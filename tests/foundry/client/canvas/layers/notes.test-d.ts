@@ -33,7 +33,7 @@ expectTypeOf(
 expectTypeOf(
   layer.panToNote(someNote, {
     duration: undefined,
-    scale: null,
+    scale: undefined,
   }),
 ).toEqualTypeOf<Promise<void>>();
 

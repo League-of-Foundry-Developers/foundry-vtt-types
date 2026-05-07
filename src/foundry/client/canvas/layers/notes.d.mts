@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
@@ -16,9 +16,7 @@ declare module "#configuration" {
  * The Notes Layer which contains Note canvas objects
  */
 declare class NotesLayer extends PlaceablesLayer<"Note"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["notes"];
 
   /**
@@ -32,9 +30,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
    */
   static override get layerOptions(): NotesLayer.LayerOptions;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   override options: NotesLayer.LayerOptions;
 
   static override documentName: "Note";
@@ -63,9 +59,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
    */
   static registerSettings(): void;
 
-  /**
-   * @deprecated Removed without replacement in v13. This warning will be removed in v14.
-   */
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
   hintMapNotes(): never;
 
   /**
@@ -109,7 +103,9 @@ declare namespace NotesLayer {
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {
     name: "notes";
-    zIndex: 800;
+
+    /** @defaultValue `800` */
+    zIndex: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -134,7 +130,7 @@ declare namespace NotesLayer {
   type DropData = DropDataJournalEntry | DropDataJournalEntryPage;
 
   /** @internal */
-  type _PanToNoteOptions = NullishProps<{
+  interface _PanToNoteOptions {
     /**
      * The resulting zoom level.
      * @defaultValue `1.5`
@@ -142,17 +138,15 @@ declare namespace NotesLayer {
      * {@link Canvas#_constrainView}, where it will be replaced with `canvas.stage.scale.x`
      */
     scale: number;
-  }> &
-    InexactPartial<{
-      /**
-       * The speed of the pan animation in milliseconds.
-       * @defaultValue `250`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      duration: number;
-    }>;
 
-  interface PanToNoteOptions extends _PanToNoteOptions {}
+    /**
+     * The speed of the pan animation in milliseconds.
+     * @defaultValue `250`
+     */
+    duration: number;
+  }
+
+  interface PanToNoteOptions extends InexactPartial<_PanToNoteOptions> {}
 }
 
 export default NotesLayer;
