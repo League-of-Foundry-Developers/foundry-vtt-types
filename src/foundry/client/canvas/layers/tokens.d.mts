@@ -1,10 +1,11 @@
 import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { Notifications, SceneControls } from "#client/applications/ui/_module.d.mts";
 import type { PIXI } from "#configuration";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -49,15 +50,8 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    */
   _dragMovementAction: string | null;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["tokens"];
-
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
-  override options: TokenLayer.LayerOptions;
 
   /**
    * @defaultValue
@@ -72,6 +66,9 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    * ```
    */
   static override get layerOptions(): TokenLayer.LayerOptions;
+
+  // Fake type override
+  override options: TokenLayer.LayerOptions;
 
   static override documentName: "Token";
 
@@ -189,7 +186,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 
   protected override _onCycleViewKey(event: KeyboardEvent): boolean;
 
-  protected override _confirmDeleteKey(documents: TokenDocument.Implementation[]): Promise<boolean | null>;
+  protected override _confirmDeleteKey(documents: TokenDocument.Implementation[]): Promise<DialogV2.ConfirmReturn>;
 
   static override prepareSceneControls(): SceneControls.Control;
 
@@ -202,7 +199,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   protected _onDropActorData(
     event: DragEvent,
     data: TokenLayer.DropData,
-  ): Promise<ReturnType<foundry.applications.ui.Notifications["warn"]> | false | TokenDocument.Implementation>;
+  ): Promise<ReturnType<Notifications["warn"]> | false | TokenDocument.Implementation>;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
@@ -259,7 +256,9 @@ declare namespace TokenLayer {
     controllableObjects: true;
     rotatableObjects: true;
     confirmDeleteKey: true;
-    zIndex: 200;
+
+    /** @defaultValue `200` */
+    zIndex: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -291,20 +290,20 @@ declare namespace TokenLayer {
   }
 
   /** @internal */
-  type _TargetObjectsOptions = InexactPartial<{
+  interface _TargetObjectsOptions {
     /**
      * Whether or not to release other targeted tokens
      * @defaultValue `true`
      */
     releaseOthers: boolean;
-  }>;
+  }
 
-  interface TargetObjectsOptions extends _TargetObjectsOptions {}
+  interface TargetObjectsOptions extends InexactPartial<_TargetObjectsOptions> {}
 
   type SetTargetMode = "replace" | "acquire" | "release";
 
   /** @internal */
-  type _SetTargetsOptions = InexactPartial<{
+  interface _SetTargetsOptions {
     /**
      * The mode that determines the targeting behavior.
      *   - `"replace"` (default): Replace the current set of targeted Tokens with provided set of Tokens.
@@ -313,20 +312,20 @@ declare namespace TokenLayer {
      * @defaultValue `"replace"`
      */
     mode: SetTargetMode;
-  }>;
+  }
 
-  interface SetTargetsOptions extends _SetTargetsOptions {}
+  interface SetTargetsOptions extends InexactPartial<_SetTargetsOptions> {}
 
   /** @internal */
-  type _ToggleCombatOptions = InexactPartial<{
+  interface _ToggleCombatOptions {
     /**
      * A specific Token which is the origin of the group toggle request
      * @defaultValue `null`
      */
     token: Token.Implementation | null;
-  }>;
+  }
 
-  interface ToggleCombatOptions extends _ToggleCombatOptions {}
+  interface ToggleCombatOptions extends InexactPartial<_ToggleCombatOptions> {}
 }
 
 export default TokenLayer;
