@@ -20,6 +20,7 @@ declare global {
 
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
+type SAL = AmbientLightDocument.Stored;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
@@ -58,15 +59,13 @@ expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.Implementatio
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Implementation> | null>();
-expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene.Implementation> | null>();
+expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | null>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
 expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
 expectTypeOf(layer.controlled).toEqualTypeOf<CAL[]>();
-expectTypeOf(layer.getDocuments()).toEqualTypeOf<
-  EmbeddedCollection<AmbientLightDocument.Implementation, Scene.Implementation> | []
->();
+expectTypeOf(layer.getDocuments()).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | []>();
 
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 declare const someLight: CALDoc;
@@ -90,7 +89,6 @@ expectTypeOf(layer.controlAll({ releaseOthers: true })).toEqualTypeOf<CAL[]>();
 
 expectTypeOf(layer.releaseAll()).toEqualTypeOf<number>();
 expectTypeOf(layer.releaseAll({})).toEqualTypeOf<number>();
-expectTypeOf(layer.releaseAll({ trigger: true })).toEqualTypeOf<number>();
 
 expectTypeOf(
   layer.rotateMany({
@@ -112,8 +110,8 @@ expectTypeOf(
   layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: undefined }),
 ).toEqualTypeOf<Promise<CAL[]> | undefined>();
 
-expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<CALDoc[]>>();
-expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
+expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<SAL[]>>();
+expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<"yes" | false | null>>();
 
 expectTypeOf(layer.storeHistory("create", [{ _id: someLight.id ?? "XXXXXSomeIDXXXXX" }])).toEqualTypeOf<void>();
 expectTypeOf(

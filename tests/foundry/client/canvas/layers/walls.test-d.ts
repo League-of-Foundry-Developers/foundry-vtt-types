@@ -67,7 +67,7 @@ describe("WallsLayer Tests", () => {
     expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
     expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
-    expectTypeOf(layer["_onUndoCreate"](creationHistoryEntry)).toEqualTypeOf<Promise<WallDocument.Implementation[]>>();
+    expectTypeOf(layer["_onUndoCreate"](creationHistoryEntry)).toEqualTypeOf<Promise<WallDocument.Stored[]>>();
 
     expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
   });

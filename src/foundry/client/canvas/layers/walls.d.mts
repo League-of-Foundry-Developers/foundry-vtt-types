@@ -134,9 +134,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   /**
    * Custom undo for wall creation while chaining is active.
    */
-  protected override _onUndoCreate(
-    event: PlaceablesLayer.CreationHistoryEntry<"Wall">,
-  ): Promise<WallDocument.Implementation[]>;
+  protected override _onUndoCreate(event: PlaceablesLayer.CreationHistoryEntry<"Wall">): Promise<WallDocument.Stored[]>;
 
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
 

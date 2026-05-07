@@ -49,7 +49,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
   /** @defaultValue `game.settings.get("core", "notesDisplayToggle")` */
   override interactiveChildren: boolean;
 
-  protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Note.Implementation[];
+  override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Note.Implementation[];
 
   protected override _deactivate(): void;
 

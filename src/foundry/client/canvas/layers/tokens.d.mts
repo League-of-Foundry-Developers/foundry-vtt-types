@@ -99,7 +99,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   /** @remarks Forces top left corner snapping */
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _prepareKeyboardMovementUpdates(
+  override _prepareKeyboardMovementUpdates(
     objects: Token.Implementation[],
     dx: -1 | 0 | 1,
     dy: -1 | 0 | 1,
@@ -177,9 +177,9 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    */
   protected _getOccludableTokens(): Token.Implementation[];
 
-  protected override _getMovableObjects(ids?: string[], includeLocked?: boolean): Token.Implementation[];
+  override _getMovableObjects(ids?: string[], includeLocked?: boolean): Token.Implementation[];
 
-  protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Token.Implementation[];
+  override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Token.Implementation[];
 
   override storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,

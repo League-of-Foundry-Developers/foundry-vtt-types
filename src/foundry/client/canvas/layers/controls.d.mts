@@ -218,10 +218,7 @@ declare class ControlsLayer extends InteractionLayer {
    * @param options  - Additional options to configure how the ping is drawn.
    * @returns A promise which resolves once the Ping has been drawn and animated
    */
-  drawOffscreenPing(
-    position: Canvas.Point,
-    options?: ControlsLayer.DrawOffscreenPingOptions, // not:null (destructured)
-  ): Promise<boolean>;
+  drawOffscreenPing(position: Canvas.Point, options?: ControlsLayer.DrawOffscreenPingOptions): Promise<boolean>;
 
   /**
    * Draw a ping on the canvas
@@ -230,10 +227,7 @@ declare class ControlsLayer extends InteractionLayer {
    * @param options  - Additional options to configure how the ping is drawn.
    * @returns A promise which resolves once the Ping has been drawn and animated
    */
-  drawPing(
-    position: Canvas.Point,
-    options?: ControlsLayer.DrawPingOptions, // not:null (destructured)
-  ): Promise<boolean>;
+  drawPing(position: Canvas.Point, options?: ControlsLayer.DrawPingOptions): Promise<boolean>;
 
   /**
    * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.

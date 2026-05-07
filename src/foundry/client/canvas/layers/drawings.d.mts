@@ -57,7 +57,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Drawing.Implementation[];
+  override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Drawing.Implementation[];
 
   /**
    * Render a configuration sheet to configure the default Drawing settings

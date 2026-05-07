@@ -43,9 +43,7 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   override get hookName(): "TemplateLayer";
 
-  protected override _getCopyableObjects(
-    options: PlaceablesLayer.GetCopyableObjectsOptions,
-  ): MeasuredTemplate.Implementation[];
+  override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): MeasuredTemplate.Implementation[];
 
   protected override _deactivate(): void;
 

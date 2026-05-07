@@ -17,6 +17,7 @@ import type { BasePlaceableHUD } from "#client/applications/hud/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type TokenLayer from "#client/canvas/layers/tokens.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.mjs";
 
 /**
  * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
@@ -58,6 +59,9 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @defaultValue `[]`
    */
   history: PlaceablesLayer.HistoryEntry<DocumentName>[];
+
+  /** @deprecated Removed in v13. Use {@linkcode PlaceablesLayer.clipboard} instead. This warning will be removed in v14. */
+  protected _copy: never;
 
   /**
    * Keep track of objects copied with CTRL+C/X which can be pasted later.
@@ -299,9 +303,10 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param includeLocked - Include locked objects which would otherwise be ignored?
    * @returns An array of objects which can be moved or rotated
    * @throws If any explicitly requested ID is not valid
+   * @internal
    * @remarks If `ids` is not passed, the currently controlled objects are used
    */
-  protected _getMovableObjects(ids?: string[], includeLocked?: boolean): Document.ObjectFor<DocumentName>[];
+  _getMovableObjects(ids?: string[], includeLocked?: boolean): Document.ObjectFor<DocumentName>[];
 
   /**
    * An internal helper method to identify the array of PlaceableObjects which can be copied/cut.
@@ -309,13 +314,13 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @returns An array of objects which can be copied/cut
    * @internal
    */
-  protected _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Document.ObjectFor<DocumentName>[];
+  _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Document.ObjectFor<DocumentName>[];
 
   /**
    * Undo a change to the objects in this layer
    * This method is typically activated using CTRL+Z while the layer is active
    */
-  undoHistory(): Promise<Document.ImplementationFor<DocumentName>[]>;
+  undoHistory(): Promise<Document.StoredForName<DocumentName>[]>;
 
   /**
    * Undo creation with deletion workflow
@@ -323,7 +328,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   protected _onUndoCreate(
     event: PlaceablesLayer.CreationHistoryEntry<DocumentName>,
-  ): Promise<Document.ImplementationFor<DocumentName>[]>;
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /**
    * Undo updates with update workflow.
@@ -331,7 +336,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   protected _onUndoUpdate(
     event: PlaceablesLayer.UpdateHistoryEntry<DocumentName>,
-  ): Promise<Document.ImplementationFor<DocumentName>[]>;
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /**
    * Undo deletion with creation workflow.
@@ -339,7 +344,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   protected _onUndoDelete(
     event: PlaceablesLayer.DeletionHistoryEntry<DocumentName>,
-  ): Promise<Document.ImplementationFor<DocumentName>[]>;
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /**
    * A helper method to prompt for deletion of all PlaceableObject instances within the Scene
@@ -348,7 +353,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @remarks Returns `null` if the dialog spawned is closed by header button, `false` if cancelled by button, `undefined` if confirmed
    * @throws If `!game.user.isGM`
    */
-  deleteAll(): Promise<undefined | false | null>;
+  deleteAll(): Promise<PlaceablesLayer.DeleteAllReturn>;
 
   /**
    * Record a new CRUD event in the history log so that it can be undone later. The base implementation calls
@@ -394,7 +399,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   selectObjects(
     options: PlaceablesLayer.SelectObjectsOptions,
-    additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions, // not:null (destructured)
+    additionalOptions?: PlaceablesLayer.SelectObjectsAdditionalOptions,
   ): boolean;
 
   /**
@@ -427,8 +432,9 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param options    - Options which configure preview creation
    * @returns The created preview object
    * @remarks Returns a temporary (`new CanvasDocument()`) document
+   * @internal
    */
-  protected _createPreview(
+  _createPreview(
     createData: Document.CreateDataForName<DocumentName>,
     options?: PlaceablesLayer.CreatePreviewOptions,
   ): Promise<Document.ObjectFor<DocumentName>>;
@@ -464,7 +470,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param documents - The documents that will be deleted on confirmation.
    * @returns True if the deletion is confirmed to proceed.
    */
-  protected _confirmDeleteKey(documents: Document.ImplementationFor<DocumentName>[]): Promise<boolean | null>;
+  protected _confirmDeleteKey(documents: Document.ImplementationFor<DocumentName>[]): Promise<DialogV2.ConfirmReturn>;
 
   protected override _onSelectAllKey(event: KeyboardEvent): boolean;
 
@@ -478,12 +484,11 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
 
   protected override _onPasteKey(event: KeyboardEvent): boolean;
 
-  /** @deprecated Removed in v13. Use {@linkcode PlaceablesLayer.clipboard} instead. This warning will be removed in v14. */
-  protected _copy: never;
-
   /**
-   * @deprecated "`PlaceablesLayer#gridPrecision` is deprecated. Use {@linkcode PlaceablesLayer.getSnappedPoint | PlaceablesLayer#getSnappedPoint} instead of
-   * {@linkcode foundry.canvas.layers.GridLayer.getSnappedPosition | GridLayer#getSnappedPosition} and `PlaceablesLayer#gridPrecision`." (since v12, until v14)
+   * @deprecated "`PlaceablesLayer#gridPrecision` is deprecated. Use
+   * {@linkcode PlaceablesLayer.getSnappedPoint | PlaceablesLayer#getSnappedPoint} instead of
+   * {@linkcode foundry.canvas.layers.GridLayer.getSnappedPosition | GridLayer#getSnappedPosition}
+   * and `PlaceablesLayer#gridPrecision`." (since v12, until v14)
    */
   get gridPrecision(): number;
 
@@ -681,28 +686,21 @@ declare namespace PlaceablesLayer {
     /**
      * @remarks An array of position or rotation updates, keys being `_id` and either
      * {@linkcode PlaceableObject._getShiftedPosition | ...placeable._getShiftedPosition(dx, dy, dz)}
-     * or `rotation`
+     * or `rotation`, depending on which method this is coming from.
      */
     updates: Document.UpdateDataForName<DocumentName>[],
 
     /**
      * @remarks Update operation options for the given placeable. As of 13.351, core only provides this in
      * {@linkcode TokenLayer._prepareKeyboardMovementUpdates | TokenLayer#_prepareKeyboardMovementUpdates},
-     * and only provides the {@linkcode TokenDocument.Database.UpdateEmbeddedOperation.movement | movement} property
+     * and only provides the {@linkcode TokenDocument.Database.UpdateEmbeddedOperation.movement | movement} property.
      */
     options?: Document.Database.UpdateEmbeddedOperationForName<DocumentName>,
   ];
 
-  interface GetCopyableObjectsOptions {
-    /**
-     * Cut instead of copy?
-     * @remarks Despite being marked required in {@linkcode PlaceablesLayer._getCopyableObjects | PlaceablesLayer#_getCopyableObjects},
-     * no core implementation makes use of this property.
-     */
-    cut: boolean;
-  }
+  /** Strictly the callback returns `void`, but its rendered as `undefined` here to make the return type machinery accurate. */
+  type DeleteAllReturn = DialogV2.ConfirmReturn<{ yes: { callback: (e: Event, button: HTMLElement) => undefined } }>;
 
-  /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
   type HistoryDataFor<Action extends Document.Database.OperationAction, DocumentName extends Document.PlaceableType> =
     | (Action extends "create" ? { _id: string } : never)
     | (Action extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
@@ -723,7 +721,7 @@ declare namespace PlaceablesLayer {
     type: "create";
     data: HistoryDataFor<"create", DocumentName>[];
 
-    /** @remarks As of 13.347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
+    /** @remarks As of 13.351 this will always be an empty object, see {@linkcode HistoryEntry} remarks. */
     options: AnyObject;
   }
 
@@ -733,6 +731,7 @@ declare namespace PlaceablesLayer {
 
     /**
      * @remarks As of 13.351 this will always be an empty object, except in the case of a token update involving movement.
+     * See {@linkcode HistoryDataFor} remarks.
      */
     options: Document.Database.UpdateEmbeddedOperationForName<DocumentName>;
   }
@@ -741,23 +740,29 @@ declare namespace PlaceablesLayer {
     type: "delete";
     data: HistoryDataFor<"delete", DocumentName>[];
 
-    /** @remarks As of 13.1347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
+    /** @remarks As of 13.351 this will always be an empty object, see {@linkcode HistoryEntry} remarks. */
     options: AnyObject;
   }
 
   /** @internal */
-  type _CopyObjectsOptions = InexactPartial<{
+  interface _CopyObjectsOptions {
     /**
      * Cut instead of copy?
      * @defaultValue `false`
      */
     cut: boolean;
-  }>;
+  }
 
-  interface CopyObjectsOptions extends _CopyObjectsOptions {}
+  interface CopyObjectsOptions extends InexactPartial<_CopyObjectsOptions> {}
+
+  /**
+   * @remarks {@linkcode PlaceablesLayer.copyObjects | PlaceablesLayer#copyObjects} passes along specifically *just* the `cut` property from its options to
+   * {@linkcode PlaceablesLayer._getCopyableObjects | #_getCopyableObjects}, despite that being the only property *to* pass.
+   */
+  interface GetCopyableObjectsOptions extends Pick<CopyObjectsOptions, "cut"> {}
 
   /** @internal */
-  type _PasteOptions = InexactPartial<{
+  interface _PasteOptions {
     /**
      * Paste data in a hidden state, if applicable. Default is false.
      * @defaultValue `false`
@@ -769,12 +774,12 @@ declare namespace PlaceablesLayer {
      * @defaultValue `true`
      */
     snap: boolean;
-  }>;
+  }
 
-  interface PasteOptions extends _PasteOptions {}
+  interface PasteOptions extends InexactPartial<_PasteOptions> {}
 
   /** @internal */
-  type _SelectObjectsOptions = InexactPartial<{
+  interface _SelectObjectsOptions {
     /**
      * Optional arguments provided to any called release() method
      * @defaultValue `{}`
@@ -788,48 +793,48 @@ declare namespace PlaceablesLayer {
      * @remarks Can't be null as it only has a parameter default
      */
     controlOptions: PlaceableObject.ControlOptions;
-  }>;
+  }
 
-  interface SelectObjectsOptions extends _SelectObjectsOptions {
+  interface SelectObjectsOptions extends InexactPartial<_SelectObjectsOptions> {
     /**
      * The top-left x-coordinate of the selection rectangle.
-     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     * @privateRemarks Foundry marked optional. Ignored as the default of 0 is questionable.
      */
     x: number;
 
     /**
      * The top-left y-coordinate of the selection rectangle.
-     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     * @privateRemarks Foundry marked optional. Ignored as the default of 0 is questionable.
      */
     y: number;
 
     /**
      * The width of the selection rectangle.
-     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     * @privateRemarks Foundry marked optional. Ignored as the default of 0 is questionable.
      */
     width: number;
 
     /**
      * The height of the selection rectangle.
-     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     * @privateRemarks Foundry marked optional. Ignored as the default of 0 is questionable.
      */
     height: number;
   }
 
-  /**
-   * This is functionally identical to {@linkcode PlaceableObject.ControlOptions}, but only the one key gets checked,
-   * and it's not passed on anywhere, so it gets its own type to not cause confusion with {@linkcode SelectObjectsOptions.controlOptions}
-   * @internal
-   */
-  type _SelectObjectAdditionalOptions = InexactPartial<{
+  interface _SelectObjectAdditionalOptions {
     /**
      * Whether to release other selected objects.
      * @defaultValue `true`
      */
     releaseOthers: boolean;
-  }>;
+  }
 
-  interface SelectObjectsAdditionalOptions extends _SelectObjectAdditionalOptions {}
+  /**
+   * This is functionally identical to {@linkcode PlaceableObject.ControlOptions} as of 13.351, but only the one key gets checked,
+   * and it's not passed on anywhere, so it gets its own type to not cause confusion with {@linkcode SelectObjectsOptions.controlOptions}
+   * @internal
+   */
+  interface SelectObjectsAdditionalOptions extends InexactPartial<_SelectObjectAdditionalOptions> {}
 
   // Note(LukeAbby): This uses `ToMethod` for variance reasons. Specifically this should be
   // covariant over `DocumentName`.
@@ -846,18 +851,18 @@ declare namespace PlaceablesLayer {
     Document.Database.UpdateManyDocumentsOperationForName<DocumentName>;
 
   /** @internal */
-  type _CanvasCoordinatesFromDropOptions = InexactPartial<{
+  interface _CanvasCoordinatesFromDropOptions {
     /**
      * Return the co-ordinates of the center of the nearest grid element.
      * @defaultValue `true`
      */
     center: boolean;
-  }>;
+  }
 
-  interface CanvasCoordinatesFromDropOptions extends _CanvasCoordinatesFromDropOptions {}
+  interface CanvasCoordinatesFromDropOptions extends InexactPartial<_CanvasCoordinatesFromDropOptions> {}
 
   /** @internal */
-  type _CreatePreviewOptions = InexactPartial<{
+  interface _CreatePreviewOptions {
     /**
      * Render the preview object config sheet?
      * @defaultValue `true`
@@ -875,9 +880,9 @@ declare namespace PlaceablesLayer {
      * @defaultValue `0`
      */
     left: number;
-  }>;
+  }
 
-  interface CreatePreviewOptions extends _CreatePreviewOptions {}
+  interface CreatePreviewOptions extends InexactPartial<_CreatePreviewOptions> {}
 }
 
 export default PlaceablesLayer;
