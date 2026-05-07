@@ -235,12 +235,12 @@ declare namespace InteractionLayer {
   }
 
   /** @internal */
-  type _ActivateOptions = InexactPartial<{
+  interface _ActivateOptions {
     /** A specific tool in the control palette to set as active */
     tool: string;
-  }>;
+  }
 
-  interface ActivateOptions extends _ActivateOptions {}
+  interface ActivateOptions extends InexactPartial<_ActivateOptions> {}
 
   interface DrawOptions extends CanvasLayer.DrawOptions {}
 

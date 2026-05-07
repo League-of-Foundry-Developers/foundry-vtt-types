@@ -16,14 +16,10 @@ declare module "#configuration" {
  * The DrawingsLayer subclass of PlaceablesLayer.
  */
 declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["drawings"];
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   override options: DrawingsLayer.LayerOptions;
 
   /**
@@ -44,7 +40,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
   /**
    * The named game setting which persists default drawing configuration for the User
    */
-  static DEFAULT_CONFIG_SETTING: "defaultDrawingConfig";
+  static DEFAULT_CONFIG_SETTING: DrawingsLayer.DEFAULT_CONFIG_SETTING;
 
   /**
    * The collection of drawing objects which are rendered in the interface.
@@ -130,8 +126,12 @@ declare namespace DrawingsLayer {
     name: "drawings";
     controllableObjects: true;
     rotatableObjects: true;
-    zIndex: 500;
+
+    /** @defaultValue `500` */
+    zIndex: number;
   }
+
+  type DEFAULT_CONFIG_SETTING = "defaultDrawingConfig";
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
