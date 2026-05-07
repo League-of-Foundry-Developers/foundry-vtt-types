@@ -16,14 +16,10 @@ declare module "#configuration" {
  * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
  */
 declare class TilesLayer extends PlaceablesLayer<"Tile"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["tiles"];
 
   static override documentName: "Tile";
-
-  override options: TilesLayer.LayerOptions;
 
   /**
    * @defaultValue
@@ -37,6 +33,9 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    * ```
    */
   static override get layerOptions(): TilesLayer.LayerOptions;
+
+  // Fake type override
+  override options: TilesLayer.LayerOptions;
 
   override get hookName(): "TilesLayer";
 
@@ -96,7 +95,8 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
 
   /**
    * A convenience reference to the tile occlusion mask on the primary canvas group.
-   * @deprecated "`TilesLayer#depthMask` is deprecated without replacement. Use {@linkcode Canvas.masks | canvas.masks.depth} instead" (since v12, until v14)
+   * @deprecated "`TilesLayer#depthMask` is deprecated without replacement. Use {@linkcode Canvas.masks | canvas.masks.depth} instead"
+   * (since v12, until v14)
    */
   get depthMask(): CanvasDepthMask.Any;
 }
@@ -124,7 +124,10 @@ declare namespace TilesLayer {
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ImplementationClass> {
     name: "tiles";
-    zIndex: 300;
+
+    /** @defaultValue `300` */
+    zIndex: number;
+
     controllableObjects: true;
     rotatableObjects: true;
   }
@@ -134,7 +137,8 @@ declare namespace TilesLayer {
 
   interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
-  /** @internal  */
+  // TODO(esheyw): This can probably be made cleaner with more research.
+  /** @internal */
   type _DropData = Required<Pick<TileDocument.CreateData, "elevation" | "height" | "width" | "sort">>;
 
   interface DropData extends Canvas.DropPosition, _DropData {
@@ -142,7 +146,7 @@ declare namespace TilesLayer {
     fromFilePicker: boolean;
     tileSize: number;
     texture: { src: string };
-    occlusion: { mode: foundry.CONST.OCCLUSION_MODES };
+    occlusion: { mode: CONST.OCCLUSION_MODES };
   }
 }
 
