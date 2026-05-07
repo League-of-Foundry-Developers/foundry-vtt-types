@@ -32,15 +32,15 @@ expectTypeOf(layer.getZIndex()).toBeNumber();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 declare const someShapeData: foundry.data.BaseShapeData;
-expectTypeOf(layer["_highlightShape"]()).toBeVoid();
-expectTypeOf(layer["_highlightShape"](null)).toBeVoid();
+expectTypeOf(layer._highlightShape()).toBeVoid();
+expectTypeOf(layer._highlightShape(null)).toBeVoid();
 expectTypeOf(
-  layer["_highlightShape"]({
+  layer._highlightShape({
     type: "rectangle",
     hole: true,
   }),
 ).toBeVoid();
-expectTypeOf(layer["_highlightShape"](someShapeData)).toBeVoid();
+expectTypeOf(layer._highlightShape(someShapeData)).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;

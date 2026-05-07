@@ -49,9 +49,9 @@ describe("TokenLayer Tests", () => {
 
     expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.Implementation[]>();
 
-    expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.Implementation[]>();
-    expectTypeOf(layer["_getMovableObjects"](["TTTTTSomeIDTTTTTT"])).toEqualTypeOf<Token.Implementation[]>();
-    expectTypeOf(layer["_getMovableObjects"](["TTTTTSomeIDTTTTTT"], true)).toEqualTypeOf<Token.Implementation[]>();
+    expectTypeOf(layer._getMovableObjects()).toEqualTypeOf<Token.Implementation[]>();
+    expectTypeOf(layer._getMovableObjects(["TTTTTSomeIDTTTTTT"])).toEqualTypeOf<Token.Implementation[]>();
+    expectTypeOf(layer._getMovableObjects(["TTTTTSomeIDTTTTTT"], true)).toEqualTypeOf<Token.Implementation[]>();
 
     expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.Implementation[]>();
 
@@ -80,7 +80,7 @@ describe("TokenLayer Tests", () => {
   test("Coordinates and movement", () => {
     expectTypeOf(layer.getSnappedPoint({ x: 4, y: 5 })).toEqualTypeOf<Canvas.Point>();
 
-    expectTypeOf(layer["_prepareKeyboardMovementUpdates"]([token], -1, 0, 1)).toEqualTypeOf<
+    expectTypeOf(layer._prepareKeyboardMovementUpdates([token], -1, 0, 1)).toEqualTypeOf<
       PlaceablesLayer.PreparedUpdates<"Token">
     >();
 
