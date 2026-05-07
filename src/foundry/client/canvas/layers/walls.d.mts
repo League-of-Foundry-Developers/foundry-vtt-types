@@ -47,9 +47,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   /** @deprecated Foundry replaced with {@linkcode _last} in v13. This warning will be removed in v14. */
   last: never;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["walls"];
 
   /**
@@ -64,7 +62,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
    */
   static override get layerOptions(): WallsLayer.LayerOptions;
 
-  /** @privateRemarks This is not overridden in foundry but reflects the real behavior. */
+  // Fake type override
   override options: WallsLayer.LayerOptions;
 
   static override documentName: "Wall";
@@ -141,20 +139,23 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   /**
    * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
    * Cache unique wall endpoints and identify interior walls using overhead roof tiles.
-   * @deprecated "`WallsLayer#initialize` is deprecated in favor of {@linkcode foundry.canvas.geometry.edges.CanvasEdges.initialize | Canvas#edges#initialize}" (since v12, until v14)
+   * @deprecated "`WallsLayer#initialize` is deprecated in favor of
+   * {@linkcode foundry.canvas.geometry.edges.CanvasEdges.initialize | Canvas#edges#initialize}" (since v12, until v14)
    */
   initialize(): void;
 
   /**
    * Identify walls which are treated as "interior" because they are contained fully within a roof tile.
-   * @deprecated "`WallsLayer#identifyInteriorWalls` has been deprecated. It has no effect anymore and there's no replacement." (since v12, until v14)
+   * @deprecated "`WallsLayer#identifyInteriorWalls` has been deprecated. It has no effect anymore and there's no replacement."
+   * (since v12, until v14)
    */
   identifyInteriorWalls(): void;
 
   /**
    * Initialization to identify all intersections between walls.
    * These intersections are cached and used later when computing point source polygons.
-   * @deprecated "`WallsLayer#identifyWallIntersections` is deprecated in favor of {@linkcode foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections} and has no effect." (since v12, until v14)
+   * @deprecated "`WallsLayer#identifyWallIntersections` is deprecated in favor of
+   * {@linkcode foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections} and has no effect." (since v12, until v14)
    */
   identifyWallIntersections(): void;
 
@@ -201,15 +202,15 @@ declare namespace WallsLayer {
   }
 
   /** @internal */
-  type _Snap = InexactPartial<{
+  interface _Snap {
     /**
      * Snap to the grid?
      * @defaultValue `true`
      */
     snap: boolean;
-  }>;
+  }
 
-  interface GetWallEndpointCoordinatesOptions extends _Snap {}
+  interface GetWallEndpointCoordinatesOptions extends InexactPartial<_Snap> {}
 }
 
 export default WallsLayer;
