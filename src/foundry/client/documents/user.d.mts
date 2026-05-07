@@ -15,6 +15,9 @@ import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ControlsLayer from "#client/canvas/layers/controls.d.mts";
+
 declare namespace User {
   /**
    * The document's name.

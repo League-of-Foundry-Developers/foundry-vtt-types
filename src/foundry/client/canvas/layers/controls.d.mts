@@ -186,6 +186,7 @@ declare class ControlsLayer extends InteractionLayer {
    * Update the cursor when the user moves to a new position
    * @param user     - The User for whom to update the cursor
    * @param position - The new cursor position
+   * @remarks Foundry doesn't type the `| null` in `position`, but explicitly checks for it.
    * @privateRemarks See {@linkcode drawCursor} remarks.
    */
   updateCursor(user: User.Stored, position: Canvas.Point | null): void;
@@ -229,13 +230,8 @@ declare class ControlsLayer extends InteractionLayer {
    */
   drawPing(position: Canvas.Point, options?: ControlsLayer.DrawPingOptions): Promise<boolean>;
 
-  /**
-   * Given off-screen coordinates, determine the closest point at the edge of the viewport to these coordinates.
-   * @param position - The off-screen co-ordinate.
-   * @returns The closest point at the edge of the viewport to these coordinates and a ray cast from the centre of the screen towards it.
-   * @remarks Foundry marked `@private`
-   */
-  protected _findViewportIntersection(position: Canvas.Point): ControlsLayer.ViewportIntersectionData;
+  /** @deprecated Foundry made this hard private in v13. This warning will be removed in v14. */
+  protected _findViewportIntersection(position: never): never;
 
   #ControlsLayer: true;
 }
@@ -263,6 +259,8 @@ declare namespace ControlsLayer {
 
   interface LayerOptions extends InteractionLayer.LayerOptions {
     name: "controls";
+
+    /** @defaultValue `1000` */
     zIndex: number;
   }
 
@@ -273,7 +271,7 @@ declare namespace ControlsLayer {
   interface HandlePingOptions extends User.PingData, Ping.ConstructorOptions {}
 
   /** @internal */
-  type _User = InexactPartial<{
+  interface _User {
     /**
      * The user who pinged.
      * @remarks Only used to set the color of the ping. If `user?.color` ends up `undefined`, the relevant Ping class will provide a default color.
@@ -281,21 +279,22 @@ declare namespace ControlsLayer {
      * @privateRemarks Since only {@linkcode User.color | color} is accessed, temporary users are allowed.
      */
     user: User.Implementation;
-  }>;
+  }
 
-  interface DrawPingOptions extends _User, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
+  interface DrawPingOptions extends InexactPartial<_User>, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
 
   /** @internal */
-  type _DrawOffscreenPingOptions = InexactPartial<{
+  interface _DrawOffscreenPingOptions {
     /**
      * The style of ping to draw, from {@linkcode CONFIG.Canvas.pings}.
      * @defaultValue `"arrow"`
      * @remarks See {@linkcode User.PingData.style}
      */
     style: User.PingData["style"];
-  }>;
+  }
 
-  interface DrawOffscreenPingOptions extends Omit<DrawPingOptions, "style">, _DrawOffscreenPingOptions {}
+  interface DrawOffscreenPingOptions
+    extends Omit<DrawPingOptions, "style">, InexactPartial<_DrawOffscreenPingOptions> {}
 
   interface ViewportIntersectionData {
     /** A Ray from the center of the [viewport minus right sidebar] area to the point on the edge of that area in line with an offscreen ping */

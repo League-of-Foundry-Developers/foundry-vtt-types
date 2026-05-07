@@ -1,11 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-import utils = foundry.utils;
 import Cursor = foundry.canvas.containers.Cursor;
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
 import ControlsLayer = foundry.canvas.layers.ControlsLayer;
 import Ruler = foundry.canvas.interaction.Ruler;
-import Ray = foundry.canvas.geometry.Ray;
 
 declare const pixiPoint: PIXI.Point;
 
@@ -92,11 +90,6 @@ expectTypeOf(
     user: undefined,
   }),
 ).toEqualTypeOf<Promise<boolean>>();
-
-expectTypeOf(layer["_findViewportIntersection"](somePoint)).toEqualTypeOf<{
-  ray: Ray;
-  intersection: utils.LineIntersection | undefined;
-}>();
 
 Hooks.on("drawControlsLayer", (layer) => {
   expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
