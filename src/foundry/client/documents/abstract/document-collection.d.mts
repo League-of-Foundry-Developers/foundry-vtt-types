@@ -1,22 +1,18 @@
-import type { InexactPartial, Identity, DeepPartial, AnyObject } from "#utils";
+import type { DeepPartial, InexactPartial, Identity } from "#utils";
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type { SearchFilter } from "#client/applications/ux/_module.d.mts";
-import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.mjs";
 
-/** @privateRemarks `DatabaseBackend` is only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DatabaseBackend from "#common/abstract/backend.d.mts";
 
-/** @privateRemarks `CompendiumCollection` and `CompendiumFolderCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
 
-/** @privateRemarks `WorldCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
@@ -145,11 +141,10 @@ declare abstract class DocumentCollection<
    * @param options        - Additional options passed to Document.updateDocuments (default: `{}`)
    * @returns An array of updated data once the operation is complete
    */
-  // TODO: This is updated in the db-ops branch
   updateAll(
     transformation: DocumentCollection.Transformation<DocumentName>,
-    condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
-    options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
+    condition?: ((doc: Document.StoredForName<DocumentName>) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /**
@@ -164,13 +159,12 @@ declare abstract class DocumentCollection<
    * @remarks Foundry types `action` as {@linkcode DatabaseBackend.DatabaseAction} but no path exists from a `get` operation to calling
    * this method.
    */
-  // TODO: this is updated in the db-ops branch
-  _onModifyContents<A extends DatabaseAction>(
-    action: A,
+  _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
     documents: Document.StoredForName<DocumentName>[],
-    result: readonly AnyObject[] | readonly string[],
-    operation: DatabaseOperationMap[A],
-    user: User.Implementation,
+    result: Collection.OnModifyContentsResult<DocumentName, Action>,
+    operation: Collection.OnModifyContentsOperation<DocumentName, Action>,
+    user: User.Stored,
   ): void;
 
   static #DocumentCollection: true;
@@ -250,8 +244,25 @@ declare namespace DocumentCollection {
 
   interface SearchOptions extends InexactPartial<_SearchOptions> {}
 
-  /** Used in the {@linkcode DocumentCollection.getSearchableFields} return type. */
-  // TODO: infer from schema all `StringField`s and subclasses that are `textSearch: true`
+  /**
+   * It wouldn't make sense to pass `pack` to {@linkcode WorldCollection.updateAll | WorldCollection#updateAll} for a world
+   * collection, and {@linkcode CompendiumCollection.updateAll | CompendiumCollection#updateAll} and
+   * {@linkcode CompendiumFolderCollection.updateAll | CompendiumFolderCollection#updateAll} force set `pack`, for obvious reasons;
+   * In either case, we omit `pack` from this operation interface. This is valid for core, as the above three classes are all that
+   * extend `DocumentCollection` in Foundry code.
+   *
+   * If you're a user that needs to be able to pass `pack` to your `DocumentCollection` subclass for some reason, please let us know.
+   */
+  type UpdateAllOperation<DocumentName extends Document.Type> = Omit<
+    Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
+    "pack"
+  >;
+
+  /**
+   * Used in the {@linkcode DocumentCollection.getSearchableFields} return type.
+   *
+   * TODO: infer from schema all `StringField`s and subclasses that are `textSearch: true`
+   */
   type SearchableField =
     | foundry.data.fields.StringField
     | {

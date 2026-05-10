@@ -1,6 +1,7 @@
 import type { Identity } from "#utils";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 /**
  * A Collection of Folder documents within a Compendium pack.
@@ -18,7 +19,19 @@ declare class CompendiumFolderCollection<
   /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
-  // TODO: `updateAll` and `_onModifyContents` are done on the db-ops branch
+  override updateAll(
+    transformation: DocumentCollection.Transformation<"Folder">,
+    condition?: ((doc: Folder.Stored<DocumentName>) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<"Folder">,
+  ): Promise<Folder.Stored[]>;
+
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Folder.Stored<DocumentName>[],
+    result: Collection.OnModifyContentsResult<"Folder", Action>,
+    operation: Collection.OnModifyContentsOperation<"Folder", Action>,
+    user: User.Stored,
+  ): void;
 }
 
 declare namespace CompendiumFolderCollection {

@@ -217,17 +217,17 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseScene.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseScene.Database.Create<Temporary>>,
+    operation?: BaseScene.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseScene.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseScene.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseScene.Database.Update>,
+    operation?: BaseScene.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Scene.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseScene.Database.Delete>,
+    operation?: BaseScene.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Scene.Stored>>;
 
   static override create<
@@ -235,19 +235,19 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseScene.Database.CreateOperation<Temporary>,
+    operation?: BaseScene.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseScene.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseScene.UpdateInput,
-    operation?: BaseScene.Database.UpdateOperation,
+    operation?: BaseScene.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseScene.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseScene.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseScene.Database.GetOptions,
+    operation?: BaseScene.Database.GetDocumentsOperation,
   ): Scene.Stored | CompendiumCollection.IndexEntry<"Scene"> | null;
 
   static override getCollectionName<CollectionName extends BaseScene.Embedded.Name>(
@@ -306,19 +306,19 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   protected override _onCreate(
     data: BaseScene.CreateData,
-    options: BaseScene.Database.OnCreateOperation,
+    options: BaseScene.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Scene.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseScene.Database.Create>,
+    operation: BaseScene.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Scene.Stored[],
-    operation: BaseScene.Database.Create,
+    operation: BaseScene.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -330,19 +330,19 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   protected override _onUpdate(
     changed: BaseScene.UpdateData,
-    options: BaseScene.Database.OnUpdateOperation,
+    options: BaseScene.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Scene.Stored[],
-    operation: BaseScene.Database.Update,
+    operation: BaseScene.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Scene.Stored[],
-    operation: BaseScene.Database.Update,
+    operation: BaseScene.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -351,17 +351,17 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseScene.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseScene.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Scene.Stored[],
-    operation: BaseScene.Database.Delete,
+    operation: BaseScene.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Scene.Stored[],
-    operation: BaseScene.Database.Delete,
+    operation: BaseScene.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -371,7 +371,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   protected static override _onCreateDocuments(
     documents: Scene.Implementation[],
-    context: BaseScene.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseScene.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -380,7 +381,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   protected static override _onUpdateDocuments(
     documents: Scene.Stored[],
-    context: BaseScene.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseScene.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -389,7 +391,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   protected static override _onDeleteDocuments(
     documents: Scene.Stored[],
-    context: BaseScene.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseScene.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

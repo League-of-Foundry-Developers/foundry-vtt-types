@@ -1,5 +1,7 @@
 import type { AnyObject, Identity } from "#utils";
-import type { DatabaseOperationMap, DocumentSocketRequest } from "#common/abstract/_types.d.mts";
+import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type { DocumentSocketRequest } from "#common/abstract/_types.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * A standardized way socket messages are dispatched and their responses are handled
@@ -11,11 +13,9 @@ declare class SocketInterface {
    * @param request   - Request data provided to the Socket event
    * @returns A Promise which resolves to the SocketResponse
    */
-  static dispatch<DatabaseAction extends keyof DatabaseOperationMap>(
+  static dispatch<DatabaseAction extends DatabaseBackend.DatabaseAction>(
     eventName: string,
-    request:
-      | DocumentSocketRequest<DatabaseAction>
-      | foundry.documents.collections.CompendiumCollection.ManageCompendiumRequest,
+    request: DocumentSocketRequest<DatabaseAction> | CompendiumCollection.ManageCompendiumRequest,
   ): Promise<SocketInterface.SocketResponse>;
 }
 

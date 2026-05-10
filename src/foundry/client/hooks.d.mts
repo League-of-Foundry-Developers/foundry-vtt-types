@@ -4,10 +4,9 @@ import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
-import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
-import type Hooks from "./helpers/hooks.d.mts";
+import type { ClientSettings, Hooks } from "#client/helpers/_module.d.mts";
 import type { Canvas, layers } from "#client/canvas/_module.d.mts";
 import type {
   CanvasGroupMixin,
@@ -15,9 +14,9 @@ import type {
   EffectsCanvasGroup,
   EnvironmentCanvasGroup,
 } from "#client/canvas/groups/_module.d.mts";
-
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;
@@ -332,12 +331,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
-  updateWorldTime: (
-    worldTime: number,
-    delta: number,
-    options: Setting.Database.UpdateOperation,
-    userId: string,
-  ) => void;
+  updateWorldTime: (worldTime: number, delta: number, options: ClientSettings.OnChangeOptions, userId: string) => void;
 
   /* CanvasLifecycle */
 
@@ -689,18 +683,54 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@linkcode foundry.documents.collections.CompendiumCollection._onModifyContents | foundry.documents.collections.CompendiumCollection#_onModifyContents}
+   *
+   * Since {@linkcode CompendiumCollection._onModifyContents | CompendiumCollection#_onModifyContents} does not forward the `action`, we
+   * can't know ahead of time if the `options` will be a `create`, `update`, or `delete` operation.
    */
-  updateCompendium: (
-    pack: foundry.documents.collections.CompendiumCollection.Any,
-    documents: Document.Any[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+  updateCompendium: <DocumentName extends CompendiumCollection.DocumentName>(
+    pack: CompendiumCollection<DocumentName>,
+    documents: Document.StoredForName<DocumentName>[],
+    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database.OperationAction>,
     userId: string,
   ) => void;
 
   /* TokenDocument */
 
-  // TODO: `preMoveToken` and `moveToken`
+  /**
+   * A hook event that fires for every Token document that is about to me moved before the conclusion of
+   * an update workflow. This hook only fires for the client who is initiating the update request.
+   * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
+   * @param document  - The existing Document which was updated
+   * @param movement  - The pending movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @returns If false, the movement is prevented
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  preMoveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.PreUpdateOptions,
+  ) => boolean | void;
+
+  /**
+   * A hook event that fires for every Token document that was moved after conclusion of an update
+   * workflow. This hook fires for all connected clients after the update has been processed.
+   * @param document  - The existing TokenDocument which was updated
+   * @param movement  - The movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @param user      - The User that requested the update operation
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   *
+   * @privateRemarks Foundry types `movement` as `DeepReadonly`, which appears to be true at runtime, despite there being no `seal` or
+   * `freeze` calls after the client gets the operation back from the server; `movement` has therefore been given the pre-server type in
+   * lieu of more complete understanding.
+   */
+  moveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.OnUpdateOptions,
+    user: User.Stored,
+  ) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is stopped.
@@ -1014,16 +1044,7 @@ export interface AllHooks extends DynamicHooks {
    * @param combat     - The Combat encounter which is starting
    * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
    */
-  combatStart: (
-    combat: Combat.Implementation,
-    updateData: {
-      /** The initial round */
-      round: number;
-
-      /** The initial turn */
-      turn: number;
-    },
-  ) => void;
+  combatStart: (combat: Combat.Implementation, updateData: Combat.CombatStartData) => void;
 
   /**
    * A hook event that fires when the turn of the Combat encounter changes.
@@ -1034,20 +1055,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatTurn: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The current round of combat */
-      round: number;
-
-      /** The new turn number */
-      turn: number;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.TurnUpdateData,
+    updateOptions: Combat.TurnUpdateOptions,
   ) => void;
 
   /**
@@ -1058,23 +1067,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatRound: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The new round of combat */
-      round: number;
-
-      /**
-       * The new turn number
-       * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
-       */
-      turn: number | null;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.RoundUpdateData,
+    updateOptions: Combat.RoundUpdateOptions,
   ) => void;
 
   /**
@@ -1208,7 +1202,14 @@ export interface AllHooks extends DynamicHooks {
    */
   rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
-  // TODO: `clientSettingChanged`
+  /**
+   * A hook event that fires when a client setting changes.
+   * @param key     - The setting key which changed
+   * @param value   - The new setting value
+   * @param options - Additional options passed with the request
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  clientSettingChanged: (key: string, value: unknown, options: ClientSettings.OnChangeOptions) => void;
 
   /* RollTableConfig */
 
@@ -1522,13 +1523,11 @@ declare global {
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preCreateDocumentArray | ClientDatabaseBackend#_preCreateDocumentArray}
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      options: Document.Database.PreCreateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1543,12 +1542,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postCreateDocumentCallbacks | ClientDatabaseBackend#_postCreateDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.CreateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1568,13 +1565,11 @@ declare global {
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preUpdateDocumentArray | ClientDatabaseBackend#_preUpdateDocumentArray}
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.PreUpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1590,13 +1585,11 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postUpdateDocumentCallbacks | ClientDatabaseBackend#_postUpdateDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       change: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.UpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1615,12 +1608,10 @@ declare global {
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preDeleteDocumentArray | ClientDatabaseBackend#_preDeleteDocumentArray}.
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.PreDeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.PreDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1635,12 +1626,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postDeleteDocumentCallbacks | ClientDatabaseBackend#_postDeleteDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.DeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.OnDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1653,6 +1642,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
+    // TODO: this is currently unused and needs to be properly wired up
     type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;

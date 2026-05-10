@@ -95,17 +95,17 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryCategory.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseJournalEntryCategory.Database.Create<Temporary>>,
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntryCategory.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntryCategory.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntryCategory.Database.Update>,
+    operation?: BaseJournalEntryCategory.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<JournalEntryCategory.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntryCategory.Database.Delete>,
+    operation?: BaseJournalEntryCategory.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<JournalEntryCategory.Stored>>;
 
   static override create<
@@ -113,18 +113,18 @@ declare abstract class BaseJournalEntryCategory extends Document<
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntryCategory.Database.CreateOperation<Temporary>,
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntryCategory.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntryCategory.UpdateInput,
-    operation?: BaseJournalEntryCategory.Database.UpdateOperation,
+    operation?: BaseJournalEntryCategory.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntryCategory.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntryCategory.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `JournalEntryCategory`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseJournalEntryCategory.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseJournalEntryCategory.Database.GetDocumentsOperation): null;
 
   // `JournalEntryCategory`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -153,19 +153,19 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   protected override _onCreate(
     data: BaseJournalEntryCategory.CreateData,
-    options: BaseJournalEntryCategory.Database.OnCreateOperation,
+    options: BaseJournalEntryCategory.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntryCategory.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseJournalEntryCategory.Database.Create>,
+    operation: BaseJournalEntryCategory.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database.Create,
+    operation: BaseJournalEntryCategory.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -177,19 +177,19 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   protected override _onUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
-    options: BaseJournalEntryCategory.Database.OnUpdateOperation,
+    options: BaseJournalEntryCategory.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database.Update,
+    operation: BaseJournalEntryCategory.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database.Update,
+    operation: BaseJournalEntryCategory.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -198,17 +198,17 @@ declare abstract class BaseJournalEntryCategory extends Document<
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database.Delete,
+    operation: BaseJournalEntryCategory.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database.Delete,
+    operation: BaseJournalEntryCategory.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -218,7 +218,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
    */
   protected static override _onCreateDocuments(
     documents: JournalEntryCategory.Implementation[],
-    context: BaseJournalEntryCategory.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -227,7 +228,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntryCategory.Stored[],
-    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -236,7 +238,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntryCategory.Stored[],
-    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

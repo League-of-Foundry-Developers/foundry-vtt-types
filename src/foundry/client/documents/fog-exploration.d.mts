@@ -1,17 +1,14 @@
-import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
-import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
+import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace FogExploration {
   /**
@@ -242,121 +239,610 @@ declare namespace FogExploration {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for FogExplorations */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<FogExploration.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for FogExplorations */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<FogExploration.CreateData, FogExploration.Parent, Temporary> {
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `FogExploration` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<FogExploration.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode FogExploration.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `FogExploration` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `FogExploration` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode FogExploration.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {
+      /**
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
+       */
       loadFog?: boolean;
     }
 
-    /** Options passed along in Delete operations for FogExplorations */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<FogExploration.Parent> {
-      loadFog?: boolean;
-    }
+    /**
+     * The interface for passing to {@linkcode FogExploration.create} or {@linkcode FogExploration.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
-    /** Options passed along in Update operations for FogExplorations */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      FogExploration.UpdateData,
+    /**
+     * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `FogExploration` documents. (see {@linkcode FogExploration.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `FogExploration` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._preCreate | FogExploration#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateFogExploration` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode FogExploration._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onCreate | FogExploration#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createFogExploration` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onCreateOperation} and `FogExploration`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `FogExploration` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode FogExploration.update | FogExploration#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      FogExploration.UpdateInput,
       FogExploration.Parent
     > {
+      /**
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
+       */
       loadFog?: boolean;
     }
 
-    /** Operation for {@linkcode FogExploration.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      FogExploration.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode FogExploration.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<FogExploration.Database.Update> {}
-
-    /** Operation for {@linkcode FogExploration.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<FogExploration.Database.Delete> {}
-
-    /** Operation for {@linkcode FogExploration.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      FogExploration.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode FogExploration.update | FogExploration#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode FogExploration.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode FogExploration._preCreate | FogExploration#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode FogExploration._onCreate | FogExploration#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode FogExploration._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<FogExploration.Database.Create> {}
-
-    /** Operation for {@linkcode FogExploration._onCreateOperation | FogExploration#_onCreateOperation} */
-    interface OnCreateOperation extends FogExploration.Database.Create {}
-
-    /** Options for {@linkcode FogExploration._preUpdate | FogExploration#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode FogExploration._onUpdate | FogExploration#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode FogExploration._preUpdateOperation} */
-    interface PreUpdateOperation extends FogExploration.Database.Update {}
-
-    /** Operation for {@linkcode FogExploration._onUpdateOperation | FogExploration._preUpdateOperation} */
-    interface OnUpdateOperation extends FogExploration.Database.Update {}
-
-    /** Options for {@linkcode FogExploration._preDelete | FogExploration#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode FogExploration._onDelete | FogExploration#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode FogExploration._preDeleteOperation | FogExploration#_preDeleteOperation} */
-    interface PreDeleteOperation extends FogExploration.Database.Delete {}
-
-    /** Options for {@linkcode FogExploration._onDeleteOperation | FogExploration#_onDeleteOperation} */
-    interface OnDeleteOperation extends FogExploration.Database.Delete {}
-
-    /** Context for {@linkcode FogExploration._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
-
-    /** Context for {@linkcode FogExploration._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
-
-    /** Context for {@linkcode FogExploration._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
+    /**
+     * The interface for passing to {@linkcode FogExploration.update | FogExploration#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
-     * Options for {@linkcode FogExploration._preCreateDescendantDocuments | FogExploration#_preCreateDescendantDocuments}
-     * and {@linkcode FogExploration._onCreateDescendantDocuments | FogExploration#_onCreateDescendantDocuments}
+     * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `FogExploration` documents (see {@linkcode FogExploration.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<FogExploration.Database.Create> {}
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
 
     /**
-     * Options for {@linkcode FogExploration._preUpdateDescendantDocuments | FogExploration#_preUpdateDescendantDocuments}
-     * and {@linkcode FogExploration._onUpdateDescendantDocuments | FogExploration#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode FogExploration.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<FogExploration.Database.Update> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
-     * Options for {@linkcode FogExploration._preDeleteDescendantDocuments | FogExploration#_preDeleteDescendantDocuments}
-     * and {@linkcode FogExploration._onDeleteDescendantDocuments | FogExploration#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `FogExploration` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<FogExploration.Database.Delete> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
-     * Create options for {@linkcode FogExploration.createDialog}.
+     * The interface passed to {@linkcode FogExploration._preUpdate | FogExploration#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateFogExploration` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode FogExploration._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onUpdate | FogExploration#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateFogExploration` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onUpdateOperation} and `FogExploration`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `FogExploration` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode FogExploration.delete | FogExploration#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<FogExploration.Parent> {
+      /**
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
+       */
+      loadFog?: boolean;
+    }
+
+    /**
+     * The interface for passing to {@linkcode FogExploration.delete | FogExploration#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `FogExploration` documents (see {@linkcode FogExploration.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode FogExploration.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `FogExploration` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._preDelete | FogExploration#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteFogExploration` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode FogExploration._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onDelete | FogExploration#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteFogExploration` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode FogExploration._onDeleteOperation} and `FogExploration`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: FogExploration.Database.GetDocumentsOperation;
+        BackendGetOperation: FogExploration.Database.BackendGetOperation;
+        GetOperation: FogExploration.Database.GetOperation;
+
+        CreateDocumentsOperation: FogExploration.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: FogExploration.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: FogExploration.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: FogExploration.Database.CreateOperation<Temporary>;
+        PreCreateOptions: FogExploration.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: FogExploration.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: FogExploration.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: FogExploration.Database.OnCreateOptions;
+        OnCreateOperation: FogExploration.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: FogExploration.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: FogExploration.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: FogExploration.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: FogExploration.Database.BackendUpdateOperation;
+        UpdateOperation: FogExploration.Database.UpdateOperation;
+        PreUpdateOptions: FogExploration.Database.PreUpdateOptions;
+        PreUpdateOperation: FogExploration.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: FogExploration.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: FogExploration.Database.OnUpdateOptions;
+        OnUpdateOperation: FogExploration.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: FogExploration.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: FogExploration.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: FogExploration.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: FogExploration.Database.BackendDeleteOperation;
+        DeleteOperation: FogExploration.Database.DeleteOperation;
+        PreDeleteOptions: FogExploration.Database.PreDeleteOptions;
+        PreDeleteOperation: FogExploration.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: FogExploration.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: FogExploration.Database.OnDeleteOptions;
+        OnDeleteOperation: FogExploration.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -423,7 +909,7 @@ declare namespace FogExploration {
    * @remarks {@linkcode FogExploration.load | FogExploration#load} takes the `query` property separately as its first argument, then merges that
    * with this interface via `{query, ...options}` before passing to {@linkcode ClientDatabaseBackend.get | this.database.get}
    */
-  interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
+  interface LoadOptions extends Omit<FogExploration.Database.GetDocumentsOperation, "query"> {}
 
   /**
    * The arguments to construct the document.
@@ -454,7 +940,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   static load(
     query?: FogExploration.LoadQuery,
     options?: FogExploration.LoadOptions,
-  ): Promise<FogExploration.Implementation | null>;
+  ): Promise<FogExploration.Stored | null>;
 
   /**
    * Transform the explored base64 data into a PIXI.Texture object
@@ -465,17 +951,17 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    operation?: FogExploration.Database.GetOptions,
-  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
+    operation?: FogExploration.Database.GetDocumentsOperation,
+  ): FogExploration.Stored | null;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@linkcode FogExploration.load | FogExploration.load}"
+   * @deprecated "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War
+   * exploration data, an operation which has been renamed to {@linkcode FogExploration.load}" (since v12, until v14)
    */
   static override get(
     query: FogExploration.LoadQuery,
-    options: FogExploration.LoadOptions,
-  ): Promise<FogExploration.Implementation | null>;
+    options?: FogExploration.LoadOptions,
+  ): Promise<FogExploration.Stored | null>;
 
   /*
    * After this point these are not really overridden methods.
@@ -497,6 +983,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: FogExploration.CreateData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: FogExploration.Database.DialogCreateOptions,
     options?: FogExploration.CreateDialogOptions,
   ): Promise<FogExploration.Stored | null | undefined>;

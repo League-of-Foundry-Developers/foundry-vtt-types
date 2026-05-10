@@ -13,7 +13,6 @@ import type {
   Override,
 } from "#utils";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { DatabaseCreateOperation, DatabaseDeleteOperation, DatabaseUpdateOperation } from "./_types.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
@@ -374,7 +373,7 @@ declare abstract class TypeDataModel<
    */
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+    options: Document.Database.PreCreateOptionsForName<Parent["documentName"]>,
     user: User.Stored,
   ): Promise<boolean | void>;
 
@@ -385,10 +384,9 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
+    options: Document.Database.OnCreateOptionsForName<Parent["documentName"]>,
     userId: string,
   ): void;
 
@@ -402,7 +400,7 @@ declare abstract class TypeDataModel<
    */
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
+    options: Document.Database.PreUpdateOptionsForName<Parent["documentName"]>,
     user: User.Stored,
   ): Promise<boolean | void>;
 
@@ -413,10 +411,9 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+    options: Document.Database.OnUpdateOptionsForName<Parent["documentName"]>,
     userId: string,
   ): void;
 
@@ -428,7 +425,7 @@ declare abstract class TypeDataModel<
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
   protected _preDelete(
-    options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
+    options: Document.Database.PreDeleteOptionsForName<Parent["documentName"]>,
     user: User.Stored,
   ): Promise<boolean | void>;
 
@@ -438,8 +435,7 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onDelete(options: Document.Database.DeleteOptions<DatabaseDeleteOperation>, userId: string): void;
+  protected _onDelete(options: Document.Database.OnDeleteOptionsForName<Parent["documentName"]>, userId: string): void;
 }
 
 declare class ConfigurationFailure extends TypeDataModel<any, any, any, any> {}

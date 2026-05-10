@@ -1,16 +1,14 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseSetting, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace Setting {
   /**
@@ -243,110 +241,625 @@ declare namespace Setting {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Settings */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Setting.Parent> {}
-
-    /** Options passed along in Create operations for Settings */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Setting.CreateData, Setting.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Settings */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Setting.Parent> {}
-
-    /** Options passed along in Update operations for Settings */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Setting.UpdateData, Setting.Parent> {}
-
-    /** Operation for {@linkcode Setting.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Setting.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Setting.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Setting.Database.Update> {}
-
-    /** Operation for {@linkcode Setting.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Setting.Database.Delete> {}
-
-    /** Operation for {@linkcode Setting.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Setting.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Setting.update | Setting#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Setting.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode Setting._preCreate | Setting#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode Setting._onCreate | Setting#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Setting._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Setting.Database.Create> {}
-
-    /** Operation for {@linkcode Setting._onCreateOperation | Setting#_onCreateOperation} */
-    interface OnCreateOperation extends Setting.Database.Create {}
-
-    /** Options for {@linkcode Setting._preUpdate | Setting#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode Setting._onUpdate | Setting#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Setting._preUpdateOperation} */
-    interface PreUpdateOperation extends Setting.Database.Update {}
-
-    /** Operation for {@linkcode Setting._onUpdateOperation | Setting._preUpdateOperation} */
-    interface OnUpdateOperation extends Setting.Database.Update {}
-
-    /** Options for {@linkcode Setting._preDelete | Setting#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode Setting._onDelete | Setting#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode Setting._preDeleteOperation | Setting#_preDeleteOperation} */
-    interface PreDeleteOperation extends Setting.Database.Delete {}
-
-    /** Options for {@linkcode Setting._onDeleteOperation | Setting#_onDeleteOperation} */
-    interface OnDeleteOperation extends Setting.Database.Delete {}
-
-    /** Context for {@linkcode Setting._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
-
-    /** Context for {@linkcode Setting._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
-
-    /** Context for {@linkcode Setting._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode Setting._preCreateDescendantDocuments | Setting#_preCreateDescendantDocuments}
-     * and {@linkcode Setting._onCreateDescendantDocuments | Setting#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Setting` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<Setting.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<Setting.Parent> {}
 
     /**
-     * Options for {@linkcode Setting._preUpdateDescendantDocuments | Setting#_preUpdateDescendantDocuments}
-     * and {@linkcode Setting._onUpdateDescendantDocuments | Setting#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode Setting.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Setting.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode Setting._preDeleteDescendantDocuments | Setting#_preDeleteDescendantDocuments}
-     * and {@linkcode Setting._onDeleteDescendantDocuments | Setting#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Setting` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode Setting.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Setting` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Setting.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Setting.CreateInput, Setting.Parent, Temporary> {
+      // The server-side `updateWorld` property has been omitted because it would never be safe to pass from the client.
+    }
+
+    /**
+     * The interface for passing to {@linkcode Setting.create} or {@linkcode Setting.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Setting` documents. (see {@linkcode Setting.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Setting` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preCreate | Setting#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateSetting` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Setting._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onCreate | Setting#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createSetting` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onCreateOperation} and `Setting`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Setting` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Setting.update | Setting#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Setting.UpdateInput, Setting.Parent> {
+      // The server-side `updateWorld` property has been omitted because it would never be safe to pass from the client.
+    }
+
+    /**
+     * The interface for passing to {@linkcode Setting.update | Setting#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Setting` documents (see {@linkcode Setting.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Setting.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Setting` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preUpdate | Setting#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateSetting` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Setting._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * This is the "real" {@linkcode OnUpdateOptionsW} for `Setting`, see that linked interface's privateRemarks.
+     * @internal
+     */
+    interface _OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onUpdate | Setting#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateSetting` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     *
+     * ---
+     *
+     * @privateRemarks This interface is mostly re-partialed due to the server, on receiving a `Combat` update that modifies the world time,
+     * emitting an `"update"` event for the `"core.time"` world setting, with what will usually (see {@linkcode Combat.TurnWorldTime}
+     * remarks) be an empty operation object. `parent` is inserted back into the operation object client-side, so it exists despite this.
+     */
+    interface OnUpdateOptions
+      extends IntentionalPartial<Omit<_OnUpdateOptions, "parent">>, Pick<_OnUpdateOptions, "parent"> {}
+
+    /**
+     * This is the "real" {@linkcode OnUpdateOperation} for `Setting`, see that linked interface's privateRemarks.
+     * @internal
+     */
+    interface _OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onUpdateOperation} and `Setting`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     *
+     * ---
+     *
+     * @privateRemarks This interface is mostly re-partialed due to the server, on receiving a `Combat` update that modifies the world time,
+     * emitting an `"update"` event for the `"core.time"` world setting, with what will usually (see {@linkcode Combat.TurnWorldTime}
+     * remarks) be an empty operation object. `parent` and `updates` are inserted back into the operation object client-side, so they exist
+     * despite this.
+     */
+    interface OnUpdateOperation
+      extends
+        IntentionalPartial<Omit<_OnUpdateOperation, "parent" | "updates">>,
+        Pick<_OnUpdateOperation, "parent" | "updates"> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Setting` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Setting.delete | Setting#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Setting.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Setting.delete | Setting#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Setting` documents (see {@linkcode Setting.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Setting.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Setting` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preDelete | Setting#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteSetting` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Setting._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onDelete | Setting#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteSetting` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Setting._onDeleteOperation} and `Setting`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Setting.Database.GetDocumentsOperation;
+        BackendGetOperation: Setting.Database.BackendGetOperation;
+        GetOperation: Setting.Database.GetOperation;
+
+        CreateDocumentsOperation: Setting.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: Setting.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Setting.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Setting.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Setting.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Setting.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Setting.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Setting.Database.OnCreateOptions;
+        OnCreateOperation: Setting.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Setting.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: Setting.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Setting.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Setting.Database.BackendUpdateOperation;
+        UpdateOperation: Setting.Database.UpdateOperation;
+        PreUpdateOptions: Setting.Database.PreUpdateOptions;
+        PreUpdateOperation: Setting.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Setting.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Setting.Database.OnUpdateOptions;
+        OnUpdateOperation: Setting.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Setting.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: Setting.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Setting.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Setting.Database.BackendDeleteOperation;
+        DeleteOperation: Setting.Database.DeleteOperation;
+        PreDeleteOptions: Setting.Database.PreDeleteOptions;
+        PreDeleteOperation: Setting.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Setting.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Setting.Database.OnDeleteOptions;
+        OnDeleteOperation: Setting.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -457,6 +970,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
    */
   static override createDialog(
     data?: Setting.CreateData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions?: Setting.Database.DialogCreateOptions,
     options?: Setting.CreateDialogOptions,
   ): never;

@@ -1,13 +1,11 @@
 import type { Coalesce, GetKey, Identity, InexactPartial, Override } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 
-/** @privateRemarks `EmbeddedCollection` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 
-/** @privateRemarks `DocumentCollection` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
 
 // This class exists make it as sound as possible to override these parts of the class and make them
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
@@ -178,13 +176,10 @@ declare namespace Collection {
   interface Any extends AnyCollection {}
   interface AnyConstructor extends Identity<typeof AnyCollection> {}
 
-  interface GetOptions {
-    /**
-     * Throw an Error if the requested Embedded Document does not exist.
-     * @defaultValue `false`
-     */
-    strict?: boolean | undefined;
-  }
+  /**
+   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return
+   */
+  type Method<This, Methods, Property extends keyof Methods> = ({ self: This } & Methods)[Property];
 
   /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
@@ -315,6 +310,29 @@ declare namespace Collection {
     | (true extends Coalesce<GetKey<Options, "invalid", undefined>, InvalidDefault>
         ? Document.InvalidForName<DocumentName>
         : never);
+
+  /**
+   * Type for the 3rd param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} and
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}. This is the primary data
+   * property of the relevant operation: `Create`/`UpdateData` for `"create"`/`"update"` respectively, and an array of IDs
+   * for `"delete"`.
+   */
+  type OnModifyContentsResult<DocumentName extends Document.Type, Action extends Document.Database.OperationAction> =
+    | (Action extends "create" ? Array<Document.CreateDataForName<DocumentName>> : never)
+    | (Action extends "update" ? Array<Document.UpdateDataForName<DocumentName>> : never)
+    | (Action extends "delete" ? string[] : never);
+
+  /**
+   * Type for the 4th param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} and
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
+   */
+  type OnModifyContentsOperation<
+    DocumentName extends Document.Type,
+    Action extends Document.Database.OperationAction,
+  > =
+    | (Action extends "create" ? Document.Database.OnCreateOperationForName<DocumentName> : never)
+    | (Action extends "update" ? Document.Database.OnUpdateOperationForName<DocumentName> : never)
+    | (Action extends "delete" ? Document.Database.OnDeleteOperationForName<DocumentName> : never);
 
   /** @deprecated Use {@linkcode GetReturn} instead. This type will be removed in v14. */
   type GetReturnType<V, Options extends GetOptions | undefined> = GetReturn<V, Options>;

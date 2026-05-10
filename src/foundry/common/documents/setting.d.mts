@@ -96,17 +96,17 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseSetting.Database.Create<Temporary>>,
+    operation?: BaseSetting.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseSetting.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseSetting.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseSetting.Database.Update>,
+    operation?: BaseSetting.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Setting.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseSetting.Database.Delete>,
+    operation?: BaseSetting.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Setting.Stored>>;
 
   static override create<
@@ -114,18 +114,21 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseSetting.Database.CreateOperation<Temporary>,
+    operation?: BaseSetting.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseSetting.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseSetting.UpdateInput,
-    operation?: BaseSetting.Database.UpdateOperation,
+    operation?: BaseSetting.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseSetting.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseSetting.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `Setting`s cannot exist in compendia, so this never returns an index entry.
-  static override get(documentId: string, operation?: BaseSetting.Database.GetOptions): Setting.Stored | null;
+  static override get(
+    documentId: string,
+    operation?: BaseSetting.Database.GetDocumentsOperation,
+  ): Setting.Stored | null;
 
   // `Setting`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
@@ -140,19 +143,19 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   protected override _onCreate(
     data: BaseSetting.CreateData,
-    options: BaseSetting.Database.OnCreateOperation,
+    options: BaseSetting.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Setting.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseSetting.Database.Create>,
+    operation: BaseSetting.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Setting.Stored[],
-    operation: BaseSetting.Database.Create,
+    operation: BaseSetting.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -164,19 +167,19 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   protected override _onUpdate(
     changed: BaseSetting.UpdateData,
-    options: BaseSetting.Database.OnUpdateOperation,
+    options: BaseSetting.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Setting.Stored[],
-    operation: BaseSetting.Database.Update,
+    operation: BaseSetting.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Setting.Stored[],
-    operation: BaseSetting.Database.Update,
+    operation: BaseSetting.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -185,17 +188,17 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseSetting.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Setting.Stored[],
-    operation: BaseSetting.Database.Delete,
+    operation: BaseSetting.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Setting.Stored[],
-    operation: BaseSetting.Database.Delete,
+    operation: BaseSetting.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -205,7 +208,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    */
   protected static override _onCreateDocuments(
     documents: Setting.Implementation[],
-    context: BaseSetting.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseSetting.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -214,7 +218,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    */
   protected static override _onUpdateDocuments(
     documents: Setting.Stored[],
-    context: BaseSetting.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseSetting.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -223,7 +228,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    */
   protected static override _onDeleteDocuments(
     documents: Setting.Stored[],
-    context: BaseSetting.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseSetting.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

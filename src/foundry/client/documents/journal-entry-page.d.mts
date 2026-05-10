@@ -1,19 +1,17 @@
 import type { ConfiguredJournalEntryPage } from "#configuration";
 import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace JournalEntryPage {
   /**
@@ -438,121 +436,586 @@ declare namespace JournalEntryPage {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for JournalEntryPages */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryPage.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for JournalEntryPages */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<JournalEntryPage.CreateData, JournalEntryPage.Parent, Temporary> {
-      animate?: boolean;
-    }
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `JournalEntryPage` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<JournalEntryPage.Parent> {}
 
-    /** Options passed along in Delete operations for JournalEntryPages */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntryPage.Parent> {
-      animate?: boolean;
-    }
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
-    /** Options passed along in Update operations for JournalEntryPages */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      JournalEntryPage.UpdateData,
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `JournalEntryPage` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `JournalEntryPage` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode JournalEntryPage.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<JournalEntryPage.CreateInput, JournalEntryPage.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.create} or {@linkcode JournalEntryPage.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `JournalEntryPage` documents. (see {@linkcode JournalEntryPage.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `JournalEntryPage` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preCreate | JournalEntryPage#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode JournalEntryPage._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onCreate | JournalEntryPage#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onCreateOperation} and `JournalEntryPage`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `JournalEntryPage` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode JournalEntryPage.update | JournalEntryPage#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      JournalEntryPage.UpdateInput,
       JournalEntryPage.Parent
-    > {
-      animate?: boolean;
+    > {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.update | JournalEntryPage#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `JournalEntryPage` documents (see {@linkcode JournalEntryPage.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `JournalEntryPage` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preUpdate | JournalEntryPage#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode JournalEntryPage._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onUpdate | JournalEntryPage#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onUpdateOperation} and `JournalEntryPage`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `JournalEntryPage` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode JournalEntryPage.delete | JournalEntryPage#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<JournalEntryPage.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.delete | JournalEntryPage#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `JournalEntryPage` documents (see {@linkcode JournalEntryPage.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryPage.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `JournalEntryPage` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preDelete | JournalEntryPage#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode JournalEntryPage._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onDelete | JournalEntryPage#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteJournalEntryPage` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode JournalEntryPage._onDeleteOperation} and `JournalEntryPage`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: JournalEntryPage.Database.GetDocumentsOperation;
+        BackendGetOperation: JournalEntryPage.Database.BackendGetOperation;
+        GetOperation: JournalEntryPage.Database.GetOperation;
+
+        CreateDocumentsOperation: JournalEntryPage.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: JournalEntryPage.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: JournalEntryPage.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: JournalEntryPage.Database.CreateOperation<Temporary>;
+        PreCreateOptions: JournalEntryPage.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: JournalEntryPage.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: JournalEntryPage.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: JournalEntryPage.Database.OnCreateOptions;
+        OnCreateOperation: JournalEntryPage.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: JournalEntryPage.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: JournalEntryPage.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: JournalEntryPage.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: JournalEntryPage.Database.BackendUpdateOperation;
+        UpdateOperation: JournalEntryPage.Database.UpdateOperation;
+        PreUpdateOptions: JournalEntryPage.Database.PreUpdateOptions;
+        PreUpdateOperation: JournalEntryPage.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: JournalEntryPage.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: JournalEntryPage.Database.OnUpdateOptions;
+        OnUpdateOperation: JournalEntryPage.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: JournalEntryPage.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: JournalEntryPage.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: JournalEntryPage.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: JournalEntryPage.Database.BackendDeleteOperation;
+        DeleteOperation: JournalEntryPage.Database.DeleteOperation;
+        PreDeleteOptions: JournalEntryPage.Database.PreDeleteOptions;
+        PreDeleteOperation: JournalEntryPage.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: JournalEntryPage.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: JournalEntryPage.Database.OnDeleteOptions;
+        OnDeleteOperation: JournalEntryPage.Database.OnDeleteOperation;
+      }
     }
 
-    /** Operation for {@linkcode JournalEntryPage.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      JournalEntryPage.Database.Create<Temporary>
-    > {}
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
 
-    /** Operation for {@linkcode JournalEntryPage.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<JournalEntryPage.Database.Update> {}
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
 
-    /** Operation for {@linkcode JournalEntryPage.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<JournalEntryPage.Database.Delete> {}
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
 
-    /** Operation for {@linkcode JournalEntryPage.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      JournalEntryPage.Database.Create<Temporary>
-    > {}
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
 
-    /** Operation for {@linkcode JournalEntryPage.update | JournalEntryPage#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
 
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
 
-    /** Options for {@linkcode JournalEntryPage.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
+    // CreateDocumentsOperation didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._preCreate | JournalEntryPage#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
 
-    /** Options for {@linkcode JournalEntryPage._onCreate | JournalEntryPage#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
 
-    /** Operation for {@linkcode JournalEntryPage._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create> {}
+    // PreCreateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode JournalEntryPage._onCreateOperation | JournalEntryPage#_onCreateOperation} */
-    interface OnCreateOperation extends JournalEntryPage.Database.Create {}
+    // OnCreateOptions didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._preUpdate | JournalEntryPage#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
+    // PreCreateOperation didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._onUpdate | JournalEntryPage#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+    // OnCreateOperation didn't change purpose or name
 
-    /** Operation for {@linkcode JournalEntryPage._preUpdateOperation} */
-    interface PreUpdateOperation extends JournalEntryPage.Database.Update {}
+    // PreUpdateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode JournalEntryPage._onUpdateOperation | JournalEntryPage._preUpdateOperation} */
-    interface OnUpdateOperation extends JournalEntryPage.Database.Update {}
+    // OnUpdateOptions didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._preDelete | JournalEntryPage#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+    // PreUpdateOperation didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._onDelete | JournalEntryPage#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+    // OnUpdateOperation didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._preDeleteOperation | JournalEntryPage#_preDeleteOperation} */
-    interface PreDeleteOperation extends JournalEntryPage.Database.Delete {}
+    // PreDeleteOptions didn't change purpose or name
 
-    /** Options for {@linkcode JournalEntryPage._onDeleteOperation | JournalEntryPage#_onDeleteOperation} */
-    interface OnDeleteOperation extends JournalEntryPage.Database.Delete {}
+    // OnDeleteOptions didn't change purpose or name
 
-    /** Context for {@linkcode JournalEntryPage._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+    // PreDeleteOperation didn't change purpose or name
 
-    /** Context for {@linkcode JournalEntryPage._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+    // OnDeleteOperation didn't change purpose or name
 
-    /** Context for {@linkcode JournalEntryPage._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
 
-    /**
-     * Options for {@linkcode JournalEntryPage._preCreateDescendantDocuments | JournalEntryPage#_preCreateDescendantDocuments}
-     * and {@linkcode JournalEntryPage._onCreateDescendantDocuments | JournalEntryPage#_onCreateDescendantDocuments}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<JournalEntryPage.Database.Create> {}
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
 
-    /**
-     * Options for {@linkcode JournalEntryPage._preUpdateDescendantDocuments | JournalEntryPage#_preUpdateDescendantDocuments}
-     * and {@linkcode JournalEntryPage._onUpdateDescendantDocuments | JournalEntryPage#_onUpdateDescendantDocuments}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntryPage.Database.Update> {}
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
 
-    /**
-     * Options for {@linkcode JournalEntryPage._preDeleteDescendantDocuments | JournalEntryPage#_preDeleteDescendantDocuments}
-     * and {@linkcode JournalEntryPage._onDeleteDescendantDocuments | JournalEntryPage#_onDeleteDescendantDocuments}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryPage.Database.Delete> {}
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
 
-    /**
-     * Create options for {@linkcode JournalEntryPage.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -865,6 +1328,7 @@ declare class JournalEntryPage<
   /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: JournalEntryPage.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: JournalEntryPage.Database.DialogCreateOptions,
     options?: JournalEntryPage.CreateDialogOptions,
   ): Promise<JournalEntryPage.Stored | null | undefined>;

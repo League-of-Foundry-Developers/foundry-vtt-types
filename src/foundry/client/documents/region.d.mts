@@ -1,17 +1,15 @@
 import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 /**
  * The client-side Region document which extends the common BaseRegion model.
@@ -177,6 +175,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: RegionDocument.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RegionDocument.Database.DialogCreateOptions,
     options?: RegionDocument.CreateDialogOptions,
   ): Promise<RegionDocument.Stored | null | undefined>;
@@ -529,115 +528,587 @@ declare namespace RegionDocument {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Regions */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
-
-    /** Options passed along in Create operations for Regions */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<RegionDocument.CreateData, RegionDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Regions */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
-
-    /** Options passed along in Update operations for Regions */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      RegionDocument.UpdateData,
-      RegionDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode RegionDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      RegionDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode RegionDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<RegionDocument.Database.Update> {}
-
-    /** Operation for {@linkcode RegionDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode RegionDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      RegionDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode RegionDocument.update | RegionDocument#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode RegionDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode RegionDocument._preCreate | RegionDocument#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode RegionDocument._onCreate | RegionDocument#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode RegionDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
-
-    /** Operation for {@linkcode RegionDocument._onCreateOperation | RegionDocument#_onCreateOperation} */
-    interface OnCreateOperation extends RegionDocument.Database.Create {}
-
-    /** Options for {@linkcode RegionDocument._preUpdate | RegionDocument#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode RegionDocument._onUpdate | RegionDocument#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode RegionDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends RegionDocument.Database.Update {}
-
-    /** Operation for {@linkcode RegionDocument._onUpdateOperation | RegionDocument._preUpdateOperation} */
-    interface OnUpdateOperation extends RegionDocument.Database.Update {}
-
-    /** Options for {@linkcode RegionDocument._preDelete | RegionDocument#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode RegionDocument._onDelete | RegionDocument#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode RegionDocument._preDeleteOperation | RegionDocument#_preDeleteOperation} */
-    interface PreDeleteOperation extends RegionDocument.Database.Delete {}
-
-    /** Options for {@linkcode RegionDocument._onDeleteOperation | RegionDocument#_onDeleteOperation} */
-    interface OnDeleteOperation extends RegionDocument.Database.Delete {}
-
-    /** Context for {@linkcode RegionDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
-
-    /** Context for {@linkcode RegionDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
-
-    /** Context for {@linkcode RegionDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode RegionDocument._preCreateDescendantDocuments | RegionDocument#_preCreateDescendantDocuments}
-     * and {@linkcode RegionDocument._onCreateDescendantDocuments | RegionDocument#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `RegionDocument` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<RegionDocument.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<RegionDocument.Parent> {}
 
     /**
-     * Options for {@linkcode RegionDocument._preUpdateDescendantDocuments | RegionDocument#_preUpdateDescendantDocuments}
-     * and {@linkcode RegionDocument._onUpdateDescendantDocuments | RegionDocument#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode RegionDocument.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<RegionDocument.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode RegionDocument._preDeleteDescendantDocuments | RegionDocument#_preDeleteDescendantDocuments}
-     * and {@linkcode RegionDocument._onDeleteDescendantDocuments | RegionDocument#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `RegionDocument` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode RegionDocument.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `RegionDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<RegionDocument.CreateInput, RegionDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.create} or {@linkcode RegionDocument.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `RegionDocument` documents. (see {@linkcode RegionDocument.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `RegionDocument` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preCreate | RegionDocument#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateRegionDocument` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionDocument._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onCreate | RegionDocument#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createRegionDocument` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onCreateOperation} and `RegionDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `RegionDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<RegionDocument.UpdateInput, RegionDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `RegionDocument` documents (see {@linkcode RegionDocument.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `RegionDocument` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preUpdate | RegionDocument#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateRegionDocument` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionDocument._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onUpdate | RegionDocument#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateRegionDocument` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onUpdateOperation} and `RegionDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `RegionDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.delete | RegionDocument#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<RegionDocument.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.delete | RegionDocument#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `RegionDocument` documents (see {@linkcode RegionDocument.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `RegionDocument` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preDelete | RegionDocument#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteRegionDocument` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionDocument._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onDelete | RegionDocument#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteRegionDocument` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionDocument._onDeleteOperation} and `RegionDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: RegionDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: RegionDocument.Database.BackendGetOperation;
+        GetOperation: RegionDocument.Database.GetOperation;
+
+        CreateDocumentsOperation: RegionDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: RegionDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: RegionDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: RegionDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: RegionDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: RegionDocument.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: RegionDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: RegionDocument.Database.OnCreateOptions;
+        OnCreateOperation: RegionDocument.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: RegionDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: RegionDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: RegionDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: RegionDocument.Database.BackendUpdateOperation;
+        UpdateOperation: RegionDocument.Database.UpdateOperation;
+        PreUpdateOptions: RegionDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: RegionDocument.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: RegionDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: RegionDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: RegionDocument.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: RegionDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: RegionDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: RegionDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: RegionDocument.Database.BackendDeleteOperation;
+        DeleteOperation: RegionDocument.Database.DeleteOperation;
+        PreDeleteOptions: RegionDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: RegionDocument.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: RegionDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: RegionDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: RegionDocument.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**

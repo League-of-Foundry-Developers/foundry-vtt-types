@@ -1,17 +1,15 @@
 import type { ConfiguredCards } from "#configuration";
 import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseCard, BaseCards, BaseFolder } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace Cards {
   /**
@@ -423,116 +421,592 @@ declare namespace Cards {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Cards Documents */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for Cards Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
-      animate?: boolean;
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Cards` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<Cards.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Cards` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Cards` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Cards.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Cards.CreateInput, Cards.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.create} or {@linkcode Cards.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Cards` documents. (see {@linkcode Cards.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Cards` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preCreate | Cards#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateCards` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Cards._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onCreate | Cards#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createCards` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onCreateOperation} and `Cards`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Cards` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Cards.update | Cards#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Cards.UpdateInput, Cards.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.update | Cards#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Cards` documents (see {@linkcode Cards.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Cards` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preUpdate | Cards#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateCards` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Cards._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onUpdate | Cards#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateCards` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onUpdateOperation} and `Cards`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Cards` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Cards.delete | Cards#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Cards.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.delete | Cards#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Cards` documents (see {@linkcode Cards.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Cards.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Cards` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preDelete | Cards#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteCards` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Cards._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onDelete | Cards#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteCards` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Cards._onDeleteOperation} and `Cards`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Cards.Database.GetDocumentsOperation;
+        BackendGetOperation: Cards.Database.BackendGetOperation;
+        GetOperation: Cards.Database.GetOperation;
+
+        CreateDocumentsOperation: Cards.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: Cards.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Cards.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Cards.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Cards.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Cards.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Cards.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Cards.Database.OnCreateOptions;
+        OnCreateOperation: Cards.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Cards.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: Cards.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Cards.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Cards.Database.BackendUpdateOperation;
+        UpdateOperation: Cards.Database.UpdateOperation;
+        PreUpdateOptions: Cards.Database.PreUpdateOptions;
+        PreUpdateOperation: Cards.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Cards.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Cards.Database.OnUpdateOptions;
+        OnUpdateOperation: Cards.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Cards.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: Cards.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Cards.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Cards.Database.BackendDeleteOperation;
+        DeleteOperation: Cards.Database.DeleteOperation;
+        PreDeleteOptions: Cards.Database.PreDeleteOptions;
+        PreDeleteOperation: Cards.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Cards.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Cards.Database.OnDeleteOptions;
+        OnDeleteOperation: Cards.Database.OnDeleteOperation;
+      }
     }
 
-    /** Options passed along in Delete operations for Cards Documents */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Cards.Parent> {
-      animate?: boolean;
-    }
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
 
-    /** Options passed along in Update operations for Cards Documents */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Cards.UpdateData, Cards.Parent> {
-      animate?: boolean;
-    }
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
 
-    /** Operation for {@linkcode Cards.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Cards.Database.Create<Temporary>
-    > {}
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
 
-    /** Operation for {@linkcode Cards.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Cards.Database.Update> {}
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
 
-    /** Operation for {@linkcode Cards.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Cards.Database.Delete> {}
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
 
-    /** Operation for {@linkcode Cards.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Cards.Database.Create<Temporary>
-    > {}
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
 
-    /** Operation for {@linkcode Cards.update | Cards#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+    // CreateDocumentsOperation didn't change purpose or name
 
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
 
-    /** Options for {@linkcode Cards.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
 
-    /** Options for {@linkcode Cards._preCreate | Cards#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+    // PreCreateOptions didn't change purpose or name
 
-    /** Options for {@linkcode Cards._onCreate | Cards#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
+    // OnCreateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode Cards._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Cards.Database.Create> {}
+    // PreCreateOperation didn't change purpose or name
 
-    /** Operation for {@linkcode Cards._onCreateOperation | Cards#_onCreateOperation} */
-    interface OnCreateOperation extends Cards.Database.Create {}
+    // OnCreateOperation didn't change purpose or name
 
-    /** Options for {@linkcode Cards._preUpdate | Cards#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
+    // PreUpdateOptions didn't change purpose or name
 
-    /** Options for {@linkcode Cards._onUpdate | Cards#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+    // OnUpdateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode Cards._preUpdateOperation} */
-    interface PreUpdateOperation extends Cards.Database.Update {}
+    // PreUpdateOperation didn't change purpose or name
 
-    /** Operation for {@linkcode Cards._onUpdateOperation | Cards._preUpdateOperation} */
-    interface OnUpdateOperation extends Cards.Database.Update {}
+    // OnUpdateOperation didn't change purpose or name
 
-    /** Options for {@linkcode Cards._preDelete | Cards#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+    // PreDeleteOptions didn't change purpose or name
 
-    /** Options for {@linkcode Cards._onDelete | Cards#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+    // OnDeleteOptions didn't change purpose or name
 
-    /** Options for {@linkcode Cards._preDeleteOperation | Cards#_preDeleteOperation} */
-    interface PreDeleteOperation extends Cards.Database.Delete {}
+    // PreDeleteOperation didn't change purpose or name
 
-    /** Options for {@linkcode Cards._onDeleteOperation | Cards#_onDeleteOperation} */
-    interface OnDeleteOperation extends Cards.Database.Delete {}
+    // OnDeleteOperation didn't change purpose or name
 
-    /** Context for {@linkcode Cards._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
 
-    /** Context for {@linkcode Cards._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
 
-    /** Context for {@linkcode Cards._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
 
-    /**
-     * Options for {@linkcode Cards._preCreateDescendantDocuments | Cards#_preCreateDescendantDocuments}
-     * and {@linkcode Cards._onCreateDescendantDocuments | Cards#_onCreateDescendantDocuments}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Cards.Database.Create> {}
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
 
-    /**
-     * Options for {@linkcode Cards._preUpdateDescendantDocuments | Cards#_preUpdateDescendantDocuments}
-     * and {@linkcode Cards._onUpdateDescendantDocuments | Cards#_onUpdateDescendantDocuments}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Cards.Database.Update> {}
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
 
-    /**
-     * Options for {@linkcode Cards._preDeleteDescendantDocuments | Cards#_preDeleteDescendantDocuments}
-     * and {@linkcode Cards._onDeleteDescendantDocuments | Cards#_onDeleteDescendantDocuments}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Cards.Database.Delete> {}
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
 
-    /**
-     * Create options for {@linkcode Cards.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -826,8 +1300,8 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @remarks Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
    */
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Cards.Implementation | Cards.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
+    data: Cards.CreateInput[],
+    operation?: Cards.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<Cards.TemporaryIf<Temporary>>>;
 
   /**
@@ -942,6 +1416,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
   static override createDialog(
     data?: Cards.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions?: Cards.Database.DialogCreateOptions,
     options?: Cards.CreateDialogOptions,
   ): Promise<Cards.Stored | null | undefined>;
