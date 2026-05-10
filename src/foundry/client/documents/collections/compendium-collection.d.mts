@@ -352,7 +352,7 @@ declare class CompendiumCollection<
 
   /**
    * Handle changes to the world compendium configuration setting.
-   * @remarks As the setting's {@linkcode f oundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
+   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
    * this gets passed the new value after it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
   protected static _onConfigure(config: CompendiumCollection.SettingData): void;
