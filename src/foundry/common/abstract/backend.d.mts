@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity, InexactPartial, IntentionalPartial, LoggingLevels } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity, InexactPartial, LoggingLevels } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -240,12 +240,12 @@ declare namespace DatabaseBackend {
   type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];
 
   /**
-   * The optional portion of this type is `IntentionalPartial` instead of `InexactPartial` because keys with `undefined` values do not
-   * survive passage over the socket. The interfaces users will most commonly be passing are `InexactPartial`ed in their entirety to allow
-   * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`
+   * The optional properties of this interface lack `| undefined` because such keys do not survive passage over the socket.
+   * The interfaces users will most commonly be passing are `InexactPartial`ed in their entirety to allow passing `undefined`
+   * regardless for DX reasons, and because some keys are only set via `??=`
    * @internal
    */
-  type _CommonOperationKeys<Parent extends Document.Any | null = Document.Any | null> = {
+  interface _CommonOperationKeys<Parent extends Document.Any | null = Document.Any | null> {
     /**
      * A parent Document within which Documents are embedded
      *
@@ -268,7 +268,7 @@ declare namespace DatabaseBackend {
      * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation})
      */
     modifiedTime: number;
-  } & IntentionalPartial<{
+
     /**
      * Whether the database operation is broadcast to other connected clients
      *
@@ -276,7 +276,7 @@ declare namespace DatabaseBackend {
      * @privateRemarks Despite this being marked required in core's typedef, it is only ever set (to `false`) in the server-side
      * `FogExploration._onXOperation` methods. It sees no other use in core.
      */
-    broadcast: boolean;
+    broadcast?: boolean;
 
     /**
      * Block the dispatch of hooks related to this operation
@@ -286,7 +286,7 @@ declare namespace DatabaseBackend {
      * Despite the description, only prevents `pre[Operation][Document]` hooks from being called. Post-operation hooks (`createItem` etc)
      * still fire.
      */
-    noHook: boolean;
+    noHook?: boolean;
 
     /**
      * Re-render Applications whose display depends on the created Documents
@@ -295,7 +295,7 @@ declare namespace DatabaseBackend {
      * @remarks This property is guaranteed to exist by the `DatabaseBackend##configure[Operation]` methods. It is not omitted from passable
      * types as it's set via `??=`, so passed values are respected.
      */
-    render: boolean;
+    render?: boolean;
 
     /**
      * A compendium collection ID which contains the Documents
@@ -306,13 +306,13 @@ declare namespace DatabaseBackend {
      * - The operation is started via a call to {@linkcode Document.update | Document#update} or {@linkcode Document.delete | #delete}
      * - The operation is started via a call to an `[operation]EmbeddedDocuments` method
      */
-    pack: string | null;
+    pack?: string | null;
 
     /**
      * A parent Document UUID provided when the parent instance is unavailable
      */
-    parentUuid: string | null;
-  }>;
+    parentUuid?: string | null;
+  }
 
   /**
    * The root, abstract `GetOperation` interface.
