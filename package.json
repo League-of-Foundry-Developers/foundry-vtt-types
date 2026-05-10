@@ -176,7 +176,7 @@
     "globals": "^17.4.0",
     "husky": "^9.1.4",
     "is-ci": "^4.1.0",
-    "lint-staged": "^16.0.0",
+    "lint-staged": "^17.0.2",
     "normalize-url": "^9.0.0",
     "npm-run-all2": "^8.0.1",
     "patch-package": "^8.0.1",
@@ -197,7 +197,7 @@
   },
   "peerDependencies": {
     "@typescript/native-preview": "*",
-    "typescript": "^5.4"
+    "typescript": ">=5.4"
   },
   "peerDependenciesMeta": {
     "typescript": {
