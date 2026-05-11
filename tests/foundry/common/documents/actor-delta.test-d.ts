@@ -128,8 +128,8 @@ expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined
 // @ts-expect-error Tile is not a valid name of an embedded document of Actor
 myDelta.getBaseCollection("Tile");
 expectTypeOf(myDelta.getBaseCollection("ActiveEffect")).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation> | undefined
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation> | undefined
 >();
 expectTypeOf(myDelta.getBaseCollection("Item")).toEqualTypeOf<
-  EmbeddedCollection<Item.Implementation, Actor.Implementation> | undefined
+  EmbeddedCollection<Item.Stored, Actor.Implementation> | undefined
 >();

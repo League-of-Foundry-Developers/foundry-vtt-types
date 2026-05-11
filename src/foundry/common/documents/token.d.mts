@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepReadonly, InexactPartial, MaybeArray } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
@@ -274,9 +274,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   // `TokenDocument`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseToken.Database.GetDocumentsOperation): null;
 
-  static override getCollectionName<CollectionName extends BaseToken.Embedded.Name>(
-    name: CollectionName,
-  ): BaseToken.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseToken.Embedded.CollectionName>,
+  ): BaseToken.Embedded.GetCollectionNameReturn<Name>;
 
   /**
    * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
@@ -287,28 +287,27 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   override getEmbeddedCollection(embeddedName: BaseToken.Embedded.CollectionName): Collection.Any;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseToken.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseToken.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseToken.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BaseToken.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(

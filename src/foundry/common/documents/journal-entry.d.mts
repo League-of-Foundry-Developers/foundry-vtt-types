@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
@@ -145,36 +145,39 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     operation?: BaseJournalEntry.Database.GetDocumentsOperation,
   ): JournalEntry.Stored | CompendiumCollection.IndexEntry<"JournalEntry"> | null;
 
-  static override getCollectionName<CollectionName extends BaseJournalEntry.Embedded.Name>(
-    name: CollectionName,
-  ): BaseJournalEntry.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseJournalEntry.Embedded.CollectionName>,
+  ): BaseJournalEntry.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BaseJournalEntry.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BaseJournalEntry.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseJournalEntry.Embedded.CollectionName>(
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseJournalEntry.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(
     embeddedName: EmbeddedName,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseJournalEntry.Embedded.DocumentFor<EmbeddedName> | undefined;
+    options?: Options,
+  ): BaseJournalEntry.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(

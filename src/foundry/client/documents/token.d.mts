@@ -12,7 +12,7 @@ import type {
 } from "#utils";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
-import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type { TerrainData } from "#client/data/terrain-data.d.mts";
@@ -141,8 +141,10 @@ declare namespace TokenDocument {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -154,12 +156,10 @@ declare namespace TokenDocument {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -179,11 +179,30 @@ declare namespace TokenDocument {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode TokenDocument.getCollectionName | TokenDocument#getCollectionName}. If the
+     * passed name is not a known valid embedded document type/collection name for `TokenDocument`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode TokenDocument.getEmbeddedDocument | TokenDocument#getEmbeddedDocument}.
+     * See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -1809,10 +1828,15 @@ declare namespace TokenDocument {
     active: boolean;
   }
 
+  /**
+   * {@linkcode TokenDocument.getEmbeddedCollection | TokenDocument#getEmbeddedCollection} adds cases for these extra valid values if the
+   * token is unlinked. They are specifically enumerated, with no support for e.g passing `"actors"` in place of `"Actor"`, like you can
+   * with {@linkcode Document.getEmbeddedCollection | Document#getEmbeddedCollection}.
+   */
   type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
   type GetEmbeddedCollectionResult<Name extends GetEmbeddedCollectionName> =
-    | (Name extends Document.Type ? globalThis.Collection<Document.ImplementationFor<Name>> : never)
+    | (Name extends Document.Type ? foundry.utils.Collection<Document.ImplementationFor<Name>> : never)
     | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
 
   type MovementState = "completed" | "paused" | "pending" | "stopped";
@@ -2521,11 +2545,10 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   ): Promise<TokenDocument.Implementation | undefined>;
 
   /**
-   * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances
-   * handles 3 extra cases:
-   * - Passing `"Actor"` returns `this.actors`.
-   * - Passing `"Item"` returns `this.actor.items`.
-   * - Passing `"ActiveEffect"` returns `this.actor.effects`.
+   * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances handle 3 extra cases:
+   * - Passing `"Actor"` returns {@linkcode TokenDocument.actors | this.actors}.
+   * - Passing `"Item"` returns {@linkcode Actor.items | this.actor.items}.
+   * - Passing `"ActiveEffect"` returns {@linkcode Actor.effects | this.actor.effects}.
    */
   override getEmbeddedCollection<EmbeddedName extends TokenDocument.GetEmbeddedCollectionName>(
     embeddedName: EmbeddedName,
