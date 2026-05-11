@@ -451,13 +451,14 @@ expectTypeOf(token.setTarget(false, { user: null, groupSelection: null, releaseO
 
 expectTypeOf(token.externalRadius).toBeNumber();
 expectTypeOf(token.getLightRadius(5)).toBeNumber();
-expectTypeOf(token["_getShiftedPosition"](20, -10)).toEqualTypeOf<Canvas.Point>();
+expectTypeOf(token._getShiftedPosition(20, -10)).toEqualTypeOf<Canvas.ElevatedPoint>();
 
-expectTypeOf(token["_updateRotation"]()).toBeNumber();
-expectTypeOf(token["_updateRotation"]({})).toBeNumber();
+expectTypeOf(token._updateRotation()).toBeNumber();
+expectTypeOf(token._updateRotation(undefined)).toBeNumber();
 // you would never actually pass `delta` if you're passing `angle` as it would get ignored
-expectTypeOf(token["_updateRotation"]({ angle: 90, delta: 20, snap: 4 })).toBeNumber();
-expectTypeOf(token["_updateRotation"]({ angle: null, delta: undefined, snap: undefined })).toBeNumber();
+expectTypeOf(token._updateRotation({ angle: 90, delta: 20, snap: 4 })).toBeNumber();
+// @ts-expect-error At least one of `angle` or `delta` must be defined
+token._updateRotation({ angle: undefined, delta: undefined, snap: undefined });
 
 expectTypeOf(token["_onApplyStatusEffect"]("flying", true)).toBeVoid();
 expectTypeOf(token["_configureFilterEffect"]("invisible", false)).toBeVoid();
@@ -514,7 +515,7 @@ expectTypeOf(token["_canDrag"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(token["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(token["_onHoverOut"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onClickLeft"](pointerEvent)).toBeVoid();

@@ -1,12 +1,4 @@
-import type {
-  Identity,
-  InterfaceToObject,
-  HandleEmptyObject,
-  InexactPartial,
-  NullishProps,
-  Titlecase,
-  GetKey,
-} from "#utils";
+import type { Identity, InterfaceToObject, HandleEmptyObject, InexactPartial, Titlecase, GetKey } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token, Wall } from "./_module.d.mts";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
@@ -19,6 +11,7 @@ import {
 } from "#client/canvas/interaction/_module.mjs";
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
 
 /**
  * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
@@ -81,6 +74,7 @@ declare abstract class PlaceableObject<
   /**
    * Return a reference to the configured subclass of this base `PlaceableObject` type.
    */
+  // TODO: Template
   static get implementation(): PlaceableObject.AnyCanvasDocument;
 
   /**
@@ -192,7 +186,6 @@ declare abstract class PlaceableObject<
    * @returns The offset
    * @internal
    */
-  // TODO: templatize
   static _getCopiedObjectsOrigin(copies: PlaceableObject.Any[]): Canvas.Point;
 
   /**
@@ -228,7 +221,9 @@ declare abstract class PlaceableObject<
    * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
    * @param options - Options passed to the initial destroy call
    * @remarks The options passed to {@linkcode PlaceableObject.destroy | PlaceableObject#destroy} get forwarded here.
-   * `| undefined` since `destroy` has no `={}` for its `options`
+   * `| undefined` since `destroy` has no `={}` for its `options`.
+   *
+   * The implementation in `PlaceableObject` is a no-op.
    */
   protected _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
@@ -241,7 +236,7 @@ declare abstract class PlaceableObject<
   /**
    * The inner _draw method which must be defined by each PlaceableObject subclass.
    * @param options - Options which may modify the draw workflow
-   * @remarks The options passed to {@linkcode PlaceableObject.draw | PlaceableObject#draw} get forwarded here
+   * @remarks The options passed to {@linkcode PlaceableObject.draw | PlaceableObject#draw} get forwarded here.
    */
   protected abstract _draw(options: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<void>;
 
@@ -249,8 +244,9 @@ declare abstract class PlaceableObject<
    * Execute a partial draw.
    * @param fn - The draw function
    * @returns The drawn object
+   * @internal
    */
-  protected _partialDraw(fn: () => Promise<void>): Promise<this>;
+  _partialDraw(fn: () => Promise<void>): Promise<this>;
 
   /**
    * Refresh all incremental render flags for the PlaceableObject.
@@ -262,7 +258,7 @@ declare abstract class PlaceableObject<
 
   /**
    * Update the quadtree.
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
   protected _updateQuadtree(): void;
 
@@ -271,7 +267,6 @@ declare abstract class PlaceableObject<
   /**
    * Is this PlaceableObject within the selection rectangle?
    * @param rectangle - The selection rectangle
-   * @remarks Foundry marked `@internal`
    */
   protected _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -282,6 +277,7 @@ declare abstract class PlaceableObject<
 
   /**
    * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
+   * @remarks The implementation in `PlaceableObject` is a no-op.
    */
   protected _onCreate(
     data: Document.CreateDataForName<CanvasDocument["documentName"]>,
@@ -314,7 +310,7 @@ declare abstract class PlaceableObject<
   control(options?: PlaceableObject.ControlOptions): boolean;
 
   /**
-   * Additional events which trigger once control of the object is established
+   * Additional events that trigger once control of the object is established
    * @param options - Optional parameters which apply for specific implementations
    * @remarks The options passed to {@linkcode PlaceableObject.control | PlaceableObject#control} get forwarded here
    */
@@ -339,6 +335,7 @@ declare abstract class PlaceableObject<
    * The returned object is non-interactive, and has no assigned ID.
    * If you plan to use it permanently you should call the create method.
    * @returns A new object with identical data
+   * @remarks Sets the clone's {@linkcode PIXI.Container.eventMode | #eventMode} to `"none"`
    */
   clone(): this;
 
@@ -354,18 +351,41 @@ declare abstract class PlaceableObject<
    * Determine a new angle of rotation for a PlaceableObject either from an explicit angle or from a delta offset.
    * @param options - An object which defines the rotation update parameters
    * @returns The new rotation angle for the object
+   * @internal
    */
-  protected _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
+  _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithAngle): number;
+  _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithDelta): number;
 
   /**
    * Obtain a shifted position for the Placeable Object
    * @param dx - The number of grid units to shift along the X-axis
    * @param dy - The number of grid units to shift along the Y-axis
+   * @param dz - The number of grid units to shift along the Z-axis
    * @returns The shifted target coordinates
+   * @internal
    * @remarks Despite the parameter descriptions saying 'number of grid units', they're only checked for sign.
-   * @privateRemarks Foundry types this correctly, but describes it wrong, logged
    */
-  protected _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1): Canvas.Point;
+  _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1, dz: -1 | 0 | 1): Canvas.ElevatedPoint;
+
+  /**
+   * Obtain the shifted position.
+   * @param dx       - The number of grid units to shift along the X-axis
+   * @param dy       - The number of grid units to shift along the Y-axis
+   * @param dz       - The number of grid units to shift along the Z-axis
+   * @param position - The unsnapped position
+   * @param snapped  - The snapped position
+   * @param grid     - The grid
+   * @returns The shifted target coordinates
+   * @internal
+   */
+  static _getShiftedPosition(
+    dx: -1 | 0 | 1,
+    dy: -1 | 0 | 1,
+    dz: -1 | 0 | 1,
+    position: Canvas.ElevatedPoint,
+    snapped: Canvas.ElevatedPoint,
+    grid: BaseGrid,
+  ): Canvas.ElevatedPoint;
 
   /**
    * Activate interactivity for the Placeable Object
@@ -375,7 +395,7 @@ declare abstract class PlaceableObject<
   /**
    * Create a standard MouseInteractionManager for the PlaceableObject
    */
-  protected _createInteractionManager(): NonNullable<this["mouseInteractionManager"]>;
+  protected _createInteractionManager(): MouseInteractionManager<this>;
 
   /**
    * Test whether a user can perform a certain interaction regarding a Placeable Object
@@ -389,82 +409,77 @@ declare abstract class PlaceableObject<
 
   /**
    * Can the User access the HUD for this Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to configure the Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to control the Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to view details of the Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canView(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to create the underlying Document?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
-   * @remarks It appears that `_canCreate` is completely unused.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
+   * @remarks It appears that `_canCreate` is completely unused as of 14.361.
    */
   protected _canCreate(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to drag this Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to left-click drag this Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status
+   * @param user    - The User performing the action. Always equal to `game.user`.
+   * @param event   - The pointer event
+   * @param options - Options, used internally
    */
-  protected _canDragLeftStart(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
+  protected _canDragLeftStart(
+    user: User.Implementation,
+    event?: Canvas.Event.Pointer,
+    options?: PlaceableObject.CanDragLeftStartOptions,
+  ): boolean;
 
   /**
    * Does the User have permission to hover on this Placeable Object?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canHover(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   /**
    * Does the User have permission to update the underlying Document?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canUpdate(user: User.Implementation, event?: PIXI.FederatedEvent): boolean;
 
   /**
    * Does the User have permission to delete the underlying Document?
-   * @param user  - The User performing the action.
-   * @param event - The event object.
-   * @returns The returned status.
+   * @param user  - The User performing the action. Always equal to `game.user`.
+   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
   protected _canDelete(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
@@ -474,13 +489,12 @@ declare abstract class PlaceableObject<
    * @see `MouseInteractionManager##handlePointerOver`
    * @param event   - The triggering canvas interaction event
    * @param options - Options which customize event handling
-   * @remarks {@linkcode Wall._onHoverIn | Wall#_onHoverIn} can return `false`, otherwise this is always `void`
+   * @remarks {@linkcode Wall._onHoverIn | Wall#_onHoverIn} can return `false`, otherwise this is always `void`.
    */
-  protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
+  protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): boolean | void;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
-   * @see `MouseInteractionManager##handlePointerOut`
    * @param event - The triggering canvas interaction event
    */
   protected _onHoverOut(event: Canvas.Event.Pointer): void;
@@ -493,10 +507,9 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a single left-click event to assume control of the object
-   * @see `MouseInteractionManager##handleClickLeft`
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickLeft(event: Canvas.Event.Pointer): void;
+  protected _onClickLeft(event: Canvas.Event.Pointer): boolean | void;
 
   /**
    * Callback actions which occur on a single left-unclick event to assume control of the object
@@ -506,7 +519,6 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a double left-click event to activate
-   * @see `MouseInteractionManager##handleClickLeft2`
    * @param event - The triggering canvas interaction event
    */
   protected _onClickLeft2(event: Canvas.Event.Pointer): void;
@@ -519,7 +531,6 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a single right-click event to configure properties of the object
-   * @see `MouseInteractionManager##handleClickRight`
    * @param event - The triggering canvas interaction event
    */
   protected _onClickRight(event: Canvas.Event.Pointer): void;
@@ -532,17 +543,22 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a double right-click event to configure properties of the object
-   * @see `MouseInteractionManager##handleClickRight2`
    * @param event - The triggering canvas interaction event
    */
   protected _onClickRight2(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur when a mouse-drag action is first begun.
-   * @see `MouseInteractionManager##handleDragStart`
+   * @param event - The triggering canvas interaction event
+   * @returns If `false`, the start if prevented
+   */
+  protected _onDragLeftStart(event: Canvas.Event.Pointer): boolean | void;
+
+  /**
+   * Initialize the left-drag operation.
    * @param event - The triggering canvas interaction event
    */
-  protected _onDragLeftStart(event: Canvas.Event.Pointer): void;
+  protected _initializeDragLeft(event: Canvas.Event.Pointer): void;
 
   /**
    * Begin a drag operation from the perspective of the preview clone.
@@ -558,14 +574,12 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @see `MouseInteractionManager##handleDragMove`
    * @param event - The triggering canvas interaction event
    */
   protected _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @see `MouseInteractionManager##handleDragDrop`
    * @param event - The triggering canvas interaction event
    */
   protected _onDragLeftDrop(event: Canvas.Event.Pointer): void;
@@ -580,42 +594,57 @@ declare abstract class PlaceableObject<
 
   /**
    * Callback actions which occur on a mouse-move operation.
-   * @see `MouseInteractionManager##handleDragCancel`
+   * @param event - The triggering mouse click event
+   * @returns If `false`, the cancellation is prevented
+   */
+  protected _onDragLeftCancel(event: Canvas.Event.Pointer): boolean | void;
+
+  /**
+   * Finalize the left-drag operation.
    * @param event - The triggering mouse click event
    */
-  protected _onDragLeftCancel(event: Canvas.Event.Pointer): void;
+  protected _finalizeDragLeft(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
-   * @see `MouseInteractionManager##handleDragStart`
    * @param event - The triggering mouse click event
+   * @returns If `false`, the start if prevented
    */
-  protected _onDragRightStart(event: Canvas.Event.Pointer): void;
+  protected _onDragRightStart(event: Canvas.Event.Pointer): false | void;
+
+  /**
+   * Initialize the right-drag operation.
+   * @param event - The triggering canvas interaction event
+   */
+  protected _initializeDragRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
-   * @see `MouseInteractionManager##handleDragMove`
    * @param event - The triggering canvas interaction event
    */
   protected _onDragRightMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
-   * @see `MouseInteractionManager##handleDragDrop`
    * @param event - The triggering canvas interaction event
    */
   protected _onDragRightDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback actions which occur on a right mouse-drag operation.
-   * @see `MouseInteractionManager##handleDragDrop`
+   * @param event - The triggering mouse click event
+   * @returns If `false`, the start if prevented
+   */
+  protected _onDragRightCancel(event: Canvas.Event.Pointer): boolean | void;
+
+  /**
+   * Finalize the right-drag operation.
    * @param event - The triggering mouse click event
    */
-  protected _onDragRightCancel(event: Canvas.Event.Pointer): void;
+  protected _finalizeDragRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Callback action which occurs on a long press.
-   * @see `MouseInteractionManager##handleLongPress`
    * @param event  - The triggering canvas interaction event
    * @param origin - The local canvas coordinates of the mousepress.
    */
@@ -665,73 +694,67 @@ declare namespace PlaceableObject {
   interface ControlOptions {
     /**
      * Release any other controlled objects first
-     * @remarks Can't be undefined because it's checked via `!== false` in {@linkcode PlaceableObject.control | PlaceableObject#control}
+     * @remarks No default, so effectively defaults `true`. Can't be undefined because it's checked via `!== false` in
+     * {@linkcode PlaceableObject.control | PlaceableObject#control}.
      */
     releaseOthers?: boolean;
   }
 
   /**
-   * @remarks As of 13.347, no placeable uses any options for `#release`
+   * @remarks As of 13.351, no placeable uses any options for `#release`
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface ReleaseOptions {}
 
-  /** @internal */
-  type __UpdateRotationOptions = NullishProps<{
-    /**
-     * An explicit angle, either this or delta must be provided
-     * @defaultValue `undefined`
-     * @remarks Checked before `delta`. If non-numeric, ignored in favour of `delta`.
-     */
-    angle: number;
-  }> &
-    InexactPartial<{
-      /**
-       * A relative angle delta, either this or the angle must be provided
-       * @defaultValue `0`
-       * @remarks Can't be `null` as it only has a parameter default.
-       *
-       * Only used if `angle` is non-numeric.
-       */
-      delta: number;
-
-      /**
-       * A precision (in degrees) to which the resulting angle should snap. Default is 0.
-       * @defaultValue `0`
-       * @remarks Can't be `null` as it only has a parameter default.
-       *
-       * @see {@linkcode Number.toNearest | Number#toNearest}
-       */
-      snap: number;
-    }>;
-  interface UpdateRotationOptions extends __UpdateRotationOptions {}
+  interface UpdateRotationOptionsWithAngle extends Pick<
+    PlaceablesLayer.RotateManyOptionsWithAngle,
+    "snap" | "angle" | "delta"
+  > {}
+  interface UpdateRotationOptionsWithDelta extends Pick<
+    PlaceablesLayer.RotateManyOptionsWithDelta,
+    "snap" | "angle" | "delta"
+  > {}
 
   /** @internal */
-  type _HoverInOptions = NullishProps<{
+  interface _HoverInOptions {
     /**
      * Trigger hover-out behavior on sibling objects
      * @defaultValue `false`
      */
     hoverOutOthers: boolean;
-  }>;
+  }
 
-  interface HoverInOptions extends _HoverInOptions {}
+  interface HoverInOptions extends InexactPartial<_HoverInOptions> {}
 
   /**
-   * @remarks {@linkcode PlaceableObject.can | PlaceableObject#can} calls `#titleCase()` on this
-   * before prepending `"_can"`, rendering any actions with more than a single capital in their
-   * name (e.g `"DragLeftStart"`), including `"HUD"` (as there's no `PlaceableObject#_canHud()`),
-   * effectively inert, so they have been omitted here. This also means these are case
-   * -insensitive at runtime, but TS doesn't have a good way to type that. Allowing lowercase or
-   * title case is the best we can do.
+   * @remarks While in theory a custom action could be added through a custom `_can*` method method Atropos
+   * has indicated that this is not intended to be user-extensible, and as of 13.351 this is typed as a literal union, not `string`.
    *
-   * While in theory a custom action could be added through a custom `_can*` method method Atropos
-   * has indicated that this is not intended to be user-extensible.
+   * @privateRemarks {@linkcode PlaceableObject.can | PlaceableObject#can} checks for
+   * ```js
+   * this[`_can${action.titleCase()}`]
+   * ```
+   * first, but as of 13.351 *also* checks
+   * ```js
+   * this[`_can${action}`]
+   * ```
+   * thus fixing the bug that existed prior where `HUD` was mangled to `Hud` and was falsely rejected. `"HUD"` has been pulled out of this
+   * union so we don't allow `"Hud"` in the types via {@linkcode PlaceableObject.Action}.
    */
-  // TODO: They also check non-titlecase in v13
-  type BaseAction = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete";
+  type BaseAction = "hover" | "control" | "drag" | "view" | "configure" | "create" | "update" | "delete";
 
-  type Action = Titlecase<BaseAction> | BaseAction;
+  type Action = Titlecase<BaseAction> | BaseAction | "HUD";
+
+  /** @internal */
+  interface _CanDragLeftStartOptions {
+    /**
+     * @defaultValue `true`
+     * @remarks Controls whether certain warning notifications are presented if a `PlaceableObject` is dragged with insufficient permissions.
+     */
+    notify: boolean;
+  }
+
+  interface CanDragLeftStartOptions extends InexactPartial<_CanDragLeftStartOptions> {}
 
   /**
    * @remarks Foundry does some unsound subclassing around

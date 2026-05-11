@@ -750,9 +750,10 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   getLightRadius(units: number): number;
 
-  protected override _getShiftedPosition(dx: number, dy: number): Canvas.Point;
+  override _getShiftedPosition(dx: number, dy: number): Canvas.ElevatedPoint;
 
-  protected override _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
+  override _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithAngle): number;
+  override _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithDelta): number;
 
   // _onCreate, _onUpdate, and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.

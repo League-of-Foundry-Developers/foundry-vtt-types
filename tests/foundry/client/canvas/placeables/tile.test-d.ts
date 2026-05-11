@@ -119,7 +119,7 @@ declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(tile["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(tile["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(tile["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(tile["_onDragLeftStart"](pointerEvent)).toBeVoid();
