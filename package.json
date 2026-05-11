@@ -152,7 +152,7 @@
     "@actions/github": "^9.0.0",
     "@ark/attest": "^0.56.0",
     "@codemirror/lint": "^6.9.2",
-    "@eslint/compat": "^2.0.0",
+    "@eslint/config-helpers": "^0.6.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "@types/debug": "^4.1.12",
