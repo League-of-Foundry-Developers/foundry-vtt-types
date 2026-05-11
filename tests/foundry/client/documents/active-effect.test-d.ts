@@ -619,7 +619,7 @@ expectTypeOf(
       parent: someActor,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(
     createData,
@@ -632,7 +632,7 @@ expectTypeOf(
       //types: [],
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(
     {},
@@ -641,13 +641,13 @@ expectTypeOf(
       pack: undefined,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: null,
   }),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 
 declare const aeSource: ActiveEffect.Source;
 expectTypeOf(

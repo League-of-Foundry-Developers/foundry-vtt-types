@@ -3386,7 +3386,7 @@ declare namespace Document {
     SimpleMerge<
       Config,
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      { ok: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<Config, "ok", {}>> }
+      { ok: SimpleMerge<{ callback: () => Promise<Doc> }, GetKey<Config, "ok", {}>> }
     >
   >;
 
