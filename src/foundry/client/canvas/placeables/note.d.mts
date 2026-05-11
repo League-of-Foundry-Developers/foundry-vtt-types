@@ -28,9 +28,9 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   // `RENDER_FLAGS` and so it has to be adjusted here.
   renderFlags: RenderFlags<Note.RENDER_FLAGS>;
 
-  // `controlIcon` is actually defined in the class body here (unlike in super or any of its siblings),
-  // but not initialized to a value. Since it's still set `null` at construction, and the Foundry
-  // comment here provides no additional info, it's been omitted as there's no change from PlaceableObject
+  // `controlIcon` is actually defined in the class body here (unlike in super or any of its siblings, where it only comes
+  // from the constructor), but not initialized to a value. Since it's still set `null` at construction, and the Foundry
+  // comment here provides no additional info, it's been omitted as there's no change from `PlaceableObject`
 
   /**
    * The tooltip.

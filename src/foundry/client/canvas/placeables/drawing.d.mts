@@ -1,10 +1,11 @@
-import type { FixedInstanceType, HandleEmptyObject, NullishProps, RequiredProps, ValueOf } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial, RequiredProps, ValueOf } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { PrimaryGraphics } from "#client/canvas/primary/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ShapeData } from "#client/data/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -17,6 +18,8 @@ declare module "#configuration" {
 /**
  * The Drawing object is an implementation of the PlaceableObject container.
  * Each Drawing is a placeable object in the DrawingsLayer.
+ * @see {@link foundry.documents.DrawingDocument}
+ * @see {@link foundry.canvas.layers.DrawingsLayer}
  */
 declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
   // fake override; super has to type as if this could be a ControlIcon, but Drawings don't use one
@@ -24,10 +27,10 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
 
   /**
    * The texture that is used to fill this Drawing, if any.
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw. Set `null` if the Drawing's document has no `texture` set
+   * @defaultValue `null`
+   * @remarks Set `null` if the `Drawing`'s document has no {@linkcode DrawingDocument.texture | texture} set
    */
-  texture: PIXI.Texture | null | undefined;
+  texture: PIXI.Texture | null;
 
   /**
    * The border frame and resizing handles for the drawing.
@@ -49,6 +52,12 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
    */
   shape: PrimaryGraphics | PIXI.Graphics | undefined;
 
+  /**
+   * An internal flag for the permanent points of the polygon.
+   * @internal
+   */
+  _fixedPoints: number[];
+
   static override embeddedName: "Drawing";
 
   static override RENDER_FLAGS: Drawing.RENDER_FLAGS;
@@ -66,7 +75,7 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
   /**
    * A convenience reference to the possible shape types.
    */
-  static SHAPE_TYPES: foundry.data.ShapeData.TYPES;
+  static SHAPE_TYPES: ShapeData.TYPES;
 
   /**
    * A convenient reference for whether the current User is the author of the Drawing document.
@@ -100,49 +109,51 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
   /**
    * The shape type that this Drawing represents. A value in Drawing.SHAPE_TYPES.
    */
-  get type(): ValueOf<foundry.data.ShapeData.TYPES>;
+  get type(): ValueOf<ShapeData.TYPES>;
 
   /**
    * The pending text.
    * @defaultValue `undefined`
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
-  protected _pendingText: string | undefined;
+  _pendingText: string | undefined;
 
   /**
    * The registered keydown listener.
    * @defaultValue `null`
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
-  protected _onkeydown: ((event: KeyboardEvent) => void) | null;
+  _onkeydown: ((event: KeyboardEvent) => void) | null;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
+
+  override clear(): this;
+
+  // fake type override
+  override draw(options?: HandleEmptyObject<Drawing.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<Drawing.DrawOptions> | undefined): Promise<void>;
 
   /**
    * Get the line style used for drawing the shape of this Drawing.
-   * @returns The line style options (`PIXI.ILineStyleOptions`).
+   * @returns The line style options ({@linkcode PIXI.ILineStyleOptions}).
    * @privateRemarks Foundry types this return as just `object` and then lists the correct interface this is a partial of in the `@returns`?!
    */
   protected _getLineStyle(): Drawing.LineStyleData;
 
   /**
    * Get the fill style used for drawing the shape of this Drawing.
-   * @returns The fill style options (`PIXI.IFillStyleOptions`).
+   * @returns The fill style options ({@linkcode PIXI.IFillStyleOptions}).
    * @privateRemarks Foundry types this return as just `object` and then lists the correct interface this is a partial of in the `@returns`?!
    */
   protected _getFillStyle(): Drawing.FillStyleData;
 
   /**
-   * Prepare the text style used to instantiate a PIXI.Text or PreciseText instance for this Drawing document.
+   * Prepare the text style used to instantiate a {@linkcode PIXI.Text} or {@linkcode PreciseText} instance for this Drawing document.
    */
   protected _getTextStyle(): PIXI.TextStyle;
 
   override clone(): this;
-
-  // fake override; super has to account for misbehaving siblings returning void
-  override clear(): this;
 
   protected override _applyRenderFlags(flags: Drawing.RenderFlags): void;
 
@@ -187,17 +198,23 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
    * Add a new polygon point to the drawing, ensuring it differs from the last one
    * @param position - The drawing point to add
    * @param options  - Options which configure how the point is added
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
-  protected _addPoint(position: Canvas.Point, options?: Drawing.AddPointOptions): void;
+  _addPoint(position: Canvas.Point, options?: Drawing.AddPointOptions): void;
 
   /**
    * Remove the last fixed point from the polygon
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
-  protected _removePoint(): void;
+  _removePoint(): void;
+
+  // fake type override
+  override control(options?: Drawing.ControlOptions): boolean;
 
   protected override _onControl(options: Drawing.ControlOptions): void;
+
+  // fake type override
+  override release(options?: HandleEmptyObject<Drawing.ReleaseOptions>): boolean;
 
   protected override _onRelease(options: HandleEmptyObject<Drawing.ReleaseOptions>): void;
 
@@ -208,8 +225,13 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
    */
   enableTextEditing(options?: Drawing.EnableTextEditingOptions): void;
 
-  // _onUpdate and _onDelete are overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  override _onUpdate(
+    changed: DrawingDocument.UpdateData,
+    options: DrawingDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
+
+  override _onDelete(options: DrawingDocument.Database.OnDeleteOptions, userId: string): void;
 
   override activateListeners(): void;
 
@@ -222,7 +244,6 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
 
   /**
    * Handle mouse movement which modifies the dimensions of the drawn shape
-   * @remarks Foundry marked `@internal`
    */
   protected _onMouseDraw(event: Canvas.Event.Pointer): void;
 
@@ -290,6 +311,8 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
    * @internal
    */
   static normalizeShape(data: DrawingDocument.Source): DrawingDocument.Source;
+
+  #Drawing: true;
 }
 
 declare namespace Drawing {
@@ -366,7 +389,10 @@ declare namespace Drawing {
 
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
-  interface ControlOptions extends _EnableTextEditingOptions, PlaceableObject.ControlOptions {}
+  /**
+   * {@linkcode Drawing._onControl | Drawing#_onControl} forwards its options to {@linkcode Drawing.enableTextEditing | #enableTextEditing}.
+   */
+  interface ControlOptions extends EnableTextEditingOptions, PlaceableObject.ControlOptions {}
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
@@ -376,7 +402,7 @@ declare namespace Drawing {
   type FillStyleData = RequiredProps<PIXI.IFillStyleOptions, "color" | "alpha">;
 
   /** @internal */
-  type _AddPointOptions = NullishProps<{
+  interface _AddPointOptions {
     /**
      * Should the point be rounded to integer coordinates?
      * @defaultValue `false`
@@ -394,17 +420,17 @@ declare namespace Drawing {
      * @defaultValue `false`
      */
     temporary: boolean;
-  }>;
+  }
 
-  interface AddPointOptions extends _AddPointOptions {}
+  interface AddPointOptions extends InexactPartial<_AddPointOptions> {}
 
   /** @internal */
-  type _EnableTextEditingOptions = NullishProps<{
+  interface _EnableTextEditingOptions {
     forceTextEditing: boolean;
     isNew: boolean;
-  }>;
+  }
 
-  interface EnableTextEditingOptions extends _EnableTextEditingOptions {}
+  interface EnableTextEditingOptions extends InexactPartial<_EnableTextEditingOptions> {}
 }
 
 export default Drawing;

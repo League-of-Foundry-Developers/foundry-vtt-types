@@ -649,6 +649,8 @@ declare abstract class PlaceableObject<
    * @param origin - The local canvas coordinates of the mousepress.
    */
   protected _onLongPress(event: Canvas.Event.Pointer, origin: PIXI.Point): void;
+
+  #PlaceableObject: true;
 }
 
 declare namespace PlaceableObject {

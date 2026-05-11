@@ -60,8 +60,8 @@ expectTypeOf(drawing.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(drawing.isTiled).toBeBoolean();
 expectTypeOf(drawing.isPolygon).toBeBoolean();
 expectTypeOf(drawing.hasText).toBeBoolean();
-expectTypeOf(drawing["_pendingText"]).toEqualTypeOf<string | undefined>();
-expectTypeOf(drawing["_onkeydown"]).toEqualTypeOf<((event: KeyboardEvent) => void) | null>();
+expectTypeOf(drawing._pendingText).toEqualTypeOf<string | undefined>();
+expectTypeOf(drawing._onkeydown).toEqualTypeOf<((event: KeyboardEvent) => void) | null>();
 expectTypeOf(drawing.shape).toEqualTypeOf<PrimaryGraphics | PIXI.Graphics | undefined>();
 expectTypeOf(drawing.text).toEqualTypeOf<PIXI.Text | null>();
 expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container | undefined>();
@@ -72,6 +72,8 @@ expectTypeOf(drawing["_destroy"]({})).toBeVoid();
 expectTypeOf(drawing["_destroy"]({ baseTexture: true, children: true, texture: true })).toBeVoid();
 expectTypeOf(drawing["_destroy"](true)).toBeVoid();
 expectTypeOf(drawing["_destroy"](undefined)).toBeVoid();
+
+expectTypeOf(drawing.clear()).toEqualTypeOf<typeof drawing>();
 
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(drawing["_draw"]()).toEqualTypeOf<Promise<void>>();
@@ -115,11 +117,13 @@ expectTypeOf(drawing["_refreshElevation"]()).toBeVoid();
 expectTypeOf(drawing["_refreshFrame"]()).toBeVoid();
 expectTypeOf(drawing["_refreshText"]()).toBeVoid();
 
-expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 })).toBeVoid();
-expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, {})).toBeVoid();
-expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, { round: true, snap: false, temporary: true })).toBeVoid();
-expectTypeOf(drawing["_addPoint"]({ x: 50, y: 60 }, { round: null, snap: undefined, temporary: null })).toBeVoid();
-expectTypeOf(drawing["_removePoint"]()).toBeVoid();
+expectTypeOf(drawing._addPoint({ x: 50, y: 60 })).toBeVoid();
+expectTypeOf(drawing._addPoint({ x: 50, y: 60 }, {})).toBeVoid();
+expectTypeOf(drawing._addPoint({ x: 50, y: 60 }, { round: true, snap: false, temporary: true })).toBeVoid();
+expectTypeOf(
+  drawing._addPoint({ x: 50, y: 60 }, { round: undefined, snap: undefined, temporary: undefined }),
+).toBeVoid();
+expectTypeOf(drawing._removePoint()).toBeVoid();
 
 expectTypeOf(
   drawing["_onCreate"](
@@ -130,7 +134,7 @@ expectTypeOf(
 ).toBeVoid();
 
 expectTypeOf(
-  drawing["_onUpdate"](
+  drawing._onUpdate(
     // partial source data
     { bezierFactor: 2, flags: { core: { sheetLock: true } }, fillColor: "#ABCFEF" },
     { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
@@ -139,7 +143,7 @@ expectTypeOf(
 ).toBeVoid();
 
 expectTypeOf(
-  drawing["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  drawing._onDelete({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value
@@ -156,7 +160,7 @@ expectTypeOf(drawing["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 expectTypeOf(drawing.enableTextEditing()).toBeVoid();
 expectTypeOf(drawing.enableTextEditing({})).toBeVoid();
 expectTypeOf(drawing.enableTextEditing({ forceTextEditing: true, isNew: false })).toBeVoid();
-expectTypeOf(drawing.enableTextEditing({ forceTextEditing: null, isNew: undefined })).toBeVoid();
+expectTypeOf(drawing.enableTextEditing({ forceTextEditing: undefined, isNew: undefined })).toBeVoid();
 
 expectTypeOf(drawing.activateListeners()).toBeVoid();
 
@@ -168,7 +172,7 @@ expectTypeOf(drawing["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(drawing["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(drawing["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(drawing["_onMouseDraw"](pointerEvent)).toBeVoid();
 expectTypeOf(drawing["_onClickLeft"](pointerEvent)).toBeVoid();

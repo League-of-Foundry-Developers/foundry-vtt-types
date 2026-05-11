@@ -70,7 +70,7 @@ expectTypeOf(region["_onRelease"]({})).toBeVoid();
 expectTypeOf(region["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(region["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(region["_onHoverIn"](pointerEvent, { hoverOutOthers: true, updateLegend: false })).toBeVoid();
-expectTypeOf(region["_onHoverIn"](pointerEvent, { hoverOutOthers: null, updateLegend: null })).toBeVoid();
+expectTypeOf(region["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined, updateLegend: null })).toBeVoid();
 
 expectTypeOf(region["_onHoverOut"](pointerEvent)).toBeVoid();
 expectTypeOf(region["_onHoverOut"](pointerEvent, {})).toBeVoid();

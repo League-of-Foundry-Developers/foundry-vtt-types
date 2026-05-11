@@ -99,7 +99,7 @@ expectTypeOf(wall["_canControl"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(wall["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
 expectTypeOf(wall["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
 expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toEqualTypeOf<false | void>();
 
 expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 

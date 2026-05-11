@@ -119,7 +119,7 @@ expectTypeOf(template["_canView"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(template["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(template["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(template["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(template["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<

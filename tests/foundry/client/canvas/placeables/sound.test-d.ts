@@ -103,7 +103,7 @@ expectTypeOf(sound["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(sound["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(sound["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onDragLeftMove"](pointerEvent)).toBeVoid();
