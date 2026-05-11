@@ -9,7 +9,7 @@ import type {
   RequiredProps,
 } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Canvas, sources } from "#client/canvas/_module.d.mts";
 import type { PlaceableObject, Region } from "#client/canvas/placeables/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
@@ -17,10 +17,8 @@ import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import BaseToken = foundry.documents.BaseToken;
-import sources = foundry.canvas.sources;
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -365,7 +363,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   protected _renderDetectionFilter(renderer: PIXI.Renderer): void;
 
-  override clear(): void;
+  override clear(): this;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
@@ -637,10 +635,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   override getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
-  override _pasteObject(
-    offset: Canvas.Point,
-    { hidden, snap }?: PlaceableObject.PasteObjectOptions,
-  ): PlaceableObject.PasteObjectReturn<TokenDocument.Implementation>;
+  override _pasteObject(offset: Canvas.Point, options?: PlaceablesLayer.PasteOptions): TokenDocument.Source;
 
   /**
    * Measure the movement path for this Token.
@@ -933,13 +928,13 @@ declare namespace Token {
   // eslint-disable-next-line no-restricted-syntax
   type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
 
-  type Schema = BaseToken.Schema;
-  type Parent = BaseToken.Parent;
+  type Schema = TokenDocument.Schema;
+  type Parent = TokenDocument.Parent;
 
-  type Metadata = BaseToken.Metadata;
+  type Metadata = TokenDocument.Metadata;
 
-  export import UpdateData = BaseToken.UpdateData;
-  export import Source = BaseToken.Source;
+  export import UpdateData = TokenDocument.UpdateData;
+  export import Source = TokenDocument.Source;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

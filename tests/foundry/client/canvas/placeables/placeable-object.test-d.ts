@@ -38,7 +38,7 @@ expectTypeOf(placeable.isOwner).toBeBoolean();
 expectTypeOf(placeable.interactionState).toEqualTypeOf<MouseInteractionManager.INTERACTION_STATES | undefined>();
 expectTypeOf(placeable.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(placeable.center).toEqualTypeOf<PIXI.Point>();
-expectTypeOf(placeable.id).toBeString();
+expectTypeOf(placeable.id).toEqualTypeOf<string | null>();
 expectTypeOf(placeable.objectId).toBeString();
 expectTypeOf(placeable.sourceId).toBeString();
 expectTypeOf(placeable.isPreview).toBeBoolean();
@@ -55,7 +55,6 @@ placeable.hover = false; // setter
 expectTypeOf(placeable.getSnappedPosition()).toEqualTypeOf<Canvas.Point>();
 // @ts-expect-error if passed an object, must be a valid point
 expectTypeOf(placeable.getSnappedPosition({})).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(placeable.getSnappedPosition(null)).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(placeable.getSnappedPosition({ x: 50, y: 70 })).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(placeable.getSnappedPosition(new PIXI.Point(5, 10))).toEqualTypeOf<Canvas.Point>();
 
@@ -68,7 +67,7 @@ expectTypeOf(placeable["_applyRenderFlags"]({})).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({ redraw: false, refresh: undefined })).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({ redraw: true, refresh: true, refreshState: true })).toBeVoid();
 
-expectTypeOf(placeable.clear()).toEqualTypeOf<FakeLight | void>();
+expectTypeOf(placeable.clear()).toEqualTypeOf<FakeLight>();
 
 expectTypeOf(placeable.destroy()).toBeVoid();
 expectTypeOf(placeable.destroy({})).toBeVoid();

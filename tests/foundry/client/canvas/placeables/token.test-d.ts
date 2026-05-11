@@ -127,7 +127,7 @@ expectTypeOf(token["_getVisionSourceData"]()).toEqualTypeOf<Token.VisionSourceDa
 expectTypeOf(token["_isVisionSource"]()).toBeBoolean();
 expectTypeOf(token["_renderDetectionFilter"](new PIXI.Renderer())).toBeVoid();
 
-expectTypeOf(token.clear()).toBeVoid();
+expectTypeOf(token.clear()).toEqualTypeOf<typeof token>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(token["_destroy"]()).toBeVoid();

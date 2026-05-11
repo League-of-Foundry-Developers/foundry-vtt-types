@@ -115,7 +115,7 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
 
   protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
-  override clear(): void;
+  override clear(): this;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 

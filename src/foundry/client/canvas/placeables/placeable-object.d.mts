@@ -17,6 +17,8 @@ import {
   RenderFlags,
   type RenderFlag,
 } from "#client/canvas/interaction/_module.mjs";
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 /**
  * An Abstract Base Class which defines a Placeable Object which represents a Document placed on the Canvas
@@ -46,7 +48,8 @@ declare abstract class PlaceableObject<
   /**
    * A control icon for interacting with the object
    * @defaultValue `null`
-   * @remarks Set to `null` in {@link PlaceableObject | `PlaceableObject#constructor`} and {@link AmbientSound.clear | `AmbientSound#clear`}.
+   * @remarks Set to `null` in {@linkcode PlaceableObject | PlaceableObject#constructor} and
+   * {@linkcode AmbientSound.clear | AmbientSound#clear}.
    *
    * In placeables which render an icon ({@linkcode AmbientLight}, {@linkcode AmbientSound},
    * {@linkcode Note}, and {@linkcode MeasuredTemplate}), it's only `null` prior to first draw; In all others, it is never set to other than `null`
@@ -74,6 +77,11 @@ declare abstract class PlaceableObject<
    * @remarks This is abstract in {@linkcode PlaceableObject}.
    */
   static embeddedName: string;
+
+  /**
+   * Return a reference to the configured subclass of this base `PlaceableObject` type.
+   */
+  static get implementation(): PlaceableObject.AnyCanvasDocument;
 
   /**
    * The flags declared here are required for all PlaceableObject subclasses to also support.
@@ -114,17 +122,20 @@ declare abstract class PlaceableObject<
 
   /**
    * The id of the corresponding Document which this PlaceableObject represents.
+   * @privateRemarks `null` included because of temporary documents
    */
-  get id(): string;
+  get id(): string | null;
 
   /**
    * A unique identifier which is used to uniquely identify elements on the canvas related to this object.
+   * @remarks For temporary documents this will (usually) be `"Token.null.preview"` (unless you create a temporary doc with an ID).
    */
   get objectId(): string;
 
   /**
    * The named identified for the source object associated with this PlaceableObject.
    * This differs from the objectId because the sourceId is the same for preview objects as for the original.
+   * @remarks For temporary documents this will (usually) be `"Token.null.preview"` (unless you create a temporary doc with an ID).
    */
   get sourceId(): string;
 
@@ -141,13 +152,13 @@ declare abstract class PlaceableObject<
   /**
    * Provide a reference to the CanvasLayer which contains this PlaceableObject.
    */
-  get layer(): PlaceableObject.Layer<CanvasDocument>;
+  get layer(): PlaceablesLayer.ImplementationFor<CanvasDocument["documentName"]>;
 
   /**
    * A Form Application which is used to configure the properties of this Placeable Object or the Document it
    * represents.
    */
-  get sheet(): PlaceableObject.Sheet<CanvasDocument>;
+  get sheet(): ClientDocumentMixin.AnyMixed["sheet"];
 
   /**
    * An indicator for whether the object is currently controlled
@@ -171,22 +182,31 @@ declare abstract class PlaceableObject<
    * Get the snapped position for a given position or the current position
    * @param position - The position to be used instead of the current position
    * @returns The snapped position
-   * @remarks Calls `this#layer#getSnappedPoint`. If `position` is not provided or nullish, the document's values are used
+   * @remarks Calls `this.layer.getSnappedPoint`. If `position` is not provided or nullish, it uses the `x`/`y` of this placeable.
    */
-  getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
+  getSnappedPosition(position?: Canvas.Point): Canvas.Point;
+
+  /**
+   * Get the origin used for pasting the copied objects.
+   * @param copies - The objects that are copied
+   * @returns The offset
+   * @internal
+   */
+  // TODO: templatize
+  static _getCopiedObjectsOrigin(copies: PlaceableObject.Any[]): Canvas.Point;
 
   /**
    * Get the data of the copied object pasted at the position given by the offset.
-   * Called by {@linkcode foundry.canvas.layers.PlaceablesLayer#pasteObjects} for each copied object.
+   * Called by {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects} for each copied object.
    * @param offset - The offset relative from the current position to the destination
-   * @param options - Options of {@linkcode foundry.canvas.layers.PlaceablesLayer#pasteObjects}
+   * @param options - Options of `PlaceablesLayer#pasteObjects`
    * @returns The update data
    * @internal
    */
   _pasteObject(
     offset: Canvas.Point,
-    { hidden, snap }?: PlaceableObject.PasteObjectOptions,
-  ): PlaceableObject.PasteObjectReturn<CanvasDocument>;
+    options?: PlaceablesLayer.PasteOptions,
+  ): Document.SourceForName<CanvasDocument["documentName"]>;
 
   override applyRenderFlags(): void;
 
@@ -199,11 +219,9 @@ declare abstract class PlaceableObject<
   /**
    * Clear the display of the existing object
    * @returns The cleared object
-   * @remarks {@link Tile.clear | `Tile`} and {@link Token.clear | `Token`} return void
    */
-  clear(): this | void;
+  clear(): this;
 
-  // options: not null (PIXI signature)
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
   /**
@@ -218,7 +236,6 @@ declare abstract class PlaceableObject<
    * Draw the placeable object into its parent container
    * @returns The drawn object
    */
-  // options: not null (will likely be destructured if any options ever materialize, parameter default)
   draw(options?: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<this>;
 
   /**
@@ -639,18 +656,11 @@ declare namespace PlaceableObject {
     refreshState: RenderFlag<this, "refreshState">;
   }
 
-  // Note(LukeAbby): Switch back to `GetKeyWithShape` once `TilesLayer` etc. is assignable to `PlaceablesLayer.Any`.
-  // There's no clear reason why it isn't but it's breaking this type.
-  type Layer<CanvasDocument extends AnyCanvasDocument> = GetKey<
-    CanvasDocument,
-    "layer"
-    // PlaceablesLayer.Any
-  >;
-
+  // TODO: deprecate and simplify `get sheet()`
   type Sheet<CanvasDocument extends AnyCanvasDocument> = GetKey<
     CanvasDocument,
     "sheet"
-    // FormApplication.Any | ApplicationV2.Any | null
+    // Application.Any | DocumentSheetV2.Any | null
   >;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -763,7 +773,13 @@ declare namespace PlaceableObject {
     snap?: boolean | undefined;
   }
 
+  /** @deprecated Use {@linkcode Document.SourceForName} directly instead. This type will be removed in v15. */
   type PasteObjectReturn<CanvasDocument extends PlaceableObject.AnyCanvasDocument> = Document.SourceForName<
+    CanvasDocument["documentName"]
+  >;
+
+  /** @deprecated Use {@linkcode PlaceablesLayer.ImplementationClassFor} instead. This type will be removed in v15. */
+  type Layer<CanvasDocument extends AnyCanvasDocument> = PlaceablesLayer.ImplementationFor<
     CanvasDocument["documentName"]
   >;
 }
