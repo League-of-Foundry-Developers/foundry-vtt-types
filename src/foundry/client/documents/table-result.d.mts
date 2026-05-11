@@ -976,16 +976,16 @@ declare namespace TableResult {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends TableResult.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<TableResult.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends TableResult.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<TableResult.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode TableResult.deleteDialog | TableResult#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     TableResult.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

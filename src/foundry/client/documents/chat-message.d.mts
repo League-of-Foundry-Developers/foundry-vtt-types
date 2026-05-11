@@ -1081,16 +1081,16 @@ declare namespace ChatMessage {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends ChatMessage.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<ChatMessage.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends ChatMessage.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ChatMessage.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode ChatMessage.deleteDialog | ChatMessage#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     ChatMessage.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

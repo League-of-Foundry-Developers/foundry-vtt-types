@@ -988,16 +988,16 @@ declare namespace Folder {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Folder.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Folder.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Folder.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Folder.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Folder.deleteDialog | Folder#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Folder.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

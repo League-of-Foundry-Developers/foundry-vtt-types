@@ -1025,16 +1025,16 @@ declare namespace Combatant {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Combatant.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Combatant.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Combatant.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Combatant.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Combatant.deleteDialog | Combatant#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Combatant.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

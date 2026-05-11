@@ -1027,16 +1027,16 @@ declare namespace DrawingDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends DrawingDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<DrawingDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends DrawingDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<DrawingDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode DrawingDocument.deleteDialog | DrawingDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     DrawingDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

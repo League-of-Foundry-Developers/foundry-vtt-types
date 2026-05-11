@@ -652,21 +652,21 @@ declare namespace CompendiumCollection {
 
   type ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,
-    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    Config extends DialogV2.ConfirmConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _ImportDialogReturn<DocumentName, Coalesce<PassedConfig, {}>>;
+  > = _ImportDialogReturn<DocumentName, Coalesce<Config, {}>>;
 
   type _ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,
-    PassedConfig extends DialogV2.ConfirmConfig,
+    Config extends DialogV2.ConfirmConfig,
   > = DialogV2.ConfirmReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
       {
         yes: SimpleMerge<
           { callback: (event: Event) => Promise<Document.StoredForName<DocumentName>[]> },
           // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-          GetKey<PassedConfig, "yes", {}>
+          GetKey<Config, "yes", {}>
         >;
       }
     >

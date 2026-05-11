@@ -962,16 +962,16 @@ declare namespace Adventure {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Adventure.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Adventure.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Adventure.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Adventure.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Adventure.deleteDialog | Adventure#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Adventure.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

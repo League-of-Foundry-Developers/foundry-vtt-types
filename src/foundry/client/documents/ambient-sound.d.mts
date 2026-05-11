@@ -962,16 +962,16 @@ declare namespace AmbientSoundDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends AmbientSoundDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<AmbientSoundDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends AmbientSoundDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<AmbientSoundDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode AmbientSoundDocument.deleteDialog | AmbientSoundDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     AmbientSoundDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

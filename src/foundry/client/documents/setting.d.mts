@@ -944,16 +944,16 @@ declare namespace Setting {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Setting.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Setting.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Setting.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Setting.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Setting.deleteDialog | Setting#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Setting.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

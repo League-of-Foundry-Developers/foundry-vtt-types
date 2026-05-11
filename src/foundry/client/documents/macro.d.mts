@@ -1004,16 +1004,16 @@ declare namespace Macro {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Macro.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Macro.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Macro.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Macro.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Macro.deleteDialog | Macro#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Macro.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

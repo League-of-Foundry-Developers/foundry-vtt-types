@@ -919,16 +919,16 @@ declare namespace FogExploration {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends FogExploration.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<FogExploration.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends FogExploration.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<FogExploration.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode FogExploration.deleteDialog | FogExploration#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     FogExploration.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

@@ -1018,16 +1018,16 @@ declare namespace RollTable {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends RollTable.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<RollTable.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends RollTable.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RollTable.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode RollTable.deleteDialog | RollTable#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     RollTable.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<

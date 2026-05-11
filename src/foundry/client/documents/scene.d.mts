@@ -1636,16 +1636,16 @@ declare namespace Scene {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Scene.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Scene.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Scene.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Scene.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Scene.deleteDialog | Scene#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Scene.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs =

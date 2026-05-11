@@ -81,8 +81,6 @@ const dialogOptions = {
   },
 } satisfies DialogV2.PromptConfig;
 
-const _x = await Item.createDialog({}, {});
-
 // "ok" if the document creation returns `undefined`
 expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(

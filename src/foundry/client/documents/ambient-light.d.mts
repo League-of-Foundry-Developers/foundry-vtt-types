@@ -911,16 +911,16 @@ declare namespace AmbientLightDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends AmbientLightDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<AmbientLightDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends AmbientLightDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<AmbientLightDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode AmbientLightDocument.deleteDialog | AmbientLightDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     AmbientLightDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

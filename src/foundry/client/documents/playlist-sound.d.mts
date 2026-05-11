@@ -924,16 +924,16 @@ declare namespace PlaylistSound {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends PlaylistSound.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<PlaylistSound.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends PlaylistSound.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<PlaylistSound.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode PlaylistSound.deleteDialog | PlaylistSound#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     PlaylistSound.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

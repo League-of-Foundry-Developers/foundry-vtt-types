@@ -1729,16 +1729,16 @@ declare namespace TokenDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends TokenDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<TokenDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends TokenDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<TokenDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode TokenDocument.deleteDialog | TokenDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     TokenDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs =

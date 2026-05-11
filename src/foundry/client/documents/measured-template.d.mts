@@ -967,16 +967,16 @@ declare namespace MeasuredTemplateDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends MeasuredTemplateDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<MeasuredTemplateDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends MeasuredTemplateDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<MeasuredTemplateDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode MeasuredTemplateDocument.deleteDialog | MeasuredTemplateDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     MeasuredTemplateDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

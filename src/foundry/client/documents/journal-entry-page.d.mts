@@ -1092,16 +1092,16 @@ declare namespace JournalEntryPage {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends JournalEntryPage.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<JournalEntryPage.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends JournalEntryPage.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<JournalEntryPage.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode JournalEntryPage.deleteDialog | JournalEntryPage#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     JournalEntryPage.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************
