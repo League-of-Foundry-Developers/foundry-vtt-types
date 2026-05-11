@@ -34,6 +34,9 @@ declare module "#configuration" {
  * @see {@linkcode TokenLayer}
  */
 declare class Token extends PlaceableObject<TokenDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Token.ImplementationClass;
+
   static override embeddedName: "Token";
 
   static override RENDER_FLAGS: Token.RENDER_FLAGS;

@@ -12,6 +12,7 @@ import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransit
 
 declare const scene: Scene.Stored;
 
+expectTypeOf(Token.implementation).toEqualTypeOf<Token.ImplementationClass>();
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<

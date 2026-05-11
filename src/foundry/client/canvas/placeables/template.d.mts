@@ -22,6 +22,9 @@ declare module "#configuration" {
  * @see {@linkcode TemplateLayer}
  */
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
+  // fake type override
+  static override get implementation(): MeasuredTemplate.ImplementationClass;
+
   /**
    * The geometry shape used for testing point intersection
    * @defaultValue `undefined`

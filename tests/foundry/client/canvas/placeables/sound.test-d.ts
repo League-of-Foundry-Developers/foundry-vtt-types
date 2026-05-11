@@ -5,6 +5,7 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Sound = foundry.audio.Sound;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 
+expectTypeOf(AmbientSound.implementation).toEqualTypeOf<AmbientSound.ImplementationClass>();
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined

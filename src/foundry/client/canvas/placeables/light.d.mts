@@ -20,6 +20,9 @@ declare module "#configuration" {
  * @see {@link foundry.canvas.layers.LightingLayer}
  */
 declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
+  // fake type override
+  static override get implementation(): AmbientLight.ImplementationClass;
+
   /**
    * The area that is affected by this light.
    * @defaultValue `undefined`

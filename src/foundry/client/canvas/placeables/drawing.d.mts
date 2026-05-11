@@ -22,6 +22,9 @@ declare module "#configuration" {
  * @see {@link foundry.canvas.layers.DrawingsLayer}
  */
 declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Drawing.ImplementationClass;
+
   // fake override; super has to type as if this could be a ControlIcon, but Drawings don't use one
   override controlIcon: null;
 

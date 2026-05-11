@@ -7,6 +7,7 @@ import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 declare const doc: TileDocument.Stored;
 declare const scene: Scene.Stored;
 
+expectTypeOf(Tile.implementation).toEqualTypeOf<Tile.ImplementationClass>();
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
 expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<

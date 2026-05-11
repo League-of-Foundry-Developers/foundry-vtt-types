@@ -6,6 +6,7 @@ import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
 import RegionShape = foundry.data.regionShapes.RegionShape;
 import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
 
+expectTypeOf(Region.implementation).toEqualTypeOf<Region.ImplementationClass>();
 expectTypeOf(Region.embeddedName).toEqualTypeOf<"Region">();
 expectTypeOf(Region.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshState" | "refreshBorder"> | undefined
@@ -78,6 +79,8 @@ expectTypeOf(region["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeV
 expectTypeOf(region["_onHoverOut"](pointerEvent, { updateLegend: null })).toBeVoid();
 
 expectTypeOf(region["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
+
+// TODO:  _onUpdate test after document test helpers are done
 
 expectTypeOf(region.testPoint({ x: 50, y: 50 })).toBeBoolean();
 expectTypeOf(region.testPoint({ x: 50, y: 50 }, 20)).toBeBoolean();

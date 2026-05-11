@@ -74,8 +74,7 @@ declare abstract class PlaceableObject<
   /**
    * Return a reference to the configured subclass of this base `PlaceableObject` type.
    */
-  // TODO: Template
-  static get implementation(): PlaceableObject.AnyCanvasDocument;
+  static get implementation(): PlaceableObject.AnyConstructor;
 
   /**
    * The flags declared here are required for all PlaceableObject subclasses to also support.

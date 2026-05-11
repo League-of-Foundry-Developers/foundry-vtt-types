@@ -23,6 +23,9 @@ declare module "#configuration" {
 declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   constructor(document: RegionDocument.Implementation);
 
+  // fake type override
+  static override get implementation(): Region.ImplementationClass;
+
   // fake override; super has to type as if this could be a ControlIcon, but Regions don't use one
   override controlIcon: null;
 

@@ -8,6 +8,7 @@ import PreciseText = foundry.canvas.containers.PreciseText;
 
 declare const scene: Scene.Stored;
 
+expectTypeOf(MeasuredTemplate.implementation).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<

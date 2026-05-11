@@ -7,6 +7,7 @@ import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
 declare const drawingDoc: DrawingDocument.Stored;
 declare const scene: Scene.Stored;
 
+expectTypeOf(Drawing.implementation).toEqualTypeOf<Drawing.ImplementationClass>();
 expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
 expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -161,6 +162,8 @@ expectTypeOf(drawing.enableTextEditing()).toBeVoid();
 expectTypeOf(drawing.enableTextEditing({})).toBeVoid();
 expectTypeOf(drawing.enableTextEditing({ forceTextEditing: true, isNew: false })).toBeVoid();
 expectTypeOf(drawing.enableTextEditing({ forceTextEditing: undefined, isNew: undefined })).toBeVoid();
+
+// TODO: _onUpdate test after document test helpers are done
 
 expectTypeOf(drawing.activateListeners()).toBeVoid();
 

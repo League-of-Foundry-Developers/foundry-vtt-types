@@ -29,6 +29,9 @@ declare module "#configuration" {
 declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
   constructor(document: AmbientSoundDocument.Implementation);
 
+  // fake type override
+  static override get implementation(): AmbientSound.ImplementationClass;
+
   /**
    * The Sound which manages playback for this AmbientSound effect
    * @defaultValue `undefined`

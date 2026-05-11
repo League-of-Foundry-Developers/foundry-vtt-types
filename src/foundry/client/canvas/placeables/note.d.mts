@@ -20,6 +20,9 @@ declare module "#configuration" {
  * @see {@link foundry.canvas.layers.NotesLayer}
  */
 declare class Note extends PlaceableObject<NoteDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Note.ImplementationClass;
+
   static override embeddedName: "Note";
 
   static override RENDER_FLAGS: Note.RENDER_FLAGS;

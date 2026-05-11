@@ -22,6 +22,9 @@ declare module "#configuration" {
  * @see {@linkcode TilesLayer}
  */
 declare class Tile extends PlaceableObject<TileDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Tile.ImplementationClass;
+
   static override embeddedName: "Tile";
 
   static override RENDER_FLAGS: Tile.RENDER_FLAGS;

@@ -1,11 +1,12 @@
-import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
-import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Edge } from "#client/canvas/geometry/edges/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -19,11 +20,13 @@ declare module "#configuration" {
  * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
  * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
  * and sounds.
- *
- * @see {@linkcode WallDocument}
- * @see {@linkcode WallsLayer}
+ * @see {@link foundry.documents.WallDocument}
+ * @see {@link foundry.canvas.layers.WallsLayer}
  */
 declare class Wall extends PlaceableObject<WallDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Wall.ImplementationClass;
+
   static override embeddedName: "Wall";
 
   static override RENDER_FLAGS: Wall.RENDER_FLAGS;
@@ -41,6 +44,11 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @remarks Only `undefined` prior to first draw. {@linkcode Wall.clearDoorControl | Wall#clearDoorControl} sets it `null`.
    */
   doorControl: DoorControl.Implementation | null | undefined;
+
+  /**
+   * A set of optional DoorMesh instances used to render a door animation for this Wall.
+   */
+  get doorMeshes(): Set<DoorMesh>;
 
   /**
    * The line segment that represents the Wall.
@@ -103,14 +111,17 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Get the direction of effect for a directional Wall
    * @returns The angle of wall effect
-   * @remarks In radians. Returns `null` if the document's `dir` is falsey/not set
+   * @remarks In radians. Returns `null` if the document's {@linkcode WallDocument.dir | dir} is falsey/not set
    */
   get direction(): number | null;
 
   /**
+   * @remarks
    * @throws "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
    */
   override getSnappedPosition(position: never): never;
+
+  override _pasteObject(offset: Canvas.Point, options?: PlaceablesLayer.PasteOptions): WallDocument.Source;
 
   /**
    * Initialize the edge which represents this Wall.
@@ -124,19 +135,12 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   toRay(): Ray;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<Wall.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<Wall.DrawOptions>): Promise<void>;
 
   override clear(): this;
-
-  /**
-   * Draw a control icon that is used to manipulate the door's open/closed state
-   */
-  createDoorControl(): DoorControl.Implementation;
-
-  /**
-   * Clear the door control if it exists.
-   */
-  clearDoorControl(): void;
 
   override control(options?: Wall.ControlOptions): boolean;
 
@@ -195,14 +199,39 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   protected _getWallColor(): number;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  protected override _onCreate(
+    data: WallDocument.CreateData,
+    options: WallDocument.Database.OnCreateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onUpdate(
+    changed: WallDocument.UpdateData,
+    options: WallDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onDelete(options: WallDocument.Database.OnDeleteOptions, userId: string): void;
+
+  /**
+   * Should this Wall have a corresponding {@linkcode DoorMesh}?
+   */
+  get hasDoorMesh(): boolean;
+
+  /**
+   * Create and add a {@linkcode DoorMesh} to the {@linkcode PrimaryCanvasContainer}.
+   */
+  createDoorMeshes(): Promise<void>;
+
+  /**
+   * Remove and destroy a {@linkcode DoorMesh} from the {@linkcode PrimaryCanvasContainer}.
+   */
+  destroyDoorMeshes(): void;
 
   /**
    * Play a door interaction sound.
    * This plays locally, each client independently applies this workflow.
    * @param interaction - The door interaction: "open", "close", "lock", "unlock", or "test".
-   * @remarks Foundry marked `@internal`
    */
   protected _playDoorSound(interaction: Wall.DoorInteraction): void;
 
@@ -211,6 +240,16 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @defaultValue `canvas.dimensions.distance * 12; // 60 feet on a 5ft grid`
    */
   get soundRadius(): number;
+
+  /**
+   * Draw a control icon that is used to manipulate the door's open/closed state
+   */
+  createDoorControl(): DoorControl.Implementation;
+
+  /**
+   * Clear the door control if it exists.
+   */
+  clearDoorControl(): void;
 
   protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
@@ -292,6 +331,8 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @deprecated "`Wall#B` is replaced by {@linkcode Edge.b | Wall#edge#b}" (since v12, until v14)
    */
   get B(): Edge["b"];
+
+  #Wall: true;
 }
 
 declare namespace Wall {
@@ -348,25 +389,25 @@ declare namespace Wall {
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
   /** @internal */
-  type _ControlOptions = NullishProps<{
+  interface _ControlOptions {
     /** @defaultValue `false` */
     chain: boolean;
-  }>;
+  }
 
-  interface ControlOptions extends _ControlOptions, PlaceableObject.ControlOptions {}
+  interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
   /** @internal */
-  type _InitializeEdgeOptions = NullishProps<{
+  interface _InitializeEdgeOptions {
     /**
      * Has the edge been deleted?
      * @defaultValue `false`
      */
     deleted: boolean;
-  }>;
+  }
 
-  interface InitializeEdgeOptions extends _InitializeEdgeOptions {}
+  interface InitializeEdgeOptions extends InexactPartial<_InitializeEdgeOptions> {}
 
   interface GetLinkedSegmentsReturn {
     /** @remarks IDs of the Walls in `walls` */

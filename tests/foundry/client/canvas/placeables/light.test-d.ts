@@ -5,6 +5,7 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
 
+expectTypeOf(AmbientLight.implementation).toEqualTypeOf<AmbientLight.ImplementationClass>();
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   // undefined only from the optional chain, not underlying type
@@ -94,6 +95,8 @@ expectTypeOf(light.initializeLightSource({})).toBeVoid();
 expectTypeOf(light.initializeLightSource({ deleted: true })).toBeVoid();
 expectTypeOf(light.initializeLightSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(light["_getLightSourceData"]()).toEqualTypeOf<AmbientLight.LightSourceData>();
+
+// TODO: _onCreate, _onUpdate, _onDelete tests after document test helpers are done
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
