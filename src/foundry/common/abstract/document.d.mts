@@ -3372,9 +3372,9 @@ declare namespace Document {
    */
   type CreateDialogReturn<
     Doc extends Document.Any,
-    PassedConfig extends DialogV2.PromptConfig | undefined,
+    Config extends DialogV2.PromptConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _CreateDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+  > = _CreateDialogReturn<Doc, Coalesce<Config, {}>>;
 
   /**
    * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `ok` object separately allows calls like
@@ -3385,14 +3385,11 @@ declare namespace Document {
    * the return type are either top level or not included in the default config.
    * @internal
    */
-  type _CreateDialogReturn<
-    Doc extends Document.Any,
-    PassedConfig extends DialogV2.PromptConfig,
-  > = DialogV2.PromptReturn<
+  type _CreateDialogReturn<Doc extends Document.Any, Config extends DialogV2.PromptConfig> = DialogV2.PromptReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      { ok: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "ok", {}>> }
+      { ok: SimpleMerge<{ callback: () => Promise<Doc> }, GetKey<Config, "ok", {}>> }
     >
   >;
 
@@ -3404,9 +3401,9 @@ declare namespace Document {
    */
   type DeleteDialogReturn<
     Doc extends Document.Any,
-    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    Config extends DialogV2.ConfirmConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _DeleteDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+  > = _DeleteDialogReturn<Doc, Coalesce<Config, {}>>;
 
   /**
    * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `yes` object separately allows calls like
@@ -3417,15 +3414,12 @@ declare namespace Document {
    * the return type are either top level or not included in the default config.
    * @internal
    */
-  type _DeleteDialogReturn<
-    Doc extends Document.Any,
-    PassedConfig extends DialogV2.ConfirmConfig,
-  > = DialogV2.ConfirmReturn<
+  type _DeleteDialogReturn<Doc extends Document.Any, Config extends DialogV2.ConfirmConfig> = DialogV2.ConfirmReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
       {
         // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "yes", {}>>;
+        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<Config, "yes", {}>>;
       }
     >
   >;

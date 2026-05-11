@@ -968,16 +968,16 @@ declare namespace RegionBehavior {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends RegionBehavior.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<RegionBehavior.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends RegionBehavior.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RegionBehavior.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode RegionBehavior.deleteDialog | RegionBehavior#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     RegionBehavior.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

@@ -979,16 +979,16 @@ declare namespace NoteDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends NoteDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<NoteDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends NoteDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<NoteDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode NoteDocument.deleteDialog | NoteDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     NoteDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /**

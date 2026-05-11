@@ -1095,16 +1095,16 @@ declare namespace Combat {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Combat.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Combat.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Combat.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Combat.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Combat.deleteDialog | Combat#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Combat.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<

@@ -1299,16 +1299,16 @@ declare namespace RegionDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends RegionDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<RegionDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends RegionDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RegionDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode RegionDocument.deleteDialog | RegionDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     RegionDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<

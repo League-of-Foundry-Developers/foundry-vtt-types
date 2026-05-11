@@ -1064,16 +1064,16 @@ declare namespace Playlist {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Playlist.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Playlist.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Playlist.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Playlist.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Playlist.deleteDialog | Playlist#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Playlist.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
