@@ -37,10 +37,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   static name: "ClientDocumentMixin";
 
-  /**
-   * @see {@link foundry.abstract.Document._initialize | `abstract.Document#_initialize`}
-   * @remarks ClientDocument override calls `super`, then if `game._documentsReady`, calls {@link InternalClientDocument._safePrepareData | `this._safePrepareData`}
-   */
+  // Actually an override of Document
   protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
@@ -55,7 +52,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
-   * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
+   * Is this document in a compendium? A stricter check than {@linkcode Document.inCompendium | Document#inCompendium}.
    */
   get inCompendium(): Document.InCompendium<DocumentName>;
 
@@ -163,11 +160,9 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Render all Application instances which are connected to this document by calling their respective
-   * @see {@link foundry.applications.api.ApplicationV2.render | `foundry.applications.api.ApplicationV2#render`}
-   * @param force   - Force rendering
-   *                  (default: `false`)
-   * @param context - Optional context
-   *                  (default: `{}`)
+   * @see {@linkcode ApplicationV2.render | foundry.applications.api.ApplicationV2#render}
+   * @param force   - Force rendering (default: `false`)
+   * @param context - Optional context (default: `{}`)
    */
   render(force?: boolean, context?: Application.RenderOptions | ApplicationV2.RenderOptions): void;
 
@@ -190,7 +185,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param eventData - The parsed object of data provided by the drop transfer event.
    * @param options   - Additional options to configure link generation.
    * @remarks Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
-   * {@link TextEditor.getDragEventData | `TextEditor.getDragEventData(someDragEvent)`}
+   * {@linkcode TextEditor.getDragEventData | TextEditor.getDragEventData(someDragEvent)}.
    */
   _createDocumentLink(eventData?: AnyObject | null, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
@@ -202,7 +197,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * - AppV1: returns that sheet
    * - AppV2: returns a Promise of that sheet
    *
-   * However it unfortunately has to be typed as `MaybePromise<unknown>` due to the {@link Macro._onClickDocumentLink | `Macro`} override,
+   * However it unfortunately has to be typed as `MaybePromise<unknown>` due to the {@linkcode Macro._onClickDocumentLink | Macro} override,
    * where `##executeScript` could return whatever a user-provided macro wants.
    */
   _onClickDocumentLink(event: MouseEvent): MaybePromise<unknown>;
@@ -762,7 +757,7 @@ declare global {
 
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
-    /** The return type of {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} if not overridden */
+    /** The return type of {@linkcode ClientDocument._onClickDocumentLink | ClientDocument#_onClickDocumentLink} if not overridden */
     type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
 
     type ToCompendiumReturnType<
