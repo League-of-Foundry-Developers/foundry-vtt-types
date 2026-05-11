@@ -50,7 +50,7 @@ expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | "ok">>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null>>();
 
 // properties of `Document`
 expectTypeOf(script.parent).toEqualTypeOf<null>();
@@ -62,10 +62,10 @@ expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>()
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 
-expectTypeOf(await Macro.createDialog()).toEqualTypeOf<Macro.Stored | "ok" | null>();
-expectTypeOf(await Macro.createDialog({})).toEqualTypeOf<Macro.Stored | "ok" | null>();
-expectTypeOf(await Macro.createDialog({}, {}, { ok: { label: "YEP" } })).toEqualTypeOf<Macro.Stored | "ok" | null>();
-expectTypeOf(await Macro.createDialog({}, { temporary: true })).toEqualTypeOf<Macro.Implementation | "ok" | null>();
+expectTypeOf(await Macro.createDialog()).toEqualTypeOf<Macro.Stored | null>();
+expectTypeOf(await Macro.createDialog({})).toEqualTypeOf<Macro.Stored | null>();
+expectTypeOf(await Macro.createDialog({}, {}, { ok: { label: "YEP" } })).toEqualTypeOf<Macro.Stored | null>();
+expectTypeOf(await Macro.createDialog({}, { temporary: true })).toEqualTypeOf<Macro.Implementation | null>();
 
 expectTypeOf(await script.deleteDialog()).toEqualTypeOf<Macro.Stored | null | false | "yes">();
 expectTypeOf(await script.deleteDialog({})).toEqualTypeOf<Macro.Stored | null | false | "yes">();

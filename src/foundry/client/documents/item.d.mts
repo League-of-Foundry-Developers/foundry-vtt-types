@@ -1093,16 +1093,16 @@ declare namespace Item {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Item.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Item.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Item.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Item.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Item.deleteDialog | Item#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Item.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<

@@ -1082,16 +1082,16 @@ declare namespace WallDocument {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends WallDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<WallDocument.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends WallDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<WallDocument.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode WallDocument.deleteDialog | WallDocument#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     WallDocument.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************

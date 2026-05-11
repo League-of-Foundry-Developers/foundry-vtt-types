@@ -1130,16 +1130,16 @@ declare namespace ActiveEffect {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends ActiveEffect.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<ActiveEffect.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends ActiveEffect.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ActiveEffect.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode ActiveEffect.deleteDialog | ActiveEffect#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     ActiveEffect.Stored,
-    PassedConfig
+    Config
   >;
 
   /* ***********************************************
