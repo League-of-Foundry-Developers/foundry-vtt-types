@@ -1,11 +1,11 @@
 import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
-import Edge = foundry.canvas.geometry.edges.Edge;
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+import type { Edge } from "#client/canvas/geometry/edges/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -38,7 +38,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * A reference the Door Control icon associated with this Wall, if any
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
+   * @remarks Only `undefined` prior to first draw. {@linkcode Wall.clearDoorControl | Wall#clearDoorControl} sets it `null`.
    */
   doorControl: DoorControl.Implementation | null | undefined;
 
@@ -66,7 +66,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
    * @defaultValue `undefined`
    * @remarks This is both not initialized to a value at construction *and* conditionally set
-   * explicitly `undefined` in {@link Wall._refreshHighlight | `Wall#_refreshHighlight`}
+   * explicitly `undefined` in {@linkcode Wall._refreshHighlight | Wall#_refreshHighlight}
    */
   highlight: PIXI.Graphics | undefined;
 
@@ -116,7 +116,6 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * Initialize the edge which represents this Wall.
    * @param options - Options which modify how the edge is initialized
    */
-  // options: not null (destructured)
   initializeEdge(options?: Wall.InitializeEdgeOptions): void;
 
   /**
@@ -139,7 +138,6 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   clearDoorControl(): void;
 
-  // options: not null (destructured)
   override control(options?: Wall.ControlOptions): boolean;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
@@ -216,7 +214,6 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  // options: not null (destructured in super)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
   protected override _onHoverOut(event: Canvas.Event.Pointer): void;
@@ -256,9 +253,10 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Determine the orientation of this wall with respect to a reference point
    * @param point - Some reference point, relative to which orientation is determined
-   * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left, right, or collinear (both) with the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.geometry.edges.Edge#orientPoint`}"
+   * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left, right, or collinear (both) with
+   * the Wall
+   * @deprecated "`Wall#orientPoint` has been moved to {@linkcode Edge.orientPoint | foundry.canvas.geometry.edges.Edge#orientPoint}"
+   * (since v12, until v14)
    */
   orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
@@ -269,8 +267,8 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @param sourceOrigin   - The origin or position of the source on the canvas
    * @param externalRadius - The external radius of the source (default: `0`)
    * @returns `true` if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
-   * @deprecated since v12, until v14
-   * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.geometry.edges.Edge#applyThreshold`}"
+   * @deprecated "Wall#applyThreshold has been moved to {@linkcode Edge.applyThreshold | foundry.canvas.geometry.edges.Edge#applyThreshold}"
+   * (since v12, until v14)
    */
   applyThreshold(
     sourceType: Edge.AttenuationTypes,
@@ -279,22 +277,19 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   ): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#vertices` is replaced by {@link Wall.edge | `Wall#edge`}"
+   * @deprecated "`Wall#vertices` is replaced by {@linkcode Wall.edge | Wall#edge}" (since v12, until v14)
    */
   get vertices(): Edge;
 
   /**
    * The initial endpoint of the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#A` is replaced by {@link Edge.a | `Wall#edge#a`}"
+   * @deprecated "`Wall#A` is replaced by {@linkcode Edge.a | Wall#edge#a}" (since v12, until v14)
    */
   get A(): Edge["a"];
 
   /**
    * The second endpoint of the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#B` is replaced by {@link Edge.b | `Wall#edge#b`}"
+   * @deprecated "`Wall#B` is replaced by {@linkcode Edge.b | Wall#edge#b}" (since v12, until v14)
    */
   get B(): Edge["b"];
 }

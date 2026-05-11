@@ -1,11 +1,10 @@
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
-import type { PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
-import type { PrimaryOccludableObjectMixin, PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import type { ResizeHandle } from "#client/canvas/containers/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import Canvas = foundry.canvas.Canvas;
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -44,7 +43,7 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
   /**
    * The primary tile image texture
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw or after {@link Tile._destroy | `Tile#_destroy`} is called
+   * @remarks Only `undefined` prior to first draw or after {@linkcode Tile._destroy | Tile#_destroy} is called
    *
    * Thereafter, `null` if no valid `texture.src` exists on this Tile's document (or the original Tile's, if this is a preview clone)
    */
@@ -168,7 +167,6 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
   override activateListeners(): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
@@ -225,39 +223,6 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    * @remarks "`Tile#isRoof `has been deprecated without replacement."
    */
   get isRoof(): boolean;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#testOcclusion` has been deprecated in favor of {@link PrimaryOccludableObjectMixin.AnyMixed.testOcclusion | `PrimaryOccludableObject#testOcclusion`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#testOcclusion`
-   */
-  // options: not null (destructured where forwarded)
-  testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "Tile#containsPixel has been deprecated in favor of {@link PrimaryOccludableObjectMixin.AnyMixed.containsPixel | `PrimaryOccludableObject#containsPixel`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#containsPixel`
-   */
-  containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#getPixelAlpha` has been deprecated in favor of {@link PrimarySpriteMesh.getPixelAlpha | `PrimarySpriteMesh#getPixelAlpha`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#getPixelAlpha`
-   */
-  getPixelAlpha(x: number, y: number): number;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#_getAlphaBounds` has been deprecated in favor of {@link PrimarySpriteMesh._getAlphaBounds | `PrimarySpriteMesh#_getAlphaBounds`}"
-   *
-   * The runtime deprecation warning doesn't point anywhere, despite forwarding the call (to `mesh?._getAlphaBounds`, thus the `| undefined`).
-   */
-  _getAlphaBounds(): PIXI.Rectangle | undefined;
 }
 
 declare namespace Tile {

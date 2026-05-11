@@ -526,23 +526,6 @@ expectTypeOf(token["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<T
 expectTypeOf(token["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onDragEnd"]()).toBeVoid();
 
-// deprecated since v11, until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(token.updatePosition()).toBeVoid();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(token.refreshHUD()).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(token.refreshHUD({})).toBeVoid();
-expectTypeOf(
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  token.refreshHUD({ bars: true, border: true, effects: true, elevation: true, nameplate: true }),
-).toBeVoid();
-expectTypeOf(
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  token.refreshHUD({ bars: null, border: null, effects: null, elevation: null, nameplate: null }),
-).toBeVoid();
-
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource()).toBeVoid();

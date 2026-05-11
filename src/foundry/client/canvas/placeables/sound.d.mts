@@ -1,5 +1,3 @@
-import type Sound from "#client/audio/sound.d.mts";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type {
   FixedInstanceType,
   HandleEmptyObject,
@@ -8,10 +6,12 @@ import type {
   NullishProps,
   RequiredProps,
 } from "#utils";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import Canvas = foundry.canvas.Canvas;
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { Sound } from "#client/audio/_module.d.mts";
+import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -32,9 +32,9 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   /**
    * The Sound which manages playback for this AmbientSound effect
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to {@link AmbientSound.sync | `AmbientSound#sync`}
-   * or {@link AmbientSound._onUpdate | `AmbientSound#_onUpdate`} being called (the
-   * former likely via {@link SoundsLayer._syncPositions | `SoundsLayer#_syncPositions`})
+   * @remarks Only `undefined` prior to {@linkcode AmbientSound.sync | AmbientSound#sync}
+   * or {@linkcode AmbientSound._onUpdate | AmbientSound#_onUpdate} being called (the
+   * former likely via {@linkcode SoundsLayer._syncPositions | SoundsLayer#_syncPositions})
    *
    * Set `null` if this sound's document has either no `path` or no `id` (e.g if its a preview, for the latter)
    */
@@ -42,10 +42,10 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
 
   /**
    * A SoundSource object which manages the area of effect for this ambient sound
-   * @remarks Not initialized to a value in the class body, but {@link AmbientSound._onCreate | `AmbientSound#_onCreate`}
+   * @remarks Not initialized to a value in the class body, but {@linkcode AmbientSound._onCreate | AmbientSound#_onCreate}
    * calls {@linkcode AmbientSound.initializeSoundSource}.
    *
-   * Set `undefined` by {@link AmbientSound._destroy | `AmbientSound#_destroy`}.
+   * Set `undefined` by {@linkcode AmbientSound._destroy | AmbientSound#_destroy}.
    */
   source: foundry.canvas.sources.PointSoundSource.Implementation | undefined;
 
@@ -72,7 +72,6 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   /**
    * Update the set of effects which are applied to the managed Sound.
    */
-  // options: not null (destructured)
   applyEffects(options?: AmbientSound.ApplyEffectsOptions): void;
 
   /**
@@ -93,7 +92,6 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
    * @param volume    - The target playback volume
    * @param options   - Additional options which affect sound synchronization
    */
-  // options: not null (destructured)
   sync(isAudible: boolean, volume: number, options?: AmbientSound.SyncOptions): void;
 
   override clear(): this;
@@ -133,7 +131,6 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
    * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
    * @param options - Options which modify how the audio source is updated
    */
-  // options: not null (destructured)
   initializeSoundSource(options?: AmbientSound.InitializeSoundSourceOptions): void;
 
   /**
@@ -150,7 +147,6 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
@@ -163,10 +159,10 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`AmbientSound#updateSource` has been deprecated in favor of {@link AmbientSound.initializeSoundSource | `AmbientSound#initializeSoundSource`}"
-   *
-   * @privateRemarks The `defer` parameter exists in this signature but is not used by `#initializeSoundSource`, so we can just reuse that method's options interface
+   * @deprecated "`AmbientSound#updateSource` has been deprecated in favor of
+   * {@linkcode AmbientSound.initializeSoundSource | AmbientSound#initializeSoundSource}" (since v12, until v14)
+   * @privateRemarks The `defer` parameter exists in this signature but is not used by `#initializeSoundSource`,
+   * so we can just reuse that method's options interface.
    */
   updateSource(options?: AmbientSound.InitializeSoundSourceOptions): void;
 }
@@ -258,12 +254,12 @@ declare namespace AmbientSound {
   interface InitializeSoundSourceOptions extends _InitializeSoundSourceOptions {}
 
   /**
-   * @remarks The return of {@link AmbientSound._getSoundSourceData | `AmbientSound#_getSoundSourceData`}, which gets passed
-   * to {@link foundry.canvas.sources.PointSoundSource.initialize | `AmbientSound#source#initialize()`}, so this is a
-   * `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
+   * @remarks The return of {@linkcode AmbientSound._getSoundSourceData | AmbientSound#_getSoundSourceData}, which gets passed to
+   * {@linkcode PointSoundSource.initialize | AmbientSound#source#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
+   * rather than a `Pick<>`
    */
   type SoundSourceData = RequiredProps<
-    IntentionalPartial<foundry.canvas.sources.PointSoundSource.SourceData>,
+    IntentionalPartial<PointSoundSource.SourceData>,
     "x" | "y" | "elevation" | "radius" | "walls" | "disabled"
   >;
 }

@@ -1,10 +1,9 @@
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { ControlIcon, PreciseText } from "#client/canvas/containers/_module.mjs";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import Canvas = foundry.canvas.Canvas;
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -117,7 +116,6 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   protected override _canConfigure(user: User.Implementation): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
@@ -127,15 +125,14 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
 
   /**
    * The text label used to annotate this Note
-   * @deprecated since v12, until v14
-   * @remarks "`Note#text` has been deprecated. Use {@link NoteDocument.label | `Note#document#label`} instead."
+   * @deprecated "`Note#text` has been deprecated. Use {@linkcode NoteDocument.label | Note#document#label} instead." (since v12, until v14)
    */
   get text(): string;
 
   /**
    * The Map Note icon size
-   * @deprecated since v12, until v14
-   * @remarks "`Note#size` has been deprecated. Use {@link NoteDocument.iconSize | `Note#document#iconSize`} instead."
+   * @deprecated "`Note#size` has been deprecated. Use {@linkcode NoteDocument.iconSize | Note#document#iconSize} instead."
+   * (since v12, until v14)
    */
   get size(): number;
 }

@@ -1,10 +1,10 @@
-import type { ValueOf, FixedInstanceType, HandleEmptyObject, RequiredProps, NullishProps } from "#utils";
-import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
-import type { PrimaryGraphics } from "#client/canvas/primary/_module.d.mts";
+import type { FixedInstanceType, HandleEmptyObject, NullishProps, RequiredProps, ValueOf } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { PrimaryGraphics } from "#client/canvas/primary/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -189,7 +189,6 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
    * @param options  - Options which configure how the point is added
    * @remarks Foundry marked `@internal`
    */
-  // options: not null (destructured)
   protected _addPoint(position: Canvas.Point, options?: Drawing.AddPointOptions): void;
 
   /**
@@ -219,7 +218,6 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
   protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   /**

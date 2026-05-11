@@ -227,7 +227,7 @@ declare abstract class PlaceableObject<
   /**
    * The inner _destroy method which may optionally be defined by each PlaceableObject subclass.
    * @param options - Options passed to the initial destroy call
-   * @remarks The options passed to {@link PlaceableObject.destroy | `PlaceableObject#destroy`} get forwarded here.
+   * @remarks The options passed to {@linkcode PlaceableObject.destroy | PlaceableObject#destroy} get forwarded here.
    * `| undefined` since `destroy` has no `={}` for its `options`
    */
   protected _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
@@ -241,7 +241,7 @@ declare abstract class PlaceableObject<
   /**
    * The inner _draw method which must be defined by each PlaceableObject subclass.
    * @param options - Options which may modify the draw workflow
-   * @remarks The options passed to {@link PlaceableObject.draw | `PlaceableObject#draw`} get forwarded here
+   * @remarks The options passed to {@linkcode PlaceableObject.draw | PlaceableObject#draw} get forwarded here
    */
   protected abstract _draw(options: HandleEmptyObject<PlaceableObject.DrawOptions>): Promise<void>;
 
@@ -308,33 +308,29 @@ declare abstract class PlaceableObject<
 
   /**
    * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
-   * @param options - Additional options which modify the control request
-   *                  (default: `{}`)
+   * @param options - Additional options which modify the control request (default: `{}`)
    * @returns A flag denoting whether control was successful
    */
-  // options: not null (property access with only a parameter default)
   control(options?: PlaceableObject.ControlOptions): boolean;
 
   /**
    * Additional events which trigger once control of the object is established
    * @param options - Optional parameters which apply for specific implementations
-   * @remarks The options passed to {@link PlaceableObject.control | `PlaceableObject#control`} get forwarded here
+   * @remarks The options passed to {@linkcode PlaceableObject.control | PlaceableObject#control} get forwarded here
    */
   protected _onControl(options: PlaceableObject.ControlOptions): void;
 
   /**
    * Release control over a PlaceableObject, removing it from the controlled set
-   * @param options - Options which modify the releasing workflow
-   *                  (default: `{}`)
+   * @param options - Options which modify the releasing workflow (default: `{}`)
    * @returns A Boolean flag confirming the object was released.
    */
-  // options: not null (parameter default only, forwarded to `_onRelease`)
   release(options?: HandleEmptyObject<PlaceableObject.ReleaseOptions>): boolean;
 
   /**
    * Additional events which trigger once control of the object is released
    * @param options - Options which modify the releasing workflow
-   * @remarks The options passed to {@link PlaceableObject.release | `PlaceableObject#release`} get forwarded here
+   * @remarks The options passed to {@linkcode PlaceableObject.release | PlaceableObject#release} get forwarded here
    */
   protected _onRelease(options: HandleEmptyObject<PlaceableObject.ReleaseOptions>): void;
 
@@ -352,7 +348,6 @@ declare abstract class PlaceableObject<
    * @param snap  - Snap the angle of rotation to a certain target degree increment
    * @returns A Promise which resolves once the rotation has completed
    */
-  // snap: not null (forwarded to _updateRotation with only a parameter default)
   rotate(angle: number, snap?: number): Promise<this>;
 
   /**
@@ -360,7 +355,6 @@ declare abstract class PlaceableObject<
    * @param options - An object which defines the rotation update parameters
    * @returns The new rotation angle for the object
    */
-  // options: not null (destructured)
   protected _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
 
   /**
@@ -480,9 +474,8 @@ declare abstract class PlaceableObject<
    * @see `MouseInteractionManager##handlePointerOver`
    * @param event   - The triggering canvas interaction event
    * @param options - Options which customize event handling
-   * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
+   * @remarks {@linkcode Wall._onHoverIn | Wall#_onHoverIn} can return `false`, otherwise this is always `void`
    */
-  // options: not null (destructured)
   protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
   /**
@@ -707,7 +700,7 @@ declare namespace PlaceableObject {
        * @defaultValue `0`
        * @remarks Can't be `null` as it only has a parameter default.
        *
-       * @see {@link Number.toNearest | `Number#toNearest`}
+       * @see {@linkcode Number.toNearest | Number#toNearest}
        */
       snap: number;
     }>;
@@ -725,7 +718,7 @@ declare namespace PlaceableObject {
   interface HoverInOptions extends _HoverInOptions {}
 
   /**
-   * @remarks {@link PlaceableObject.can | `PlaceableObject#can`} calls `#titleCase()` on this
+   * @remarks {@linkcode PlaceableObject.can | PlaceableObject#can} calls `#titleCase()` on this
    * before prepending `"_can"`, rendering any actions with more than a single capital in their
    * name (e.g `"DragLeftStart"`), including `"HUD"` (as there's no `PlaceableObject#_canHud()`),
    * effectively inert, so they have been omitted here. This also means these are case
@@ -740,11 +733,14 @@ declare namespace PlaceableObject {
 
   type Action = Titlecase<BaseAction> | BaseAction;
 
-  /** @remarks Foundry does some unsound subclassing around {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`} */
+  /**
+   * @remarks Foundry does some unsound subclassing around
+   * {@linkcode PlaceableObject._prepareDragLeftDropUpdates | PlaceableObject#_prepareDragLeftDropUpdates}
+   */
   type AnyDragLeftDropUpdate = DragLeftDropUpdate | Token.DragLeftDropUpdate | Wall.DragLeftDropUpdate;
 
   /**
-   * @remarks The type {@link PlaceableObject._prepareDragLeftDropUpdates | `PlaceableObject#_prepareDragLeftDropUpdates`}
+   * @remarks The type {@linkcode PlaceableObject._prepareDragLeftDropUpdates | PlaceableObject#_prepareDragLeftDropUpdates}
    * returns if not overridden by the specific placeable
    */
   interface DragLeftDropUpdate {

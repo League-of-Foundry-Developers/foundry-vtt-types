@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
 
 import Tile = foundry.canvas.placeables.Tile;
-import Token = foundry.canvas.placeables.Token;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 
@@ -47,7 +46,7 @@ expectTypeOf(tile.volume).toBeNumber();
 expectTypeOf(tile["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(tile["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(tile.clear()).toBeVoid();
+expectTypeOf(tile.clear()).toEqualTypeOf<typeof tile>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(tile["_destroy"]()).toBeVoid();
@@ -140,22 +139,3 @@ expectTypeOf(tile["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Pl
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
-declare const someToken: Token.Implementation;
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, { corners: undefined })).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.containsPixel(50, 50)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.containsPixel(50, 50, 0.3)).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.getPixelAlpha(50, 50)).toBeNumber();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile._getAlphaBounds()).toEqualTypeOf<PIXI.Rectangle | undefined>;

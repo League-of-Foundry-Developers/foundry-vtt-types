@@ -1,10 +1,10 @@
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { RegionShape, RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
 import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -120,10 +120,8 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 
   protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: Region.HoverInOptions): void;
 
-  // options: not null (destructured)
   protected override _onHoverOut(event: Canvas.Event.Pointer, options?: Region.HoverOutOptions): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
@@ -133,9 +131,9 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
    * @param point       - The point.
    * @param elevation   - The elevation of the point.
    * @returns Is the point (at the given elevation) inside this Region?
-   * @remarks Only tests elevation if provided, always forwards `position` to {@link RegionPolygonTree.testPoint | `RegionPolygonTree#testPoint`}
+   * @remarks Only tests elevation if provided, always forwards `position` to
+   * {@linkcode RegionPolygonTree.testPoint | RegionPolygonTree#testPoint}.
    */
-  // elevation: not null (`=== undefined` check)
   testPoint(point: Canvas.Point, elevation?: number): boolean;
 
   /**
@@ -145,7 +143,6 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
    * @param options   - Additional options
    * @returns The movement split into its segments.
    */
-  // options: not null (destructured)
   segmentizeMovement(
     waypoints: Region.MovementWaypoint[],
     samples: Canvas.Point[],
