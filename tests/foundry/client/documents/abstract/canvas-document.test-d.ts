@@ -19,7 +19,7 @@ expectTypeOf(doc.compendium).toEqualTypeOf<foundry.documents.collections.Compend
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
 expectTypeOf(
   AmbientLightDocument.createDialog({}, { parent: new Scene.implementation({ name: "Scene" }) }),
-).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | "ok">>(); // ClientDocumentMixin
+).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null>>(); // ClientDocumentMixin
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();

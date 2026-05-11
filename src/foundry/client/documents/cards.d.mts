@@ -1102,16 +1102,16 @@ declare namespace Cards {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Cards.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Cards.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Cards.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Cards.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Cards.deleteDialog | Cards#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Cards.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<

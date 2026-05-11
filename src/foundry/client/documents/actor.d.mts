@@ -1107,16 +1107,16 @@ declare namespace Actor {
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
-    PassedConfig extends Actor.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Actor.TemporaryIf<Temporary>, PassedConfig>;
+    Config extends Actor.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Actor.TemporaryIf<Temporary>, Config>;
 
   /**
    * The return type for {@linkcode Actor.deleteDialog | Actor#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
-  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
     Actor.Stored,
-    PassedConfig
+    Config
   >;
 
   type PreCreateDescendantDocumentsArgs =

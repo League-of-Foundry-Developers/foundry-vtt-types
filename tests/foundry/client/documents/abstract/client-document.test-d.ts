@@ -64,7 +64,7 @@ declare const actorDelta: ActorDelta.Stored;
 declare const activeEffect: ActiveEffect.Stored;
 const anyClientDoc: ClientDocumentMixin.AnyMixed = tempItem;
 // ensure source can be used to create a new document with createDialog
-expectTypeOf(Item.createDialog(tempItem.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+expectTypeOf(Item.createDialog(tempItem.toObject())).toEqualTypeOf<Promise<Item.Stored | null>>();
 
 declare const itemCreateData: Item.CreateData;
 declare const macroCreateData: Macro.CreateData;
@@ -81,10 +81,8 @@ const dialogOptions = {
   },
 } satisfies DialogV2.PromptConfig;
 
-const _x = await Item.createDialog({}, {});
-
 // "ok" if the document creation returns `undefined`
-expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null>>();
 expectTypeOf(
   Item.createDialog(
     itemCreateData,
@@ -94,7 +92,7 @@ expectTypeOf(
     },
     dialogOptions, // TODO: test relevant options
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<Item.Stored | null>>();
 
 // @ts-expect-error "foo" is not a valid Item type
 Item.createDialog({}, { types: ["foo"] });
@@ -111,19 +109,19 @@ expectTypeOf(
       ...dialogOptions,
     },
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<Item.Stored | null>>();
 expectTypeOf(
   Item.createDialog(itemCreateData, {
     pack: null,
     parent: null,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<Item.Stored | null>>();
 expectTypeOf(
   Item.createDialog(itemCreateData, {
     pack: undefined,
     parent: undefined,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+).toEqualTypeOf<Promise<Item.Stored | null>>();
 
 // @ts-expect-error `Macro.metadata.hasTypeData` is not `true`, so passing `types` is not valid
 Macro.createDialog(macroCreateData, { types: ["foo"] });
