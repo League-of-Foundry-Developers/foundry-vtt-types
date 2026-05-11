@@ -16,8 +16,8 @@ declare module "#configuration" {
 /**
  * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
  * Each Note links to a JournalEntry document and represents its location on the map.
- * @see {@linkcode NoteDocument}
- * @see {@linkcode NotesLayer}
+ * @see {@link foundry.documents.NoteDocument}
+ * @see {@link foundry.canvas.layers.NotesLayer}
  */
 declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   static override embeddedName: "Note";
@@ -58,6 +58,9 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
    */
   get isVisible(): boolean;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<Note.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<Note.DrawOptions>): Promise<void>;
 
   /**
@@ -79,9 +82,6 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
    * Define a PIXI TextStyle object which is used for the tooltip displayed for this Note
    */
   protected _getTextStyle(): PIXI.TextStyle;
-
-  // fake override; super has to account for misbehaving siblings returning void
-  override clear(): this;
 
   protected override _applyRenderFlags(flags: Note.RenderFlags): void;
 
@@ -105,10 +105,12 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
    */
   protected _refreshElevation(): void;
 
-  // `_onUpdate` is overridden but with no signature changes.
-  // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+  protected override _onUpdate(
+    changed: NoteDocument.UpdateData,
+    options: NoteDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
 
-  /** @remarks Unconditionally returns `true` */
   protected override _canHover(user: User.Implementation): boolean;
 
   protected override _canView(user: User.Implementation): boolean;
