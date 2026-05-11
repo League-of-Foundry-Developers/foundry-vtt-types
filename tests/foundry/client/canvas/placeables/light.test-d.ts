@@ -92,7 +92,7 @@ expectTypeOf(light.refreshControl()).toBeVoid();
 expectTypeOf(light.initializeLightSource()).toBeVoid();
 expectTypeOf(light.initializeLightSource({})).toBeVoid();
 expectTypeOf(light.initializeLightSource({ deleted: true })).toBeVoid();
-expectTypeOf(light.initializeLightSource({ deleted: null })).toBeVoid();
+expectTypeOf(light.initializeLightSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(light["_getLightSourceData"]()).toEqualTypeOf<AmbientLight.LightSourceData>();
 
 declare const someUser: User.Implementation;
@@ -114,7 +114,7 @@ expectTypeOf(light.updateSource({})).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.updateSource({ deleted: null })).toBeVoid();
+expectTypeOf(light.updateSource({ deleted: undefined })).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.source).toEqualTypeOf<
   PointLightSource.Implementation | PointDarknessSource.Implementation | undefined
