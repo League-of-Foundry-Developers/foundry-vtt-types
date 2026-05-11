@@ -2,7 +2,7 @@
 /* eslint-disable jsdoc/no-types, jsdoc/require-param-description, jsdoc/require-returns-description */
 
 import globals from "globals";
-import { includeIgnoreFile } from "@eslint/compat";
+import { includeIgnoreFile } from "@eslint/config-helpers";
 import js from "@eslint/js";
 import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
