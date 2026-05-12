@@ -881,6 +881,8 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * {@linkcode TokenConfig._resetPreview | TokenConfig#_resetPreview}." (since v12 Stable 4, until v14)
    */
   protected _recoverFromPreview(): void;
+
+  #Token: true;
 }
 
 declare namespace Token {

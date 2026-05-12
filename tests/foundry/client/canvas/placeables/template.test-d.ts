@@ -33,7 +33,7 @@ const template = new CONFIG.MeasuredTemplate.objectClass(doc);
 
 expectTypeOf(template.controlIcon).toEqualTypeOf<ControlIcon | null>();
 expectTypeOf(template.shape).toEqualTypeOf<PIXI.Circle | PIXI.Polygon | PIXI.Rectangle | undefined>();
-expectTypeOf(template.texture).toEqualTypeOf<PIXI.Texture | null | undefined>();
+expectTypeOf(template.texture).toEqualTypeOf<PIXI.Texture | null>();
 expectTypeOf(template.template).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(template.ruler).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(template["_borderThickness"]).toBeNumber();
