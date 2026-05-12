@@ -24,7 +24,7 @@ expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
 expectTypeOf(sound.applyEffects()).toBeVoid();
 expectTypeOf(sound.applyEffects({})).toBeVoid();
 expectTypeOf(sound.applyEffects({ muffled: true })).toBeVoid();
-expectTypeOf(sound.applyEffects({ muffled: null })).toBeVoid();
+expectTypeOf(sound.applyEffects({ muffled: undefined })).toBeVoid();
 
 expectTypeOf(sound.isAudible).toEqualTypeOf<boolean>();
 expectTypeOf(sound.bounds).toEqualTypeOf<PIXI.Rectangle>();
@@ -93,7 +93,7 @@ expectTypeOf(
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({})).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({ deleted: true })).toBeVoid();
-expectTypeOf(sound.initializeSoundSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(sound["_getSoundSourceData"]()).toEqualTypeOf<AmbientSound.SoundSourceData>();
 
 declare const someUser: User.Implementation;
@@ -123,4 +123,4 @@ expectTypeOf(sound.updateSource({})).toBeVoid();
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.updateSource({ deleted: undefined })).toBeVoid();
