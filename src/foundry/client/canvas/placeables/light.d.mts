@@ -16,8 +16,8 @@ declare module "#configuration" {
 
 /**
  * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
- * @see {@link foundry.documents.AmbientLightDocument}
- * @see {@link foundry.canvas.layers.LightingLayer}
+ * @see {@linkcode foundry.documents.AmbientLightDocument}
+ * @see {@linkcode foundry.canvas.layers.LightingLayer}
  */
 declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
   // fake type override

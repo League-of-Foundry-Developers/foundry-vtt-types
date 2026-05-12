@@ -20,8 +20,8 @@ declare module "#configuration" {
  * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
  * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
  * and sounds.
- * @see {@link foundry.documents.WallDocument}
- * @see {@link foundry.canvas.layers.WallsLayer}
+ * @see {@linkcode foundry.documents.WallDocument}
+ * @see {@linkcode foundry.canvas.layers.WallsLayer}
  */
 declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   // fake type override

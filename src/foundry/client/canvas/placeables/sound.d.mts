@@ -16,8 +16,8 @@ declare module "#configuration" {
 
 /**
  * An AmbientSound is an implementation of PlaceableObject which represents a dynamic audio source within the Scene.
- * @see {@link foundry.documents.AmbientSoundDocument}
- * @see {@link foundry.canvas.layers.SoundsLayer}
+ * @see {@linkcode foundry.documents.AmbientSoundDocument}
+ * @see {@linkcode foundry.canvas.layers.SoundsLayer}
  */
 declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
   // fake type override

@@ -18,8 +18,8 @@ declare module "#configuration" {
 /**
  * The Drawing object is an implementation of the PlaceableObject container.
  * Each Drawing is a placeable object in the DrawingsLayer.
- * @see {@link foundry.documents.DrawingDocument}
- * @see {@link foundry.canvas.layers.DrawingsLayer}
+ * @see {@linkcode foundry.documents.DrawingDocument}
+ * @see {@linkcode foundry.canvas.layers.DrawingsLayer}
  */
 declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
   // fake type override

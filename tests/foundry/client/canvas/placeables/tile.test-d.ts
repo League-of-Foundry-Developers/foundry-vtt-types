@@ -31,12 +31,12 @@ const tile = new CONFIG.Tile.objectClass(doc);
 
 expectTypeOf(tile.controlIcon).toBeNull();
 expectTypeOf(tile.frame).toEqualTypeOf<Tile.FrameContainer | undefined>();
-expectTypeOf(tile.texture).toEqualTypeOf<PIXI.Texture | null | undefined>();
-expectTypeOf(tile.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(tile.mesh).toEqualTypeOf<PrimarySpriteMesh | null | undefined>();
+expectTypeOf(tile.texture).toEqualTypeOf<PIXI.Texture | null>();
+expectTypeOf(tile.bg).toEqualTypeOf<PIXI.Graphics | null>();
+expectTypeOf(tile.mesh).toEqualTypeOf<PrimarySpriteMesh | null>();
 expectTypeOf(tile.aspectRatio).toEqualTypeOf<number>();
 expectTypeOf(tile.bounds).toEqualTypeOf<PIXI.Rectangle>();
-expectTypeOf(tile.sourceElement).toEqualTypeOf<PIXI.ImageSource | undefined>();
+expectTypeOf(tile.sourceElement).toEqualTypeOf<PIXI.ImageSource | null>();
 expectTypeOf(tile.isVideo).toBeBoolean();
 expectTypeOf(tile.isVisible).toBeBoolean();
 expectTypeOf(tile.occluded).toBeBoolean();

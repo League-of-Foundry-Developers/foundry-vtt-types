@@ -16,8 +16,8 @@ declare module "#configuration" {
 /**
  * A Note is an implementation of PlaceableObject which represents an annotated location within the Scene.
  * Each Note links to a JournalEntry document and represents its location on the map.
- * @see {@link foundry.documents.NoteDocument}
- * @see {@link foundry.canvas.layers.NotesLayer}
+ * @see {@linkcode foundry.documents.NoteDocument}
+ * @see {@linkcode foundry.canvas.layers.NotesLayer}
  */
 declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   // fake type override
