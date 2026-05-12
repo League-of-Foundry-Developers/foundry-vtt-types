@@ -1,8 +1,7 @@
-import type { Brand, FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
-import type { RegionShape, RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
 import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -21,8 +20,6 @@ declare module "#configuration" {
  * @see {@linkcode RegionLayer}
  */
 declare class Region extends PlaceableObject<RegionDocument.Implementation> {
-  constructor(document: RegionDocument.Implementation);
-
   // fake type override
   static override get implementation(): Region.ImplementationClass;
 
@@ -38,56 +35,12 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   renderFlags: RenderFlags<Region.RENDER_FLAGS>;
 
   /**
-   * The scaling factor used for Clipper paths.
-   * @defaultValue `100`
-   * @remarks Defined using `Object.defineProperty` in a static initialization block
+   * The geometry of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
    */
-  static readonly CLIPPER_SCALING_FACTOR: 100;
-
-  /**
-   * The three movement segment types: ENTER, MOVE, and EXIT.
-   * @remarks Defined using `Object.defineProperty` in a static initialization block
-   */
-  static readonly MOVEMENT_SEGMENT_TYPES: Region.MovementSegmentTypes;
-
-  /**
-   * The shapes of this Region in draw order.
-   * @privateRemarks Foundry types this as `ReadonlyArray<>`, but does nothing to that effect at runtime.
-   * Not reported, as this is deprecated and thus untyped in v13
-   */
-  get shapes(): RegionShape.Any[];
-
-  /** The bottom elevation of this Region. */
-  get bottom(): number;
-
-  /** The top elevation of this Region. */
-  get top(): number;
-
-  /**
-   * The polygons of this Region.
-   * @privateRemarks Foundry types this as `ReadonlyArray<>`, but does nothing to that effect at runtime.
-   * Not reported, as this is deprecated and thus untyped in v13
-   */
-  get polygons(): PIXI.Polygon[];
-
-  /** The polygon tree of this Region. */
-  get polygonTree(): RegionPolygonTree;
-
-  /**
-   * The Clipper paths of this Region.
-   * @privateRemarks Foundry types this as `ReadonlyArray<>`, but does nothing to that effect at runtime.
-   * Not reported, as this is deprecated and thus untyped in v13
-   */
-  get clipperPaths(): ClipperLib.Paths;
-
-  /**
-   * The triangulation of this Region
-   * @privateRemarks Foundry types this as `Readonly<>`, but does nothing to that effect at runtime.
-   * Not reported, as this is deprecated and thus untyped in v13
-   */
-  get triangulation(): Region.TriangulationData;
-
-  /** The geometry of this Region */
   get geometry(): RegionGeometry;
 
   override get bounds(): PIXI.Rectangle;
@@ -98,9 +51,13 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   get isVisible(): boolean;
 
   /**
+   * @remarks
    * @throws "`Region#getSnappedPosition` is not supported: `RegionDocument` does not have a (x, y) position"
    */
   override getSnappedPosition(position?: never): never;
+
+  // fake type override
+  override draw(options?: HandleEmptyObject<Region.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<Region.DrawOptions>): Promise<void>;
 
@@ -123,21 +80,85 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 
   protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: Region.HoverInOptions): void;
+  // Foundry reiterates the JSDoc here to add `updateLegend` to the options; omitted because redundant
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: Region.HoverInOptions): boolean | void;
 
   protected override _onHoverOut(event: Canvas.Event.Pointer, options?: Region.HoverOutOptions): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
+  protected override _onUpdate(
+    changed: RegionDocument.UpdateData,
+    options: RegionDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
+
+  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
+
   /**
-   * Test whether the given point (at the given elevation) is inside this Region.
-   * @param point       - The point.
-   * @param elevation   - The elevation of the point.
-   * @returns Is the point (at the given elevation) inside this Region?
-   * @remarks Only tests elevation if provided, always forwards `position` to
-   * {@linkcode RegionPolygonTree.testPoint | RegionPolygonTree#testPoint}.
+   * The scaling factor used for Clipper paths.
+   * @defaultValue `100`
+   * @deprecated "`Region.CLIPPER_SCALING_FACTOR` has been deprecated in favor of {@linkcode CONST.CLIPPER_SCALING_FACTOR}."
+   * (since v13, until v15)
    */
-  testPoint(point: Canvas.Point, elevation?: number): boolean;
+  static get CLIPPER_SCALING_FACTOR(): number;
+
+  /**
+   * The three movement segment types: ENTER, MOVE, and EXIT.
+   * @deprecated "`Region.MOVEMENT_SEGMENT_TYPES` has been deprecated in favor of {@linkcode CONST.REGION_MOVEMENT_SEGMENTS}."
+   * (since v13, until v15)
+   */
+  static get MOVEMENT_SEGMENT_TYPES(): typeof CONST.REGION_MOVEMENT_SEGMENTS;
+
+  /**
+   * The bottom elevation of this Region.
+   * @deprecated "`Region#bottom` has been deprecated in favor of
+   * {@linkcode RegionDocument.ElevationSchema.bottom | RegionDocument#elevation.bottom}." (since v13, until v15)
+   */
+  get bottom(): number;
+
+  /**
+   * The top elevation of this Region.
+   * @deprecated "`Region#top` has been deprecated in favor of
+   * {@linkcode RegionDocument.ElevationSchema.top | RegionDocument#elevation.top}." (since v13, until v15)
+   */
+  get top(): number;
+
+  /**
+   * The shapes of this Region in draw order.
+   * @deprecated "`Region#shapes` has been deprecated in favor of {@linkcode RegionDocument.regionShapes | RegionDocument#regionShapes}."
+   * (since v13, until v15)
+   */
+  get shapes(): RegionDocument.Implementation["regionShapes"];
+
+  /**
+   * The polygons of this Region.
+   * @deprecated "`Region#polygons` has been deprecated in favor of {@linkcode RegionDocument.polygons | RegionDocument#polygons}."
+   * (since v13, until v15)
+   */
+  get polygons(): RegionDocument.Implementation["polygons"];
+
+  /**
+   * The polygon tree of this Region.
+   * @deprecated "`Region#polygonTree` has been deprecated in favor of {@linkcode RegionDocument.polygonTree | RegionDocument#polygonTree}."
+   * (since v13, until v15)
+   */
+  get polygonTree(): RegionDocument.Implementation["polygonTree"];
+
+  /**
+   * The Clipper paths of this Region.
+   * @deprecated "`Region#clipperPaths` has been deprecated in favor of
+   * {@linkcode RegionDocument.clipperPaths | RegionDocument#clipperPaths}." (since v13, until v15)
+   */
+  get clipperPaths(): ClipperLib.Paths;
+
+  /**
+   * The triangulation of this Region
+   * @deprecated "`Region#triangulation` has been deprecated in favor of
+   * {@linkcode RegionDocument.triangulation | RegionDocument#triangulation}." (since v13, until v15)
+   */
+  get triangulation(): Region.TriangulationData;
 
   /**
    * Split the movement into its segments.
@@ -145,18 +166,26 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
    * @param samples   - The points relative to the waypoints that are tested. Whenever one of them is inside the region, the moved object is considered to be inside the region.
    * @param options   - Additional options
    * @returns The movement split into its segments.
+   * @deprecated "`Region#segmentizeMovement` has been deprecated in favor of
+   * {@linkcode RegionDocument.segmentizeMovementPath | RegionDocument#segmentizeMovementPath}." (since v13, until v15)
    */
   segmentizeMovement(
-    waypoints: Region.MovementWaypoint[],
+    waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
     samples: Canvas.Point[],
     options?: Region.SegmentizeMovementOptions,
-  ): Region.MovementSegment[];
+  ): RegionDocument.MovementSegment[];
 
-  // _onUpdate is overridden but with no signature changes.
-  // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+  /**
+   * Test whether the given point (at the given elevation) is inside this Region.
+   * @param point       - The point.
+   * @param elevation   - The elevation of the point.
+   * @returns Is the point (at the given elevation) inside this Region?
+   * @deprecated "`Region#testPoint(point: Point, elevation?: number)` has been deprecated in favor of
+   * {@linkcode RegionDocument.testPoint | RegionDocument#testPoint(point: ElevatedPoint)}." (since v13, until v15)
+   */
+  testPoint(point: Canvas.Point, elevation?: number): boolean;
 
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
+  #Region: true;
 }
 
 declare namespace Region {
@@ -208,67 +237,41 @@ declare namespace Region {
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
-  type _HoverInOptions = NullishProps<{
-    /** @defaultValue `true` */
+  /** @internal */
+  interface _HoverInOptions {
+    /**
+     * Highlight corresponding entry in the RegionLegend.
+     * @defaultValue `true`
+     */
     updateLegend: boolean;
-  }>;
-
-  interface HoverInOptions extends _HoverInOptions, PlaceableObject.HoverInOptions {}
-
-  interface HoverOutOptions extends _HoverInOptions {}
-
-  interface MovementWaypoint {
-    /** The x-coordinates in pixels (integer) */
-    x: number;
-
-    /** The y-coordinates in pixels (integer) */
-    y: number;
-
-    /** The elevation in grid units. */
-    elevation: number;
   }
 
-  interface MovementSegment {
-    /** The type of this segment (see {@linkcode Region.MovementSegmentTypes}) */
-    type: MOVEMENT_SEGMENT_TYPES;
+  interface HoverInOptions extends InexactPartial<_HoverInOptions>, PlaceableObject.HoverInOptions {}
 
-    /** The waypoint that this segment starts from */
-    from: MovementWaypoint;
-
-    /** The waypoint that this segment goes to */
-    to: MovementWaypoint;
-  }
-
-  type MOVEMENT_SEGMENT_TYPES = Brand<number, "Region.MOVEMENT_SEGMENT_TYPES">;
-
-  interface MovementSegmentTypes extends Readonly<{
-    /**
-     * The segment crosses the boundary of the region and exits it.
-     */
-    EXIT: -1 & MOVEMENT_SEGMENT_TYPES;
-
-    /**
-     * The segment does not cross the boundary of the region and is contained within it.
-     */
-    MOVE: 0 & MOVEMENT_SEGMENT_TYPES;
-
-    /**
-     * The segment crosses the boundary of the region and enters it.
-     */
-    ENTER: 1 & MOVEMENT_SEGMENT_TYPES;
-  }> {}
+  interface HoverOutOptions extends InexactPartial<_HoverInOptions> {}
 
   /** @internal */
-  type _SegmentizeMovementOptions = NullishProps<{
+  interface _SegmentizeMovementOptions {
     /**
      * Is it teleportation?
      * @defaultValue `false`
-     * @remarks Can't be `null` because it only has a parameter default
      */
     teleport: boolean;
-  }>;
+  }
 
-  interface SegmentizeMovementOptions extends _SegmentizeMovementOptions {}
+  interface SegmentizeMovementOptions extends InexactPartial<_SegmentizeMovementOptions> {}
+
+  /** @deprecated Use {@linkcode CONST.REGION_MOVEMENT_SEGMENTS} instead. This type will be removed in v14. */
+  type MOVEMENT_SEGMENT_TYPES = CONST.REGION_MOVEMENT_SEGMENTS;
+
+  /** @deprecated Use {@linkcode CONST.REGION_MOVEMENT_SEGMENTS} instead. This type will be removed in v14. */
+  type MovementSegmentTypes = typeof CONST.REGION_MOVEMENT_SEGMENTS;
+
+  /** @deprecated Use {@linkcode RegionDocument.MovementSegment} instead. This type will be removed in v14. */
+  type MovementSegment = RegionDocument.MovementSegment;
+
+  /** @deprecated Use {@linkcode RegionDocument.SegmentizeMovementPathWaypoint} instead. This type will be removed in v14. */
+  type MovementWaypoint = RegionDocument.SegmentizeMovementPathWaypoint;
 }
 
 export default Region;

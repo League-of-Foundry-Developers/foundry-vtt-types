@@ -2,7 +2,6 @@ import type { MaybeArray, Merge } from "#utils";
 import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
-import type { Region } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { RegionPolygonTree, RegionShape } from "#client/data/region-shapes/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -587,25 +586,7 @@ declare namespace RegionDocument {
      * @defaultValue see properties
      */
     elevation: fields.SchemaField<
-      {
-        /**
-         * The bottom elevation level where the Region begins to take effect
-         * @remarks if bottom is `null`, it is treated as `-Infinity`
-         * @defaultValue `null`
-         */
-        bottom: fields.NumberField<{
-          required: true;
-        }>;
-
-        /**
-         * The top elevation level where the Region's effect ends
-         * @remarks if top is `null`, it is treated as `Infinity`
-         * @defaultValue `null`
-         */
-        top: fields.NumberField<{
-          required: true;
-        }>;
-      },
+      ElevationSchema,
       {
         validate: (d: unknown) => boolean;
         validationError: "elevation.top may not be less than elevation.bottom";
@@ -639,6 +620,22 @@ declare namespace RegionDocument {
      * An object of optional key/value flags
      */
     flags: fields.DocumentFlagsField<Name>;
+  }
+
+  interface ElevationSchema extends fields.DataSchema {
+    /**
+     * The bottom elevation level where the Region begins to take effect
+     * @remarks if bottom is `null`, it is treated as `-Infinity`
+     * @defaultValue `null`
+     */
+    bottom: fields.NumberField<{ required: true }>;
+
+    /**
+     * The top elevation level where the Region's effect ends
+     * @remarks if top is `null`, it is treated as `Infinity`
+     * @defaultValue `null`
+     */
+    top: fields.NumberField<{ required: true }>;
   }
 
   namespace Database {
@@ -1403,7 +1400,7 @@ declare namespace RegionDocument {
         };
         teleport: boolean;
         forced: boolean;
-        segments: Region.MovementSegment[];
+        segments: RegionDocument.SegmentizeMovementPathWaypoint[];
       }
     | {
         token: TokenDocument.Implementation;

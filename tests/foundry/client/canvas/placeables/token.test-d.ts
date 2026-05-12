@@ -434,13 +434,15 @@ const waypoints = [
   { x: 50, y: 50, elevation: 0 },
   { x: 70, y: 90, elevation: 60 },
 ];
-expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints)).toEqualTypeOf<Region.MovementSegment[]>();
-expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, {})).toEqualTypeOf<Region.MovementSegment[]>();
-expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, { teleport: true })).toEqualTypeOf<
-  Region.MovementSegment[]
+expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints)).toEqualTypeOf<RegionDocument.MovementSegment[]>();
+expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, {})).toEqualTypeOf<
+  RegionDocument.MovementSegment[]
 >();
-expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, { teleport: null })).toEqualTypeOf<
-  Region.MovementSegment[]
+expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, { teleport: true })).toEqualTypeOf<
+  RegionDocument.MovementSegment[]
+>();
+expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, { teleport: undefined })).toEqualTypeOf<
+  RegionDocument.MovementSegment[]
 >();
 
 declare const someUser: User.Stored;
