@@ -19,6 +19,7 @@ import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
+import type { LightData } from "#client/data/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -29,9 +30,10 @@ declare module "#configuration" {
 }
 
 /**
- * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
- * @see {@linkcode TokenDocument}
- * @see {@linkcode TokenLayer}
+ * A Token is an implementation of PlaceableObject which represents an {@linkcode foundry.documents.Actor} within a viewed
+ * Scene on the game canvas.
+ * @see {@linkcode foundry.documents.TokenDocument}
+ * @see {@linkcode foundry.canvas.layers.TokenLayer}
  */
 declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   // fake type override
@@ -728,9 +730,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   segmentizeRegionMovement(
     region: Region.Implementation,
-    waypoints: Region.MovementWaypoint[],
+    waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
     options?: Region.SegmentizeMovementOptions,
-  ): Region.MovementSegment[];
+  ): RegionDocument.MovementSegment[];
 
   /**
    * Set this Token as an active target for the current game User
@@ -789,6 +791,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @remarks Foundry marked `@internal`
    */
   protected _removeAllFilterEffects(): void;
+
+  // fake type override
+  override control(options?: Token.ControlOptions): boolean;
 
   protected override _onControl(options: Token.ControlOptions): void;
 
@@ -983,46 +988,46 @@ declare namespace Token {
   }
 
   /** @internal */
-  type _GetMovementAdjustedPointOffsets = NullishProps<{
+  interface _GetMovementAdjustedPointOffsets {
     /** @defaultValue `this.#priorMovement.ox` */
     offsetX: number;
 
     /** @defaultValue `this.#priorMovement.oy` */
     offsetY: number;
-  }>;
+  }
 
-  interface GetMovementAdjustedPointOffsets extends _GetMovementAdjustedPointOffsets {}
+  interface GetMovementAdjustedPointOffsets extends InexactPartial<_GetMovementAdjustedPointOffsets> {}
 
   interface DrawOptions extends PlaceableObject.DrawOptions {}
 
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
   /** @internal */
-  type _ControlOptions = NullishProps<{
+  interface _ControlOptions {
     /** @defaultValue `false` */
     pan: boolean;
-  }>;
+  }
 
-  interface ControlOptions extends _ControlOptions, PlaceableObject.ControlOptions {}
+  interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
   /**
    * @remarks {@linkcode Token._getLightSourceData | Token#_getLightSourceData} calls `mergeObject` on the return of
-   * {@linkcode foundry.data.LightData.toObject | LightData#toObject(false)} and the enumerated properties below and
-   * returns the result. This gets passed to {@linkcode sources.PointLightSource.initialize | Token#light#initialize()},
-   * so this is a `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
+   * {@linkcode LightData.toObject | LightData#toObject(false)} and the enumerated properties below and returns the result. This gets passed
+   * to {@linkcode sources.PointLightSource.initialize | Token#light#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
+   * rather than a `Pick<>`.
    */
-  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<foundry.data.LightData.Schema> &
+  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<LightData.Schema> &
     RequiredProps<
-      IntentionalPartial<foundry.canvas.sources.PointLightSource.SourceData>,
+      IntentionalPartial<sources.PointLightSource.SourceData>,
       "x" | "y" | "elevation" | "rotation" | "dim" | "bright" | "externalRadius" | "seed" | "preview" | "disabled"
     >;
 
   /**
    * @remarks The return of {@linkcode Token._getVisionSourceData | Token#_getVisionSourceData}, which gets passed to
    * {@linkcode sources.PointVisionSource.initialize | Token#vision#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
-   * rather than a `Pick<>`
+   * rather than a `Pick<>`.
    */
   type VisionSourceData = RequiredProps<
     IntentionalPartial<foundry.canvas.sources.PointVisionSource.SourceData>,
@@ -1050,7 +1055,7 @@ declare namespace Token {
   }
 
   /** @internal */
-  type _ReticuleOptions = NullishProps<{
+  interface _ReticuleOptions {
     /**
      * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
      * @defaultValue `0`
@@ -1063,44 +1068,39 @@ declare namespace Token {
      * @defaultValue {@linkcode Token.Implementation._getBorderColor | this._getBorderColor()}
      */
     color: number;
-  }> &
-    InexactPartial<{
+
+    /**
+     * The alpha value of the arrows.
+     * @defaultValue `1`
+     */
+    alpha: number;
+
+    /**
+     * The size of the arrows as a proportion of grid size.
+     * @defaultValue `0.15`
+     */
+    size: number;
+
+    /**
+     * The arrows' border style configuration.
+     * @defaultValue see properties
+     */
+    border: InexactPartial<{
       /**
-       * The alpha value of the arrows.
-       * @defaultValue `1`
-       * @remarks Can't be `null` as it only has a parameter default
+       * The border color.
+       * @defaultValue `0`
        */
-      alpha: number;
+      color: number;
 
       /**
-       * The size of the arrows as a proportion of grid size.
-       * @defaultValue `0.15`
-       * @remarks Can't be `null` as it only has a parameter default
+       * The border width.
+       * @defaultValue `2`
        */
-      size: number;
-
-      /**
-       * The arrows' border style configuration.
-       * @defaultValue see properties
-       * @remarks Can't be `null` as it's destructured in signature
-       */
-      border: InexactPartial<{
-        /**
-         * The border color.
-         * @defaultValue `0`
-         * @remarks Can't be `null` as it only has a parameter default
-         */
-        color: number;
-
-        /**
-         * The border width.
-         * @defaultValue `2`
-         * @remarks Can't be `null` as it only has a parameter default
-         */
-        width: number;
-      }>;
+      width: number;
     }>;
-  interface ReticuleOptions extends _ReticuleOptions {}
+  }
+
+  interface ReticuleOptions extends InexactPartial<_ReticuleOptions> {}
 
   /**
    * The return type of {@linkcode Token.getRingColors | Token#getRingColors}. Core's implementation returns `{}`.
@@ -1143,27 +1143,26 @@ declare namespace Token {
   interface AnimationDataForRotation extends RequiredProps<PartialAnimationData, "rotation"> {}
 
   /** @internal */
-  type _GetAnimationDurationOptions = InexactPartial<{
+  interface _GetAnimationDurationOptions {
     /**
      * A desired token movement speed in grid spaces per second
      * @defaultValue `6`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     movementSpeed: number;
-  }>;
+  }
 
-  interface GetAnimationDurationOptions extends _GetAnimationDurationOptions {}
+  interface GetAnimationDurationOptions extends InexactPartial<_GetAnimationDurationOptions> {}
 
   /** @internal */
-  type _PrepareAnimationOptions = NullishProps<{
+  interface _PrepareAnimationOptions {
     /**
      * The desired texture transition type
      * @defaultValue `TextureTransitionFilter.TYPES.FADE` (`"fade"`)
      */
     transition: TextureTransitionFilter.TYPES;
-  }>;
+  }
 
-  interface PrepareAnimationOptions extends _PrepareAnimationOptions {}
+  interface PrepareAnimationOptions extends InexactPartial<_PrepareAnimationOptions> {}
 
   /** @internal */
   type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "name" | "ontick">;
@@ -1178,44 +1177,40 @@ declare namespace Token {
   }
 
   /** @internal */
-  type _StopAnimationOptions = NullishProps<{
+  interface _StopAnimationOptions {
     /**
      * Reset the TokenDocument?
      * @defaultValue `false`
      */
     reset: boolean;
-  }>;
+  }
 
-  interface StopAnimationOptions extends _StopAnimationOptions {}
+  interface StopAnimationOptions extends InexactPartial<_StopAnimationOptions> {}
 
   /** @internal */
-  type _CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined> = InexactPartial<{
+  interface _CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined> {
     /**
      * The collision mode to test: "any", "all", or "closest"
      * @defaultValue `"any"`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     mode: Mode;
 
     /**
      * The collision type
      * @defaultValue `"move"`
-     * @remarks Can't be `null` as it only has a parameter default
-     *
-     * `"sound"` is a valid source type but explicitly throws if passed, so omitted here
+     * @remarks `"sound"` is a valid source type but explicitly throws if passed, so omitted here
      */
     type: "move" | "sight" | "light";
-  }> &
-    NullishProps<{
-      /**
-       * The origin to be used instead of the current origin
-       */
-      origin: Canvas.Point;
-    }>;
+
+    /**
+     * The origin to be used instead of the current origin
+     */
+    origin: Canvas.Point | Canvas.ElevatedPoint;
+  }
 
   interface CheckCollisionOptions<
     Mode extends PointSourcePolygon.CollisionModes | undefined = undefined,
-  > extends _CheckCollisionOptions<Mode> {}
+  > extends InexactPartial<_CheckCollisionOptions<Mode>> {}
 
   /** Return type of {@linkcode Token.getSize | Token#getSize} */
   interface Size {
@@ -1234,15 +1229,15 @@ declare namespace Token {
    */
   type TestablePosition = Canvas.Point & { elevation?: number };
 
-  type _InitializeSourcesOptions = NullishProps<{
+  interface _InitializeSourcesOptions {
     /**
      * Indicate that this source has been deleted.
      * @defaultValue `false`
      */
     deleted: boolean;
-  }>;
+  }
 
-  interface InitializeSourcesOptions extends _InitializeSourcesOptions {}
+  interface InitializeSourcesOptions extends InexactPartial<_InitializeSourcesOptions> {}
 
   /** @internal */
   type _TargetContext = NullishProps<{
@@ -1310,16 +1305,6 @@ declare namespace Token {
     x: number;
     y: number;
   }
-
-  /** @internal */
-  type _RefreshHUDOptions = NullishProps<{
-    bars: boolean;
-    border: boolean;
-    elevation: boolean;
-    nameplate: boolean;
-    effects: boolean;
-  }>;
-  interface RefreshHUDOptions extends _RefreshHUDOptions {}
 
   interface MeasureMovementPathOptions {
     /**

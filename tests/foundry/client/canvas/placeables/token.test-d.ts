@@ -81,7 +81,7 @@ expectTypeOf(
   token.getMovementAdjustedPoint({ x: 20, y: 30 }, { offsetX: 50, offsetY: 50 }),
 ).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(
-  token.getMovementAdjustedPoint({ x: 20, y: 30 }, { offsetX: null, offsetY: null }),
+  token.getMovementAdjustedPoint({ x: 20, y: 30 }, { offsetX: undefined, offsetY: undefined }),
 ).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(token.sourceId).toBeString();
@@ -111,18 +111,18 @@ expectTypeOf(token.optimalSightRange).toBeNumber();
 expectTypeOf(token.initializeSources()).toBeVoid();
 expectTypeOf(token.initializeSources({})).toBeVoid();
 expectTypeOf(token.initializeSources({ deleted: true })).toBeVoid();
-expectTypeOf(token.initializeSources({ deleted: null })).toBeVoid();
+expectTypeOf(token.initializeSources({ deleted: undefined })).toBeVoid();
 
 expectTypeOf(token.initializeLightSource()).toBeVoid();
 expectTypeOf(token.initializeLightSource({})).toBeVoid();
 expectTypeOf(token.initializeLightSource({ deleted: true })).toBeVoid();
-expectTypeOf(token.initializeLightSource({ deleted: null })).toBeVoid();
+expectTypeOf(token.initializeLightSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(token["_getLightSourceData"]()).toEqualTypeOf<Token.LightSourceData>();
 
 expectTypeOf(token.initializeVisionSource()).toBeVoid();
 expectTypeOf(token.initializeVisionSource({})).toBeVoid();
 expectTypeOf(token.initializeVisionSource({ deleted: true })).toBeVoid();
-expectTypeOf(token.initializeVisionSource({ deleted: null })).toBeVoid();
+expectTypeOf(token.initializeVisionSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(token["_getVisionBlindedStates"]()).toEqualTypeOf<Token.BlindedStates>();
 expectTypeOf(token["_getVisionSourceData"]()).toEqualTypeOf<Token.VisionSourceData>();
 expectTypeOf(token["_isVisionSource"]()).toBeBoolean();
@@ -204,8 +204,8 @@ expectTypeOf(
   token["_refreshTarget"]({
     alpha: undefined,
     border: { color: undefined, width: undefined },
-    color: null,
-    margin: null,
+    color: undefined,
+    margin: undefined,
     size: undefined,
   }),
 ).toBeVoid();
@@ -229,8 +229,8 @@ expectTypeOf(
   token["_drawTarget"]({
     alpha: undefined,
     border: { color: undefined, width: undefined },
-    color: null,
-    margin: null,
+    color: undefined,
+    margin: undefined,
     size: undefined,
   }),
 ).toBeVoid();
@@ -312,7 +312,7 @@ expectTypeOf(
       movementSpeed: undefined,
       name: undefined,
       ontick: undefined,
-      transition: null,
+      transition: undefined,
     },
   ),
 ).toEqualTypeOf<Promise<void>>();
@@ -342,7 +342,7 @@ expectTypeOf(token["_onAnimationUpdate"](fullAnimationData, someAnimationContext
 expectTypeOf(token.stopAnimation()).toBeVoid();
 expectTypeOf(token.stopAnimation({})).toBeVoid();
 expectTypeOf(token.stopAnimation({ reset: true })).toBeVoid();
-expectTypeOf(token.stopAnimation({ reset: null })).toBeVoid();
+expectTypeOf(token.stopAnimation({ reset: undefined })).toBeVoid();
 
 // only rotation required for `from`, `changes` is allowed to, but never would actually, be empty, no options required
 expectTypeOf(token["_prepareAnimation"]({ rotation: 175 }, { rotation: 260 }, someAnimationContext)).toEqualTypeOf<
@@ -366,7 +366,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<CanvasAnimation.Attribute[]>();
 expectTypeOf(
-  token["_prepareAnimation"](fullAnimationData, fullAnimationData, someAnimationContext, { transition: null }),
+  token["_prepareAnimation"](fullAnimationData, fullAnimationData, someAnimationContext, { transition: undefined }),
 ).toEqualTypeOf<CanvasAnimation.Attribute[]>();
 
 const p = { x: 40, y: 800 };
@@ -381,7 +381,7 @@ expectTypeOf(
 expectTypeOf(
   token.checkCollision(p, {
     type: undefined,
-    origin: null,
+    origin: undefined,
     mode: undefined,
   }),
 ).toEqualTypeOf<PointSourcePolygon.TestCollision<"any">>();
@@ -538,7 +538,7 @@ expectTypeOf(token.updateSource({})).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource({ deleted: true })).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(token.updateSource({ deleted: null })).toBeVoid();
+expectTypeOf(token.updateSource({ deleted: undefined })).toBeVoid();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.getCenter(50, 270)).toEqualTypeOf<Canvas.Point>();
