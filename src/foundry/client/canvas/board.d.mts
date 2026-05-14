@@ -34,6 +34,7 @@ import type BaseRuler from "#client/canvas/interaction/ruler/base-ruler.d.mts";
 import type ControlsLayer from "#client/canvas/layers/controls.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
+import type { PIXI } from "#configuration";
 
 /**
  * `grid` is excluded because {@linkcode Canvas.grid | Canvas#grid} is a getter for the instance of the current
@@ -717,13 +718,13 @@ declare namespace Canvas {
 
   interface SceneTextures extends Record<string, string | PIXI.Texture | PIXI.Spritesheet> {
     /** A specific background texture used for the Scene */
-    background?: string | PIXI.Texture;
+    background?: string | PIXI.Texture | PIXI.Spritesheet;
 
     /** A specific foreground texture used for the Scene */
-    foreground?: string | PIXI.Texture;
+    foreground?: string | PIXI.Texture | PIXI.Spritesheet;
 
     /** A specific fog overlay texture used for the Scene */
-    fogOverlay?: string | PIXI.Texture;
+    fogOverlay?: string | PIXI.Texture | PIXI.Spritesheet;
   }
 
   interface FPS {
