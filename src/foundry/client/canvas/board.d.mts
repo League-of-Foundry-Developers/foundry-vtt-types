@@ -1,19 +1,60 @@
-import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
+import type { InexactPartial, FixedInstanceType, Brand, IntentionalPartial, InitializedOn } from "#utils";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
+import type { FramebufferSnapshot, SceneManager } from "#client/canvas/_module.d.mts";
 import type {
-  groups,
-  layers,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
-  placeables,
-} from "./_module.d.mts";
-import type { PerceptionManager } from "#client/canvas/perception/_module.d.mts";
+  CanvasVisibility,
+  EffectsCanvasGroup,
+  EnvironmentCanvasGroup,
+  HiddenCanvasGroup,
+  InterfaceCanvasGroup,
+  OverlayCanvasGroup,
+  PrimaryCanvasGroup,
+  RenderedCanvasGroup,
+} from "#client/canvas/groups/_module.d.mts";
+import type { CanvasLayer, PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { FogManager, PerceptionManager } from "#client/canvas/perception/_module.d.mts";
+import type { CanvasEdges } from "#client/canvas/geometry/edges/_module.d.mts";
+import type { HeadsUpDisplayContainer } from "#client/applications/hud/_module.d.mts";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type Drawing from "#client/canvas/placeables/drawing.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type Tile from "#client/canvas/placeables/tile.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type Token from "#client/canvas/placeables/token.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type BaseRuler from "#client/canvas/interaction/ruler/base-ruler.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type ControlsLayer from "#client/canvas/layers/controls.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
 
+/**
+ * `grid` is excluded because {@linkcode Canvas.grid | Canvas#grid} is a getter for the instance of the current
+ * {@linkcode BaseGrid}-descended class. The {@linkcode foundry.canvas.layers.GridLayer | GridLayer} is generally
+ * accessed via `canvas.interface.grid`.
+ * @internal
+ */
 type InternalCanvas = new (...args: never) => {
-  readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
+  // white lie: these properties don't exist prior to group creation, but once created they are never removed,
+  // and are typed as `| undefined` prior to `ready`.
+  readonly [K in keyof CONFIG.Canvas.Groups]: InitializedOn<
+    FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]>,
+    "ready"
+  >;
+} & {
+  // white lie: these properties don't exist prior to group creation (each group creates its layers and adds properties for them
+  // to the global `canvas`), but once created they are never removed, and are typed as `| undefined` prior to `ready`.
+  readonly [K in Exclude<keyof CONFIG.Canvas.Layers, "grid">]: InitializedOn<
+    FixedInstanceType<CONFIG.Canvas.Layers[K]["layerClass"]>,
+    "ready"
+  >;
 };
 
 declare const _InternalCanvas: InternalCanvas;
@@ -48,93 +89,108 @@ declare class Canvas extends _InternalCanvas {
   constructor();
 
   /**
+   * Mouse move handler priorities.
+   * @remarks The object is frozen, but the property is not readonly.
+   */
+  static MOUSE_MOVE_HANDLER_PRIORITIES: Readonly<Canvas.MouseMoveHandlerPriorities>;
+
+  /**
    * A set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
    * @defaultValue `[]`
    */
-  blurFilters: Set<PIXI.BlurFilter>;
+  blurFilters: Set<PIXI.Filter>;
 
   /**
    * A reference to the MouseInteractionManager that is currently controlling pointer-based interaction, or null.
+   * @remarks Initialized to `null`, only set by `MouseInteractionManager##handleClickLeft` and `##handleClickRight`.
    */
-  currentMouseManager: MouseInteractionManager<PIXI.Container> | null;
+  currentMouseManager: MouseInteractionManager.Any | null;
 
   /**
    * Configure options passed to the texture loaded for the Scene.
-   * This object can be configured during the canvasInit hook before textures have been loaded.
+   * This object can be configured during the `canvasInit` hook before textures have been loaded.
+   * @remarks Only `undefined` prior to first draw.
    */
-  loadTexturesOptions: { expireCache: boolean; additionalSources: string[] };
+  loadTexturesOptions: Canvas.LoadTexturesOptions | undefined;
 
   /**
    * Configure options used by the visibility framework for special effects
-   * This object can be configured during the canvasInit hook before visibility is initialized.
+   * This object can be configured during the `canvasInit` hook before visibility is initialized.
+   * @remarks Only `undefined` prior to first draw.
    */
-  visibilityOptions: { persistentVision: boolean };
+  visibilityOptions: Canvas.VisibilityOptions | undefined;
 
   /**
    * Configure options passed to initialize blur for the Scene and override normal behavior.
-   * This object can be configured during the canvasInit hook before blur is initialized.
+   * This object can be configured during the `canvasInit` hook before blur is initialized.
+   * @remarks Not initialized to a value, and only ever set `undefined` on tear-down by core, so it's only *ever* `undefined` barring user
+   * action. Will be passed to `Canvas##initializeBlur` every draw.
    */
-  blurOptions:
-    | {
-        enabled: boolean;
-        blurClass: typeof PIXI.BlurFilter;
-        strength: number;
-        passes: number;
-        kernels: number;
-      }
-    | undefined;
+  blurOptions: Canvas.BlurOptions | undefined;
 
   /**
    * Configure the Textures to apply to the Scene.
    * Textures registered here will be automatically loaded as part of the TextureLoader.loadSceneTextures workflow.
-   * Textures which need to be loaded should be configured during the "canvasInit" hook.
+   * Textures which need to be loaded should be configured during the `canvasInit` hook.
+   * @defaultValue `{}`
    */
-  sceneTextures: { background?: string; foreground?: string; fogOverlay?: string };
+  sceneTextures: Canvas.SceneTextures;
 
   /**
    * Record framerate performance data
    */
-  fps: {
-    /** @defaultValue `0` */
-    average: number;
-
-    /** @defaultValue `[]` */
-    values: number[];
-
-    /** @defaultValue `0` */
-    render: number;
-
-    /** @defaultValue `document.getElementById("fps")` */
-    element: HTMLElement;
-  };
+  fps: Canvas.FPS;
 
   /**
    * The singleton interaction manager instance which handles mouse interaction on the Canvas.
+   * @remarks The manager for {@linkcode Canvas.stage | this.stage}, set in `Canvas##addListeners`. Only `undefined` prior to first draw.
    */
   mouseInteractionManager: MouseInteractionManager<PIXI.Container> | undefined;
 
   /**
    * Configured performance settings which affect the behavior of the Canvas and its renderer.
-   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   * Set by {@linkcode Canvas._configurePerformanceMode | Canvas#_configurePerformanceMode}.
    */
   performance: Canvas.PerformanceSettings | undefined;
 
   /**
    * A list of supported webGL capabilities and limitations.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false, enumerable: true }` in `Canvas##createApplication`, with the value set to the (frozen) return of
+   * `Canvas##testSupport`.
    */
-  supported: Canvas.SupportedComponents;
+  readonly supported: Readonly<Canvas.SupportedComponents> | undefined;
 
   /**
    * Is the photosensitive mode enabled?
-   * @remarks Cached from core settings
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }`, with the core `"photosensitiveMode"` setting's value.
    */
-  readonly photosensitiveMode: boolean;
+  readonly photosensitiveMode: boolean | undefined;
 
   /**
    * The renderer screen dimensions.
    * @defaultValue `[0, 0]`
    */
-  screenDimensions: [x: number, y: number];
+  screenDimensions: [width: number, height: number];
+
+  /**
+   * The framebuffer snapshot.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with no options in
+   * `Canvas##createApplication`. Because it exists before the `defineProperty` call, it retains its writable status.
+   */
+  snapshot: FramebufferSnapshot | undefined;
 
   /**
    * A flag to indicate whether a new Scene is currently being drawn.
@@ -149,81 +205,128 @@ declare class Canvas extends _InternalCanvas {
   initializing: Promise<void> | null;
 
   /**
-   * The singleton PIXI.Application instance rendered on the Canvas.
-   * @defaultValue `undefined`
+   * The singleton {@linkcode PIXI.Application} instance rendered on the Canvas.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createApplication`.
    */
   readonly app: PIXI.Application<HTMLCanvasElement> | undefined;
 
   /**
-   * The primary stage container of the PIXI.Application.
-   * @defaultValue `undefined`
+   * The primary stage container of the {@linkcode PIXI.Application}.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createApplication`.
    */
   readonly stage: PIXI.Container | undefined;
 
   /**
-   * The rendered canvas group which render the environment canvas group and the interface canvas group.
+   * The {@link RenderedCanvasGroup | rendered canvas group} which render the environment canvas group and the interface canvas group.
+   * @see {@linkcode Canvas.environment | Canvas#environment}
+   * @see {@linkcode Canvas.interface | Canvas#interface}
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  rendered: groups.RenderedCanvasGroup;
+  readonly rendered: InitializedOn<RenderedCanvasGroup.Implementation, "ready">;
 
   /**
    * A singleton CanvasEdges instance.
+   * @privateRemarks Defined in the class body but not initialized, then `defineProperty`'d in construction with no options.
    */
-  edges: foundry.canvas.geometry.edges.CanvasEdges;
+  edges: CanvasEdges;
 
   /**
    * The singleton FogManager instance.
+   * @remarks Only `undefined` prior to first draw.
    */
-  fog: FixedInstanceType<typeof CONFIG.Canvas.fogManager>;
+  fog: FogManager.Implementation | undefined;
 
   /**
    * A perception manager interface for batching lighting, sight, and sound updates
+   * @privateRemarks Defined in the class body but not initialized, then `defineProperty`'d in construction with no options.
    */
   perception: PerceptionManager;
 
   /**
    * The environment canvas group which render the primary canvas group and the effects canvas group.
+   * @see {@linkcode Canvas.primary | Canvas#primary}
+   * @see {@linkcode Canvas.effects | Canvas#effects}
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  environment: groups.EnvironmentCanvasGroup;
+  readonly environment: InitializedOn<EnvironmentCanvasGroup.Implementation, "ready">;
 
   /**
-   * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
-   * This group is a {@linkcode CachedContainer} which is rendered to the Scene as a {@linkcode SpriteMesh}.
-   * This allows the rendered result of the Primary Canvas Group to be affected by a {@linkcode BaseSamplerShader}.
-   * @defaultValue `undefined`
+   * The primary Canvas group which generally contains tangible physical objects which exist within the Scene. This group is a
+   * {@linkcode CachedContainer} which is rendered to the Scene as a {@linkcode SpriteMesh}. This allows the rendered result of
+   * the Primary Canvas Group to be affected by a {@linkcode BaseSamplerShader}.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  readonly primary: groups.PrimaryCanvasGroup | undefined;
+  readonly primary: InitializedOn<PrimaryCanvasGroup.Implementation, "ready">;
 
   /**
-   * The effects Canvas group which modifies the result of the {@linkcode PrimaryCanvasGroup} by adding special effects.
+   * The effects Canvas group which modifies the result of the {@link PrimaryCanvasGroup} by adding special effects.
    * This includes lighting, vision, fog of war and related animations.
-   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  readonly effects: groups.EffectsCanvasGroup.Implementation | undefined;
+  readonly effects: InitializedOn<EffectsCanvasGroup.Implementation, "ready">;
 
   /**
    * The visibility Canvas group which handles the fog of war overlay by consolidating multiple render textures,
    * and applying a filter with special effects and blur.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  visibility: groups.CanvasVisibility;
+  readonly visibility: InitializedOn<CanvasVisibility.Implementation, "ready">;
 
   /**
    * The interface Canvas group which is rendered above other groups and contains all interactive elements.
    * The various {@linkcode InteractionLayer} instances of the interface group provide different control sets for
    * interacting with different types of {@linkcode Document}s which can be represented on the Canvas.
-   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  readonly interface: groups.InterfaceCanvasGroup | undefined;
+  readonly interface: InitializedOn<InterfaceCanvasGroup.Implementation, "ready">;
 
   /**
    * The overlay Canvas group which is rendered above other groups and contains elements not bound to stage transform.
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks This is defined but not initialized in the class body, then overwritten with a `defineProperty` with
+   * `{ writable: false }` in `Canvas##createGroups`.
    */
-  readonly overlay: groups.OverlayCanvasGroup;
+  readonly overlay: InitializedOn<OverlayCanvasGroup.Implementation, "ready">;
 
   /**
-   * The singleton HeadsUpDisplay container which overlays HTML rendering on top of this Canvas.
-   * @defaultValue `undefined`
+   * The singleton {@linkcode HeadsUpDisplayContainer} which overlays HTML rendering on top of this Canvas.
+   *
    */
-  readonly hud: foundry.applications.hud.HeadsUpDisplayContainer | undefined;
+  hud: InitializedOn<HeadsUpDisplayContainer, "ready">;
 
   /**
    * Position of the mouse on stage.
@@ -231,16 +334,19 @@ declare class Canvas extends _InternalCanvas {
   mousePosition: PIXI.Point;
 
   /**
-   * Track the last automatic pan time to throttle
-   * @defaultValue `0`
+   * Previous position of the mouse on stage.
    */
-  protected _panTime: number;
+  previousMousePosition: PIXI.Point;
+
+  /** @deprecated This was made hard private in v13. This warning will be removed in v14. */
+  protected _panTime: never;
 
   /**
    * Force snapping to grid vertices?
-   * @defaultValue `false`
    */
-  forceSnapVertices: boolean;
+  get forceSnapVertices(): boolean;
+
+  set forceSnapVertices(value);
 
   /**
    * A flag for whether the game Canvas is fully initialized and ready for additional content to be drawn.
@@ -250,13 +356,13 @@ declare class Canvas extends _InternalCanvas {
   /**
    * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
    */
-  get scene(): Scene.Stored | null;
+  get scene(): Scene.Implementation | null;
 
   /**
    * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.
    * @defaultValue `null`
    */
-  get manager(): foundry.canvas.SceneManager | null;
+  get manager(): SceneManager | null;
 
   /**
    * The current pixel dimensions of the displayed Scene, or null if the Canvas is blank.
@@ -266,7 +372,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * A reference to the grid of the currently displayed Scene document, or null if the Canvas is currently blank.
    */
-  get grid(): foundry.grid.BaseGrid | null;
+  get grid(): BaseGrid | null;
 
   /**
    * A flag for whether the game Canvas is ready to be used. False if the canvas is not yet drawn, true otherwise.
@@ -275,13 +381,17 @@ declare class Canvas extends _InternalCanvas {
 
   /**
    * The colors bound to this scene and handled by the color manager.
+   * @remarks
+   * @throws If accessed before canvas initialization. Safe after the `ready` hook.
    */
-  get colors(): this["environment"]["colors"];
+  get colors(): EnvironmentCanvasGroup.Implementation["colors"];
 
   /**
-   * Shortcut to get the masks container from HiddenCanvasGroup.
+   * Shortcut to get the masks container from {@linkcode HiddenCanvasGroup}.
+   * @remarks
+   * @throws If accessed before canvas initialization. Safe after the `ready` hook.
    */
-  get masks(): PIXI.Container;
+  get masks(): HiddenCanvasGroup.Implementation["masks"];
 
   /**
    * The id of the currently displayed Scene.
@@ -296,17 +406,19 @@ declare class Canvas extends _InternalCanvas {
   /**
    * An Array of all CanvasLayer instances which are active on the Canvas board
    */
-  get layers(): layers.CanvasLayer[];
+  get layers(): Canvas.AllLayers[];
 
   /**
    * Return a reference to the active Canvas Layer
    */
-  get activeLayer(): layers.CanvasLayer | null;
+  get activeLayer(): CanvasLayer.Any | null;
 
   /**
    * The currently displayed darkness level, which may override the saved Scene value.
+   * @remarks
+   * @throws If accessed before canvas initialization. Safe after the `ready` hook.
    */
-  get darknessLevel(): number;
+  get darknessLevel(): EnvironmentCanvasGroup.Implementation["darknessLevel"];
 
   /**
    * Initialize the Canvas by creating the HTML element and PIXI application.
@@ -315,86 +427,14 @@ declare class Canvas extends _InternalCanvas {
    */
   initialize(): void;
 
-  /**
-   * Configure the usage of WebGL for the PIXI.Application that will be created.
-   * @throws an Error if WebGL is not supported by this browser environment.
-   */
-  static #configureWebGL(): void;
-
-  /**
-   * Create the Canvas element which will be the render target for the PIXI.Application instance.
-   * Replace the template element which serves as a placeholder in the initially served HTML response.
-   */
-  static #createHTMLCanvas(): HTMLCanvasElement;
-
-  /**
-   * Configure the settings used to initialize the PIXI.Application instance.
-   * @returns Options passed to the PIXI.Application constructor.
-   */
-  static #configureCanvasSettings(): ConstructorParameters<typeof PIXI.Application>[0];
-
-  /**
-   * Initialize custom pixi plugins.
-   */
-  #initializePlugins(): void;
-
-  /**
-   * Create the PIXI.Application and update references to the created app and stage.
-   * @param canvas - The target canvas view element
-   * @param config - Desired PIXI.Application configuration options
-   */
-  #createApplication(canvas: HTMLCanvasElement, config: ConstructorParameters<typeof PIXI.Application>[0]): void;
-
-  readonly snapshot?: foundry.canvas.FramebufferSnapshot;
-
-  /**
-   * Remap premultiplied blend modes/non premultiplied blend modes to fix PIXI bug with custom BM.
-   */
-  #mapPremultipliedBlendModes(): void;
-
-  /**
-   * Initialize the group containers of the game Canvas.
-   */
-  #createGroups(parentName: string, parent: PIXI.DisplayObject): void;
-
-  // Group properties are determined by the CanvasGroups type
-
-  /**
-   * TODO: Add a quality parameter
-   * Compute the blur parameters according to grid size and performance mode.
-   * @param options - Blur options.
-   * @remarks The TODO is foundry internal
-   */
-  protected _initializeBlur(
-    options?: InexactPartial<{
-      enabled: boolean;
-
-      /**
-       * @defaultValue `AlphaBlurFilter`
-       */
-      blurClass: typeof PIXI.Filter;
-
-      /**
-       * @defaultValue `AlphaBlurFilterPass`
-       */
-      blurPassClass: typeof PIXI.Filter;
-
-      /**
-       * @defaultValue `this.grid.size / 25`
-       */
-      strength: number;
-
-      passes: number;
-
-      kernels: number;
-    }>,
-  ): void;
+  /** @deprecated Foundry made this hard private in v13. This warning will be removed in v14. */
+  protected _initializeBlur(options?: never): never;
 
   /**
    * Configure performance settings for hte canvas application based on the selected performance mode.
    * @internal
    */
-  protected _configurePerformanceMode(): Canvas.PerformanceSettings;
+  _configurePerformanceMode(): Canvas.PerformanceSettings;
 
   /**
    * Draw the game canvas.
@@ -404,6 +444,9 @@ declare class Canvas extends _InternalCanvas {
    */
   draw(scene?: Scene.Implementation | null): Promise<this>;
 
+  /** @remarks Doesn't exist prior to first draw */
+  blur?: Canvas.Blur;
+
   /**
    * When re-drawing the canvas, first tear down or discontinue some existing processes
    */
@@ -412,7 +455,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * Create a SceneManager instance used for this Scene, if any.
    */
-  static getSceneManager(scene: Scene.Implementation): foundry.canvas.SceneManager.Any | null;
+  static getSceneManager(scene: Scene.Implementation): SceneManager.Any | null;
 
   /**
    * Get the value of a GL parameter
@@ -428,48 +471,17 @@ declare class Canvas extends _InternalCanvas {
    */
   initializeCanvasPosition(): void;
 
-  // Layers are added to the global `canvas` object via `CanvasGroupMixin#_createLayers()`
-  // TODO: Revisit after updating CONFIG in #2911
-
-  readonly weather?: layers.WeatherEffects;
-
-  // GridLayer is not assigned due to conflicting `Canvas#grid` property pointing to the BaseGrid subclass
-
-  readonly drawings?: layers.DrawingsLayer;
-
-  readonly templates?: layers.TemplateLayer;
-
-  readonly tiles?: layers.TilesLayer;
-
-  readonly walls?: layers.WallsLayer;
-
-  readonly tokens?: layers.TokenLayer;
-
-  readonly sounds?: layers.SoundsLayer;
-
-  readonly lighting?: layers.LightingLayer;
-
-  readonly notes?: layers.NotesLayer;
-
-  readonly regions?: layers.RegionLayer;
-
-  readonly controls?: layers.ControlsLayer;
-
   /**
    * Given an embedded object name, get the canvas layer for that object
    */
-  getLayerByEmbeddedName<T extends string>(
-    embeddedName: T,
-  ): T extends keyof EmbeddedEntityNameToLayerMap ? Exclude<EmbeddedEntityNameToLayerMap[T], undefined> | null : null;
+  getLayerByEmbeddedName<Name extends string>(embeddedName: Name): Canvas.GetLayerByEmbeddedNameReturn<Name>;
 
   /**
    * Get the InteractionLayer of the canvas which manages Documents of a certain collection within the Scene.
    * @param collectionName - The collection name
    * @returns The canvas layer
    */
-  getCollectionLayer<T extends string>(
-    collectionName: T,
-  ): T extends keyof CollectionNameToLayerMap ? Exclude<CollectionNameToLayerMap[T], undefined> : undefined;
+  getCollectionLayer<Name extends string>(collectionName: Name): Canvas.GetCollectionLayerReturn<Name>;
 
   /**
    * Activate framerate tracking by adding an HTML element to the display and refreshing it every frame.
@@ -482,14 +494,10 @@ declare class Canvas extends _InternalCanvas {
   deactivateFPSMeter(): void;
 
   /**
-   * Measure average framerate per second over the past 30 frames
-   */
-  #measureFPS(): void;
-
-  /**
    * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
+   * @param position - The canvas position to pan to
    */
-  pan({ x, y, scale }?: Canvas.ViewPosition): void;
+  pan(position?: Canvas.PartialViewPosition): void;
 
   /**
    * Animate panning the canvas to a certain destination coordinate and zoom scale
@@ -500,31 +508,18 @@ declare class Canvas extends _InternalCanvas {
    *               (default: `{}`)
    * @returns A Promise which resolves once the animation has been completed
    */
-  animatePan(
-    view: Canvas.ViewPosition & {
-      /**
-       * The total duration of the animation in milliseconds; used if speed is not set
-       * @defaultValue `250`
-       */
-      duration?: number;
-
-      /** The speed of animation in pixels per second; overrides duration if set */
-      speed?: number;
-
-      /** An easing function passed to CanvasAnimation animate */
-      easing?: CanvasAnimation.EasingFunction;
-    },
-  ): ReturnType<typeof CanvasAnimation.animate>;
+  animatePan(view: Canvas.AnimatePanOptions): CanvasAnimation.AnimateReturn;
 
   /**
    * Recenter the canvas with a pan animation that ends in the center of the canvas rectangle.
    * @param initial - A desired initial position from which to begin the animation
    * @returns A Promise which resolves once the animation has been completed
    */
-  recenter(initial?: Canvas.ViewPosition): ReturnType<this["animatePan"]>;
+  recenter(initial?: Canvas.PartialViewPosition): CanvasAnimation.AnimateReturn;
 
   /**
    * Highlight objects on any layers which are visible
+   * @remarks Calls the {@linkcode hookEvents.highlightObjects | highlightObjects} hook.
    */
   highlightObjects(active: boolean): void;
 
@@ -540,27 +535,32 @@ declare class Canvas extends _InternalCanvas {
   ping(origin: Canvas.Point, options?: Ping.ConstructorOptions): Promise<boolean>;
 
   /**
+   * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
+   * @param position - The unconstrained camera position
+   * @returns The constrained position
+   * @internal
+   */
+  _constrainView(position: Canvas.PartialViewPosition): Canvas.ViewPosition;
+
+  /**
    * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.
-   * @param blurStrength - The desired blur strength to use for this filter
-   *                       (default: `CONFIG.Canvas.blurStrength`)
-   * @param blurQuality  - The desired quality to use for this filter
-   *                       (default: `CONFIG.Canvas.blurQuality`)
+   * @param blurStrength - The desired blur strength to use for this filter (default: {@linkcode CONFIG.Canvas.blurStrength})
+   * @param blurQuality  - The desired quality to use for this filter (default: {@linkcode CONFIG.Canvas.blurQuality})
    */
   createBlurFilter(blurStrength?: number, blurQuality?: number): PIXI.BlurFilter;
 
   /**
-   * Add a filter to the blur filter list. The filter must have the blur property
-   * @param filter - The Filter instance to add
-   * @returns The added filter for method chaining
+   * Add a filter to the blur filter list if it has the `blur` property.
+   * @param filter - The filter instance to add
+   * @returns The filter that was passed to this function
    */
-  addBlurFilter(filter: PIXI.BlurFilter): PIXI.BlurFilter;
+  addBlurFilter<Filter extends PIXI.Filter>(filter: Filter): Filter;
 
   /**
    * Update the blur strength depending on the scale of the canvas stage
-   * @param strength - Optional blur strength to apply
-   *                   (default: `this.blur.strength`)
+   * @param strength - Optional blur strength to apply (default: {@linkcode Canvas.blur | this.blur.strength})
    */
-  protected updateBlur(strength?: number): void;
+  updateBlur(strength?: number): void;
 
   /**
    * Convert canvas coordinates to the client's viewport.
@@ -587,10 +587,11 @@ declare class Canvas extends _InternalCanvas {
    * Remove all children of the display object and call one cleaning method:
    * clean first, then tearDown, and destroy if no cleaning method is found.
    * @param displayObject - The display object to clean.
-   * @param destroy       - If textures should be destroyed.
-   *                        (default: `true`)
+   * @param destroy       - If textures should be destroyed. (default: `true`)
+   * @remarks Despite the parameter name and description, this calls `removeChildren` on it, which `DisplayObject`s don't have. `Container`
+   * is best guess as to actual constraint.
    */
-  static clearContainer(displayObject: PIXI.DisplayObject, destroy?: boolean): void;
+  static clearContainer(displayObject: PIXI.Container, destroy?: boolean): void;
 
   /**
    * Get a texture with the required configuration and clear color.
@@ -598,105 +599,271 @@ declare class Canvas extends _InternalCanvas {
   static getRenderTexture(options?: Canvas.GetRenderTextureOptions): PIXI.RenderTexture;
 
   /**
-   * Handle right-mouse start drag events occurring on the Canvas.
+   * Register a new onMouseMove handler with an optional priority.
+   * @param handler  - The function to call on mouse move.
+   * @param priority - Optional priority. Higher values are called earlier. (default: `0`)
+   * @param context  - The context in which the handler should be executed. (default: `this`)
+   * @param strict   - To know if the handler should be called on real pointer move only (not simulated) (default: `false`)
+   * @remarks The `priority` is not limited to specific values from {@linkcode Canvas.MOUSE_MOVE_HANDLER_PRIORITIES}, as evidenced by its
+   * default not being enumerated there. It's used as a simple numerical sort.
+   *
+   * When called, the `this` of the handler will be `context`. Core only registers three handlers as of 13.351, and their contexts are the
+   * {@linkcode PrimaryCanvasGroup}, {@linkcode SoundsLayer}, and {@linkcode ControlsLayer}.
    */
-  protected _onDragRightStart(event: Canvas.Event.Pointer): void;
+  registerMouseMoveHandler(
+    handler: Canvas.MouseMoveHandler,
+    priority?: Canvas.MOUSE_MOVE_HANDLER_PRIORITIES,
+    context?: unknown,
+    strict?: boolean,
+  ): void;
+
+  /**
+   * Handle right-mouse start drag events occurring on the Canvas.
+   * @see `MouseInteractionManager##handleDragStart`
+   * @internal
+   */
+  _onDragRightStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle right-mouse drag events occurring on the Canvas.
+   * @see `MouseInteractionManager##handleDragMove`
+   * @internal
    */
-  protected _onDragRightMove(event: Canvas.Event.Pointer): void;
+  _onDragRightMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
+   * @see `MouseInteractionManager##handleDragDrop`
+   * @internal
    */
-  protected _onDragRightDrop(event: Canvas.Event.Pointer): void;
+  _onDragRightDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle the cancellation of a right-mouse drag workflow the Canvas stage.
+   * @see `MouseInteractionManager##handleDragCancel`
+   * @internal
    */
-  protected _onDragRightCancel(event: Canvas.Event.Pointer): void;
+  _onDragRightCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Pan the canvas view when the cursor position gets close to the edge of the frame
    * @param event - The originating mouse movement event
+   * @internal
    */
-  protected _onDragCanvasPan(event: Canvas.Event.Pointer): ReturnType<this["animatePan"]> | void;
+  _onDragCanvasPan(event: Canvas.Event.Pointer): ReturnType<this["animatePan"]> | void;
 
   /**
    * Handle window resizing with the dimensions of the window viewport change
-   * @param event - The Window resize event
-   *                (default: `null`)
+   * @internal
    */
-  protected _onResize(event?: UIEvent | null): false | void;
+  _onResize(): false | void;
 
   /**
    * Handle mousewheel events which adjust the scale of the canvas
    * @param event - The mousewheel event that zooms the canvas
+   * @internal
    */
-  protected _onMouseWheel(event: Canvas.Event.Wheel): void;
+  _onMouseWheel(event: Canvas.Event.Wheel): void;
 
   /**
    * Track objects which have pending render flags.
+   * @remarks Only `undefined` prior to first draw. Defined in the class body but not initialized, replaced every draw via `defineProperty`
+   * with `{ writable: false, configurable: true }` options.
    */
-  readonly pendingRenderFlags: Canvas.PendingRenderFlags;
+  readonly pendingRenderFlags: Canvas.PendingRenderFlags | undefined;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "Canvas#addPendingOperation is deprecated without replacement in v11.
-   * The callback that you have passed as a pending operation has been executed immediately.
-   * We recommend switching your code to use a debounce operation or RenderFlags to de-duplicate overlapping requests."
-   */
-  addPendingOperation<S, A>(name: string, fn: (this: S, args: A) => void, scope: S, args: A): void;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "Canvas#triggerPendingOperations is deprecated without replacement in v11 and performs no action."
-   */
-  triggerPendingOperations(): void;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"Canvas#pendingOperations is deprecated without replacement in v11."`
-   */
-  get pendingOperations(): [];
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"Canvas#colorManager is deprecated and replaced by Canvas#environment"`
+   * @deprecated "`Canvas#colorManager` is deprecated and replaced by {@linkcode Canvas.environment | Canvas#environment}"
+   * (since v12, until v14)
    */
   get colorManager(): this["environment"];
+
+  #Canvas: true;
 }
 
 declare namespace Canvas {
-  interface Dimensions extends Scene.Dimensions {
-    /** The canvas rectangle. */
-    rect: PIXI.Rectangle;
+  type MOUSE_MOVE_HANDLER_PRIORITIES = Brand<number, "Canvas.MOUSE_MOVE_HANDLER_PRIORITIES">;
 
-    /** The scene rectangle. */
-    sceneRect: PIXI.Rectangle;
+  interface MouseMoveHandlerPriorities {
+    HIGH: 75 & MOUSE_MOVE_HANDLER_PRIORITIES;
+    MEDIUM: 50 & MOUSE_MOVE_HANDLER_PRIORITIES;
+    LOW: 25 & MOUSE_MOVE_HANDLER_PRIORITIES;
+  }
+
+  interface LoadTexturesOptions {
+    /** @defaultValue `true` */
+    expireCache: boolean;
+
+    /** @defaultValue `[]` */
+    additionalSources: string[];
+  }
+
+  interface VisibilityOptions {
+    /** @defaultValue `false` */
+    persistentVision: boolean;
+  }
+
+  interface BlurOptions {
+    enabled: boolean;
+    blurClass: typeof PIXI.Filter;
+    blurPassClass: typeof PIXI.Filter;
+    strength: number;
+    passes: number;
+    kernels: number;
+  }
+
+  /** The interface for {@linkcode Canvas.blur | Canvas#blur}, which doesn't exist until first draw */
+  interface Blur extends Readonly<Omit<BlurOptions, "strength">>, Pick<BlurOptions, "strength"> {}
+
+  interface SceneTextures extends Record<string, string | PIXI.Texture | PIXI.Spritesheet> {
+    /** A specific background texture used for the Scene */
+    background?: string | PIXI.Texture;
+
+    /** A specific foreground texture used for the Scene */
+    foreground?: string | PIXI.Texture;
+
+    /** A specific fog overlay texture used for the Scene */
+    fogOverlay?: string | PIXI.Texture;
+  }
+
+  interface FPS {
+    /** @defaultValue `[]` */
+    values: number[];
+
+    /** @defaultValue `0` */
+    renderTime: number;
+  }
+
+  interface PerformanceSettings {
+    /** The performance mode in {@linkcode CONST.CANVAS_PERFORMANCE_MODES} */
+    mode: CONST.CANVAS_PERFORMANCE_MODES;
+
+    /**
+     * Whether to use mipmaps, "ON" or "OFF"
+     * @remarks Foundry uses a string union instead of a boolean because this is used to index {@linkcode PIXI.MIPMAP_MODES}.
+     */
+    mipmap: "ON" | "OFF";
+
+    /** Whether to apply MSAA at the overall canvas level */
+    msaa: boolean;
+
+    /** Whether to apply SMAA at the overall canvas level */
+    smaa: boolean;
+
+    /** Maximum framerate which should be the render target */
+    fps: number;
+
+    /** Whether to display token movement animation */
+    tokenAnimation: boolean;
+
+    /** Whether to display light source animation */
+    lightAnimation: boolean;
+
+    /** Whether to render soft edges for light sources */
+    lightSoftEdges: boolean;
   }
 
   /** @internal */
-  type _ViewPosition = NullishProps<{
+  interface _SupportedComponents {
+    /** Is reading pixels in RED format supported? */
+    readPixelsRED: boolean;
+
+    /** Is the OffscreenCanvas supported? */
+    offscreenCanvas: boolean;
+
+    // These `max_` properties are undocumented, but I assume are self-explanatory for people in a position to care.
+    maxVertexVectors: number;
+    maxFragmentVectors: number;
+    maxVertexAttributes: number;
+    maxVaryingVectors: number;
+    maxTextureUnits: number;
+    maxVertexTextureUnits: number;
+  }
+
+  /**
+   * If {@linkcode SupportedComponents.webGL2 | webGL2} is `false`, the object will be returned with only that property.
+   */
+  interface SupportedComponents extends IntentionalPartial<_SupportedComponents> {
+    /** Is WebGL2 supported? */
+    webGL2: boolean;
+  }
+
+  interface Dimensions extends Scene.Dimensions {
+    /** The minimum, maximum, and default canvas scale. */
+    scale: {
+      min: number;
+      max: number;
+      default: number;
+    };
+
+    /** The scaling factor for canvas UI elements. Based on the normalized grid size (100px). */
+    uiScale: number;
+  }
+
+  type AllLayers = _AllLayers<keyof CONFIG.Canvas.Layers>;
+
+  /** @internal */
+  type _AllLayers<K extends keyof CONFIG.Canvas.Layers> = K extends unknown
+    ? FixedInstanceType<CONFIG.Canvas.Layers[K]["layerClass"]>
+    : never;
+
+  /**
+   * @privateRemarks The `NonNullable` is necessary because the layer properties are `InitializedOn` themselves, but that's handled by
+   * `|| null` at runtime for this method.
+   */
+  type GetLayerByEmbeddedNameReturn<Name extends string> = Name extends Document.PlaceableType
+    ? _GetLayerByEmbeddedNameReturn<NonNullable<EmbeddedEntityNameToLayerMap[Name]>>
+    : null;
+
+  /** @internal */
+  type _GetLayerByEmbeddedNameReturn<Layer> = InitializedOn<Layer, "ready", Layer | null>;
+
+  type GetCollectionLayerReturn<Name extends string> = Name extends PlaceableObject.AnyCanvasDocument["collectionName"]
+    ? CollectionNameToLayerMap[Name]
+    : undefined;
+
+  interface ViewPosition {
     /**
      * The x-coordinate which becomes stage.pivot.x
+     * @defaultValue `canvas.stage.pivot.x`
      */
     x: number;
 
     /**
      * The y-coordinate which becomes stage.pivot.y
+     * @defaultValue `canvas.stage.pivot.y`
      */
     y: number;
 
     /**
-     * The zoom level up to CONFIG.Canvas.maxZoom which becomes stage.scale.x and y
+     * The zoom level up to {@linkcode CONFIG.Canvas.maxZoom} which becomes stage.scale.x and y
+     * @defaultValue `canvas.stage.scale.x`
      */
     scale: number;
-  }>;
+  }
 
-  interface ViewPosition extends _ViewPosition {}
+  interface PartialViewPosition extends InexactPartial<ViewPosition> {}
 
+  interface _AnimatePanOptions {
+    /**
+     * The total duration of the animation in milliseconds; used if speed is not set
+     * @defaultValue `250`
+     */
+    duration?: number;
+
+    /** The speed of animation in pixels per second; overrides duration if set */
+    speed?: number;
+
+    /**
+     * An easing function passed to CanvasAnimation animate
+     * @defaultValue {@linkcode CanvasAnimation.easeInOutCosine}
+     */
+    easing?: CanvasAnimation.EasingFunction;
+  }
+
+  interface AnimatePanOptions extends InexactPartial<ViewPosition>, InexactPartial<_AnimatePanOptions> {}
+
+  // TODO: do we really need this type separate from Point?
   interface DropPosition {
     x: number;
     y: number;
@@ -749,79 +916,29 @@ declare namespace Canvas {
     height: number;
   }
 
-  interface PerformanceSettings {
-    /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
-    mode: CONST.CANVAS_PERFORMANCE_MODES;
-
-    /** Blur filter configuration */
-    blur: {
-      enabled: boolean;
-      illumination: boolean;
-    };
-
-    /** Whether to use mipmaps, "ON" or "OFF" */
-    mipmap: "ON" | "OFF";
-
-    /** Whether to apply MSAA at the overall canvas level */
-    msaa: boolean;
-
-    /** Whether to apply SMAA at the overall canvas level */
-    smaa: boolean;
-
-    /** Maximum framerate which should be the render target */
-    fps: number;
-
-    /** Whether to display token movement animation */
-    tokenAnimation: boolean;
-
-    /** Whether to display light source animation */
-    lightAnimation: boolean;
-
-    /** Whether to render soft edges for light sources */
-    lightSoftEdges: boolean;
-
-    /** Texture configuration */
-    textures: {
-      enabled: boolean;
-
-      maxSize: number;
-
-      p2Steps: number;
-
-      /** @defaultValue `2` */
-      p2StepsMax: number;
-    };
-  }
-
-  interface SupportedComponents {
-    /** Is WebGL2 supported? */
-    webGL2: boolean;
-
-    /** Is reading pixels in RED format supported? */
-    readPixelsRED: boolean;
-
-    /** Is the OffscreenCanvas supported? */
-    offscreenCanvas: boolean;
-  }
-
   interface GetRenderTextureOptions {
     /**
      * The clear color to use for this texture. Transparent by default.
+     * @remarks Foundry types this as just `number[]` because they seem to prefer RGB(A) arrays for specifying PIXI colors,
+     * but this gets assigned to {@linkcode PIXI.BaseRenderTexture.clearColor}.
      */
-    clearColor?: number[] | null | undefined;
+    clearColor?: PIXI.ColorSource | undefined;
 
     /**
      * The render texture configuration.
-     * @privateRemarks forwarded to {@linkcode PIXI.RenderTexture.create}
+     * @remarks Options for {@linkcode PIXI.RenderTexture.create}.
      */
     textureConfiguration?: PIXI.IBaseTextureOptions | undefined;
   }
+
+  type MouseMoveHandler = (position: PIXI.Point) => void;
 
   namespace Event {
     /**
      * All known InteractionData properties. Last updated 13.346.
      * @internal
      */
+    // TODO: audit in v14
     type _InteractionData<ObjectFor extends PIXI.DisplayObject> = InexactPartial<{
       /**
        * @remarks Set in `MouseInteractionManager##assignInteractionData`, which is called in
@@ -838,22 +955,22 @@ declare namespace Canvas {
        * - `MouseInteractionManager##handlePointerUp`
        *
        * A {@linkcode Canvas.PossiblyElevatedPoint} in:
-       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
-       * - {@linkcode layers.RegionLayer._onDragLeftMove | RegionLayer#_onDragLeftMove}
-       * - {@linkcode layers.RegionLayer._onDragLeftDrop | RegionLayer#_onDragLeftDrop}
-       * - {@linkcode layers.SoundsLayer._onDragLeftDrop | SoundsLayer#_onDragLeftDrop}
-       * - {@linkcode layers.TemplateLayer._onDragLeftMove | TemplateLayer#_onDragLeftMove}
-       * - {@linkcode layers.TilesLayer._onDragLeftMove | TilesLayer#_onDragLeftMove}
-       * - {@linkcode layers.TilesLayer._onDragLeftDrop | TilesLayer#_onDragLeftDrop}
-       * - {@linkcode placeables.Tile._onHandleDragMove | Tile#_onHandleDragMove}
-       * - {@linkcode placeables.Tile._onHandleDragDrop | Tile#_onHandleDragDrop}
+       * - {@linkcode DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode RegionLayer._onDragLeftMove | RegionLayer#_onDragLeftMove}
+       * - {@linkcode RegionLayer._onDragLeftDrop | RegionLayer#_onDragLeftDrop}
+       * - {@linkcode SoundsLayer._onDragLeftDrop | SoundsLayer#_onDragLeftDrop}
+       * - {@linkcode TemplateLayer._onDragLeftMove | TemplateLayer#_onDragLeftMove}
+       * - {@linkcode TilesLayer._onDragLeftMove | TilesLayer#_onDragLeftMove}
+       * - {@linkcode TilesLayer._onDragLeftDrop | TilesLayer#_onDragLeftDrop}
+       * - {@linkcode Tile._onHandleDragMove | Tile#_onHandleDragMove}
+       * - {@linkcode Tile._onHandleDragDrop | Tile#_onHandleDragDrop}
        */
       destination: PIXI.Point | Canvas.PossiblyElevatedPoint;
 
       /**
        * @privateRemarks Set:
        * - As {@linkcode PIXI.Point} in `MouseInteractionManager##assignOriginData`
-       * - As {@linkcode Canvas.Rectangle} in {@linkcode placeables.Tile._onHandleDragStart | Tile#_onHandleDragStart}
+       * - As {@linkcode Canvas.Rectangle} in {@linkcode Tile._onHandleDragStart | Tile#_onHandleDragStart}
        */
       origin: PIXI.Point | Canvas.Rectangle;
 
@@ -874,18 +991,18 @@ declare namespace Canvas {
        * - {@linkcode BaseRuler._onClickLeft | BaseRuler#_onClickLeft}
        * - {@linkcode BaseRuler._onClickRight | BaseRuler#_onClickRight}
        * - {@linkcode BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
-       * - {@linkcode layers.ControlsLayer._onLongPress | ControlsLayer#_onLongPress}
-       * - {@linkcode layers.WallsLayer._onUndoCreate | WallsLayer#_onUndoCreate}
-       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
-       * - {@linkcode placeables.Token._triggerDragLeftCancel | Token#_triggerDragLeftCancel}
+       * - {@linkcode ControlsLayer._onLongPress | ControlsLayer#_onLongPress}
+       * - {@linkcode WallsLayer._onUndoCreate | WallsLayer#_onUndoCreate}
+       * - {@linkcode Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode Token._triggerDragLeftCancel | Token#_triggerDragLeftCancel}
        */
       cancelled: boolean;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
-       * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
-       * - {@linkcode placeables.Token._triggerDragLeftDrop | Token#_triggerDragLeftDrop}
+       * - {@linkcode Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode Token._onDragLeftDrop | Token#_onDragLeftDrop}
+       * - {@linkcode Token._triggerDragLeftDrop | Token#_triggerDragLeftDrop}
        */
       dropped: boolean;
 
@@ -893,82 +1010,82 @@ declare namespace Canvas {
        * @privateRemarks Set in:
        * - {@linkcode BaseRuler._onDragStart | BaseRuler#_onDragStart}
        * - {@linkcode BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
-       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
-       * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
+       * - {@linkcode Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode Token._onDragLeftDrop | Token#_onDragLeftDrop}
        */
       released: boolean;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
-       * - {@linkcode layers.LightingLayer._onDragLeftStart | LightingLayer#_onDragLeftStart}
-       * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
-       * - {@linkcode layers.TemplateLayer._onDragLeftStart | TemplateLayer#_onDragLeftStart}
-       * - {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       * - {@linkcode DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
+       * - {@linkcode LightingLayer._onDragLeftStart | LightingLayer#_onDragLeftStart}
+       * - {@linkcode SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
+       * - {@linkcode TemplateLayer._onDragLeftStart | TemplateLayer#_onDragLeftStart}
+       * - {@linkcode WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
        */
       preview: ObjectFor;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode layers.DrawingsLayer._onClickLeft2 | DrawingsLayer#_onClickLeft2}
-       * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
-       * - {@linkcode layers.DrawingsLayer._onDragLeftMove | DrawingsLayer#_onDragLeftMove}
-       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
-       * - {@linkcode layers.DrawingsLayer._onDragLeftCancel | DrawingsLayer#_onDragLeftCancel}
+       * - {@linkcode DrawingsLayer._onClickLeft2 | DrawingsLayer#_onClickLeft2}
+       * - {@linkcode DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
+       * - {@linkcode DrawingsLayer._onDragLeftMove | DrawingsLayer#_onDragLeftMove}
+       * - {@linkcode DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode DrawingsLayer._onDragLeftCancel | DrawingsLayer#_onDragLeftCancel}
        */
-      drawingsState: layers.PlaceablesLayer.CREATION_STATES;
+      drawingsState: PlaceablesLayer.CREATION_STATES;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
-       * - {@linkcode layers.SoundsLayer._onDragLeftMove | SoundsLayer#_onDragLeftMove}
+       * - {@linkcode SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
+       * - {@linkcode SoundsLayer._onDragLeftMove | SoundsLayer#_onDragLeftMove}
        */
-      soundState: layers.PlaceablesLayer.CREATION_STATES;
+      soundState: PlaceablesLayer.CREATION_STATES;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode placeables.PlaceableObject._onDragLeftDrop | PlaceableObject#_onDragLeftDrop}
-       * - {@linkcode layers.PlaceablesLayer._onDragLeftDrop | PlaceablesLayer#_onDragLeftDrop}
-       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
-       * - {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
-       * - {@linkcode layers.WallsLayer._onDragLeftDrop | WallsLayer#_onDragLeftDrop}
+       * - {@linkcode PlaceableObject._onDragLeftDrop | PlaceableObject#_onDragLeftDrop}
+       * - {@linkcode PlaceablesLayer._onDragLeftDrop | PlaceablesLayer#_onDragLeftDrop}
+       * - {@linkcode DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       * - {@linkcode WallsLayer._onDragLeftDrop | WallsLayer#_onDragLeftDrop}
        */
       clearPreviewContainer: boolean;
 
       /**
-       * @privateRemarks Set in: {@linkcode placeables.PlaceableObject._onClickLeft | PlaceableObject#_onClickLeft}
+       * @privateRemarks Set in: {@linkcode PlaceableObject._onClickLeft | PlaceableObject#_onClickLeft}
        */
       release: boolean;
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode placeables.Drawing._onClickLeft | Drawing#_onClickLeft}
-       * - {@linkcode placeables.Tile._onClickLeft | Tile#_onClickLeft}
+       * - {@linkcode Drawing._onClickLeft | Drawing#_onClickLeft}
+       * - {@linkcode Tile._onClickLeft | Tile#_onClickLeft}
        */
       dragHandle: boolean;
 
       /**
-       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       * @privateRemarks Set in {@linkcode Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
        */
       handleOrigin: Canvas.Point;
 
       /**
-       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       * @privateRemarks Set in {@linkcode Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
        */
       originalData: DrawingDocument.Source;
 
       /**
-       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragDrop | Drawing#_onHandleDragDrop}
+       * @privateRemarks Set in {@linkcode Drawing._onHandleDragDrop | Drawing#_onHandleDragDrop}
        */
       restoreOriginalData: boolean;
 
       /**
-       * @privateRemarks Set in {@linkcode placeables.PlaceableObject._initializeDragLeft | PlaceableObject#_initializeDragLeft}
+       * @privateRemarks Set in {@linkcode PlaceableObject._initializeDragLeft | PlaceableObject#_initializeDragLeft}
        */
       clones: ObjectFor[];
 
       /**
-       * @privateRemarks Set in {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       * @privateRemarks Set in {@linkcode WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
        */
       fixed: boolean;
     }>;
@@ -1008,22 +1125,26 @@ declare namespace Canvas {
 
 export default Canvas;
 
+// TODO: move this somewhere accessible, or at least make somewhere accessible to add to it
 interface EmbeddedEntityNameToLayerMap {
   AmbientLight: Canvas["lighting"];
   AmbientSound: Canvas["sounds"];
   Drawing: Canvas["drawings"];
   Note: Canvas["notes"];
   MeasuredTemplate: Canvas["templates"];
+  Region: Canvas["regions"];
   Tile: Canvas["tiles"];
   Token: Canvas["tokens"];
   Wall: Canvas["walls"];
 }
 
+// TODO: move this somewhere accessible, or at least make somewhere accessible to add to it
 interface CollectionNameToLayerMap {
   lights: Canvas["lighting"];
   sounds: Canvas["sounds"];
   drawings: Canvas["drawings"];
   notes: Canvas["notes"];
+  regions: Canvas["regions"];
   templates: Canvas["templates"];
   tiles: Canvas["tiles"];
   tokens: Canvas["tokens"];
