@@ -3,6 +3,7 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import DynamicRingData = foundry.canvas.placeables.tokens.DynamicRingData;
 import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
+import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
 import SchemaField = foundry.data.fields.SchemaField;
 
 export class TypesTestTokenRing extends TokenRing {
@@ -61,19 +62,19 @@ describe("DynamicRingData Tests", () => {
 
     expectTypeOf(instance.spritesheet).toEqualTypeOf<string | null>();
     expect(instance.spritesheet).toBe(createData.spritesheet);
-    expect(instanceEmpty.spritesheet).toBeUndefined();
+    expect(instanceEmpty.spritesheet).toBeNull();
 
     expectTypeOf(instance.effects).toEqualTypeOf<Record<string, string>>();
-    expect(instance.effects).toBe(createData.effects);
-    expect(instanceEmpty.effects).toBe(DynamicRingData.schema.fields.effects.initial);
+    expect(instance.effects).toEqual(createData.effects);
+    expect(instanceEmpty.effects).toEqual(DynamicRingData.schema.fields.effects.initial);
 
     expectTypeOf(instance.framework.ringClass).toEqualTypeOf<typeof TokenRing>();
     expect(instance.framework.ringClass).toBe(createData.framework.ringClass);
-    expect(instanceEmpty.framework.ringClass).toBeInstanceOf(TypesTestTokenRing);
+    expect(instanceEmpty.framework.ringClass).toBe(TokenRing);
 
     expectTypeOf(instance.framework.shaderClass).toEqualTypeOf<PrimaryBaseSamplerShader.AnyConstructor>();
     expect(instance.framework.shaderClass).toBe(createData.framework.shaderClass);
-    expect(instanceEmpty.framework.shaderClass).toBeInstanceOf(TypesTestTokenRingSamplerShader);
+    expect(instanceEmpty.framework.shaderClass).toBe(TokenRingSamplerShader);
   });
 
   test("DataModel template overrides", () => {
