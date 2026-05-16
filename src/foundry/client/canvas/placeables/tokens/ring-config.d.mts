@@ -97,7 +97,7 @@ declare class TokenRingConfig {
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@linkcode TokenRingConfig.initialize | initialize} has been called, which happens between the `setup` and `ready` hooks
    */
   static CORE_TOKEN_RINGS: TokenRingConfig.CoreTokenRings;
 
@@ -119,8 +119,8 @@ declare class TokenRingConfig {
    * A mapping of token subject paths where modules or systems have configured subject images.
    * @defaultValue `{}`
    * @remarks Not directly used anywhere in this class, essentially just a global cache. The system's `flags.tokenRingSubjectMappings`,
-   * if any, get assigned here in {@link Game.initializeConfig | `Game#initializeConfig`}, and they're read in
-   * {@link TokenDocument._inferRingSubjectTexture | `TokenDocument#_inferRingSubjectTexture`}.
+   * if any, get assigned here in {@linkcode Game.initializeConfig | Game#initializeConfig}, and they're read in
+   * {@linkcode TokenDocument._inferRingSubjectTexture | TokenDocument#_inferRingSubjectTexture}.
    */
   subjectPaths: Record<string, string>;
 
@@ -225,7 +225,7 @@ declare namespace TokenRingConfig {
 
   /**
    * @remarks The type of any given {@linkcode TokenRingConfig.CORE_TOKEN_RINGS} entry prior to
-   * {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} being called between the `setup` and `ready` hooks; Plain objects at this point
+   * {@linkcode TokenRingConfig.initialize | TokenRingConfig#initialize} being called between the `setup` and `ready` hooks; Plain objects at this point
    */
   interface InitialCoreRingData extends Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">> {}
 
@@ -237,7 +237,7 @@ declare namespace TokenRingConfig {
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called,
+   * after {@linkcode TokenRingConfig.initialize | TokenRingConfig#initialize} has been called,
    * which happens between the `setup` and `ready` hooks.
    */
   interface SourceCoreRingData extends foundry.data.fields.SchemaField.SourceData<DynamicRingData.Schema> {}
