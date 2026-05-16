@@ -17,7 +17,6 @@ import type {
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
-  MakeConform,
   MaybeArray,
   MaybePromise,
   NullishProps,
@@ -1595,6 +1594,10 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
+     */
     type PreCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1609,6 +1612,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
+     */
     type OnCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1624,6 +1631,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
+     */
     type PreUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1638,6 +1649,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
+     */
     type OnUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1653,6 +1668,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
+     */
     type PreDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1667,6 +1686,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
+     */
     type OnDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -2215,11 +2238,6 @@ declare namespace Document {
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
-
-  type SheetClassFor<Name extends Document.Type> = MakeConform<
-    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
-    AnyConstructor
-  >;
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
@@ -3351,9 +3369,9 @@ declare namespace Document {
    */
   type CreateDialogReturn<
     Doc extends Document.Any,
-    PassedConfig extends DialogV2.PromptConfig | undefined,
+    Config extends DialogV2.PromptConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _CreateDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+  > = _CreateDialogReturn<Doc, Coalesce<Config, {}>>;
 
   /**
    * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `ok` object separately allows calls like
@@ -3364,14 +3382,13 @@ declare namespace Document {
    * the return type are either top level or not included in the default config.
    * @internal
    */
-  type _CreateDialogReturn<
-    Doc extends Document.Any,
-    PassedConfig extends DialogV2.PromptConfig,
-  > = DialogV2.PromptReturn<
+  type _CreateDialogReturn<Doc extends Document.Any, Config extends DialogV2.PromptConfig> = DialogV2.PromptReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
+      // This is technically wrong in v13 without `| undefined` in the callback return, but preemptively correct for v14.
+      // TODO: Remove the above note in v14.
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      { ok: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "ok", {}>> }
+      { ok: SimpleMerge<{ callback: () => Promise<Doc> }, GetKey<Config, "ok", {}>> }
     >
   >;
 
@@ -3383,9 +3400,9 @@ declare namespace Document {
    */
   type DeleteDialogReturn<
     Doc extends Document.Any,
-    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    Config extends DialogV2.ConfirmConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _DeleteDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+  > = _DeleteDialogReturn<Doc, Coalesce<Config, {}>>;
 
   /**
    * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `yes` object separately allows calls like
@@ -3396,15 +3413,12 @@ declare namespace Document {
    * the return type are either top level or not included in the default config.
    * @internal
    */
-  type _DeleteDialogReturn<
-    Doc extends Document.Any,
-    PassedConfig extends DialogV2.ConfirmConfig,
-  > = DialogV2.ConfirmReturn<
+  type _DeleteDialogReturn<Doc extends Document.Any, Config extends DialogV2.ConfirmConfig> = DialogV2.ConfirmReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
       {
         // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "yes", {}>>;
+        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<Config, "yes", {}>>;
       }
     >
   >;
@@ -3418,7 +3432,7 @@ declare namespace Document {
    */
   interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
 
-  /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
+  /** This interface is necessitated by the change in default `strict` behaviour between `fromImport` and `fromSource` and nothing else */
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<
     Document.ConstructionContext<Parent>,
     "strict"
@@ -3433,10 +3447,11 @@ declare namespace Document {
   }
 
   /**
-   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
+   * {@linkcode ClientDocumentMixin.AnyMixed.fromDropData | ClientDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DropDataOptions {}
+  type DropDataOptions = AnyObject;
 
   type DropDataFor<Name extends Document.Type> = {
     ActiveEffect: ActiveEffect.DropData;

@@ -1,8 +1,556 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
+import { database, testID } from "../../../utils.ts";
+import * as itemHelpers from "./item.test-d.ts";
 
+import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
+
+const documentName = "ActiveEffect";
+type SubType = ActiveEffect.SubType;
+type Implementation = ActiveEffect.Implementation;
+type OfType<Type extends SubType = SubType> = ActiveEffect.OfType<Type>;
+type Stored<Type extends SubType = SubType> = ActiveEffect.Stored<Type>;
+type Parent = ActiveEffect.Parent;
+type Source = ActiveEffect.Source;
+type CreateData<Type extends SubType = SubType> = ActiveEffect.CreateData<Type>;
+type CreateInput = ActiveEffect.CreateInput;
+type UpdateData = ActiveEffect.UpdateData;
+type UpdateInput = ActiveEffect.UpdateInput;
+type ConstructionContext = ActiveEffect.ConstructionContext;
+
+const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
+
+/** The parent document that runtime tests in this file will use. */
+const parent = await Item.create(itemHelpers.source);
+if (!parent) throw new Error("Couldn't create test Item");
+expectTypeOf(parent).toEqualTypeOf<Item.Stored>();
+docsToCleanUp.add(parent);
+
+export function isStored<Type extends SubType>(doc: OfType<Type> | Stored<Type>): doc is Stored<Type> {
+  if (!doc.id) return false;
+  if (!doc.collection) return false;
+  if (doc.collection instanceof Document) return doc.collection.id === doc.id;
+  if (doc.collection instanceof CompendiumCollection) return doc.collection.index.has(doc.id);
+  return doc.collection.has(doc.id);
+}
+
+export function isOfType<Type extends SubType>(doc: Implementation, type: Type): doc is OfType<Type> {
+  return doc.type === type;
+}
+
+export const source = {
+  _id: testID,
+  name: "Add Suffix", // necessary for construction
+  img: "icons/magic/symbols/star-yellow.webp",
+  type: "base",
+  system: {},
+  changes: [
+    {
+      key: "name",
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      priority: 60,
+      value: " the Suffix",
+    },
+  ],
+  disabled: true,
+  duration: {
+    startTime: 1700000,
+    seconds: 300,
+    combat: null, // TODO: make this the canonical test Combat ID eventually
+    rounds: 20,
+    turns: 3,
+    startRound: 1,
+    startTurn: 3,
+  },
+  description: "Add a suffix to your name",
+  origin: null, // TODO: possibly give this a real UUID in future
+  tint: "#C8888C",
+  transfer: true,
+  statuses: ["invisible", "flying"],
+  sort: 7,
+  flags: {
+    core: {
+      overlay: true,
+    },
+  },
+  _stats: {
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.0.1",
+    createdTime: null,
+    modifiedTime: null,
+    lastModifiedBy: null,
+    compendiumSource: "Compendium.mysystem.pack-id.Item.YYYYYSomeIDYYYYY.ActiveEffect.ZZZZZSomeIDZZZZZ",
+    duplicateSource: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
+    exportSource: null,
+  },
+} as const satisfies Source;
+
+export const minimalCreateData = {
+  name: `FVTT-Types Test ${documentName}`,
+} satisfies CreateData;
+
+export const nullishCreateData = {
+  _id: null,
+  ...minimalCreateData, // necessary for construction
+  img: null,
+  type: null,
+  system: null,
+  changes: [
+    {
+      key: null,
+      mode: null,
+      priority: null,
+      value: null,
+    },
+  ],
+  disabled: null,
+  duration: {
+    startTime: null,
+    seconds: null,
+    combat: null,
+    rounds: null,
+    turns: null,
+    startRound: null,
+    startTurn: null,
+  },
+  description: null,
+  origin: null,
+  tint: null,
+  transfer: null,
+  statuses: null,
+  sort: null,
+  flags: null,
+  _stats: {
+    // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
+    compendiumSource: null,
+    duplicateSource: null,
+  },
+} satisfies CreateData;
+
+export const constructionContext = ({ parent = null }: { parent?: Parent } = {}) =>
+  ({
+    dropInvalidEmbedded: false,
+    fallback: false,
+    pack: null,
+    parentCollection: "effects",
+    strict: true,
+    parent,
+  }) satisfies ConstructionContext;
+
+/** Keys added to this Document's base `CreateOperation`. */
+const docCreateOpProps = {
+  animate: true,
+  restoreDelta: false,
+};
+
+/** The update props are composed like this because `PreUpdateOptions` explicitly omits `restoreDelta` */
+const _docUpdateProps = {
+  animate: true,
+};
+
+const docUpdateOpProps = {
+  ..._docUpdateProps,
+  restoreDelta: false,
+};
+
+const docDeleteOpProps = {
+  animate: true,
+};
+
+export const operations = {
+  getDocumentsOperation: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.getDocumentsOperationBase,
+      parent,
+    }) satisfies ActiveEffect.Database.GetDocumentsOperation,
+
+  backendGetOperation: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.backendGetOperationBase,
+      parent,
+    }) satisfies ActiveEffect.Database.BackendGetOperation,
+
+  // -----------------
+
+  createEmbeddedOperation: () =>
+    ({
+      ...database.createEmbeddedOperationBase,
+      ...docCreateOpProps,
+    }) satisfies ActiveEffect.Database.CreateEmbeddedOperation,
+
+  createDocumentsOperation: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.createDocumentsOperationBase,
+      ...docCreateOpProps,
+      parent, // actual creation requires a parent on v13, where AEs are not yet primary documents
+    }) satisfies ActiveEffect.Database.CreateDocumentsOperation,
+
+  minimalBackendCreateOperation: ({ data, parent = null }: { data: CreateInput[]; parent?: Parent }) =>
+    ({
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.BackendCreateOperation,
+
+  backendCreateOperation: ({ data, parent = null }: { data: CreateInput[]; parent?: Parent }) =>
+    ({
+      ...database.createDocumentsOperationBase,
+      ...docCreateOpProps,
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.BackendCreateOperation,
+
+  minimalPreCreateOptions: () =>
+    ({
+      ...database.minimalPreCreateOptionsBase,
+    }) satisfies ActiveEffect.Database.PreCreateOptions,
+
+  preCreateOptions: () =>
+    ({
+      ...database.preCreateOptionsBase,
+      ...docCreateOpProps,
+    }) satisfies ActiveEffect.Database.PreCreateOptions,
+
+  minimalPreCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
+    ({
+      ...database.minimalPreCreateOperationBase,
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.PreCreateOperation,
+
+  preCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
+    ({
+      ...database.preCreateOperationBase,
+      ...docCreateOpProps,
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.PreCreateOperation,
+
+  // TODO: remove in v14
+  onCreateDocumentsOperation: ({ data, parent = null }: { data: Implementation[]; parent?: Parent }) =>
+    ({
+      ...database.onCreateDocumentsOperationBase,
+      ...docCreateOpProps,
+      data,
+      parent,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+    }) satisfies ActiveEffect.Database.OnCreateDocumentsOperation,
+
+  minimalOnCreateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.minimalOnCreateOptionsBase,
+      parent,
+    }) satisfies ActiveEffect.Database.OnCreateOptions,
+
+  onCreateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.onCreateOptionsBase,
+      ...docCreateOpProps,
+      parent,
+    }) satisfies ActiveEffect.Database.OnCreateOptions,
+
+  minimalOnCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
+    ({
+      ...database.minimalOnCreateOperationBase,
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.OnCreateOperation,
+
+  onCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
+    ({
+      ...docCreateOpProps,
+      ...database.onCreateOperationBase,
+      data,
+      parent,
+    }) satisfies ActiveEffect.Database.OnCreateOperation,
+
+  // -----------------
+
+  updateOneDocumentsOperation: () =>
+    ({
+      ...database.updateOneDocumentOperationBase,
+      ...docUpdateOpProps,
+    }) satisfies ActiveEffect.Database.UpdateOneDocumentOperation,
+
+  updateEmbeddedOperation: () =>
+    ({
+      ...database.updateEmbeddedOperationBase,
+      ...docUpdateOpProps,
+    }) satisfies ActiveEffect.Database.UpdateEmbeddedOperation,
+
+  updateManyDocumentsOperation: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.updateManyDocumentsOperationBase,
+      ...docUpdateOpProps,
+      parent,
+    }) satisfies ActiveEffect.Database.UpdateManyDocumentsOperation,
+
+  minimalBackendUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateInput[] }) =>
+    ({
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.BackendUpdateOperation,
+
+  backendUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateInput[] }) =>
+    ({
+      ...database.updateManyDocumentsOperationBase,
+      ...docUpdateOpProps,
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.BackendUpdateOperation,
+
+  minimalPreUpdateOptions: () =>
+    ({ ...database.minimalPreUpdateOptionsBase }) satisfies ActiveEffect.Database.PreUpdateOptions,
+
+  preUpdateOptions: () =>
+    ({ ...database.preUpdateOptionsBase, ..._docUpdateProps }) satisfies ActiveEffect.Database.PreUpdateOptions,
+
+  minimalPreUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
+    ({
+      ...database.minimalPreUpdateOperationBase,
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.PreUpdateOperation,
+
+  preUpdateOperation: ({ parent = null, updates }: { updates: UpdateData[]; parent?: Parent }) =>
+    ({
+      ...database.preUpdateOperationBase,
+      ...docUpdateOpProps,
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.PreUpdateOperation,
+
+  // TODO: remove in v14
+  onUpdateDocumentsOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
+    ({
+      ...database.onUpdateDocumentsOperationBase,
+      ...docCreateOpProps,
+      parent,
+      updates,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+    }) satisfies ActiveEffect.Database.OnUpdateDocumentsOperation,
+
+  minimalOnUpdateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.minimalOnUpdateOptionsBase,
+      parent,
+    }) satisfies ActiveEffect.Database.OnUpdateOptions,
+
+  onUpdateOptions: ({ parent = null }: { parent?: Parent }) =>
+    ({
+      ...database.onUpdateOptionsBase,
+      ...docUpdateOpProps,
+      parent,
+    }) satisfies ActiveEffect.Database.OnUpdateOptions,
+
+  minimalOnUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
+    ({
+      ...database.minimalOnUpdateOperationBase,
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.OnUpdateOperation,
+
+  onUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
+    ({
+      ...database.onUpdateOperationBase,
+      ...docUpdateOpProps,
+      parent,
+      updates,
+    }) satisfies ActiveEffect.Database.OnUpdateOperation,
+
+  // -----------------
+
+  deleteOneDocumentOperation: () =>
+    ({
+      ...database.deleteOneDocumentOperationBase,
+      ...docDeleteOpProps,
+    }) satisfies ActiveEffect.Database.DeleteOneDocumentOperation,
+
+  deleteEmbeddedOperation: () =>
+    ({
+      ...database.deleteEmbeddedOperationBase,
+      ...docDeleteOpProps,
+    }) satisfies ActiveEffect.Database.DeleteEmbeddedOperation,
+
+  deleteManyDocumentsOperation: ({ parent = null }: { parent?: Parent } = {}) =>
+    ({
+      ...database.deleteManyDocumentsOperationBase,
+      ...docDeleteOpProps,
+      parent,
+    }) satisfies ActiveEffect.Database.DeleteManyDocumentsOperation,
+
+  minimalBackendDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.BackendDeleteOperation,
+
+  backendDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.backendDeleteOperationBase,
+      ...docDeleteOpProps,
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.BackendDeleteOperation,
+
+  minimalPreDeleteOptions: () =>
+    ({
+      ...database.minimalPreDeleteOptionsBase,
+    }) satisfies ActiveEffect.Database.PreDeleteOptions,
+
+  preDeleteOptions: () =>
+    ({
+      ...database.preDeleteOptionsBase,
+      ...docDeleteOpProps,
+    }) satisfies ActiveEffect.Database.PreDeleteOptions,
+
+  minimalPreDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.minimalPreDeleteOperationBase,
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.PreDeleteOperation,
+
+  preDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.preDeleteOperationBase,
+      ...docDeleteOpProps,
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.PreDeleteOperation,
+
+  // TODO: remove in v14
+  onDeleteDocumentsOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.preDeleteOperationBase,
+      ...docDeleteOpProps,
+      ids,
+      parent,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+    }) satisfies ActiveEffect.Database.OnDeleteDocumentsOperation,
+
+  minimalOnDeleteOptions: ({ parent = null }: { parent?: Parent }) =>
+    ({
+      ...database.minimalOnDeleteOptionsBase,
+      parent,
+    }) satisfies ActiveEffect.Database.OnDeleteOptions,
+
+  onDeleteOptions: ({ parent = null }: { parent?: Parent }) =>
+    ({
+      ...database.onDeleteOptionsBase,
+      ...docDeleteOpProps,
+      parent,
+    }) satisfies ActiveEffect.Database.OnDeleteOptions,
+
+  minimalOnDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.minimalOnDeleteOperationBase,
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.OnDeleteOperation,
+
+  onDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
+    ({
+      ...database.onDeleteDocumentsOperationBase,
+      ...docDeleteOpProps,
+      ids,
+      parent,
+    }) satisfies ActiveEffect.Database.OnDeleteOperation,
+};
+
+export const realSource = {
+  _id: "R5ro4AuNjcdWD56O",
+  changes: [
+    {
+      key: "system.attributes.ac.calc",
+      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: "unarmoredMonk",
+      priority: null,
+    },
+  ],
+  disabled: false,
+  duration: {
+    startTime: 0,
+    seconds: null,
+    combat: null,
+    rounds: null,
+    turns: null,
+    startRound: null,
+    startTurn: null,
+  },
+  origin: "Item.cOdcNWy4hII029DT",
+  transfer: true,
+  flags: {},
+  tint: "#ffffff",
+  name: "Unarmored Defense",
+  description: "",
+  statuses: [],
+  _stats: {
+    createdTime: 1252345,
+    modifiedTime: 13245234623624,
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: null,
+    coreVersion: "13.348",
+    systemId: "dnd5e",
+    systemVersion: "5.2.3",
+    lastModifiedBy: null,
+  },
+  img: "icons/magic/control/silhouette-hold-change-blue.webp",
+  type: "base",
+  system: {},
+  sort: 0,
+} as const satisfies Source;
+
+export const maximumSource = {
+  _id: "R5ro4AuNjcdWD56O",
+  changes: [
+    {
+      key: "system.attributes.ac.calc",
+      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: "unarmoredMonk",
+      priority: 70,
+    },
+  ],
+  disabled: false,
+  duration: {
+    startTime: 0,
+    seconds: 12,
+    combat: "XXXXCOMBATIDXXXX",
+    rounds: 2,
+    turns: 7,
+    startRound: 1,
+    startTurn: 3,
+  },
+  origin: "Item.cOdcNWy4hII029DT",
+  transfer: true,
+  flags: {
+    core: {
+      overlay: true,
+    },
+  },
+  tint: "#FEDCBA",
+  name: "A Name",
+  description: "Some Text",
+  _stats: {
+    systemVersion: null,
+    compendiumSource: null,
+    coreVersion: null,
+    createdTime: 0,
+    modifiedTime: 1,
+    duplicateSource: null,
+    exportSource: null,
+    lastModifiedBy: "UserID",
+    systemId: null,
+  },
+  img: null,
+  sort: 0,
+  statuses: [],
+  system: {},
+  type: "base",
+} as const satisfies Source;
 
 // @ts-expect-error ActiveEffect requires name.
 new ActiveEffect.implementation();
@@ -71,7 +619,7 @@ expectTypeOf(
       parent: someActor,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(
     createData,
@@ -84,7 +632,7 @@ expectTypeOf(
       //types: [],
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(
     {},
@@ -93,13 +641,13 @@ expectTypeOf(
       pack: undefined,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: null,
   }),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 
 declare const aeSource: ActiveEffect.Source;
 expectTypeOf(
@@ -113,12 +661,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
-  ActiveEffect.fromDropData(
-    {
-      data: aeSource,
-    },
-    {}, // options is vestigial, this is AnyObject
-  ),
+  ActiveEffect.fromDropData({
+    data: aeSource,
+  }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 
 expectTypeOf(ActiveEffect.fromImport(aeSource)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();

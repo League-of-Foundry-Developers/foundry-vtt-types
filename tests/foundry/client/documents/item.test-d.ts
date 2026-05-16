@@ -1,5 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
+import * as activeEffectHelpers from "./active-effect.test-d.ts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -31,6 +32,75 @@ declare global {
     };
   }
 }
+
+export const source = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor",
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
+
+export const sourceWithEmbedded = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor", // using one of our test subtypes because a blank system is disallowed, so using `base` is out
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [activeEffectHelpers.source],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
+
+export const minimalCreateData = {
+  name: "FVTT-Types Test Item",
+  type: "base",
+} satisfies Item.CreateData;
 
 // @ts-expect-error Item requires name and type.
 new Item.implementation();
