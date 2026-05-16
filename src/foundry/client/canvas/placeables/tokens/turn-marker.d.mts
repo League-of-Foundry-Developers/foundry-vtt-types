@@ -3,13 +3,13 @@ import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { TurnMarkerData } from "#client/canvas/placeables/tokens/_module.d.mts";
 
-declare class TokenTurnMarker<TokenFor extends Token.Implementation = Token.Implementation> extends PIXI.Container {
-  constructor(token: TokenFor);
+declare class TokenTurnMarker extends PIXI.Container<SpriteMesh> {
+  constructor(token: Token.Implementation);
 
   /**
    * The Token who this Turn Marker belongs to.
    */
-  get token(): TokenFor;
+  get token(): Token.Implementation;
 
   /**
    * The sprite of the Turn Marker.
@@ -57,6 +57,6 @@ declare namespace TokenTurnMarker {
 
 export default TokenTurnMarker;
 
-declare abstract class AnyTokenTurnMarker extends TokenTurnMarker<Token.Implementation> {
+declare abstract class AnyTokenTurnMarker extends TokenTurnMarker {
   constructor(...args: never);
 }
