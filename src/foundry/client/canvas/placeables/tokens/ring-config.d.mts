@@ -1,4 +1,4 @@
-import type { InitializedOn, RequiredProps } from "#utils";
+import type { Identity, InitializedOn, RequiredProps } from "#utils";
 import type DynamicRingData from "./ring-data.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -201,7 +201,7 @@ declare class TokenRingConfig {
 
 declare namespace TokenRingConfig {
   interface Any extends AnyTokenRingConfig {}
-  type AnyConstructor = typeof AnyTokenRingConfig;
+  interface AnyConstructor extends Identity<typeof AnyTokenRingConfig> {}
 
   /** Token ring fit modes for dynamic token ring visualization */
   interface RingFitMode {
