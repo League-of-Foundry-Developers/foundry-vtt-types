@@ -3387,6 +3387,8 @@ declare namespace Document {
   type _CreateDialogReturn<Doc extends Document.Any, Config extends DialogV2.PromptConfig> = DialogV2.PromptReturn<
     SimpleMerge<
       Config,
+      // This is technically wrong in v13 without `| undefined` in the callback return, but preemptively correct for v14.
+      // TODO: Remove the above note in v14.
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       { ok: SimpleMerge<{ callback: () => Promise<Doc> }, GetKey<Config, "ok", {}>> }
     >
