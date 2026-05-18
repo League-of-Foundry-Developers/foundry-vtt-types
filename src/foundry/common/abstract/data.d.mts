@@ -17,7 +17,18 @@ declare class _InternalDataModel<
 export default DataModel;
 
 /**
- * The abstract base class which defines the data schema contained within a Document.
+ * An abstract class which is a fundamental building block of numerous structures and concepts in Foundry Virtual
+ * Tabletop. Data models perform several essential roles:
+ *
+ * * A static schema definition that all instances of that model adhere to.
+ * * A workflow for data migration, cleaning, validation, and initialization such that provided input data is structured
+ *   according to the rules of the model's declared schema.
+ * * A workflow for transacting differential updates to the instance data and serializing its data into format suitable
+ *   for storage or transport.
+ *
+ * DataModel subclasses can be used for a wide variety of purposes ranging from simple game settings to high complexity
+ * objects like `Scene` documents. Data models are often nested; see the {@linkcode DataModel.parent | DataModel#parent} property for more.
+ *
  * @remarks List of methods and types that subclasses may want to override beyond the
  * required {@linkcode DataModel.defineSchema} to get narrower types:
  * - {@linkcode DataModel.schema}
@@ -531,8 +542,7 @@ declare namespace DataModel {
    * inheritance issues and complicates subclass overriding, so a default {@linkcode ConstructionContext} is extended
    */
   interface FromSourceOptions<Parent extends DataModel.Any | null = DataModel.Any | null>
-    extends _FromSourceOptions,
-      Omit<ConstructionContext<Parent>, "strict"> {}
+    extends _FromSourceOptions, Omit<ConstructionContext<Parent>, "strict"> {}
 
   /** @internal */
   type _ShimDataOptions = NullishProps<{
