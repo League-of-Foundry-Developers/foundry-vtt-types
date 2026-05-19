@@ -178,7 +178,7 @@
     "is-ci": "^4.1.0",
     "lint-staged": "^17.0.2",
     "normalize-url": "^9.0.0",
-    "npm-run-all2": "^8.0.1",
+    "npm-run-all2": "^9.0.0",
     "patch-package": "^8.0.1",
     "pathe": "^2.0.3",
     "playwright": "^1.59.1",
