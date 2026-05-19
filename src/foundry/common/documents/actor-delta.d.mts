@@ -121,7 +121,6 @@ declare abstract class BaseActorDelta<
   /* Document overrides */
 
   // Even temporary `ActorDelta`s require parents, so this is never `null`.
-  override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
   static override get implementation(): ActorDelta.ImplementationClass;
 

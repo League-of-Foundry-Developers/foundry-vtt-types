@@ -179,8 +179,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   /* Document overrides */
 
-  readonly parentCollection: BaseScene.ParentCollectionName | null;
-
   static override get implementation(): Scene.ImplementationClass;
 
   static override get baseDocument(): typeof BaseScene;

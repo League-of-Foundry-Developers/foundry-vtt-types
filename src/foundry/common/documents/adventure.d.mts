@@ -68,7 +68,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   /* Document overrides */
 
   // `Adventure`s are never embedded.
-  override readonly parentCollection: null;
 
   static override get implementation(): Adventure.ImplementationClass;
 

@@ -85,8 +85,6 @@ declare abstract class BaseChatMessage<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
-
   static override get implementation(): ChatMessage.ImplementationClass;
 
   static override get baseDocument(): typeof BaseChatMessage;

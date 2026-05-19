@@ -135,7 +135,7 @@ declare abstract class Document<
    * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
    * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
-  readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
+  readonly parentCollection: Document.ParentCollection<DocumentName>;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -2040,6 +2040,10 @@ declare namespace Document {
   type Pack<Name extends Document.Type> =
     | null
     | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
+
+  type ParentCollection<Name extends Document.Type> =
+    | (Name extends "Adventure" ? never : Document.MetadataFor<Name>["collection"])
+    | (Name extends "ActorData" ? never : null);
 
   /**
    * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` out of the passed context before forwarding to

@@ -74,8 +74,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCard.ParentCollectionName | null;
-
   static override get implementation(): Card.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCard;

@@ -98,8 +98,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseItem.ParentCollectionName | null;
-
   static override get implementation(): Item.ImplementationClass;
 
   static override get baseDocument(): typeof BaseItem;

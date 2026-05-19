@@ -66,8 +66,6 @@ declare abstract class BaseCombatant<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCombatant.ParentCollectionName | null;
-
   static override get implementation(): Combatant.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatant;

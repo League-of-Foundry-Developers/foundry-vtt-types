@@ -50,8 +50,6 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  override readonly parentCollection: BaseAmbientSound.ParentCollectionName | null;
-
   static override get implementation(): AmbientSoundDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAmbientSound;

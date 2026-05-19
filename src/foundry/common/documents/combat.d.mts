@@ -91,8 +91,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCombat.ParentCollectionName | null;
-
   static override get implementation(): Combat.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombat;

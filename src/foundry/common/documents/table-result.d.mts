@@ -89,8 +89,6 @@ declare abstract class BaseTableResult<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseTableResult.ParentCollectionName | null;
-
   static override get implementation(): TableResult.ImplementationClass;
 
   static override get baseDocument(): typeof BaseTableResult;

@@ -69,8 +69,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseNote.ParentCollectionName | null;
-
   static override get implementation(): NoteDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseNote;

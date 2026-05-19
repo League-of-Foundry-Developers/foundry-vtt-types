@@ -60,8 +60,6 @@ declare abstract class BaseJournalEntryPage<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseJournalEntryPage.ParentCollectionName | null;
-
   static override get implementation(): JournalEntryPage.ImplementationClass;
 
   static override get baseDocument(): typeof BaseJournalEntryPage;
