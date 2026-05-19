@@ -249,7 +249,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BasePlaylistSound.Schema>;
+  static override _schema: SchemaField<BasePlaylistSound.Schema>;
 
   static override get schema(): SchemaField<BasePlaylistSound.Schema>;
 

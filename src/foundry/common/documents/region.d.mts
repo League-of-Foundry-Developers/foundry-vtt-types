@@ -267,7 +267,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseRegion.Schema>;
+  static override _schema: SchemaField<BaseRegion.Schema>;
 
   static override get schema(): SchemaField<BaseRegion.Schema>;
 

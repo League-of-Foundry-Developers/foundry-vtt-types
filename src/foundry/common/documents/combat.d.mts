@@ -302,7 +302,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCombat.Schema>;
+  static override _schema: SchemaField<BaseCombat.Schema>;
 
   static override get schema(): SchemaField<BaseCombat.Schema>;
 

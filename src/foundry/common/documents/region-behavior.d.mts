@@ -263,7 +263,7 @@ declare abstract class BaseRegionBehavior<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseRegionBehavior.Schema>;
+  static override _schema: SchemaField<BaseRegionBehavior.Schema>;
 
   static override get schema(): SchemaField<BaseRegionBehavior.Schema>;
 

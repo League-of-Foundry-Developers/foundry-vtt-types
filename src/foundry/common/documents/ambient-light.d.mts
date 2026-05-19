@@ -236,7 +236,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAmbientLight.Schema>;
+  static override _schema: SchemaField<BaseAmbientLight.Schema>;
 
   static override get schema(): SchemaField<BaseAmbientLight.Schema>;
 

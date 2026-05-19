@@ -249,7 +249,7 @@ declare abstract class BaseJournalEntryPage<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseJournalEntryPage.Schema>;
+  static override _schema: SchemaField<BaseJournalEntryPage.Schema>;
 
   static override get schema(): SchemaField<BaseJournalEntryPage.Schema>;
 

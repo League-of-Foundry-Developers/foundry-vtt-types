@@ -237,7 +237,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseWall.Schema>;
+  static override _schema: SchemaField<BaseWall.Schema>;
 
   static override get schema(): SchemaField<BaseWall.Schema>;
 

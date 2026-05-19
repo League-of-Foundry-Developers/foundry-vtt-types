@@ -258,7 +258,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAdventure.Schema>;
+  static override _schema: SchemaField<BaseAdventure.Schema>;
 
   static override get schema(): SchemaField<BaseAdventure.Schema>;
 

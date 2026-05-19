@@ -134,7 +134,7 @@ export const constructionContext = ({ parent = null }: { parent?: Parent } = {})
   ({
     dropInvalidEmbedded: false,
     fallback: false,
-    pack: null,
+    pack: undefined,
     parentCollection: "effects",
     strict: true,
     parent,
@@ -686,16 +686,6 @@ expectTypeOf(
     parent: undefined,
     parentCollection: undefined,
     // strict not allowed to be undefined,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(
-  ActiveEffect.fromImport(aeSource, {
-    dropInvalidEmbedded: null,
-    fallback: null,
-    pack: null,
-    parent: null,
-    parentCollection: null,
-    strict: false,
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 

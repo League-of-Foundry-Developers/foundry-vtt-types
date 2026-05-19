@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -59,14 +59,14 @@ declare abstract class BaseActiveEffect<
    * Migrations:
    * - `icon` to `img` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
    * - `icon` to `img` (since v12, until v14)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -273,7 +273,7 @@ declare abstract class BaseActiveEffect<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseActiveEffect.Schema>;
+  static override _schema: SchemaField<BaseActiveEffect.Schema>;
 
   static override get schema(): SchemaField<BaseActiveEffect.Schema>;
 

@@ -60,7 +60,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks `source` instead of the parent's `data` here */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -293,7 +293,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<BaseRollTable.Schema>;
+  static override _schema: SchemaField<BaseRollTable.Schema>;
 
   static get schema(): SchemaField<BaseRollTable.Schema>;
 

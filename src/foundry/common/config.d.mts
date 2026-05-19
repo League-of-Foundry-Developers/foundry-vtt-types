@@ -1,7 +1,6 @@
 import type { DataModel } from "./abstract/data.d.mts";
 import type * as fields from "./data/fields.d.mts";
 import type { SOFTWARE_UPDATE_CHANNELS } from "./constants.d.mts";
-import type { AnyMutableObject } from "#utils";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -199,7 +198,7 @@ declare class ApplicationConfiguration extends DataModel<ApplicationConfiguratio
    * - pre-v9 `dataChannel`s to their updated names
    * - `awsConfig === true` to `""`
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * Validate a port assignment.

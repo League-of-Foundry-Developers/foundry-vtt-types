@@ -1,5 +1,5 @@
 import type { DataModel } from "../abstract/data.d.mts";
-import type { AnyMutableObject, GetKey, NullishCoalesce, RemoveIndexSignatures, ToMethod, ValueOf } from "#utils";
+import type { GetKey, NullishCoalesce, RemoveIndexSignatures, ToMethod, ValueOf } from "#utils";
 import type { SchemaField } from "./fields.d.mts";
 
 import fields = foundry.data.fields;
@@ -183,7 +183,7 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
    * Migrations:
    * - negative `luminosity`s to `1 - luminosity` and setting `negative` true
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 }
 
 declare namespace ShapeData {

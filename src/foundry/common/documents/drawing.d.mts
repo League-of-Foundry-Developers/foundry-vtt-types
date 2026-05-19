@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -69,14 +69,14 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * Migrations:
    * - `z` to `elevation` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
    * - `z` to `elevation` (since v12, until v14)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated since v12, until v14
@@ -277,7 +277,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseDrawing.Schema>;
+  static override _schema: SchemaField<BaseDrawing.Schema>;
 
   static override get schema(): SchemaField<BaseDrawing.Schema>;
 

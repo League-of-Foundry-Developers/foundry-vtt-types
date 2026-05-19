@@ -97,6 +97,11 @@ declare class Uses<T> {
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
+ *
+ * @privateRemarks
+ * List of properties and methods that need to be templated out in each specific document file, for one reason or another:
+ * - {@linkcode Document.parentCollection | #parentCollection}: (most) primary documents have this set `null`. Could be handled by a lookup
+ * in `Document`, but
  */
 declare abstract class Document<
   DocumentName extends Document.Type,
@@ -1965,6 +1970,7 @@ declare namespace Document {
 
   /**
    * This ensures that Documents that require a parent even for temporary construction
+   * (only {@linkcode ActorDelta} as of 13.351) get passed one.
    * @internal
    */
   interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
@@ -1988,41 +1994,37 @@ declare namespace Document {
   interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
-  interface _ConstructionContext<Parent extends Document.Any | null>
-    extends
-      _ParentContext<Parent>,
-      NullishProps<{
-        /**
-         * The compendium collection ID which contains this Document, if any
-         * @defaultValue `null`
-         */
-        pack: string;
+  interface _ConstructionContext {
+    /**
+     * The compendium collection ID which contains this Document, if any
+     * @defaultValue `null`
+     */
+    pack: string;
 
-        /**
-         * Whether to validate initial data strictly?
-         * @defaultValue `true`
-         */
-        strict: boolean;
+    /**
+     * Whether to validate initial data strictly?
+     * @defaultValue `true`
+     */
+    strict: boolean;
 
-        /**
-         * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-         * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
-         * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
-         * {@linkcode Document.parentCollection | Document#parentCollection}.
-         */
-        parentCollection: string;
-      }> {}
+    /**
+     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+     * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
+     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+     * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+     * {@linkcode Document.parentCollection | Document#parentCollection}.
+     */
+    parentCollection: string;
+  }
 
   /**
-   * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
-   * but they're all still valid.
-   *
-   * `strict` is omitted from the DataModel interface so the Document interface's property
-   * description takes precedence.
+   * @privateRemarks `strict` is omitted from the `DataModel` interface so the `Document` interface's property description takes precedence.
    */
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
-    extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
+    extends
+      Omit<DataModel._ConstructionContext, "strict">,
+      InexactPartial<_ConstructionContext>,
+      _ParentContext<Parent> {}
 
   /**
    * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` and `strict` out of the passed context before

@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -71,9 +71,9 @@ declare abstract class BaseTableResult<
    * Migrations:
    * - Numeric `type`s to their new — since v12 — string values
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /*
    * After this point these are not really overridden methods.
@@ -276,7 +276,7 @@ declare abstract class BaseTableResult<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseTableResult.Schema>;
+  static override _schema: SchemaField<BaseTableResult.Schema>;
 
   static override get schema(): SchemaField<BaseTableResult.Schema>;
 

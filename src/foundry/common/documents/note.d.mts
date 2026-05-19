@@ -256,7 +256,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseNote.Schema>;
+  static override _schema: SchemaField<BaseNote.Schema>;
 
   static override get schema(): SchemaField<BaseNote.Schema>;
 

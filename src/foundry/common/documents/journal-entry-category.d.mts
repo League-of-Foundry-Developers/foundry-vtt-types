@@ -244,7 +244,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
+  static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
 
   static override get schema(): SchemaField<BaseJournalEntryCategory.Schema>;
 

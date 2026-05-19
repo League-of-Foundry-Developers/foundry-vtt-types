@@ -260,7 +260,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseFolder.Schema>;
+  static override _schema: SchemaField<BaseFolder.Schema>;
 
   static override get schema(): SchemaField<BaseFolder.Schema>;
 

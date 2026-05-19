@@ -263,7 +263,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCard.Schema>;
+  static override _schema: SchemaField<BaseCard.Schema>;
 
   static override get schema(): SchemaField<BaseCard.Schema>;
 

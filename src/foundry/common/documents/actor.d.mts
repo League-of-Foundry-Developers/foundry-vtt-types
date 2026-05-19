@@ -91,7 +91,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks `source` instead of the parent's `data` here */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -317,7 +317,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseActor.Schema>;
+  static override _schema: SchemaField<BaseActor.Schema>;
 
   static override get schema(): SchemaField<BaseActor.Schema>;
 

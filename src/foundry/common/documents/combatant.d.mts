@@ -255,7 +255,7 @@ declare abstract class BaseCombatant<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCombatant.Schema>;
+  static override _schema: SchemaField<BaseCombatant.Schema>;
 
   static override get schema(): SchemaField<BaseCombatant.Schema>;
 

@@ -67,7 +67,7 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
    * - `gridUnits` to `grid.units` (since v12, until v14)
    */
   // options: not null (destructured)
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 }
 
 export default BaseSystem;

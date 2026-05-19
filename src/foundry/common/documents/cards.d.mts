@@ -70,7 +70,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks `source` instead of the parent's `data` here */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -308,7 +308,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCards.Schema>;
+  static override _schema: SchemaField<BaseCards.Schema>;
 
   static override get schema(): SchemaField<BaseCards.Schema>;
 

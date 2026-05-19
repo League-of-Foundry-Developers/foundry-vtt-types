@@ -234,7 +234,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseSetting.Schema>;
+  static override _schema: SchemaField<BaseSetting.Schema>;
 
   static override get schema(): SchemaField<BaseSetting.Schema>;
 
