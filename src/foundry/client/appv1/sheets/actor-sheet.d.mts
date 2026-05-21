@@ -129,7 +129,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
    * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
    */
   protected _onSortItem(
-    event: DragEvent,
+    event: Event,
     itemData: Item.Implementation["_source"],
   ): undefined | Promise<Item.Implementation[]>;
 

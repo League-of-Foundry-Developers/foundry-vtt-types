@@ -86,6 +86,11 @@ export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
 
 interface _FormInputConfig<FormInputValue = unknown> {
   /**
+   * The name of the form element
+   */
+  name: string;
+
+  /**
    * The current value of the form element
    */
   value: FormInputValue;
@@ -132,6 +137,7 @@ interface _FormInputConfig<FormInputValue = unknown> {
 
   /**
    * Aria attributes to assign to the input
+   * @remarks Omit the `aria-`-prefix
    */
   aria: Record<string, string>;
 

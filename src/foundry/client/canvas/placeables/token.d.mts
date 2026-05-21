@@ -821,9 +821,12 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // options: not null (destructured)
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(
+    event: Canvas.Event.Pointer | MouseEvent,
+    options?: PlaceableObject.HoverInOptions,
+  ): void;
 
-  protected override _onHoverOut(event: Canvas.Event.Pointer): void;
+  protected override _onHoverOut(event?: Canvas.Event.Pointer): void;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 

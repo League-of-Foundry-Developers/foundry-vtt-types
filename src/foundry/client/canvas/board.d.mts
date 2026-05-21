@@ -303,7 +303,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * Return a reference to the active Canvas Layer
    */
-  get activeLayer(): layers.CanvasLayer | null;
+  get activeLayer(): layers.InteractionLayer | null;
 
   /**
    * The currently displayed darkness level, which may override the saved Scene value.
