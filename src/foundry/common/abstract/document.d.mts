@@ -1164,22 +1164,10 @@ declare namespace Document {
 
   type ModuleSubType = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
-  type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
-    | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
-    | (Name extends "ActorDelta" ? ActorDelta.OfType<SubType & ActorDelta.SubType> : never)
-    | (Name extends "Actor" ? Actor.OfType<SubType & Actor.SubType> : never)
-    | (Name extends "Card" ? Card.OfType<SubType & Card.SubType> : never)
-    | (Name extends "Cards" ? Cards.OfType<SubType & Cards.SubType> : never)
-    | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
-    | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
-    | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
-    | (Name extends "CombatantGroup" ? CombatantGroup.OfType<SubType & CombatantGroup.SubType> : never)
-    | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
-    | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
-    | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
-    | (Name extends "Macro" ? Macro.OfType<SubType & Macro.SubType> : never)
-    | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
-    | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never);
+  type OfType<
+    Name extends Document.Type,
+    SubType extends SubTypesOf<Name> = SubTypesOf<Name>,
+  > = Document.Internal.OfType<Name, SubType>;
 
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
@@ -1749,6 +1737,78 @@ declare namespace Document {
           userId: string,
         ]
       : never;
+
+    type StoredForName<Name extends Document.Type, Type = SubTypesOf<Name>> =
+      | (Name extends "ActiveEffect" ? ActiveEffect.Stored<Type & ActiveEffect.SubType> : never)
+      | (Name extends "ActorDelta" ? ActorDelta.Stored<Type & ActorDelta.SubType> : never)
+      | (Name extends "Actor" ? Actor.Stored<Type & Actor.SubType> : never)
+      | (Name extends "Card" ? Card.Stored<Type & Card.SubType> : never)
+      | (Name extends "Cards" ? Cards.Stored<Type & Cards.SubType> : never)
+      | (Name extends "ChatMessage" ? ChatMessage.Stored<Type & ChatMessage.SubType> : never)
+      | (Name extends "Combat" ? Combat.Stored<Type & Combat.SubType> : never)
+      | (Name extends "Combatant" ? Combatant.Stored<Type & Combatant.SubType> : never)
+      | (Name extends "CombatantGroup" ? CombatantGroup.Stored<Type & CombatantGroup.SubType> : never)
+      | (Name extends "Folder" ? Folder.Stored<Type & Folder.SubType> : never)
+      | (Name extends "Item" ? Item.Stored<Type & Item.SubType> : never)
+      | (Name extends "JournalEntryPage" ? JournalEntryPage.Stored<Type & JournalEntryPage.SubType> : never)
+      | (Name extends "Macro" ? Macro.Stored<Type & Macro.SubType> : never)
+      | (Name extends "RegionBehavior" ? RegionBehavior.Stored<Type & RegionBehavior.SubType> : never)
+      | (Name extends "TableResult" ? TableResult.Stored<Type & TableResult.SubType> : never)
+      | (Name extends "Adventure" ? Adventure.Stored : never)
+      | (Name extends "FogExploration" ? FogExploration.Stored : never)
+      | (Name extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
+      | (Name extends "JournalEntry" ? JournalEntry.Stored : never)
+      | (Name extends "PlaylistSound" ? PlaylistSound.Stored : never)
+      | (Name extends "Playlist" ? Playlist.Stored : never)
+      | (Name extends "RollTable" ? RollTable.Stored : never)
+      | (Name extends "Scene" ? Scene.Stored : never)
+      | (Name extends "Setting" ? Setting.Stored : never)
+      | (Name extends "User" ? User.Stored : never)
+      | (Name extends "AmbientLight" ? AmbientLightDocument.Stored : never)
+      | (Name extends "AmbientSound" ? AmbientSoundDocument.Stored : never)
+      | (Name extends "Drawing" ? DrawingDocument.Stored : never)
+      | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.Stored : never)
+      | (Name extends "Note" ? NoteDocument.Stored : never)
+      | (Name extends "Region" ? RegionDocument.Stored : never)
+      | (Name extends "Tile" ? TileDocument.Stored : never)
+      | (Name extends "Token" ? TokenDocument.Stored : never)
+      | (Name extends "Wall" ? WallDocument.Stored : never);
+
+    type OfType<Name extends Document.Type, SubType = SubTypesOf<Name>> =
+      | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
+      | (Name extends "ActorDelta" ? ActorDelta.OfType<SubType & ActorDelta.SubType> : never)
+      | (Name extends "Actor" ? Actor.OfType<SubType & Actor.SubType> : never)
+      | (Name extends "Card" ? Card.OfType<SubType & Card.SubType> : never)
+      | (Name extends "Cards" ? Cards.OfType<SubType & Cards.SubType> : never)
+      | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
+      | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
+      | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
+      | (Name extends "CombatantGroup" ? CombatantGroup.OfType<SubType & CombatantGroup.SubType> : never)
+      | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
+      | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
+      | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
+      | (Name extends "Macro" ? Macro.OfType<SubType & Macro.SubType> : never)
+      | (Name extends "RegionBehavior" ? RegionBehavior.OfType<SubType & RegionBehavior.SubType> : never)
+      | (Name extends "TableResult" ? TableResult.OfType<SubType & TableResult.SubType> : never)
+      | (Name extends "Adventure" ? Adventure.Implementation : never)
+      | (Name extends "FogExploration" ? FogExploration.Implementation : never)
+      | (Name extends "JournalEntryCategory" ? JournalEntryCategory.Implementation : never)
+      | (Name extends "JournalEntry" ? JournalEntry.Implementation : never)
+      | (Name extends "PlaylistSound" ? PlaylistSound.Implementation : never)
+      | (Name extends "Playlist" ? Playlist.Implementation : never)
+      | (Name extends "RollTable" ? RollTable.Implementation : never)
+      | (Name extends "Scene" ? Scene.Implementation : never)
+      | (Name extends "Setting" ? Setting.Implementation : never)
+      | (Name extends "User" ? User.Implementation : never)
+      | (Name extends "AmbientLight" ? AmbientLightDocument.Implementation : never)
+      | (Name extends "AmbientSound" ? AmbientSoundDocument.Implementation : never)
+      | (Name extends "Drawing" ? DrawingDocument.Implementation : never)
+      | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.Implementation : never)
+      | (Name extends "Note" ? NoteDocument.Implementation : never)
+      | (Name extends "Region" ? RegionDocument.Implementation : never)
+      | (Name extends "Tile" ? TileDocument.Implementation : never)
+      | (Name extends "Token" ? TokenDocument.Implementation : never)
+      | (Name extends "Wall" ? WallDocument.Implementation : never);
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1906,41 +1966,10 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  type StoredForName<DocumentType extends Document.Type> =
-    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Stored : never)
-    | (DocumentType extends "ActorDelta" ? ActorDelta.Stored : never)
-    | (DocumentType extends "Actor" ? Actor.Stored : never)
-    | (DocumentType extends "Adventure" ? Adventure.Stored : never)
-    | (DocumentType extends "Card" ? Card.Stored : never)
-    | (DocumentType extends "Cards" ? Cards.Stored : never)
-    | (DocumentType extends "ChatMessage" ? ChatMessage.Stored : never)
-    | (DocumentType extends "Combat" ? Combat.Stored : never)
-    | (DocumentType extends "Combatant" ? Combatant.Stored : never)
-    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Stored : never)
-    | (DocumentType extends "FogExploration" ? FogExploration.Stored : never)
-    | (DocumentType extends "Folder" ? Folder.Stored : never)
-    | (DocumentType extends "Item" ? Item.Stored : never)
-    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
-    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
-    | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
-    | (DocumentType extends "Macro" ? Macro.Stored : never)
-    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Stored : never)
-    | (DocumentType extends "Playlist" ? Playlist.Stored : never)
-    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Stored : never)
-    | (DocumentType extends "RollTable" ? RollTable.Stored : never)
-    | (DocumentType extends "Scene" ? Scene.Stored : never)
-    | (DocumentType extends "Setting" ? Setting.Stored : never)
-    | (DocumentType extends "TableResult" ? TableResult.Stored : never)
-    | (DocumentType extends "User" ? User.Stored : never)
-    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Stored : never)
-    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Stored : never)
-    | (DocumentType extends "Drawing" ? DrawingDocument.Stored : never)
-    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Stored : never)
-    | (DocumentType extends "Note" ? NoteDocument.Stored : never)
-    | (DocumentType extends "Region" ? RegionDocument.Stored : never)
-    | (DocumentType extends "Tile" ? TileDocument.Stored : never)
-    | (DocumentType extends "Token" ? TokenDocument.Stored : never)
-    | (DocumentType extends "Wall" ? WallDocument.Stored : never);
+  type StoredForName<
+    Name extends Document.Type,
+    Type extends SubTypesOf<Name> = SubTypesOf<Name>,
+  > = Document.Internal.StoredForName<Name, Type>;
 
   type InvalidForName<DocumentType extends Document.Type> =
     | (DocumentType extends "ActiveEffect" ? ActiveEffect.Invalid : never)
@@ -3254,6 +3283,10 @@ declare namespace Document {
    */
   type Clone<This extends Document.Any, Save extends boolean | undefined> =
     true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]> | undefined> : This;
+
+  type Clone2<Doc extends Document.Any, Save extends boolean | undefined> = Save extends true
+    ? Document.Internal.StoredForName<Doc["documentName"], GetKey<Doc, "type">>
+    : Document.OfType<Doc["documentName"], GetKey<Doc, "type">>;
 
   /* ***********************************************
    *             CLIENT DOCUMENT TYPES             *

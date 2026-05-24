@@ -326,6 +326,13 @@ declare namespace Actor {
     Data extends Array<CreateInput> ? Array<Actor.TemporaryIf<Temporary>> : Actor.TemporaryIf<Temporary> | undefined;
 
   /**
+   * Helper type for the return of {@linkcode Actor.clone | Actor#clone}. This is required because we don't have a document-generic way
+   */
+  type Clone<Type extends SubType, Save extends boolean | undefined> = Save extends true
+    ? Promise<Actor.Stored<Type> | undefined>
+    : Actor.OfType<Type>;
+
+  /**
    * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Actor.name | Actor#name}.
    *
