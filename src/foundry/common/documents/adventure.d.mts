@@ -67,8 +67,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* Document overrides */
 
-  // `Adventure`s are never embedded.
-
   static override get implementation(): Adventure.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAdventure;

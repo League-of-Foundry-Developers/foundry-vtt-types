@@ -120,8 +120,6 @@ declare abstract class BaseActorDelta<
 
   /* Document overrides */
 
-  // Even temporary `ActorDelta`s require parents, so this is never `null`.
-
   static override get implementation(): ActorDelta.ImplementationClass;
 
   static override get baseDocument(): typeof BaseActorDelta;

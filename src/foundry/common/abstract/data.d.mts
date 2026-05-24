@@ -29,14 +29,14 @@ export default DataModel;
  * @remarks List of methods and types that subclasses may want to override beyond the
  * required {@linkcode DataModel.defineSchema} to get narrower types:
  * - {@linkcode DataModel.schema}
- * - {@linkcode DataModel.cleanData}
- * - {@linkcode DataModel._initializeSource | DataModel#_initializeSource}
  * - {@linkcode DataModel.clone | DataModel#clone}
  * - {@linkcode DataModel.validateJoint}
  * - {@linkcode DataModel.fromSource}
  * - {@linkcode DataModel.fromJSON}
- * - {@linkcode DataModel.migrateData}
- * - {@linkcode DataModel.shimData}
+ *
+ * Additionally, {@linkcode DataModel.cleanData}, {@linkcode DataModel.migrateData}, and {@linkcode DataModel.shimData} could be overridden
+ * if you are sure you have accurate and sufficient types for your model, but the types project is still deciding on how best (or even if
+ * its reasonably possible to) type these in a useful and configurable way.
  */
 declare abstract class DataModel<
   Schema extends DataSchema,
@@ -284,7 +284,6 @@ declare abstract class DataModel<
    * this is effectively abstract in `DataModel`. Subclasses implementing should type `data` as the `SchemaField.SourceData<>` of
    * their schema.
    */
-  // TODO(esheyw): dep warning is gone in v13, clean up remarks
   static validateJoint(data: never): void;
 
   /**
@@ -299,7 +298,6 @@ declare abstract class DataModel<
    */
   // TODO: This should allow dotkeys to be passed
   // TODO: Without widening changes and the return type, the ActorDelta override is impossible to make correct
-  // changes, options: not null (parameter default only)
   updateSource(
     changes?: SchemaField.UpdateData<Schema>,
     options?: DataModel.UpdateOptions,
@@ -365,14 +363,20 @@ declare abstract class DataModel<
   /**
    * Migrate candidate source data for this `DataModel` which may require initial cleaning or transformations.
    * @param source - The candidate source data from which the model will be constructed
-   * @returns Migrated source data, if necessary
+   * @returns Migrated source data, which is the same object as the `source` argument
+   * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
+   * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
+   * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
   static migrateData(source: object): object;
 
   /**
    * Wrap data migration in a try/catch which attempts it safely
    * @param source - The candidate source data from which the model will be constructed
-   * @returns Migrated source data, if necessary
+   * @returns Migrated source data, which is the same object as the `source` argument
+   * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
+   * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
+   * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
   static migrateDataSafe(source: object): object;
 
@@ -381,7 +385,7 @@ declare abstract class DataModel<
    * support older code which uses this data.
    * @param data    - Data which matches the current schema
    * @param options - Additional shimming options
-   * @returns Data with added backwards-compatible properties
+   * @returns Data with added backwards-compatible properties, which is the same object as the `data` argument
    */
   static shimData(data: object, options?: DataModel.ShimDataOptions): object;
 }

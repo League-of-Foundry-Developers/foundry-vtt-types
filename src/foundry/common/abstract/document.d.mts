@@ -95,13 +95,53 @@ declare class Uses<T> {
 }
 
 /**
- * An extension of the base DataModel which defines a Document.
- * Documents are special in that they are persisted to the database and referenced by _id.
+ * An extension of the base {@linkcode DataModel} which defines a Document.
+ * Documents are special in that they are persisted to the database and referenced by `_id`.
  *
  * @privateRemarks
  * List of properties and methods that need to be templated out in each specific document file, for one reason or another:
- * - {@linkcode Document.parentCollection | #parentCollection}: (most) primary documents have this set `null`. Could be handled by a lookup
- * in `Document`, but
+ * - Only templated because the static side can't see the `DocumentName` type param:
+ *   - {@linkcode Document.implementation}
+ *   - {@linkcode Document.baseDocument}
+ *   - {@linkcode Document.collectionName}
+ *   - {@linkcode Document.documentName}
+ *   - {@linkcode Document.TYPES}
+ *   - {@linkcode Document.hasTypeData}
+ *   - {@linkcode Document.getCollectionName}
+ * - Need to hide `User.Internal.Implementation` from users:
+ *   - {@linkcode Document.canUserCreate | Document#canUserCreate}
+ *   - {@linkcode Document.getUserLevel | Document#getUserLevel}
+ *   - {@linkcode Document.testUserPermission | Document#testUserPermission}
+ *   - {@linkcode Document.canUserModify | Document#canUserModify}
+ * - Circularity control:
+ *   - {@linkcode Document.system | Document#system}
+ *   - {@linkcode Document.parent | Document#parent}
+ * - Database operations (circularity bait and the statics can't see the `DocumentName`):
+ *   - {@linkcode Document.createDocuments}
+ *   - {@linkcode Document.updateDocuments}
+ *   - {@linkcode Document.deleteDocuments}
+ *   - {@linkcode Document.create}
+ *   - {@linkcode Document.update | Document#update}
+ *   - {@linkcode Document.delete | Document#delete}
+ *   - {@linkcode Document.get}
+ *   - {@linkcode Document.getEmbeddedCollection | Document#getEmbeddedCollection}
+ *   - {@linkcode Document.createEmbeddedDocuments | Document#createEmbeddedDocuments}
+ *   - {@linkcode Document.updateEmbeddedDocuments | Document#updateEmbeddedDocuments}
+ *   - {@linkcode Document.deleteEmbeddedDocuments | Document#deleteEmbeddedDocuments}
+ *   - {@linkcode Document.getFlag | Document#getFlag}
+ *   - {@linkcode Document.setFlag | Document#setFlag}
+ *   - {@linkcode Document.unsetFlag | Document#unsetFlag}
+ *   - {@linkcode Document._preCreate | Document#_preCreate}
+ *   - {@linkcode Document._onCreate | Document#_onCreate}
+ *   - {@linkcode Document._preCreateOperation}
+ *   - {@linkcode Document._preUpdate | Document#_preUpdate}
+ *   - {@linkcode Document._onUpdate | Document#_onUpdate}
+ *   - {@linkcode Document._preUpdateOperation}
+ *   - {@linkcode Document._preDelete | Document#_preDelete}
+ *   - {@linkcode Document._onDelete | Document#_onDelete}
+ *   - {@linkcode Document._preDeleteOperation}
+ *
+ * `Document`s are also {@linkcode DataModel}s, so the template methods listed there also apply.
  */
 declare abstract class Document<
   DocumentName extends Document.Type,
