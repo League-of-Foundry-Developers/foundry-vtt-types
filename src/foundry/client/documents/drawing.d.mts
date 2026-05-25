@@ -182,7 +182,7 @@ declare namespace DrawingDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode DrawingDocument}. This is the source of truth for how an DrawingDocument document
+   * The schema for {@linkcode DrawingDocument}. This is the source of truth for how a `DrawingDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode DrawingDocument}. For example
@@ -1045,9 +1045,9 @@ declare namespace DrawingDocument {
 
   interface ValidateVisibleContentData
     extends
-      IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
+      IntentionalPartial<Pick<DrawingDocument.InitializedData, "shape">>,
       Pick<
-        BaseDrawing.InitializedData,
+        DrawingDocument.InitializedData,
         "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
       > {}
 
@@ -1078,7 +1078,24 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   /**
    * Fields included in the drawing defaults setting
-   * @defaultValue `["strokeWidth", "strokeColor", "strokeAlpha", "bezierFactor", "fillType", "fillColor", "fillAlpha", "texture", "text", "fontFamily", "fontSize", "textColor", "textAlpha"]`
+   * @defaultValue
+   * ```js
+   * [
+   *   "strokeWidth",
+   *   "strokeColor",
+   *   "strokeAlpha",
+   *   "bezierFactor",
+   *   "fillType",
+   *   "fillColor",
+   *   "fillAlpha",
+   *   "texture",
+   *   "text",
+   *   "fontFamily",
+   *   "fontSize",
+   *   "textColor",
+   *   "textAlpha"
+   * ]
+   * ```
    */
   static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 

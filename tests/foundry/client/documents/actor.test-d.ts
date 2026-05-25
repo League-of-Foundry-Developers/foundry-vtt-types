@@ -19,17 +19,17 @@ expectTypeOf(actor.thumbnail).toEqualTypeOf<typeof actor.img>();
 expectTypeOf(actor.itemTypes).toEqualTypeOf<Actor.ItemTypes>();
 
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();
-expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
+expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect.Stored[]>();
+expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ActiveEffect.Stored[]>();
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
 expectTypeOf(actor.applyActiveEffects()).toEqualTypeOf<void>();
 expectTypeOf(actor.getActiveTokens(false)).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(actor.getActiveTokens(false, Math.random() > 0.5)).toEqualTypeOf<
-  Token.Implementation[] | TokenDocument.Implementation[]
+  Token.Implementation[] | TokenDocument.Stored[]
 >();
-expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument.Implementation[]>();
+expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument.Stored[]>();
 expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token.Implementation[]>();
 
 expectTypeOf(actor.itemTypes.weapon![0]!.type).toEqualTypeOf<"weapon">();
@@ -38,7 +38,7 @@ expectTypeOf(actor.itemTypes.armor[0]!.type).toEqualTypeOf<"armor">();
 expectTypeOf(actor.itemTypes.armor[0]!.system).toEqualTypeOf<ArmorData>();
 
 for (const effect of actor.allApplicableEffects()) {
-  expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
+  expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Stored>();
 }
 
 expectTypeOf(actor.getRollData()).toEqualTypeOf<AnyObject>();
@@ -47,8 +47,8 @@ expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promis
 
 expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
-expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<Combat.Implementation | null>>();
-expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Implementation[]>();
+expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<Combat.Stored | null>>();
+expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Stored[]>();
 
 test("actor system update", () => {
   // Note(LukeAbby): This test _should_ fail at some point. Specifically it should require `==type`

@@ -173,7 +173,7 @@ declare namespace AmbientSoundDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode AmbientSoundDocument}. This is the source of truth for how an AmbientSoundDocument document
+   * The schema for {@linkcode AmbientSoundDocument}. This is the source of truth for how an `AmbientSoundDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode AmbientSoundDocument}. For example

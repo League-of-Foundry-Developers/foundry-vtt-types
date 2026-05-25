@@ -1,6 +1,5 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
@@ -50,7 +49,7 @@ declare abstract class BaseCombatant<
 
   static override defineSchema(): BaseCombatant.Schema;
 
-  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.

@@ -60,6 +60,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param user - The user attempting to change the round
    * @returns Is the user allowed to change the round?
    * @remarks Foundry's implementation always returns `true`
+   * @privateRemarks Called by the permission check methods, so a temporary `User` is possible
    */
   protected _canChangeRound(user: User.Implementation): boolean;
 
@@ -68,6 +69,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param user - The user attempting to change the turn
    * @returns Is the user allowed to change the turn?
    * @remarks Foundry's implementation always returns `true`
+   * @privateRemarks Called by the permission check methods, so a temporary `User` is possible
    */
   protected _canChangeTurn(user: User.Implementation): boolean;
 

@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
+import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -64,22 +65,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * @returns Candidate item image
    * @remarks Core's implementation does not use `itemData`
    */
-  static getDefaultArtwork(itemData?: BaseItem.CreateData): Item.GetDefaultArtworkReturn;
+  static getDefaultArtwork(itemData?: BaseItem.CreateData): BaseItem.GetDefaultArtworkReturn;
 
+  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
-   */
+  /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
   static override migrateData(source: object): object;
 
-  /** @remarks `source` instead of the parent's `data` here */
+  /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
@@ -93,8 +91,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
 
   type: SubType;
-
-  aaaaa: SubType;
 
   /* Document overrides */
 

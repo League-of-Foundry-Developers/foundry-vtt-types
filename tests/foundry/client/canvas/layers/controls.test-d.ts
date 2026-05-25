@@ -64,7 +64,7 @@ expectTypeOf(
     color: 0xfaddaf,
     duration: 2323,
     name: "SomePing.ASFASDFAS",
-    pull: null,
+    pull: true,
     size: 120,
     style: "alert",
     zoom: 2.6,
@@ -92,7 +92,7 @@ expectTypeOf(
     name: "bizzfuzz",
     duration: 1000,
     size: 250,
-    style: null,
+    style: undefined,
     user: null,
   }),
 ).toEqualTypeOf<Promise<boolean>>();
