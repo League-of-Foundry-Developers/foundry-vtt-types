@@ -84,7 +84,7 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
     viewport = null;
   }
 
-  const browser = await chromium.launch({ headless, args });
+  const browser = await launchChromium({ headless, args });
 
   const context = await browser.newContext({
     baseURL: foundryUrl,
@@ -374,6 +374,22 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
   }
 
   return { viteUrl, browser, server, context, page };
+}
+
+async function launchChromium({ headless, args }: { headless: boolean; args: string[] }): Promise<Browser> {
+  // Try Playwright-managed Chromium first.
+  const channels: Array<"chromium" | "chrome" | "msedge"> = ["chromium", "chrome", "msedge"];
+
+  let latestError: unknown;
+  for (const channel of channels) {
+    try {
+      return await chromium.launch({ channel, headless, args });
+    } catch (error) {
+      latestError = error;
+    }
+  }
+
+  throw latestError;
 }
 
 async function getFoundryUrl(): Promise<string> {
