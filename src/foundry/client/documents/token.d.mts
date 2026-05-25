@@ -308,6 +308,7 @@ declare namespace TokenDocument {
     /**
      * The display mode of the Token nameplate, from {@linkcode CONST.TOKEN_DISPLAY_MODES}
      * @defaultValue {@linkcode CONST.TOKEN_DISPLAY_MODES.NONE}
+     * @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.ActorSubTypeSchema.displayName}.
      */
     displayName: fields.NumberField<
       {
@@ -327,12 +328,6 @@ declare namespace TokenDocument {
      * @defaultValue `false`
      */
     actorLink: fields.BooleanField;
-
-    randomImg: fields.BooleanField;
-
-    appendNumber: fields.BooleanField;
-
-    prependAdjective: fields.BooleanField;
 
     /**
      * The width of the Token in grid units
@@ -363,6 +358,7 @@ declare namespace TokenDocument {
     /**
      * Prevent the Token image from visually rotating?
      * @defaultValue `false`
+     * @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.ActorSubTypeSchema.lockRotation}.
      */
     lockRotation: fields.BooleanField;
 
@@ -381,6 +377,7 @@ declare namespace TokenDocument {
     /**
      * A displayed Token disposition from CONST.TOKEN_DISPOSITIONS
      * @defaultValue `CONST.TOKEN_DISPOSITIONS.HOSTILE` (`-1`)
+     * @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.ActorSubTypeSchema.disposition}.
      */
     disposition: fields.NumberField<
       {
@@ -398,6 +395,7 @@ declare namespace TokenDocument {
     /**
      * The display mode of Token resource bars, from CONST.TOKEN_DISPLAY_MODES
      * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+     * @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.ActorSubTypeSchema.displayBars}.
      */
     displayBars: fields.NumberField<
       {
@@ -605,26 +603,7 @@ declare namespace TokenDocument {
       }>;
     }>;
 
-    turnMarker: fields.SchemaField<{
-      mode: fields.NumberField<
-        {
-          required: true;
-          choices: CONST.TOKEN_TURN_MARKER_MODES[];
-          initial: typeof CONST.TOKEN_TURN_MARKER_MODES.DEFAULT;
-          validationError: "must be a value in CONST.TOKEN_TURN_MARKER_MODES";
-        },
-        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-        CONST.TOKEN_TURN_MARKER_MODES | null | undefined,
-        CONST.TOKEN_TURN_MARKER_MODES,
-        CONST.TOKEN_TURN_MARKER_MODES
-      >;
-
-      animation: fields.StringField<{ required: true; blank: false; nullable: true }>;
-
-      src: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
-
-      disposition: fields.BooleanField;
-    }>;
+    turnMarker: fields.SchemaField<TurnMarkerSchema>;
 
     movementAction: fields.StringField<{
       required: true;
@@ -639,6 +618,31 @@ declare namespace TokenDocument {
      * @defaultValue `{}`
      */
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
+  }
+
+  interface TurnMarkerSchema extends fields.DataSchema {
+    /** @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.TurnMarkerSchema.mode}. */
+    mode: fields.NumberField<
+      {
+        required: true;
+        choices: CONST.TOKEN_TURN_MARKER_MODES[];
+        initial: typeof CONST.TOKEN_TURN_MARKER_MODES.DEFAULT;
+        validationError: "must be a value in CONST.TOKEN_TURN_MARKER_MODES";
+      },
+      // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      CONST.TOKEN_TURN_MARKER_MODES | null | undefined,
+      CONST.TOKEN_TURN_MARKER_MODES,
+      CONST.TOKEN_TURN_MARKER_MODES
+    >;
+
+    /** @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.TurnMarkerSchema.animation}. */
+    animation: fields.StringField<{ required: true; blank: false; nullable: true }>;
+
+    /** @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.TurnMarkerSchema.src}. */
+    src: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+
+    /** @privateRemarks When updating, also update {@linkcode foundry.data.PrototypeTokenOverrides.TurnMarkerSchema.disposition}. */
+    disposition: fields.BooleanField;
   }
 
   interface DetectionModeSchema extends fields.DataSchema {
