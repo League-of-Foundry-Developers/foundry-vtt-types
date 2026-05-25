@@ -28,8 +28,8 @@ export default DataModel;
  *
  * @remarks List of methods and types that subclasses may want to override beyond the
  * required {@linkcode DataModel.defineSchema} to get narrower types:
+ * - {@linkcode DataModel._schema}
  * - {@linkcode DataModel.schema}
- * - {@linkcode DataModel.clone | DataModel#clone}
  * - {@linkcode DataModel.validateJoint}
  * - {@linkcode DataModel.fromSource}
  * - {@linkcode DataModel.fromJSON}
