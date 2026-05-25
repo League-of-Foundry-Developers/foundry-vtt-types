@@ -381,7 +381,9 @@ declare namespace RectangleShapeData {
  * The data model for a rectangular shape.
  */
 declare class RectangleShapeData extends BaseShapeData<RectangleShapeData.Schema> {
-  static override TYPE: "rectangle";
+  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
+  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+  static override readonly TYPE: "rectangle";
 
   static override defineSchema(): RectangleShapeData.Schema;
 
@@ -435,9 +437,26 @@ declare namespace CircleShapeData {
  * The data model for a circle shape.
  */
 declare class CircleShapeData extends BaseShapeData<CircleShapeData.Schema> {
-  static override TYPE: "circle";
+  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
+  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+  static override readonly TYPE: "circle";
 
   static override defineSchema(): CircleShapeData.Schema;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<CircleShapeData.Schema>;
+
+  static override get schema(): fields.SchemaField<CircleShapeData.Schema>;
+
+  static override validateJoint(data: CircleShapeData.Source): void;
+
+  static override fromSource(
+    source: CircleShapeData.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): CircleShapeData;
+
+  static override fromJSON(json: string): CircleShapeData;
 }
 
 declare namespace EllipseShapeData {
@@ -486,9 +505,26 @@ declare namespace EllipseShapeData {
  * The data model for an ellipse shape.
  */
 declare class EllipseShapeData extends BaseShapeData<EllipseShapeData.Schema> {
-  static override TYPE: "ellipse";
+  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
+  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+  static override readonly TYPE: "ellipse";
 
   static override defineSchema(): EllipseShapeData.Schema;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<EllipseShapeData.Schema>;
+
+  static override get schema(): fields.SchemaField<EllipseShapeData.Schema>;
+
+  static override validateJoint(data: EllipseShapeData.Source): void;
+
+  static override fromSource(
+    source: EllipseShapeData.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): EllipseShapeData;
+
+  static override fromJSON(json: string): EllipseShapeData;
 }
 
 declare namespace PolygonShapeData {
@@ -517,9 +553,26 @@ declare namespace PolygonShapeData {
  * The data model for a polygon shape.
  */
 declare class PolygonShapeData extends BaseShapeData<PolygonShapeData.Schema> {
-  static override TYPE: "polygon";
+  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
+  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+  static override readonly TYPE: "polygon";
 
   static override defineSchema(): PolygonShapeData.Schema;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<PolygonShapeData.Schema>;
+
+  static override get schema(): fields.SchemaField<PolygonShapeData.Schema>;
+
+  static override validateJoint(data: PolygonShapeData.Source): void;
+
+  static override fromSource(
+    source: PolygonShapeData.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): PolygonShapeData;
+
+  static override fromJSON(json: string): PolygonShapeData;
 }
 
 declare namespace TextureData {
@@ -558,9 +611,11 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     src: fields.FilePathField<{
+      required: true;
       categories: NullishCoalesce<Options["categories"], DefaultOptions["categories"]>;
       initial: NullishCoalesce<GetKey<Options["initial"], "src", null>, null>;
       wildcard: NullishCoalesce<Options["wildcard"], DefaultOptions["wildcard"]>;
+      virtual: _Not<NullishCoalesce<Options["wildcard"], DefaultOptions["wildcard"]>>;
       label: NullishCoalesce<Options["label"], DefaultOptions["label"]>;
     }>;
 
@@ -571,6 +626,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     anchorX: fields.NumberField<{
+      required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "anchorX", 0>, 0>;
     }>;
@@ -582,6 +638,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     anchorY: fields.NumberField<{
+      required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "anchorY", 0>, 0>;
     }>;
@@ -593,6 +650,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     offsetX: fields.NumberField<{
+      required: true;
       nullable: false;
       integer: true;
       initial: NullishCoalesce<GetKey<Options["initial"], "offsetX", 0>, 0>;
@@ -605,6 +663,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     offsetY: fields.NumberField<{
+      required: true;
       nullable: false;
       integer: true;
       initial: NullishCoalesce<GetKey<Options["initial"], "offsetY", 0>, 0>;
@@ -617,6 +676,7 @@ declare namespace TextureData {
      */
     fit: fields.StringField<
       {
+        required: true;
         initial: NullishCoalesce<GetKey<Options["initial"], "fit", "fill">, "fill">;
         choices: typeof CONST.TEXTURE_DATA_FIT_MODES;
       },
@@ -632,6 +692,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     scaleX: fields.NumberField<{
+      required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "scaleX", 1>, 1>;
     }>;
@@ -643,6 +704,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     scaleY: fields.NumberField<{
+      required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "scaleY", 1>, 1>;
     }>;
@@ -664,6 +726,7 @@ declare namespace TextureData {
      * parameter of the {@linkcode TextureData} constructor
      */
     tint: fields.ColorField<{
+      required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "tint", "#ffffff">, "#ffffff">;
     }>;
@@ -778,7 +841,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   /**
    * @defaultValue `{}`
    * @remarks Created via `defineProperty` in constructor without options.
-   * Since it isn't defined in the class body, it's readonly and non-enumerable.
+   * Since it isn't defined in the class body, it's readonly.
    */
   readonly apps: Record<string, foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
@@ -906,7 +969,7 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   /** Apply configured overrides to all Actor documents within the World. */
   static applyAll(): void;
 
-  static #PrototypeTokenOverrides: true; /* DataModel overrides */
+  /* DataModel overrides */
 
   static override _schema: fields.SchemaField<PrototypeToken.Schema>;
 
@@ -917,6 +980,8 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   static override fromSource(source: PrototypeToken.CreateData, context?: DataModel.FromSourceOptions): PrototypeToken;
 
   static override fromJSON(json: string): PrototypeToken;
+
+  static #PrototypeTokenOverrides: true;
 }
 
 declare namespace PrototypeTokenOverrides {
@@ -1102,3 +1167,5 @@ export {
   TextureData,
   TombstoneData,
 };
+
+type _Not<T extends boolean> = T extends true ? false : true;

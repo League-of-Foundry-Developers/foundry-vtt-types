@@ -107,10 +107,12 @@ expectTypeOf(myTombstone._tombstone).toEqualTypeOf<boolean>();
 test("Test TextureData.Schema", () => {
   expectTypeOf<foundry.data.TextureData.Schema["src"]>().toEqualTypeOf<
     foundry.data.fields.FilePathField<{
+      required: true;
       categories: ["IMAGE", "VIDEO"];
       // Note(LukeAbby): The `initial` here in particular was broken for a while due to a usage of `EmptyObject`.
       initial: null;
       wildcard: false;
+      virtual: true;
       label: "";
     }>
   >();
