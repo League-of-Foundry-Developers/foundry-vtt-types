@@ -17,6 +17,11 @@ declare class ChatInputPlugin extends ProseMirrorPlugin {
   /** The ChatLog instance this plugin belongs to. */
   get chat(): ChatLog;
 
+  /**
+   * Build the plugin.
+   * @param schema  - The ProseMirror schema to build the plugin against.
+   * @param options - Build options.
+   */
   static override build(schema: Schema, options?: ChatInputPlugin.BuildOptions): Plugin;
 
   /**

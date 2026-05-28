@@ -201,31 +201,73 @@ declare global {
     }
 
     interface TextEditorEngineRenderOptions extends Record<string, unknown> {
+      /**
+       * Whether the editor is editable.
+       * @defaultValue `true`
+       */
       editable?: boolean | undefined;
+
+      /**
+       * Whether the editor state is toggleable via button.
+       * @defaultValue `false`
+       */
       button?: boolean | undefined;
+
+      /**
+       * Whether the editor should allow for collaborative editing, if supported.
+       * @defaultValue `false`
+       */
       collaborate?: boolean | undefined;
+
+      /** Render the editor at a fixed height. */
       height?: number | undefined;
+
+      /** The editor's initial content. */
       value?: string | undefined;
+
+      /** The editor's name in the form. */
       name?: string | undefined;
     }
 
+    /**
+     * A callback used to instantiate the editor instance.
+     * @param options        - Construction options.
+     * @param initialContent - The editor's initial content.
+     */
     type TextEditorEngineFactory = (
       options: Record<string, unknown>,
       initialContent: string,
     ) => Promise<foundry.applications.ux.TextEditor.CustomEngine>;
 
+    /**
+     * A callback used to generate markup used for the createEditorInput method and `{{ editor }}` handlebars helper.
+     */
     type TextEditorEngineRenderer = (options: TextEditorEngineRenderOptions) => HTMLElement;
 
     interface TextEditorEngineConfig {
+      /** A callback used to instantiate the editor instance. */
       create: TextEditorEngineFactory;
+
+      /**
+       * A callback used to generate markup used for the createEditorInput method and `{{ editor }}` handlebars helper.
+       */
       render: TextEditorEngineRenderer;
     }
 
     interface ProseMirrorInsert {
+      /** A unique identifier. */
       action: string;
+
+      /** The description of the menu item or insert. */
       title: string;
+
+      /** Whether the insert is inline content, otherwise it is assumed to be block content. */
       inline?: boolean | undefined;
+
+      /** The insert's markup. */
       html?: string | undefined;
+
+      /** Any child entries. */
       children?: ProseMirrorInsert[] | undefined;
     }
   }
