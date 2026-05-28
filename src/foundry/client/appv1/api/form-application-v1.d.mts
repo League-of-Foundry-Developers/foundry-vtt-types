@@ -1,4 +1,3 @@
-import type { EditorView } from "prosemirror-view";
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
@@ -162,7 +161,7 @@ declare abstract class FormApplication<
   protected abstract _updateObject(event: Event, formData?: object): Promise<unknown>;
 
   /**
-   * Activate a named TinyMCE text editor
+   * Activate a named text editor.
    * @param name           - The named data field which the editor modifies.
    * @param options        - Editor initialization options passed to {@linkcode TextEditor.create}.
    *                         (default: `{}`)
@@ -173,7 +172,7 @@ declare abstract class FormApplication<
     name: string,
     options?: TextEditor.Options,
     initialContent?: string,
-  ): Promise<tinyMCE.Editor | EditorView>;
+  ): Promise<TextEditor.EditorInstance>;
 
   /**
    * Handle saving the content of a specific editor by name
@@ -301,8 +300,8 @@ declare namespace FormApplication {
     target: string;
     button: HTMLElement;
     hasButton: boolean;
-    instance: tinyMCE.Editor | null;
-    mce: tinyMCE.Editor | null;
+    instance: TextEditor.EditorInstance | null;
+    mce: TextEditor.EditorInstance | null;
     active: boolean;
     changed: boolean;
     options: TextEditor.Options;

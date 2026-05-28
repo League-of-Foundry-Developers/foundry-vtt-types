@@ -97,7 +97,7 @@ export function disabled(value: unknown): string;
 export function concat(...values: string[]): Handlebars.SafeString;
 
 /**
- * Construct an editor element for rich text editing with TinyMCE or ProseMirror.
+ * Construct an editor element for rich text editing.
  * @param content - The content to display and edit
  *
  * @example
@@ -366,9 +366,9 @@ export interface TextEditorOptions extends InexactPartial<Handlebars.HelperOptio
 
     /**
      * The engine editor to use, see {@linkcode TextEditor.create}
-     * @defaultValue `"tinymce"`
+     * @defaultValue `"prosemirror"`
      */
-    engine?: "tinymce" | "prosemirror" | undefined;
+    engine?: string | undefined;
 
     /**
      * Whether to turn on collaborative editing features for ProseMirror
