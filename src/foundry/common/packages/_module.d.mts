@@ -12,17 +12,10 @@ export { default as BaseModule } from "./base-module.mjs";
 export { default as AdditionalTypesField } from "./sub-types.mjs";
 
 declare global {
-  type PackageAuthorData = SchemaField.CreateData<foundry.packages.BasePackage.PackageAuthorSchema>;
-
-  type PackageCompendiumData = SchemaField.CreateData<foundry.packages.BasePackage.PackageCompendiumSchema>;
-
-  type PackageLanguageData = SchemaField.CreateData<foundry.packages.BasePackage.PackageLanguageSchema>;
-
-  type RelatedPackage = SchemaField.CreateData<foundry.packages.BasePackage.RelatedPackageSchema>;
-
   /*
    * The data structure of a package manifest. This data structure is extended by BasePackage subclasses to add additional
    * type-specific fields.
    */
+  // TODO: Replace all references to this with the relevant specific `PackageManifestData` from `BasePackage`, `BaseModule`, `BaseSystem`, or `BaseWorld`
   interface PackageManifestData extends SchemaField.CreateData<foundry.packages.BasePackage.Schema> {}
 }

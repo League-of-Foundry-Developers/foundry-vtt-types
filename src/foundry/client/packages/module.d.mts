@@ -62,11 +62,16 @@ declare namespace Module {
    */
   interface Schema extends BasePackage.Schema {
     /**
-     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3"
-     * and to not include a leading "v" to avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
-     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
+     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3" and to not include a leading "v" to
+     * avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
+     * @privateRemarks Fake type override; see {@linkcode BasePackage.version | BasePackage#version}
      */
-    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+    version: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "0";
+      validate: typeof BasePackage.validateVersion;
+    }>;
 
     /**
      * Does this module provide a translation for the core software?
@@ -83,6 +88,8 @@ declare namespace Module {
      */
     documentTypes: AdditionalTypesField;
   }
+
+  interface ManifestData extends BasePackage.ManifestData<Schema> {}
 }
 
 export default Module;

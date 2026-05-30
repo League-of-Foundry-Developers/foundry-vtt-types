@@ -74,7 +74,7 @@ declare namespace ClientPackageMixin {
   }
 
   class ClientPackage {
-    /** @privateRemarks All mixin classses should accept anything for its constructor. */
+    /** @privateRemarks All mixin classes should accept anything for its constructor. */
     constructor(...args: any[]);
 
     /**

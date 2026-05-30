@@ -5,6 +5,7 @@ import type Module from "./module.d.mts";
 import type System from "./system.d.mts";
 
 import fields = foundry.data.fields;
+import type { InexactPartial } from "#utils";
 
 declare class World extends ClientPackageMixin(foundry.packages.BaseWorld) {
   static override getVersionBadge(
@@ -63,6 +64,11 @@ declare namespace World {
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+  interface DemoSchema extends fields.DataSchema {
+    /** Path to the world's fresh data. */
+    sourceZip: fields.StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+  }
+
   /**
    * The schema for {@linkcode World}. This is the source of truth for how an World document
    * must be structured.
@@ -82,7 +88,9 @@ declare namespace World {
     /**
      * A web URL or local file path which provides a background banner image
      */
-    background: fields.StringField<{ required: false; blank: false }>;
+    background: fields.FilePathField<{ categories: ["IMAGE"]; required: false }>;
+
+    description: fields.HTMLField<{ required: true }>;
 
     /**
      * The theme to use for this world's join page.
@@ -91,19 +99,23 @@ declare namespace World {
       required: false;
       initial: undefined;
       nullable: false;
-      blank: false;
-      choices: typeof foundry.CONST.WORLD_JOIN_THEMES;
+      choices: (keyof typeof CONST.WORLD_JOIN_THEMES)[];
     }>;
 
     /**
      * The version of the core software for which this world has been migrated
      */
-    coreVersion: fields.StringField<{ required: true; blank: false }>;
+    coreVersion: fields.StringField<{ required: true; blank: false; validate: typeof BasePackage.validateVersion }>;
 
     /**
      * The version of the game system for which this world has been migrated
      */
-    systemVersion: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+    systemVersion: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "0";
+      validate: typeof BasePackage.validateVersion;
+    }>;
 
     lastPlayed: fields.StringField;
 
@@ -124,7 +136,22 @@ declare namespace World {
      */
     safeMode: fields.BooleanField<{ required: false; initial: undefined }>;
 
-    version: fields.StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+    /**
+     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3" and to not include a leading "v" to
+     * avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
+     */
+    version: fields.StringField<{
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: null;
+      validate: typeof BasePackage.validateVersion;
+    }>;
+
+    /**
+     * Configuration for demo worlds.
+     */
+    demo: fields.SchemaField<DemoSchema>;
   }
 
   interface GetVersionBadgeOptions {
@@ -150,6 +177,36 @@ declare namespace World {
      */
     systems?: Collection<System> | undefined;
   }
+
+  /** @internal */
+  interface _TestAvailabilityOptions {
+    /**
+     * A specific collection of modules to test availability
+     * against. Tests against the currently installed modules by
+     * default.
+     */
+    modules: Collection<foundry.packages.Module>;
+
+    /**
+     * A specific collection of modules to test availability
+     * against. Tests against the currently installed modules by
+     * default.
+     */
+    systems: Collection<foundry.packages.System>;
+
+    /**
+     * Ignore the world's own core software compatibility and
+     * instead defer entirely to the system's core software
+     * compatibility, if the world's availability is less than
+     * this.
+     */
+    systemAvailabilityThreshold: CONST.PACKAGE_AVAILABILITY_CODES;
+  }
+
+  interface TestAvailabilityOptions
+    extends InexactPartial<_TestAvailabilityOptions>, BasePackage.TestAvailabilityOptions {}
+
+  interface ManifestData extends BasePackage.ManifestData<Schema> {}
 }
 
 export default World;

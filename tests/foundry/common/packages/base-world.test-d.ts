@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject } from "fvtt-types/utils";
 
 // @ts-expect-error Missing required properties.
 new foundry.packages.BaseWorld({});
@@ -8,10 +7,10 @@ const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", syst
 
 expectTypeOf(foundry.packages.BaseWorld.type).toEqualTypeOf<"world">();
 expectTypeOf(foundry.packages.BaseWorld.icon).toEqualTypeOf<string>();
-expectTypeOf(foundry.packages.BaseWorld.migrateData({})).toEqualTypeOf<AnyMutableObject>();
+expectTypeOf(foundry.packages.BaseWorld.migrateData({})).toEqualTypeOf<object>();
 expectTypeOf(
-  foundry.packages.BaseWorld.testAvailability({}, {}),
-).toEqualTypeOf<foundry.CONST.PACKAGE_AVAILABILITY_CODES>();
+  foundry.packages.BaseWorld.testAvailability(baseWorld, {}),
+).toEqualTypeOf<CONST.PACKAGE_AVAILABILITY_CODES>();
 
 // Following should check out, validated in world (use `game.world` to grab the instance)
 // The version handling is weird because it's an alteration of the schema
@@ -22,7 +21,7 @@ expectTypeOf(
 
 // schema fields
 expectTypeOf(baseWorld.system).toEqualTypeOf<string>();
-expectTypeOf(baseWorld.background).toEqualTypeOf<string | undefined>();
+expectTypeOf(baseWorld.background).toEqualTypeOf<string | null>();
 expectTypeOf(baseWorld.joinTheme).toEqualTypeOf<keyof typeof foundry.CONST.WORLD_JOIN_THEMES | undefined>();
 expectTypeOf(baseWorld.coreVersion).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.systemVersion).toEqualTypeOf<string>();
@@ -32,3 +31,4 @@ expectTypeOf(baseWorld.nextSession).toEqualTypeOf<string | null>();
 expectTypeOf(baseWorld.resetKeys).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(baseWorld.safeMode).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(baseWorld.version).toEqualTypeOf<string | null>();
+expectTypeOf(baseWorld.demo.sourceZip).toEqualTypeOf<string | null>();

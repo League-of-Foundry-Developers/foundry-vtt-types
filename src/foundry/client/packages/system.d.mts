@@ -1,9 +1,8 @@
-import type BasePackage from "#common/packages/base-package.d.mts";
-import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
-import type DataModel from "#common/abstract/data.mjs";
-import type ClientPackageMixin from "./client-package.d.mts";
 import type { SystemNameConfig } from "#configuration";
 import type { GetKey } from "#utils";
+import type { AdditionalTypesField, BasePackage } from "#common/packages/_module.d.mts";
+import type { DataModel } from "#common/abstract/_module.d.mts";
+import type { ClientPackageMixin } from "#client/packages/_module.d.mts";
 
 import fields = foundry.data.fields;
 import Game = foundry.Game;
@@ -75,11 +74,16 @@ declare namespace System {
    */
   interface Schema extends BasePackage.Schema {
     /**
-     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3"
-     * and to not include a leading "v" to avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
-     * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
+     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3" and to not include a leading "v" to
+     * avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
+     * @privateRemarks Fake type override; see {@linkcode BasePackage.version | BasePackage#version}
      */
-    version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+    version: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "0";
+      validate: typeof BasePackage.validateVersion;
+    }>;
 
     /**
      * Additional document subtypes provided by this system.
@@ -150,6 +154,8 @@ declare namespace System {
      */
     gridUnits: fields.NumberField;
   }
+
+  interface ManifestData extends BasePackage.ManifestData<Schema> {}
 }
 
 export default System;
