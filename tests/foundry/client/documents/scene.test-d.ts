@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 import ImageHelper = foundry.helpers.media.ImageHelper;
+import Notifications = foundry.applications.ui.Notifications;
 
 // @ts-expect-error A Scene requires name.
 new Scene.implementation();
@@ -19,7 +20,7 @@ expectTypeOf(scene.journal).toEqualTypeOf<JournalEntry.Stored | null>();
 expectTypeOf(scene.playlist).toEqualTypeOf<Playlist.Stored | null>();
 expectTypeOf(scene.playlistSound).toEqualTypeOf<string | null>();
 expectTypeOf(scene.activate()).toEqualTypeOf<Promise<Scene.Implementation | undefined>>();
-expectTypeOf(scene.view()).toEqualTypeOf<Promise<typeof scene | number>>();
+expectTypeOf(scene.view()).toEqualTypeOf<Promise<typeof scene | Notifications.Notification<"warning">>>();
 expectTypeOf(scene.clone()).toEqualTypeOf<Scene.Implementation>();
 expectTypeOf(scene.prepareBaseData()).toEqualTypeOf<void>();
 expectTypeOf(scene.createThumbnail()).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn>>();

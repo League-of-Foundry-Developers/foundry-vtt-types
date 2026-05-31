@@ -69,7 +69,7 @@ type CanvasSupportedComponents = unknown;
 
 type CanvasDimensions = unknown;
 
-type JournalEntryPageHeading = unknown;
+type JournalEntryPageHeading = JournalEntryPage.Heading;
 
 type SearchableField = foundry.data.fields.DataField.Any | Record<string, foundry.data.fields.DataField.Any>;
 

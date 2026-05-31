@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
-import SettingsConfig = foundry.applications.settings.SettingsConfig;
+import ClientSettings = foundry.helpers.ClientSettings;
 
 // @ts-expect-error requires key
 new Setting.implementation();
@@ -11,7 +11,7 @@ new Setting.implementation({});
 
 const setting = new Setting.implementation({ key: "foo.bar", value: "bar" });
 
-expectTypeOf(setting.config).toEqualTypeOf<SettingsConfig | undefined>();
+expectTypeOf(setting.config).toEqualTypeOf<ClientSettings.SettingConfig | undefined>();
 
 expectTypeOf(setting.key).toEqualTypeOf<`${string}.${string}`>();
 expectTypeOf(setting.value).toEqualTypeOf<AnyObject | null>();

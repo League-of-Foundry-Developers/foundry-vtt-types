@@ -5,7 +5,7 @@ const doc = new TokenDocument.implementation({}, { parent: scene });
 expectTypeOf(doc.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(doc.isOwner).toEqualTypeOf<boolean>();
 expectTypeOf(doc.isLinked).toEqualTypeOf<boolean>();
-expectTypeOf(doc.combatant).toEqualTypeOf<Combatant.Implementation | null>();
+expectTypeOf(doc.combatant).toEqualTypeOf<Combatant.Stored | null>();
 expectTypeOf(doc.inCombat).toEqualTypeOf<boolean>();
 expectTypeOf(doc.clone()).toEqualTypeOf<TokenDocument.Implementation>();
 expectTypeOf(doc.clone({}, { save: true })).toEqualTypeOf<Promise<TokenDocument.Stored | undefined>>();

@@ -231,7 +231,7 @@ declare namespace WallDocument {
   interface AnimationData extends fields.SchemaField.InitializedData<AnimationSchema> {}
 
   /**
-   * The schema for {@linkcode WallDocument}. This is the source of truth for how an WallDocument document
+   * The schema for {@linkcode WallDocument}. This is the source of truth for how a `WallDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode WallDocument}. For example

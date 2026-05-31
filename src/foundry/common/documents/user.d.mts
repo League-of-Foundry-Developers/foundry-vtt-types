@@ -53,7 +53,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   get isBanned(): boolean;
 
   /**
-   * Test whether the User has a GAMEMASTER or ASSISTANT role in this World?
+   * Test whether the User has a `GAMEMASTER` or `ASSISTANT` role in this World?
    */
   get isGM(): boolean;
 
@@ -70,7 +70,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   /**
    * Test whether the User has at least a specific permission
-   * @param permission - The permission name from USER_PERMISSIONS to test
+   * @param permission - The permission name from {@linkcode CONST.USER_PERMISSIONS} to test
    * @returns Does the user have at least this permission
    */
   hasPermission(permission: keyof typeof CONST.USER_PERMISSIONS): boolean;

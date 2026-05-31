@@ -58,26 +58,23 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "You are accessing `roof` which has been migrated to `restrictions.{light|weather}`"
-   *
-   * Getter returns `this.restrictions.light && this.restrictions.weather`, setter sets both
+   * @deprecated "You are accessing `roof` which has been migrated to `restrictions.{`
+   * {@linkcode TileDocument.RestrictionsData.light | light}`|`{@linkcode TileDocument.RestrictionsData.weather | weather}`}`"
+   * (since v12, until v14)
+   * @remarks Getter returns `this.restrictions.light && this.restrictions.weather`, setter sets both
    */
   set roof(value: boolean);
 
   get roof();
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "You are accessing `z` which has been migrated to `sort`"
+   * @deprecated "You are accessing `z` which has been migrated to `sort`" (since v12, until v14)
    */
   get z(): this["sort"];
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`BaseTile#overhead` is deprecated."
-   *
-   * Returns `this.elevation >= this.parent?.foregroundElevation`
+   * @deprecated "`BaseTile#overhead` is deprecated." (since v12, until v14)
+   * @remarks Returns `this.elevation >= this.parent?.foregroundElevation`
    */
   get overhead(): boolean;
 
