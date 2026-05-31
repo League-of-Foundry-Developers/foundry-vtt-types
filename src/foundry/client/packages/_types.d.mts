@@ -7,7 +7,6 @@
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
-type PackageCompatibilityBadge = unknown;
+type PackageCompatibilityBadge = foundry.packages.ClientPackageMixin.CompatibilityBadge;
