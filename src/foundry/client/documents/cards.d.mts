@@ -1200,18 +1200,21 @@ declare namespace Cards {
   }
 
   /** @internal */
-  type _DealOptions = InexactPartial<{
+  interface _DealOptions {
     /**
      * The name of the action being performed, used as part of the dispatched Hook event
      * @defaultValue `"deal"`
      * @remarks See {@linkcode Cards.DealAction}
      */
     action: DealAction;
-  }>;
+  }
 
-  interface DealOptions extends InexactPartial<
-    _DealOptions & _HowOption & _UpdateDataOption & _ChatNotificationOption
-  > {}
+  interface DealOptions
+    extends
+      InexactPartial<_DealOptions>,
+      InexactPartial<_HowOption>,
+      InexactPartial<_UpdateDataOption>,
+      InexactPartial<_ChatNotificationOption> {}
 
   /**
    * Additional context which describes the operation
@@ -1252,7 +1255,8 @@ declare namespace Cards {
     action: PassAction;
   }
 
-  interface PassOptions extends InexactPartial<_PassOptions & _UpdateDataOption & _ChatNotificationOption> {}
+  interface PassOptions
+    extends InexactPartial<_PassOptions>, InexactPartial<_UpdateDataOption>, InexactPartial<_ChatNotificationOption> {}
 
   /**
    * Additional context which describes the operation
@@ -1290,12 +1294,12 @@ declare namespace Cards {
     action?: never;
   }
 
-  interface ShuffleOptions extends InexactPartial<_UpdateDataOption & _ChatNotificationOption> {}
+  interface ShuffleOptions extends InexactPartial<_UpdateDataOption>, InexactPartial<_ChatNotificationOption> {}
 
-  interface RecallOptions extends InexactPartial<_UpdateDataOption & _ChatNotificationOption> {}
+  interface RecallOptions extends InexactPartial<_UpdateDataOption>, InexactPartial<_ChatNotificationOption> {}
 
-  type DealDialogReturn<ThisType> = DialogV2.PromptReturn<{
-    ok: { callback: (e: Event, button: HTMLElement) => Promise<ThisType> };
+  type DealDialogReturn<ConcreteCards extends Cards.Implementation> = DialogV2.PromptReturn<{
+    ok: { callback: (e: Event, button: HTMLElement) => Promise<ConcreteCards> };
   }>;
 
   type DrawDialogReturn = DialogV2.PromptReturn<{
@@ -1303,12 +1307,14 @@ declare namespace Cards {
   }>;
 
   /** {@linkcode Cards.passDialog | Cards#passDialog} actually calls {@linkcode Cards.deal | #deal}, not {@linkcode Cards.pass | #pass}. */
-  type PassDialogReturn<ThisType> = DealDialogReturn<ThisType>;
+  type PassDialogReturn<ConcreteCards extends Cards.Implementation> = DealDialogReturn<ConcreteCards>;
 
   /** @privateRemarks This equivalence is structural, it doesn't represent any shared code paths, the returns are just equivalent. */
   type PlayDialogReturn = DrawDialogReturn;
 
-  type ResetDialogReturn<ThisType> = DialogV2.ConfirmReturn<{ yes: { callback: () => Promise<ThisType> } }>;
+  type ResetDialogReturn<ConcreteCards extends Cards.Implementation> = DialogV2.ConfirmReturn<{
+    yes: { callback: () => Promise<ConcreteCards> };
+  }>;
 
   /**
    * Additional context which describes the operation.
