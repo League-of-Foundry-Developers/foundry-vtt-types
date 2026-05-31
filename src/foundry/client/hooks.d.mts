@@ -359,7 +359,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode Canvas.pan | Canvas#pan}
    * @see {@linkcode Canvas.animatePan | Canvas#animatePan}
    */
-  canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
+  canvasPan: (canvas: Canvas, view: Canvas.PartialViewPosition) => void;
 
   /**
    * A hook event that fires when the Canvas is ready.

@@ -1718,7 +1718,7 @@ declare namespace Scene {
     size: number;
 
     /** The canvas rectangle. */
-    rect: Canvas.Rectangle;
+    rect: PIXI.Rectangle;
 
     /** The X coordinate of the scene rectangle within the larger canvas. */
     sceneX: number;
@@ -1733,7 +1733,7 @@ declare namespace Scene {
     sceneHeight: number;
 
     /** The scene rectangle. */
-    sceneRect: Canvas.Rectangle;
+    sceneRect: PIXI.Rectangle;
 
     /** The number of distance units in a single grid space. */
     distance: number;
@@ -1741,8 +1741,12 @@ declare namespace Scene {
     /** The factor to convert distance units to pixels */
     distancePixels: number;
 
-    /** The units of distance */
-    units: string;
+    /**
+     * The units of distance
+     * @remarks This still exists in the typedef, but isn't returned by {@linkcode Scene.getDimensions | Scene#getDimensions} as ov 13.
+     * Possibly should be deprecated.
+     */
+    units?: string;
 
     /** The aspect ratio of the scene rectangle. */
     ratio: number;
@@ -1826,7 +1830,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @internal
    * @remarks This is intentionally public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
    */
-  _viewPosition: Canvas.ViewPosition;
+  _viewPosition: Canvas.PartialViewPosition;
 
   /**
    * Track whether the scene is the active view
