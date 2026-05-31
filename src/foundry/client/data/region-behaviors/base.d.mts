@@ -38,8 +38,7 @@ declare class RegionBehaviorType<
    * The events that are handled by this behavior
    * @defaultValue `new Set()`
    */
-  // TODO: are event names statically known?
-  events: Set<string>;
+  events: Set<CONST.REGION_EVENTS>;
 
   /** A convenience reference to the RegionBehavior which contains this behavior sub-type */
   get behavior(): RegionBehavior.Implementation | null;

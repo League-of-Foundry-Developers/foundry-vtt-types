@@ -362,7 +362,7 @@ declare namespace TextEditor {
     /**
      * Classes to attach to the outermost element.
      */
-    classes?: string;
+    classes: string;
 
     /**
      * By default Documents are embedded inside a figure element. If this option is
