@@ -24,6 +24,10 @@ declare class World extends ClientPackageMixin(BaseWorld) {
   ): string;
 
   // fake type override
+  /** @deprecated `game.worlds` only exists in the `setup` view, so this always throws at runtime. */
+  static override get(id: never): never;
+
+  // fake type override
   protected static override _formatIncompatibleSystemsTooltip(
     data: World.ManifestData | World,
     deps: Iterable<RelatedPackage.Data>,

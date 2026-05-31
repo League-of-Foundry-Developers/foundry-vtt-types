@@ -4,9 +4,10 @@ import type { Module, System } from "#client/packages/_module.d.mts";
 
 /**
  * A client-side mixin used for all Package types.
- * @param BasePackage - The parent BasePackage class being mixed
- * @returns A BasePackage subclass mixed with ClientPackage features
- * @privateRemarks Some {@linkcode ClientPackage} methods/properties need to be overridden in subclasses for accurate types:
+ * @param BasePackage - The parent {@linkcode BasePackage} class being mixed
+ * @returns A `BasePackage` subclass mixed with {@linkcode ClientPackage} features
+ * @privateRemarks Some `ClientPackage` methods/properties need to be overridden in subclasses for accurate types:
+ * - {@linkcode ClientPackage.get} to wire up our configured Module types and deprecate it as broken-at-runtime in System and World.
  * - {@linkcode ClientPackage.getVersionBadge} to narrow the 2nd parameter.
  * - {@linkcode ClientPackage._formatBadDependenciesTooltip} to narrow the 2nd parameter.
  * - {@linkcode ClientPackage._formatIncompatibleSystemsTooltip} to narrow the 2nd parameter.
@@ -19,7 +20,7 @@ declare namespace ClientPackageMixin {
   interface AnyMixedConstructor extends ReturnType<typeof ClientPackageMixin<BasePackage.AnyConstructor>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  // Making this `BasePackage.AnyConstructor` induces circularities, despite `AnyMixedConstructor` using that as a base.
+  // Making this `BasePackage.AnyConstructor` induces circularities, despite `AnyMixedConstructor` using that as a base just fine.
   type BaseClass = BasePackage.Internal.Constructor;
 
   interface CompatibilityBadge {
@@ -92,7 +93,7 @@ declare namespace ClientPackageMixin {
      * @param id - The package ID to retrieve
      * @returns The retrieved package instance, or undefined
      */
-    static get(id: string): ClientPackageMixin.AnyMixed;
+    static get(id: string): ClientPackageMixin.AnyMixed | undefined;
 
     /**
      * Determine a version badge for the provided compatibility data.
@@ -155,7 +156,8 @@ declare namespace ClientPackageMixin {
      * @param options  - Additional options which affect package construction
      * @returns A Promise which resolves to a constructed ServerPackage instance
      * @throws An error if the retrieved manifest data is invalid
-     * @remarks Unconditionally returns `null` (or throws with `strict: true`) in every situation user code could call it.
+     * @remarks Unconditionally returns `null` (or throws, with `strict: true`) if called outside the `setup` view,
+     * which user code never runs in.
      */
     static fromRemoteManifest(manifest: string, options: BasePackage.FromRemoteManifestOptions): Promise<null>;
   }

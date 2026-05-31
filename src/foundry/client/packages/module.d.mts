@@ -13,6 +13,9 @@ declare class Module extends ClientPackageMixin(BaseModule) {
   readonly active: boolean;
 
   // fake type override
+  static override get<ID extends string>(id: ID): Module.GetReturn<ID>;
+
+  // fake type override
   static override getVersionBadge(
     availability: CONST.PACKAGE_AVAILABILITY_CODES,
     data: Module.ManifestData | Module,
@@ -115,6 +118,8 @@ declare namespace Module {
     /** Is this package currently active? */
     active: boolean;
   }
+
+  type GetReturn<ID extends string> = foundry.Game._ModuleCollectionGetReturn<ID>;
 }
 
 export default Module;

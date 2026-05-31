@@ -19,6 +19,10 @@ declare class System extends ClientPackageMixin(BaseSystem) {
   strictDataCleaning: boolean;
 
   // fake type override
+  /** @deprecated `game.systems` only exists in the `setup` view, so this always throws at runtime. */
+  static override get(id: never): never;
+
+  // fake type override
   static override getVersionBadge(
     availability: CONST.PACKAGE_AVAILABILITY_CODES,
     data: System.ManifestData | System,
