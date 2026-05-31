@@ -1,5 +1,6 @@
-import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { BasePackage } from "#common/packages/_module.d.mts";
+import type { DataModel } from "#common/abstract/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
 import System = foundry.packages.System;
 
@@ -82,6 +83,18 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
     data: BaseSystem.ManifestData | BaseSystem,
     options: BasePackage.TestAvailabilityOptions,
   ): CONST.PACKAGE_AVAILABILITY_CODES;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<BaseSystem.Schema>;
+
+  static override get schema(): fields.SchemaField<BaseSystem.Schema>;
+
+  static override validateJoint(data: BaseSystem.Source): void;
+
+  static override fromSource(source: BaseSystem.ManifestData, context?: DataModel.FromSourceOptions): BaseSystem;
+
+  static override fromJSON(json: string): BaseSystem;
 }
 
 export default BaseSystem;

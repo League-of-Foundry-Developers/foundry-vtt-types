@@ -1,13 +1,15 @@
-import type { FixedInstanceType, Mixin } from "#utils";
-import type { CONST } from "#client/client.d.mts";
-import type BasePackage from "#common/packages/base-package.d.mts";
-import type Module from "./module.d.mts";
-import type System from "./system.d.mts";
+import type { FixedInstanceType, InexactPartial, Mixin } from "#utils";
+import type { BasePackage, RelatedPackage } from "#common/packages/_module.d.mts";
+import type { Module, System } from "#client/packages/_module.d.mts";
 
 /**
  * A client-side mixin used for all Package types.
  * @param BasePackage - The parent BasePackage class being mixed
  * @returns A BasePackage subclass mixed with ClientPackage features
+ * @privateRemarks Some {@linkcode ClientPackage} methods/properties need to be overridden in subclasses for accurate types:
+ * - {@linkcode ClientPackage.getVersionBadge} to narrow the 2nd parameter.
+ * - {@linkcode ClientPackage._formatBadDependenciesTooltip} to narrow the 2nd parameter.
+ * - {@linkcode ClientPackage._formatIncompatibleSystemsTooltip} to narrow the 2nd parameter.
  */
 declare function ClientPackageMixin<BaseClass extends ClientPackageMixin.BaseClass>(
   BasePackage: BaseClass,
@@ -17,61 +19,59 @@ declare namespace ClientPackageMixin {
   interface AnyMixedConstructor extends ReturnType<typeof ClientPackageMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
+  // TODO: Investigate whether switching to BasePackage.AnyConstructor explodes anything. Preliminary tests say it doesn't, and removing the
+  // TODO: whole `BasePackage.Internal` namespace would be nice.
   type BaseClass = BasePackage.Internal.Constructor;
 
-  interface PackageCompatibilityBadge {
-    type: "safe" | "unsafe" | "warning" | "neutral" | "error";
+  interface CompatibilityBadge {
+    /**
+     * A type in "safe", "unsafe", "warning", "neutral" applied as a CSS class
+     * @remarks Despite the above list in the description, core never returns `"unsafe"` but does return `"error"`.
+     */
+    type: "safe" | "warning" | "neutral" | "error";
+
+    /** A tooltip string displayed when hovering over the badge */
     tooltip: string;
+
+    /**
+     * An optional text label displayed in the badge
+     * @remarks Despite being optional, this will always be provided where core returns this type.
+     */
     label?: string;
+
+    /**
+     * An optional icon displayed in the badge
+     * @remarks Despite being optional, this will always be provided where core returns this type.
+     */
     icon?: string;
   }
 
-  interface ModuleCreateData extends Module.CreateData {
-    active: boolean;
+  /** @deprecated Use {@linkcode Module.ManifestData} instead. This warning will be removed in v14. */
+  type ModuleCreateData = Module.ManifestData;
+
+  /** @deprecated Use {@linkcode System.ManifestData} instead. This warning will be removed in v14. */
+  type SystemCreateData = System.ManifestData;
+
+  /** @internal */
+  interface _ModulesAndSystems {
+    /** A specific collection of modules to test availability against. Tests against the currently installed modules by default. */
+    modules: Collection<Module>;
+
+    /** A specific collection of systems to test availability against. Tests against the currently installed systems by default. */
+    systems: Collection<System>;
   }
 
-  interface SystemCreateData extends foundry.packages.BaseSystem.CreateData {
-    strictDataCleaning?: boolean;
-  }
+  interface GetVersionBadgeOptions extends InexactPartial<_ModulesAndSystems> {}
 
-  interface GetVersionBadgeOptions {
-    /**
-     * A specific collection of modules to test availability against. Tests against the currently installed modules by default.
-     */
-    modules?: Collection<Module>;
+  interface FormatBadDependenciesTooltipOptions extends InexactPartial<_ModulesAndSystems> {}
 
-    /**
-     * A specific collection of systems to test availability against. Tests against the currently installed systems by default.
-     */
-    systems?: Collection<System>;
-  }
+  interface FormatIncompatibleSystemsTooltipOptions extends InexactPartial<Pick<_ModulesAndSystems, "systems">> {}
 
-  interface FormatBadDependenciesTooltipOptions {
-    /**
-     * A specific collection of modules to test availability against. Tests against the currently installed modules by default.
-     */
-    modules?: Collection<Module> | undefined;
+  /** @deprecated Use {@linkcode ClientPackageMixin.CompatibilityBadge} instead. This warning will be removed in v14. */
+  type PackageCompatibilityBadge = CompatibilityBadge;
 
-    /**
-     * A specific collection of systems to test availability against. Tests against the currently installed systems by default.
-     */
-    systems?: Collection<System> | undefined;
-  }
-
-  interface FormatIncompatibleSystemsTooltipOptions {
-    /**
-     * A specific collection of systems to test availability against. Tests against the currently installed systems by default.
-     */
-    systems?: Collection<System> | undefined;
-  }
-
-  interface FromRemoteManifestOptions {
-    /**
-     * Whether to construct the remote package strictly
-     * @defaultValue `true`
-     */
-    strict?: boolean | undefined;
-  }
+  /** @deprecated Use {@linkcode BasePackage.FromRemoteManifestOptions} instead. This warning will be removed in v14. */
+  type FromRemoteManifestOptions = BasePackage.FromRemoteManifestOptions;
 
   class ClientPackage {
     /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -86,42 +86,52 @@ declare namespace ClientPackageMixin {
     /**
      * Associate package availability with certain badge for client-side display.
      */
-    getVersionBadge(): PackageCompatibilityBadge | null;
+    getVersionBadge(): ClientPackageMixin.CompatibilityBadge | null;
+
+    /**
+     * Retrieve a Package of this type from its collection.
+     * @param id - The package ID to retrieve
+     * @returns The retrieved package instance, or undefined
+     */
+    static get(id: string): ClientPackageMixin.AnyMixed;
 
     /**
      * Determine a version badge for the provided compatibility data.
      * @param availability - The availability level.
      * @param data         - The compatibility data.
-     * @param options      - (default: `{}`)
+     * @privateRemarks Foundry types `data` as `Partial<PackageManifestData>`, which on their side is an incomplete
+     * `InitializedData<BasePackage.Schema>`, but the only client side call is in {@linkcode ClientPackageMixin.AnyMixed.getVersionBadge}
+     * (the instance method), where it gets passed `this`, and server-side it's also always called with a constructed package.
      */
     static getVersionBadge(
       availability: CONST.PACKAGE_AVAILABILITY_CODES,
-      data: Partial<PackageManifestData>,
-      options: GetVersionBadgeOptions,
-    ): PackageCompatibilityBadge | null;
+      data: BasePackage.ManifestData | ClientPackageMixin.AnyMixed,
+      options: ClientPackageMixin.GetVersionBadgeOptions,
+    ): CompatibilityBadge | null;
 
     /**
      * List missing dependencies and format them for display.
-     * @param availability - The availability level.
+     * @param availability - The availability value.
      * @param data         - The compatibility data.
-     * @param options      - (default: `{}`)
+     * @param deps         - The dependencies to format.
+     * @remarks `data` is unused in `ClientPackage`.
      */
-    static _formatBadDependenciesTooltip(
+    protected static _formatBadDependenciesTooltip(
       availability: CONST.PACKAGE_AVAILABILITY_CODES,
-      data: Partial<PackageManifestData>,
-      options: FormatBadDependenciesTooltipOptions,
+      data: BasePackage.ManifestData | ClientPackageMixin.AnyMixed,
+      deps: Iterable<RelatedPackage.Data>,
+      options?: ClientPackageMixin.FormatBadDependenciesTooltipOptions,
     ): string;
 
     /**
      * List missing dependencies and format them for display.
      * @param availability - The availability level.
      * @param data         - The compatibility data.
-     * @param options      - (default: `{}`)
      */
-    static _formatIncompatibleSystemsTooltip(
-      availability: CONST.PACKAGE_AVAILABILITY_CODES,
-      data: Partial<PackageManifestData>,
-      options: FormatIncompatibleSystemsTooltipOptions,
+    protected static _formatIncompatibleSystemsTooltip(
+      data: BasePackage.ManifestData | ClientPackageMixin.AnyMixed,
+      deps: Iterable<RelatedPackage.Data>,
+      options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
     ): string;
 
     /**
@@ -146,8 +156,9 @@ declare namespace ClientPackageMixin {
      * @param options  - Additional options which affect package construction
      * @returns A Promise which resolves to a constructed ServerPackage instance
      * @throws An error if the retrieved manifest data is invalid
+     * @remarks Unconditionally returns `null` (or throws with `strict: true`) in every situation user code could call it.
      */
-    static fromRemoteManifest(manifest: string, options: FromRemoteManifestOptions): Promise<ClientPackage | null>;
+    static fromRemoteManifest(manifest: string, options: BasePackage.FromRemoteManifestOptions): Promise<null>;
   }
 }
 

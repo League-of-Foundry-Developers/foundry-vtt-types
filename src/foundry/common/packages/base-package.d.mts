@@ -255,9 +255,9 @@ declare namespace BasePackage {
     flags: ObjectField<
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- No options, and `EmptyObject` behaves differently
       {},
-      BasePackage.Flags.Core | null | undefined,
-      BasePackage.Flags.Core,
-      BasePackage.Flags.Core
+      BasePackage.Flags | null | undefined,
+      BasePackage.Flags,
+      BasePackage.Flags
     >;
 
     /** An array of objects containing media info about the package. */
@@ -344,10 +344,34 @@ declare namespace BasePackage {
    * @internal
    */
   interface _ExtraConstructionProperties {
+    /**
+     * An availability code in {@linkcode CONST.PACKAGE_AVAILABILITY_CODES} which defines whether this package can be used.
+     * @defaultValue {@linkcode BasePackage.testAvailability | this.constructor.testAvailability(this)}
+     */
     availability: CONST.PACKAGE_AVAILABILITY_CODES;
+
+    /**
+     * A flag which tracks whether this package is currently locked.
+     * @defaultValue `false`
+     */
     locked: boolean;
+
+    /**
+     * A flag which tracks whether this package is owned, if it is protected.
+     * @defaultValue `false`
+     */
     owned: boolean;
+
+    /**
+     * A set of Tags that indicate what kind of Package this is, provided by the Website
+     * @defaultValue `[]`
+     */
     tags: string[];
+
+    /**
+     * A flag which tracks if this package has files stored in the persistent storage folder
+     * @defaultValue `false`
+     */
     hasStorage: boolean;
   }
 
@@ -413,6 +437,9 @@ declare namespace BasePackage {
       mapping: string;
     }
   }
+
+  /** Merge into this interface if you are using non-core package flags. */
+  interface Flags extends BasePackage.Flags.Core {}
 
   /** @internal */
   interface _TestAvailabilityOptions {
@@ -482,7 +509,7 @@ declare namespace BasePackage {
    * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageCompendiumFolder.FolderRecursion}
    * instead. This warning will be removed in v14.
    */
-  type FolderRecursion = PackageCompendiumFolder;
+  type FolderRecursion = PackageCompendiumFolder.FolderRecursion;
 
   /**
    * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageCompendiumFolder.Schema}
@@ -891,8 +918,8 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
    * and the one real override in {@linkcode foundry.packages.BaseWorld.testAvailability | BaseWorld} only access
    * properties of `data`, so it has been typed as either.
    *
-   * TODO: Also, currently, `BasePackage.Any` is not assignable to `BasePackageData.PackageManifestData` on mismatched
-   * TODO: folder depth. Otherwise this could be typed as just `PackageManifestData`.
+   * TODO: Also, currently, `BasePackage.Any` is not assignable to `BasePackage.ManifestData` on mismatched
+   * TODO: folder depth grounds. Otherwise this could be typed as just `ManifestData`.
    */
   static testAvailability(
     data: BasePackage.ManifestData | BasePackage.Any,
@@ -946,7 +973,7 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
    *  A wrapper around the default compatibility warning logger which handles some package-specific interactions.
    * @param packageId - The package ID being logged
    * @param message   - The warning or error being logged
-   * @param options   - Logging options passed to foundry.utils.logCompatibilityWarning
+   * @param options   - Logging options passed to {@linkcode foundry.utils.logCompatibilityWarning}
    */
   protected static _logWarning(packageId: string, message: string, options?: BasePackage.LogOptions): void;
 
@@ -976,6 +1003,8 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
    * @param options     - Additional options which affect package construction
    * @returns A Promise which resolves to a constructed ServerPackage instance
    * @throws An error if the retrieved manifest data is invalid
+   * @remarks This is effectively abstract. Real overrides are provided by `ServerPackageMixin` and
+   * {@linkcode foundry.packages.ClientPackageMixin | ClientPackageMixin}.
    */
   static fromRemoteManifest(manifestUrl: string, options: BasePackage.FromRemoteManifestOptions): Promise<never>;
 }

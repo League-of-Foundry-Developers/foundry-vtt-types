@@ -1,4 +1,6 @@
-import type BasePackage from "./base-package.d.mts";
+import type { BasePackage } from "#common/packages/_module.d.mts";
+import type { DataModel } from "#common/abstract/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
 import Module = foundry.packages.Module;
 
@@ -41,6 +43,18 @@ declare class BaseModule extends BasePackage<BaseModule.Schema> {
     data: BaseModule.ManifestData | BaseModule,
     options: BasePackage.TestAvailabilityOptions,
   ): CONST.PACKAGE_AVAILABILITY_CODES;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<BaseModule.Schema>;
+
+  static override get schema(): fields.SchemaField<BaseModule.Schema>;
+
+  static override validateJoint(data: BaseModule.Source): void;
+
+  static override fromSource(source: BaseModule.ManifestData, context?: DataModel.FromSourceOptions): BaseModule;
+
+  static override fromJSON(json: string): BaseModule;
 }
 
 export default BaseModule;

@@ -1,29 +1,33 @@
-import type { CONST } from "#client/client.d.mts";
-import type BasePackage from "#common/packages/base-package.d.mts";
-import type ClientPackageMixin from "./client-package.d.mts";
-import type Module from "./module.d.mts";
-import type System from "./system.d.mts";
-
-import fields = foundry.data.fields;
 import type { InexactPartial } from "#utils";
+import type { BasePackage, BaseWorld, RelatedPackage } from "#common/packages/_module.d.mts";
+import type { ClientPackageMixin, System } from "#client/packages/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
-declare class World extends ClientPackageMixin(foundry.packages.BaseWorld) {
+declare class World extends ClientPackageMixin(BaseWorld) {
   static override getVersionBadge(
     availability: CONST.PACKAGE_AVAILABILITY_CODES,
-    data: Partial<PackageManifestData>,
-    options: World.GetVersionBadgeOptions,
-  ): ClientPackageMixin.PackageCompatibilityBadge | null;
+    data: World.ManifestData | World,
+    options: ClientPackageMixin.GetVersionBadgeOptions,
+  ): ClientPackageMixin.CompatibilityBadge | null;
 
   /**
    * Provide data for a system badge displayed for the world which reflects the system ID and its availability
    * @param system - A specific system to use, otherwise use the installed system.
    */
-  getSystemBadge(system?: System): ClientPackageMixin.PackageCompatibilityBadge | null;
+  getSystemBadge(system?: System): ClientPackageMixin.CompatibilityBadge | null;
 
-  static override _formatBadDependenciesTooltip(
+  // drops `options` from super
+  protected static override _formatBadDependenciesTooltip(
     availability: CONST.PACKAGE_AVAILABILITY_CODES,
-    data: Partial<PackageManifestData>,
-    options: World.FormatBadDependenciesTooltip,
+    data: World.ManifestData | World,
+    deps: Iterable<RelatedPackage.Data>,
+  ): string;
+
+  // fake type override
+  protected static override _formatIncompatibleSystemsTooltip(
+    data: World.ManifestData | World,
+    deps: Iterable<RelatedPackage.Data>,
+    options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
   ): string;
 }
 
@@ -32,16 +36,16 @@ declare namespace World {
    * The data put in {@linkcode DataModel._source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a data model. Used in places like {@linkcode World.create}
-   * and {@link World | `new World(...)`}.
+   * and {@linkcode World | new World(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -49,17 +53,17 @@ declare namespace World {
 
   /**
    * The data after a {@linkcode DataModel} has been initialized, for example
-   * {@link World.name | `World#name`}.
+   * {@linkcode World.name | World#name}.
    *
    * This is data transformed from {@linkcode World.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link World.update | `World#update`}.
-   * It is a distinct type from {@link World.CreateData | `DeepPartial<World.CreateData>`} because
+   * The data used to update a document, for example {@linkcode World.update | World#update}.
+   * It is a distinct type from {@linkcode World.CreateData | DeepPartial<World.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -74,8 +78,8 @@ declare namespace World {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode World}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -154,29 +158,11 @@ declare namespace World {
     demo: fields.SchemaField<DemoSchema>;
   }
 
-  interface GetVersionBadgeOptions {
-    /**
-     * A specific collection of modules to test availability against. Tests against the currently installed modules by default.
-     */
-    modules?: Collection<Module> | undefined;
+  /** @deprecated Use {@linkcode ClientPackageMixin.GetVersionBadgeOptions} instead. This warning will be removed in v14. */
+  type GetVersionBadgeOptions = ClientPackageMixin.GetVersionBadgeOptions;
 
-    /**
-     * A specific collection of systems to test availability against. Tests against the currently installed systems by default.
-     */
-    systems?: Collection<System> | undefined;
-  }
-
-  interface FormatBadDependenciesTooltip {
-    /**
-     * A specific collection of modules to test availability against. Tests against the currently installed modules by default.
-     */
-    modules?: Collection<Module> | undefined;
-
-    /**
-     * A specific collection of systems to test availability against. Tests against the currently installed systems by default.
-     */
-    systems?: Collection<System> | undefined;
-  }
+  /** @deprecated Use {@linkcode ClientPackageMixin.FormatBadDependenciesTooltipOptions} instead. This warning will be removed in v14. */
+  type FormatBadDependenciesTooltip = ClientPackageMixin.FormatBadDependenciesTooltipOptions;
 
   /** @internal */
   interface _TestAvailabilityOptions {

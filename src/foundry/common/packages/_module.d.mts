@@ -3,19 +3,10 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 /* eslint-disable import-x/extensions */
 
-import type { SchemaField } from "../data/fields.d.mts";
+export * as types from "./_types.mjs";
 
 export { default as BasePackage, PackageCompatibility, RelatedPackage } from "./base-package.mjs";
 export { default as BaseWorld } from "./base-world.mjs";
 export { default as BaseSystem } from "./base-system.mjs";
 export { default as BaseModule } from "./base-module.mjs";
 export { default as AdditionalTypesField } from "./sub-types.mjs";
-
-declare global {
-  /*
-   * The data structure of a package manifest. This data structure is extended by BasePackage subclasses to add additional
-   * type-specific fields.
-   */
-  // TODO: Replace all references to this with the relevant specific `PackageManifestData` from `BasePackage`, `BaseModule`, `BaseSystem`, or `BaseWorld`
-  interface PackageManifestData extends SchemaField.CreateData<foundry.packages.BasePackage.Schema> {}
-}

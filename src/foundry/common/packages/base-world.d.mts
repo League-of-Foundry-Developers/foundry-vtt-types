@@ -1,4 +1,6 @@
 import type { BasePackage } from "#common/packages/_module.d.mts";
+import type { DataModel } from "#common/abstract/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
 import World = foundry.packages.World;
 
@@ -48,6 +50,18 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
     data: BaseWorld.ManifestData | BaseWorld,
     options: BaseWorld.TestAvailabilityOptions,
   ): CONST.PACKAGE_AVAILABILITY_CODES;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<BaseWorld.Schema>;
+
+  static override get schema(): fields.SchemaField<BaseWorld.Schema>;
+
+  static override validateJoint(data: BaseWorld.Source): void;
+
+  static override fromSource(source: BaseWorld.ManifestData, context?: DataModel.FromSourceOptions): BaseWorld;
+
+  static override fromJSON(json: string): BaseWorld;
 }
 
 export default BaseWorld;
