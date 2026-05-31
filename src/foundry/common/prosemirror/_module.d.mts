@@ -8,9 +8,6 @@ import { EditorView } from "prosemirror-view";
 import { Schema, DOMSerializer } from "prosemirror-model";
 import ProseMirrorInputRules from "./input-rules.mjs";
 import { keymap } from "prosemirror-keymap";
-// this is used in defaultPlugins, below, as `baseKeyMap: keymap(baseKeymap)`, but is irrelevant to the types
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { baseKeymap } from "prosemirror-commands";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
 import { history } from "prosemirror-history";
@@ -29,9 +26,10 @@ import ProseMirrorDirtyPlugin from "./dirty-plugin.mjs";
 import ProseMirrorContentLinkPlugin from "./content-link-plugin.mjs";
 import ProseMirrorHighlightMatchesPlugin from "./highlight-matches-plugin.mjs";
 import ProseMirrorClickHandler from "./click-handler.mjs";
-import { columnResizing, tableEditing } from "prosemirror-tables";
 import DOMParser from "./dom-parser.mjs";
 import ProseMirrorPasteTransformer from "./paste-transformer.mjs";
+import DisclosureWidget from "./schema/disclosure.mjs";
+import * as chat from "./chat/_module.mjs";
 
 declare const dom: Dom;
 
@@ -42,27 +40,37 @@ interface Dom {
   serializeString: typeof serializeHTMLString;
 }
 
-declare const defaultPlugins: DefaultPlugins;
+declare const plugins: Plugins;
+declare const nodeViews: NodeViews;
 
-interface DefaultPlugins {
-  inputRules: ReturnType<typeof ProseMirrorInputRules.build>;
-  keyMaps: ReturnType<typeof ProseMirrorKeyMaps.build>;
-  menu: ReturnType<typeof ProseMirrorMenu.build>;
-  isDirty: ReturnType<typeof ProseMirrorDirtyPlugin.build>;
-  clickHandler: ReturnType<typeof ProseMirrorClickHandler.build>;
-  pasteTransformer: ReturnType<typeof ProseMirrorPasteTransformer.build>;
-  baseKeyMap: ReturnType<typeof keymap>;
-  dropCursor: ReturnType<typeof dropCursor>;
-  gapCursor: ReturnType<typeof gapCursor>;
-  history: ReturnType<typeof history>;
-  columnResizing: ReturnType<typeof columnResizing>;
-  tables: ReturnType<typeof tableEditing>;
+interface Plugins {
+  ProseMirrorPlugin: typeof ProseMirrorPlugin;
+  ProseMirrorContentLinkPlugin: typeof ProseMirrorContentLinkPlugin;
+  ProseMirrorHighlightMatchesPlugin: typeof ProseMirrorHighlightMatchesPlugin;
+  ProseMirrorDirtyPlugin: typeof ProseMirrorDirtyPlugin;
+  ProseMirrorImagePlugin: typeof ProseMirrorImagePlugin;
+  ProseMirrorClickHandler: typeof ProseMirrorClickHandler;
+  ProseMirrorPasteTransformer: typeof ProseMirrorPasteTransformer;
+  ProseMirrorInputRules: typeof ProseMirrorInputRules;
+  ProseMirrorKeyMaps: typeof ProseMirrorKeyMaps;
+  ProseMirrorMenu: typeof ProseMirrorMenu;
+  ProseMirrorDropDown: typeof ProseMirrorDropDown;
+  chat: typeof chat;
+  dropCursor: typeof dropCursor;
+  gapCursor: typeof gapCursor;
+  history: typeof history;
+  keymap: typeof keymap;
+}
+
+interface NodeViews {
+  details: typeof DisclosureWidget.view;
+  [nodeName: string]: unknown;
 }
 
 export * as commands from "prosemirror-commands";
 export * as transform from "prosemirror-transform";
 export * as list from "prosemirror-schema-list";
-export * as tables from "prosemirror-tables";
+export * as tables from "@massifrg/prosemirror-tables-sections";
 export * as input from "prosemirror-inputrules";
 export * as state from "prosemirror-state";
 
@@ -91,7 +99,8 @@ export {
   ProseMirrorMenu,
   ProseMirrorDropDown,
   collab,
-  defaultPlugins,
+  plugins,
+  nodeViews,
   defaultSchema,
   dom,
   keymap,

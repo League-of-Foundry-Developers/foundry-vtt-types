@@ -1,5 +1,6 @@
 import { assertType, expectTypeOf, test } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type TextEditor from "../../../../../src/foundry/client/applications/ux/text-editor.mjs";
 
 import FormApplication = foundry.appv1.api.FormApplication;
 import Application = foundry.appv1.api.Application;
@@ -18,6 +19,7 @@ expectTypeOf(formApplication.render(true)).toEqualTypeOf<
 
 expectTypeOf(formApplication.form).toEqualTypeOf<HTMLElement | null>();
 expectTypeOf(formApplication.editors).toEqualTypeOf<Record<string, FormApplication.FormApplicationEditor>>();
+expectTypeOf(formApplication.activateEditor("content")).toEqualTypeOf<Promise<TextEditor.EditorInstance>>();
 
 const app = new (class extends FormApplication<{ foo: string }, FormApplication.Options> {
   protected async _updateObject(): Promise<unknown> {

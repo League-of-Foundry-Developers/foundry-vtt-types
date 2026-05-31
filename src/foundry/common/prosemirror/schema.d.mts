@@ -1,6 +1,6 @@
 // Several imports are just used for links in this file
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { NodeSpec, Schema } from "prosemirror-model";
+import type { MarkSpec, NodeSpec, Schema } from "prosemirror-model";
 // splitListItem is set as the handler for the `list_item` node on the schema but isn't used in an externally visible way
 // import type { splitListItem } from "prosemirror-schema-list";
 import type {
@@ -10,34 +10,13 @@ import type {
   heading,
   pre as code_block,
   br as hard_break,
+  icon,
 } from "./schema/core.d.mts";
+import type { ol as ordered_list, ul as bullet_list, li as list_item } from "./schema/lists.d.mts";
+import type { builtInTableNodes } from "./schema/tables.d.mts";
 import type {
-  ol as ordered_list,
-  ul as bullet_list,
-  li as list_item,
-  liText as list_item_text,
-} from "./schema/lists.d.mts";
-import type {
-  builtInTableNodes,
-  tableComplex as table_complex,
-  colgroup,
-  col,
-  thead,
-  tbody,
-  tfoot,
-  caption,
-  captionBlock as caption_block,
-  tableRowComplex as table_row_complex,
-  tableCellComplex as table_cell_complex,
-  tableCellComplexBlock as table_cell_complex_block,
-  tableHeaderComplex as table_header_complex,
-  tableHeaderComplexBlock as table_header_complex_block,
-} from "./schema/tables.d.mts";
-import type {
-  details,
-  summary,
-  summaryBlock as summary_block,
   dl,
+  dl_group,
   dt,
   dd,
   fieldset,
@@ -56,11 +35,16 @@ import type {
   rt,
   iframe,
 } from "./schema/other.d.mts";
+import type DisclosureWidget from "./schema/disclosure.d.mts";
+import type { selection } from "./schema/inserts.d.mts";
 import type {
   superscript,
   subscript,
   span,
   font,
+  size,
+  color,
+  cite,
   em,
   strong,
   underline,
@@ -95,35 +79,24 @@ interface Nodes extends Identity<typeof builtInTableNodes> {
 
   /** @remarks See {@linkcode ImageNode.make} */
   image: NodeSpec;
+  icon: typeof icon;
   hard_break: typeof hard_break;
 
   // Lists.
   ordered_list: typeof ordered_list;
   bullet_list: typeof bullet_list;
   list_item: typeof list_item;
-  list_item_text: typeof list_item_text;
 
-  // Tables
-  table_complex: typeof table_complex;
-  tbody: typeof tbody;
-  thead: typeof thead;
-  tfoot: typeof tfoot;
-  caption: typeof caption;
-  caption_block: typeof caption_block;
-  colgroup: typeof colgroup;
-  col: typeof col;
-  table_row_complex: typeof table_row_complex;
-  table_cell_complex: typeof table_cell_complex;
-  table_header_complex: typeof table_header_complex;
-  table_cell_complex_block: typeof table_cell_complex_block;
-  table_header_complex_block: typeof table_header_complex_block;
-  // ...(typeof builtInTableNodes): handled with & at the
+  // Disclosure.
+  details: DisclosureWidget.Nodes["details"];
+  summary: DisclosureWidget.Nodes["summary"];
+
+  // Inserts.
+  selection: typeof selection;
 
   // Misc.
-  details: typeof details;
-  summary: typeof summary;
-  summary_block: typeof summary_block;
   dl: typeof dl;
+  dl_group: typeof dl_group;
   dt: typeof dt;
   dd: typeof dd;
   fieldset: typeof fieldset;
@@ -141,6 +114,17 @@ interface Nodes extends Identity<typeof builtInTableNodes> {
   rp: typeof rp;
   rt: typeof rt;
   iframe: typeof iframe;
+
+  // Auto-generated specifications for HTML preservation.
+  header: NodeSpec;
+  main: NodeSpec;
+  section: NodeSpec;
+  article: NodeSpec;
+  aside: NodeSpec;
+  nav: NodeSpec;
+  footer: NodeSpec;
+  div: NodeSpec;
+  address: NodeSpec;
 }
 
 interface Doc {
@@ -160,6 +144,9 @@ interface Marks {
   subscript: typeof subscript;
   span: typeof span;
   font: typeof font;
+  size: typeof size;
+  color: typeof color;
+  cite: typeof cite;
 
   /** @remarks See {@linkcode LinkMark.make} */
   link: NodeSpec;
@@ -168,6 +155,13 @@ interface Marks {
   underline: typeof underline;
   strikethrough: typeof strikethrough;
   code: typeof code;
+
+  // Auto-generated specifications for HTML preservation.
+  abbr: MarkSpec;
+  mark: MarkSpec;
+  q: MarkSpec;
+  time: MarkSpec;
+  ins: MarkSpec;
 }
 
 export declare const schema: Schema<keyof typeof nodes, keyof typeof marks>;

@@ -1,5 +1,3 @@
-import type { EditorView } from "prosemirror-view";
-import type { Editor } from "tinymce";
 import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type Application from "./application-v1.mjs";
@@ -72,7 +70,7 @@ declare abstract class DocumentSheet<
     name: string,
     options?: TextEditor.Options,
     initialContent?: string,
-  ): Promise<Editor | EditorView>;
+  ): Promise<TextEditor.EditorInstance>;
 
   protected override _render(force?: boolean, options?: Application.RenderOptions<Options>): Promise<void>;
 
