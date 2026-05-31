@@ -34,7 +34,6 @@ import type BaseRuler from "#client/canvas/interaction/ruler/base-ruler.d.mts";
 import type ControlsLayer from "#client/canvas/layers/controls.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
-import type { PIXI } from "#configuration";
 
 /**
  * `grid` is excluded because {@linkcode Canvas.grid | Canvas#grid} is a getter for the instance of the current
@@ -716,15 +715,15 @@ declare namespace Canvas {
   /** The interface for {@linkcode Canvas.blur | Canvas#blur}, which doesn't exist until first draw */
   interface Blur extends Readonly<Omit<BlurOptions, "strength">>, Pick<BlurOptions, "strength"> {}
 
-  interface SceneTextures extends Record<string, string | PIXI.Texture | PIXI.Spritesheet> {
+  interface SceneTextures extends Record<string, string | PIXI.Texture | PIXI.Spritesheet | undefined> {
     /** A specific background texture used for the Scene */
-    background?: string | PIXI.Texture | PIXI.Spritesheet;
+    background?: string | PIXI.Texture | PIXI.Spritesheet | undefined;
 
     /** A specific foreground texture used for the Scene */
-    foreground?: string | PIXI.Texture | PIXI.Spritesheet;
+    foreground?: string | PIXI.Texture | PIXI.Spritesheet | undefined;
 
     /** A specific fog overlay texture used for the Scene */
-    fogOverlay?: string | PIXI.Texture | PIXI.Spritesheet;
+    fogOverlay?: string | PIXI.Texture | PIXI.Spritesheet | undefined;
   }
 
   interface FPS {
