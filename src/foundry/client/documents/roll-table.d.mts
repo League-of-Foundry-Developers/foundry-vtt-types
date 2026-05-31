@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseRollTable, BaseTableResult } from "#client/documents/_module.d.mts";
@@ -1083,9 +1083,10 @@ declare namespace RollTable {
     /**
      * Additional data which customizes the created messages
      * @defaultValue `{}`
+     * @privateRemarks This gets `mergeObject`ed with base create data with default options, so `performDeletions` is false,
+     * so we can't use `UpdateData`.
      */
-    // TODO: IntentionalPartial? CloneData?
-    messageData: ChatMessage.CreateData;
+    messageData: IntentionalPartial<ChatMessage.CreateData>;
 
     /**
      * Additional options which customize the created messages
