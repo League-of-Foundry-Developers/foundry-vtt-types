@@ -19,9 +19,7 @@ expectTypeOf(journalPageSheet.isV2).toEqualTypeOf<boolean>();
 // Subclasses can override the new protected hooks (the `override` keyword would error if signatures didn't match).
 class CustomJournalPageSheet extends JournalPageSheet {
   protected override _closeView(): void {}
-  protected override _onAutosave(html: string): void {
-    void html;
-  }
+  protected override _onAutosave(_html: string): void {}
   protected override _onNewSteps(): void {}
 }
 void CustomJournalPageSheet;

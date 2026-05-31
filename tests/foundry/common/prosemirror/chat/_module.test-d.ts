@@ -15,19 +15,12 @@ expectTypeOf(inputPlugin.sendMessage).parameter(0).toEqualTypeOf<EditorView>();
 // Subclasses can override the protected hooks.
 class CustomChatInputPlugin extends ChatInputPlugin {
   protected override _inspectTransactions(
-    transactions: Transaction[],
-    oldState: EditorState,
-    newState: EditorState,
-  ): void {
-    void transactions;
-    void oldState;
-    void newState;
-  }
+    _transactions: Transaction[],
+    _oldState: EditorState,
+    _newState: EditorState,
+  ): void {}
 
-  protected override _onKeyDown(view: EditorView, event: KeyboardEvent): boolean | void {
-    void view;
-    void event;
-  }
+  protected override _onKeyDown(_view: EditorView, _event: KeyboardEvent): boolean | void {}
 }
 assertType<typeof ChatInputPlugin>(CustomChatInputPlugin);
 

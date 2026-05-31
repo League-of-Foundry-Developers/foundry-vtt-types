@@ -200,34 +200,7 @@ declare global {
       value: string[];
     }
 
-    interface TextEditorEngineRenderOptions extends Record<string, unknown> {
-      /**
-       * Whether the editor is editable.
-       * @defaultValue `true`
-       */
-      editable?: boolean | undefined;
-
-      /**
-       * Whether the editor state is toggleable via button.
-       * @defaultValue `false`
-       */
-      button?: boolean | undefined;
-
-      /**
-       * Whether the editor should allow for collaborative editing, if supported.
-       * @defaultValue `false`
-       */
-      collaborate?: boolean | undefined;
-
-      /** Render the editor at a fixed height. */
-      height?: number | undefined;
-
-      /** The editor's initial content. */
-      value?: string | undefined;
-
-      /** The editor's name in the form. */
-      name?: string | undefined;
-    }
+    interface TextEditorEngineRenderOptions extends foundry.applications.fields.EditorInputConfig {}
 
     /**
      * A callback used to instantiate the editor instance.
