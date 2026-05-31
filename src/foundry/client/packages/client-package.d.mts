@@ -16,11 +16,10 @@ declare function ClientPackageMixin<BaseClass extends ClientPackageMixin.BaseCla
 ): Mixin<typeof ClientPackageMixin.ClientPackage, BaseClass>;
 
 declare namespace ClientPackageMixin {
-  interface AnyMixedConstructor extends ReturnType<typeof ClientPackageMixin<BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<typeof ClientPackageMixin<BasePackage.AnyConstructor>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  // TODO: Investigate whether switching to BasePackage.AnyConstructor explodes anything. Preliminary tests say it doesn't, and removing the
-  // TODO: whole `BasePackage.Internal` namespace would be nice.
+  // Making this `BasePackage.AnyConstructor` induces circularities, despite `AnyMixedConstructor` using that as a base.
   type BaseClass = BasePackage.Internal.Constructor;
 
   interface CompatibilityBadge {

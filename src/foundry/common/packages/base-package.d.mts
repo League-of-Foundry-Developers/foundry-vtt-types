@@ -31,17 +31,13 @@ declare namespace BasePackage {
       [__BasePackageBrand]: never;
     };
 
-    interface Instance<PackageSchema extends BasePackage.Internal.Schema> {
+    interface Instance<PackageSchema extends BasePackage.Schema> {
       [__PackageSchema]: PackageSchema;
     }
 
     namespace Instance {
-      interface Any extends Instance<BasePackage.Internal.Schema> {}
+      interface Any extends Instance<BasePackage.Schema> {}
     }
-
-    // TODO: This is not serving any purpose since we've excluded `version` from BasePackage.Schema and added
-    // TODO: fake definitions to BaseModule and BaseSystem.
-    interface Schema extends Omit<BasePackage.Schema, "version"> {}
   }
 
   /**
