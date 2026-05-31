@@ -1986,9 +1986,9 @@ declare namespace TokenDocument {
 
   interface PartialShapelessDimensions extends InexactPartial<ShapelessDimensions> {}
 
-  interface Dimensions2D extends InexactPartial<Canvas.Point & Dimensions> {}
+  interface Dimensions2D extends InexactPartial<Canvas.Point>, InexactPartial<Dimensions> {}
 
-  interface Dimensions3D extends InexactPartial<Canvas.ElevatedPoint & Dimensions> {}
+  interface Dimensions3D extends InexactPartial<Canvas.ElevatedPoint>, InexactPartial<Dimensions> {}
 
   interface MovementWaypoint extends Omit<
     MeasuredMovementWaypoint,

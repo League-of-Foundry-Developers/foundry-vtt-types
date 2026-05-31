@@ -1240,15 +1240,12 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
 
-  // TODO: accurately type changes and return type
   override updateSource(
     // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });`,
     // `this.syntheticActor.updateSource`, and `super.updateSource`. However it's likely the overlap between these types is pretty high.
-    // Note(esheyw): `Actor.UpdateData` has been chosen as it is actually the most restrictive relevant type;
-    // `ActorDelta`s require no data for construction.
-    changes: Actor.UpdateData,
+    changes: ActorDelta.CreateData,
     options?: DataModel.UpdateOptions,
-  ): object;
+  ): ActorDelta.UpdateData;
 
   override reset(): void;
 
