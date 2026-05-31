@@ -1084,7 +1084,8 @@ declare namespace RollTable {
      * Additional data which customizes the created messages
      * @defaultValue `{}`
      */
-    messageData: ConstructorParameters<typeof foundry.documents.BaseChatMessage>[0];
+    // TODO: IntentionalPartial? CloneData?
+    messageData: ChatMessage.CreateData;
 
     /**
      * Additional options which customize the created messages

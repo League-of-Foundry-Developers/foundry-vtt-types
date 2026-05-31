@@ -1984,7 +1984,7 @@ declare namespace TokenDocument {
 
   interface ShapelessDimensions extends Omit<Dimensions, "shape"> {}
 
-  interface PartialShapelessDimensions extends InexactPartial<ShapelessDimensions> {}
+  interface GetSizeDimensions extends InexactPartial<ShapelessDimensions> {}
 
   interface Dimensions2D extends InexactPartial<Canvas.Point>, InexactPartial<Dimensions> {}
 
@@ -2570,7 +2570,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * }
    * ```
    * @remarks
-   * @throws If the key has already been used on this token.
+   * @throws If the key has already been used on this token for this movement.
    */
   pauseMovement<Key extends string | undefined = undefined>(key?: Key): TokenDocument.PauseMovementReturn<Key>;
 
