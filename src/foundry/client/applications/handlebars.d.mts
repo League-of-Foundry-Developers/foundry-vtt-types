@@ -368,7 +368,7 @@ export interface TextEditorOptions extends InexactPartial<Handlebars.HelperOptio
      * The engine editor to use, see {@linkcode TextEditor.create}
      * @defaultValue `"prosemirror"`
      */
-    engine?: (string & {}) | "tinymce" | undefined;
+    engine?: (string & {}) | "prosemirror" | undefined;
 
     /**
      * Whether to turn on collaborative editing features for ProseMirror

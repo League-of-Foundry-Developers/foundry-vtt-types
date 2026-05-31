@@ -170,7 +170,7 @@ interface _EditorInputConfig {
   /**
    * @defaultValue `"prosemirror"`
    */
-  engine: string;
+  engine: (string & {}) | "prosemirror";
 
   /** @remarks In `px`, applied to the returned outer `<div>` */
   height: number;
