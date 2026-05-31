@@ -1,4 +1,6 @@
 import type { Identity } from "#utils";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { TokenRuler } from "#client/canvas/placeables/tokens/_module.d.mts";
 
 /**
  * The ruler of a Token visualizes
@@ -7,22 +9,21 @@ import type { Identity } from "#utils";
  *   - the planned movement path while the Token is being dragged.
  */
 declare abstract class BaseTokenRuler {
-  #BaseTokenRuler: true;
-
   /**
    *
    * @param token - The Token that this ruler belongs to
    */
-  constructor(token: foundry.canvas.placeables.Token.Implementation);
+  constructor(token: Token.Implementation);
 
   /**
    * The reference to the Token this ruler belongs to.
    */
-  get token(): foundry.canvas.placeables.Token.Implementation;
+  get token(): Token.Implementation;
 
   /**
    * Is the ruler visible?
-   * @defaultValue `false`
+   *
+   * Set to {@linkcode BaseTokenRuler.isVisible | BaseTokenRuler#isVisible} in {@linkcode Token._refreshState | Token#_refreshState}.
    */
   get visible(): boolean;
 
@@ -35,34 +36,36 @@ declare abstract class BaseTokenRuler {
 
   /**
    * Is the ruler supposed to be visible?
-   * {@link BaseTokenRuler#visible} is set to {@link BaseTokenRuler#isVisible} in
-   * {@link foundry.canvas.placeables.Token#_refreshState}.
+   * {@linkcode BaseTokenRuler.visible | BaseTokenRuler#visible} is set to {@linkcode BaseTokenRuler.isVisible | BaseTokenRuler#isVisible}
+   * in {@linkcode Token._refreshState | Token#_refreshState}.
    */
   get isVisible(): boolean;
 
   /**
    * Draw the ruler.
-   * Called in {@linkcode foundry.canvas.placeables.Token.draw | Token#_draw}.
+   * Called in {@linkcode Token.draw | foundry.canvas.placeables.Token#_draw}.
    */
   abstract draw(): Promise<void>;
 
   /**
    * Clear the ruler.
-   * Called in {@linkcode foundry.canvas.placeables.Token.clear | Token#clear}.
+   * Called in {@linkcode Token.clear | foundry.canvas.placeables.Token#clear}.
    */
   abstract clear(): void;
 
   /**
    * Destroy the ruler.
-   * Called in {@linkcode foundry.canvas.placeables.Token._destroy | Token#_destroy}.
+   * Called in {@linkcode Token._destroy | foundry.canvas.placeables.Token#_destroy}.
    */
   abstract destroy(): void;
 
   /**
    * Refresh the ruler.
-   * Called in {@linkcode foundry.canvas.placeables.Token._refreshRuler | Token#_refreshRuler}.
+   * Called in {@linkcode Token._refreshRuler | foundry.canvas.placeables.Token#_refreshRuler}.
    */
-  abstract refresh(rulerData: unknown): void;
+  abstract refresh(rulerData: TokenRuler.Data): void;
+
+  #BaseTokenRuler: true;
 }
 
 declare namespace BaseTokenRuler {

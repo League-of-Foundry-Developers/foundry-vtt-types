@@ -12,7 +12,7 @@ on: # yamllint disable-line rule:truthy
   merge_group:
 
 env:
-  node_version: 24
+  node_version: 26
 
 jobs:
   typecheck:

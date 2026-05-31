@@ -1,4 +1,4 @@
-import type { Brand, FixedInstanceType, Identity, InitializedOn } from "#utils";
+import type { Brand, FixedInstanceType, Identity, InexactPartial, InitializedOn } from "#utils";
 import type { DynamicRingData } from "./_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
@@ -12,29 +12,30 @@ declare class TokenRing {
   constructor(token: Token.Implementation);
 
   /** The effects which could be applied to a token ring (using bitwise operations) */
-  static effects: TokenRing.Effects;
+  static effects: Readonly<TokenRing.Effects>;
 
   /**
    * Is the token rings framework enabled? Will be `null` if the system hasn't initialized yet.
-   * @remarks {@link TokenRing.initialize | `CONFIG.Token.ring.ringClass.initialize`} is called inside {@linkcode Canvas.initialize}, which is called between the `setup` and `ready` hooks.
+   * @remarks {@linkcode TokenRing.Implementation.initialize | CONFIG.Token.ring.ringClass.initialize} is called inside
+   * {@linkcode Canvas.initialize}, which is called between the `setup` and `ready` hooks.
    */
   static get initialized(): InitializedOn<true, "ready", true | null>;
 
   /**
    * Token Rings sprite sheet base texture.
-   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode createAssetsUVs}
+   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode TokenRing.createAssetsUVs}
    */
   static baseTexture: PIXI.BaseTexture | undefined;
 
   /**
    * Rings and background textures UVs and center offset.
-   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode createAssetsUVs}
+   * @remarks Only `undefined` prior to first canvas draw; set in {@linkcode TokenRing.createAssetsUVs}
    */
   static texturesData: Record<string, TokenRing.TextureData> | undefined;
 
   /**
    * The token ring shader class definition.
-   * @remarks Set in {@link TokenRing.initialize | `initialize`}
+   * @remarks Set in {@linkcode TokenRing.initialize}
    */
   static tokenRingSamplerShader: InitializedOn<DynamicRingData["framework"]["shaderClass"], "ready">;
 
@@ -49,8 +50,7 @@ declare class TokenRing {
    * @param name              - Name of the texture we want to get UVs.
    * @param scaleCorrection   - The scale correction applied to UVs. (default: `1`)
    */
-  // scaleCorrection: not null (parameter default only, casting to 0 produces nonsense)
-  static getTextureUVs(name: string, scaleCorrection?: number): Float32Array;
+  static getTextureUVs(name: string, scaleCorrection?: number): Float32Array | void;
 
   /**
    * Get ring and background names for a given size.
@@ -62,20 +62,28 @@ declare class TokenRing {
   static getRingDataBySize(size: number): TokenRing.RingData;
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | TokenRing.configureSize`}.
+   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize | TokenRing#configureSize}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   ringName: TokenRing.RingData["ringName"];
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize}.
+   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize | TokenRing#configureSize}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   bkgName: TokenRing.RingData["bkgName"];
 
+  /**
+   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize | TokenRing#configureSize}.
+   * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
+   */
+  maskName: TokenRing.RingData["maskName"];
+
   ringUVs: InitializedOn<Float32Array, "ready">;
 
   bkgUVs: InitializedOn<Float32Array, "ready">;
+
+  maskUVs: InitializedOn<Float32Array, "ready">;
 
   /**
    * Little endian format =\> BBGGRR
@@ -91,19 +99,17 @@ declare class TokenRing {
 
   /**
    * @defaultValue `null`
-   * @remarks Cannot be `undefined` as core explicitly checks for `null`.
    */
   defaultRingColorLittleEndian: TokenRing.RingData["defaultRingColorLittleEndian"];
 
   /**
    * @defaultValue `null`
-   * @remarks Cannot be `undefined` as core explicitly checks for `null`.
    */
   defaultBackgroundColorLittleEndian: TokenRing.RingData["defaultBackgroundColorLittleEndian"];
 
   /**
    * @defaultValue `0`
-   * @remarks A bitmask of {@link TokenRing.Effects | `effects`}
+   * @remarks A bitmask of {@linkcode TokenRing.Effects | `effects`}.
    */
   effects: number;
 
@@ -133,21 +139,21 @@ declare class TokenRing {
   textureScaleAdjustment: number;
 
   /**
-   * @remarks Not initialized to a value, this gets set in {@link TokenRing.configureSize | `configureSize`}.
+   * @remarks Not initialized to a value, this gets set in {@linkcode TokenRing.configureSize | TokenRing#configureSize}.
    * After initialization (`ready`), this will only be `undefined` if the current spritesheet provides no frames
    */
   colorBand: TokenRing.RingData["colorBand"];
 
   /**
    * Reference to the token that should be animated
-   * @remarks This getter is the return of calling {@link WeakRef.deref | `deref`} on the stored {@linkcode WeakRef}
+   * @remarks This getter is the return of calling {@linkcode WeakRef.deref | deref} on the stored {@linkcode WeakRef}
    * of the Token passed at construction; If the Token has been garbage collected, will return undefined.
    */
   get token(): Token.Implementation | undefined;
 
   /**
    * Configure the sprite mesh.
-   * @param mesh  - The mesh to which TokenRing functionality is configured.
+   * @param mesh  - The mesh to which TokenRing functionality is configured. (default to {@linkcode Token.mesh | token.mesh})
    */
   configure(mesh: PrimarySpriteMesh): void;
 
@@ -155,7 +161,7 @@ declare class TokenRing {
   clear(): void;
 
   /** Configure token ring size. */
-  configureSize(): void;
+  configureSize(options?: TokenRing.ConfigureSizeOptions): void;
 
   /** Configure the token ring visuals properties. */
   configureVisuals(): void;
@@ -166,7 +172,7 @@ declare class TokenRing {
    * @param animationOptions - Options to customize the animation. (default: `{}`)
    * @remarks Only returns `Promise<void>` if `color` is `NaN`ish
    */
-  flashColor(Color: Color, animationOptions?: TokenRing.FlashColorOptions | null): Promise<boolean | void>;
+  flashColor(Color: Color, animationOptions?: TokenRing.FlashColorOptions): Promise<boolean | void>;
 
   /**
    * Create an easing function that spikes in the center. Ideal duration is around 1600ms.
@@ -183,25 +189,36 @@ declare class TokenRing {
   static easeTwoPeaks(pt: number): number;
 
   /**
+   * Soft ping pong curve for photosensitive people.
+   * @param pt - The proportional animation timing on [0,1].
+   * @returns The eased animation progress on [0,1].
+   */
+  static easePingPong(pt: number): number;
+
+  /**
    * To avoid breaking dnd5e.
-   * @deprecated since v12
-   * @remarks No deprecation warning or end of deprecation period provided, method body completely empty
+   * @deprecated No deprecation warning or end of deprecation period provided, but this doesn't exist in v14. (since v12, until v14)
    */
   configureMesh(): void;
 
   /**
    * To avoid breaking dnd5e.
-   * @deprecated since v12
-   * @remarks No deprecation warning or end of deprecation period provided, method body completely empty
+   * @deprecated No deprecation warning or end of deprecation period provided, but this doesn't exist in v14. (since v12, until v14)
    */
   configureNames(): void;
 }
 
 declare namespace TokenRing {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -212,18 +229,47 @@ declare namespace TokenRing {
   interface ImplementationClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  /** @remarks Overrides for default values */
+  /** @privateRemarks Inferred from `TokenRing##adjustScaleByFitMode` */
+  type FitMode = "fill" | "cover" | "contain" | "width" | "height";
+
+  interface _ConfigureSizeOptions {
+    /**
+     * The desired fit mode
+     * @defaultValue `"contain"`
+     */
+    fit: FitMode;
+
+    /**
+     * A custom scale multiplier applied on scale correction
+     * @defaultValue `1`
+     */
+    scaleMultiplier: number;
+  }
+
+  interface ConfigureSizeOptions extends InexactPartial<_ConfigureSizeOptions> {}
+
+  /** @remarks No new properties, just overrides for default values */
   interface FlashColorOptions extends CanvasAnimation.AnimateOptions {
     /**
+     * A duration in milliseconds over which the animation should occur
      * @defaultValue `1600`
-     * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
+     * @remarks **and maximum** changes to `1000`
      */
     duration?: number;
 
-    /** @defaultValue `PIXI.UPDATE_PRIORITY.HIGH` */
+    /**
+     * A priority in {@linkcode PIXI.UPDATE_PRIORITY} which defines when the animation should be evaluated related to others
+     * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.HIGH}
+     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due
+     * to the `Brand`ed enum.
+     */
     priority?: PIXI.UPDATE_PRIORITY | undefined;
 
-    /** @defaultValue `TokenRing.createSpikeEasing(0.15)` */
+    /**
+     * An easing function used to translate animation time or the string name of a static member of the {@linkcode CanvasAnimation} class
+     * @defaultValue {@linkcode TokenRing.createSpikeEasing | TokenRing.createSpikeEasing(0.15)}
+     * @remarks If photosensitive mode is active, the default changes to {@linkcode TokenRing.easePingPong}.
+     */
     easing?: CanvasAnimation.EasingFunction | undefined;
   }
 
@@ -233,26 +279,35 @@ declare namespace TokenRing {
   }
 
   /**
-   * @remarks {@link TokenRing.configureSize | `configureSize`} effectively calls `Object.assign(this, RingData)`
+   * @remarks {@linkcode TokenRing.configureSize | TokenRing#configureSize} effectively calls `Object.assign(this, RingData)`
    */
   interface RingData {
+    /** The filename of the ring asset, if available */
     ringName: string | undefined;
 
+    /** The filename of the background asset, if available */
     bkgName: string | undefined;
 
+    /** The filename of the mask asset, if available */
+    maskName: string | undefined;
+
+    /** Defines color stops for the ring gradient, if applicable */
     colorBand: ColorBand | undefined;
 
     /**
      * @remarks This property comes from the spritesheet JSON and is included with the frame entries in the `##ringData`
-     * private array, but is stripped out of the return of {@link TokenRing.getRingDataBySize | `getRingDataBySize`},
-     * and thus never gets assigned as a property to the `TokenRing` instance in {@link TokenRing.configureSize | `configureSize`}
+     * private array, but is stripped out of the return of {@linkcode TokenRing.getRingDataBySize}, and thus never gets
+     * assigned as a property to the `TokenRing` instance in {@linkcode TokenRing.configureSize | TokenRing#configureSize}
      */
     gridTarget?: number;
 
+    /** Default color for the ring in little-endian BBGGRR format, or null if not set */
     defaultRingColorLittleEndian: number | null;
 
+    /** Default color for the background in little-endian BBGGRR format, or null if not set */
     defaultBackgroundColorLittleEndian: number | null;
 
+    /** Scaling factor to adjust how the subject texture fits within the ring, or null if unavailable */
     subjectScaleAdjustment: number | null;
   }
 
@@ -276,28 +331,26 @@ declare namespace TokenRing {
   type EFFECTS = Brand<number, "TokenRing.effects">;
 
   interface Effects {
-    readonly DISABLED: 0x00 & EFFECTS;
+    DISABLED: 0x00 & EFFECTS;
 
-    readonly ENABLED: 0x01 & EFFECTS;
+    ENABLED: 0x01 & EFFECTS;
 
-    readonly RING_PULSE: 0x02 & EFFECTS;
+    RING_PULSE: 0x02 & EFFECTS;
 
-    readonly RING_GRADIENT: 0x04 & EFFECTS;
+    RING_GRADIENT: 0x04 & EFFECTS;
 
-    readonly BKG_WAVE: 0x08 & EFFECTS;
+    BKG_WAVE: 0x08 & EFFECTS;
 
-    /** @remarks Foundry comments "or spectral pulse effect" */
-    readonly INVISIBILITY: 0x10 & EFFECTS;
+    /** @remarks Foundry comments "Or spectral pulse effect" */
+    INVISIBILITY: 0x10 & EFFECTS;
+
+    COLOR_OVER_SUBJECT: 0x20 & EFFECTS;
   }
 
-  /**
-   * @deprecated Replaced by {@linkcode TokenRing.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode TokenRing.ImplementationClass}. This type will be removed in v14. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode TokenRing.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode TokenRing.Implementation}. This type will be removed in v14. */
   type ConfiguredInstance = Implementation;
 }
 

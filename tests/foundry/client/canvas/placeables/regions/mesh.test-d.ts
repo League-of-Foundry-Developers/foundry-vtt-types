@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
 import RegionMesh = foundry.canvas.placeables.regions.RegionMesh;
 import Region = foundry.canvas.placeables.Region;
@@ -6,28 +6,41 @@ import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 import PulseColorationShader = foundry.canvas.rendering.shaders.PulseColorationShader;
 import RegionShader = foundry.canvas.rendering.shaders.RegionShader;
 
-declare const someRegion: Region.Implementation;
+declare const region: Region.Implementation;
+declare const renderer: PIXI.Renderer;
 
-const myRM = new RegionMesh(someRegion, RegionShader);
+describe("RegionMesh Tests", () => {
+  test("Construction", () => {
+    // @ts-expect-error must supply a Region
+    new RegionMesh();
+    expectTypeOf(new RegionMesh(region)).toEqualTypeOf<RegionMesh>();
+    expectTypeOf(new RegionMesh(region, PulseColorationShader)).toEqualTypeOf<RegionMesh>();
+  });
 
-expectTypeOf(myRM.region).toEqualTypeOf<Region.Implementation>();
-expectTypeOf(myRM.shader).toEqualTypeOf<AbstractBaseShader>();
+  const mesh = new RegionMesh(region, RegionShader);
 
-expectTypeOf(myRM.blendMode).toExtend<PIXI.BLEND_MODES>();
-expectTypeOf((myRM.blendMode = PIXI.BLEND_MODES.DST_ATOP)).toExtend<PIXI.BLEND_MODES>();
+  test("Properties and getters", () => {
+    expectTypeOf(mesh.region).toEqualTypeOf<Region.Implementation>();
+    expectTypeOf(mesh.shader).toEqualTypeOf<AbstractBaseShader.Any>();
 
-expectTypeOf(myRM.tint).toBeNumber();
-expectTypeOf((myRM.tint = 0xabcedf)).toBeNumber();
+    expectTypeOf(mesh.blendMode).toExtend<PIXI.BLEND_MODES>();
+    expectTypeOf((mesh.blendMode = PIXI.BLEND_MODES.DST_ATOP)).toExtend<PIXI.BLEND_MODES>();
 
-expectTypeOf(myRM["_tintColor"]).toEqualTypeOf<PIXI.Color>();
-expectTypeOf(myRM["_cachedTint"]).toEqualTypeOf<Color.RGBAColorVector>();
-expectTypeOf(myRM["_tintAlphaDirty"]).toBeBoolean();
+    expectTypeOf(mesh.tint).toBeNumber();
+    mesh.tint = 0xabcedf; // Setter
 
-expectTypeOf(myRM.setShaderClass(PulseColorationShader)).toBeVoid();
-expectTypeOf(myRM.updateTransform()).toBeVoid();
+    expectTypeOf(mesh["_tintColor"]).toEqualTypeOf<PIXI.Color>();
+    expectTypeOf(mesh["_cachedTint"]).toEqualTypeOf<Color.RGBAColorVector>();
+    expectTypeOf(mesh["_tintAlphaDirty"]).toBeBoolean();
+  });
 
-declare const someRenderer: PIXI.Renderer;
-expectTypeOf(myRM["_render"](someRenderer)).toBeVoid();
-expectTypeOf(myRM["_calculateBounds"]()).toBeVoid();
+  test("Methods", () => {
+    expectTypeOf(mesh.setShaderClass(PulseColorationShader)).toBeVoid();
+    expectTypeOf(mesh.updateTransform()).toBeVoid();
 
-expectTypeOf(myRM.containsPoint({ x: 50, y: 50 })).toBeBoolean();
+    expectTypeOf(mesh["_render"](renderer)).toBeVoid();
+    expectTypeOf(mesh["_calculateBounds"]()).toBeVoid();
+
+    expectTypeOf(mesh.containsPoint({ x: 50, y: 50 })).toBeBoolean();
+  });
+});
