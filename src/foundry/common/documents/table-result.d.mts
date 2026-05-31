@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -75,7 +75,7 @@ declare abstract class BaseTableResult<
    * - `documentId` and `documentCollection` -\> `documentUuid`
    * - `text` -\> `description` (since v13, until v15)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
@@ -84,7 +84,7 @@ declare abstract class BaseTableResult<
    * - `documentCollection` -\> a pack ID, document type, or `null` (since v13, until v15)
    * - `text` -\> `description` (since v13, until v15)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /*
    * After this point these are not really overridden methods.
@@ -99,8 +99,6 @@ declare abstract class BaseTableResult<
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseTableResult.ParentCollectionName | null;
 
   static override get implementation(): TableResult.ImplementationClass;
 
@@ -287,7 +285,7 @@ declare abstract class BaseTableResult<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseTableResult.Schema>;
+  static override _schema: SchemaField<BaseTableResult.Schema>;
 
   static override get schema(): SchemaField<BaseTableResult.Schema>;
 

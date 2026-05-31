@@ -147,6 +147,18 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @privateRemarks This was not previously typed by us, as it had been erroneously marked static in v12
    */
   get BASIC_MODE_ID(): typeof DetectionMode.BASIC_MODE_ID;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<DetectionMode.Schema>;
+
+  static override get schema(): fields.SchemaField<DetectionMode.Schema>;
+
+  static override validateJoint(data: DetectionMode.Source): void;
+
+  static override fromSource(source: DetectionMode.CreateData, context?: DataModel.FromSourceOptions): DetectionMode;
+
+  static override fromJSON(json: string): DetectionMode;
 }
 
 declare namespace DetectionMode {
@@ -182,7 +194,7 @@ declare namespace DetectionMode {
 
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
-  interface SourceData extends fields.SchemaField.SourceData<Schema> {}
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   type DETECTION_TYPES = Brand<number, "DetectionMode.DETECTION_TYPES">;
 
@@ -199,6 +211,9 @@ declare namespace DetectionMode {
     /** Can't fit in other types (smell, life sense, trans-dimensional sense, sense of humor...) */
     readonly OTHER: 3 & DETECTION_TYPES;
   }
+
+  /** @deprecated Use {@linkcode DetectionMode.Source} instead. This type will be removed in v14. */
+  type SourceData = Source;
 }
 
 export default DetectionMode;

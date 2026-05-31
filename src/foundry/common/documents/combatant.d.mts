@@ -65,8 +65,6 @@ declare abstract class BaseCombatant<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCombatant.ParentCollectionName | null;
-
   static override get implementation(): Combatant.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatant;
@@ -254,7 +252,7 @@ declare abstract class BaseCombatant<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCombatant.Schema>;
+  static override _schema: SchemaField<BaseCombatant.Schema>;
 
   static override get schema(): SchemaField<BaseCombatant.Schema>;
 

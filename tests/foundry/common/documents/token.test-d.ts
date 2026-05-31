@@ -27,8 +27,6 @@ const myToken = new TestBaseToken({
     // not going to include the entire Actor schema here
     name: "Foo the Barbazian",
   },
-  appendNumber: true,
-  prependAdjective: true,
   width: 2,
   height: 3,
   texture: {
@@ -131,8 +129,6 @@ expectTypeOf(myToken.displayName).toEqualTypeOf<CONST.TOKEN_DISPLAY_MODES>();
 expectTypeOf(myToken.actorId).toEqualTypeOf<string | null>();
 expectTypeOf(myToken.actorLink).toBeBoolean();
 expectTypeOf(myToken.delta).toEqualTypeOf<ActorDelta.Implementation | null>();
-expectTypeOf(myToken.appendNumber).toBeBoolean();
-expectTypeOf(myToken.prependAdjective).toBeBoolean();
 
 // TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
 expectTypeOf(myToken.texture).toEqualTypeOf<

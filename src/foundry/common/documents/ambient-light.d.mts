@@ -49,8 +49,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  override readonly parentCollection: BaseAmbientLight.ParentCollectionName | null;
-
   static override get implementation(): AmbientLightDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAmbientLight;
@@ -236,7 +234,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAmbientLight.Schema>;
+  static override _schema: SchemaField<BaseAmbientLight.Schema>;
 
   static override get schema(): SchemaField<BaseAmbientLight.Schema>;
 

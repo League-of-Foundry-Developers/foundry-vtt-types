@@ -1,8 +1,11 @@
 import type DataModel from "#common/abstract/data.d.mts";
 import type * as fields from "#common/data/fields.mjs";
-import type { AnyObject, IntentionalPartial } from "#utils";
+import type { AnyObject, Identity, IntentionalPartial } from "#utils";
 
 declare namespace CalendarData {
+  interface Any extends AnyCalendarData {}
+  interface AnyConstructor extends Identity<typeof AnyCalendarData> {}
+
   interface Schema extends fields.DataSchema {
     /** The name of the calendar being used. */
     name: fields.StringField<{ required: true; blank: false }>;
@@ -334,8 +337,26 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
     components: CalendarData.TimeComponents,
     options?: CalendarData.FormatAgoOptions,
   ): string;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<CalendarData.Schema>;
+
+  static override get schema(): fields.SchemaField<CalendarData.Schema>;
+
+  static override validateJoint(data: CalendarData.Source): void;
+
+  // TODO: figure out if this should be generic
+  static override fromSource(source: CalendarData.CreateData, context?: DataModel.FromSourceOptions): CalendarData.Any;
+
+  // TODO: figure out if this should be generic
+  static override fromJSON(json: string): CalendarData.Any;
 }
 
 export const SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG: CalendarData.CreateData;
 
 export default CalendarData;
+
+declare abstract class AnyCalendarData extends CalendarData<CalendarData.TimeComponents> {
+  constructor(...args: never);
+}

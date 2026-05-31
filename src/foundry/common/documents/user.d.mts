@@ -94,8 +94,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseUser.ParentCollectionName | null;
-
   static override get implementation(): User.ImplementationClass;
 
   static override get baseDocument(): typeof BaseUser;
@@ -281,7 +279,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseUser.Schema>;
+  static override _schema: SchemaField<BaseUser.Schema>;
 
   static override get schema(): SchemaField<BaseUser.Schema>;
 

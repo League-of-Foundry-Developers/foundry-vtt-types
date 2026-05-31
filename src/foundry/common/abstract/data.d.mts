@@ -1,9 +1,6 @@
-import type { AnyMutableObject, AnyObject, EmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { fields } from "../data/_module.d.mts";
-import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
-
-type DataSchema = fields.DataSchema;
+import type { AnyObject, Identity, InexactPartial } from "#utils";
+import type { DataField, SchemaField, DataSchema } from "#common/data/fields.d.mts";
+import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
@@ -26,19 +23,33 @@ export default DataModel;
  * - A workflow for transacting differential updates to the instance data and serializing its data into format suitable
  *   for storage or transport.
  *
- * DataModel subclasses can be used for a wide variety of purposes ranging from simple game settings to high complexity
- * objects like `Scene` documents. Data models are often nested; see the {@linkcode DataModel.parent} property for more.
+ * `DataModel` subclasses can be used for a wide variety of purposes ranging from simple game settings to high complexity
+ * objects like `Scene` documents. Data models are often nested; see the {@linkcode DataModel.parent | DataModel#parent} property for more.
+ *
+ * @remarks List of methods and types that subclasses may want to override beyond the
+ * required {@linkcode DataModel.defineSchema} to get narrower types:
+ * - {@linkcode DataModel._schema}
+ * - {@linkcode DataModel.schema}
+ * - {@linkcode DataModel.validateJoint}
+ * - {@linkcode DataModel.fromSource}
+ * - {@linkcode DataModel.fromJSON}
+ *
+ * Additionally, {@linkcode DataModel.cleanData}, {@linkcode DataModel.migrateData}, and {@linkcode DataModel.shimData} could be overridden
+ * if you are sure you have accurate and sufficient types for your model, but the types project is still deciding on how best (or even if
+ * its reasonably possible to) type these in a useful and configurable way.
  */
 declare abstract class DataModel<
   Schema extends DataSchema,
   Parent extends DataModel.Any | null = null,
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  ExtraConstructorOptions extends AnyObject = {},
+  ExtraConstructorOptions extends object = {},
 > extends _InternalDataModel<Schema> {
   /**
-   * @param data    - Initial data used to construct the data object. The provided object
-   *                  will be owned by the constructed model instance and may be mutated.
-   * @param options - Options which affect DataModel construction
+   * @param data    - Initial data used to construct the data object. The provided object will be owned by the
+   * constructed model instance and may be mutated.
+   * @param options - Options which affect `DataModel` construction
+   * @remarks Passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
+   * by FVTT-Types at this time. If you need this for your project, come talk to us on the project discord.
    */
   constructor(...args: DataModel.ConstructorArgs<Schema, Parent, ExtraConstructorOptions>);
 
@@ -57,24 +68,30 @@ declare abstract class DataModel<
 
   /**
    * Configure the data model instance before validation and initialization workflows are performed.
+   * @param options - Additional options modifying the configuration
    */
-  // options: not null (parameter default only, destructured in Document)
-  protected _configure(options?: DataModel.ConfigureOptions & ExtraConstructorOptions): void;
+  protected _configure(options?: DataModel.ConfigureOptions<ExtraConstructorOptions>): void;
 
   /**
-   * The source data object for this DataModel instance.
+   * The source data object for this `DataModel` instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
+   * @remarks Defined in the class body, but overwritten during construction by `defineProperty` with
+   * `{ writeable: false, enumerable: false }` options and the value being the return of
+   * {@linkcode DataModel._initializeSource | #_initializeSource}.
    */
-  readonly _source: fields.SchemaField.SourceData<Schema>;
+  readonly _source: SchemaField.SourceData<Schema>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
    * @internal
+   * @remarks Only `undefined` until the first time {@linkcode DataModel.schema} is accessed.
    */
-  protected static _schema: SchemaField.Any;
+  static _schema: SchemaField.Any | undefined;
 
   /**
-   * An immutable reverse-reference to a parent DataModel to which this model belongs.
+   * An immutable reverse-reference to a parent `DataModel` to which this model belongs.
+   * @remarks Defined in the class body, but overwritten during construction by `defineProperty` with
+   * `{ writeable: false, enumerable: false }` options.
    */
   readonly parent: Parent;
 
@@ -90,7 +107,8 @@ declare abstract class DataModel<
    * server, where user code does not run. However, almost all documents have a `flags` field to store data, and many
    * have a `system` field that can be configured to be a {@linkcode foundry.abstract.TypeDataModel} instance. Those models
    * are *not* constructed on the server and rely purely on client-side code, which means certain extra-sensitive fields
-   * must be also be registered through your package manifest. {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields | ServerSanitizationFields}
+   * must be also be registered through your package manifest.
+   * {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields | ServerSanitizationFields}
    *
    * @example
    * ```js
@@ -125,10 +143,10 @@ declare abstract class DataModel<
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): SchemaField<Schema, EmptyObject>;
+  get schema(): SchemaField<Schema>;
 
   /**
-   * Is the current state of this DataModel invalid?
+   * Is the current state of this `DataModel` invalid?
    * The model is invalid if there is any unresolved failure.
    */
   get invalid(): boolean;
@@ -136,10 +154,7 @@ declare abstract class DataModel<
   /**
    * An array of validation failure instances which may have occurred when this instance was last validated.
    */
-  // FIXME: Check if this is actually correct.
-  get validationFailures(): { fields: DataModelValidationFailure | null; joint: DataModelValidationFailure | null };
-
-  #validationFailures: { fields: DataModelValidationFailure | null; joint: DataModelValidationFailure | null };
+  get validationFailures(): DataModel.ValidationFailures;
 
   /**
    * A set of localization prefix paths which are used by this DataModel. This provides an alternative to defining the
@@ -189,7 +204,7 @@ declare abstract class DataModel<
   static LOCALIZATION_PREFIXES: string[];
 
   /**
-   * Initialize the source data for a new DataModel instance.
+   * Initialize the source data for a new `DataModel` instance.
    * One-time migrations and initial cleaning operations are applied to the source data.
    * @param data    - The candidate source data from which the model will be constructed
    * @param options - Options provided to the model constructor
@@ -197,22 +212,24 @@ declare abstract class DataModel<
    * @returns Migrated and cleaned source data which will be stored to the model instance
    * @remarks `options` is unused in `DataModel`
    */
-  // options: not null (parameter default only)
   protected _initializeSource(
-    data: fields.SchemaField.CreateData<Schema> | this,
-    options?: DataModel.InitializeSourceOptions & ExtraConstructorOptions,
-  ): fields.SchemaField.SourceData<Schema>;
+    data: SchemaField.CreateData<Schema> | this,
+    options?: DataModel.InitializeSourceOptions<ExtraConstructorOptions>,
+  ): SchemaField.SourceData<Schema>;
 
   /**
    * Clean a data source object to conform to a specific provided schema.
    * @param source  - The source data object
    * @param options - Additional options which are passed to field cleaning methods
-   * @returns The cleaned source data
+   * @returns The cleaned source data, which is the same object as the `source` argument
+   * @privateRemarks `object` is used because {@linkcode CreateData} isn't assignable to {@linkcode AnyMutableObject}, which would otherwise
+   * be used here for both
    */
-  static cleanData(source?: AnyMutableObject, options?: DataField.CleanOptions): AnyMutableObject;
+  static cleanData(source?: object, options?: DataField.CleanOptions): object;
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
+   * @yields {@linkcode DataField}
    */
   protected static _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -222,8 +239,7 @@ declare abstract class DataModel<
    * @param options - Options provided to the model constructor
    * @remarks `options` gets passed on to each field in the schema's `#initialize`
    */
-  // options: not null (parameter default only)
-  protected _initialize(options?: DataModel.InitializeOptions & ExtraConstructorOptions): void;
+  protected _initialize(options?: DataModel.InitializeOptions<ExtraConstructorOptions>): void;
 
   /**
    * Reset the state of this data instance back to mirror the contained source data, erasing any changes.
@@ -239,16 +255,15 @@ declare abstract class DataModel<
    *
    * **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
    * on; Accurate typing of `#parent` requires a cast.
-   * @privateRemarks Foundry types `context` as simply `object`, but going by core usage, it's a
-   * {@link DataModel.ConstructionContext | `DataModel.ConstructionContext`}. Both the implementation here
-   * and the override in `Document` provide `this.parent` to the construction context; Here, `context` is
-   * spread in, so providing a different parent is allowed. The `Document` override enforces `this.parent`
-   * with no opportunity to pass an alternative.
+   * @privateRemarks Foundry types `context` as simply `object`, but going by core usage, it's a {@linkcode DataModel.ConstructionContext}.
+   *
+   * Both the implementation here and the override in `Document` provide `this.parent` to the construction context; Here, `context` is
+   * spread in, so providing a different parent is allowed. The `Document` override enforces `this.parent` with no opportunity to pass
+   * an alternative.
    */
-  // null would be fine for either/both params here, but it breaks Document, and its never *expected*, just incidentally doesn't break
-  // Note(LukeAbby): This is really like `DeepPartial<fields.SchemaField.UpdateData<Schema>>`.
+  // Note(LukeAbby): This is really like `DeepPartial<SchemaField.UpdateData<Schema>>`.
   // However the difference is subtle enough that it's unlikely to come into play in common usage.
-  clone(data?: fields.SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext & ExtraConstructorOptions): this;
+  clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext<ExtraConstructorOptions>): this;
 
   /**
    * Validate the data contained in the document to check for type and content
@@ -257,7 +272,6 @@ declare abstract class DataModel<
    * @param options - Optional parameters which customize how validation occurs.
    * @returns An indicator for whether the document contains valid data
    */
-  // options: not null (destructured)
   validate(options?: DataModel.ValidateOptions<Schema>): boolean;
 
   /**
@@ -270,11 +284,10 @@ declare abstract class DataModel<
    * this is effectively abstract in `DataModel`. Subclasses implementing should type `data` as the `SchemaField.SourceData<>` of
    * their schema.
    */
-  // TODO(esheyw): dep warning is gone in v13, clean up remarks
   static validateJoint(data: never): void;
 
   /**
-   * Update the DataModel locally by applying an object of changes to its source data.
+   * Update the `DataModel` locally by applying an object of changes to its source data.
    * The provided changes are cleaned, validated, and stored to the source data object for this model.
    * The source data is then re-initialized to apply those changes to the prepared data.
    * The method returns an object of differential changes which modified the original data.
@@ -285,14 +298,13 @@ declare abstract class DataModel<
    */
   // TODO: This should allow dotkeys to be passed
   // TODO: Without widening changes and the return type, the ActorDelta override is impossible to make correct
-  // changes, options: not null (parameter default only)
   updateSource(
-    changes?: fields.SchemaField.UpdateData<Schema>,
+    changes?: SchemaField.UpdateData<Schema>,
     options?: DataModel.UpdateOptions,
-  ): fields.SchemaField.UpdateData<Schema>;
+  ): SchemaField.UpdateData<Schema>;
 
   /**
-   * Copy and transform the DataModel into a plain object.
+   * Copy and transform the `DataModel` into a plain object.
    * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
    * @param source - Draw values from the underlying data source rather than transformed values (default: `true`)
    * @returns The extracted primitive object
@@ -300,13 +312,13 @@ declare abstract class DataModel<
   toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
 
   /**
-   * Extract the source data for the DataModel into a simple object format that can be serialized.
+   * Extract the source data for the `DataModel` into a simple object format that can be serialized.
    * @returns The document source data expressed as a plain object
    */
   toJSON(): SchemaField.SourceData<Schema>;
 
   /**
-   * Create a new instance of this DataModel from a source record.
+   * Create a new instance of this `DataModel` from a source record.
    * The source is presumed to be trustworthy and is not strictly validated.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
@@ -325,17 +337,16 @@ declare abstract class DataModel<
    *
    * class MyDataModel extends DataModel<MySchema, DataModel.Any | null, MyExtraConstructorOptions> {
    *   static fromSource(
-   *     source: foundry.data.fields.SchemaField.CreateData<MySchema>,
+   *     source: foundry.data.SchemaField.CreateData<MySchema>,
    *     context?: DataModel.FromSourceOptions<NewParent> & MyExtraConstructorOptions
    *   ): MyDataModel
    * }
    * ```
    */
-  // context: not null (destructured)
   static fromSource(source: never, context?: DataModel.FromSourceOptions): DataModel.Any;
 
   /**
-   * Create a DataModel instance using a provided serialized JSON string.
+   * Create a `DataModel` instance using a provided serialized JSON string.
    * @param json - Serialized document data in string format
    * @returns A constructed data model instance
    * @remarks
@@ -350,28 +361,33 @@ declare abstract class DataModel<
   static fromJSON(json: string): DataModel.Any;
 
   /**
-   * Migrate candidate source data for this DataModel which may require initial cleaning or transformations.
+   * Migrate candidate source data for this `DataModel` which may require initial cleaning or transformations.
    * @param source - The candidate source data from which the model will be constructed
-   * @returns Migrated source data, if necessary
+   * @returns Migrated source data, which is the same object as the `source` argument
+   * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
+   * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
+   * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
-  static migrateData(source: AnyMutableObject): AnyMutableObject;
+  static migrateData(source: object): object;
 
   /**
    * Wrap data migration in a try/catch which attempts it safely
    * @param source - The candidate source data from which the model will be constructed
-   * @returns Migrated source data, if necessary
+   * @returns Migrated source data, which is the same object as the `source` argument
+   * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
+   * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
+   * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
-  static migrateDataSafe(source: AnyMutableObject): AnyMutableObject;
+  static migrateDataSafe(source: object): object;
 
   /**
    * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to
    * support older code which uses this data.
    * @param data    - Data which matches the current schema
    * @param options - Additional shimming options
-   * @returns Data with added backwards-compatible properties
+   * @returns Data with added backwards-compatible properties, which is the same object as the `data` argument
    */
-  // options: not null (destructured)
-  static shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static shimData(data: object, options?: DataModel.ShimDataOptions): object;
 }
 
 declare namespace DataModel {
@@ -387,20 +403,31 @@ declare namespace DataModel {
   // TODO(LukeAbby): see if `| DataModel<Schema, any>` needs to be added back.
   // Seems rare in practice and causes terrible errors. May not need to be added back if `DataModel`.
   // is always assignable.
-  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema>;
+  type CreateData<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
 
-  // TODO(LukeAbby): Make optional only if `{}` is assignable to `CreateData`.
+  /**
+   * If `CreateData` has no required fields, makes the first argument (`data`) optional.
+   */
   type ConstructorArgs<
     Schema extends DataSchema,
     Parent extends DataModel.Any | null = null,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    ExtraConstructorOptions extends AnyObject = {},
-  > = [
-    data?: DataModel.CreateData<Schema>,
+    ExtraConstructorOptions extends object = {},
+  > =
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {} extends DataModel.CreateData<Schema>
+      ? [
+          data?: DataModel.CreateData<Schema>,
 
-    // Note(LukeAbby): `{ parent, strict, ...options }`
-    options?: DataModel.ConstructionContext<Parent> & ExtraConstructorOptions,
-  ];
+          // Note(LukeAbby): `{ parent, strict, ...options }`
+          options?: DataModel.ConstructionContext<Parent, ExtraConstructorOptions>,
+        ]
+      : [
+          data: DataModel.CreateData<Schema>,
+
+          // Note(LukeAbby): `{ parent, strict, ...options }`
+          options?: DataModel.ConstructionContext<Parent, ExtraConstructorOptions>,
+        ];
 
   /**
    * With the existence of custom module subtypes a system can no longer rely on their configured types being the only ones.
@@ -414,34 +441,45 @@ declare namespace DataModel {
 
   /**
    * A helper type to extract the schema from a {@linkcode DataModel}.
-   * @template ModelType - the DataModel for the embedded data
+   * @template ModelType - the `DataModel` for the embedded data
    */
   type SchemaOf<ModelType extends DataModel.Any> = ModelType["schema"]["fields"];
 
-  // Note(LukeAbby): This avoids writing `SchemaOf<InstanceType<ConcreteClass>>` to be robust to an issue with this snippet:
-  // ```ts
-  // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
-  // ```
+  /**
+   * @privateRemarks Note(LukeAbby): This avoids writing `SchemaOf<InstanceType<ConcreteClass>>` to be robust to an issue with this snippet:
+   * ```ts
+   * EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
+   * ```
+   */
   type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ReturnType<ConcreteClass["defineSchema"]>;
 
   /**
-   * this is how 13.339 splits up the interfaces
-   *
+   * {@linkcode ValidateOptions} has already had `InexactPartial` applied, so this inherits that optionality/nullishness.
    * @internal
    */
-  type _ConstructionContext = Pick<ValidateOptions<DataSchema>, "strict" | "fallback" | "dropInvalidEmbedded">;
+  type _ConstructionContext<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = Pick<ValidateOptions<DataSchema>, "strict" | "fallback" | "dropInvalidEmbedded"> & ExtraConstructionOptions;
 
-  interface ConstructionContext<Parent extends Any | null = Any | null> extends _ConstructionContext {
+  type ConstructionContext<
+    Parent extends DataModel.Any | null = DataModel.Any | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = _ConstructionContext<ExtraConstructionOptions> & {
     /**
-     * A parent DataModel instance to which this DataModel belongs
+     * A parent `DataModel` instance to which this `DataModel` belongs
      * @defaultValue `null`
      */
     parent?: Parent | undefined;
-  }
+  };
 
-  interface CloneContext extends _ConstructionContext {
+  type CloneContext<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = _ConstructionContext<ExtraConstructionOptions> & {
     /**
-     * A parent DataModel instance to which this DataModel belongs
+     * A parent `DataModel` instance to which this `DataModel` belongs
      * @defaultValue `this.parent`
      * @remarks The above default is only applied if this parameter is omitted entirely. Passing `parent: undefined` will
      * cause the returned DataModel's `parent` (*at runtime*) to be `null`, because it will override the spread-object
@@ -450,16 +488,11 @@ declare namespace DataModel {
      * **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
      * on; Accurate typing of `#parent` requires a cast.
      */
-    parent?: Any | null | undefined;
-  }
+    parent?: DataModel.Any | null | undefined;
+  };
 
-  /**
-   * Updated to 13.339 wording, still accurate for v12
-   *
-   * @internal
-   */
-  // TODO: When updating this type to swap NullishProps for InexactPartial, also fix EmbeddedCollection.HandleInvalidDocumentOptions
-  type _ValidateOptions<Schema extends DataSchema> = NullishProps<{
+  /** @internal */
+  interface _ValidateOptions<Schema extends DataSchema> {
     /**
      * Validate each individual field?
      * @defaultValue `true`
@@ -479,8 +512,7 @@ declare namespace DataModel {
      * A specific set of proposed changes to validate, rather than the full source data of the model.
      * @remarks If not passed or nullish, `validate` will operate on `this._source` instead
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    changes: fields.SchemaField.AssignmentData<Schema>;
+    changes: SchemaField.UpdateData<Schema>;
 
     /**
      * If changes are provided, attempt to clean the changes before validating them?
@@ -498,36 +530,49 @@ declare namespace DataModel {
     /**
      * Allow replacement of invalid values with valid defaults? This option mutates the provided changes.
      * @defaultValue `false`
-     * @see {@link DataField.ValidateOptions.fallback | `DataField.DataValidationOptions.fallback`}
+     * @see {@linkcode DataField.ValidateOptions.fallback}
      */
     fallback: boolean;
-
-    // Foundry describes a `partial` property here, but nothing in DataModel actually *takes* such; `#validate`
-    // generates a value for `partial` from the state of `changes` and `joint` before passing it on to either
-    // `DataModel.cleanData` or `SchemaField#validate`, both of which do have uses for that property downstream
-    // (in `SchemaField#_cleanType` and `#_validateType`). This is a documentation error in v12, fixed in v13.
 
     /**
      * If true, invalid embedded documents will emit a warning and be placed in the invalidDocuments collection rather
      * than causing the parent to be considered invalid. This option mutates the provided changes.
      * @defaultValue `false`
-     * @see {@link DataField.ValidateOptions.dropInvalidEmbedded | `DataField.DataValidationOptions.dropInvalidEmbedded`}
+     * @see {@linkcode DataField.ValidateOptions.dropInvalidEmbedded}
      */
     dropInvalidEmbedded: boolean;
-  }>;
+  }
 
-  interface ValidateOptions<Schema extends DataSchema> extends _ValidateOptions<Schema> {}
+  interface ValidateOptions<Schema extends DataSchema> extends InexactPartial<_ValidateOptions<Schema>> {}
 
-  /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initializeSource` */
-  interface InitializeSourceOptions extends _ConstructionContext {}
+  /**
+   * `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to
+   * {@linkcode DataModel._initializeSource | #_initializeSource}.
+   */
+  type InitializeSourceOptions<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = _ConstructionContext<ExtraConstructionOptions>;
 
-  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed `ConstructionContext` before forwarding to `#_configure` */
-  interface ConfigureOptions extends Omit<_ConstructionContext, "strict"> {}
+  /**
+   * `DataModel#constructor` pulls `parent` and `strict` out of the passed `ConstructionContext` before forwarding to
+   * {@linkcode DataModel._configure | #_configure}.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type ConfigureOptions<ExtraConstructionOptions extends object = {}> = Omit<_ConstructionContext, "strict"> &
+    ExtraConstructionOptions;
 
-  /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initialize` */
-  interface InitializeOptions extends _ConstructionContext {}
+  /**
+   * `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to
+   * {@linkcode DataModel._initialize #_initialize}.
+   */
+  type InitializeOptions<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = _ConstructionContext<ExtraConstructionOptions>;
 
-  type _UpdateOptions = InexactPartial<{
+  /** @internal */
+  interface _UpdateOptions {
     /** Do not finally apply the change, but instead simulate the update workflow  */
     dryRun: boolean;
 
@@ -547,16 +592,15 @@ declare namespace DataModel {
 
     /** An advanced option used specifically and internally by the ActorDelta model */
     restoreDelta: boolean;
-  }>;
+  }
 
-  interface UpdateOptions extends _UpdateOptions {}
+  interface UpdateOptions extends InexactPartial<_UpdateOptions> {}
 
   /**
    * Only necessary to change the default value of `strict`
-   *
    * @internal
    */
-  type _FromSourceOptions = NullishProps<{
+  interface _FromSourceOptions {
     /**
      * Models created from trusted source data are validated non-strictly
      * @defaultValue `false`
@@ -564,24 +608,29 @@ declare namespace DataModel {
      * rather than `true` in normal construction
      */
     strict: boolean;
-  }>;
+  }
 
   /**
    * @remarks `.fromSource` could take and pass on a specific `Parent`, but this causes
    * inheritance issues and complicates subclass overriding
    */
-  interface FromSourceOptions extends ConstructionContext {}
+  interface FromSourceOptions extends Omit<ConstructionContext, "strict">, InexactPartial<_FromSourceOptions> {}
 
   /** @internal */
-  type _ShimDataOptions = NullishProps<{
+  interface _ShimDataOptions {
     /**
      * Apply shims to embedded models?
      * @defaultValue `true`
      */
     embedded: boolean;
-  }>;
+  }
 
-  interface ShimDataOptions extends _ShimDataOptions {}
+  interface ShimDataOptions extends InexactPartial<_ShimDataOptions> {}
+
+  interface ValidationFailures {
+    fields: DataModelValidationFailure | null;
+    joint: DataModelValidationFailure | null;
+  }
 
   /**
    * @deprecated Replaced by {@linkcode DataModel.CreateData}

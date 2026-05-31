@@ -67,7 +67,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -85,8 +85,6 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseCards.ParentCollectionName | null;
 
   static override get implementation(): Cards.ImplementationClass;
 
@@ -305,7 +303,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCards.Schema>;
+  static override _schema: SchemaField<BaseCards.Schema>;
 
   static override get schema(): SchemaField<BaseCards.Schema>;
 

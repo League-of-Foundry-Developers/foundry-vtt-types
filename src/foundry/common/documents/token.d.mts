@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
+import type { DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
@@ -163,7 +163,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Migrations:
    * - `hexagonalShape` to `shape` (since v13, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
@@ -175,7 +175,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * - `hexagonalShape` to `shape` (since v13, until v15)
    *   - "`TokenDocument#hexagonalShape` is deprecated in favor of `TokenDocument#shape`."
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated "TokenDocument#overlayEffect is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
@@ -205,8 +205,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseToken.ParentCollectionName | null;
 
   static override get implementation(): TokenDocument.ImplementationClass;
 
@@ -426,7 +424,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseToken.Schema>;
+  static override _schema: SchemaField<BaseToken.Schema>;
 
   static override get schema(): SchemaField<BaseToken.Schema>;
 
