@@ -25,9 +25,9 @@ type TokenFindMovementPathOptions = unknown;
 
 type TokenFindMovementPathJob = unknown;
 
-type TokenGEtTerrainMovementPathWaypoint = unknown;
+type TokenGetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
 
-type TokenTerrainMovementWaypoint = unknown;
+type TokenTerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
 type TokenRulerData = foundry.canvas.placeables.tokens.TokenRuler.Data;
 

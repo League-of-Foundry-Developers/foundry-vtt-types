@@ -5,6 +5,7 @@ import Note = foundry.canvas.placeables.Note;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
+expectTypeOf(Note.implementation).toEqualTypeOf<Note.ImplementationClass>();
 expectTypeOf(Note.embeddedName).toEqualTypeOf<"Note">();
 expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -84,6 +85,8 @@ expectTypeOf(
 expectTypeOf(
   note["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
+
+// TODO: _onUpdate test after document test helpers are done
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;

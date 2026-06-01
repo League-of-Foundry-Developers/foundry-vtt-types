@@ -1,11 +1,12 @@
-import type { FixedInstanceType, HandleEmptyObject, NullishProps } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
-import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
-import Edge = foundry.canvas.geometry.edges.Edge;
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+import type { Edge } from "#client/canvas/geometry/edges/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -19,11 +20,13 @@ declare module "#configuration" {
  * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
  * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
  * and sounds.
- *
- * @see {@linkcode WallDocument}
- * @see {@linkcode WallsLayer}
+ * @see {@linkcode foundry.documents.WallDocument}
+ * @see {@linkcode foundry.canvas.layers.WallsLayer}
  */
 declare class Wall extends PlaceableObject<WallDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Wall.ImplementationClass;
+
   static override embeddedName: "Wall";
 
   static override RENDER_FLAGS: Wall.RENDER_FLAGS;
@@ -38,9 +41,14 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * A reference the Door Control icon associated with this Wall, if any
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
+   * @remarks Only `undefined` prior to first draw. {@linkcode Wall.clearDoorControl | Wall#clearDoorControl} sets it `null`.
    */
   doorControl: DoorControl.Implementation | null | undefined;
+
+  /**
+   * A set of optional DoorMesh instances used to render a door animation for this Wall.
+   */
+  get doorMeshes(): Set<DoorMesh>;
 
   /**
    * The line segment that represents the Wall.
@@ -66,7 +74,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
    * @defaultValue `undefined`
    * @remarks This is both not initialized to a value at construction *and* conditionally set
-   * explicitly `undefined` in {@link Wall._refreshHighlight | `Wall#_refreshHighlight`}
+   * explicitly `undefined` in {@linkcode Wall._refreshHighlight | Wall#_refreshHighlight}
    */
   highlight: PIXI.Graphics | undefined;
 
@@ -103,20 +111,22 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Get the direction of effect for a directional Wall
    * @returns The angle of wall effect
-   * @remarks In radians. Returns `null` if the document's `dir` is falsey/not set
+   * @remarks In radians. Returns `null` if the document's {@linkcode WallDocument.dir | dir} is falsey/not set
    */
   get direction(): number | null;
 
   /**
+   * @remarks
    * @throws "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
    */
   override getSnappedPosition(position: never): never;
+
+  override _pasteObject(offset: Canvas.Point, options?: PlaceablesLayer.PasteOptions): WallDocument.Source;
 
   /**
    * Initialize the edge which represents this Wall.
    * @param options - Options which modify how the edge is initialized
    */
-  // options: not null (destructured)
   initializeEdge(options?: Wall.InitializeEdgeOptions): void;
 
   /**
@@ -125,21 +135,13 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   toRay(): Ray;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<Wall.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<Wall.DrawOptions>): Promise<void>;
 
   override clear(): this;
 
-  /**
-   * Draw a control icon that is used to manipulate the door's open/closed state
-   */
-  createDoorControl(): DoorControl.Implementation;
-
-  /**
-   * Clear the door control if it exists.
-   */
-  clearDoorControl(): void;
-
-  // options: not null (destructured)
   override control(options?: Wall.ControlOptions): boolean;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
@@ -197,14 +199,39 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   protected _getWallColor(): number;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  protected override _onCreate(
+    data: WallDocument.CreateData,
+    options: WallDocument.Database.OnCreateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onUpdate(
+    changed: WallDocument.UpdateData,
+    options: WallDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onDelete(options: WallDocument.Database.OnDeleteOptions, userId: string): void;
+
+  /**
+   * Should this Wall have a corresponding {@linkcode DoorMesh}?
+   */
+  get hasDoorMesh(): boolean;
+
+  /**
+   * Create and add a {@linkcode DoorMesh} to the {@linkcode PrimaryCanvasContainer}.
+   */
+  createDoorMeshes(): Promise<void>;
+
+  /**
+   * Remove and destroy a {@linkcode DoorMesh} from the {@linkcode PrimaryCanvasContainer}.
+   */
+  destroyDoorMeshes(): void;
 
   /**
    * Play a door interaction sound.
    * This plays locally, each client independently applies this workflow.
    * @param interaction - The door interaction: "open", "close", "lock", "unlock", or "test".
-   * @remarks Foundry marked `@internal`
    */
   protected _playDoorSound(interaction: Wall.DoorInteraction): void;
 
@@ -214,9 +241,18 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   get soundRadius(): number;
 
+  /**
+   * Draw a control icon that is used to manipulate the door's open/closed state
+   */
+  createDoorControl(): DoorControl.Implementation;
+
+  /**
+   * Clear the door control if it exists.
+   */
+  clearDoorControl(): void;
+
   protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  // options: not null (destructured in super)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
   protected override _onHoverOut(event: Canvas.Event.Pointer): void;
@@ -256,9 +292,10 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Determine the orientation of this wall with respect to a reference point
    * @param point - Some reference point, relative to which orientation is determined
-   * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left, right, or collinear (both) with the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#orientPoint` has been moved to {@link Edge.orientPoint | `foundry.canvas.geometry.edges.Edge#orientPoint`}"
+   * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left, right, or collinear (both) with
+   * the Wall
+   * @deprecated "`Wall#orientPoint` has been moved to {@linkcode Edge.orientPoint | foundry.canvas.geometry.edges.Edge#orientPoint}"
+   * (since v12, until v14)
    */
   orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
@@ -269,8 +306,8 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @param sourceOrigin   - The origin or position of the source on the canvas
    * @param externalRadius - The external radius of the source (default: `0`)
    * @returns `true` if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
-   * @deprecated since v12, until v14
-   * @remarks "Wall#applyThreshold has been moved to {@link Edge.applyThreshold | `foundry.canvas.geometry.edges.Edge#applyThreshold`}"
+   * @deprecated "Wall#applyThreshold has been moved to {@linkcode Edge.applyThreshold | foundry.canvas.geometry.edges.Edge#applyThreshold}"
+   * (since v12, until v14)
    */
   applyThreshold(
     sourceType: Edge.AttenuationTypes,
@@ -279,24 +316,23 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   ): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#vertices` is replaced by {@link Wall.edge | `Wall#edge`}"
+   * @deprecated "`Wall#vertices` is replaced by {@linkcode Wall.edge | Wall#edge}" (since v12, until v14)
    */
   get vertices(): Edge;
 
   /**
    * The initial endpoint of the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#A` is replaced by {@link Edge.a | `Wall#edge#a`}"
+   * @deprecated "`Wall#A` is replaced by {@linkcode Edge.a | Wall#edge#a}" (since v12, until v14)
    */
   get A(): Edge["a"];
 
   /**
    * The second endpoint of the Wall
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#B` is replaced by {@link Edge.b | `Wall#edge#b`}"
+   * @deprecated "`Wall#B` is replaced by {@linkcode Edge.b | Wall#edge#b}" (since v12, until v14)
    */
   get B(): Edge["b"];
+
+  #Wall: true;
 }
 
 declare namespace Wall {
@@ -353,25 +389,25 @@ declare namespace Wall {
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
   /** @internal */
-  type _ControlOptions = NullishProps<{
+  interface _ControlOptions {
     /** @defaultValue `false` */
     chain: boolean;
-  }>;
+  }
 
-  interface ControlOptions extends _ControlOptions, PlaceableObject.ControlOptions {}
+  interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
   /** @internal */
-  type _InitializeEdgeOptions = NullishProps<{
+  interface _InitializeEdgeOptions {
     /**
      * Has the edge been deleted?
      * @defaultValue `false`
      */
     deleted: boolean;
-  }>;
+  }
 
-  interface InitializeEdgeOptions extends _InitializeEdgeOptions {}
+  interface InitializeEdgeOptions extends InexactPartial<_InitializeEdgeOptions> {}
 
   interface GetLinkedSegmentsReturn {
     /** @remarks IDs of the Walls in `walls` */

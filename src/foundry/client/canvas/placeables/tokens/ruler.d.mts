@@ -88,17 +88,17 @@ declare namespace TokenRuler {
     /**
      * The waypoints that were already passed by the Token
      */
-    passedWaypoints: foundry.canvas.placeables.Token.MeasuredMovementWaypoint[];
+    passedWaypoints: TokenDocument.MeasuredMovementWaypoint[];
 
     /**
      * The waypoints that the Token will try move to next
      */
-    pendingWaypoints: foundry.canvas.placeables.Token.MeasuredMovementWaypoint[];
+    pendingWaypoints: TokenDocument.MeasuredMovementWaypoint[];
 
     /**
      * Movement planned by Users
      */
-    plannedMovement: Record<string, foundry.canvas.placeables.Token.PlannedMovement>;
+    plannedMovement: Record<string, TokenDocument.PlannedMovement>;
   }
 
   interface WaypointData {

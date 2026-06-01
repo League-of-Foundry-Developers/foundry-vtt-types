@@ -8,19 +8,18 @@ import type {
   NullishProps,
   RequiredProps,
 } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject, Region } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { Canvas, sources } from "#client/canvas/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
-import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { BaseTokenRuler, TokenRing, TokenTurnMarker } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import BaseToken = foundry.documents.BaseToken;
-import sources = foundry.canvas.sources;
+import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
+import type { LightData } from "#client/data/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -31,11 +30,15 @@ declare module "#configuration" {
 }
 
 /**
- * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
- * @see {@linkcode TokenDocument}
- * @see {@linkcode TokenLayer}
+ * A Token is an implementation of PlaceableObject which represents an {@linkcode foundry.documents.Actor} within a viewed
+ * Scene on the game canvas.
+ * @see {@linkcode foundry.documents.TokenDocument}
+ * @see {@linkcode foundry.canvas.layers.TokenLayer}
  */
 declare class Token extends PlaceableObject<TokenDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Token.ImplementationClass;
+
   static override embeddedName: "Token";
 
   static override RENDER_FLAGS: Token.RENDER_FLAGS;
@@ -51,16 +54,15 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * The shape of this token.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to {@link Token._refreshShape | `Token#_refreshShape`} being called.     *
-   * @privateRemarks Foundry types this as possibly being `PIXI.Circle` but {@link Token.getShape | `Token#getShape`} only returns `Rectangle` or `Polygon` in v12
    */
-  shape: PIXI.Rectangle | PIXI.Polygon | undefined;
+  shape: PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | PIXI.Ellipse | undefined;
 
   /**
    * Defines the filter to use for detection.
    * @defaultValue `null`
-   * @remarks Only set to other-than-`null` externally, in {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
+   * @remarks Only set to other-than-`null` externally, in {@linkcode CanvasVisibility.testVisibility | CanvasVisibility#testVisibility}
    *
-   * Set `null` unconditionally when {@link Token.isVisible | `Token#isVisible`} is accessed
+   * Set `null` unconditionally when {@linkcode Token.isVisible | Token#isVisible} is accessed
    */
   detectionFilter: PIXI.Filter | null;
 
@@ -79,6 +81,13 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   bars: Token.Bars | undefined;
 
   /**
+   * The effects icons of temporary ActiveEffects that are applied to the Actor of this Token.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw
+   */
+  effects: PIXI.Container | undefined;
+
+  /**
    * The tooltip text of this Token, which contains its elevation.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw
@@ -86,11 +95,18 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   tooltip: PreciseText | undefined;
 
   /**
-   * The target marker, which indicates that this Token is targeted by this User or others.
+   * The target arrows marker, which indicates that this Token is targeted by this User.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw
    */
-  target: PIXI.Graphics | undefined;
+  targetArrows: PIXI.Graphics | undefined;
+
+  /**
+   * The target pips marker, which indicates that this Token is targeted by other User(s).
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw
+   */
+  targetPips: PIXI.Graphics | undefined;
 
   /**
    * The nameplate of this Token, which displays its name.
@@ -98,6 +114,20 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @remarks Only `undefined` prior to first draw
    */
   nameplate: PreciseText | undefined;
+
+  /**
+   * The ruler of this Token.
+   * @defaultValue `undefined`
+   * @remarks `undefined` prior to first draw; `null` if `CONFIG.Token.rulerClass` is not set.
+   */
+  ruler: BaseTokenRuler | null | undefined;
+
+  /**
+   * The Turn Marker of this Token.
+   * Only a subset of Token objects have a turn marker at any given time.
+   * @defaultValue `null`
+   */
+  turnMarker: TokenTurnMarker | null;
 
   /**
    * Track the set of User documents which are currently targeting this Token
@@ -115,7 +145,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Renders the mesh of this Token with ERASE blending in the Token.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw
-   * @privateRemarks Foundry types as `PIXI.DisplayObject`, but its only ever set to `PIXI.Container` in v12
    */
   voidMesh: PIXI.Container | undefined;
 
@@ -123,30 +152,29 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Renders the mesh of with the detection filter.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw
-   * @privateRemarks Foundry types as `PIXI.DisplayObject`, but its only ever set to `PIXI.Container` in v12
    */
   detectionFilterMesh: PIXI.Container | undefined;
 
   /**
    * The texture of this Token, which is used by its mesh.
    * @defaultValue `undefined`
-   * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called
+   * @remarks `undefined` prior to first draw or after {@linkcode Token._destroy | Token#_destroy} is called
    */
   texture: PIXI.Texture | undefined;
 
   /**
    * A reference to the VisionSource object which defines this vision source area of effect
    * @defaultValue `undefined`
-   * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called, or
-   * {@link Token.initializeVisionSource | `Token#initializeVisionSource`} is called with `{deleted: true}`
+   * @remarks `undefined` prior to first draw or after {@linkcode Token._destroy | Token#_destroy} is called, or
+   * {@linkcode Token.initializeVisionSource | Token#initializeVisionSource} is called with `{deleted: true}`
    */
   vision: sources.PointVisionSource.Implementation | undefined;
 
   /**
    * A reference to the LightSource object which defines this light source area of effect
    * @defaultValue `undefined`
-   * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called, or
-   * {@link Token.initializeLightSource | `Token#initializeLightSource`} is called with `{deleted: true}`
+   * @remarks `undefined` prior to first draw or after {@linkcode Token._destroy | Token#_destroy} is called, or
+   * {@linkcode Token.initializeLightSource | Token#initializeLightSource} is called with `{deleted: true}`
    *
    * Whether this is a LightSource or a DarknessSource depends on `this.document.light.negative`
    */
@@ -156,6 +184,31 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * The current animations of this Token.
    */
   get animationContexts(): Map<string, Token.AnimationContext>;
+
+  /**
+   * The animation name used for Token movement
+   * @defaultValue
+   * ```js
+   * `${this.objectId}.animate`
+   * ```
+   */
+  get animationName(): string;
+
+  /**
+   * The animation name used to animate this Token's movement.
+   */
+  get movementAnimationName(): string;
+
+  /**
+   * The promise of the current movement animation chain of this Token
+   * or null if there isn't a movement animation in progress.
+   */
+  get movementAnimationPromise(): Promise<void> | null;
+
+  /**
+   * Should the ruler of this Token be visible?
+   */
+  get showRuler(): boolean;
 
   /**
    * A TokenRing instance which is used if this Token applies a dynamic ring.
@@ -205,7 +258,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * The Token's central position, adjusted in each direction by one or zero pixels to offset it relative to walls.
    */
-  // offsets: not null (destructured)
   getMovementAdjustedPoint(point: Canvas.Point, offsets?: Token.GetMovementAdjustedPointOffsets): Canvas.Point;
 
   /**
@@ -214,7 +266,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * returns `this.texture?.baseTexture.resource.source`, which could be any of `PIXI.ImageSource`,
    * and returns `ImageBitmap`, not `HTMLImageElement`, for static images.
    */
-  get sourceElement(): PIXI.ImageSource | undefined;
+  get sourceElement(): PIXI.ImageSource | null;
 
   override get sourceId(): string;
 
@@ -231,12 +283,17 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
    */
-  get combatant(): Combatant.Stored;
+  get combatant(): Combatant.Stored | null;
 
   /**
    * An indicator for whether the Token is currently targeted by the active game User
    */
   get isTargeted(): boolean;
+
+  /**
+   * Is this Token currently being dragged?
+   */
+  get isDragged(): boolean;
 
   /**
    * Return a reference to the detection modes array.
@@ -250,18 +307,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Controlled tokens are always visible.
    * All Tokens are visible to a GM user if no Token is controlled.
    *
-   * @see {@link CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
+   * @see {@linkcode CanvasVisibility.testVisibility | CanvasVisibility#testVisibility}
    */
   get isVisible(): boolean;
-
-  /**
-   * The animation name used for Token movement
-   * @defaultValue
-   * ```js
-   * `${this.objectId}.animate`
-   * ```
-   */
-  get animationName(): string;
 
   /**
    * Test whether the Token has sight (or blindness) at any radius
@@ -324,13 +372,11 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Update the light and vision source objects associated with this Token.
    * @param options - Options which configure how perception sources are updated
    */
-  // options: not null (destructured)
   initializeSources(options?: Token.InitializeSourcesOptions): void;
 
   /**
    * Update an emitted light source associated with this Token.
    */
-  // options: not null (destructured)
   initializeLightSource(options?: Token.InitializeSourcesOptions): void;
 
   /**
@@ -341,7 +387,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * Update the VisionSource instance associated with this Token.
    */
-  // options: not null (destructured)
   initializeVisionSource(options?: Token.InitializeSourcesOptions): void;
 
   /**
@@ -365,7 +410,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   protected _renderDetectionFilter(renderer: PIXI.Renderer): void;
 
-  override clear(): void;
+  override clear(): this;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
@@ -430,6 +475,11 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   protected _refreshMesh(): void;
 
   /**
+   * Refresh the token mesh size and scale.
+   */
+  protected _refreshMeshSizeAndScale(): void;
+
+  /**
    * Refresh the token mesh shader.
    */
   protected _refreshShader(): void;
@@ -448,20 +498,31 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   protected _getBorderColor(): number;
 
   /**
+   * Get the Color used to represent the disposition of this Token.
+   * @returns The hex color representing the Token's disposition
+   * @remarks Colors sourced from `CONFIG.Canvas.dispositionColors`
+   */
+  getDispositionColor(): number;
+
+  /**
    * Refresh the target indicators for the Token.
    * Draw both target arrows for the primary User and indicator pips for other Users targeting the same Token.
-   * @param reticule - Additional parameters to configure how the targeting reticule is drawn.
-   * @remarks Forwards `reticule` to {@link Token._drawTarget | `Token#_drawTarget`}
+   * @remarks Forwards to {@link Token._drawTargetArrows | `Token#_drawTargetArrows`} and
+   * {@link Token._drawTargetPips | `Token#_drawTargetPips`}
    */
-  // reticule: not null (destructured in _drawTarget)
-  protected _refreshTarget(reticule?: Token.ReticuleOptions): void;
+  protected _refreshTarget(): void;
 
   /**
    * Draw the targeting arrows around this token.
    * @param reticule - Additional parameters to configure how the targeting reticule is drawn.
    */
   // reticule: not null (destructured)
-  protected _drawTarget(reticule?: Token.ReticuleOptions): void;
+  protected _drawTargetArrows(reticule?: Token.ReticuleOptions): void;
+
+  /**
+   * Draw the targeting pips around this token.
+   */
+  protected _drawTargetPips(): void;
 
   /**
    * Refresh the display of Token attribute bars, rendering its latest resource data.
@@ -474,7 +535,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param number - The Bar number
    * @param bar    - The Bar container
    * @param data   - Resource data for this bar
-   * @remarks Called in {@link Token.drawBars | `Token#drawBars`} only after checking `data` for truthiness.
+   * @remarks Called in {@linkcode Token.drawBars | Token#drawBars} only after checking `data` for truthiness.
    *
    * Unconditionally returns `true`
    */
@@ -501,7 +562,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Draw the effect icons for ActiveEffect documents which apply to the Token's Actor.
-   * Called by {@link Token.drawEffects | `Token#drawEffects`}.
+   * Called by {@linkcode Token.drawEffects | Token#drawEffects}.
    */
   protected _drawEffects(): Promise<void>;
 
@@ -515,7 +576,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Draw the overlay effect icon
-   * @remarks Forwards both arguments to {@link Token._drawEffect | `Token#_drawEffect`}, and returns its output.
+   * @remarks Forwards both arguments to {@linkcode Token._drawEffect | Token#_drawEffect}, and returns its output.
    */
   protected _drawOverlay(src: string, tint?: number | null): Promise<PIXI.Sprite | undefined>;
 
@@ -525,23 +586,33 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   protected _refreshEffects(): void;
 
   /**
+   * Refresh presentation of the Token's combat turn marker, if any.
+   */
+  protected _refreshTurnMarker(): void;
+
+  /**
+   * Refresh the display of the ruler.
+   */
+  protected _refreshRuler(): void;
+
+  /**
    * Helper method to determine whether a token attribute is viewable under a certain mode
-   * @param mode - The mode from CONST.TOKEN_DISPLAY_MODES
+   * @param mode - The mode from {@linkcode CONST.TOKEN_DISPLAY_MODES}
    * @returns Is the attribute viewable?
    */
   protected _canViewMode(mode: CONST.TOKEN_DISPLAY_MODES): boolean;
 
   /**
    * Override ring colors for this particular Token instance.
-   * @remarks The return gets `mergeObject`ed over {@link TokenDocument.ring | `TokenDocument#ring#colors`}
-   * in {@link foundry.canvas.tokens.TokenRing.configureVisuals | `TokenRing#configureVisuals`} and
-   * {@link foundry.canvas.tokens.TokenRing.flashColor | `TokenRing#flashColor`}. Foundry's implementation returns `{}`
+   * @remarks The return gets `mergeObject`ed over {@linkcode TokenDocument.ring | TokenDocument#ring#colors}
+   * in {@linkcode TokenRing.configureVisuals | TokenRing#configureVisuals} and
+   * {@linkcode TokenRing.flashColor | TokenRing#flashColor}. Foundry's implementation returns `{}`
    */
   getRingColors(): Token.RingColors;
 
   /**
    * Apply additional ring effects for this particular Token instance.
-   * Effects are returned as an array of integers in {@link foundry.canvas.tokens.TokenRing.effects}.
+   * Effects are returned as an array of integers in {@linkcode TokenRing.effects}.
    * @remarks Additional effects to add over and above those in `CONFIG.Token.ring.effects`. Foundry's implementation returns `[]`
    */
   getRingEffects(): TokenRing.EFFECTS[];
@@ -555,9 +626,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * Animate from the old to the new state of this Token.
    * @param to      - The animation data to animate to
-   * @param options - The options that configure the animation behavior. Passed to {@link Token._getAnimationDuration | `Token#_getAnimationDuration`}.
+   * @param options - The options that configure the animation behavior. Passed to
+   * {@linkcode Token._getAnimationDuration | Token#_getAnimationDuration}.
    */
-  // options: not null (destructured)
   animate(to: Token.PartialAnimationData, options?: Token.AnimateOptions): Promise<void>;
 
   /**
@@ -567,7 +638,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param options - The options that configure the animation behavior
    * @returns The duration of the animation in milliseconds
    */
-  // options: not null (destructured)
   protected _getAnimationDuration(
     from: Token.AnimationDataForDuration,
     to: Token.PartialAnimationData,
@@ -584,7 +654,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * Terminate animation of this particular Token.
    */
-  // options: not null (destructured)
   stopAnimation(options?: Token.StopAnimationOptions): void;
 
   /**
@@ -595,7 +664,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param options - The options that configure the animation behavior
    * @returns The animation attributes
    */
-  // options: not null (property access)
   protected _prepareAnimation(
     from: Token.AnimationDataForRotation,
     changes: Token.PartialAnimationData,
@@ -606,10 +674,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * Check for collision when attempting a move to a new position
    * @param destination - The central destination point of the attempted movement
-   * @param options     - Additional options forwarded to {@link WallsLayer.checkCollision | `WallsLayer#checkCollision`}
+   * @param options     - Additional options forwarded to {@linkcode WallsLayer.checkCollision | WallsLayer#checkCollision}
    * @returns The result of the `WallsLayer#checkCollision` test
    */
-  // options: not null (destructured)
   checkCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
     destination: Canvas.Point,
     options?: Token.CheckCollisionOptions<Mode>,
@@ -623,10 +690,8 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Get the shape of this Token.
-   * @privateRemarks Foundry types this as possibly returning a `PIXI.Circle`, but it never does in practice in v12.
-   * Not reported as this has changed in v13.
    */
-  getShape(): PIXI.Rectangle | PIXI.Polygon;
+  getShape(): PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | PIXI.Ellipse;
 
   /**
    * Get the center point for a given position or the current position.
@@ -637,20 +702,17 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   override getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
-  override _pasteObject(
-    offset: Canvas.Point,
-    { hidden, snap }?: PlaceableObject.PasteObjectOptions,
-  ): PlaceableObject.PasteObjectReturn<TokenDocument.Implementation>;
+  override _pasteObject(offset: Canvas.Point, options?: PlaceablesLayer.PasteOptions): TokenDocument.Source;
 
   /**
    * Measure the movement path for this Token.
    * @param waypoints - The waypoints of movement
    * @param options   - Additional options that affect cost calculations
-   * (passed to {@link Token#_getMovementCostFunction})
+   * (passed to {@linkcode Token._getMovementCostFunction | Token#_getMovementCostFunction})
    */
   measureMovementPath(
-    waypoints: Token.MeasuredMovementWaypoint[],
-    options?: TokenDocument.MeasureMovementPathOptions,
+    waypoints: Token.MeasureMovementPathWaypoint[],
+    options?: Token.MeasureMovementPathOptions,
   ): foundry.grid.BaseGrid.MeasurePathResult;
 
   /**
@@ -663,7 +725,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param options - Additional options that affect cost calculations
    */
   protected _getMovementCostFunction(
-    options?: TokenDocument.MeasureMovementPathOptions,
+    options?: Token.MeasureMovementPathOptions,
   ): TokenDocument.MovementCostFunction | void;
 
   /**
@@ -698,16 +760,33 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   ): Token.FindMovementPathJob;
 
   /**
+   * This function adds intermediate waypoints pre/post enter and exit for a {@link Region} if the Region
+   * has at least one Behavior that could affect the movement. For each segment of the movement path the
+   * terrain data is created from all behaviors that could affect the movement of this Token.
+   * This terrain data may then be used in {@link Token._getMovementCostFunction | `Token#_getMovementCostFunction`}
+   * and {@link Token.constrainMovementPath | `Token#constrainMovementPath`}.
+   * @param waypoints - The waypoints of movement
+   * @param options   - Additional options
+   * @returns The movement path with terrain data
+   */
+  // options: not null (destructured)
+  createTerrainMovementPath(
+    waypoints: Token.GetTerrainMovementPathWaypoint[],
+    options?: Token.CreateTerrainMovementPathOptions,
+  ): Token.TerrainMovementWaypoint[];
+
+  /**
    * Test whether the Token is inside the Region.
-   * This function determines the state of {@link TokenDocument.regions | `TokenDocument#regions`} and {@link RegionDocument.tokens | `RegionDocument#tokens`}.
+   * This function determines the state of {@linkcode TokenDocument.regions | TokenDocument#regions} and
+   * {@linkcode RegionDocument.tokens | RegionDocument#tokens}.
    *
    * Implementations of this function are restricted in the following ways:
-   *   - If the bounds (given by {@link Token.getSize | `Token#getSize`}) of the Token do not intersect the Region, then the Token is not
+   *   - If the bounds (given by {@linkcode Token.getSize | Token#getSize}) of the Token do not intersect the Region, then the Token is not
    *     contained within the Region.
    *   - If the Token is inside the Region a particular elevation, then the Token is inside the Region at any elevation
    *     within the elevation range of the Region.
    *
-   * If this function is overridden, then {@link Token.segmentizeRegionMovement | `Token#segmentizeRegionMovement`} must be overridden too.
+   * If this function is overridden, then {@linkcode Token.segmentizeRegionMovement | Token#segmentizeRegionMovement} must be overridden too.
    * @param region   - The region.
    * @param position - The (x, y) and/or elevation to use instead of the current values.
    * @returns Is the Token inside the Region?
@@ -721,35 +800,34 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Implementations of this function are restricted in the following ways:
    *   - The segments must go through the waypoints.
    *   - The *from* position matches the *to* position of the succeeding segment.
-   *   - The Token must be contained (w.r.t. {@link Token.testInsideRegion | `Token#testInsideRegion`}) within the Region
+   *   - The Token must be contained (w.r.t. {@linkcode Token.testInsideRegion | Token#testInsideRegion}) within the Region
    *     at the *from* and *to* of MOVE segments.
-   *   - The Token must be contained (w.r.t. {@link Token.testInsideRegion | `Token#testInsideRegion`}) within the Region
+   *   - The Token must be contained (w.r.t. `Token#testInsideRegion`) within the Region
    *     at the *to* position of ENTER segments.
-   *   - The Token must be contained (w.r.t. {@link Token.testInsideRegion | `Token#testInsideRegion`}) within the Region
+   *   - The Token must be contained (w.r.t. `Token#testInsideRegion`) within the Region
    *     at the *from* position of EXIT segments.
-   *   - The Token must not be contained (w.r.t. {@link Token.testInsideRegion | `Token#testInsideRegion`}) within the Region
+   *   - The Token must not be contained (w.r.t. `Token#testInsideRegion`) within the Region
    *     at the *from* position of ENTER segments.
-   *   - The Token must not be contained (w.r.t. {@link Token.testInsideRegion | `Token#testInsideRegion`}) within the Region
+   *   - The Token must not be contained (w.r.t. `Token#testInsideRegion`) within the Region
    *     at the *to* position of EXIT segments.
    * @param region    - The region.
    * @param waypoints - The waypoints of movement.
    * @param options   - Additional options
    * @returns The movement split into its segments.
    */
-  // options: not null (destructured)
   segmentizeRegionMovement(
     region: Region.Implementation,
-    waypoints: Region.MovementWaypoint[],
+    waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
     options?: Region.SegmentizeMovementOptions,
-  ): Region.MovementSegment[];
+  ): RegionDocument.MovementSegment[];
 
   /**
-   * Set this Token as an active target for the current game User
-   * @param targeted - Is the Token now targeted? (default: `true`)
-   * @param context  - Additional context options
+   * Set this Token as an active target for the current game User.
+   * @param targeted - Is the Token now targeted?
+   * @param options  - Additional options which modify how targets are acquired.
    */
-  // targeted: not null (!== check with a boolean), context: not null (destructured)
-  setTarget(targeted?: boolean, context?: Token.TargetContext): void;
+  // targeted: not null (!== check with a boolean), options: not null (destructured)
+  setTarget(targeted?: boolean, options?: Token.TargetContext): void;
 
   /**
    * The external radius of the token in pixels.
@@ -765,10 +843,21 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   getLightRadius(units: number): number;
 
-  protected override _getShiftedPosition(dx: number, dy: number): Canvas.Point;
+  override _getShiftedPosition(dx: -1 | 0 | 1, dy: -1 | 0 | 1, dz: -1 | 0 | 1): Canvas.ElevatedPoint;
 
-  // options: not null (destructured)
-  protected override _updateRotation(options?: PlaceableObject.UpdateRotationOptions): number;
+  override _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithAngle): number;
+  override _updateRotation(options?: PlaceableObject.UpdateRotationOptionsWithDelta): number;
+
+  /**
+   * Create the BaseTokenRuler instance for this Token, if any.
+   */
+  protected _initializeRuler(): BaseTokenRuler | null;
+
+  /**
+   * Handle updating the targeting state of this Token for a particular User.
+   * @remarks Foundry marked `@internal`
+   */
+  protected _updateTarget(targeted: boolean, user: User.Implementation): void;
 
   // _onCreate, _onUpdate, and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -802,6 +891,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    */
   protected _removeAllFilterEffects(): void;
 
+  // fake type override
+  override control(options?: Token.ControlOptions): boolean;
+
   protected override _onControl(options: Token.ControlOptions): void;
 
   protected override _onRelease(options: HandleEmptyObject<Token.ReleaseOptions>): void;
@@ -820,7 +912,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onHoverOut(event: Canvas.Event.Pointer): void;
@@ -835,32 +926,47 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
+  protected _initializeDragLeft(event: Canvas.Event.Pointer): void;
+
+  protected _getDragConstrainOptions(): Token.DragConstrainOptions;
+
+  protected _getDragPathfindingOptions(): Token.FindMovementPathOptions;
+
+  protected _getDragMovementAction(): string;
+
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
+
+  protected _shouldPreventDragLeftDrop(event: Canvas.Event.Pointer): boolean;
+
+  // fake override; core returns `Token.DragLeftDropReturn`, but the higher-order `PlaceableObject` type cannot express it
   protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): Token.DragLeftDropUpdate[];
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
+  protected _updateDragDestination(point: Canvas.Point, options?: Token.DragWaypointPositionOptions): void;
+
+  protected _onDragClickLeft(event: Canvas.Event.Pointer): void;
+
+  protected _onDragClickLeft2(event: Canvas.Event.Pointer): void;
+
+  protected _onDragClickRight(event: Canvas.Event.Pointer): void;
+
+  protected _changeDragElevation(delta: number, options?: Token.ChangeDragElevationOptions): void;
+
+  protected _getDragWaypointPosition(
+    current: Pick<TokenDocument.Position, "x" | "y" | "elevation">,
+    changes: InexactPartial<Canvas.ElevatedPoint>,
+    options?: Token.DragWaypointPositionOptions,
+  ): Token.DragWaypointPosition;
+
   protected override _onDragEnd(): void;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Token#updatePosition` has been deprecated without replacement as it is no longer required."
-   */
-  updatePosition(): void;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Token#refreshHUD` is deprecated in favor of {@link RenderFlags.set | `token.renderFlags.set()`}"
-   */
-  // options: not null (destructured)
-  refreshHUD(options?: Token.RefreshHUDOptions): void;
 
   /**
    * Update the light and vision source objects associated with this Token
    * @param options - Options which configure how perception sources are updated
-   * @deprecated since v12, until v14
-   * @remarks "`Token#updateSource` has been deprecated in favor of {@link Token.initializeSources | `Token#initializeSources`}"
+   * @deprecated "`Token#updateSource` has been deprecated in favor of {@linkcode Token.initializeSources | Token#initializeSources}"
+   * (since v12, until v14)
    */
-  // options: not null (destructured)
   updateSource(options?: Token.InitializeSourcesOptions): void;
 
   /**
@@ -868,49 +974,54 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param x - The grid x-coordinate that represents the top-left of the Token
    * @param y - The grid y-coordinate that represents the top-left of the Token
    * @returns The coordinate pair which represents the Token's center at position (x, y)
-   * @deprecated since v12, until v14
-   * @remarks "`Token#getCenter(x, y)` has been deprecated in favor of {@link Token.getCenterPoint | `Token#getCenterPoint(Point)`}."
+   * @deprecated "`Token#getCenter(x, y)` has been deprecated in favor of {@linkcode Token.getCenterPoint | Token#getCenterPoint(Point)}."
+   * (since v12, until v14)
    */
   getCenter(x: number, y: number): Canvas.Point;
 
   /**
    * A convenient reference for whether the current User has full control over the Token document.
-   * @deprecated since v12, until v14
-   * @remarks "`Token#owner` has been deprecated. Use {@link Token.isOwner | `Token#isOwner`} instead."
+   * @deprecated "`Token#owner` has been deprecated. Use {@linkcode Token.isOwner | Token#isOwner} instead." (since v12, until v14)
    */
   get owner(): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Token#toggleCombat` is deprecated in favor of {@link TokenDocument.toggleCombatant | `TokenDocument#toggleCombatant`},
-   * {@link TokenDocument.createCombatants | `TokenDocument.implementation.createCombatants`}, and
-   * {@link TokenDocument.deleteCombatants | `TokenDocument.implementation.deleteCombatants`}"
-   *
-   * The `combat` parameter is unused. Creates Combatants for every Token controlled, plus the Token this was called on if it wasn't already controlled
+   * @deprecated "`Token#toggleCombat` is deprecated in favor of {@linkcode TokenDocument.toggleCombatant | TokenDocument#toggleCombatant},
+   * {@linkcode TokenDocument.Implementation.createCombatants | TokenDocument.implementation.createCombatants}, and
+   * {@linkcode TokenDocument.Implementation.deleteCombatants | TokenDocument.implementation.deleteCombatants}" (since v12, until v14)
+   * @remarks The `combat` parameter is unused. Creates Combatants for every Token controlled, plus the Token this was called on if it
+   * wasn't already controlled.
    */
   toggleCombat(combat?: Combat.Implementation): Promise<Combatant.Stored[]>;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Token#toggleEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
+   * @deprecated "`Token#toggleEffect` is deprecated in favor of {@linkcode Actor.toggleStatusEffect | Actor#toggleStatusEffect}"
+   * (since v12, until v14)
    */
-  // options: not null (destructured)
   toggleEffect(
     effect: CONFIG.StatusEffect,
     options?: Actor.ToggleStatusEffectOptions,
   ): Promise<ActiveEffect.Stored | boolean | undefined>;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Token#toggleVisibility` is deprecated without replacement in favor of updating the {@link TokenDocument.hidden | `hidden` field of the `TokenDocument`} directly."
+   * @deprecated "`Token#toggleVisibility` is deprecated without replacement in favor of updating the
+   * {@link TokenDocument.hidden | `hidden` field of the `TokenDocument`} directly." (since v12, until v14)
    */
   toggleVisibility(): Promise<TokenDocument.Stored[]>;
 
   /**
-   * @deprecated since v12 Stable 4, until v14
-   * @remarks "`Token#_recoverFromPreview` is deprecated without replacement in favor of recovering from preview directly into {@link TokenConfig._resetPreview | `TokenConfig#_resetPreview`}."
+   * @deprecated "`Token#_recoverFromPreview` is deprecated without replacement in favor of recovering from preview directly into
+   * {@linkcode TokenConfig._resetPreview | TokenConfig#_resetPreview}." (since v12 Stable 4, until v14)
    */
   protected _recoverFromPreview(): void;
+
+  /**
+   * @deprecated since v13, until v14
+   * @remarks "`Token#target` is deprecated and has been split into two new graphics objects:
+   * {@link Token.targetArrows | `targetArrows`} and {@link Token.targetPips | `targetPips`}.
+   * `targetArrows` is returned by this deprecated property."
+   */
+  get target(): PIXI.Graphics | undefined;
 }
 
 declare namespace Token {
@@ -933,13 +1044,13 @@ declare namespace Token {
   // eslint-disable-next-line no-restricted-syntax
   type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
 
-  type Schema = BaseToken.Schema;
-  type Parent = BaseToken.Parent;
+  type Schema = TokenDocument.Schema;
+  type Parent = TokenDocument.Parent;
 
-  type Metadata = BaseToken.Metadata;
+  type Metadata = TokenDocument.Metadata;
 
-  export import UpdateData = BaseToken.UpdateData;
-  export import Source = BaseToken.Source;
+  export import UpdateData = TokenDocument.UpdateData;
+  export import Source = TokenDocument.Source;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
@@ -948,7 +1059,7 @@ declare namespace Token {
     /** @defaultValue `{}` */
     redrawEffects: RenderFlag<this, "redrawEffects">;
 
-    /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshNameplate", "refreshElevation", "refreshRingVisuals"], alias: true }` */
+    /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshNameplate", "refreshElevation", "refreshRingVisuals", "refreshRuler", "refreshTurnMarker"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
     /** @defaultValue `{ propagate: ["refreshVisibility", "refreshTarget"] }` */
@@ -972,7 +1083,7 @@ declare namespace Token {
     /** @defaultValue `{ propagate: ["refreshTooltip"] }` */
     refreshElevation: RenderFlag<this, "refreshElevation">;
 
-    /** @defaultValue `{}` */
+    /** @defaultValue `{ propagate: ["refreshShader"] }` */
     refreshMesh: RenderFlag<this, "refreshMesh">;
 
     /** @defaultValue `{}` */
@@ -1001,6 +1112,15 @@ declare namespace Token {
 
     /** @defaultValue `{}` */
     refreshRingVisuals: RenderFlag<this, "refreshRingVisuals">;
+
+    /** @defaultValue `{}` */
+    refreshRuler: RenderFlag<this, "refreshRuler">;
+
+    /** @defaultValue `{}` */
+    refreshTurnMarker: RenderFlag<this, "refreshTurnMarker">;
+
+    /** @defaultValue `{ deprecated: { since: 12, until: 14 } }` */
+    recoverFromPreview: RenderFlag<this, "recoverFromPreview">;
   }
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
@@ -1010,53 +1130,69 @@ declare namespace Token {
     bar2: PIXI.Graphics;
   }
 
-  // TODO: Convert to interface with appropriate properties
-  type MeasuredMovementWaypoint = unknown;
+  type MeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
 
-  // TODO: Convert to interface with appropriate properties
-  type PlannedMovement = unknown;
+  interface MeasureMovementPathWaypoint extends InexactPartial<
+    Pick<
+      TokenDocument.MeasuredMovementWaypoint,
+      "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain"
+    >
+  > {
+    /**
+     * A predetermined cost (nonnegative) or cost function to be used instead of `options.cost`.
+     */
+    cost?: number | TokenDocument.MovementCostFunction | undefined;
+  }
+
+  interface PlannedMovement {
+    foundPath: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
+    unreachableWaypoints: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
+    history: TokenDocument.MeasuredMovementWaypoint[];
+    hidden: boolean;
+    searching: boolean;
+  }
 
   /** @internal */
-  type _GetMovementAdjustedPointOffsets = NullishProps<{
+  interface _GetMovementAdjustedPointOffsets {
     /** @defaultValue `this.#priorMovement.ox` */
     offsetX: number;
 
     /** @defaultValue `this.#priorMovement.oy` */
     offsetY: number;
-  }>;
+  }
 
-  interface GetMovementAdjustedPointOffsets extends _GetMovementAdjustedPointOffsets {}
+  interface GetMovementAdjustedPointOffsets extends InexactPartial<_GetMovementAdjustedPointOffsets> {}
 
   interface DrawOptions extends PlaceableObject.DrawOptions {}
 
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
   /** @internal */
-  type _ControlOptions = NullishProps<{
+  interface _ControlOptions {
     /** @defaultValue `false` */
     pan: boolean;
-  }>;
+  }
 
-  interface ControlOptions extends _ControlOptions, PlaceableObject.ControlOptions {}
+  interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
   /**
-   * @remarks {@link Token._getLightSourceData | `Token#_getLightSourceData`} calls `mergeObject` on the return of
-   * {@link foundry.data.LightData.toObject | `LightData#toObject(false)`} and the enumerated properties below and
-   * returns the result. This gets passed to {@link foundry.canvas.sources.PointLightSource.initialize | `Token#light#initialize()`},
-   * so this is a `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
+   * @remarks {@linkcode Token._getLightSourceData | Token#_getLightSourceData} calls `mergeObject` on the return of
+   * {@linkcode LightData.toObject | LightData#toObject(false)} and the enumerated properties below and returns the result. This gets passed
+   * to {@linkcode sources.PointLightSource.initialize | Token#light#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
+   * rather than a `Pick<>`.
    */
-  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<foundry.data.LightData.Schema> &
+  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<LightData.Schema> &
     RequiredProps<
-      IntentionalPartial<foundry.canvas.sources.PointLightSource.SourceData>,
+      IntentionalPartial<sources.PointLightSource.SourceData>,
       "x" | "y" | "elevation" | "rotation" | "dim" | "bright" | "externalRadius" | "seed" | "preview" | "disabled"
     >;
 
   /**
-   * @remarks The return of {@link Token._getVisionSourceData | `Token#_getVisionSourceData`}, which gets passed
-   * to {@link foundry.canvas.sources.PointVisionSource.initialize | `Token#vision#initialize()`}, so this is a
-   * `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
+   * @remarks The return of {@linkcode Token._getVisionSourceData | Token#_getVisionSourceData}, which gets passed to
+   * {@linkcode sources.PointVisionSource.initialize | Token#vision#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
+   * rather than a `Pick<>`.
    */
   type VisionSourceData = RequiredProps<
     IntentionalPartial<foundry.canvas.sources.PointVisionSource.SourceData>,
@@ -1084,7 +1220,7 @@ declare namespace Token {
   }
 
   /** @internal */
-  type _ReticuleOptions = NullishProps<{
+  interface _ReticuleOptions {
     /**
      * The amount of margin between the targeting arrows and the token's bounding box, expressed as a fraction of an arrow's size.
      * @defaultValue `0`
@@ -1094,50 +1230,45 @@ declare namespace Token {
 
     /**
      * The color of the arrows.
-     * @defaultValue `this._getBorderColor()` {@link Token._getBorderColor | `Token#_getBorderColor`}
+     * @defaultValue {@linkcode Token.Implementation._getBorderColor | this._getBorderColor()}
      */
     color: number;
-  }> &
-    InexactPartial<{
+
+    /**
+     * The alpha value of the arrows.
+     * @defaultValue `1`
+     */
+    alpha: number;
+
+    /**
+     * The size of the arrows as a proportion of grid size.
+     * @defaultValue `0.15`
+     */
+    size: number;
+
+    /**
+     * The arrows' border style configuration.
+     * @defaultValue see properties
+     */
+    border: InexactPartial<{
       /**
-       * The alpha value of the arrows.
-       * @defaultValue `1`
-       * @remarks Can't be `null` as it only has a parameter default
+       * The border color.
+       * @defaultValue `0`
        */
-      alpha: number;
+      color: number;
 
       /**
-       * The size of the arrows as a proportion of grid size.
-       * @defaultValue `0.15`
-       * @remarks Can't be `null` as it only has a parameter default
+       * The border width.
+       * @defaultValue `2`
        */
-      size: number;
-
-      /**
-       * The arrows' border style configuration.
-       * @defaultValue see properties
-       * @remarks Can't be `null` as it's destructured in signature
-       */
-      border: InexactPartial<{
-        /**
-         * The border color.
-         * @defaultValue `0`
-         * @remarks Can't be `null` as it only has a parameter default
-         */
-        color: number;
-
-        /**
-         * The border width.
-         * @defaultValue `2`
-         * @remarks Can't be `null` as it only has a parameter default
-         */
-        width: number;
-      }>;
+      width: number;
     }>;
-  interface ReticuleOptions extends _ReticuleOptions {}
+  }
+
+  interface ReticuleOptions extends InexactPartial<_ReticuleOptions> {}
 
   /**
-   * The return type of {@link Token.getRingColors | `Token#getRingColors`}. Core's implementation returns `{}`.
+   * The return type of {@linkcode Token.getRingColors | Token#getRingColors}. Core's implementation returns `{}`.
    * Values returned by subclasses should not be nullish, as they are `mergeObject`'d into the default color values
    * from {@linkcode TokenRing.ImplementationClass}
    */
@@ -1153,7 +1284,7 @@ declare namespace Token {
       TokenDocument.Implementation["texture"],
       "src" | "anchorX" | "anchorY" | "scaleX" | "scaleY" | "tint"
     >;
-  } & {
+
     /** The ring data. */
     ring: {
       /** The ring subject data */
@@ -1165,7 +1296,7 @@ declare namespace Token {
    * Token animation data.
    * @privateRemarks Implementing this interface like this does lose the specific (simplified, really)
    * property descriptions of the `TokenAnimationData` typedef, but it gains the ones from the document
-   * schema, and since the values returned by {@link Token._getAnimationData | `Token#_getAnimationData`}
+   * schema, and since the values returned by {@linkcode Token._getAnimationData | Token#_getAnimationData}
    * are pulled directly from the document, this is also the most accurate typing.
    */
   interface AnimationData extends _AnimationData {}
@@ -1177,30 +1308,53 @@ declare namespace Token {
   interface AnimationDataForRotation extends RequiredProps<PartialAnimationData, "rotation"> {}
 
   /** @internal */
-  type _GetAnimationDurationOptions = InexactPartial<{
+  interface _GetAnimationDurationOptions {
     /**
      * A desired token movement speed in grid spaces per second
      * @defaultValue `6`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     movementSpeed: number;
-  }>;
+  }
 
-  interface GetAnimationDurationOptions extends _GetAnimationDurationOptions {}
+  interface GetAnimationDurationOptions extends InexactPartial<_GetAnimationDurationOptions> {}
 
   /** @internal */
-  type _PrepareAnimationOptions = NullishProps<{
+  interface _PrepareAnimationOptions {
     /**
      * The desired texture transition type
      * @defaultValue `TextureTransitionFilter.TYPES.FADE` (`"fade"`)
      */
     transition: TextureTransitionFilter.TYPES;
-  }>;
+  }
 
-  interface PrepareAnimationOptions extends _PrepareAnimationOptions {}
+  interface PrepareAnimationOptions extends InexactPartial<_PrepareAnimationOptions> {}
 
   /** @internal */
-  type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "name" | "ontick">;
+  type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> &
+    InexactPartial<{
+      /**
+       * The name of the animation, or `null` if nameless.
+       */
+      name: string | symbol | null;
+
+      /**
+       * Chain the animation to the existing one of the same name?
+       * @defaultValue `false`
+       */
+      chain: boolean;
+
+      /**
+       * The movement action.
+       */
+      action: string;
+    }> &
+    NullishProps<{
+      /**
+       * The terrain data.
+       * @defaultValue `null`
+       */
+      terrain: foundry.abstract.DataModel.Any | null;
+    }>;
 
   interface AnimateOptions extends _AnimateOptions, GetAnimationDurationOptions, PrepareAnimationOptions {
     /**
@@ -1212,46 +1366,42 @@ declare namespace Token {
   }
 
   /** @internal */
-  type _StopAnimationOptions = NullishProps<{
+  interface _StopAnimationOptions {
     /**
      * Reset the TokenDocument?
      * @defaultValue `false`
      */
     reset: boolean;
-  }>;
+  }
 
-  interface StopAnimationOptions extends _StopAnimationOptions {}
+  interface StopAnimationOptions extends InexactPartial<_StopAnimationOptions> {}
 
   /** @internal */
-  type _CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined> = InexactPartial<{
+  interface _CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined> {
     /**
      * The collision mode to test: "any", "all", or "closest"
      * @defaultValue `"any"`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     mode: Mode;
 
     /**
      * The collision type
      * @defaultValue `"move"`
-     * @remarks Can't be `null` as it only has a parameter default
-     *
-     * `"sound"` is a valid source type but explicitly throws if passed, so omitted here
+     * @remarks `"sound"` is a valid source type but explicitly throws if passed, so omitted here
      */
     type: "move" | "sight" | "light";
-  }> &
-    NullishProps<{
-      /**
-       * The origin to be used instead of the current origin
-       */
-      origin: Canvas.Point;
-    }>;
+
+    /**
+     * The origin to be used instead of the current origin
+     */
+    origin: Canvas.Point | Canvas.ElevatedPoint;
+  }
 
   interface CheckCollisionOptions<
     Mode extends PointSourcePolygon.CollisionModes | undefined = undefined,
-  > extends _CheckCollisionOptions<Mode> {}
+  > extends InexactPartial<_CheckCollisionOptions<Mode>> {}
 
-  /** Return type of {@link Token.getSize | `Token#getSize`} */
+  /** Return type of {@linkcode Token.getSize | Token#getSize} */
   interface Size {
     width: number;
     height: number;
@@ -1259,7 +1409,7 @@ declare namespace Token {
 
   /**
    * @privateRemarks Foundry types this as `Point | (Point & {elevation: number}) | {elevation: number}`,
-   * but this is misleading, as if an object is passed for the 2nd param of {@link Token.testInsideRegion | `Token#testInsideRegion`}
+   * but this is misleading, as if an object is passed for the 2nd param of {@linkcode Token.testInsideRegion | Token#testInsideRegion}
    * then it must contain `{x, y}` data, only if the value is nullish does the document's data get used.
    * Passing just `{elevation: number}` would result in `{x: undefined, y: undefined}`, causing
    * `PIXI.Rectangle#contains()` to always return false.
@@ -1268,48 +1418,46 @@ declare namespace Token {
    */
   type TestablePosition = Canvas.Point & { elevation?: number };
 
-  type _InitializeSourcesOptions = NullishProps<{
+  interface _InitializeSourcesOptions {
     /**
      * Indicate that this source has been deleted.
      * @defaultValue `false`
      */
     deleted: boolean;
-  }>;
+  }
 
-  interface InitializeSourcesOptions extends _InitializeSourcesOptions {}
+  interface InitializeSourcesOptions extends InexactPartial<_InitializeSourcesOptions> {}
 
   /** @internal */
-  type _TargetContext = NullishProps<{
-    /**
-     * Assign the token as a target for a specific User
-     * @defaultValue `game.user`
-     * @remarks `null` is the parameter default, but it's `||=`d with `game.user`
-     */
-    // TODO: This is removed in v13, so it doesn't need updated to Stored
-    user: User.Implementation;
-
+  interface _TargetContext {
     /**
      * Release other active targets for the same player?
      * @defaultValue `true`
+     * @remarks Only an omitted or `undefined` value uses the default.
      */
     releaseOthers: boolean;
+  }
 
-    /**
-     * Is this target being set as part of a group selection workflow?
-     * @defaultValue `false`
-     */
-    groupSelection: boolean;
-  }>;
+  interface TargetContext extends InexactPartial<_TargetContext> {}
 
-  interface TargetContext extends _TargetContext {}
+  interface AnimationChainLink {
+    to: PartialAnimationData;
+    options: Omit<Token.AnimateOptions, "duration"> & { duration: number };
+    promise: Promise<void>;
+    resolve: () => void;
+    reject: (error: Error) => void;
+  }
 
   interface AnimationContext {
     /** The name of the animation */
-    name: PropertyKey;
+    name: string | symbol;
+
+    /** The animation chain. */
+    chain: Token.AnimationChainLink[];
 
     /**
      * The final animation state
-     * @remarks This gets `mergeObject`ed with the return of {@link Token._getAnimationData | `Token#_getAnimationData`}
+     * @remarks This gets `mergeObject`ed with the return of {@linkcode Token._getAnimationData | Token#_getAnimationData}.
      */
     to: PartialAnimationData;
 
@@ -1325,22 +1473,35 @@ declare namespace Token {
     /** Synchronous functions that are executed after the animation ended */
     postAnimate: ((context: Token.AnimationContext) => void)[];
 
-    /** Synchronous functions that are executed each frame after `ontick` and before {@link Token._onAnimationUpdate | `Token#_onAnimationUpdate`} */
+    /**
+     * Synchronous functions that are executed each frame after `ontick` and before
+     * {@linkcode Token._onAnimationUpdate | Token#_onAnimationUpdate}
+     */
     onAnimate: ((context: Token.AnimationContext) => void)[];
 
-    /**
-     * The promise of the animation, which resolves to true if the animation
-     * completed, to false if it was terminated, and rejects if an error occurred.
-     * Undefined in the first frame (at time 0) of the animation.
-     */
-    promise?: Promise<boolean> | undefined;
+    /** The promise of the animation, which resolves once it completes or is terminated. */
+    promise: Promise<void>;
   }
 
   interface DragLeftDropUpdate {
     _id: string;
-    x: number;
-    y: number;
   }
+
+  interface DragLeftDropMovement {
+    waypoints: TokenDocument.MovementWaypoint[];
+    method: "dragging";
+    constrainOptions: Token.DragConstrainOptions;
+  }
+
+  interface DragLeftDropOperation {
+    movement: Record<string, Token.DragLeftDropMovement>;
+  }
+
+  /**
+   * @remarks This is the runtime return shape of {@link Token._prepareDragLeftDropUpdates | `Token#_prepareDragLeftDropUpdates`}.
+   * The method itself is typed more narrowly because of higher-order unsoundness in {@link PlaceableObject}.
+   */
+  type DragLeftDropReturn = [updates: Token.DragLeftDropUpdate[], operation: Token.DragLeftDropOperation];
 
   /** @internal */
   type _RefreshHUDOptions = NullishProps<{
@@ -1360,76 +1521,25 @@ declare namespace Token {
     preview?: boolean | undefined;
   }
 
-  interface ConstrainMovementPathWaypoint {
-    /**
-     * The top-left x-coordinate in pixels (integer).
-     * @defaultValue the previous or source x-coordinate.
-     */
-    x: number;
+  interface ConstrainMovementPathWaypoint extends InexactPartial<
+    Pick<
+      TokenDocument.MeasuredMovementWaypoint,
+      | "x"
+      | "y"
+      | "elevation"
+      | "width"
+      | "height"
+      | "shape"
+      | "action"
+      | "terrain"
+      | "snapped"
+      | "explicit"
+      | "checkpoint"
+      | "intermediate"
+    >
+  > {}
 
-    /**
-     * The top-left y-coordinate in pixels (integer).
-     * @defaultValue the previous or source y-coordinate.
-     */
-    y: number;
-
-    /**
-     * The elevation in grid units.
-     * @defaultValue the previous or source elevation.
-     */
-    elevation: number;
-
-    /**
-     * The width in grid spaces (positive).
-     * @defaultValue the previous or source width.
-     */
-    width: number;
-
-    /**
-     * The height in grid spaces (positive).
-     * @defaultValue the previous or source height.
-     */
-    height: number;
-
-    /**
-     * The shape type (see {@link CONST.TOKEN_SHAPES}).
-     * @defaultValue the previous or source shape.
-     */
-    shape: CONST.TOKEN_SHAPES;
-
-    /**
-     * The movement action from the previous to this waypoint.
-     * @defaultValue the previous or prepared movement action.
-     */
-    action: string;
-
-    /**
-     * The terrain data of this segment.
-     * @defaultValue `null`.
-     */
-    terrain: foundry.abstract.DataModel.Any | null;
-
-    /**
-     * Was this waypoint snapped to the grid?
-     * @defaultValue `false`.
-     */
-    snapped: boolean;
-
-    /**
-     * Was this waypoint explicitly placed by the user?
-     * @defaultValue `false`.
-     */
-    explicit: boolean;
-
-    /**
-     * Is this waypoint a checkpoint?
-     * @defaultValue `false`.
-     */
-    checkpoint: boolean;
-  }
-
-  /** @internal */
-  interface _ConstrainMovementPathOptions {
+  interface ConstrainMovementPathOptions extends InexactPartial<{
     /**
      * Constrain a preview path?
      * @defaultValue `false`
@@ -1454,11 +1564,11 @@ declare namespace Token {
      * @remarks marked by foundry as readonly
      */
     history: boolean | TokenDocument.MeasuredMovementWaypoint[];
-  }
+  }> {}
 
-  interface ConstrainMovementPathOptions extends InexactPartial<_ConstrainMovementPathOptions> {}
+  type ConstrainedMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
-  type ConstrainMovementPathReturn = [constrainedPath: TokenDocument.MovementWaypoint[], wasConstrained: boolean];
+  type ConstrainMovementPathReturn = [constrainedPath: Token.ConstrainedMovementWaypoint[], wasConstrained: boolean];
 
   interface FindMovementPathWaypoint {
     /**
@@ -1492,7 +1602,7 @@ declare namespace Token {
     height?: number | undefined;
 
     /**
-     * The shape type (see {@link CONST.TOKEN_SHAPES}).
+     * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
      * @defaultValue the previous or source shape.
      */
     shape?: CONST.TOKEN_SHAPES | undefined;
@@ -1575,6 +1685,29 @@ declare namespace Token {
      */
     cancel: () => void;
   }
+
+  /** A waypoint used as input to {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
+  type GetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
+
+  /** Options for {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
+  interface CreateTerrainMovementPathOptions {
+    /**
+     * Is this a preview path?
+     * @defaultValue `false`
+     */
+    preview?: boolean | undefined;
+  }
+
+  /** A waypoint in the terrain-annotated movement path returned by {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
+  type TerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
+
+  type DragConstrainOptions = Omit<Token.ConstrainMovementPathOptions, "preview" | "history">;
+
+  interface DragWaypointPositionOptions extends InexactPartial<{ snap: boolean }> {}
+
+  interface ChangeDragElevationOptions extends InexactPartial<{ precise: boolean }> {}
+
+  type DragWaypointPosition = Pick<TokenDocument.Position, "x" | "y" | "elevation"> & Partial<TokenDocument.Dimensions>;
 }
 
 export default Token;
