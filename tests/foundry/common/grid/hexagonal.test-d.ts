@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 
 import Canvas = foundry.canvas.Canvas;
+import HexagonalGrid = foundry.grid.HexagonalGrid;
+import type { InexactPartial, UnionToIntersection } from "fvtt-types/utils";
 
 declare const config: foundry.grid.HexagonalGrid.Configuration;
 
@@ -48,3 +50,5 @@ expectTypeOf(hexGrid.cubeToOffset(cube)).toEqualTypeOf<foundry.grid.HexagonalGri
 
 expectTypeOf(foundry.grid.HexagonalGrid.cubeRound(cube)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
 expectTypeOf(foundry.grid.HexagonalGrid.cubeDistance(cube, cube)).toEqualTypeOf<number>();
+
+type _x = UnionToIntersection<InexactPartial<HexagonalGrid.Coordinates2D>>;

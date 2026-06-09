@@ -1,8 +1,9 @@
-import type { AnyObject, EmptyObject, InexactPartial, Identity } from "#utils";
+import type { InexactPartial, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { GridHighlight } from "#client/canvas/containers/_module.mjs";
+import type { GridHighlight } from "#client/canvas/containers/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { HexagonalGrid } from "#common/grid/_module.d.mts";
 
 /**
  * The base grid class.
@@ -11,26 +12,63 @@ declare abstract class BaseGrid {
   /** The base grid constructor. */
   constructor(config: BaseGrid.Configuration);
 
+  /**
+   * The size of a grid space in pixels.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   size: number;
 
+  /**
+   * The width of a grid space in pixels.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   sizeX: number;
 
+  /**
+   * The height of a grid space in pixels.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   sizeY: number;
 
+  /**
+   * The distance of a grid space in units.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   distance: number;
 
+  /**
+   * The distance units used in this grid.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   units: string;
 
+  /**
+   * The style of the grid.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   style: string;
 
+  /**
+   * The thickness of the grid.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   thickness: number;
 
+  /**
+   * The color of the grid.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   color: Color;
 
+  /**
+   * The opacity of the grid.
+   * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
+   */
   alpha: number;
 
   /**
    * The grid type (see {@linkcode CONST.GRID_TYPES}).
+   * @privateRemarks Foundry marks `@readonly` but does nothing to enforce that at runtime.
    */
   type: CONST.GRID_TYPES;
 
@@ -51,10 +89,11 @@ declare abstract class BaseGrid {
 
   /**
    * Returns the offset of the grid space corresponding to the given coordinates.
-   * @param coords -The coordinates
+   * @param coords - The coordinates
    * @returns The offset
    */
-  abstract getOffset(coords: BaseGrid.Coordinates): BaseGrid.Offset;
+  abstract getOffset(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D;
+  abstract getOffset(coords: BaseGrid.Coordinates3D): BaseGrid.Offset3D;
 
   /**
    * Returns the smallest possible range containing the offsets of all grid spaces that intersect the given bounds.
@@ -76,66 +115,78 @@ declare abstract class BaseGrid {
 
   /**
    * Returns the offsets of the grid spaces adjacent to the one corresponding to the given coordinates.
-   * Returns an empty array in gridless grids.
+   * Returns always an empty array in gridless grids.
    * @param coords - The coordinates
    * @returns The adjacent offsets
+   * @remarks {@linkcode foundry.grid.GridlessGrid.getAdjacentOffsets | GridlessGrid#getAdjacentOffsets} always returns `[]` in core.
    */
-  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates): BaseGrid.Offset[];
+  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D[];
+  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates3D): BaseGrid.Offset3D[];
 
   /**
    * Returns true if the grid spaces corresponding to the given coordinates are adjacent to each other.
-   * In square grids with illegal diagonals the diagonally neighboring grid spaces are not adjacent.
-   * Returns false in gridless grids.
+   * In square and hexagonal grids with illegal diagonals the diagonally neighboring grid spaces are not adjacent.
+   * Returns always false in gridless grids.
    * @param coords1 - The first coordinates
    * @param coords2 - The second coordinates
+   * @remarks {@linkcode foundry.grid.GridlessGrid.testAdjacency | GridlessGrid#testAdjacency} always returns `false` in core.
    */
-  abstract testAdjacency(coords1: BaseGrid.Coordinates, coords2: BaseGrid.Coordinates): boolean;
+  abstract testAdjacency(coords1: BaseGrid.Coordinates2D, coords2: BaseGrid.Coordinates2D): boolean;
+  abstract testAdjacency(coords1: BaseGrid.Coordinates3D, coords2: BaseGrid.Coordinates3D): boolean;
 
   /**
    * Returns the offset of the grid space corresponding to the given coordinates
-   * shifted by one grid space in the given direction.
-   * In square grids with illegal diagonals the offset of the given coordinates is returned
+   * shifted by one grid space in the given direction. The k-coordinate is not changed.
+   * In square and hexagonal grids with illegal diagonals the offset of the given coordinates is returned
    * if the direction is diagonal.
+   * In gridless grids the point is by the grid size.
    * @param coords    - The coordinates
    * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The offset
    */
-  abstract getShiftedOffset(coords: BaseGrid.Coordinates, direction: number): BaseGrid.Offset;
+  abstract getShiftedOffset(coords: BaseGrid.Coordinates2D, direction: CONST.MOVEMENT_DIRECTIONS): BaseGrid.Offset2D;
+  abstract getShiftedOffset(coords: BaseGrid.Coordinates3D, direction: CONST.MOVEMENT_DIRECTIONS): BaseGrid.Offset3D;
 
   /**
    * Returns the point shifted by the difference between the grid space corresponding to the given coordinates
-   * and the shifted grid space in the given direction.
-   * In square grids with illegal diagonals the point is not shifted if the direction is diagonal.
+   * and the shifted grid space in the given direction. The z-coordinate is not changed.
+   * In square and hexagonal grids with illegal diagonals the point is not shifted if the direction is diagonal.
    * In gridless grids the point coordinates are shifted by the grid size.
    * @param point     - The point that is to be shifted
    * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The shifted point
    */
-  abstract getShiftedPoint(point: Canvas.Point, direction: number): Canvas.Point;
+  abstract getShiftedPoint(point: Canvas.Point, direction: CONST.MOVEMENT_DIRECTIONS): Canvas.Point;
+  abstract getShiftedPoint(point: Canvas.ElevatedPoint, direction: CONST.MOVEMENT_DIRECTIONS): Canvas.ElevatedPoint;
 
   /**
-   * Returns the top-left point of the grid space corresponding to the given coordinates.
-   * If given a point, the top-left point of the grid space that contains it is returned.
+   * Returns the top-left point of the grid space bounds corresponding to the given coordinates.
+   * If given a point, the top-left point of the grid space bounds that contains it is returned.
+   * The top-left point lies in the plane of the bottom face of the 3D grid space.
    * In gridless grids a point with the same coordinates as the given point is returned.
    * @param coords - The coordinates
    * @returns The top-left point
    */
-  abstract getTopLeftPoint(coords: BaseGrid.Coordinates): Canvas.Point;
+  abstract getTopLeftPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
+  abstract getTopLeftPoint(coords: BaseGrid.Coordinates3D): Canvas.ElevatedPoint;
 
   /**
    * Returns the center point of the grid space corresponding to the given coordinates.
    * If given a point, the center point of the grid space that contains it is returned.
+   * The center point lies in the plane of the bottom face of the 3D grid space.
    * In gridless grids a point with the same coordinates as the given point is returned.
    * @param coords - The coordinates
    * @returns The center point
    */
-  abstract getCenterPoint(coords: BaseGrid.Coordinates): Canvas.Point;
+  abstract getCenterPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
+  abstract getCenterPoint(coords: BaseGrid.Coordinates3D): Canvas.ElevatedPoint;
 
   /**
    * Returns the points of the grid space shape relative to the center point.
-   * The points are returned in the same order as in {@link BaseGrid.getVertices | `BaseGrid#getVertices`}.
+   * The points are returned in the same order as in {@linkcode BaseGrid.getVertices | BaseGrid#getVertices}.
    * In gridless grids an empty array is returned.
    * @returns The points of the polygon
+   * @remarks {@linkcode foundry.grid.GridlessGrid.getShape | GridlessGrid#getShape} always returns `[]` in core.
    */
   abstract getShape(): Canvas.Point[];
 
@@ -147,16 +198,21 @@ declare abstract class BaseGrid {
    * In gridless grids an empty array is returned.
    * @param coords - The coordinates
    * @returns The vertices
+   * @remarks {@linkcode foundry.grid.GridlessGrid.getVertices | GridlessGrid#getVertices} always returns `[]` in core.
    */
-  abstract getVertices(coords: BaseGrid.Coordinates): Canvas.Point[];
+  abstract getVertices(coords: BaseGrid.Coordinates2D): Canvas.Point[];
 
   /**
    * Snaps the given point to the grid.
+   * In square and hexagonal grids the z-coordinate of the point is rounded to the nearest multiple of the grid size.
+   * In gridless grids a point with the same coordinates as the given point is returned regardless of the
+   * snapping behavior.
    * @param point    - The point that is to be snapped
    * @param behavior - The snapping behavior
    * @returns The snapped point
    */
-  abstract getSnappedPoint({ x, y }: Canvas.Point, behavior: BaseGrid.SnappingBehavior): Canvas.Point;
+  abstract getSnappedPoint(point: Canvas.Point, behavior: BaseGrid.SnappingBehavior): Canvas.Point;
+  abstract getSnappedPoint(point: Canvas.ElevatedPoint, behavior: BaseGrid.SnappingBehavior): Canvas.ElevatedPoint;
 
   /**
    * Measure a shortest, direct path through the given waypoints.
@@ -164,51 +220,37 @@ declare abstract class BaseGrid {
    * @param options   - Additional measurement options
    * @returns The measurements a shortest, direct path through the given waypoints.
    */
-  measurePath(
-    waypoints: BaseGrid.MeasurePathWaypoint[],
-    options: InexactPartial<{
-      /**
-       * The function that returns the cost for a given move between
-       * grid spaces (default is the distance traveled along the direct path)
-       */
-      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
-    }>,
-  ): BaseGrid.MeasurePathResult;
+  measurePath(waypoints: never, options?: never): BaseGrid.MeasurePathResult;
+  measurePath(waypoints: never, options?: never): BaseGrid.MeasurePathResult;
 
   /**
    * Measures the path and writes the measurements into `result`.
-   * Called by {@link BaseGrid.measurePath | `BaseGrid#getDirectPath`}.
+   * Called by {@linkcode BaseGrid.measurePath | BaseGrid#measurePath}.
    * @param waypoints - The waypoints the path must pass through
    * @param options   - Additional measurement options
    * @param result    - The measurement result that the measurements need to be written to
    */
-  protected abstract _measurePath(
-    waypoints: BaseGrid.MeasurePathWaypoint[],
-    options: InexactPartial<{
-      /**
-       * The function that returns the cost for a given move between
-       * grid spaces (default is the distance traveled along the direct path)
-       */
-      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
-    }>,
-    result: BaseGrid.MeasurePathResult,
-  ): void;
+  protected abstract _measurePath(waypoints: never, options: never, result: BaseGrid.MeasurePathResult): void;
+  protected abstract _measurePath(waypoints: never, options: never, result: BaseGrid.MeasurePathResult): void;
 
   /**
    * Returns the sequence of grid offsets of a shortest, direct path passing through the given waypoints.
    * @param waypoints - The waypoints the path must pass through
    * @returns The sequence of grid offsets of a shortest, direct path
    */
-  abstract getDirectPath(waypoints: BaseGrid.Coordinates[]): BaseGrid.Offset[];
+  abstract getDirectPath(waypoints: BaseGrid.Coordinates2D[]): BaseGrid.Offset2D[];
+  abstract getDirectPath(waypoints: BaseGrid.Coordinates3D[]): BaseGrid.Offset3D[];
 
   /**
    * Get the point translated in a direction by a distance.
+   * The z-coordinate is not changed.
    * @param point     - The point that is to be translated.
    * @param direction - The angle of direction in degrees.
    * @param distance  - The distance in grid units.
    * @returns The translated point.
    */
   abstract getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
+  abstract getTranslatedPoint(point: Canvas.ElevatedPoint, direction: number, distance: number): Canvas.ElevatedPoint;
 
   /**
    * Get the circle polygon given the radius in grid units for this grid.
@@ -224,11 +266,11 @@ declare abstract class BaseGrid {
    * Get the cone polygon given the radius in grid units and the angle in degrees for this grid.
    * The points of the polygon are returned ordered in positive orientation.
    * In gridless grids an approximation of the true cone with a deviation of less than 0.25 pixels is returned.
-   * @param origin    - The origin point of the cone.
-   * @param radius    - The radius in grid units.
-   * @param direction - The direction in degrees.
-   * @param angle     - The angle in degrees.
-   * @returns The points of the cone polygon.
+   * @param origin    - The origin point of the cone
+   * @param radius    - The radius in grid units
+   * @param direction - The direction in degrees
+   * @param angle     - The angle in degrees
+   * @returns The points of the cone polygon
    */
   getCone(origin: Canvas.Point, radius: number, direction: number, angle: number): Canvas.Point[];
 
@@ -240,7 +282,7 @@ declare abstract class BaseGrid {
    * Determine a placeable's bounding box based on the size of the grid.
    * @param w - The width in grid spaces.
    * @param h - The height in grid spaces.
-   * @deprecated Since v12 until v14. If you need the size of a Token, use Token#getSize instead.
+   * @deprecated "`BaseGrid#getRect` is deprecated. If you need the size of a `Token`, use {@linkcode Token.getSize | Token#getSize} instead."
    */
   getRect(w: number, h: number): PIXI.Rectangle;
 
@@ -253,7 +295,8 @@ declare abstract class BaseGrid {
    * @param size     - The grid size.
    * @param padding  - The percentage of padding.
    * @param options  - Options to configure the padding calculation.
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.calculateDimensions | `BaseGrid#calculateDimensions`} instead.
+   * @deprecated "`BaseGrid.calculatePadding` is deprecated. Use {@linkcode BaseGrid.calculateDimensions | BaseGrid#calculateDimensions}
+   * instead." (since v12, until v14)
    */
   static calculatePadding(
     gridType: foundry.CONST.GRID_TYPES,
@@ -270,29 +313,30 @@ declare abstract class BaseGrid {
   ): { width: number; height: number; x: number; y: number };
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.sizeX | `BaseGrid#sizeX`} instead.
+   * @deprecated "`BaseGrid#w` is deprecated in favor of {@linkcode BaseGrid.sizeX | BaseGrid#sizeX}." (since v12 until v14)
    */
   get w(): number;
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.sizeX | `BaseGrid#sizeX`} instead.
+   * @deprecated "`BaseGrid#w` is deprecated in favor of {@linkcode BaseGrid.sizeX | BaseGrid#sizeX}." (since v12 until v14)
    */
   set w(value: number);
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.sizeY | `BaseGrid#sizeY`} instead.
+   * @deprecated "`BaseGrid#h` is deprecated in favor of {@linkcode BaseGrid.sizeY | BaseGrid#sizeY}." (since v12 until v14)
    */
   get h(): number;
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.sizeY | `BaseGrid#sizeY`} instead.
+   * @deprecated "`BaseGrid#h` is deprecated in favor of {@linkcode BaseGrid.sizeY | BaseGrid#sizeY}." (since v12 until v14)
    */
   set h(value: number);
 
   /**
    * Given a pair of coordinates (x, y) - return the top-left of the grid square which contains that point
    * @returns An Array [x, y] of the top-left coordinate of the square which contains (x, y)
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getTopLeftPoint | `BaseGrid#getTopLeftPoint`} instead.
+   * @deprecated "`BaseGrid#getTopLeft` is deprecated. Use {@linkcode BaseGrid.getTopLeftPoint | BaseGrid#getTopLeftPoint} instead."
+   * (since v12, until v14)
    */
   getTopLeft(x: number, y: number): Canvas.PointTuple;
 
@@ -301,7 +345,7 @@ declare abstract class BaseGrid {
    * @param x - The x-coordinate
    * @param y - The y-coordinate
    * @returns An array [cx, cy] of the central point of the grid space which contains (x, y)
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getCenterPoint | `BaseGrid#getCenterPoint`} instead.
+   * @deprecated "`BaseGrid#getCenter`. Use {@linkcode BaseGrid.getCenterPoint | BaseGrid#getCenterPoint} instead." (since v12, until v14)
    */
   getCenter(x: number, y: number): Canvas.PointTuple;
 
@@ -310,7 +354,8 @@ declare abstract class BaseGrid {
    * @param row - The grid row coordinate against which to test for neighbors
    * @param col - The grid column coordinate against which to test for neighbors
    * @returns An array of grid positions which are neighbors of the row and column
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getAdjacentOffsets | `BaseGrid#getAdjacentOffsets`} instead.
+   * @deprecated "`BaseGrid#getNeighbors` is deprecated. Use {@linkcode BaseGrid.getAdjacentOffsets | BaseGrid#getAdjacentOffsets} instead."
+   * (since v12, until v14)
    */
   getNeighbors(row: number, col: number): Canvas.PointTuple[];
 
@@ -320,7 +365,8 @@ declare abstract class BaseGrid {
    * @param x - The x-coordinate pixel position
    * @param y - The y-coordinate pixel position
    * @returns An array representing the position in grid units
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getOffset | `BaseGrid#getOffset`} instead.
+   * @deprecated "`BaseGrid#getGridPositionFromPixels` is deprecated. Use {@linkcode BaseGrid.getOffset | BaseGrid#getOffset} instead."
+   * (since v12, until v15)
    */
   getGridPositionFromPixels(x: number, y: number): Canvas.PointTuple;
 
@@ -332,7 +378,8 @@ declare abstract class BaseGrid {
    * @param x - The x-coordinate grid position
    * @param y - The y-coordinate grid position
    * @returns An array representing the position in pixels
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getTopLeftPoint | `BaseGrid#getTopLeftPoint`} instead.
+   * @deprecated "`BaseGrid#getPixelsFromGridPosition` is deprecated. Use {@linkcode BaseGrid.getTopLeftPoint | BaseGrid#getTopLeftPoint}
+   * instead." (since v12, until v14)
    */
   getPixelsFromGridPosition(x: number, y: number): Canvas.PointTuple;
 
@@ -345,7 +392,8 @@ declare abstract class BaseGrid {
    * @param dx - The number of grid positions to shift horizontally
    * @param dy - The number of grid positions to shift vertically
    * @param options - Additional options to configure shift behavior.
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getShiftedPoint | `BaseGrid#getShiftedPoint`} instead.
+   * @deprecated "`BaseGrid#shiftPosition` is deprecated. Use {@linkcode BaseGrid.getShiftedPoint | BaseGrid#getShiftedPoint} instead."
+   * (since v12, until v14)
    */
   shiftPosition(
     x: number,
@@ -365,20 +413,15 @@ declare abstract class BaseGrid {
   /**
    * Measure the distance traversed over an array of measured segments
    * @param segments - An Array of measured movement segments
-   * @param options  - Additional options which modify the measurement
-   *                   (default: `{}`)
+   * @param options  - Additional options which modify the measurement (default: `{}`)
    * @returns An Array of distance measurements for each segment
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.measurePath | `BaseGrid#measurePath`} instead.
+   * @deprecated "`BaseGrid#measureDistances` is deprecated. Use {@linkcode BaseGrid.measurePath | BaseGrid#measurePath} instead."
+   * (since v12, until v14)
    */
   measureDistances(
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     segments: BaseGrid.Segment[],
-
-    /**
-     * @defaultValue `{}`
-     * @remarks Unused
-     */
-    options?: EmptyObject,
+    options?: object,
   ): number[];
 
   /* -------------------------------------------- */
@@ -392,22 +435,18 @@ declare abstract class BaseGrid {
    * @param interval - An interval of grid spaces at which to snap.
    *                   At interval=1, snapping occurs at pixel intervals defined by the grid size
    *                   At interval=2, snapping would occur at the center-points of each grid size
-   *                   At interval=null, no snapping occurs
-   *                   (default: `null`)
+   *                   At interval=null, no snapping occurs (default: `null`)
    * @param options  - Additional options to configure snapping behavior.
    * @returns An object containing the coordinates of the snapped location
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.getSnappedPoint | `BaseGrid#getSnappedPoint`} instead.
+   * @deprecated "`BaseGrid#getSnappedPosition` is deprecated. Use {@linkcode BaseGrid.getSnappedPoint | BaseGrid#getSnappedPoint} instead."
+   * (since v12, until v14)
    */
   getSnappedPosition(
     x: number,
     y: number,
     interval?: number | null,
 
-    /**
-     * @defaultValue `{}`
-     * @remarks Unused
-     */
-    options?: EmptyObject,
+    options?: object,
   ): PIXI.IPointData;
 
   /* -------------------------------------------- */
@@ -416,133 +455,167 @@ declare abstract class BaseGrid {
    * Highlight a grid position for a certain coordinates
    * @param layer   - The highlight layer to use
    * @param options - Additional options to configure behavior.
-   * @deprecated Since v12 until v14. Use {@link GridLayer.highlightPosition | `GridLayer#highlightPosition`} instead.
+   * @deprecated "`BaseGrid#highlightGridPosition` is deprecated. Use
+   * {@linkcode foundry.canvas.layers.GridLayer.highlightPosition | GridLayer#highlightPosition} instead." (since v12, until v14)
    */
-  highlightGridPosition(layer: GridHighlight, options?: AnyObject): void;
+  highlightGridPosition(layer: GridHighlight, options?: object): void;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14. Use {@link Canvas.grid | `Canvas#grid`} instead.
+   * @deprecated "`canvas.grid.grid` is deprecated. Use {@linkcode canvas.grid} instead." (since v12, until v14)
    */
-  get grid(): BaseGrid;
+  get grid(): this;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.testAdjacency | `BaseGrid#testAdjacency`} instead.
+   * @deprecated "`canvas.grid.isNeighbor` is deprecated. Use {@linkcode canvas.grid.testAdjacency} instead." (since v12, until v14)
    */
   isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.isHexagonal | `BaseGrid#isHexagonal`} instead.
+   * @deprecated "`canvas.grid.isHex` is deprecated. Use {@linkcode canvas.grid.isHexagonal} instead." (since v12, until v14)
    */
   get isHex(): boolean;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14. Use {@link BaseGrid.measurePath | `BaseGrid#measurePath`} instead.
+   * @deprecated "`canvas.grid.measureDistance` is deprecated. Use {@linkcode canvas.grid.measurePath} instead, which returns grid distance
+   * (`gridSpaces: true`) and Euclidean distance (`gridSpaces: false`)." (since v12, until v14)
    */
-  measureDistance(origin: Canvas.Point, target: Canvas.Point, options: AnyObject): number[];
+  measureDistance(origin: Canvas.Point, target: Canvas.Point, options?: object): number[];
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.highlight` is deprecated. Use {@linkcode canvas.interface.grid.highlight} instead."
+   * (since v12, until v14)
    */
-  get highlight(): unknown;
+  get highlight(): PIXI.Container | undefined;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.highlightLayers` is deprecated. Use {@linkcode canvas.interface.grid.highlightLayers} instead."
+   * (since v12, until v14)
    */
-  get highlightLayers(): unknown;
+  get highlightLayers(): Record<string, GridHighlight>;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.addHighlightLayer` is deprecated. Use {@linkcode canvas.interface.grid.addHighlightLayer} instead."
+   * (since v12, until v14)
    */
-  addHighlightLayer(name: string): unknown;
+  addHighlightLayer(name: string): GridHighlight;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.clearHighlightLayer` is deprecated. Use {@linkcode canvas.interface.grid.clearHighlightLayer} instead."
+   * (since v12, until v14)
    */
-  clearHighlightLayer(name: string): unknown;
+  clearHighlightLayer(name: string): void;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.destroyHighlightLayer` is deprecated. Use {@linkcode canvas.interface.grid.destroyHighlightLayer} instead."
+   * (since v12, until v14)
    */
-  destroyHighlightLayer(name: string): unknown;
+  destroyHighlightLayer(name: string): void;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.getHighlightLayer` is deprecated. Use {@linkcode canvas.interface.grid.getHighlightLayer} instead."
+   * (since v12, until v14)
    */
-  getHighlightLayer(name: string): unknown;
+  getHighlightLayer(name: string): GridHighlight | undefined;
 
   /* -------------------------------------------- */
 
   /**
-   * @deprecated Since v12 until v14.
+   * @deprecated "`canvas.grid.highlightPosition` is deprecated. Use {@linkcode canvas.interface.grid.highlightPosition} instead."
+   * (since v12, until v14)
    */
-  highlightPosition(name: string, options: AnyObject): unknown;
+  highlightPosition(name: string, options?: object): void;
 }
 
 declare namespace BaseGrid {
   interface Any extends AnyBaseGrid {}
   interface AnyConstructor extends Identity<typeof AnyBaseGrid> {}
 
-  interface Configuration {
-    /** The size of a grid space in pixels (a positive number) */
-    size: number;
-
+  /** @internal */
+  interface _Configuration {
     /**
      * The distance of a grid space in units (a positive number)
-     * Default: `1`
+     * @defaultValue `1`
      */
-    distance?: number | undefined;
+    distance: number;
 
     /**
      * The units of measurement
-     * Default: `""`
+     * @defaultValue `""`
      */
-    units?: string | undefined;
+    units: string;
 
     /**
      * The style of the grid
-     * Default: `"solidLines"`
+     * @defaultValue `"solidLines"`
      */
-    style?: string | undefined;
+    style: string;
 
     /**
      * The color of the grid
-     * Default: `0`
+     * @defaultValue `new Color(0)`
      */
-    color?: Color.Source | undefined;
+    color: Color.Source;
 
     /**
      * The alpha of the grid
-     * Default: `1`
+     * @defaultValue `1`
      */
-    alpha?: number | undefined;
+    alpha: number;
 
     /**
      * The line thickness of the grid
-     * Default: `1`
+     * @defaultValue `1`
      */
-    thickness?: number | undefined;
+    thickness: number;
+
+    /**
+     * @deprecated "The constructor `BaseGrid({dimensions, color, alpha})` is deprecated in favor of
+     * `BaseGrid({size, distance, units, style, thickness, color, alpha})`." (since v12, until v14)
+     */
+    dimensions: { size: number; distance?: number | undefined };
   }
 
+  interface Configuration extends InexactPartial<_Configuration> {
+    /** The size of a grid space in pixels (a positive number) */
+    size: number;
+  }
+
+  /**
+   * Property common to both square and hex grid configs
+   * @internal
+   */
+  interface _Diagonals {
+    /**
+     * The rule for diagonal measurement (see {@linkcode CONST.GRID_DIAGONALS}).
+     * @defaultValue {@linkcode CONST.GRID_DIAGONALS.EQUIDISTANT}
+     */
+    diagonals: CONST.GRID_DIAGONALS;
+  }
+
+  /**
+   * @deprecated Use {@linkcode BaseGrid.Offset2D} or {@linkcode BaseGrid.Offset3D} as appropriate instead.
+   * This warning will be removed in v14.
+   */
   type Offset = Offset2D | Offset3D;
 
   /**
@@ -568,64 +641,137 @@ declare namespace BaseGrid {
 
   type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
+  /**
+   * @deprecated Use {@linkcode BaseGrid.Coordinates2D} or {@linkcode BaseGrid.Coordinates3D} as appropriate instead.
+   * This warning will be removed in v14.
+   */
   type Coordinates = Coordinates2D | Coordinates3D;
 
   type Coordinates2D = Offset2D | Canvas.Point;
 
   type Coordinates3D = Offset3D | Canvas.ElevatedPoint;
 
-  interface SnappingBehavior {
-    /** The snapping mode (a union of {@linkcode CONST.GRID_SNAPPING_MODES}) */
-    mode: number;
+  /**
+   * This type is effectively identical to {@linkcode HexagonalGrid.Coordinates2D}, but using that name in the signatures for
+   * {@linkcode BaseGrid.measurePath | BaseGrid#measurePath} and {@linkcode BaseGrid._measurePath | #_measurePath} felt wrong,
+   * despite them being required
+   */
+  type _WideCoordinates2D = Coordinates2D | HexagonalGrid.Coordinates2D;
 
+  /**
+   * This type is effectively identical to {@linkcode HexagonalGrid.Coordinates3D}, but using that name in the signatures for
+   * {@linkcode BaseGrid.measurePath | BaseGrid#measurePath} and {@linkcode BaseGrid._measurePath | #_measurePath} felt wrong,
+   * despite them being required
+   */
+  type _WideCoordinates3D = Coordinates3D | HexagonalGrid.Coordinates3D;
+
+  /** @internal */
+  interface _SnappingBehavior {
     /**
      * The resolution (a positive integer)
-     * Default: `1`
+     * @defaultValue `1`
      */
-    resolution?: number | undefined;
+    resolution: number;
   }
 
-  interface _MeasurePathWaypointData {
+  interface SnappingBehavior extends InexactPartial<_SnappingBehavior> {
+    /** The snapping mode (a union of {@linkcode CONST.GRID_SNAPPING_MODES}) */
+    mode: number;
+  }
+
+  /** @internal */
+  interface _WaypointData<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> {
     /**
      * Teleport to this waypoint?
      * @defaultValue `false`
      */
-    teleport?: boolean;
+    teleport: boolean;
 
     /**
      * Measure of the segment from the previous to this waypoint? The distance, cost, spaces,
      * diagonals, and Euclidean length of a segment that is not measured are always 0.
      * @defaultValue `true`
+     * @privateRemarks default provided by `!== false` checks in all three `#_measurePath` overrides
      */
-    measure?: boolean;
-  }
+    measure: boolean;
 
-  interface MeasurePathWaypointData2D extends _MeasurePathWaypointData {
     /**
      * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
      */
-    cost?: number | MeasurePathCostFunction2D;
+    cost: number | CostFunction<Coordinates>;
   }
 
-  interface MeasurePathWaypointData3D extends _MeasurePathWaypointData {
+  /**
+   * @deprecated Use {@linkcode BaseGrid.WaypointData | BaseGrid.WaypointData<BaseGrid.Coordinates2D>} instead.
+   * This warning will be removed in v14.
+   */
+  type MeasurePathWaypointData2D = WaypointData<Coordinates2D>;
+
+  /**
+   * @deprecated Use {@linkcode BaseGrid.WaypointData | BaseGrid.WaypointData<BaseGrid.Coordinates2D>} instead.
+   * This warning will be removed in v14.
+   */
+  type MeasurePathWaypointData3D = WaypointData<Coordinates3D>;
+
+  type CostFunction<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> = (
+    from: Coordinates,
+    to: Coordinates,
+    distance: number,
+    segment: Waypoint<Coordinates>,
+  ) => number;
+
+  /**
+   * Data contained in waypoints for {@linkcode BaseGrid.measurePath | #measurePath} other than coordinates/offsets
+   */
+  interface WaypointData<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> extends InexactPartial<
+    BaseGrid._WaypointData<Coordinates>
+  > {}
+
+  /**
+   * Hack to make {@linkcode Waypoint} work
+   * @internal
+   */
+  type _AllKeys = keyof HexagonalGrid.Cube3D | keyof BaseGrid.Offset3D | keyof Canvas.ElevatedPoint | "cost";
+
+  /**
+   * The type of full waypoints passed to {@linkcode BaseGrid.measurePath | #measurePath}
+   */
+  type Waypoint<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> = Coordinates extends unknown
+    ? WaypointData<Coordinates> & Coordinates
+    : never;
+
+  type _x = Waypoint<_WideCoordinates2D>;
+
+  /** @internal */
+  interface _MeasurePathOptions<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> {
     /**
-     * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
+     * The function that returns the cost for a given move between grid spaces (default is the distance traveled)
      */
-    cost?: number | MeasurePathCostFunction3D;
+    cost: BaseGrid.CostFunction<Coordinates>;
   }
 
-  type MeasurePathWaypoint2D = InexactPartial<Coordinates2D & MeasurePathWaypointData2D>;
+  interface MeasurePathOptions<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> extends InexactPartial<
+    _MeasurePathOptions<Coordinates>
+  > {}
 
-  type MeasurePathWaypoint3D = InexactPartial<Coordinates3D & MeasurePathWaypointData3D>;
+  type MeasurePathWaypoint2D = Waypoint<Coordinates2D>;
+
+  type MeasurePathWaypoint3D = Waypoint<Coordinates3D>;
 
   type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D;
 
   /** The measurements of a waypoint. */
   interface MeasurePathResultWaypoint {
-    /** The segment from the previous waypoint to this waypoint. */
+    /**
+     * The segment from the previous waypoint to this waypoint.
+     * @remarks Only `null` in the first waypoint
+     */
     backward: MeasurePathResultSegment | null;
 
-    /** The segment from this waypoint to the next waypoint. */
+    /**
+     * The segment from this waypoint to the next waypoint.
+     * @remarks Only `null` in the last waypoint
+     */
     forward: MeasurePathResultSegment | null;
 
     /** The total distance traveled along the path up to this waypoint. */
@@ -661,11 +807,11 @@ declare namespace BaseGrid {
     /** The number of spaces moved along this segment. */
     spaces: number;
 
-    /** The cost of the direct path ({@link BaseGrid.getDirectPath | `BaseGrid#getDirectPath`}) between the two waypoints. */
+    /** The cost of the direct path ({@linkcode BaseGrid.getDirectPath | BaseGrid#getDirectPath}) between the two waypoints. */
     cost: number;
   }
 
-  /** The measurements result of {@link BaseGrid.measurePath | `BaseGrid#measurePath`}. */
+  /** The measurements result of {@linkcode BaseGrid.measurePath | BaseGrid#measurePath}. */
   interface MeasurePathResult {
     /** The measurements at each waypoint. */
     waypoints: MeasurePathResultWaypoint[];
@@ -683,7 +829,7 @@ declare namespace BaseGrid {
      */
     spaces: number;
 
-    /** The total cost of the direct path ({@link BaseGrid.getDirectPath | `BaseGrid#getDirectPath`}) through all waypoints. */
+    /** The total cost of the direct path ({@linkcode BaseGrid.getDirectPath | BaseGrid#getDirectPath}) through all waypoints. */
     cost: number;
 
     /** The total number of diagonals moved along a direct path through all waypoints. */
@@ -694,7 +840,7 @@ declare namespace BaseGrid {
   }
 
   /**
-   * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}
+   * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}. This warning will be removed in v14.
    */
   type MeasurePathCostFunction = MeasurePathCostFunction2D;
 
@@ -709,12 +855,7 @@ declare namespace BaseGrid {
    * @returns The cost of the move between the grid spaces (nonnegative)
    * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  type MeasurePathCostFunction2D = (
-    from: Offset2D,
-    to: Offset2D,
-    distance: number,
-    segment: foundry.grid.BaseGrid.MeasurePathWaypoint2D,
-  ) => number;
+  type MeasurePathCostFunction2D = CostFunction<Coordinates2D>;
 
   /**
    * A function that returns the cost for a given move between grid spaces in 3D.
@@ -727,12 +868,7 @@ declare namespace BaseGrid {
    * @returns The cost of the move between the grid spaces (nonnegative)
    * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  type MeasurePathCostFunction3D = (
-    from: Offset3D,
-    to: Offset3D,
-    distance: number,
-    segment: foundry.grid.BaseGrid.MeasurePathWaypoint3D,
-  ) => number;
+  type MeasurePathCostFunction3D = CostFunction<Coordinates3D>;
 
   interface Dimensions {
     width: number;
@@ -744,7 +880,7 @@ declare namespace BaseGrid {
   }
 
   /**
-   * @deprecated since v12, will be removed in v14
+   * @deprecated This type is only used with deprecated methods and will be removed with them. This warning will be removed in v14.
    */
   interface Segment {
     ray: Ray;

@@ -1,4 +1,4 @@
-import type HexagonalGrid from "./hexagonal.mjs";
+import type { BaseGrid, HexagonalGrid } from "#common/grid/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
@@ -11,16 +11,37 @@ declare class GridHex {
    * @param coordinates - The coordinates of the hex to construct
    * @param grid        - The hexagonal grid instance to which this hex belongs
    */
-  constructor(coordinates: HexagonalGrid.Coordinates, grid: HexagonalGrid);
+  constructor(coordinates: HexagonalGrid.Coordinates2D, grid: HexagonalGrid);
 
-  /** The hexagonal grid to which this hex belongs. */
+  /**
+   * @deprecated "The coordinates used to construct the `GridHex` class are now a {@linkcode BaseGrid.Offset2D} with format `{i, j}`."
+   * (since v12, until v14)
+   */
+  constructor(coordinates: { row: number; col: number }, grid: HexagonalGrid);
+
+  /**
+   * @deprecated "The `GridHex` class now requires a {@linkcode HexagonalGrid} instance to be passed to its constructor, rather than a
+   * {@linkcode HexagonalGrid.Configuration}" (since v12, until v14)
+   */
+  constructor(coordinates: HexagonalGrid.Coordinates2D, grid: HexagonalGrid.Configuration);
+
+  /**
+   * The hexagonal grid to which this hex belongs.
+   * @privateRemarks Defined at construction, not in the class body.
+   */
   grid: HexagonalGrid;
 
-  /** The cube coordinate of this hex. */
-  cube: HexagonalGrid.Cube;
+  /**
+   * The cube coordinate of this hex.
+   * @privateRemarks Defined at construction, not in the class body.
+   */
+  cube: HexagonalGrid.Cube2D;
 
-  /** The offset coordinate of this hex. */
-  offset: HexagonalGrid.Offset;
+  /**
+   * The offset coordinate of this hex.
+   * @privateRemarks Defined at construction, not in the class body.
+   */
+  offset: BaseGrid.Offset2D;
 
   /** Return a reference to the pixel point in the center of this hexagon. */
   get center(): Canvas.Point;
