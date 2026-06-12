@@ -9,7 +9,6 @@ import type { BaseGrid, HexagonalGrid, SquareGrid } from "#common/grid/_module.d
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
 type GridOffset2D = BaseGrid.Offset2D;
@@ -30,9 +29,9 @@ type HexagonalGridCoordinates3D = HexagonalGrid.Coordinates3D;
 
 type GridSnappingBehavior = BaseGrid.SnappingBehavior;
 
-type GridMeasurePathWaypointData2D = BaseGrid.WaypointData<BaseGrid.Coordinates2D>;
+type GridMeasurePathWaypointData2D = BaseGrid.WaypointData<BaseGrid._AnyCoordinates2D>;
 
-type GridMeasurePathWaypointData3D = BaseGrid.WaypointData<BaseGrid.Coordinates3D>;
+type GridMeasurePathWaypointData3D = BaseGrid.WaypointData<BaseGrid._AnyCoordinates3D>;
 
 type GridMeasurePathResultWaypoint = BaseGrid.MeasurePathResultWaypoint;
 
@@ -40,9 +39,9 @@ type GridMeasurePathResultSegment = BaseGrid.MeasurePathResultSegment;
 
 type GridMeasurePathResult = BaseGrid.MeasurePathResult;
 
-type GridMeasurePathCostFunction2D = BaseGrid.CostFunction<BaseGrid.Coordinates2D>;
+type GridMeasurePathCostFunction2D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
 
-type GridMeasurePathCostFunction3D = BaseGrid.CostFunction<BaseGrid.Coordinates2D>;
+type GridMeasurePathCostFunction3D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
 
 type GridConfiguration = BaseGrid.Configuration;
 

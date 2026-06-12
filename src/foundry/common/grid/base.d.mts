@@ -5,6 +5,11 @@ import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { HexagonalGrid } from "#common/grid/_module.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type GridlessGrid from "#common/grid/gridless.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type SquareGrid from "#common/grid/square.d.mts";
+
 /**
  * The base grid class.
  */
@@ -46,7 +51,7 @@ declare abstract class BaseGrid {
    * The style of the grid.
    * @privateRemarks Defined at construction, not in the class body. Foundry marks `@readonly` but does nothing to enforce that at runtime.
    */
-  style: string;
+  style: BaseGrid.ConfiguredStyle;
 
   /**
    * The thickness of the grid.
@@ -91,9 +96,10 @@ declare abstract class BaseGrid {
    * Returns the offset of the grid space corresponding to the given coordinates.
    * @param coords - The coordinates
    * @returns The offset
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getOffset(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D;
   abstract getOffset(coords: BaseGrid.Coordinates3D): BaseGrid.Offset3D;
+  abstract getOffset(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D;
 
   /**
    * Returns the smallest possible range containing the offsets of all grid spaces that intersect the given bounds.
@@ -119,9 +125,10 @@ declare abstract class BaseGrid {
    * @param coords - The coordinates
    * @returns The adjacent offsets
    * @remarks {@linkcode foundry.grid.GridlessGrid.getAdjacentOffsets | GridlessGrid#getAdjacentOffsets} always returns `[]` in core.
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D[];
   abstract getAdjacentOffsets(coords: BaseGrid.Coordinates3D): BaseGrid.Offset3D[];
+  abstract getAdjacentOffsets(coords: BaseGrid.Coordinates2D): BaseGrid.Offset2D[];
 
   /**
    * Returns true if the grid spaces corresponding to the given coordinates are adjacent to each other.
@@ -130,9 +137,10 @@ declare abstract class BaseGrid {
    * @param coords1 - The first coordinates
    * @param coords2 - The second coordinates
    * @remarks {@linkcode foundry.grid.GridlessGrid.testAdjacency | GridlessGrid#testAdjacency} always returns `false` in core.
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract testAdjacency(coords1: BaseGrid.Coordinates2D, coords2: BaseGrid.Coordinates2D): boolean;
   abstract testAdjacency(coords1: BaseGrid.Coordinates3D, coords2: BaseGrid.Coordinates3D): boolean;
+  abstract testAdjacency(coords1: BaseGrid.Coordinates2D, coords2: BaseGrid.Coordinates2D): boolean;
 
   /**
    * Returns the offset of the grid space corresponding to the given coordinates
@@ -143,9 +151,10 @@ declare abstract class BaseGrid {
    * @param coords    - The coordinates
    * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The offset
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getShiftedOffset(coords: BaseGrid.Coordinates2D, direction: CONST.MOVEMENT_DIRECTIONS): BaseGrid.Offset2D;
   abstract getShiftedOffset(coords: BaseGrid.Coordinates3D, direction: CONST.MOVEMENT_DIRECTIONS): BaseGrid.Offset3D;
+  abstract getShiftedOffset(coords: BaseGrid.Coordinates2D, direction: CONST.MOVEMENT_DIRECTIONS): BaseGrid.Offset2D;
 
   /**
    * Returns the point shifted by the difference between the grid space corresponding to the given coordinates
@@ -155,9 +164,10 @@ declare abstract class BaseGrid {
    * @param point     - The point that is to be shifted
    * @param direction - The direction (see {@linkcode CONST.MOVEMENT_DIRECTIONS})
    * @returns The shifted point
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getShiftedPoint(point: Canvas.Point, direction: CONST.MOVEMENT_DIRECTIONS): Canvas.Point;
   abstract getShiftedPoint(point: Canvas.ElevatedPoint, direction: CONST.MOVEMENT_DIRECTIONS): Canvas.ElevatedPoint;
+  abstract getShiftedPoint(point: Canvas.Point, direction: CONST.MOVEMENT_DIRECTIONS): Canvas.Point;
 
   /**
    * Returns the top-left point of the grid space bounds corresponding to the given coordinates.
@@ -166,9 +176,10 @@ declare abstract class BaseGrid {
    * In gridless grids a point with the same coordinates as the given point is returned.
    * @param coords - The coordinates
    * @returns The top-left point
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getTopLeftPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
   abstract getTopLeftPoint(coords: BaseGrid.Coordinates3D): Canvas.ElevatedPoint;
+  abstract getTopLeftPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
 
   /**
    * Returns the center point of the grid space corresponding to the given coordinates.
@@ -177,9 +188,10 @@ declare abstract class BaseGrid {
    * In gridless grids a point with the same coordinates as the given point is returned.
    * @param coords - The coordinates
    * @returns The center point
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getCenterPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
   abstract getCenterPoint(coords: BaseGrid.Coordinates3D): Canvas.ElevatedPoint;
+  abstract getCenterPoint(coords: BaseGrid.Coordinates2D): Canvas.Point;
 
   /**
    * Returns the points of the grid space shape relative to the center point.
@@ -210,18 +222,23 @@ declare abstract class BaseGrid {
    * @param point    - The point that is to be snapped
    * @param behavior - The snapping behavior
    * @returns The snapped point
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getSnappedPoint(point: Canvas.Point, behavior: BaseGrid.SnappingBehavior): Canvas.Point;
   abstract getSnappedPoint(point: Canvas.ElevatedPoint, behavior: BaseGrid.SnappingBehavior): Canvas.ElevatedPoint;
+  abstract getSnappedPoint(point: Canvas.Point, behavior: BaseGrid.SnappingBehavior): Canvas.Point;
 
   /**
    * Measure a shortest, direct path through the given waypoints.
    * @param waypoints - The waypoints the path must pass through
    * @param options   - Additional measurement options
    * @returns The measurements a shortest, direct path through the given waypoints.
+   * @privateRemarks This uses `never` because it needs to be wide enough to allow the override in
+   * {@linkcode HexagonalGrid.measurePath | HexagonalGrid}, but re-narrowing in {@linkcode SquareGrid.measurePath | SquareGrid} and
+   * {@linkcode GridlessGrid.measurePath | GridlessGrid} problematic because of the {@linkcode BaseGrid.CostFunction}.
+   *
+   * In subclasses, the 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  measurePath(waypoints: never, options?: never): BaseGrid.MeasurePathResult;
-  measurePath(waypoints: never, options?: never): BaseGrid.MeasurePathResult;
+  measurePath(waypoints: never, options: never): BaseGrid.MeasurePathResult;
 
   /**
    * Measures the path and writes the measurements into `result`.
@@ -229,17 +246,22 @@ declare abstract class BaseGrid {
    * @param waypoints - The waypoints the path must pass through
    * @param options   - Additional measurement options
    * @param result    - The measurement result that the measurements need to be written to
+   * @privateRemarks This uses `never` because it needs to be wide enough to allow the override in
+   * {@linkcode HexagonalGrid._measurePath | HexagonalGrid}, but re-narrowing in {@linkcode SquareGrid._measurePath | SquareGrid} and
+   * {@linkcode GridlessGrid._measurePath | GridlessGrid} proved problematic.
+   *
+   * In subclasses, the 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  protected abstract _measurePath(waypoints: never, options: never, result: BaseGrid.MeasurePathResult): void;
   protected abstract _measurePath(waypoints: never, options: never, result: BaseGrid.MeasurePathResult): void;
 
   /**
    * Returns the sequence of grid offsets of a shortest, direct path passing through the given waypoints.
    * @param waypoints - The waypoints the path must pass through
    * @returns The sequence of grid offsets of a shortest, direct path
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getDirectPath(waypoints: BaseGrid.Coordinates2D[]): BaseGrid.Offset2D[];
   abstract getDirectPath(waypoints: BaseGrid.Coordinates3D[]): BaseGrid.Offset3D[];
+  abstract getDirectPath(waypoints: BaseGrid.Coordinates2D[]): BaseGrid.Offset2D[];
 
   /**
    * Get the point translated in a direction by a distance.
@@ -248,9 +270,10 @@ declare abstract class BaseGrid {
    * @param direction - The angle of direction in degrees.
    * @param distance  - The distance in grid units.
    * @returns The translated point.
+   * @privateRemarks The 3D signature must precede the 2D for correct inference, because all 3D types extend the relevant 2D type.
    */
-  abstract getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
   abstract getTranslatedPoint(point: Canvas.ElevatedPoint, direction: number, distance: number): Canvas.ElevatedPoint;
+  abstract getTranslatedPoint(point: Canvas.Point, direction: number, distance: number): Canvas.Point;
 
   /**
    * Get the circle polygon given the radius in grid units for this grid.
@@ -550,6 +573,8 @@ declare namespace BaseGrid {
   interface Any extends AnyBaseGrid {}
   interface AnyConstructor extends Identity<typeof AnyBaseGrid> {}
 
+  type ConfiguredStyle = keyof CONFIG.Canvas.GridStyles;
+
   /** @internal */
   interface _Configuration {
     /**
@@ -568,7 +593,7 @@ declare namespace BaseGrid {
      * The style of the grid
      * @defaultValue `"solidLines"`
      */
-    style: string;
+    style: BaseGrid.ConfiguredStyle;
 
     /**
      * The color of the grid
@@ -651,19 +676,18 @@ declare namespace BaseGrid {
 
   type Coordinates3D = Offset3D | Canvas.ElevatedPoint;
 
-  /**
-   * This type is effectively identical to {@linkcode HexagonalGrid.Coordinates2D}, but using that name in the signatures for
-   * {@linkcode BaseGrid.measurePath | BaseGrid#measurePath} and {@linkcode BaseGrid._measurePath | #_measurePath} felt wrong,
-   * despite them being required
-   */
-  type _WideCoordinates2D = Coordinates2D | HexagonalGrid.Coordinates2D;
+  /** @internal */
+  type _AnyCoordinates2D = Coordinates2D | HexagonalGrid.Coordinates2D;
+
+  /** @internal */
+  type _AnyCoordinates3D = Coordinates3D | HexagonalGrid.Coordinates3D;
 
   /**
-   * This type is effectively identical to {@linkcode HexagonalGrid.Coordinates3D}, but using that name in the signatures for
-   * {@linkcode BaseGrid.measurePath | BaseGrid#measurePath} and {@linkcode BaseGrid._measurePath | #_measurePath} felt wrong,
-   * despite them being required
+   * The constraint for various machinery involving {@linkcode Waypoint}s. As of 13.351, the hex coords by themselves are the widest types
+   * here; this type exists to reduce confusion and to hedge against future changes.
+   * @internal
    */
-  type _WideCoordinates3D = Coordinates3D | HexagonalGrid.Coordinates3D;
+  type _AnyCoordinates = _AnyCoordinates2D | _AnyCoordinates3D;
 
   /** @internal */
   interface _SnappingBehavior {
@@ -680,7 +704,7 @@ declare namespace BaseGrid {
   }
 
   /** @internal */
-  interface _WaypointData<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> {
+  interface _WaypointData<Coordinates extends _AnyCoordinates> {
     /**
      * Teleport to this waypoint?
      * @defaultValue `false`
@@ -713,52 +737,53 @@ declare namespace BaseGrid {
    */
   type MeasurePathWaypointData3D = WaypointData<Coordinates3D>;
 
-  type CostFunction<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> = (
-    from: Coordinates,
-    to: Coordinates,
-    distance: number,
-    segment: Waypoint<Coordinates>,
-  ) => number;
-
   /**
-   * Data contained in waypoints for {@linkcode BaseGrid.measurePath | #measurePath} other than coordinates/offsets
+   * A function that returns the cost for a given move between grid spaces in 3D.
+   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
+   * The function is never called with the same offsets.
+   * @param from     - The offset that is moved from
+   * @param to       - The offset that is moved to
+   * @param distance - The distance between the grid spaces
+   * @param segment  - The properties of the segment
+   * @returns The cost of the move between the grid spaces (nonnegative)
+   * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  interface WaypointData<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> extends InexactPartial<
+  type CostFunction<
+    Coordinates extends _AnyCoordinates = _AnyCoordinates,
+    Segment extends object = Waypoint<Coordinates>,
+  > = (from: Coordinates, to: Coordinates, distance: number, segment: Segment) => number;
+
+  /** Data contained in waypoints for {@linkcode BaseGrid.measurePath | #measurePath} other than coordinates/offsets */
+  interface WaypointData<Coordinates extends _AnyCoordinates> extends InexactPartial<
     BaseGrid._WaypointData<Coordinates>
   > {}
 
-  /**
-   * Hack to make {@linkcode Waypoint} work
-   * @internal
-   */
-  type _AllKeys = keyof HexagonalGrid.Cube3D | keyof BaseGrid.Offset3D | keyof Canvas.ElevatedPoint | "cost";
-
-  /**
-   * The type of full waypoints passed to {@linkcode BaseGrid.measurePath | #measurePath}
-   */
-  type Waypoint<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> = Coordinates extends unknown
-    ? WaypointData<Coordinates> & Coordinates
-    : never;
-
-  type _x = Waypoint<_WideCoordinates2D>;
+  /** The type of full waypoints passed to {@linkcode BaseGrid.measurePath | #measurePath} */
+  type Waypoint<
+    Coordinates extends _AnyCoordinates,
+    AllCoordinates extends _AnyCoordinates = Coordinates,
+  > = Coordinates extends unknown ? WaypointData<AllCoordinates> & Coordinates : never;
 
   /** @internal */
-  interface _MeasurePathOptions<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> {
+  interface _MeasurePathOptions<Coordinates extends _AnyCoordinates> {
     /**
      * The function that returns the cost for a given move between grid spaces (default is the distance traveled)
      */
     cost: BaseGrid.CostFunction<Coordinates>;
   }
 
-  interface MeasurePathOptions<Coordinates extends _WideCoordinates2D | _WideCoordinates3D> extends InexactPartial<
+  interface MeasurePathOptions<Coordinates extends _AnyCoordinates> extends InexactPartial<
     _MeasurePathOptions<Coordinates>
   > {}
 
-  type MeasurePathWaypoint2D = Waypoint<Coordinates2D>;
+  /** @deprecated Use {@linkcode BaseGrid.Waypoint} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathWaypoint2D = Waypoint<_AnyCoordinates2D>;
 
-  type MeasurePathWaypoint3D = Waypoint<Coordinates3D>;
+  /** @deprecated Use {@linkcode BaseGrid.Waypoint} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathWaypoint3D = Waypoint<_AnyCoordinates3D>;
 
-  type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D;
+  /** @deprecated Use {@linkcode BaseGrid.Waypoint} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathWaypoint = Waypoint<_AnyCoordinates>;
 
   /** The measurements of a waypoint. */
   interface MeasurePathResultWaypoint {
@@ -839,37 +864,16 @@ declare namespace BaseGrid {
     euclidean: number;
   }
 
-  /**
-   * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}. This warning will be removed in v14.
-   */
-  type MeasurePathCostFunction = MeasurePathCostFunction2D;
+  /** @deprecated Use {@linkcode BaseGrid.CostFunction} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathCostFunction = CostFunction<_AnyCoordinates2D>;
 
-  /**
-   * A function that returns the cost for a given move between grid spaces in 2D.
-   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
-   * The function is never called with the same offsets.
-   * @param from     - The offset that is moved from
-   * @param to       - The offset that is moved to
-   * @param distance - The distance between the grid spaces
-   * @param segment  - The properties of the segment
-   * @returns The cost of the move between the grid spaces (nonnegative)
-   * @remarks foundry marks `from`, `to`, and `segment` as readonly
-   */
-  type MeasurePathCostFunction2D = CostFunction<Coordinates2D>;
+  /** @deprecated Use {@linkcode BaseGrid.CostFunction} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathCostFunction2D = CostFunction<_AnyCoordinates2D>;
 
-  /**
-   * A function that returns the cost for a given move between grid spaces in 3D.
-   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
-   * The function is never called with the same offsets.
-   * @param from     - The offset that is moved from
-   * @param to       - The offset that is moved to
-   * @param distance - The distance between the grid spaces
-   * @param segment  - The properties of the segment
-   * @returns The cost of the move between the grid spaces (nonnegative)
-   * @remarks foundry marks `from`, `to`, and `segment` as readonly
-   */
-  type MeasurePathCostFunction3D = CostFunction<Coordinates3D>;
+  /** @deprecated Use {@linkcode BaseGrid.CostFunction} with an appropriate coordinate type instead. This warning will be removed in v14. */
+  type MeasurePathCostFunction3D = CostFunction<_AnyCoordinates3D>;
 
+  /** The return type for {@linkcode BaseGrid.calculateDimensions}. As of 13.351, all subclass overrides return this type exactly. */
   interface Dimensions {
     width: number;
     height: number;
