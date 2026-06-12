@@ -2218,7 +2218,7 @@ declare namespace TokenDocument {
       InexactPartial<_MoveOptions> {}
 
   /**
-   * We have no information from the TokenDocument about whether the grid is hex or not,
+   * We have no information from the `TokenDocument` about whether the grid is hex or not, or whether the path provided is 2D or 3D.
    */
   type MovementCostFunction =
     | BaseGrid.CostFunction<BaseGrid.Coordinates2D, MovementSegmentData>
