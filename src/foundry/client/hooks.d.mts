@@ -1430,7 +1430,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
-      data: PlaceableObject.PasteObjectReturn<P["document"]>,
+      data: Document.SourceForName<P["document"]["documentName"]>,
       options: Hooks.PastePlaceableObjectOptions,
     ) => boolean | void;
 

@@ -1,11 +1,10 @@
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
-import type { PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
-import type { PrimaryOccludableObjectMixin, PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
+import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import type { ResizeHandle } from "#client/canvas/containers/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import Canvas = foundry.canvas.Canvas;
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -17,12 +16,13 @@ declare module "#configuration" {
 
 /**
  * A Tile is an implementation of PlaceableObject which represents a static piece of artwork or prop within the Scene.
- * Tiles are drawn inside the {@linkcode TilesLayer} container.
- *
- * @see {@linkcode TileDocument}
- * @see {@linkcode TilesLayer}
+ * @see {@linkcode foundry.documents.TileDocument}
+ * @see {@linkcode foundry.canvas.layers.TilesLayer}
  */
 declare class Tile extends PlaceableObject<TileDocument.Implementation> {
+  // fake type override
+  static override get implementation(): Tile.ImplementationClass;
+
   static override embeddedName: "Tile";
 
   static override RENDER_FLAGS: Tile.RENDER_FLAGS;
@@ -43,27 +43,23 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
 
   /**
    * The primary tile image texture
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw or after {@link Tile._destroy | `Tile#_destroy`} is called
-   *
-   * Thereafter, `null` if no valid `texture.src` exists on this Tile's document (or the original Tile's, if this is a preview clone)
+   * @defaultValue `null`
+   * @remarks `null` if no valid `texture.src` exists on this Tile's document (or the original Tile's, if this is a preview clone)
    */
-  texture: PIXI.Texture | null | undefined;
+  texture: PIXI.Texture | null;
 
   /**
    * A Tile background which is displayed if no valid image texture is present
-   * @defaultValue `undefined`
+   * @defaultValue `null`
    */
-  bg: PIXI.Graphics | undefined;
+  bg: PIXI.Graphics | null;
 
   /**
    * A reference to the SpriteMesh which displays this Tile in the PrimaryCanvasGroup.
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw.
-   *
-   * Thereafter, `null` if no valid `texture.src` exists on this Tile's document (or the original Tile's, if this is a preview clone)
+   * @defaultValue `null`
+   * @remarks `null` if no valid `texture.src` exists on this Tile's document (or the original Tile's, if this is a preview clone)
    */
-  mesh: PrimarySpriteMesh | null | undefined;
+  mesh: PrimarySpriteMesh | null;
 
   /**
    * Get the native aspect ratio of the base texture for the Tile sprite
@@ -74,11 +70,8 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
 
   /**
    * The HTML source element for the primary Tile texture
-   * @privateRemarks Foundry types this as `HTMLImageElement | HTMLVideoElement`, but this just
-   * returns `this.texture?.baseTexture.resource.source`, which could be any of `PIXI.ImageSource`,
-   * and returns `ImageBitmap`, not `HTMLImageElement`, for static images.
    */
-  get sourceElement(): PIXI.ImageSource | undefined;
+  get sourceElement(): PIXI.ImageSource | null;
 
   /**
    * Does this Tile depict an animated video texture?
@@ -113,9 +106,12 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    */
   static createPreview(data: TileDocument.CreateData): Tile.Implementation;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<Tile.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
-  override clear(): void;
+  override clear(): this;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
@@ -168,7 +164,6 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
   override activateListeners(): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
@@ -221,43 +216,11 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
 
   /**
    * Is this tile a roof?
-   * @deprecated since v12, until v14
-   * @remarks "`Tile#isRoof `has been deprecated without replacement."
+   * @deprecated "`Tile#isRoof` has been deprecated without replacement." (since v12, until v14)
    */
   get isRoof(): boolean;
 
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#testOcclusion` has been deprecated in favor of {@link PrimaryOccludableObjectMixin.AnyMixed.testOcclusion | `PrimaryOccludableObject#testOcclusion`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#testOcclusion`
-   */
-  // options: not null (destructured where forwarded)
-  testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "Tile#containsPixel has been deprecated in favor of {@link PrimaryOccludableObjectMixin.AnyMixed.containsPixel | `PrimaryOccludableObject#containsPixel`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#containsPixel`
-   */
-  containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#getPixelAlpha` has been deprecated in favor of {@link PrimarySpriteMesh.getPixelAlpha | `PrimarySpriteMesh#getPixelAlpha`}"
-   *
-   * The runtime deprecation warning erroneously points to `PrimaryCanvasObject#getPixelAlpha`
-   */
-  getPixelAlpha(x: number, y: number): number;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "`Tile#_getAlphaBounds` has been deprecated in favor of {@link PrimarySpriteMesh._getAlphaBounds | `PrimarySpriteMesh#_getAlphaBounds`}"
-   *
-   * The runtime deprecation warning doesn't point anywhere, despite forwarding the call (to `mesh?._getAlphaBounds`, thus the `| undefined`).
-   */
-  _getAlphaBounds(): PIXI.Rectangle | undefined;
+  #Tile: true;
 }
 
 declare namespace Tile {
@@ -323,17 +286,40 @@ declare namespace Tile {
      * }
      * ```
      * @deprecated since v12, until v14
-     * @remarks The `alias: true` should be a sibling of `deprecated`, not a child, this is a Foundry bug in 12.331
+     * @remarks The `alias: true` should be a sibling of `deprecated`, not a child, this is a Foundry bug in 13.351
      */
     refreshShape: RenderFlag<this, "refreshShape">;
   }
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
+  /**
+   * The {@linkcode PIXI.Container} that `Tile##drawFrame` returns, which has had some additions from stock. In addition to the properties
+   * below, its {@linkcode PIXI.Container.eventMode | eventMode} is set to "passive".
+   */
   interface FrameContainer extends PIXI.Container {
     bounds: PIXI.Rectangle;
+
+    /**
+     * @remarks Added as a child of the frame `Container`.
+     *
+     * Its {@linkcode PIXI.Container.hitArea | hitArea} is set to {@linkcode FrameContainer.bounds} and its
+     * {@linkcode PIXI.Container.eventMode | eventMode} is set to "auto".
+     */
     interaction: PIXI.Container;
+
+    /**
+     * @remarks Added as a child of the frame `Container`.
+     *
+     * Its {@linkcode PIXI.Container.eventMode | eventMode} is set to "none".
+     */
     border: PIXI.Graphics;
+
+    /**
+     * @remarks Added as a child of the frame `Container`.
+     *
+     * Its {@linkcode PIXI.Container.eventMode | eventMode} is set to "static".
+     */
     handle: ResizeHandle;
   }
 

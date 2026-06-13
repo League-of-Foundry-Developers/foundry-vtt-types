@@ -17,8 +17,8 @@ expectTypeOf(TokenRing.texturesData).toEqualTypeOf<Record<string, TokenRing.Text
 expectTypeOf(TokenRing.initialize()).toBeVoid();
 expectTypeOf(TokenRing.createAssetsUVs()).toBeVoid();
 
-expectTypeOf(TokenRing.getTextureUVs("foo")).toEqualTypeOf<Float32Array>();
-expectTypeOf(TokenRing.getTextureUVs("foo", 1.6)).toEqualTypeOf<Float32Array>();
+expectTypeOf(TokenRing.getTextureUVs("foo")).toEqualTypeOf<Float32Array | void>();
+expectTypeOf(TokenRing.getTextureUVs("foo", 1.6)).toEqualTypeOf<Float32Array | void>();
 expectTypeOf(TokenRing.getRingDataBySize(3)).toEqualTypeOf<TokenRing.RingData>();
 
 expectTypeOf(TokenRing.createSpikeEasing()).toEqualTypeOf<CanvasAnimation.EasingFunction>();
@@ -51,7 +51,12 @@ expectTypeOf(myTR.token).toEqualTypeOf<Token.Implementation | undefined>();
 
 expectTypeOf(myTR.configure(someToken.mesh!)).toBeVoid();
 expectTypeOf(myTR.clear()).toBeVoid();
+
 expectTypeOf(myTR.configureSize()).toBeVoid();
+expectTypeOf(myTR.configureSize({})).toBeVoid();
+expectTypeOf(myTR.configureSize({ fit: "height", scaleMultiplier: 0.75 })).toBeVoid();
+expectTypeOf(myTR.configureSize({ fit: undefined, scaleMultiplier: undefined })).toBeVoid();
+
 expectTypeOf(myTR.configureVisuals()).toBeVoid();
 
 declare const someColor: Color;
@@ -59,7 +64,6 @@ declare const somePromise: Promise<void>;
 declare const someOnTickFunction: CanvasAnimation.OnTickFunction;
 
 expectTypeOf(myTR.flashColor(someColor)).toEqualTypeOf<Promise<boolean | void>>();
-expectTypeOf(myTR.flashColor(someColor, null)).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
   myTR.flashColor(someColor, {
     context: someToken,

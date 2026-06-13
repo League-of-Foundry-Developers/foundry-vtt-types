@@ -1,23 +1,23 @@
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /** A mesh of a {@linkcode Region} */
 declare class RegionMesh extends PIXI.Container {
   /**
    * Create a RegionMesh
    * @param region        - The Region to create the RegionMesh from.
-   * @param shaderClass   - The shader class to use. (default: `RegionShader`)
+   * @param shaderClass   - The shader class to use. (default: {@linkcode foundry.canvas.rendering.shaders.RegionShader | RegionShader})
    */
-  // shaderClass: not null (parameter default only)
   constructor(region: Region.Implementation, shaderClass?: AbstractBaseShader.AnyConstructor);
 
   /** The Region of this RegionMesh */
   get region(): Region.Implementation;
 
   /** The shader bound to this RegionMesh */
-  get shader(): AbstractBaseShader;
+  get shader(): AbstractBaseShader.Any;
 
-  /** The blend mode assigned tot his RegionMesh */
+  /** The blend mode assigned to this RegionMesh */
   get blendMode(): PIXI.BLEND_MODES;
   set blendMode(value);
 
@@ -35,7 +35,6 @@ declare class RegionMesh extends PIXI.Container {
 
   /**
    * Cached tint value for the shader uniforms
-   * @remarks Foundry marked `@internal`
    */
   protected _cachedTint: Color.RGBAColorVector;
 
@@ -56,11 +55,12 @@ declare class RegionMesh extends PIXI.Container {
 
   /**
    * Tests if a point is inside this RegionMesh.
-   * @privateRemarks The rare instance of Foundry using the PIXI interface in *their* types
    */
-  containsPoint(point: PIXI.IPointData): boolean;
+  containsPoint(point: Canvas.Point): boolean;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+  #RegionMesh: true;
 }
 
 declare namespace RegionMesh {

@@ -1896,8 +1896,11 @@ declare global {
       /** @defaultValue `typeof TokenHUD` */
       hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
-      /** @defaultValue `typeof TokenRuler` */
-      rulerClass: foundry.canvas.placeables.tokens.TokenRuler.AnyConstructor;
+      /**
+       * @defaultValue `typeof TokenRuler`
+       * @privateRemarks `typeof` because the constructor must take a {@linkcode Token.Implementation}
+       */
+      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
 
       movement: {
         /** @defaultValue `data.TerrainData` */
@@ -3554,9 +3557,7 @@ declare global {
         ) => MovementActionCostFunction;
       }
 
-      interface MovementActionOptionalConfig extends InexactPartial<_MovementActionConfig> {}
-
-      interface MovementActionConfig extends MovementActionOptionalConfig {
+      interface MovementActionConfig extends InexactPartial<_MovementActionConfig> {
         /**
          * The label of the movement action.
          */
