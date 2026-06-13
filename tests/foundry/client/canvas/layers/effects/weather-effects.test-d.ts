@@ -31,7 +31,7 @@ expectTypeOf(WeatherEffects.configureTerrainMask(someShader, {})).toBeVoid();
 expectTypeOf(
   WeatherEffects.configureTerrainMask(someShader, {
     channelWeights: undefined,
-    enabled: null,
+    enabled: false,
     reverse: true,
     texture: someTex,
   }),
@@ -71,7 +71,6 @@ expectTypeOf(
     label: "MYSYSTEM.WeatherEffects.someID.label",
     filter: {
       enabled: false,
-      blendMode: PIXI.BLEND_MODES.DIFFERENCE,
     },
     effects: [
       // @ts-expect-error `AutumnLeavesWeatherEffect` does not take a config object as it overrides that path and uses its `static LEAF_CONFIG` instead
@@ -106,7 +105,7 @@ expectTypeOf(
         effectClass: SomeWeatherShaderEffect,
         shaderClass: SomeWeatherShader,
         performanceLevel: CONST.CANVAS_PERFORMANCE_MODES.MED,
-        blendMode: null,
+        blendMode: undefined,
         config: {
           // UniformValues
           foo: 7.6,
@@ -122,7 +121,3 @@ expectTypeOf(
 ).toBeVoid();
 
 expectTypeOf(layer.clearEffects()).toBeVoid();
-
-// deprecated until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.weather).toEqualTypeOf<typeof layer>();

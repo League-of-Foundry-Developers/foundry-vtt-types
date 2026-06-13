@@ -43,7 +43,7 @@ expectTypeOf(placeable.objectId).toBeString();
 expectTypeOf(placeable.sourceId).toBeString();
 expectTypeOf(placeable.isPreview).toBeBoolean();
 expectTypeOf(placeable.hasPreview).toBeBoolean();
-expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Any>();
+expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Implementation>();
 
 // TODO: investigate AmbientLightDocument#sheet to see if this should be a more narrowed type
 expectTypeOf(placeable.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();

@@ -649,7 +649,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * (passed to {@link Token#_getMovementCostFunction})
    */
   measureMovementPath(
-    waypoints: Token.MeasuredMovementWaypoint[],
+    waypoints: TokenDocument.MeasuredMovementWaypoint[],
     options?: TokenDocument.MeasureMovementPathOptions,
   ): foundry.grid.BaseGrid.MeasurePathResult;
 
@@ -1009,12 +1009,6 @@ declare namespace Token {
     bar1: PIXI.Graphics;
     bar2: PIXI.Graphics;
   }
-
-  // TODO: Convert to interface with appropriate properties
-  type MeasuredMovementWaypoint = unknown;
-
-  // TODO: Convert to interface with appropriate properties
-  type PlannedMovement = unknown;
 
   /** @internal */
   type _GetMovementAdjustedPointOffsets = NullishProps<{

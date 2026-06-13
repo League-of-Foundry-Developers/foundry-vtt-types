@@ -3137,6 +3137,7 @@ declare namespace EmbeddedCollectionField {
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
     EmbeddedCollection<
+      // TODO: Stored is only mostly accurate, this should be a specific Embedded type with only the id/uuid guarantees eventually
       Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
       ParentDataModel
     >,

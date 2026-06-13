@@ -81,6 +81,8 @@ declare namespace PointSoundSource {
 
   interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
 
+  interface PartialSourceData extends InexactPartial<SourceData> {}
+
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}

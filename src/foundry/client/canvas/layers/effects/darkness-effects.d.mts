@@ -4,6 +4,7 @@ import type { CanvasLayer } from "../_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasLayerConfig {
+      /** @remarks Not configurable, doesn't have an `Implementation` */
       CanvasDarknessEffects: CanvasDarknessEffects.Any;
     }
   }
@@ -23,6 +24,9 @@ declare class CanvasDarknessEffects extends CanvasLayer {
    */
   clear(): void;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<void>;
 }
 
@@ -32,6 +36,7 @@ declare namespace CanvasDarknessEffects {
 
   interface DrawOptions extends CanvasLayer.DrawOptions {}
 
+  // `CanvasDarknessEffects` has no `_tearDown` override, this exists for consistency
   interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 

@@ -1,18 +1,16 @@
 import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
-import type { CANVAS_PERFORMANCE_MODES } from "#common/constants.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type {
   groups,
   layers,
-  // placeables is only used for @links
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
   placeables,
-  // interaction is only used for @links
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interaction,
 } from "./_module.d.mts";
 import type { PerceptionManager } from "#client/canvas/perception/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type BaseRuler from "#client/canvas/interaction/ruler/base-ruler.d.mts";
 
 type InternalCanvas = new (...args: never) => {
   readonly [K in keyof CONFIG.Canvas.Groups]?: FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]> | undefined;
@@ -200,7 +198,7 @@ declare class Canvas extends _InternalCanvas {
    * This includes lighting, vision, fog of war and related animations.
    * @defaultValue `undefined`
    */
-  readonly effects: groups.EffectsCanvasGroup | undefined;
+  readonly effects: groups.EffectsCanvasGroup.Implementation | undefined;
 
   /**
    * The visibility Canvas group which handles the fog of war overlay by consolidating multiple render textures,
@@ -753,7 +751,7 @@ declare namespace Canvas {
 
   interface PerformanceSettings {
     /** The performance mode in CONST.CANVAS_PERFORMANCE_MODES */
-    mode: CANVAS_PERFORMANCE_MODES;
+    mode: CONST.CANVAS_PERFORMANCE_MODES;
 
     /** Blur filter configuration */
     blur: {
@@ -872,10 +870,10 @@ declare namespace Canvas {
        * @privateRemarks Set in:
        * - `SceneControls##onToolChange`
        * - `ClientKeybindings.#onDismiss`
-       * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
-       * - {@linkcode interaction.BaseRuler._onClickLeft | BaseRuler#_onClickLeft}
-       * - {@linkcode interaction.BaseRuler._onClickRight | BaseRuler#_onClickRight}
-       * - {@linkcode interaction.BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
+       * - {@linkcode BaseRuler._onDragStart | BaseRuler#_onDragStart}
+       * - {@linkcode BaseRuler._onClickLeft | BaseRuler#_onClickLeft}
+       * - {@linkcode BaseRuler._onClickRight | BaseRuler#_onClickRight}
+       * - {@linkcode BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
        * - {@linkcode layers.ControlsLayer._onLongPress | ControlsLayer#_onLongPress}
        * - {@linkcode layers.WallsLayer._onUndoCreate | WallsLayer#_onUndoCreate}
        * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
@@ -893,8 +891,8 @@ declare namespace Canvas {
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
-       * - {@linkcode interaction.BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
+       * - {@linkcode BaseRuler._onDragStart | BaseRuler#_onDragStart}
+       * - {@linkcode BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
        * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
        * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
        */
@@ -989,6 +987,8 @@ declare namespace Canvas {
 
     interface Pointer<ObjectFor extends PIXI.Container = PIXI.Container> extends _Base<ObjectFor, PointerEvent> {}
     interface Wheel extends WheelEvent {}
+
+    /** @deprecated Just use {@linkcode KeyboardEvent} instead */
     interface DeleteKey extends KeyboardEvent {}
 
     interface DarknessChange extends PIXI.FederatedEvent {
