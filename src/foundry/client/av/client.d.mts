@@ -1,7 +1,5 @@
-import type { DeepPartial } from "#utils";
-
-import AVMaster = foundry.av.AVMaster;
-import AVSettings = foundry.av.AVSettings;
+import type { DeepPartial, FixedInstanceType } from "#utils";
+import type { AVMaster, AVSettings } from "#client/av/_module.d.mts";
 
 /**
  * An interface for an Audio/Video client which is extended to provide broadcasting functionality.
@@ -86,8 +84,9 @@ declare abstract class AVClient {
    * Obtain a mapping of available device sources for a given type.
    * @param kind - The type of device source being requested
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _getSourcesOfType(kind: MediaDeviceKind): Promise<Record<string, string>>;
+  protected _getSourcesOfType(kind: never): never;
 
   /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
@@ -160,6 +159,11 @@ declare abstract class AVClient {
    * @remarks The updateLocalStream() method must be defined by an AVClient subclass.
    */
   abstract updateLocalStream(): Promise<void>;
+}
+
+declare namespace AVClient {
+  type Implementation = FixedInstanceType<ImplementationClass>;
+  type ImplementationClass = CONFIG["WebRTC"]["clientClass"];
 }
 
 export default AVClient;

@@ -360,8 +360,8 @@ export interface SettingConfig {
     foundry.dice.Roll.Mode,
     foundry.dice.Roll.Mode
   >;
-  "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
-  "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
+  "core.rtcClientSettings": AVSettings.SchemaFields["client"];
+  "core.rtcWorldSettings": AVSettings.SchemaFields["world"];
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
 
   /**
