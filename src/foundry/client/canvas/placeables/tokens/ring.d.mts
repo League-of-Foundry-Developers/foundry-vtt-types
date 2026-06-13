@@ -11,7 +11,10 @@ declare class TokenRing {
   /** A `TokenRing` is constructed by providing a reference to a `Token` object. */
   constructor(token: Token.Implementation);
 
-  /** The effects which could be applied to a token ring (using bitwise operations) */
+  /**
+   * The effects which could be applied to a token ring (using bitwise operations)
+   * @remarks Frozen.
+   */
   static effects: Readonly<TokenRing.Effects>;
 
   /**
