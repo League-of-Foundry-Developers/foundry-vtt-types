@@ -248,7 +248,7 @@ declare namespace TokenLayer {
     interface AnyConstructor extends Identity<typeof AnyTokenLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["tokens"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.tokens.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ImplementationClass> {

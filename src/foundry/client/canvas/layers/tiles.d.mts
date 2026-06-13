@@ -119,7 +119,7 @@ declare namespace TilesLayer {
     interface AnyConstructor extends Identity<typeof AnyTilesLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["tiles"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.tiles.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ImplementationClass> {

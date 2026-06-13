@@ -8,7 +8,7 @@ import type { AllHooks as AH } from "#client/hooks.mjs";
 import type { WeatherEffects } from "#client/canvas/layers/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
-import type { Canvas } from "#client/canvas//_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * An abstract pattern for primary layers of the game canvas to implement

@@ -278,7 +278,10 @@ export interface SettingConfig {
     required: true;
     blank: false;
     initial: "round";
-    choices: { round: string; flat: string };
+    choices: {
+      round: "TEMPLATE.ConeTypeRound";
+      flat: "TEMPLATE.ConeTypeFlat";
+    };
   }>;
   "core.colorSchema": fields.StringField<{
     required: true;

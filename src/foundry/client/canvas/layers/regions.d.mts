@@ -120,7 +120,7 @@ declare namespace RegionLayer {
     interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["regions"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.regions.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ImplementationClass> {

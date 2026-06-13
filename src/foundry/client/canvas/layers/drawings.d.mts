@@ -96,7 +96,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   /**
    * Use an adaptive precision depending on the size of the grid
-   * @deprecated [No deprecation message provided] (since v12 until v14)
+   * @deprecated (since v12, until v14)
    */
   get gridPrecision(): 0 | 8 | 16;
 }
@@ -119,7 +119,7 @@ declare namespace DrawingsLayer {
     interface AnyConstructor extends Identity<typeof AnyDrawingsLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["drawings"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.drawings.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ImplementationClass> {

@@ -254,7 +254,7 @@ declare namespace ControlsLayer {
     interface AnyConstructor extends Identity<typeof AnyControlsLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["controls"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.controls.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends InteractionLayer.LayerOptions {

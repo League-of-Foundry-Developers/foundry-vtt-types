@@ -225,7 +225,7 @@ declare namespace SoundsLayer {
     interface AnyConstructor extends Identity<typeof AnySoundsLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["sounds"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.sounds.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
@@ -307,7 +307,7 @@ declare namespace SoundsLayer {
      * - There is a valid listener and
      * - That listener does not share coordinates with the sound and
      * - The sound is not explicitly constrained by walls and
-     * - There is a wall between the listener and the sound     *
+     * - There is a wall between the listener and the sound
      */
     muffled?: boolean | undefined;
 
