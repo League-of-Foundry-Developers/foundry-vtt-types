@@ -17,7 +17,7 @@ declare class RegionMesh extends PIXI.Container {
   /** The shader bound to this RegionMesh */
   get shader(): AbstractBaseShader.Any;
 
-  /** The blend mode assigned tot his RegionMesh */
+  /** The blend mode assigned to this RegionMesh */
   get blendMode(): PIXI.BLEND_MODES;
   set blendMode(value);
 
