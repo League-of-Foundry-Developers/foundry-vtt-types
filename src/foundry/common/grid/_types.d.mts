@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type BaseGrid from "./base.d.mts";
-import type HexagonalGrid from "./hexagonal.d.mts";
+import type { BaseGrid, HexagonalGrid, SquareGrid } from "#common/grid/_module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -10,7 +9,6 @@ import type HexagonalGrid from "./hexagonal.d.mts";
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
 type GridOffset2D = BaseGrid.Offset2D;
@@ -31,22 +29,22 @@ type HexagonalGridCoordinates3D = HexagonalGrid.Coordinates3D;
 
 type GridSnappingBehavior = BaseGrid.SnappingBehavior;
 
-type GridMeasurePathWaypointData2D = foundry.grid.BaseGrid.MeasurePathWaypoint2D;
+type GridMeasurePathWaypointData2D = BaseGrid.WaypointData<BaseGrid._AnyCoordinates2D>;
 
-type GridMeasurePathWaypointData3D = foundry.grid.BaseGrid.MeasurePathWaypoint3D;
+type GridMeasurePathWaypointData3D = BaseGrid.WaypointData<BaseGrid._AnyCoordinates3D>;
 
-type GridMeasurePathResultWaypoint = foundry.grid.BaseGrid.MeasurePathResultWaypoint;
+type GridMeasurePathResultWaypoint = BaseGrid.MeasurePathResultWaypoint;
 
-type GridMeasurePathResultSegment = foundry.grid.BaseGrid.MeasurePathResultSegment;
+type GridMeasurePathResultSegment = BaseGrid.MeasurePathResultSegment;
 
-type GridMeasurePathResult = foundry.grid.BaseGrid.MeasurePathResult;
+type GridMeasurePathResult = BaseGrid.MeasurePathResult;
 
-type GridMeasurePathCostFunction2D = BaseGrid.MeasurePathCostFunction2D;
+type GridMeasurePathCostFunction2D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
 
-type GridMeasurePathCostFunction3D = BaseGrid.MeasurePathCostFunction3D;
+type GridMeasurePathCostFunction3D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
 
 type GridConfiguration = BaseGrid.Configuration;
 
-type SquareGridConfiguration = unknown;
+type SquareGridConfiguration = HexagonalGrid.Configuration;
 
-type HexagonalGridConfiguration = unknown;
+type HexagonalGridConfiguration = SquareGrid.Configuration;
