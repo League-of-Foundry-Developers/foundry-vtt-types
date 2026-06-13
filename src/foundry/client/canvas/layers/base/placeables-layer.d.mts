@@ -25,7 +25,7 @@ import type { DialogV2 } from "#client/applications/api/_module.mjs";
  * @template DocumentName - The key of the configuration which defines the object and document class.
  * @template Options      - The type of the options in this layer.
  */
-declare abstract class PlaceablesLayer<out DocumentName extends Document.PlaceableType> extends InteractionLayer {
+declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> extends InteractionLayer {
   /**
    * Sort order for placeables belonging to this layer
    * @defaultValue `0`
