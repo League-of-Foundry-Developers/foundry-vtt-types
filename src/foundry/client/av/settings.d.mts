@@ -70,8 +70,8 @@ declare class AVSettings {
 
   /**
    * Schemas for world and client settings
-   * @privateRemarks This replaces itself with a property on first read. Since that property has getter-like write- and enumerability,
-   * it has been typed as the getter for ease of subclassing.
+   * @privateRemarks This replaces itself with a property on first read. Since that property is readonly and non-enumerable, exactly like a
+   * getter, it has just been typed as such.
    */
   static get schemaFields(): AVSettings.SchemaFields;
 

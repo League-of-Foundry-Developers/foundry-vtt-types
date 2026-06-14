@@ -59,21 +59,21 @@ declare class AVMaster {
   /**
    * @defaultValue `{ speaking: false, volumeHistories: [] }`
    * @internal
-   * @privateRemarks Defined during construction.
+   * @privateRemarks Defined during construction by simple assignment.
    */
   _speakingData: AVMaster.SpeakingData;
 
   /**
    * @defaultValue `0`
    * @internal
-   * @privateRemarks Defined during construction.
+   * @privateRemarks Defined during construction by simple assignment.
    */
   _pttMuteTimeout: number;
 
   /**
    * @defaultValue `3000`
    * @internal
-   * @privateRemarks Defined during construction.
+   * @privateRemarks Defined during construction by simple assignment.
    */
   _reconnectPeriodMS: number;
 
