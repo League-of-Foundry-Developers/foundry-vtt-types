@@ -46,7 +46,7 @@ const noteCallbacks = {
 const regionPermissions = {
   clickLeft(user: User.Implementation, event: MouseInteractionManager.Event<Region.Implementation>) {
     return (
-      !!this.shapes.length && // checking we know we're in a Region
+      !!this.document.regionShapes.length && // checking we know we're in a Region
       user.name.length > 2 && // using user for something
       event instanceof PIXI.FederatedEvent &&
       !!event.interactionData.destination &&

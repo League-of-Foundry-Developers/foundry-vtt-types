@@ -913,7 +913,7 @@ export type AnyConcreteConstructor = new (...args: never) => unknown;
  *
  * Do not use this type or {@linkcode MaybePromise} for the return
  * type of asynchronous methods on classes. For example for
- * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
+ * {@linkcode Document._preCreate | Document#_preCreate} the typing
  * should be `Promise<void>` and not this type. In theory we could use
  * {@linkcode MaybePromise} in this context as well but this seems
  * more likely to be confusing than to be helpful.
@@ -935,7 +935,7 @@ export type MustBePromise<T> = Promise<T>;
  * `Promise<T>`.
  *
  * This should generally not be used in asynchronous methods. For example in
- * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
+ * {@linkcode Document._preCreate | Document#_preCreate} the typing
  * is `Promise<void>` because it's declared as an async method. Overriding an
  * asynchronous method with a synchronous method is more confusing than
  * helpful.

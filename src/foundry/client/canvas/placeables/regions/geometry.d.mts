@@ -1,14 +1,15 @@
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
+import type { Identity } from "#utils";
 
 /**
  * The geometry of a {@linkcode Region}.
  * - Vertex Attribute: `aVertexPosition` (`vec2`)
- * - Draw Mode: `PIXI.DRAW_MODES.TRIANGLES`
+ * - Draw Mode: {@linkcode PIXI.DRAW_MODES.TRIANGLES}
  */
 declare class RegionGeometry extends PIXI.Geometry {
   /**
    * Create a RegionGeometry
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
   constructor(region: Region.Implementation);
 
@@ -17,20 +18,24 @@ declare class RegionGeometry extends PIXI.Geometry {
 
   /**
    * Update the buffers
-   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
+   * @internal
+   * @remarks Is exclusively called externally in `Region##updateShapes`
    */
-  protected _clearBuffers(): void;
+  _clearBuffers(): void;
 
   /**
    * Update the buffers
-   * @remarks Foundry marked `@internal`, is exclusively called externally in `Region##updateShapes`
+   * @internal
+   * @remarks Is exclusively called externally in `Region##updateShapes`
    */
-  protected _updateBuffers(): void;
+  _updateBuffers(): void;
+
+  #RegionGeometry: true;
 }
 
 declare namespace RegionGeometry {
   interface Any extends AnyRegionGeometry {}
-  type AnyConstructor = typeof AnyRegionGeometry;
+  interface AnyConstructor extends Identity<typeof AnyRegionGeometry> {}
 }
 
 declare abstract class AnyRegionGeometry extends RegionGeometry {

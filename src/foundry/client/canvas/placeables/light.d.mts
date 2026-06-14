@@ -1,10 +1,10 @@
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
-import type { FixedInstanceType, HandleEmptyObject, IntentionalPartial, NullishProps, RequiredProps } from "#utils";
-import type { PointLightSource, PointDarknessSource } from "#client/canvas/sources/_module.d.mts";
+import type { FixedInstanceType, HandleEmptyObject, InexactPartial, IntentionalPartial, RequiredProps } from "#utils";
+import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
-
-import Canvas = foundry.canvas.Canvas;
+import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
+import type { PointLightSource, PointDarknessSource } from "#client/canvas/sources/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { LightData } from "#client/data/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -16,10 +16,13 @@ declare module "#configuration" {
 
 /**
  * An AmbientLight is an implementation of PlaceableObject which represents a dynamic light source within the Scene.
- * @see {@linkcode AmbientLightDocument}
- * @see {@linkcode LightingLayer}
+ * @see {@linkcode foundry.documents.AmbientLightDocument}
+ * @see {@linkcode foundry.canvas.layers.LightingLayer}
  */
 declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implementation> {
+  // fake type override
+  static override get implementation(): AmbientLight.ImplementationClass;
+
   /**
    * The area that is affected by this light.
    * @defaultValue `undefined`
@@ -30,10 +33,10 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
   /**
    * A reference to the PointSource object which defines this light or darkness area of effect.
    * This is undefined if the AmbientLight does not provide an active source of light.
-   * @remarks This is not initialized to a value, but {@link AmbientLight._onCreate | `AmbientLight#_onCreate`}
-   * calls {@link AmbientLight.initializeLightSource | `AmbientLight#initializeLightSource`}, so it could be set immediately.
+   * @remarks This is not initialized to a value, but {@linkcode AmbientLight._onCreate | AmbientLight#_onCreate}
+   * calls {@linkcode AmbientLight.initializeLightSource | AmbientLight#initializeLightSource}, so it could be set immediately.
    *
-   * Set `undefined` in {@link AmbientLight._destroy | `AmbientLight#_destroy`}.
+   * Set `undefined` in {@linkcode AmbientLight._destroy | AmbientLight#_destroy}.
    */
   lightSource: PointLightSource.Implementation | PointDarknessSource.Implementation | undefined;
 
@@ -52,7 +55,7 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
   /**
    * A convenience accessor to the LightData configuration object
    */
-  get config(): foundry.data.LightData;
+  get config(): LightData;
 
   /**
    * Test whether a specific AmbientLight source provides global illumination
@@ -108,10 +111,10 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
-  protected override _draw(options: HandleEmptyObject<AmbientLight.DrawOptions>): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<AmbientLight.DrawOptions>): Promise<this>;
 
-  // fake override; super has to account for misbehaving siblings returning void
-  override clear(): this;
+  protected override _draw(options: HandleEmptyObject<AmbientLight.DrawOptions>): Promise<void>;
 
   protected override _applyRenderFlags(flags: AmbientLight.RenderFlags): void;
 
@@ -142,7 +145,10 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
 
   /**
    * Update the LightSource associated with this AmbientLight object.
-   * @param options - Options which modify how the source is updated
+   * Darkness sources always generate edges. Light sources only do so if their priority is strictly greater than 0.
+   * If any aspect changes (deletion, switching between darkness/light, or priority change), the source may be destroyed
+   * and recreated as needed, and relevant perception flags are set.
+   * @param options - Options which modify how the source is updated.
    */
   initializeLightSource(options?: AmbientLight.InitializeLightSourceOptions): void;
 
@@ -151,8 +157,19 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
    */
   protected _getLightSourceData(): AmbientLight.LightSourceData;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  protected override _onCreate(
+    data: AmbientLightDocument.CreateData,
+    options: AmbientLightDocument.Database.OnCreateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onUpdate(
+    changed: AmbientLightDocument.UpdateData,
+    options: AmbientLightDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
+
+  protected override _onDelete(options: AmbientLightDocument.Database.OnDeleteOptions, userId: string): void;
 
   protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
@@ -161,7 +178,6 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
   protected override _canDragLeftStart(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  // options: not null (destructured)
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
@@ -174,17 +190,18 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
   protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`AmbientLight#updateSource` has been deprecated in favor of {@link AmbientLight.initializeLightSource | `AmbientLight#initializeLightSource`}"
+   * @deprecated "`AmbientLight#updateSource` has been deprecated in favor of
+   * {@linkcode AmbientLight.initializeLightSource | AmbientLight#initializeLightSource}" (since v12, until v14)
    */
-  // options: not null (destructured)
   updateSource(options?: AmbientLight.InitializeLightSourceOptions): void;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`AmbientLight#source` has been deprecated in favor of {@link AmbientLight.lightSource | `AmbientLight#lightSource`}"
+   * @deprecated "`AmbientLight#source` has been deprecated in favor of {@linkcode AmbientLight.lightSource | AmbientLight#lightSource}"
+   * (since v12, until v14)
    */
   get source(): this["lightSource"];
+
+  #AmbientLight: true;
 }
 
 declare namespace AmbientLight {
@@ -237,26 +254,24 @@ declare namespace AmbientLight {
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
-  /**
-   * @internal
-   */
-  type _InitializeLightSourceOptions = NullishProps<{
+  /** @internal */
+  interface _InitializeLightSourceOptions {
     /**
      * Indicate that this SoundSource has been deleted.
      * @defaultValue `false`
      */
     deleted: boolean;
-  }>;
+  }
 
-  interface InitializeLightSourceOptions extends _InitializeLightSourceOptions {}
+  interface InitializeLightSourceOptions extends InexactPartial<_InitializeLightSourceOptions> {}
 
   /**
-   * @remarks {@link AmbientLight._getLightSourceData | `AmbientLight#_getLightSourceData`} calls `mergeObject` on the return of
-   * {@link foundry.data.LightData.toObject | `LightData#toObject(false)`} and the enumerated properties below and
-   * returns the result. This gets passed to {@link foundry.canvas.sources.PointLightSource.initialize | `AmbientLight#lightSource#initialize()`},
-   * so this is a `RequiredProps<IntentionalPartial<>>` rather than a `Pick<>`
+   * @remarks {@linkcode AmbientLight._getLightSourceData | AmbientLight#_getLightSourceData} calls `mergeObject` on the return of
+   * {@linkcode LightData.toObject | LightData#toObject(false)} and the enumerated properties below and returns the result. This gets passed
+   * to {@linkcode PointLightSource.initialize | AmbientLight#lightSource#initialize()}, so this is a `RequiredProps<IntentionalPartial<>>`
+   * rather than a `Pick<>`
    */
-  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<foundry.data.LightData.Schema> &
+  type LightSourceData = foundry.data.fields.SchemaField.InitializedData<LightData.Schema> &
     RequiredProps<
       IntentionalPartial<PointLightSource.SourceData>,
       "x" | "y" | "elevation" | "rotation" | "walls" | "vision" | "dim" | "bright" | "seed" | "disabled" | "preview"

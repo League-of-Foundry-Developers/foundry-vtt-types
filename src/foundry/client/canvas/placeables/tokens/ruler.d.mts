@@ -1,12 +1,13 @@
+import type { FixedInstanceType, Identity } from "#utils";
 import type { Ruler } from "#client/canvas/interaction/_module.d.mts";
-import type { Identity } from "#utils";
-import type { BaseTokenRuler } from "./_module.d.mts";
+import type { BaseTokenRuler } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
+import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 
 declare class TokenRuler extends BaseTokenRuler {
-  #TokenRuler: true;
-
   /**
    * A handlebars template used to render each waypoint label.
+   * @defaultValue `"templates/hud/waypoint-label.hbs"`
    */
   static WAYPOINT_LABEL_TEMPLATE: string;
 
@@ -65,22 +66,48 @@ declare class TokenRuler extends BaseTokenRuler {
    */
   protected _getGridHighlightStyle(
     waypoint: TokenRuler.Waypoint,
-    offset: foundry.grid.BaseGrid.Offset3D,
+    offset: BaseGrid.Offset3D,
   ): TokenRuler.GridHighlightStyle;
+
+  #TokenRuler: true;
 }
 
 declare namespace TokenRuler {
-  interface Any extends AnyTokenRuler {}
-  interface AnyConstructor extends Identity<typeof AnyTokenRuler> {}
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
+  type Any = Internal.Any;
+
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyTokenRuler {}
+    interface AnyConstructor extends Identity<typeof AnyTokenRuler> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["Token"]["rulerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface Outline {
+    /** The thickness in pixels */
     thickness: number;
+
     color: PIXI.ColorSource;
   }
 
   interface DashLine {
+    /** @remarks Dash length in pixels. */
     dash: number;
+
+    /** @remarks Gap length in pixels. */
     gap: number;
+
+    /** @remarks In pixels per second. */
     speed: number;
   }
 
@@ -97,6 +124,7 @@ declare namespace TokenRuler {
 
     /**
      * Movement planned by Users
+     * @remarks Keys are User IDs.
      */
     plannedMovement: Record<string, TokenDocument.PlannedMovement>;
   }
@@ -130,10 +158,10 @@ declare namespace TokenRuler {
     };
 
     /** The ray from the center point of previous to the center point of this waypoint, or null if there is no previous waypoint. */
-    ray: foundry.canvas.geometry.Ray | null;
+    ray: Ray | null;
 
     /** The measurements at this waypoint. */
-    measurement: foundry.grid.BaseGrid.MeasurePathResultWaypoint;
+    measurement: BaseGrid.MeasurePathResultWaypoint;
 
     /** The previous waypoint, if any. */
     previous: Waypoint | null;
@@ -146,15 +174,16 @@ declare namespace TokenRuler {
    * @remarks This is not intended to be mutated, so foundry has marked it DeepReadonly,
    * but there's no programmatic block on mutation
    */
-  type Waypoint = Omit<TokenDocument.MeasuredMovementWaypoint, "movementId"> & WaypointData;
+  interface Waypoint extends Omit<TokenDocument.MeasuredMovementWaypoint, "movementId">, WaypointData {}
 
   /**
    * @remarks Intended to be extended by subclasses that need to track additional info between waypoints
    * Importantly, this is *not* saved to the token's movement data, instead it is merely mutated locally.
    */
   interface State {
-    hasElevation: boolean;
-    previousElevation: number;
+    initialized?: boolean | undefined;
+    hasElevation?: boolean | undefined;
+    previousElevation?: number;
   }
 
   /**

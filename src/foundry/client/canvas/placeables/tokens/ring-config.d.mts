@@ -1,12 +1,16 @@
-import type { InitializedOn, RequiredProps } from "#utils";
+import type { Identity, InitializedOn, RequiredProps } from "#utils";
 import type DynamicRingData from "./ring-data.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type { AllHooks } from "#client/hooks.d.mts";
 
 /**
  * Token Ring configuration Singleton Class.
  *
- * @example Add a new custom ring configuration. Allow only ring pulse, ring gradient and background wave effects.
+ * @example
+ * Add a new custom ring configuration. Allow only ring pulse, ring gradient and background wave effects.
  * ```js
- * const customConfig = new foundry.canvas.tokens.DynamicRingData({
+ * const customConfig = new foundry.canvas.placeables.tokens.DynamicRingData({
  *   id: "myCustomRingId",
  *   label: "Custom Ring",
  *   effects: {
@@ -23,19 +27,22 @@ import type DynamicRingData from "./ring-data.d.mts";
  * CONFIG.Token.ring.addConfig(customConfig.id, customConfig);
  * ```
  *
- * @example Get a specific ring configuration
+ * @example
+ * Get a specific ring configuration
  * ```js
  * const config = CONFIG.Token.ring.getConfig("myCustomRingId");
  * console.log(config.spritesheet); // Output: canvas/tokens/myCustomRings.json
  * ```
  *
- * @example Use a specific ring configuration
+ * @example
+ * Use a specific ring configuration
  * ```js
  * const success = CONFIG.Token.ring.useConfig("myCustomRingId");
  * console.log(success); // Output: true
  * ```
  *
- * @example Get the labels of all configurations
+ * @example
+ * Get the labels of all configurations
  * ```js
  * const configLabels = CONFIG.Token.ring.configLabels;
  * console.log(configLabels);
@@ -47,16 +54,18 @@ import type DynamicRingData from "./ring-data.d.mts";
  * // }
  * ```
  *
- * @example Get the IDs of all configurations
+ * @example
+ * Get the IDs of all configurations
  * ```js
  * const configIDs = CONFIG.Token.ring.configIDs;
  * console.log(configIDs); // Output: ["coreSteel", "coreBronze", "myCustomRingId"]
  * ```
  *
- * @example Create a hook to add a custom token ring configuration. This ring configuration will appear in the settings.
+ * @example
+ * Create a hook to add a custom token ring configuration. This ring configuration will appear in the settings.
  * ```js
  * Hooks.on("initializeDynamicTokenRingConfig", ringConfig => {
- *   const mySuperPowerRings = new foundry.canvas.tokens.DynamicRingData({
+ *   const mySuperPowerRings = new foundry.canvas.placeables.tokens.DynamicRingData({
  *     id: "myCustomRingId",
  *     label: "My Super Power Rings",
  *     effects: {
@@ -70,7 +79,8 @@ import type DynamicRingData from "./ring-data.d.mts";
  * });
  * ```
  *
- * @example Activate color bands debugging visuals to ease configuration
+ * @example
+ * Activate color bands debugging visuals to ease configuration
  * ```js
  * CONFIG.Token.ring.debugColorBands = true;
  * ```
@@ -82,11 +92,12 @@ declare class TokenRingConfig {
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
-   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@linkcode DynamicRingData} constructor, leading to, for example,
+   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a
+   * {@linkcode DynamicRingData} constructor, leading to, for example,
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@linkcode TokenRingConfig.initialize | initialize} has been called, which happens between the `setup` and `ready` hooks
    */
   static CORE_TOKEN_RINGS: TokenRingConfig.CoreTokenRings;
 
@@ -97,7 +108,7 @@ declare class TokenRingConfig {
 
   /**
    * Register the token ring config and initialize it
-   * @remarks Calls the {@link Hooks.StaticCallbacks.initializeDynamicTokenRingConfig | `initializeDynamicTokenRingConfig`} hook via {@linkcode Hooks.callAll}
+   * @remarks Calls the {@linkcode AllHooks.initializeDynamicTokenRingConfig | initializeDynamicTokenRingConfig} hook.
    */
   static initialize(): void;
 
@@ -107,8 +118,9 @@ declare class TokenRingConfig {
   /**
    * A mapping of token subject paths where modules or systems have configured subject images.
    * @defaultValue `{}`
-   * @remarks Not directly used anywhere in this class, essentially just a global cache. The system's `flags.tokenRingSubjectMappings`, if any, get assigned here in {@link Game.initializeConfig | `Game#initializeConfig`},
-   * and they're read in {@link TokenDocument._inferRingSubjectTexture | `TokenDocument#_inferRingSubjectTexture`}
+   * @remarks Not directly used anywhere in this class, essentially just a global cache. The system's `flags.tokenRingSubjectMappings`,
+   * if any, get assigned here in {@linkcode Game.initializeConfig | Game#initializeConfig}, and they're read in
+   * {@linkcode TokenDocument._inferRingSubjectTexture | TokenDocument#_inferRingSubjectTexture}.
    */
   subjectPaths: Record<string, string>;
 
@@ -152,24 +164,25 @@ declare class TokenRingConfig {
 
   /**
    * Add a new ring configuration.
-   * @param id      - The id of the ring configuration.
-   * @param config  - The configuration object for the ring.
-   * @throws If called outside a callback for the {@link Hooks.StaticCallbacks.initializeDynamicTokenRingConfig | `initializeDynamicTokenRingConfig`} hook
-   * @remarks The actual error thrown incorrectly refers to a non-existent `registerDynamicTokenRing` hook
+   * @param id     - The id of the ring configuration.
+   * @param config - The configuration object for the ring.
+   * @remarks
+   * @throws If called outside a callback for the {@linkcode AllHooks.initializeDynamicTokenRingConfig | initializeDynamicTokenRingConfig}
+   * hook.
    */
   addConfig(id: string, config: DynamicRingData): void;
 
   /**
    * Get a ring configuration.
-   * @param id  - The id of the ring configuration.
-   * @returns   - The ring configuration object.
+   * @param id - The id of the ring configuration.
+   * @returns  - The ring configuration object.
    */
   getConfig(id: string): DynamicRingData;
 
   /**
    * Use a ring configuration.
-   * @param id  - The id of the ring configuration to use.
-   * @returns   - True if the configuration was successfully set, false otherwise.
+   * @param id - The id of the ring configuration to use.
+   * @returns  - True if the configuration was successfully set, false otherwise.
    */
   useConfig(id: string): boolean;
 
@@ -180,17 +193,15 @@ declare class TokenRingConfig {
   get configLabels(): Record<string, string>;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "TokenRingConfig#configNames is deprecated and replaced by TokenRingConfig#configIDs"
-   *
-   * Foundry comment claims deprecated since v11 - possibly a dnd5e-implementation-related deprecation?
+   * @deprecated "`TokenRingConfig#configNames` is deprecated and replaced by
+   * {@linkcode TokenRingConfig.configIDs | TokenRingConfig#configIDs}" (since v12, until v14)
    */
   get configNames(): string[];
 }
 
 declare namespace TokenRingConfig {
   interface Any extends AnyTokenRingConfig {}
-  type AnyConstructor = typeof AnyTokenRingConfig;
+  interface AnyConstructor extends Identity<typeof AnyTokenRingConfig> {}
 
   /** Token ring fit modes for dynamic token ring visualization */
   interface RingFitMode {
@@ -214,7 +225,7 @@ declare namespace TokenRingConfig {
 
   /**
    * @remarks The type of any given {@linkcode TokenRingConfig.CORE_TOKEN_RINGS} entry prior to
-   * {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} being called between the `setup` and `ready` hooks; Plain objects at this point
+   * {@linkcode TokenRingConfig.initialize | TokenRingConfig#initialize} being called between the `setup` and `ready` hooks; Plain objects at this point
    */
   interface InitialCoreRingData extends Required<Pick<SourceCoreRingData, "id" | "label" | "spritesheet">> {}
 
@@ -226,7 +237,8 @@ declare namespace TokenRingConfig {
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@linkcode TokenRingConfig.initialize | TokenRingConfig#initialize} has been called,
+   * which happens between the `setup` and `ready` hooks.
    */
   interface SourceCoreRingData extends foundry.data.fields.SchemaField.SourceData<DynamicRingData.Schema> {}
 
@@ -241,11 +253,13 @@ declare namespace TokenRingConfig {
    * Core token rings used in Foundry VTT.
    * Each key is a string identifier for a ring, and the value is an object containing the ring's data.
    * This object is frozen to prevent any modifications.
-   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a {@linkcode DynamicRingData} constructor, leading to, for example,
+   * @remarks The outer object is frozen, but the individual rings' data isn't, and that object gets passed into a
+   * {@linkcode DynamicRingData} constructor, leading to, for example,
    * ```js
    * CONFIG.Token.ring.getConfig("coreSteel")._source === TokenRingConfig.CORE_TOKEN_RINGS.coreSteel
    * ```
-   * after {@link TokenRingConfig.initialize | `TokenRingConfig#initialize`} has been called, which happens between the `setup` and `ready` hooks
+   * after {@linkcode TokenRingConfig.initialize | TokenRingConfig#initialize} has been called,
+   * which happens between the `setup` and `ready` hooks.
    */
   type CoreTokenRings = InitializedOn<SourceCoreRings, "ready", MaybeCoreRings>;
 }
