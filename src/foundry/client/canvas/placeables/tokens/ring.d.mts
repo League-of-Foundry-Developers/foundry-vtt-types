@@ -256,7 +256,7 @@ declare namespace TokenRing {
     /**
      * A duration in milliseconds over which the animation should occur
      * @defaultValue `1600`
-     * @remarks **and maximum** changes to `1000`
+     * @remarks **and minimum** changes to `1000`
      */
     duration?: number;
 
