@@ -181,8 +181,8 @@ declare namespace TokenRuler {
    * Importantly, this is *not* saved to the token's movement data, instead it is merely mutated locally.
    */
   interface State {
-    initialized?: boolean;
-    hasElevation?: boolean;
+    initialized?: boolean | undefined;
+    hasElevation?: boolean | undefined;
     previousElevation?: number;
   }
 
