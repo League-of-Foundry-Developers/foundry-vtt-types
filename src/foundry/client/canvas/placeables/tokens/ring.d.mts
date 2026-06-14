@@ -256,7 +256,7 @@ declare namespace TokenRing {
     /**
      * A duration in milliseconds over which the animation should occur
      * @defaultValue `1600`
-     * @remarks **and minimum** changes to `1000`
+     * @remarks If photosensitive mode is active, this gets `Math.max(1000, duration)`ed, preventing flashes faster than 1 second.
      */
     duration?: number;
 
