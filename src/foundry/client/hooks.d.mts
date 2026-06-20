@@ -359,7 +359,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode Canvas.pan | Canvas#pan}
    * @see {@linkcode Canvas.animatePan | Canvas#animatePan}
    */
-  canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
+  canvasPan: (canvas: Canvas, view: Canvas.PartialViewPosition) => void;
 
   /**
    * A hook event that fires when the Canvas is ready.
@@ -827,11 +827,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context            - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  dealCards: (
-    origin: Cards.Implementation,
-    destinations: Cards.Implementation[],
-    context: Cards.DealContext,
-  ) => boolean | void;
+  dealCards: (origin: Cards.Stored, destinations: Cards.Stored[], context: Cards.DealContext) => boolean | void;
 
   /**
    * A hook event that fires when Cards are passed from one stack to another
@@ -840,11 +836,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context     - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  passCards: (
-    origin: Cards.Implementation,
-    destination: Cards.Implementation,
-    context: Cards.PassContext,
-  ) => boolean | void;
+  passCards: (origin: Cards.Stored, destination: Cards.Stored, context: Cards.PassContext) => boolean | void;
 
   /**
    * A hook event that fires when a stack of Cards are returned to the decks they originally came from.
@@ -1198,7 +1190,6 @@ export interface AllHooks extends DynamicHooks {
    * @param settings - The AVSettings manager
    * @param changed  - The delta of the settings that have been changed
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@linkcode AVSettings._onSettingsChanged | AVSettings#_onSettingsChanged}
    */
   rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
@@ -1438,7 +1429,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
-      data: PlaceableObject.PasteObjectReturn<P["document"]>,
+      data: Document.SourceForName<P["document"]["documentName"]>,
       options: Hooks.PastePlaceableObjectOptions,
     ) => boolean | void;
 

@@ -46,16 +46,16 @@ describe("InterfaceCanvasGroup tests", () => {
 
   test("Layers", () => {
     expectTypeOf(myInterfaceGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"interface">>();
-    expectTypeOf(myInterfaceGroup.grid).toEqualTypeOf<layers.GridLayer.Any>();
-    expectTypeOf(myInterfaceGroup.regions).toEqualTypeOf<layers.RegionLayer.Any>();
-    expectTypeOf(myInterfaceGroup.drawings).toEqualTypeOf<layers.DrawingsLayer.Any>();
-    expectTypeOf(myInterfaceGroup.templates).toEqualTypeOf<layers.TemplateLayer.Any>();
-    expectTypeOf(myInterfaceGroup.tiles).toEqualTypeOf<layers.TilesLayer.Any>();
-    expectTypeOf(myInterfaceGroup.walls).toEqualTypeOf<layers.WallsLayer.Any>();
-    expectTypeOf(myInterfaceGroup.tokens).toEqualTypeOf<layers.TokenLayer.Any>();
-    expectTypeOf(myInterfaceGroup.sounds).toEqualTypeOf<layers.SoundsLayer.Any>();
-    expectTypeOf(myInterfaceGroup.lighting).toEqualTypeOf<layers.LightingLayer.Any>();
-    expectTypeOf(myInterfaceGroup.notes).toEqualTypeOf<layers.NotesLayer.Any>();
+    expectTypeOf(myInterfaceGroup.grid).toEqualTypeOf<layers.GridLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.regions).toEqualTypeOf<layers.RegionLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.drawings).toEqualTypeOf<layers.DrawingsLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.templates).toEqualTypeOf<layers.TemplateLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.tiles).toEqualTypeOf<layers.TilesLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.walls).toEqualTypeOf<layers.WallsLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.tokens).toEqualTypeOf<layers.TokenLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.sounds).toEqualTypeOf<layers.SoundsLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.lighting).toEqualTypeOf<layers.LightingLayer.Implementation>();
+    expectTypeOf(myInterfaceGroup.notes).toEqualTypeOf<layers.NotesLayer.Implementation>();
     expectTypeOf(myInterfaceGroup.controls).toEqualTypeOf<layers.ControlsLayer.Implementation>();
   });
 

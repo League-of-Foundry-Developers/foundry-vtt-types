@@ -1,6 +1,8 @@
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
+import Token = foundry.canvas.placeables.Token;
+
 expectTypeOf(new ChatMessage.implementation()).toEqualTypeOf<ChatMessage.Implementation>();
 expectTypeOf(new ChatMessage.implementation({})).toEqualTypeOf<ChatMessage.Implementation>();
 
@@ -27,6 +29,9 @@ declare module "fvtt-types/configuration" {
   }
 }
 
+declare const tokenDoc: TokenDocument.Stored;
+declare const token: Token.Implementation;
+
 test("Regression test for CONFIG.Dice.rollModes as choices", () => {
   new foundry.data.fields.StringField({
     blank: true,
@@ -51,17 +56,14 @@ if (game instanceof Game) {
     ChatMessage.getSpeaker({
       scene: game.scenes?.active,
       actor: game.user?.character,
-      token: new TokenDocument.implementation(),
-      alias: "Mario",
+      token: token,
     }),
   ).toEqualTypeOf<ChatMessage.SpeakerData>();
 }
-expectTypeOf(
-  ChatMessage.getSpeaker({ token: new TokenDocument.implementation() }),
-).toEqualTypeOf<ChatMessage.SpeakerData>();
+expectTypeOf(ChatMessage.getSpeaker({ token: tokenDoc })).toEqualTypeOf<ChatMessage.SpeakerData>();
 expectTypeOf(ChatMessage.getSpeaker({ alias: "Mario" })).toEqualTypeOf<ChatMessage.SpeakerData>();
 
-expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor.Implementation | null>();
+expectTypeOf(ChatMessage.getSpeakerActor(ChatMessage.getSpeaker())).toEqualTypeOf<Actor.Stored | null>();
 expectTypeOf(ChatMessage.getWhisperRecipients("Mario")).toEqualTypeOf<User.Stored[]>();
 
 const chat = new ChatMessage.implementation();

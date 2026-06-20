@@ -56,7 +56,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   /**
    * @remarks
-   * @throws If `data` fails `BaseDrawing.#validateVisibleContent` validation (must have some visible text, fill, *or* line)
+   * @throws If `data` fails {@linkcode BaseDrawing._validateVisibleContent} validation (must have some visible text, fill, *or* line)
    */
   static override validateJoint(data: BaseDrawing.Source): void;
 
@@ -79,8 +79,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "You are accessing `z` which has been migrated to `elevation`"
+   * @deprecated "You are accessing `z` which has been migrated to `elevation`" (since v12, until v14)
    */
   get z(): this["elevation"];
 

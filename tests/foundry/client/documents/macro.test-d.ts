@@ -12,7 +12,7 @@ const testEffect = new ActiveEffect.implementation({ name: "Test Effect" });
 
 const anyMacro = new Macro.implementation<Macro.SubType>({ name: "my macro", scope: "global", type: "script" });
 expectTypeOf(anyMacro.execute()).toEqualTypeOf<
-  Promise<ChatMessage.Implementation | undefined | void> | Promise<unknown> | void
+  Promise<ChatMessage.Stored | undefined | void> | Promise<unknown> | void
 >();
 
 const script = new Macro.implementation({ name: "my macro", scope: "global", type: "script" });

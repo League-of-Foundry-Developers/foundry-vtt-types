@@ -5,7 +5,10 @@ declare class FullCanvasObject {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  /** @remarks Overrides the mixed PIXI class's method, see {@linkcode PIXI.DisplayObject.calculateBounds | PIXI.DisplayObject#calculateBounds} */
+  /**
+   * @remarks Overrides the mixed PIXI class's method, see
+   * {@linkcode PIXI.DisplayObject.calculateBounds | PIXI.DisplayObject#calculateBounds}
+   */
   calculateBounds(): void;
 }
 

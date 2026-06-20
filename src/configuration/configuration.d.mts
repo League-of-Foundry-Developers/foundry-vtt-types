@@ -274,7 +274,15 @@ export interface SettingConfig {
   "core.combatTrackerConfig": fields.SchemaField<foundry.data.CombatConfiguration.ConfigSettingSchema>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
-  "core.coneTemplateType": "round" | "flat";
+  "core.coneTemplateType": fields.StringField<{
+    required: true;
+    blank: false;
+    initial: "round";
+    choices: {
+      round: "TEMPLATE.ConeTypeRound";
+      flat: "TEMPLATE.ConeTypeFlat";
+    };
+  }>;
   "core.colorSchema": fields.StringField<{
     required: true;
     blank: true;
@@ -311,13 +319,13 @@ export interface SettingConfig {
     initial: NonNullable<typeof game.i18n>["lang"];
     choices: typeof CONFIG.supportedLanguages;
   }>;
-  "core.leftClickRelease": fields.BooleanField<{ initial: true }>;
+  "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
   "core.maxFPS": fields.NumberField<{ required: true; min: 10; max: 60; step: 10; initial: 60 }>;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;
-  "core.notesDisplayToggle": boolean;
+  "core.notesDisplayToggle": fields.BooleanField<{ initial: true }>;
   "core.nue.shownTips": boolean;
   "core.performanceMode": fields.NumberField<{
     required: true;
@@ -352,8 +360,8 @@ export interface SettingConfig {
     foundry.dice.Roll.Mode,
     foundry.dice.Roll.Mode
   >;
-  "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
-  "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
+  "core.rtcClientSettings": AVSettings.SchemaFields["client"];
+  "core.rtcWorldSettings": AVSettings.SchemaFields["world"];
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
 
   /**

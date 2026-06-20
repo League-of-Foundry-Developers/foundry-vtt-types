@@ -10,7 +10,7 @@ expectTypeOf(combatant.parent).toEqualTypeOf<Combat.Implementation>();
 expectTypeOf(combatant.combat).toEqualTypeOf<Combat.Implementation | null>();
 expectTypeOf(combatant.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(combatant.token).toEqualTypeOf<TokenDocument.Implementation | null>();
-expectTypeOf(combatant.players).toEqualTypeOf<User.Implementation[]>();
+expectTypeOf(combatant.players).toEqualTypeOf<User.Stored[]>();
 expectTypeOf(combatant.isDefeated).toEqualTypeOf<boolean>();
 
 declare const user: User.Implementation;

@@ -51,7 +51,7 @@ declare class JournalPageSheet<
 
   override get title(): string;
 
-  toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  toc: JournalEntryPage.TOC;
 
   override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<JournalPageSheet.Data>>;
 

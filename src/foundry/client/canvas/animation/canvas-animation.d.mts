@@ -134,7 +134,8 @@ declare namespace CanvasAnimation {
   ) => void;
 
   /**
-   * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take
+   * `CanvasAnimation.AnimationData<this>`
    * @internal
    */
   type _AnimateOptions<AnimationParent extends object = object> = InexactPartial<{
@@ -160,7 +161,8 @@ declare namespace CanvasAnimation {
      * A priority in {@linkcode PIXI.UPDATE_PRIORITY} which defines when the animation
      * should be evaluated related to others
      * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.LOW}`+ 1`
-     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due to the Branded enum
+     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be
+     * cast `as PIXI.UPDATE_PRIORITY` due to the `Brand`ed enum.
      */
     priority: PIXI.UPDATE_PRIORITY;
 

@@ -173,7 +173,7 @@ declare namespace TileDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode TileDocument}. This is the source of truth for how an TileDocument document
+   * The schema for {@linkcode TileDocument}. This is the source of truth for how a `TileDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TileDocument}. For example
@@ -952,8 +952,7 @@ declare namespace TileDocument {
   interface CoreFlags {
     core?: {
       /**
-       * @deprecated since v12, until 14
-       * @remarks "Tiling Sprites are deprecated without replacement."
+       * @deprecated "Tiling Sprites are deprecated without replacement." (since v12, until 14)
        */
       isTilingSprite?: boolean;
 
@@ -1019,6 +1018,10 @@ declare namespace TileDocument {
     TileDocument.Stored,
     Config
   >;
+
+  /* ***********************************************
+   *              TILE-SPECIFIC TYPES              *
+   *************************************************/
 
   /**
    * The arguments to construct the document.

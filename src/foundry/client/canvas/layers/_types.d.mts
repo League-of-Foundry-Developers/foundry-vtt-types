@@ -9,7 +9,7 @@
 
 export {};
 
-type AmbientSoundPlaybackConfig = foundry.canvas.layers.SoundsLayer.AmbientSoundPlaybackConfig;
+type AmbientSoundPlaybackConfig = foundry.canvas.layers.SoundsLayer.PlaybackConfig;
 
 type CanvasHistoryEvent<DocumentName extends foundry.abstract.Document.PlaceableType> =
   foundry.canvas.layers.PlaceablesLayer.HistoryEntry<DocumentName>;
