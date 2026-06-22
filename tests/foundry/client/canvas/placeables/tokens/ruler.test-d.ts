@@ -173,7 +173,7 @@ declare namespace DrawSteelTokenRuler {
 declare const _testRuler: DrawSteelTokenRuler;
 declare const token: Token.Implementation;
 declare const mmw: TokenDocument.MeasuredMovementWaypoint;
-declare const pm: TokenDocument.PlannedMovement;
+declare const pm: Token.PlannedMovement;
 
 const rulerWaypoint = {
   action: "displace",

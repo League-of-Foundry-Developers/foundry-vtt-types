@@ -32,7 +32,7 @@ type TokenTerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
 type TokenRulerData = foundry.canvas.placeables.tokens.TokenRuler.Data;
 
-type TokenPlannedMovement = unknown;
+type TokenPlannedMovement = Token.PlannedMovement;
 
 type TokenRulerWaypointData = foundry.canvas.placeables.tokens.TokenRuler.WaypointData;
 

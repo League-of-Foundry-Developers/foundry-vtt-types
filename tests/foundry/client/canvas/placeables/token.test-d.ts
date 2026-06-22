@@ -31,6 +31,7 @@ expectTypeOf(token.targetPips).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(token.nameplate).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(token.ruler).toEqualTypeOf<foundry.canvas.placeables.tokens.BaseTokenRuler | null | undefined>();
 expectTypeOf(token.turnMarker).toEqualTypeOf<foundry.canvas.placeables.tokens.TokenTurnMarker | null>();
+expectTypeOf(token["_plannedMovement"]).toEqualTypeOf<Record<string, Token.PlannedMovement>>();
 expectTypeOf(token.targeted).toEqualTypeOf<Set<User.Stored>>();
 expectTypeOf(token.mesh).toEqualTypeOf<PrimarySpriteMesh | undefined>();
 

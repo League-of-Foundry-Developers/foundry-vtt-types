@@ -53,7 +53,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   /**
    * The shape of this token.
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to {@link Token._refreshShape | `Token#_refreshShape`} being called.     *
+   * @remarks Only `undefined` prior to {@link Token._refreshShape | `Token#_refreshShape`} being called.
    */
   shape: PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | PIXI.Ellipse | undefined;
 
@@ -74,18 +74,18 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   border: PIXI.Graphics | undefined;
 
   /**
-   * The attribute bars of this Token.
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw
-   */
-  bars: Token.Bars | undefined;
-
-  /**
    * The effects icons of temporary ActiveEffects that are applied to the Actor of this Token.
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw
    */
   effects: PIXI.Container | undefined;
+
+  /**
+   * The attribute bars of this Token.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw
+   */
+  bars: Token.Bars | undefined;
 
   /**
    * The tooltip text of this Token, which contains its elevation.
@@ -123,11 +123,10 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   ruler: BaseTokenRuler | null | undefined;
 
   /**
-   * The Turn Marker of this Token.
-   * Only a subset of Token objects have a turn marker at any given time.
-   * @defaultValue `null`
+   * The ruler data.
+   * @defaultValue `{}`
    */
-  turnMarker: TokenTurnMarker | null;
+  protected _plannedMovement: Record<string, Token.PlannedMovement>;
 
   /**
    * Track the set of User documents which are currently targeting this Token
@@ -181,12 +180,19 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   light: sources.PointLightSource.Implementation | sources.PointDarknessSource.Implementation | undefined;
 
   /**
+   * The Turn Marker of this Token.
+   * Only a subset of Token objects have a turn marker at any given time.
+   * @defaultValue `null`
+   */
+  turnMarker: TokenTurnMarker | null;
+
+  /**
    * The current animations of this Token.
    */
   get animationContexts(): Map<string, Token.AnimationContext>;
 
   /**
-   * The animation name used for Token movement
+   * The general animation name used for this Token.
    * @defaultValue
    * ```js
    * `${this.objectId}.animate`
@@ -499,8 +505,6 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Get the Color used to represent the disposition of this Token.
-   * @returns The hex color representing the Token's disposition
-   * @remarks Colors sourced from `CONFIG.Canvas.dispositionColors`
    */
   getDispositionColor(): number;
 
@@ -514,9 +518,8 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Draw the targeting arrows around this token.
-   * @param reticule - Additional parameters to configure how the targeting reticule is drawn.
+   * @param reticule - Additional parameters to configure how the targeting reticule is drawn. (default: `{}`)
    */
-  // reticule: not null (destructured)
   protected _drawTargetArrows(reticule?: Token.ReticuleOptions): void;
 
   /**
@@ -733,7 +736,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    *
    * The result of this function must not be affected by the animation of this Token.
    * @param waypoints - The waypoints of movement
-   * @param options   - Additional options
+   * @param options   - Additional options (default: `{}`)
    * @returns The (constrained) path of movement and a boolean that is true if and only if the path was constrained.
    * If it wasn't constrained, then a copy of the path of all given waypoints with all default values filled in
    * is returned.
@@ -761,15 +764,17 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * This function adds intermediate waypoints pre/post enter and exit for a {@link Region} if the Region
-   * has at least one Behavior that could affect the movement. For each segment of the movement path the
-   * terrain data is created from all behaviors that could affect the movement of this Token.
+   * has at least one Behavior that could affect the movement, which is determined by
+   * `foundry.data.regionBehaviors.RegionBehaviorType#_getTerrainEffects`.
+   * For each segment of the movement path the terrain data is created from all behaviors that
+   * could affect the movement of this Token with `CONFIG.Token.movement.TerrainData.resolveTerrainEffects`.
+   * This terrain data is included in the returned regionalized movement path.
    * This terrain data may then be used in {@link Token._getMovementCostFunction | `Token#_getMovementCostFunction`}
    * and {@link Token.constrainMovementPath | `Token#constrainMovementPath`}.
    * @param waypoints - The waypoints of movement
-   * @param options   - Additional options
+   * @param options   - Additional options (default: `{}`)
    * @returns The movement path with terrain data
    */
-  // options: not null (destructured)
   createTerrainMovementPath(
     waypoints: Token.GetTerrainMovementPathWaypoint[],
     options?: Token.CreateTerrainMovementPathOptions,
@@ -823,10 +828,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Set this Token as an active target for the current game User.
-   * @param targeted - Is the Token now targeted?
-   * @param options  - Additional options which modify how targets are acquired.
+   * @param targeted - Is the Token now targeted? (default: `true`)
+   * @param options  - Additional option which modify how targets are acquired (default: `{}`)
    */
-  // targeted: not null (!== check with a boolean), options: not null (destructured)
   setTarget(targeted?: boolean, options?: Token.TargetContext): void;
 
   /**
@@ -850,6 +854,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * Create the BaseTokenRuler instance for this Token, if any.
+   * This function is called when the Token is drawn for the first time.
    */
   protected _initializeRuler(): BaseTokenRuler | null;
 
@@ -926,7 +931,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected _initializeDragLeft(event: Canvas.Event.Pointer): void;
+  protected override _initializeDragLeft(event: Canvas.Event.Pointer): void;
 
   protected _getDragConstrainOptions(): Token.DragConstrainOptions;
 
@@ -943,6 +948,11 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
+  /**
+   * Update the destinations of the drag previews and rulers
+   * @param point   - The (unsnapped) center point of the waypoint
+   * @param options - Additional options (default: `{}`)
+   */
   protected _updateDragDestination(point: Canvas.Point, options?: Token.DragWaypointPositionOptions): void;
 
   protected _onDragClickLeft(event: Canvas.Event.Pointer): void;
@@ -951,8 +961,17 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected _onDragClickRight(event: Canvas.Event.Pointer): void;
 
+  /**
+   * Change the elevation of the dragged Tokens.
+   * @param delta   - The number vertical steps
+   * @param options - Additional options (default: `{}`)
+   */
   protected _changeDragElevation(delta: number, options?: Token.ChangeDragElevationOptions): void;
 
+  /**
+   * Get the drag waypoint position.
+   * @param options - Additional options (default: `{}`)
+   */
   protected _getDragWaypointPosition(
     current: Pick<TokenDocument.Position, "x" | "y" | "elevation">,
     changes: InexactPartial<Canvas.ElevatedPoint>,
@@ -1017,11 +1036,13 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   /**
    * @deprecated since v13, until v14
-   * @remarks "`Token#target` is deprecated and has been split into two new graphics objects:
+   * @remarks "`Token#target` is deprecated and has been split into two new graphics object:
    * {@link Token.targetArrows | `targetArrows`} and {@link Token.targetPips | `targetPips`}.
-   * `targetArrows` is returned by this deprecated property."
+   * `targetArrows` is returned by the deprecated target property."
    */
   get target(): PIXI.Graphics | undefined;
+
+  #Token: true;
 }
 
 declare namespace Token {
@@ -1503,16 +1524,6 @@ declare namespace Token {
    */
   type DragLeftDropReturn = [updates: Token.DragLeftDropUpdate[], operation: Token.DragLeftDropOperation];
 
-  /** @internal */
-  type _RefreshHUDOptions = NullishProps<{
-    bars: boolean;
-    border: boolean;
-    elevation: boolean;
-    nameplate: boolean;
-    effects: boolean;
-  }>;
-  interface RefreshHUDOptions extends _RefreshHUDOptions {}
-
   interface MeasureMovementPathOptions {
     /**
      * Measure a preview path?
@@ -1703,9 +1714,22 @@ declare namespace Token {
 
   type DragConstrainOptions = Omit<Token.ConstrainMovementPathOptions, "preview" | "history">;
 
-  interface DragWaypointPositionOptions extends InexactPartial<{ snap: boolean }> {}
+  interface DragWaypointPositionOptions extends InexactPartial<{
+    /**
+     * Snap the destination?
+     * @defaultValue `false`
+     */
+    snap: boolean;
+  }> {}
 
-  interface ChangeDragElevationOptions extends InexactPartial<{ precise: boolean }> {}
+  interface ChangeDragElevationOptions extends InexactPartial<{
+    /**
+     * Round elevations to multiples of the grid distance divided by
+     * `CONFIG.Canvas.elevationSnappingPrecision`? If false, rounds to multiples of the grid distance.
+     * @defaultValue `false`
+     */
+    precise: boolean;
+  }> {}
 
   type DragWaypointPosition = Pick<TokenDocument.Position, "x" | "y" | "elevation"> & Partial<TokenDocument.Dimensions>;
 }
