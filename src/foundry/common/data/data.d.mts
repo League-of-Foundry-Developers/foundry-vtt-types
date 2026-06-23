@@ -597,7 +597,10 @@ declare namespace TextureData {
     [K in keyof T]: fields.DataField.Options.InitialType<T[K]>;
   };
 
-  /** @remarks The keys picked directly are passed on to the `src: FilePathField` field, but `initial` is an object of initial values for potentially every field in the schema */
+  /**
+   * @remarks The keys picked directly are passed on to the `src: FilePathField` field, but `initial` is an object of initial values for
+   * potentially every field in the schema.
+   */
   interface SrcOptions extends Pick<fields.FilePathField.Options, "categories" | "wildcard" | "label"> {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     initial: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>>;
@@ -939,7 +942,7 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   /**
    * Localize all non-recursive data fields on first load of the application.
    * @param fields - Subfields of a recursive field
-   * @param cache  -  A running cache of localization results (default: `{}`)
+   * @param cache  - A running cache of localization results (default: `{}`)
    * @remarks `fields` defaults to all the fields of the various {@linkcode PrototypeTokenOverrides.ActorSubTypeSchema}s
    */
   static localizeFields(fields?: fields.DataField[], cache?: Record<string, string>): void;
