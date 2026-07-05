@@ -358,75 +358,7 @@ declare global {
     /**
      * Configuration for the Combat document
      */
-    Combat: {
-      /** @defaultValue `Combat` */
-      documentClass: Document.ImplementationClassFor<"Combat">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.CombatEncounters}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.CombatEncounters;
-
-      /** @defaultValue `new `{@linkcode foundry.data.CombatConfiguration}`()` */
-      settings: foundry.data.CombatConfiguration;
-
-      /** @defaultValue `"fas fa-swords"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Combat.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Combat">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCombat.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      initiative: {
-        /** @defaultValue `null` */
-        formula: string | null;
-
-        /** @defaultValue `2` */
-        decimals: number;
-      };
-
-      /** @defaultValue "icons/vtt-512.png" */
-      fallbackTurnMarker: string;
-
-      /**
-       * @defaultValue
-       * ```typescript
-       * {
-       *   "epic": {
-       *     label: "COMBAT.Sounds.Epic",
-       *     startEncounter: ["sounds/combat/epic-start-3hit.ogg", "sounds/combat/epic-start-horn.ogg"],
-       *     nextUp: ["sounds/combat/epic-next-horn.ogg"],
-       *     yourTurn: ["sounds/combat/epic-turn-1hit.ogg", "sounds/combat/epic-turn-2hit.ogg"]
-       *   },
-       *   "mc": {
-       *     label: "COMBAT.Sounds.MC",
-       *     startEncounter: ["sounds/combat/mc-start-battle.ogg", "sounds/combat/mc-start-begin.ogg", "sounds/combat/mc-start-fight.ogg", "sounds/combat/mc-start-fight2.ogg"],
-       *     nextUp: ["sounds/combat/mc-next-itwillbe.ogg", "sounds/combat/mc-next-makeready.ogg", "sounds/combat/mc-next-youare.ogg"],
-       *     yourTurn: ["sounds/combat/mc-turn-itisyour.ogg", "sounds/combat/mc-turn-itsyour.ogg"]
-       *   }
-       * }
-       * ```
-       */
-      sounds: CONFIG.Combat.Sounds;
-    };
+    Combat: CONFIG.Combat;
 
     /**
      * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
@@ -2142,6 +2074,84 @@ declare global {
       batchSize: number;
     }
 
+    interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {
+      /**
+       * @defaultValue {@linkcode collections.CombatEncounters}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.CombatEncounters;
+
+      /**
+       * @privateRemarks This gets `defineProperty`'d to `{ writable: false, configurable: false }` near the bottom of `config.mjs`
+       */
+      readonly settings: foundry.data.CombatConfiguration;
+
+      sidebarIcon: string;
+
+      initiativeIcon: Combat.InitiativeIcon;
+
+      initiative: Combat.Initiative;
+
+      /** @defaultValue "icons/vtt-512.png" */
+      fallbackTurnMarker: string;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   epic: {
+       *     label: "COMBAT.Sounds.Epic",
+       *     startEncounter: ["sounds/combat/epic-start-3hit.ogg", "sounds/combat/epic-start-horn.ogg"],
+       *     nextUp: ["sounds/combat/epic-next-horn.ogg"],
+       *     yourTurn: ["sounds/combat/epic-turn-1hit.ogg", "sounds/combat/epic-turn-2hit.ogg"]
+       *   },
+       *   mc: {
+       *     label: "COMBAT.Sounds.MC",
+       *     startEncounter: [
+       *       "sounds/combat/mc-start-battle.ogg",
+       *       "sounds/combat/mc-start-begin.ogg",
+       *       "sounds/combat/mc-start-fight.ogg",
+       *       "sounds/combat/mc-start-fight2.ogg"
+       *     ],
+       *     nextUp: ["sounds/combat/mc-next-itwillbe.ogg", "sounds/combat/mc-next-makeready.ogg", "sounds/combat/mc-next-youare.ogg"],
+       *     yourTurn: ["sounds/combat/mc-turn-itisyour.ogg", "sounds/combat/mc-turn-itsyour.ogg"]
+       *   }
+       * }
+       * ```
+       */
+      sounds: Combat.Sounds;
+    }
+
+    namespace Combat {
+      interface InitiativeIcon {
+        /** @defaultValue `../icons/svg/d20.svg` */
+        icon: string;
+
+        /** @defaultValue `../icons/svg/d20-highlight.svg` */
+        hover: string;
+      }
+
+      interface Initiative {
+        /** @defaultValue `null` */
+        formula: string | null;
+
+        /** @defaultValue `2` */
+        decimals: number;
+      }
+
+      interface SoundPreset {
+        label: string;
+        startEncounter: string[];
+        nextUp: string[];
+        yourTurn: string[];
+      }
+
+      interface Sounds extends Record<string, SoundPreset> {
+        epic: SoundPreset;
+        mc: SoundPreset;
+      }
+    }
+
     interface UI {
       /** @defaultValue `MainMenu` */
       menu: foundry.applications.ui.MainMenu.AnyConstructor;
@@ -3418,15 +3428,6 @@ declare global {
        * ```
        */
       blizzard: layers.WeatherEffects.AmbienceConfiguration;
-    }
-
-    namespace Combat {
-      interface SoundPreset {
-        label: string;
-        startEncounter: string[];
-        nextUp: string[];
-        yourTurn: string[];
-      }
     }
 
     namespace Font {
