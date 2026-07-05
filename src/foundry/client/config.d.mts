@@ -103,8 +103,6 @@ declare global {
 
       type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
-      type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
-
       interface Terms extends Record<string, foundry.dice.terms.DiceTerm.AnyConstructor> {
         c: foundry.dice.terms.Coin.AnyConstructor;
         d: foundry.dice.terms.Die.AnyConstructor;

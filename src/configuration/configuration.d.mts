@@ -325,9 +325,7 @@ export interface SettingConfig {
   }>;
   "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
   "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
-  "core.diceConfiguration": {
-    [K in CONFIG.Dice.DTermDiceStrings]?: string | undefined;
-  };
+  "core.diceConfiguration": Record<string, string>;
   "core.disableResolutionScaling": boolean;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
