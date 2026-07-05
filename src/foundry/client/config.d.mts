@@ -842,31 +842,7 @@ declare global {
      */
     Note: CONFIG.Note;
 
-    Region: {
-      /** @defaultValue `RegionDocument` */
-      documentClass: Document.ImplementationClassFor<"Region">;
-
-      /** @defaultValue `Region` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.RegionLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The regions layer can be set at {@linkcode CONFIG.Canvas.layers.regions}
-       */
-      layerClass: typeof layers.RegionLayer;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Region">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    Region: CONFIG.Region;
 
     /**
      * Configuration for the RegionBehavior embedded document type
@@ -3267,6 +3243,8 @@ declare global {
     }
 
     interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
+
+    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {}
 
     namespace Wall {
       /** @internal */
