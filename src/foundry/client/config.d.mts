@@ -373,30 +373,7 @@ declare global {
     /**
      * Configuration for the Folder entity
      */
-    Folder: {
-      /** @defaultValue `Folder` */
-      documentClass: Document.ImplementationClassFor<"Folder">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Folders}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Folders;
-
-      /** @defaultValue `"fas fa-folder"` */
-      sidebarIcon: string;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Folder">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, string>;
-    };
+    Folder: CONFIG.Folder;
 
     /**
      * Configuration for the default Item entity class
@@ -2138,6 +2115,17 @@ declare global {
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
        */
       collection: typeof collections.FogExplorations;
+    }
+
+    interface Folder extends _Document<"Folder">, _HasNoTypes<"Folder"> {
+      /**
+       * @defaultValue {@linkcode collections.Folders}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Folders;
+
+      /** @defaultValue `"fa-solid fa-folder"` */
+      sidebarIcon: string;
     }
 
     interface UI {
