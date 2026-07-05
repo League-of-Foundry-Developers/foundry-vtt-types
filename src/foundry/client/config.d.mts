@@ -405,29 +405,7 @@ declare global {
      */
     Scene: CONFIG.Scene;
 
-    Setting: {
-      /** @defaultValue `Setting` */
-      documentClass: Document.ImplementationClassFor<"Setting">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Setting">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.WorldSettings}
-       * @remarks {@linkcode foundry.helpers.ClientSettings | ClientSettings#constructor} instantiates `WorldSettings` by name, without referring to this property.
-       * It's only purpose seems to be allowing a {@linkcode WorldCollection.instance | CONFIG[primaryType]?.collection?.instance} reference in
-       * {@linkcode foundry.utils.parseUuid} to work.
-       */
-      collection: foundry.documents.collections.WorldSettings.Internal.AnyConstructor;
-    };
+    Setting: CONFIG.Setting;
 
     /**
      * Configuration for the User entity, it's roles, and permissions
@@ -2053,6 +2031,22 @@ declare global {
 
       /** @defaultValue `"fa-solid fa-table-map"` */
       sidebarIcon: string;
+    }
+
+    interface Setting extends _Document<"Setting">, _HasNoTypes<"Setting"> {
+      /**
+       * @defaultValue {@linkcode collections.WorldSettings}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.WorldSettings;
+    }
+
+    interface User extends _Document<"User">, _HasNoTypes<"User"> {
+      /**
+       * @defaultValue {@linkcode collections.Users}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Users;
     }
 
     interface UI {
