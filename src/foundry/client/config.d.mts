@@ -2180,7 +2180,12 @@ declare global {
     interface UX {
       ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
       Draggable: foundry.applications.ux.Draggable.AnyConstructor;
-      DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.DragDrop}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.initialize | Canvas#initialize}, among other places.
+       */
+      DragDrop: typeof foundry.applications.ux.DragDrop;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
