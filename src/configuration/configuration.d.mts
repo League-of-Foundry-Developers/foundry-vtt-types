@@ -320,7 +320,7 @@ export interface SettingConfig {
     blank: false;
     initial: "none";
     choices: () => {
-      [K in keyof CONFIG.Combat.Sounds]: string;
+      [K in keyof typeof CONFIG.Combat.sounds]: string;
     };
   }>;
   "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;

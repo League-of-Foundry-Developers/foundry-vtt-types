@@ -1347,7 +1347,7 @@ declare global {
        * }
        * ```
        */
-      sounds: Combat.Sounds;
+      sounds: RemoveIndexSignatures<Combat.Sounds>;
     }
 
     namespace Combat {
@@ -1374,7 +1374,8 @@ declare global {
         yourTurn: string[];
       }
 
-      interface Sounds extends Record<string, SoundPreset> {
+      interface Sounds {
+        [soundName: string]: SoundPreset;
         epic: SoundPreset;
         mc: SoundPreset;
       }
@@ -2956,13 +2957,6 @@ declare global {
           /** @defaultValue `"fa-solid fa-user"` */
           icon: string;
         }
-      }
-    }
-
-    namespace Combat {
-      interface Sounds {
-        epic: CONFIG.Combat.SoundPreset;
-        mc: CONFIG.Combat.SoundPreset;
       }
     }
 

@@ -33,6 +33,8 @@ declare global {
   }
 }
 
+Object.assign(CONFIG.Item.dataModels, { armor: ArmorData, weapon: WeaponData });
+
 export const source = {
   _id: "XXXXXItemIDXXXXX",
   type: "armor",

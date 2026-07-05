@@ -1317,7 +1317,8 @@ declare namespace Document {
    */
   // TODO: Possibly convert to map of names to core models if docs other than RegionBehavior get any.
   type TypeModelsFor<Name extends WithSystem> = Name extends "RegionBehavior"
-    ? GetKey<DataModelConfig, Name, EmptyObject> & RegionBehavior.CoreBehaviors
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataModelConfig, Name, {}> & RegionBehavior.CoreBehaviors
     : GetKey<DataModelConfig, Name, EmptyObject>;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
