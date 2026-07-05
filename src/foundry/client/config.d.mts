@@ -2183,8 +2183,12 @@ declare global {
       DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
       FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
       TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      TooltipManager: foundry.helpers.interaction.TooltipManager.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.helpers.interaction.TooltipManager}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initialize | Game#initialize}.
+       */
+      TooltipManager: typeof foundry.helpers.interaction.TooltipManager;
     }
 
     interface Queries {
