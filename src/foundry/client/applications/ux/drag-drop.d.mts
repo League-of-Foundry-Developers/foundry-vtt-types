@@ -113,7 +113,7 @@ declare class DragDrop {
   /**
    * Retrieve the configured DragDrop implementation.
    */
-  static get implementation(): typeof DragDrop;
+  static get implementation(): DragDrop.ImplementationClass;
 }
 
 declare namespace DragDrop {

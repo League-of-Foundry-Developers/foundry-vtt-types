@@ -2179,7 +2179,13 @@ declare global {
 
     interface UX {
       ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
-      Draggable: foundry.applications.ux.Draggable.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.Draggable}
+       * @privateRemarks Instantiated via `new` in
+       * {@linkcode foundry.applications.apps.av.CameraPopout._onFirstRender | CameraPopout#_onFirstRender}, among other places.
+       */
+      Draggable: typeof foundry.applications.ux.Draggable;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.DragDrop}

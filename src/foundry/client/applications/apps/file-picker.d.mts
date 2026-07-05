@@ -257,9 +257,8 @@ declare class FilePicker<
 
   /**
    * Retrieve the configured FilePicker implementation.
-   * @privateRemarks TODO: Config.ux handling
    */
-  static get implementation(): typeof FilePicker;
+  static get implementation(): FilePicker.ImplementationClass;
 }
 
 declare namespace FilePicker {
