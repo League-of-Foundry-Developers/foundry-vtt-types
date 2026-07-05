@@ -388,36 +388,7 @@ declare global {
     /**
      * Configuration for the Macro entity
      */
-    Macro: {
-      /** @defaultValue `Macro` */
-      documentClass: Document.ImplementationClassFor<"Macro">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Macro">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Macros}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Macros;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/macro-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-code"` */
-      sidebarIcon: string;
-    };
+    Macro: CONFIG.Macro;
 
     /**
      * Configuration for the default Playlist entity class
@@ -2101,6 +2072,23 @@ declare global {
         /** @defaultValue `"icons/svg/windmill.svg";` */
         Windmill: string;
       }
+    }
+
+    interface Macro extends _Document<"Macro">, _HasNoTypes<"Macro"> {
+      /**
+       * @defaultValue {@linkcode collections.Macros}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Macros;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/macro-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-code"` */
+      sidebarIcon: string;
     }
 
     interface UI {
