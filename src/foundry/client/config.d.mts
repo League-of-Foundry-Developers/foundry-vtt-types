@@ -343,30 +343,7 @@ declare global {
      * Currently for internal use only.
      * @internal
      */
-    Adventure: {
-      /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: Document.ImplementationClassFor<"Adventure">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Adventure">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/adventure-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fa-solid fa-treasure-chest"` */
-      sidebarIcon: string;
-    };
+    Adventure: CONFIG.Adventure;
 
     /**
      * Configuration for the Cards primary Document type
@@ -2178,6 +2155,23 @@ declare global {
 
     /** @deprecated Use {@linkcode CONFIG2.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
     type TrackableAttribute = Actor.TrackableAttribute;
+
+    interface Adventure extends _Document<"Adventure">, _HasNoTypes<"Adventure"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.sheets.AdventureExporter}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.apps.Compendium}.
+       */
+      exporterClass: typeof foundry.applications.sheets.AdventureExporter;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/adventure-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-treasure-chest"` */
+      sidebarIcon: string;
+    }
 
     interface UI {
       /** @defaultValue `MainMenu` */
