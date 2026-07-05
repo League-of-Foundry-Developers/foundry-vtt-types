@@ -825,34 +825,7 @@ declare global {
     /**
      * Configuration for the Drawing embedded document type and its representation on the game Canvas
      */
-    Drawing: {
-      /** @defaultValue `DrawingDocument` */
-      documentClass: Document.ImplementationClassFor<"Drawing">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Drawing">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Drawing` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.DrawingsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The drawings layer can be set at {@linkcode CONFIG.Canvas.layers.drawings}
-       */
-      layerClass: typeof layers.DrawingsLayer;
-
-      /** @defaultValue `typeof DrawingHUD` */
-      hudClass: typeof foundry.applications.hud.DrawingHUD;
-    };
+    Drawing: CONFIG.Drawing;
 
     /**
      * Configuration for the JournalEntryCategory embedded document type.
@@ -3333,6 +3306,14 @@ declare global {
     interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
 
     interface CombatantGroup extends _Document<"CombatantGroup">, _HasTypes<"CombatantGroup"> {}
+
+    interface Drawing extends _Document<"Drawing">, _HasNoTypes<"Drawing">, _CanvasDoc<"Drawing"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.DrawingHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.DrawingHUD;
+    }
 
     namespace Wall {
       /** @internal */
