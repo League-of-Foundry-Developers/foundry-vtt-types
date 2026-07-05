@@ -353,46 +353,7 @@ declare global {
     /**
      * Configuration for the ChatMessage document
      */
-    ChatMessage: {
-      /** @defaultValue `ChatMessage` */
-      documentClass: Document.ImplementationClassFor<"ChatMessage">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.ChatMessages}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.ChatMessages;
-
-      /** @defaultValue `"templates/sidebar/chat-message.html"` */
-      template: string;
-
-      /** @defaultValue `"fas fa-comments"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ChatMessage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseChatMessage.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /** @defaultValue `100` */
-      batchSize: number;
-    };
+    ChatMessage: CONFIG.ChatMessage;
 
     /**
      * Configuration for the Combat document
@@ -2162,6 +2123,23 @@ declare global {
         label: string;
         src: string;
       }
+    }
+
+    interface ChatMessage extends _Document<"ChatMessage">, _HasTypes<"ChatMessage"> {
+      /**
+       * @defaultValue {@linkcode collections.ChatMessages}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.ChatMessages;
+
+      /** @defaultValue `"templates/sidebar/chat-message.html"` */
+      template: string;
+
+      /** @defaultValue `"fa-solid fa-comments"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `100` */
+      batchSize: number;
     }
 
     interface UI {
