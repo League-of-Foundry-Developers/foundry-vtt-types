@@ -53,11 +53,12 @@ declare namespace Ping {
     /**
      * The duration of the animation in milliseconds.
      * @defaultValue `900`
-     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
+     * @remarks This is allowed to be be `undefined` despite the default being provided via `mergeObject`, because it's only ever passed on
+     * to {@linkcode CanvasAnimation.animate}, which has a signature default for it.
      *
      * See {@linkcode CanvasAnimation.AnimateOptions.duration}
      */
-    duration: number;
+    duration: number | undefined;
 
     /**
      * The size of the ping graphic.

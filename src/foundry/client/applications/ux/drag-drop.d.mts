@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
 
 /**
  * A controller class for managing drag and drop workflows within an Application instance.
@@ -117,8 +117,19 @@ declare class DragDrop {
 }
 
 declare namespace DragDrop {
-  interface Any extends AnyDragDrop {}
-  interface AnyConstructor extends Identity<typeof AnyDragDrop> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyDragDrop {}
+    interface AnyConstructor extends Identity<typeof AnyDragDrop> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["ux"]["DragDrop"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type Action = "dragstart" | "dragover" | "drop" | "dragenter" | "dragleave" | "dragend";
 

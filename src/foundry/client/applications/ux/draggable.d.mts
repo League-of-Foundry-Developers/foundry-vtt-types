@@ -1,6 +1,6 @@
 import type Application from "#client/appv1/api/application-v1.mjs";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
-import type { Identity } from "#utils";
+import type { FixedInstanceType, Identity } from "#utils";
 
 /**
  * A UI utility to make an element draggable.
@@ -102,8 +102,19 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
 }
 
 declare namespace Draggable {
-  interface Any extends AnyDraggable {}
-  interface AnyConstructor extends Identity<typeof AnyDraggable> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyDraggable {}
+    interface AnyConstructor extends Identity<typeof AnyDraggable> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["ux"]["Draggable"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface Resizable {
     /**

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, IntentionalPartial, ValueOf } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, IntentionalPartial, ValueOf } from "#utils";
 
 /**
  * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is
@@ -158,8 +158,19 @@ declare class TooltipManager {
 }
 
 declare namespace TooltipManager {
-  interface Any extends AnyTooltipManager {}
-  interface AnyConstructor extends Identity<typeof AnyTooltipManager> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyTooltipManager {}
+    interface AnyConstructor extends Identity<typeof AnyTooltipManager> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["ux"]["TooltipManager"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**
    * The directions in which a tooltip can extend, relative to its tool-tipped element.
