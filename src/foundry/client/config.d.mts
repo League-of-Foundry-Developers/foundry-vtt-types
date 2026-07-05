@@ -393,39 +393,7 @@ declare global {
     /**
      * Configuration for the default Playlist entity class
      */
-    Playlist: {
-      /** @defaultValue `Playlist` */
-      documentClass: Document.ImplementationClassFor<"Playlist">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Playlist">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Playlists}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Playlists;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/playlist-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-music"` */
-      sidebarIcon: string;
-
-      /** @defaultValue `20` */
-      autoPreloadSeconds: number;
-    };
+    Playlist: CONFIG.Playlist;
 
     /**
      * Configuration for RollTable random draws
@@ -2089,6 +2057,26 @@ declare global {
 
       /** @defaultValue `"fa-solid fa-code"` */
       sidebarIcon: string;
+    }
+
+    interface Playlist extends _Document<"Playlist">, _HasNoTypes<"Playlist"> {
+      /**
+       * @defaultValue {@linkcode collections.Playlists}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Playlists;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/playlist-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-music"` */
+      sidebarIcon: string;
+
+      /** @remarks The number of seconds prior to the end of the current track to start preloading the next one. */
+      autoPreloadSeconds: number;
     }
 
     interface UI {
