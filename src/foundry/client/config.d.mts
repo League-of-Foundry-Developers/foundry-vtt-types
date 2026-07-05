@@ -378,43 +378,7 @@ declare global {
     /**
      * Configuration for the default Item entity class
      */
-    Item: {
-      /** @defaultValue `Item` */
-      documentClass: Document.ImplementationClassFor<"Item">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Items}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Items;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/item-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-suitcase"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Item.Implementation>>;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseItem.SubType, string>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Item">;
-    };
+    Item: CONFIG.Item;
 
     /**
      * Configuration for the JournalEntry entity
@@ -2125,6 +2089,23 @@ declare global {
       collection: typeof collections.Folders;
 
       /** @defaultValue `"fa-solid fa-folder"` */
+      sidebarIcon: string;
+    }
+
+    interface Item extends _Document<"Item">, _HasTypes<"Item"> {
+      /**
+       * @defaultValue {@linkcode collections.Items}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Items;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/item-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-suitcase"` */
       sidebarIcon: string;
     }
 
