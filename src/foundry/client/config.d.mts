@@ -383,119 +383,7 @@ declare global {
     /**
      * Configuration for the JournalEntry entity
      */
-    JournalEntry: {
-      /** @defaultValue `JournalEntry` */
-      documentClass: Document.ImplementationClassFor<"JournalEntry">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntry">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Journal}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Journal;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/journalentry-banner.webp"` */
-      compendiumBanner: string;
-
-      noteIcons: {
-        /** @defaultValue `"icons/svg/anchor.svg"` */
-        Anchor: string;
-
-        /** @defaultValue `"icons/svg/barrel.svg"` */
-        Barrel: string;
-
-        /** @defaultValue `"icons/svg/book.svg"` */
-        Book: string;
-
-        /** @defaultValue `"icons/svg/bridge.svg"` */
-        Bridge: string;
-
-        /** @defaultValue `"icons/svg/cave.svg"` */
-        Cave: string;
-
-        /** @defaultValue `"icons/svg/castle.svg"` */
-        Castle: string;
-
-        /** @defaultValue `"icons/svg/chest.svg"` */
-        Chest: string;
-
-        /** @defaultValue `"icons/svg/city.svg"` */
-        City: string;
-
-        /** @defaultValue `"icons/svg/coins.svg"` */
-        Coins: string;
-
-        /** @defaultValue `"icons/svg/fire.svg"` */
-        Fire: string;
-
-        /** @defaultValue `"icons/svg/hanging-sign.svg"` */
-        "Hanging Sign": string;
-
-        /** @defaultValue `"icons/svg/house.svg"` */
-        House: string;
-
-        /** @defaultValue `"icons/svg/mountain.svg"` */
-        Mountain: string;
-
-        /** @defaultValue `"icons/svg/oak.svg"` */
-        "Oak Tree": string;
-
-        /** @defaultValue `"icons/svg/obelisk.svg"` */
-        Obelisk: string;
-
-        /** @defaultValue `"icons/svg/pawprint.svg"` */
-        Pawprint: string;
-
-        /** @defaultValue `"icons/svg/ruins.svg"` */
-        Ruins: string;
-
-        /** @defaultValue `"icons/svg/skull.svg"` */
-        Skull: string;
-
-        /** @defaultValue `"icons/svg/statue.svg"` */
-        Statue: string;
-
-        /** @defaultValue `"icons/svg/sword.svg"` */
-        Sword: string;
-
-        /** @defaultValue `"icons/svg/tankard.svg"` */
-        Tankard: string;
-
-        /** @defaultValue `"icons/svg/temple.svg"` */
-        Temple: string;
-
-        /** @defaultValue `"icons/svg/tower.svg"` */
-        Tower: string;
-
-        /** @defaultValue `"icons/svg/trap.svg"` */
-        Trap: string;
-
-        /** @defaultValue `"icons/svg/village.svg"` */
-        Village: string;
-
-        /** @defaultValue `"icons/svg/waterfall.svg"` */
-        Waterfall: string;
-
-        /** @defaultValue `"icons/svg/windmill.svg"` */
-        Windmill: string;
-      } & Record<string, string>;
-
-      /** @defaultValue `"fas fa-book-open"` */
-      sidebarIcon: string;
-    };
+    JournalEntry: CONFIG.JournalEntry;
 
     /**
      * Configuration for the Macro entity
@@ -2107,6 +1995,112 @@ declare global {
 
       /** @defaultValue `"fa-solid fa-suitcase"` */
       sidebarIcon: string;
+    }
+
+    interface JournalEntry extends _Document<"JournalEntry">, _HasNoTypes<"JournalEntry"> {
+      /**
+       * @defaultValue {@linkcode collections.Journal}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Journal;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/journalentry-banner.webp"` */
+      compendiumBanner: string;
+
+      noteIcons: RemoveIndexSignatures<JournalEntry.NoteIcons>;
+
+      /** @defaultValue `"fa-solid fa-book-open"` */
+      sidebarIcon: string;
+    }
+
+    namespace JournalEntry {
+      interface NoteIcons {
+        [iconName: string]: string;
+
+        /** @defaultValue `"icons/svg/anchor.svg";` */
+        Anchor: string;
+
+        /** @defaultValue `"icons/svg/barrel.svg";` */
+        Barrel: string;
+
+        /** @defaultValue `"icons/svg/book.svg";` */
+        Book: string;
+
+        /** @defaultValue `"icons/svg/bridge.svg";` */
+        Bridge: string;
+
+        /** @defaultValue `"icons/svg/cave.svg";` */
+        Cave: string;
+
+        /** @defaultValue `"icons/svg/castle.svg";` */
+        Castle: string;
+
+        /** @defaultValue `"icons/svg/chest.svg";` */
+        Chest: string;
+
+        /** @defaultValue `"icons/svg/city.svg";` */
+        City: string;
+
+        /** @defaultValue `"icons/svg/coins.svg";` */
+        Coins: string;
+
+        /** @defaultValue `"icons/svg/fire.svg";` */
+        Fire: string;
+
+        /** @defaultValue `"icons/svg/hanging-sign.svg"` */
+        "Hanging Sign": string;
+
+        /** @defaultValue `"icons/svg/house.svg";` */
+        House: string;
+
+        /** @defaultValue `"icons/svg/mountain.svg";` */
+        Mountain: string;
+
+        /** @defaultValue `"icons/svg/oak.svg";` */
+        "Oak Tree": string;
+
+        /** @defaultValue `"icons/svg/obelisk.svg";` */
+        Obelisk: string;
+
+        /** @defaultValue `"icons/svg/pawprint.svg";` */
+        Pawprint: string;
+
+        /** @defaultValue `"icons/svg/ruins.svg";` */
+        Ruins: string;
+
+        /** @defaultValue `"icons/svg/skull.svg";` */
+        Skull: string;
+
+        /** @defaultValue `"icons/svg/statue.svg";` */
+        Statue: string;
+
+        /** @defaultValue `"icons/svg/sword.svg";` */
+        Sword: string;
+
+        /** @defaultValue `"icons/svg/tankard.svg";` */
+        Tankard: string;
+
+        /** @defaultValue `"icons/svg/temple.svg";` */
+        Temple: string;
+
+        /** @defaultValue `"icons/svg/tower.svg";` */
+        Tower: string;
+
+        /** @defaultValue `"icons/svg/trap.svg";` */
+        Trap: string;
+
+        /** @defaultValue `"icons/svg/village.svg";` */
+        Village: string;
+
+        /** @defaultValue `"icons/svg/waterfall.svg";` */
+        Waterfall: string;
+
+        /** @defaultValue `"icons/svg/windmill.svg";` */
+        Windmill: string;
+      }
     }
 
     interface UI {
