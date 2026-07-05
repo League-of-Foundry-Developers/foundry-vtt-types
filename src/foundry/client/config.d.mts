@@ -793,21 +793,7 @@ declare global {
     /**
      * Configuration for the TableResult embedded document type
      */
-    TableResult: {
-      /** @defaultValue `TableResult` */
-      documentClass: Document.ImplementationClassFor<"TableResult">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"TableResult">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.documents.BaseTableResult.SubType, string>;
-    };
+    TableResult: CONFIG.TableResult;
 
     JournalEntryPage: {
       /** @defaultValue `JournalEntryPage` */
@@ -3476,6 +3462,8 @@ declare global {
     interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}
 
     interface Card extends _Document<"Card">, _HasTypes<"Card"> {}
+
+    interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult"> {}
 
     namespace Wall {
       /** @internal */
