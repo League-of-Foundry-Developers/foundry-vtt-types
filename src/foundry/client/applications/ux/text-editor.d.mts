@@ -261,9 +261,8 @@ declare class TextEditor {
 
   /**
    * Retrieve the configured TextEditor implementation.
-   * @remarks TODO: Link up with CONFIG
    */
-  static get implementation(): typeof TextEditor;
+  static get implementation(): TextEditor.ImplementationClass;
 
   #private: true;
 }
@@ -280,7 +279,7 @@ declare namespace TextEditor {
     interface AnyConstructor extends Identity<typeof AnyTextEditor> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["ux"]["TextEditor"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.TextEditor> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type TEXT_MIME_TYPES = ValueOf<typeof CONST.TEXT_FILE_EXTENSIONS>;

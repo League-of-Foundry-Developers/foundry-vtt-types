@@ -1047,7 +1047,7 @@ declare namespace Document {
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
-  type PlaceableType = keyof RemoveIndexSignatures<PlaceableObject.DefaultPlaceables>;
+  type PlaceableType = ConcreteKeys<PlaceableObject.DefaultPlaceables>;
 
   type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;

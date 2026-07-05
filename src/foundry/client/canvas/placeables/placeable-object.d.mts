@@ -671,6 +671,12 @@ declare namespace PlaceableObject {
   >;
   type ImplementationFor<Name extends Document.PlaceableType> = FixedInstanceType<ImplementationClassFor<Name>>;
 
+  /**
+   * A mapping of Document name to the placeable class associated with it by core, before any user action.
+   *
+   * Its concrete keys define {@linkcode Document.PlaceableType}, so if you are creating a new placeable out of an existing document,
+   * this is where to merge into.
+   */
   interface DefaultPlaceables {
     [documentName: string]: PlaceableObject.AnyConstructor;
     AmbientLight: typeof foundry.canvas.placeables.AmbientLight;

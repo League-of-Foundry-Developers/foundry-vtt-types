@@ -183,9 +183,8 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * Retrieve the configured DragDrop implementation
-   * @privateRemarks TODO: Config.ux handling
    */
-  static get implementation(): typeof ContextMenu;
+  static get implementation(): ContextMenu.ImplementationClass;
 
   /**
    * @deprecated since v13 until v15

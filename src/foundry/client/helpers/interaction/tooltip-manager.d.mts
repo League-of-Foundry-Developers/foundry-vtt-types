@@ -151,8 +151,7 @@ declare class TooltipManager {
   /**
    * Retrieve the configured TooltipManager implementation
    */
-  // TODO: Config.ux handling
-  static get implementation(): typeof TooltipManager;
+  static get implementation(): TooltipManager.ImplementationClass;
 
   #TooltipManager: true;
 }
@@ -169,7 +168,7 @@ declare namespace TooltipManager {
     interface AnyConstructor extends Identity<typeof AnyTooltipManager> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["ux"]["TooltipManager"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.TooltipManager> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**

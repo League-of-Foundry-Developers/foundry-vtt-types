@@ -96,9 +96,8 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
 
   /**
    * Retrieve the configured Draggable implementation.
-   * @remarks TODO: Link up with CONFIG
    */
-  static get implementation(): typeof Draggable;
+  static get implementation(): Draggable.ImplementationClass;
 }
 
 declare namespace Draggable {
@@ -113,7 +112,7 @@ declare namespace Draggable {
     interface AnyConstructor extends Identity<typeof AnyDraggable> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["ux"]["Draggable"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.Draggable> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface Resizable {

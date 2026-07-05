@@ -6,7 +6,7 @@ import type { FormSelectOption } from "../forms/fields.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface ApplicationV2Config {
-      FilePicker: FilePicker.Implementation;
+      FilePicker: FilePicker.Internal.Any;
     }
   }
 }
@@ -257,9 +257,8 @@ declare class FilePicker<
 
   /**
    * Retrieve the configured FilePicker implementation.
-   * @privateRemarks TODO: Config.ux handling
    */
-  static get implementation(): typeof FilePicker;
+  static get implementation(): FilePicker.ImplementationClass;
 }
 
 declare namespace FilePicker {
@@ -274,7 +273,7 @@ declare namespace FilePicker {
     interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["ux"]["FilePicker"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.FilePicker> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**

@@ -103,8 +103,6 @@ declare global {
 
       type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
-      type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
-
       interface Terms extends Record<string, foundry.dice.terms.DiceTerm.AnyConstructor> {
         c: foundry.dice.terms.Coin.AnyConstructor;
         d: foundry.dice.terms.Die.AnyConstructor;
@@ -2180,12 +2178,43 @@ declare global {
     }
 
     interface UX {
-      ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
-      Draggable: foundry.applications.ux.Draggable.AnyConstructor;
-      DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
-      FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
-      TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
-      TooltipManager: foundry.helpers.interaction.TooltipManager.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
+       * among other places.
+       */
+      ContextMenu: typeof foundry.applications.ux.ContextMenu;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.Draggable}
+       * @privateRemarks Instantiated via `new` in
+       * {@linkcode foundry.applications.apps.av.CameraPopout._onFirstRender | CameraPopout#_onFirstRender}, among other places.
+       */
+      Draggable: typeof foundry.applications.ux.Draggable;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.DragDrop}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.initialize | Canvas#initialize}, among other places.
+       */
+      DragDrop: typeof foundry.applications.ux.DragDrop;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
+       * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
+       */
+      FilePicker: typeof foundry.applications.apps.FilePicker;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
+       * @privateRemarks `TextEditor` is a collection of statics, and is never instantiated at all.
+       */
+      TextEditor: foundry.applications.ux.TextEditor.Internal.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.helpers.interaction.TooltipManager}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initialize | Game#initialize}.
+       */
+      TooltipManager: typeof foundry.helpers.interaction.TooltipManager;
     }
 
     interface Queries {

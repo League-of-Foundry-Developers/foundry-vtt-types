@@ -113,7 +113,7 @@ declare class DragDrop {
   /**
    * Retrieve the configured DragDrop implementation.
    */
-  static get implementation(): typeof DragDrop;
+  static get implementation(): DragDrop.ImplementationClass;
 }
 
 declare namespace DragDrop {
@@ -128,7 +128,7 @@ declare namespace DragDrop {
     interface AnyConstructor extends Identity<typeof AnyDragDrop> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["ux"]["DragDrop"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.DragDrop> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type Action = "dragstart" | "dragover" | "drop" | "dragenter" | "dragleave" | "dragend";
