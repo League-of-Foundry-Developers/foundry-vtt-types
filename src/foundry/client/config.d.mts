@@ -2178,7 +2178,12 @@ declare global {
     }
 
     interface UX {
-      ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
+       * among other places.
+       */
+      ContextMenu: typeof foundry.applications.ux.ContextMenu;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.Draggable}
