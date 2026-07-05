@@ -852,34 +852,7 @@ declare global {
     /**
      * Configuration for the Tile embedded document type and its representation on the game Canvas
      */
-    Tile: {
-      /** @defaultValue `TileDocument` */
-      documentClass: Document.ImplementationClassFor<"Tile">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Tile">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Tile` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TilesLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The tiles layer can be set at {@linkcode CONFIG.Canvas.layers.tiles}
-       */
-      layerClass: typeof layers.TilesLayer;
-
-      /** @defaultValue `typeof TileHUD` */
-      hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
-    };
+    Tile: CONFIG.Tile;
 
     /**
      * Configuration for the Token embedded document type and its representation on the game Canvas
@@ -3250,6 +3223,14 @@ declare global {
        * ```
        */
       typeIcons: _HasTypes<"RegionBehavior">["typeIcons"];
+    }
+
+    interface Tile extends _Document<"Tile">, _HasNoTypes<"Tile">, _CanvasDoc<"Tile"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.TileHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.TileHUD;
     }
 
     namespace Wall {
