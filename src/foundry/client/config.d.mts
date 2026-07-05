@@ -2182,7 +2182,12 @@ declare global {
       Draggable: foundry.applications.ux.Draggable.AnyConstructor;
       DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
       FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
-      TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
+       * @privateRemarks `TextEditor` is a collection of statics, and is never instantiated at all.
+       */
+      TextEditor: foundry.applications.ux.TextEditor.Internal.AnyConstructor;
 
       /**
        * @defaultValue {@linkcode foundry.helpers.interaction.TooltipManager}
