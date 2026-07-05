@@ -788,31 +788,7 @@ declare global {
     /**
      * Configuration for the Card embedded Document type
      */
-    Card: {
-      /** @defaultValue `Card` */
-      documentClass: Document.ImplementationClassFor<"Card">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Card.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Card">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCard.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-    };
+    Card: CONFIG.Card;
 
     /**
      * Configuration for the TableResult embedded document type
@@ -3498,6 +3474,8 @@ declare global {
     }
 
     interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}
+
+    interface Card extends _Document<"Card">, _HasTypes<"Card"> {}
 
     namespace Wall {
       /** @internal */
