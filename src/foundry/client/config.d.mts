@@ -10,13 +10,14 @@ import type {
   InterfaceToObject,
   MaybeArray,
   MaybePromise,
+  PartialUntilInitialized,
   RemoveIndexSignatures,
 } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
-import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
-import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
+import type * as layers from "#client/canvas/layers/_module.d.mts";
+import type * as groups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
@@ -24,6 +25,13 @@ import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
+import type { collections } from "#client/documents/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type Localization from "#client/helpers/localization.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type * as configuration from "#configuration";
 
 declare global {
   namespace CONFIG {
@@ -192,11 +200,6 @@ declare global {
        */
       hud?: boolean | { actorTypes: string[] } | undefined | null;
     }
-
-    interface TrackableAttribute {
-      bar: string[];
-      value: string[];
-    }
   }
 
   /**
@@ -333,49 +336,7 @@ declare global {
     /**
      * Configuration for the Actor document
      */
-    Actor: {
-      /** @defaultValue `Actor` */
-      documentClass: Document.ImplementationClassFor<"Actor">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Actors}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Actors;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/actor-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-user"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Actor.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Actor">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<Actor.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /** @defaultValue `{}` */
-      trackableAttributes: Record<string, CONFIG.TrackableAttribute>;
-    };
+    Actor: CONFIG.Actor;
 
     /**
      * Configuration for the Adventure document.
@@ -1562,7 +1523,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The lighting layer can be set at {@linkcode CONFIG.Canvas.layers.lighting}
        */
-      layerClass: typeof canvasLayers.LightingLayer;
+      layerClass: typeof layers.LightingLayer;
     };
 
     /**
@@ -1591,7 +1552,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The sounds layer can be set at {@linkcode CONFIG.Canvas.layers.sounds}
        */
-      layerClass: typeof canvasLayers.SoundsLayer;
+      layerClass: typeof layers.SoundsLayer;
     };
 
     /**
@@ -1678,7 +1639,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The drawings layer can be set at {@linkcode CONFIG.Canvas.layers.drawings}
        */
-      layerClass: typeof canvasLayers.DrawingsLayer;
+      layerClass: typeof layers.DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
@@ -1751,7 +1712,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The template layer can be set at {@linkcode CONFIG.Canvas.layers.templates}
        */
-      layerClass: typeof canvasLayers.TemplateLayer;
+      layerClass: typeof layers.TemplateLayer;
     };
 
     /**
@@ -1780,7 +1741,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The notes layer can be set at {@linkcode CONFIG.Canvas.layers.notes}
        */
-      layerClass: typeof canvasLayers.NotesLayer;
+      layerClass: typeof layers.NotesLayer;
     };
 
     Region: {
@@ -1795,7 +1756,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The regions layer can be set at {@linkcode CONFIG.Canvas.layers.regions}
        */
-      layerClass: typeof canvasLayers.RegionLayer;
+      layerClass: typeof layers.RegionLayer;
 
       /**
        * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
@@ -1854,7 +1815,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The tiles layer can be set at {@linkcode CONFIG.Canvas.layers.tiles}
        */
-      layerClass: typeof canvasLayers.TilesLayer;
+      layerClass: typeof layers.TilesLayer;
 
       /** @defaultValue `typeof TileHUD` */
       hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
@@ -1886,7 +1847,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The tokens layer can be set at {@linkcode CONFIG.Canvas.layers.tokens}
        */
-      layerClass: typeof canvasLayers.TokenLayer;
+      layerClass: typeof layers.TokenLayer;
 
       /** @defaultValue `typeof TokenConfig` */
       prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
@@ -2033,7 +1994,7 @@ declare global {
        * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
        * The walls layer can be set at {@linkcode CONFIG.Canvas.layers.walls}
        */
-      layerClass: typeof canvasLayers.WallsLayer;
+      layerClass: typeof layers.WallsLayer;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
@@ -2112,6 +2073,112 @@ declare global {
   }
 
   namespace CONFIG {
+    /**
+     * Common properties of all document interfaces in `CONFIG`. Doesn't include `typeLabels`, because while all docs will have it defined,
+     * the (TS) types are different for docs that don't really have (foundry) types, which requires different JSDoc.
+     * @internal
+     */
+    interface _Document<Name extends Document.Type> {
+      documentClass: Document.ImplementationClassFor<Name>;
+
+      /**
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode foundry.Game | Game#constructor} as
+       * an empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
+       */
+      sheetClasses: CONFIG.SheetClasses<Name>;
+    }
+
+    /**
+     * Common properties for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
+     * `dataModels` and `typeIcons` fields, their `typeLabels` are defined in their `CONFIG` entry immediately,
+     * rather than being added later.
+     * @internal
+     */
+    interface _HasTypes<Name extends Document.WithSystem> {
+      /**
+       * @remarks In FVTT-Types, this just mirrors {@linkcode configuration.DataModelConfig | DataModelConfig}, which is where
+       * you must currently define your subtypes, in addition to setting this property at runtime.
+       */
+      dataModels: Document.TypeModelsFor<Name>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Is empty prior to {@linkcode Localization.initialize | Localization#initialize} being called just before `i18nInit`,
+       * after which at least one entry per document is guaranteed.
+       */
+      typeLabels: PartialUntilInitialized<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Used by {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.toAnchor | ClientDocument#toAnchor}
+       * and the `RollTable`, `Region`, and `RegionBehavior` sheets in core. Unlike `typeLabels`, nothing comes along and fills this in for
+       * all subtypes; only `Cards`, `JournalEntryPage`, and `RegionBehavior` have any pre-defined as of 13.351.
+       */
+      typeIcons: IntentionalPartial<Record<Document.SubTypesOf<Name>, string>>;
+    }
+
+    /**
+     * A definition of `typeLabels` for the majority of Documents' `CONFIG` entries that do not have it defined prior to `i18nInit`
+     * @internal
+     */
+    interface _HasNoTypes<Name extends Document.Type> {
+      /**
+       * @remarks Not defined in `config.mjs`, this is added by {@linkcode Localization.initialize | Localization#initialize} just before
+       * the `i18nInit` hook.
+       */
+      typeLabels: InitializedOn<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
+    }
+
+    /**
+     * Common properties for Canvas document `CONFIG` entries.
+     * @internal
+     */
+    interface _CanvasDoc<Name extends Document.PlaceableType> {
+      objectClass: foundry.canvas.placeables.PlaceableObject.ImplementationClassFor<Name>;
+
+      /**
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11. The layer for a given Canvas Document
+       * can be set at `CONFIG.Canvas.layers[canvas.getLayerByEmbeddedName(documentName).constructor.layerOptions.name].layerClass`. Formal
+       * deprecation starts in v14:
+       *
+       * "`CONFIG.${documentName}.layerClass` has been deprecated. Use `CONFIG.Canvas.layers.${layerName}.layerClass` instead."
+       * (since v14, until v16)
+       *
+       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type.
+       */
+      layerClass: foundry.canvas.layers.PlaceablesLayer.ImplementationClassFor<Name>;
+    }
+
+    interface Actor extends _Document<"Actor">, _HasTypes<"Actor"> {
+      /**
+       * @defaultValue {@linkcode collections.Actors}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Actors;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/actor-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-user"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `{}` */
+      trackableAttributes: Actor.TrackableAttribute;
+    }
+
+    namespace Actor {
+      interface TrackableAttribute {
+        bar: string[];
+        value: string[];
+      }
+    }
+
+    /** @deprecated Use {@linkcode CONFIG2.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
+    type TrackableAttribute = Actor.TrackableAttribute;
+
     interface UI {
       /** @defaultValue `MainMenu` */
       menu: foundry.applications.ui.MainMenu.AnyConstructor;
@@ -2376,28 +2443,28 @@ declare global {
         // TODO: Index signature?
 
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
-        hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
+        hidden: CONFIG.Canvas.GroupDefinition<typeof groups.HiddenCanvasGroup>;
 
         /** @defaultValue `{ groupClass: RenderedCanvasGroup, parent: "stage" }` */
-        rendered: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.RenderedCanvasGroup>;
+        rendered: CONFIG.Canvas.GroupDefinition<typeof groups.RenderedCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EnvironmentCanvasGroup>;
+        environment: CONFIG.Canvas.GroupDefinition<typeof groups.EnvironmentCanvasGroup>;
 
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.PrimaryCanvasGroup>;
+        primary: CONFIG.Canvas.GroupDefinition<typeof groups.PrimaryCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EffectsCanvasGroup, parent: "environment" }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EffectsCanvasGroup>;
+        effects: CONFIG.Canvas.GroupDefinition<typeof groups.EffectsCanvasGroup>;
 
         /** @defaultValue `{ groupClass: CanvasVisibility, parent: "rendered" }` */
-        visibility: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.CanvasVisibility>;
+        visibility: CONFIG.Canvas.GroupDefinition<typeof groups.CanvasVisibility>;
 
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered", zIndexDrawings: 500, zIndexScrollingText: 1100 }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<typeof groups.InterfaceCanvasGroup>;
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
-        overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
+        overlay: CONFIG.Canvas.GroupDefinition<typeof groups.OverlayCanvasGroup>;
       }
 
       /**
@@ -2432,45 +2499,45 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof canvasLayers.WeatherEffects, "primary">;
+        weather: LayerDefinition<typeof layers.WeatherEffects, "primary">;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
-        grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
+        grid: LayerDefinition<typeof layers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
-        regions: LayerDefinition<typeof canvasLayers.RegionLayer, "interface">;
+        regions: LayerDefinition<typeof layers.RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
-        drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
+        drawings: LayerDefinition<typeof layers.DrawingsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
-        templates: LayerDefinition<typeof canvasLayers.TemplateLayer, "interface">;
+        templates: LayerDefinition<typeof layers.TemplateLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tiles: LayerDefinition<typeof canvasLayers.TilesLayer, "interface">;
+        tiles: LayerDefinition<typeof layers.TilesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
-        walls: LayerDefinition<typeof canvasLayers.WallsLayer, "interface">;
+        walls: LayerDefinition<typeof layers.WallsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tokens: LayerDefinition<typeof canvasLayers.TokenLayer, "interface">;
+        tokens: LayerDefinition<typeof layers.TokenLayer, "interface">;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<typeof canvasLayers.SoundsLayer, "interface">;
+        sounds: LayerDefinition<typeof layers.SoundsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof canvasLayers.LightingLayer, "interface">;
+        lighting: LayerDefinition<typeof layers.LightingLayer, "interface">;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<typeof canvasLayers.NotesLayer, "interface">;
+        notes: LayerDefinition<typeof layers.NotesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<typeof canvasLayers.ControlsLayer, "interface">;
+        controls: LayerDefinition<typeof layers.ControlsLayer, "interface">;
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
       interface LayerDefinition<
-        LayerClass extends typeof canvasLayers.CanvasLayer,
+        LayerClass extends typeof layers.CanvasLayer,
         Group extends keyof CONFIG["Canvas"]["groups"],
       > {
         layerClass: LayerClass;
@@ -2511,7 +2578,7 @@ declare global {
       }
 
       interface GridStyles {
-        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: canvasLayers.GridLayer.GridStyle;
+        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2525,7 +2592,7 @@ declare global {
          * }
          * ```
          */
-        solidLines: canvasLayers.GridLayer.GridStyle;
+        solidLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2539,7 +2606,7 @@ declare global {
          * }
          * ```
          */
-        dashedLines: canvasLayers.GridLayer.GridStyle;
+        dashedLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2553,7 +2620,7 @@ declare global {
          * }
          * ```
          */
-        dottedLines: canvasLayers.GridLayer.GridStyle;
+        dottedLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2567,7 +2634,7 @@ declare global {
          * }
          * ```
          */
-        squarePoints: canvasLayers.GridLayer.GridStyle;
+        squarePoints: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2581,7 +2648,7 @@ declare global {
          * }
          * ```
          */
-        diamondPoints: canvasLayers.GridLayer.GridStyle;
+        diamondPoints: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2595,7 +2662,7 @@ declare global {
          * }
          * ```
          */
-        roundPoints: canvasLayers.GridLayer.GridStyle;
+        roundPoints: layers.GridLayer.GridStyle;
       }
 
       interface LightSourceAnimationConfig
@@ -3213,7 +3280,7 @@ declare global {
     }
 
     interface WeatherEffects {
-      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3227,9 +3294,9 @@ declare global {
        *   }]
        * }
        * ```
-       * @remarks See {@linkcode canvasLayers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
+       * @remarks See {@linkcode layers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
        */
-      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      leaves: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3257,7 +3324,7 @@ declare global {
        * }
        * ```
        */
-      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      rain: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3298,7 +3365,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      rainStorm: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3323,7 +3390,7 @@ declare global {
        * }
        * ```
        */
-      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      fog: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3349,7 +3416,7 @@ declare global {
        * }
        * ```
        */
-      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      snow: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3387,7 +3454,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      blizzard: layers.WeatherEffects.AmbienceConfiguration;
     }
 
     namespace Cards {
@@ -4075,7 +4142,7 @@ type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.
   Fallback
 >;
 
-declare const _MixedCanvasGroup: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
+declare const _MixedCanvasGroup: groups.CanvasGroupMixin.AnyMixedConstructor;
 
 /**
  * @privateRemarks Used to enforce user-provided group classes taking no constructor arguments
