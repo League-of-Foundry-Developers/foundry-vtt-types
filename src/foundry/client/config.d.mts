@@ -847,21 +847,7 @@ declare global {
     /**
      * Configuration for the RegionBehavior embedded document type
      */
-    RegionBehavior: {
-      documentClass: Document.ImplementationClassFor<"Region">;
-      dataModels: Record<
-        string,
-        typeof foundry.data.regionBehaviors.RegionBehaviorType<any, RegionBehavior.Implementation, AnyObject, AnyObject>
-      >;
-      typeLabels?: Record<"base", string>;
-      typeIcons: Record<string, string>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"RegionBehavior">;
-    };
+    RegionBehavior: CONFIG.RegionBehavior;
 
     /**
      * Configuration for the Tile embedded document type and its representation on the game Canvas
@@ -3245,6 +3231,26 @@ declare global {
     interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
 
     interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {}
+
+    interface RegionBehavior extends _Document<"RegionBehavior">, _HasTypes<"RegionBehavior"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   adjustDarknessLevel: "fa-solid fa-circle-half-stroke",
+       *   displayScrollingText: "fa-solid fa-message-arrow-up",
+       *   executeMacro: "fa-solid fa-code",
+       *   executeScript: "fa-brands fa-js",
+       *   modifyMovementCost: "fa-solid fa-shoe-prints",
+       *   pauseGame: "fa-solid fa-pause",
+       *   suppressWeather: "fa-solid fa-cloud-slash",
+       *   teleportToken: "fa-solid fa-transporter-1",
+       *   toggleBehavior: "fa-solid fa-sliders"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"RegionBehavior">["typeIcons"];
+    }
 
     namespace Wall {
       /** @internal */
