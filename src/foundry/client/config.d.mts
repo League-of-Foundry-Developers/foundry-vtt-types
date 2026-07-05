@@ -2181,7 +2181,12 @@ declare global {
       ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
       Draggable: foundry.applications.ux.Draggable.AnyConstructor;
       DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
-      FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
+       * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
+       */
+      FilePicker: typeof foundry.applications.apps.FilePicker;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.TextEditor}

@@ -1,4 +1,4 @@
-import type { EmptyObject, AnyObject, DeepPartial, Identity } from "#utils";
+import type { EmptyObject, AnyObject, DeepPartial, Identity, FixedInstanceType } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";
@@ -6,7 +6,7 @@ import type { FormSelectOption } from "../forms/fields.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface ApplicationV2Config {
-      FilePicker: FilePicker.Any;
+      FilePicker: FilePicker.Internal.Any;
     }
   }
 }
@@ -263,8 +263,19 @@ declare class FilePicker<
 }
 
 declare namespace FilePicker {
-  interface Any extends AnyFilePicker {}
-  interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyFilePicker {}
+    interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
+  }
+
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.FilePicker> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**
    * @remarks {@linkcode FilePicker.upload} (and {@linkcode FilePicker.uploadPersistent}, which returns a call to the former)
@@ -320,7 +331,7 @@ declare namespace FilePicker {
     img: string;
   }
 
-  interface Configuration<FilePicker extends FilePicker.Any = FilePicker.Any>
+  interface Configuration<FilePicker extends FilePicker.Internal.Any = FilePicker.Internal.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<FilePicker> {
     /**
      * A type of file to target.
@@ -370,7 +381,9 @@ declare namespace FilePicker {
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  type DefaultOptions<FilePicker extends FilePicker.Any = FilePicker.Any> = DeepPartial<Configuration<FilePicker>> &
+  type DefaultOptions<FilePicker extends FilePicker.Internal.Any = FilePicker.Internal.Any> = DeepPartial<
+    Configuration<FilePicker>
+  > &
     object;
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
