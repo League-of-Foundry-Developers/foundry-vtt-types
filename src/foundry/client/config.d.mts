@@ -398,42 +398,7 @@ declare global {
     /**
      * Configuration for RollTable random draws
      */
-    RollTable: {
-      /** @defaultValue `RollTable` */
-      documentClass: Document.ImplementationClassFor<"RollTable">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"RollTable">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.RollTables}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.RollTables;
-
-      /** @defaultValue `["formula"]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/rolltable-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-th-list"` */
-      sidebarIcon: string;
-
-      /** @defaultValue `"icons/svg/d20-black.svg"` */
-      resultIcon: string;
-
-      /** @defaultValue `"templates/dice/table-result.html"` */
-      resultTemplate: string;
-    };
+    RollTable: CONFIG.RollTable;
 
     /**
      * Configuration for the default Scene entity class
@@ -2077,6 +2042,29 @@ declare global {
 
       /** @remarks The number of seconds prior to the end of the current track to start preloading the next one. */
       autoPreloadSeconds: number;
+    }
+
+    interface RollTable extends _Document<"RollTable">, _HasNoTypes<"RollTable"> {
+      /**
+       * @defaultValue {@linkcode collections.RollTables}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.RollTables;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/rolltable-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-table-list"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `"icons/svg/d20-black.svg"` */
+      resultIcon: string;
+
+      /** @defaultValue `"templates/dice/table-result.hbs"` */
+      resultTemplate: string;
     }
 
     interface UI {
