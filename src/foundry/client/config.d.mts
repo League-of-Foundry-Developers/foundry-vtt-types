@@ -403,36 +403,7 @@ declare global {
     /**
      * Configuration for the default Scene entity class
      */
-    Scene: {
-      /** @defaultValue `Scene` */
-      documentClass: Document.ImplementationClassFor<"Scene">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Scene">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Scenes}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Scenes;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/scene-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-map"` */
-      sidebarIcon: string;
-    };
+    Scene: CONFIG.Scene;
 
     Setting: {
       /** @defaultValue `Setting` */
@@ -2065,6 +2036,23 @@ declare global {
 
       /** @defaultValue `"templates/dice/table-result.hbs"` */
       resultTemplate: string;
+    }
+
+    interface Scene extends _Document<"Scene">, _HasNoTypes<"Scene"> {
+      /**
+       * @defaultValue {@linkcode collections.Scenes}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Scenes;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/scene-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-table-map"` */
+      sidebarIcon: string;
     }
 
     interface UI {
