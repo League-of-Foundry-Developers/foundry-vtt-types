@@ -368,27 +368,7 @@ declare global {
     /**
      * Configuration for the FogExploration document
      */
-    FogExploration: {
-      /** @defaultValue `FogExploration` */
-      documentClass: Document.ImplementationClassFor<"FogExploration">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"FogExploration">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.FogExplorations}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.FogExplorations;
-    };
+    FogExploration: CONFIG.FogExploration;
 
     /**
      * Configuration for the Folder entity
@@ -2150,6 +2130,14 @@ declare global {
         epic: SoundPreset;
         mc: SoundPreset;
       }
+    }
+
+    interface FogExploration extends _Document<"FogExploration">, _HasNoTypes<"FogExploration"> {
+      /**
+       * @defaultValue {@linkcode collections.FogExplorations}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.FogExplorations;
     }
 
     interface UI {
