@@ -795,50 +795,7 @@ declare global {
      */
     TableResult: CONFIG.TableResult;
 
-    JournalEntryPage: {
-      /** @defaultValue `JournalEntryPage` */
-      documentClass: Document.ImplementationClassFor<"JournalEntryPage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, JournalEntryPage.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntryPage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by {@linkcode foundry.helpers.Localization | Localization#initialize}, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseJournalEntryPage.SubType, string>;
-
-      typeIcons: {
-        [type: Brand<string, "CONFIG.JournalEntryPage">]: string;
-
-        /** @defaultValue `"fas fa-file-image"` */
-        image: string;
-
-        /** @defaultValue `"fas fa-file-pdf"` */
-        pdf: string;
-
-        /** @defaultValue `"fas fa-file-lines"` */
-        text: string;
-
-        /** @defaultValue `"fas fa-file-video"` */
-        video: string;
-      };
-
-      /** @defaultValue `"text"` */
-      defaultType: string;
-
-      /** @defaultValue `"fas fa-book-open"` */
-      sidebarIcon: string;
-    };
+    JournalEntryPage: CONFIG.JournalEntryPage;
 
     /**
      * Configuration for the ActiveEffect embedded document type
@@ -3452,6 +3409,27 @@ declare global {
     interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult"> {}
 
     interface JournalEntryCategory extends _Document<"JournalEntryCategory">, _HasNoTypes<"JournalEntryCategory"> {}
+
+    interface JournalEntryPage extends _Document<"JournalEntryPage">, _HasTypes<"JournalEntryPage"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   image: "fa-solid fa-file-image",
+       *   pdf: "fa-solid fa-file-pdf",
+       *   text: "fa-solid fa-file-lines",
+       *   video: "fa-solid fa-file-video"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"JournalEntryPage">["typeIcons"];
+
+      /** @defaultValue `"text"` */
+      defaultType: string;
+
+      /** @defaultValue `"fa-solid fa-book-open"` */
+      sidebarIcon: string;
+    }
 
     namespace Wall {
       /** @internal */
