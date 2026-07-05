@@ -2183,6 +2183,7 @@ declare global {
       DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
       FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
       TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       TooltipManager: foundry.helpers.interaction.TooltipManager.AnyConstructor;
     }
 
