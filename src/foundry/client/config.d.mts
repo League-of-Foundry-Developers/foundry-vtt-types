@@ -840,31 +840,7 @@ declare global {
     /**
      * Configuration for the Note embedded document type and its representation on the game Canvas
      */
-    Note: {
-      /** @defaultValue `NoteDocument` */
-      documentClass: Document.ImplementationClassFor<"Note">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Note">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Note` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.NotesLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The notes layer can be set at {@linkcode CONFIG.Canvas.layers.notes}
-       */
-      layerClass: typeof layers.NotesLayer;
-    };
+    Note: CONFIG.Note;
 
     Region: {
       /** @defaultValue `RegionDocument` */
@@ -3289,6 +3265,8 @@ declare global {
         width: number;
       }
     }
+
+    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
 
     namespace Wall {
       /** @internal */
