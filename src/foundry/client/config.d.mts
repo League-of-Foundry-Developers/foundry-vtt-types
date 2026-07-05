@@ -1010,21 +1010,7 @@ declare global {
     /**
      * Configuration for the JournalEntryCategory embedded document type.
      */
-    JournalEntryCategory: {
-      /** @defaultValue `JournalEntryCategory` */
-      documentClass: Document.ImplementationClassFor<"JournalEntryCategory">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntryCategory">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    JournalEntryCategory: CONFIG.JournalEntryCategory;
 
     /**
      * Configuration for the MeasuredTemplate embedded document type and its representation on the game Canvas
@@ -3464,6 +3450,8 @@ declare global {
     interface Card extends _Document<"Card">, _HasTypes<"Card"> {}
 
     interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult"> {}
+
+    interface JournalEntryCategory extends _Document<"JournalEntryCategory">, _HasNoTypes<"JournalEntryCategory"> {}
 
     namespace Wall {
       /** @internal */
