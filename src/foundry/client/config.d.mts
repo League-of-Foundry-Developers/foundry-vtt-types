@@ -410,27 +410,7 @@ declare global {
     /**
      * Configuration for the User entity, it's roles, and permissions
      */
-    User: {
-      /** @defaultValue `User` */
-      documentClass: Document.ImplementationClassFor<"User">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"User">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Users}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Users;
-    };
+    User: CONFIG.User;
 
     /**
      * Configuration settings for the Canvas and its contained layers and objects
