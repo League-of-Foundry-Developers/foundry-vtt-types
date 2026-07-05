@@ -810,31 +810,7 @@ declare global {
     /**
      * Configuration for the AmbientSound embedded document type and its representation on the game Canvas
      */
-    AmbientSound: {
-      /** @defaultValue `AmbientSoundDocument` */
-      documentClass: Document.ImplementationClassFor<"AmbientSound">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"AmbientSound">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof AmbientSound` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.SoundsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The sounds layer can be set at {@linkcode CONFIG.Canvas.layers.sounds}
-       */
-      layerClass: typeof layers.SoundsLayer;
-    };
+    AmbientSound: CONFIG.AmbientSound;
 
     /**
      * Configuration for the Combatant embedded document type within a Combat document
@@ -3399,6 +3375,8 @@ declare global {
     }
 
     interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {}
+
+    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {}
 
     namespace Wall {
       /** @internal */
