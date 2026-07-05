@@ -835,53 +835,7 @@ declare global {
     /**
      * Configuration for the MeasuredTemplate embedded document type and its representation on the game Canvas
      */
-    MeasuredTemplate: {
-      defaults: {
-        /** @defaultValue `53.13` */
-        angle: number;
-
-        /** @defaultValue `1` */
-        width: number;
-      };
-
-      types: {
-        /** @defaultValue `"Circle"` */
-        circle: string;
-
-        /** @defaultValue `"Cone"` */
-        cone: string;
-
-        /** @defaultValue `"Rectangle"` */
-        rect: string;
-
-        /** @defaultValue `"Ray"` */
-        ray: string;
-      };
-
-      /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: Document.ImplementationClassFor<"MeasuredTemplate">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"MeasuredTemplate">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof MeasuredTemplate` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TemplateLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The template layer can be set at {@linkcode CONFIG.Canvas.layers.templates}
-       */
-      layerClass: typeof layers.TemplateLayer;
-    };
+    MeasuredTemplate: CONFIG.MeasuredTemplate;
 
     /**
      * Configuration for the Note embedded document type and its representation on the game Canvas
@@ -3313,6 +3267,27 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
+    }
+
+    interface MeasuredTemplate
+      extends _Document<"MeasuredTemplate">, _HasNoTypes<"MeasuredTemplate">, _CanvasDoc<"MeasuredTemplate"> {
+      defaults: MeasuredTemplate.Defaults;
+
+      /**
+       * @deprecated "`CONFIG.MeasuredTemplate.types` has been deprecated without replacement. Use {@linkcode CONST.MEASURED_TEMPLATE_TYPES}
+       * and `TEMPLATE.TYPES.${type}` instead." (since v13, until v15)
+       */
+      get types(): Record<string, string>;
+    }
+
+    namespace MeasuredTemplate {
+      interface Defaults {
+        /** @defaultValue `53.13` */
+        angle: number;
+
+        /** @defaultValue `1` */
+        width: number;
+      }
     }
 
     namespace Wall {
