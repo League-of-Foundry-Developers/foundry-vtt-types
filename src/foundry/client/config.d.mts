@@ -348,72 +348,7 @@ declare global {
     /**
      * Configuration for the Cards primary Document type
      */
-    Cards: {
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.CardStacks}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.CardStacks;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `Cards` */
-      documentClass: Document.ImplementationClassFor<"Cards">;
-
-      /** @defaultValue `"fa-solid fa-cards"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Cards.Implementation>>;
-
-      /**
-       * @defaultValue
-       * ```typescript
-       * {
-       *    pokerDark: {
-       *      type: "deck",
-       *      label: "CARDS.DeckPresetPokerDark",
-       *      src: "cards/poker-deck-dark.json"
-       *    },
-       *    pokerLight: {
-       *      type: "deck",
-       *      label: "CARDS.DeckPresetPokerLight",
-       *      src: "cards/poker-deck-light.json"
-       *    }
-       * }
-       * ```
-       */
-      presets: Record<string, CONFIG.Cards.Preset>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Cards">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCards.SubType, string>;
-
-      typeIcons: {
-        /** @defaultValue `"fas fa-cards"` */
-        deck: string;
-
-        /** @defaultValue `"fa-duotone fa-cards"` */
-        hand: string;
-
-        /** @defaultValue `"fa-duotone fa-layer-group"` */
-        pile: string;
-
-        [type: Brand<string, "CONFIG.Cards.typeIcons">]: string;
-      };
-    };
+    Cards: CONFIG.Cards;
 
     /**
      * Configuration for the ChatMessage document
@@ -2173,6 +2108,62 @@ declare global {
       sidebarIcon: string;
     }
 
+    interface Cards extends _Document<"Cards">, _HasTypes<"Cards"> {
+      /**
+       * @defaultValue {@linkcode collections.CardStacks}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.CardStacks;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/cards-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-cards"` */
+      sidebarIcon: string;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *    pokerDark: {
+       *      type: "deck",
+       *      label: "CARDS.DeckPresetPokerDark",
+       *      src: "cards/poker-deck-dark.json"
+       *    },
+       *    pokerLight: {
+       *      type: "deck",
+       *      label: "CARDS.DeckPresetPokerLight",
+       *      src: "cards/poker-deck-light.json"
+       *    }
+       * }
+       * ```
+       */
+      presets: Record<string, Cards.Preset>;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   deck: "fa-solid fa-cards",
+       *   hand: "fa-duotone fa-cards",
+       *   pile: "fa-duotone fa-layer-group"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"Cards">["typeIcons"];
+    }
+
+    namespace Cards {
+      interface Preset {
+        type: string;
+        label: string;
+        src: string;
+      }
+    }
+
     interface UI {
       /** @defaultValue `MainMenu` */
       menu: foundry.applications.ui.MainMenu.AnyConstructor;
@@ -3451,13 +3442,6 @@ declare global {
       blizzard: layers.WeatherEffects.AmbienceConfiguration;
     }
 
-    namespace Cards {
-      interface Preset {
-        type: string;
-        label: string;
-        src: string;
-      }
-    }
     namespace Combat {
       interface SoundPreset {
         label: string;
