@@ -783,21 +783,7 @@ declare global {
     /**
      * Configuration for the ActorDelta embedded document type.
      */
-    ActorDelta: {
-      /** @defaultValue `ActorDelta` */
-      documentClass: Document.ImplementationClassFor<"ActorDelta">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ActorDelta">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    ActorDelta: CONFIG.ActorDelta;
 
     /**
      * Configuration for the Card embedded Document type
@@ -3510,6 +3496,8 @@ declare global {
        */
       legacyTransferral: boolean;
     }
+
+    interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}
 
     namespace Wall {
       /** @internal */
