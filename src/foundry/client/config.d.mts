@@ -13,7 +13,7 @@ import type {
   PartialUntilInitialized,
   RemoveIndexSignatures,
 } from "#utils";
-import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 import type * as layers from "#client/canvas/layers/_module.d.mts";
@@ -820,31 +820,7 @@ declare global {
     /**
      * Configuration for the CombatantGroup embedded document type within a Combat document.
      */
-    CombatantGroup: {
-      /** @defaultValue `CombatantGroup` */
-      documentClass: Document.ImplementationClassFor<"CombatantGroup">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, CombatantGroup.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"CombatantGroup">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCombatantGroup.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-    };
+    CombatantGroup: CONFIG.CombatantGroup;
 
     /**
      * Configuration for the Drawing embedded document type and its representation on the game Canvas
@@ -3355,6 +3331,8 @@ declare global {
     interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {}
 
     interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
+
+    interface CombatantGroup extends _Document<"CombatantGroup">, _HasTypes<"CombatantGroup"> {}
 
     namespace Wall {
       /** @internal */
