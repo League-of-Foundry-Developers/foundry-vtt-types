@@ -805,31 +805,7 @@ declare global {
     /**
      * Configuration for the AmbientLight embedded document type and its representation on the game Canvas
      */
-    AmbientLight: {
-      /** @defaultValue `AmbientLightDocument` */
-      documentClass: Document.ImplementationClassFor<"AmbientLight">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"AmbientLight">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof AmbientLightDocument` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.LightingLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The lighting layer can be set at {@linkcode CONFIG.Canvas.layers.lighting}
-       */
-      layerClass: typeof layers.LightingLayer;
-    };
+    AmbientLight: CONFIG.AmbientLight;
 
     /**
      * Configuration for the AmbientSound embedded document type and its representation on the game Canvas
@@ -3421,6 +3397,8 @@ declare global {
       /** @defaultValue `"fa-solid fa-music"` */
       sidebarIcon: string;
     }
+
+    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {}
 
     namespace Wall {
       /** @internal */
