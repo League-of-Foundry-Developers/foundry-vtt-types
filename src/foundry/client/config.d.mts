@@ -857,149 +857,7 @@ declare global {
     /**
      * Configuration for the Token embedded document type and its representation on the game Canvas
      */
-    Token: {
-      /** @defaultValue `TokenDocument` */
-      documentClass: Document.ImplementationClassFor<"Token">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Token">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Token` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TokenLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The tokens layer can be set at {@linkcode CONFIG.Canvas.layers.tokens}
-       */
-      layerClass: typeof layers.TokenLayer;
-
-      /** @defaultValue `typeof TokenConfig` */
-      prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
-
-      /** @defaultValue `typeof TokenHUD` */
-      hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
-
-      /**
-       * @defaultValue `typeof TokenRuler`
-       * @privateRemarks `typeof` because the constructor must take a {@linkcode Token.Implementation}
-       */
-      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
-
-      movement: {
-        /** @defaultValue {@linkcode foundry.data.TerrainData | data.TerrainData} */
-        TerrainData: foundry.data.BaseTerrainData.Internal.AnyConstructor;
-
-        /** The movement cost aggregator. */
-        costAggregator: TokenDocument.MovementCostAggregator;
-
-        /**
-         * The default movement animation speed in grid spaces per second.
-         * @defaultValue `6`
-         */
-        defaultSpeed: number;
-
-        /** @defaultValue `"walk"` */
-        defaultAction: string;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   walk: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
-         *     icon: "fa-solid fa-person-walking",
-         *     img: "icons/svg/walk.svg",
-         *     order: 0
-         *   },
-         *   fly: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
-         *     icon: "fa-solid fa-person-fairy",
-         *     img: "icons/svg/wing.svg",
-         *     order: 1
-         *   },
-         *   swim: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
-         *     icon: "fa-solid fa-person-swimming",
-         *     img: "icons/svg/whale.svg",
-         *     order: 2,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
-         *   },
-         *   burrow: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
-         *     icon: "fa-solid fa-person-digging",
-         *     img: "icons/svg/burrow.svg",
-         *     order: 3
-         *   },
-         *   crawl: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
-         *     icon: "fa-solid fa-person-praying",
-         *     img: "icons/svg/leg.svg",
-         *     order: 4,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-         *     deriveTerrainDifficulty: ({walk}) => walk,
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   climb: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
-         *     icon: "fa-solid fa-person-through-window",
-         *     img: "icons/svg/ladder.svg",
-         *     order: 5,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-         *     deriveTerrainDifficulty: ({walk}) => walk,
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   jump: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
-         *     icon: "fa-solid fa-person-running-fast",
-         *     img: "icons/svg/jump.svg",
-         *     order: 6,
-         *     deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   blink: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
-         *     icon: "fa-solid fa-person-from-portal",
-         *     img: "icons/svg/teleport.svg",
-         *     order: 7,
-         *     teleport: true,
-         *     getAnimationOptions: () => ({duration: 0}),
-         *     deriveTerrainDifficulty: () => 1
-         *   },
-         *   displace: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
-         *     icon: "fa-solid fa-transporter-1",
-         *     img: "icons/svg/portal.svg",
-         *     order: 8,
-         *     teleport: true,
-         *     measure: false,
-         *     walls: null,
-         *     visualize: false,
-         *     getAnimationOptions: () => ({duration: 0}),
-         *     canSelect: () => false,
-         *     deriveTerrainDifficulty: () => 1,
-         *     getCostFunction: () => () => 0
-         *   }
-         * }
-         * ```
-         */
-        actions: Record<string, CONFIG.Token.MovementActionConfig>;
-      };
-
-      /** @defaultValue `"TOKEN.Adjectives"` */
-      adjectivesPrefix: string;
-
-      /** @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()` */
-      ring: foundry.canvas.placeables.tokens.TokenRingConfig;
-    };
+    Token: CONFIG.Token;
 
     /**
      * Configuration for the Wall embedded document type and its representation on the game Canvas
@@ -1178,7 +1036,7 @@ declare global {
       }
     }
 
-    /** @deprecated Use {@linkcode CONFIG2.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
+    /** @deprecated Use {@linkcode CONFIG.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
     type TrackableAttribute = Actor.TrackableAttribute;
 
     interface Adventure extends _Document<"Adventure">, _HasNoTypes<"Adventure"> {
@@ -2930,119 +2788,284 @@ declare global {
     }
 
     namespace Token {
-      /** Returns the cost of the move between the grid spaces (nonnegative) */
-      type MovementActionCostFunction = (
-        /** The base cost (terrain cost) */
-        baseCost: number,
+      interface Movement {
+        /** @defaultValue {@linkcode foundry.data.TerrainData} */
+        TerrainData: typeof foundry.data.BaseTerrainData;
+
+        /** The movement cost aggregator. */
+        costAggregator: TokenDocument.MovementCostAggregator;
 
         /**
-         * The offset that is moved from
-         * @remarks foundry marked as `readonly`
+         * The default movement animation speed in grid spaces per second.
+         * @defaultValue `6`
          */
-        from: foundry.grid.BaseGrid.Offset3D,
+        defaultSpeed: number;
 
-        /**
-         * The offset that is moved to
-         * @remarks foundry marked as `readonly`
-         */
-        to: foundry.grid.BaseGrid.Offset3D,
+        /** @defaultValue `"walk"` */
+        defaultAction: ConcreteKeys<Movement.Actions>;
 
-        /** The distance between the grid spaces */
-        distance: number,
-
-        /**
-         * The properties of the segment
-         * @remarks foundry marked as `readonly`
-         */
-        segment: TokenDocument.MovementSegmentData,
-      ) => number;
-
-      interface AnimationOptions extends Pick<
-        foundry.canvas.placeables.Token.AnimateOptions,
-        "duration" | "movementSpeed" | "easing" | "ontick"
-      > {}
-
-      interface _MovementActionConfig {
-        /**
-         * The FontAwesome icon class.
-         */
-        icon: string;
-
-        /**
-         * An image filename. Takes precedence over the icon if both are supplied.
-         */
-        img: string;
-
-        /**
-         * The number that is used to sort the movement actions / movement action configs.
-         * Determines the order in the Token Config/HUD and of cycling.
-         * @defaultValue `0`
-         */
-        order: number;
-
-        /**
-         * Is teleportation? If true, the movement does not go through all grid spaces
-         * between the origin and destination: it goes from teh origin immediately to the destination grid space.
-         * @defaultValue `false`
-         */
-        teleport: boolean;
-
-        /**
-         * Is the movement measured? The distance, cost, spaces, and diagonals
-         * of a segment that is not measured are always 0.
-         * @defaultValue `true`
-         */
-        measure: boolean;
-
-        /**
-         * The type of walls that block this movement, if any.
-         * @defaultValue `"move"`
-         */
-        walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
-
-        /**
-         * Is segment of the movement visualized by the ruler?
-         * @defaultValue `true`
-         */
-        visualize: boolean;
-
-        /**
-         * Get the default animation options for this movement action.
-         * @defaultValue `() => ({})`
-         */
-        getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
-
-        /**
-         * Can the current User select this movement action for the given Token? If selectable, the movement action of the
-         * Token can be set to this movement action by the User via the UI and when cycling.
-         * @defaultValue `() => true`
-         */
-        canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
-
-        /**
-         * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
-         * which are those that do not have `deriveTerrainDifficulty` set.
-         * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
-         * Derived terrain difficulties are not configurable via the behavior UI.
-         */
-        deriveTerrainDifficulty: ((nonDerivedDifficulties: { [action: string]: number }) => number) | null;
-
-        /**
-         * The cost modification function.
-         * @defaultValue `() => cost => cost`
-         */
-        getCostFunction: (
-          token: TokenDocument.Implementation,
-          options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
-        ) => MovementActionCostFunction;
+        actions: RemoveIndexSignatures<Movement.Actions>;
       }
 
-      interface MovementActionConfig extends InexactPartial<_MovementActionConfig> {
-        /**
-         * The label of the movement action.
-         */
-        label: string;
+      namespace Movement {
+        interface AnimationOptions extends Pick<
+          foundry.canvas.placeables.Token.AnimateOptions,
+          "duration" | "movementSpeed" | "easing" | "ontick"
+        > {}
+
+        /** Returns the cost of the move between the grid spaces (nonnegative) */
+        type MovementActionCostFunction = (
+          /** The base cost (terrain cost) */
+          baseCost: number,
+
+          /**
+           * The offset that is moved from
+           * @remarks foundry marked as `readonly`
+           */
+          from: foundry.grid.BaseGrid.Offset3D,
+
+          /**
+           * The offset that is moved to
+           * @remarks foundry marked as `readonly`
+           */
+          to: foundry.grid.BaseGrid.Offset3D,
+
+          /** The distance between the grid spaces */
+          distance: number,
+
+          /**
+           * The properties of the segment
+           * @remarks foundry marked as `readonly`
+           */
+          segment: TokenDocument.MovementSegmentData,
+        ) => number;
+
+        interface _ActionConfig {
+          /**
+           * The FontAwesome icon class.
+           */
+          icon: string;
+
+          /**
+           * An image filename. Takes precedence over the icon if both are supplied.
+           */
+          img: string;
+
+          /**
+           * The number that is used to sort the movement actions / movement action configs.
+           * Determines the order in the Token Config/HUD and of cycling.
+           * @defaultValue `0`
+           */
+          order: number;
+
+          /**
+           * Is teleportation? If true, the movement does not go through all grid spaces
+           * between the origin and destination: it goes from teh origin immediately to the destination grid space.
+           * @defaultValue `false`
+           */
+          teleport: boolean;
+
+          /**
+           * Is the movement measured? The distance, cost, spaces, and diagonals
+           * of a segment that is not measured are always 0.
+           * @defaultValue `true`
+           */
+          measure: boolean;
+
+          /**
+           * The type of walls that block this movement, if any.
+           * @defaultValue `"move"`
+           */
+          walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
+
+          /**
+           * Is segment of the movement visualized by the ruler?
+           * @defaultValue `true`
+           */
+          visualize: boolean;
+
+          /**
+           * Get the default animation options for this movement action.
+           * @defaultValue `() => ({})`
+           */
+          getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
+
+          /**
+           * Can the current User select this movement action for the given Token? If selectable, the movement action of the
+           * Token can be set to this movement action by the User via the UI and when cycling.
+           * @defaultValue `() => true`
+           */
+          canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
+
+          /**
+           * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
+           * which are those that do not have `deriveTerrainDifficulty` set.
+           * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
+           * Derived terrain difficulties are not configurable via the behavior UI.
+           */
+          deriveTerrainDifficulty: ((nonDerivedDifficulties: { [action: string]: number }) => number) | null;
+
+          /**
+           * The cost modification function.
+           * @defaultValue `() => cost => cost`
+           */
+          getCostFunction: (
+            token: TokenDocument.Implementation,
+            options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
+          ) => MovementActionCostFunction;
+        }
+
+        interface ActionConfig extends InexactPartial<_ActionConfig> {
+          /**
+           * The label of the movement action.
+           */
+          label: string;
+        }
+
+        interface Actions {
+          [action: string]: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
+           *   icon: "fa-solid fa-person-walking",
+           *   img: "icons/svg/walk.svg",
+           *   order: 0
+           * }
+           * ```
+           */
+          walk: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
+           *   icon: "fa-solid fa-person-fairy",
+           *   img: "icons/svg/wing.svg",
+           *   order: 1
+           * }
+           * ```
+           */
+          fly: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
+           *   icon: "fa-solid fa-person-swimming",
+           *   img: "icons/svg/whale.svg",
+           *   order: 2,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
+           * }
+           * ```
+           */
+          swim: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
+           *   icon: "fa-solid fa-person-digging",
+           *   img: "icons/svg/burrow.svg",
+           *   order: 3
+           * }
+           * ```
+           */
+          burrow: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
+           *   icon: "fa-solid fa-person-praying",
+           *   img: "icons/svg/leg.svg",
+           *   order: 4,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+           *   deriveTerrainDifficulty: ({walk}) => walk,
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          crawl: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
+           *   icon: "fa-solid fa-person-through-window",
+           *   img: "icons/svg/ladder.svg",
+           *   order: 5,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+           *   deriveTerrainDifficulty: ({walk}) => walk,
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          climb: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
+           *   icon: "fa-solid fa-person-running-fast",
+           *   img: "icons/svg/jump.svg",
+           *   order: 6,
+           *   deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          jump: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
+           *   icon: "fa-solid fa-person-from-portal",
+           *   img: "icons/svg/teleport.svg",
+           *   order: 7,
+           *   teleport: true,
+           *   getAnimationOptions: () => ({duration: 0}),
+           *   deriveTerrainDifficulty: () => 1
+           * }
+           * ```
+           */
+          blink: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
+           *   icon: "fa-solid fa-transporter-1",
+           *   img: "icons/svg/portal.svg",
+           *   order: 8,
+           *   teleport: true,
+           *   measure: false,
+           *   walls: null,
+           *   visualize: false,
+           *   getAnimationOptions: () => ({duration: 0}),
+           *   canSelect: () => false,
+           *   deriveTerrainDifficulty: () => 1,
+           *   getCostFunction: () => () => 0
+           * }
+           * ```
+           */
+          displace: ActionConfig;
+        }
       }
+
+      /** @deprecated Use {@linkcode CONFIG.Token.Movement.ActionConfig} instead. This warning will be removed in v14. */
+      type MovementActionConfig = Movement.ActionConfig;
     }
 
     interface Time {
@@ -3194,6 +3217,39 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.TileHUD;
+    }
+
+    interface Token extends _Document<"Token">, _HasNoTypes<"Token">, _CanvasDoc<"Token"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.sheets.PrototypeTokenConfig}
+       * @privateRemarks Instantiated via `new` in `ActorSheetV2##onConfigurePrototypeToken` and
+       * {@linkcode foundry.appv1.sheets.ActorSheet._onConfigureToken | ActorSheet#_onConfigureToken}.
+       */
+      prototypeSheetClass: typeof foundry.applications.sheets.PrototypeTokenConfig;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.TokenHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.TokenHUD;
+
+      /**
+       * @defaultValue {@linkcode foundry.canvas.placeables.tokens.TokenRuler}
+       * TODO: fix the following link once Token has been updated
+       * @privateRemarks Instantiated via `new` in `linkcode foundry.canvas.placeables.Token._initializeRuler | Token#_initializeRuler`
+       */
+      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
+
+      movement: Token.Movement;
+
+      /** @defaultValue `"TOKEN.Adjectives"` */
+      adjectivesPrefix: string;
+
+      /**
+       * @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()`
+       * @privateRemarks This gets `defineProperty`'d to `{ writable: false, configurable: false }` near the bottom of `config.mjs`
+       */
+      readonly ring: foundry.canvas.placeables.tokens.TokenRingConfig;
     }
 
     interface Wall extends _Document<"Wall">, _HasNoTypes<"Wall">, _CanvasDoc<"Wall"> {
