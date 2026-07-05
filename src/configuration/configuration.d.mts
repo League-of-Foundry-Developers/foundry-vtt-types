@@ -217,6 +217,28 @@ export interface DataConfig {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface GetDataConfig {}
 
+/**
+ * Merge into this interface to configure known subtypes for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}:
+ * `ActiveEffect`, `Actor`, `Card`, `Cards`, `ChatMessage`, `Combat`, `Combatant`, `CombatantGroup`, `Item`, `JournalEntryPage`,
+ * and `RegionBehavior`.
+ *
+ * The current design of this interface limits each document type to having to define all its types in a single merge, rather than spread
+ * out per type model file. However, for example, `Actor` and `Item` subtypes could be registered in separate merges.
+ * @example
+ * ```ts
+ * class NPCModel extends foundry.abstract.TypeDataModel<FooSchema, Actor.Implementation> {
+ *   //...
+ * }
+ *
+ * declare module "fvtt-types/configuration" {
+ *   interface DataModelConfig {
+ *     Actor {
+ *       npc: typeof NPCModel
+ *     }
+ *   }
+ * }
+ * ```
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataModelConfig {}
 
