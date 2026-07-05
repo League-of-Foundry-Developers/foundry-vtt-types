@@ -800,21 +800,7 @@ declare global {
     /**
      * Configuration for the ActiveEffect embedded document type
      */
-    PlaylistSound: {
-      /** @defaultValue `PlaylistSound` */
-      documentClass: Document.ImplementationClassFor<"PlaylistSound">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"PlaylistSound">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    PlaylistSound: CONFIG.PlaylistSound;
 
     /**
      * Configuration for the AmbientLight embedded document type and its representation on the game Canvas
@@ -3428,6 +3414,11 @@ declare global {
       defaultType: string;
 
       /** @defaultValue `"fa-solid fa-book-open"` */
+      sidebarIcon: string;
+    }
+
+    interface PlaylistSound extends _Document<"PlaylistSound">, _HasNoTypes<"PlaylistSound"> {
+      /** @defaultValue `"fa-solid fa-music"` */
       sidebarIcon: string;
     }
 
