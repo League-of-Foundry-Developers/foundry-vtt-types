@@ -1004,38 +1004,7 @@ declare global {
     /**
      * Configuration for the Wall embedded document type and its representation on the game Canvas
      */
-    Wall: {
-      /** @defaultValue `WallDocument` */
-      documentClass: Document.ImplementationClassFor<"Wall">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Wall">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Wall` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.WallsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The walls layer can be set at {@linkcode CONFIG.Canvas.layers.walls}
-       */
-      layerClass: typeof layers.WallsLayer;
-
-      /** @defaultValue `1` */
-      thresholdAttenuationMultiplier: number;
-
-      doorSounds: InterfaceToObject<CONFIG.Wall.DoorSounds>;
-
-      animationTypes: InterfaceToObject<CONFIG.Wall.DoorAnimations>;
-    };
+    Wall: CONFIG.Wall;
 
     /**
      * An enumeration of sound effects which can be applied to Sound instances.
@@ -3227,9 +3196,26 @@ declare global {
       hudClass: typeof foundry.applications.hud.TileHUD;
     }
 
+    interface Wall extends _Document<"Wall">, _HasNoTypes<"Wall">, _CanvasDoc<"Wall"> {
+      // TODO: is InterfaceToObject required?
+      animationTypes: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorAnimations>>;
+
+      // TODO: is InterfaceToObject required?
+      doorSounds: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorSounds>>;
+
+      /**
+       * A default grid size in pixels which is used for rendering {@linkcode foundry.canvas.containers.DoorMesh} sizing.
+       * @defaultValue `200`
+       */
+      textureGridSize: number;
+
+      /** @defaultValue `1` */
+      thresholdAttenuationMultiplier: number;
+    }
+
     namespace Wall {
       /** @internal */
-      type _DoorSoundConfig = InexactPartial<{
+      interface _DoorSoundConfig {
         /**
          * One or more sound paths for when the door is closed
          * @remarks If an array is provided, a random entry is chosen
@@ -3259,9 +3245,9 @@ declare global {
          * @remarks If an array is provided, a random entry is chosen
          */
         unlock: MaybeArray<string>;
-      }>;
+      }
 
-      interface DoorSoundConfig extends _DoorSoundConfig {
+      interface DoorSoundConfig extends InexactPartial<_DoorSoundConfig> {
         /** A localization string label */
         label: string;
       }
@@ -3560,7 +3546,7 @@ declare global {
       type DoorAnimationHook = (this: DoorMesh, open: boolean) => MaybePromise<void>;
 
       /** @internal */
-      type _DoorAnimationConfig = InexactPartial<{
+      interface _DoorAnimationConfig {
         /**
          * @defaultValue `false`
          * @remarks Pivot about the midpoint, instead of the {@linkcode geometry.edges.Edge.a | a} endpoint of the Wall's Edge?
@@ -3578,9 +3564,9 @@ declare global {
 
         /** @remarks `postAnimate` hooks **are** awaited */
         postAnimate: DoorAnimationHook;
-      }>;
+      }
 
-      interface DoorAnimationConfig extends _DoorAnimationConfig {
+      interface DoorAnimationConfig extends InexactPartial<_DoorAnimationConfig> {
         /** @remarks Label (or localization key) for the animation select in {@linkcode foundry.applications.sheets.WallConfig | WallConfig}*/
         label: string;
 
