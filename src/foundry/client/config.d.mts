@@ -778,40 +778,7 @@ declare global {
     /**
      * Configuration for the ActiveEffect embedded document type
      */
-    ActiveEffect: {
-      /** @defaultValue `ActiveEffect` */
-      documentClass: Document.ImplementationClassFor<"ActiveEffect">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, ActiveEffect.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ActiveEffect">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseActiveEffect.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /**
-       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
-       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
-       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
-       * if the transfer property on the Active Effect is true.
-       * @remarks Foundry states "\@deprecated since v11" but this is misleading for actual use
-       */
-      legacyTransferral: boolean;
-    };
+    ActiveEffect: CONFIG.ActiveEffect;
 
     /**
      * Configuration for the ActorDelta embedded document type.
@@ -3530,6 +3497,18 @@ declare global {
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
         ago: typeof foundry.data.CalendarData.formatAgo;
       }
+    }
+
+    interface ActiveEffect extends _Document<"ActiveEffect">, _HasTypes<"ActiveEffect"> {
+      /**
+       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
+       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
+       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
+       * if the transfer property on the Active Effect is true.
+       * @defaultValue `false`
+       * @deprecated since V11. It can be set to true until V14, at which point it will be removed.
+       */
+      legacyTransferral: boolean;
     }
 
     namespace Wall {
