@@ -172,33 +172,38 @@ declare global {
       fulfillment: CONFIG.Dice.FulfillmentConfiguration;
     }
 
+    /** @internal */
+    interface _StatusEffect {
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
+       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of
+       * {@linkcode StatusEffectConfig.name | StatusEffectConfig#name}"  (since v12, until v14)
+       */
+      label: string;
+
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
+       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of
+       * {@linkcode StatusEffectConfig.img | StatusEffectConfig#img}"  (since v12, until v14)
+       */
+      icon: string;
+
+      /**
+       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
+       * if the Token's Actor sub-type is one of the configured ones.
+       * @defaultValue `true`
+       */
+      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
+    }
+
     /**
      * Configured status effects which are recognized by the game system
      */
-    interface StatusEffect extends foundry.documents.BaseActiveEffect.CreateData {
+    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
       /**
        * A string identifier for the effect
        */
       id: string;
-
-      /**
-       * Alias for ActiveEffectData#name
-       * @deprecated since v11, will be removed in v13
-       */
-      label?: string | undefined | null;
-
-      /**
-       * Alias for ActiveEffectData#img
-       * @deprecated since v12, will be removed in v14
-       */
-      icon?: string | undefined | null;
-
-      /**
-       * Should this effect be selectable in the Token HUD?
-       * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
-       * @defaultValue `true`
-       */
-      hud?: boolean | { actorTypes: string[] } | undefined | null;
     }
   }
 
@@ -392,139 +397,139 @@ declare global {
     defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
 
     /**
-     * The array of status effect icons which can be applied to an Actor
+     * The array of status effects which can be applied to an Actor.
      * @defaultValue
      * ```js
      * [
      *   {
-     *     id: "dead";
-     *     name: "EFFECT.StatusDead";
-     *     img: "icons/svg/skull.svg";
+     *     id: "dead",
+     *     name: "EFFECT.StatusDead",
+     *     img: "icons/svg/skull.svg"
      *   },
      *   {
-     *     id: "unconscious";
-     *     name: "EFFECT.StatusUnconscious";
-     *     img: "icons/svg/unconscious.svg";
+     *     id: "unconscious",
+     *     name: "EFFECT.StatusUnconscious",
+     *     img: "icons/svg/unconscious.svg"
      *   },
      *   {
-     *     id: "sleep";
-     *     name: "EFFECT.StatusAsleep";
-     *     img: "icons/svg/sleep.svg";
+     *     id: "sleep",
+     *     name: "EFFECT.StatusAsleep",
+     *     img: "icons/svg/sleep.svg"
      *   },
      *   {
-     *     id: "stun";
-     *     name: "EFFECT.StatusStunned";
-     *     img: "icons/svg/daze.svg";
+     *     id: "stun",
+     *     name: "EFFECT.StatusStunned",
+     *     img: "icons/svg/daze.svg"
      *   },
      *   {
-     *     id: "prone";
-     *     name: "EFFECT.StatusProne";
-     *     img: "icons/svg/falling.svg";
+     *     id: "prone",
+     *     name: "EFFECT.StatusProne",
+     *     img: "icons/svg/falling.svg"
      *   },
      *   {
-     *     id: "restrain";
-     *     name: "EFFECT.StatusRestrained";
-     *     img: "icons/svg/net.svg";
+     *     id: "restrain",
+     *     name: "EFFECT.StatusRestrained",
+     *     img: "icons/svg/net.svg"
      *   },
      *   {
-     *     id: "paralysis";
-     *     name: "EFFECT.StatusParalysis";
-     *     img: "icons/svg/paralysis.svg";
+     *     id: "paralysis",
+     *     name: "EFFECT.StatusParalysis",
+     *     img: "icons/svg/paralysis.svg"
      *   },
      *   {
-     *     id: "fly";
-     *     name: "EFFECT.StatusFlying";
-     *     img: "icons/svg/wing.svg";
+     *     id: "fly",
+     *     name: "EFFECT.StatusFlying",
+     *     img: "icons/svg/wing.svg"
      *   },
      *   {
-     *     id: "blind";
-     *     name: "EFFECT.StatusBlind";
-     *     img: "icons/svg/blind.svg";
+     *     id: "blind",
+     *     name: "EFFECT.StatusBlind",
+     *     img: "icons/svg/blind.svg"
      *   },
      *   {
-     *     id: "deaf";
-     *     name: "EFFECT.StatusDeaf";
-     *     img: "icons/svg/deaf.svg";
+     *     id: "deaf",
+     *     name: "EFFECT.StatusDeaf",
+     *     img: "icons/svg/deaf.svg"
      *   },
      *   {
-     *     id: "silence";
-     *     name: "EFFECT.StatusSilenced";
-     *     img: "icons/svg/silenced.svg";
+     *     id: "silence",
+     *     name: "EFFECT.StatusSilenced",
+     *     img: "icons/svg/silenced.svg"
      *   },
      *   {
-     *     id: "fear";
-     *     name: "EFFECT.StatusFear";
-     *     img: "icons/svg/terror.svg";
+     *     id: "fear",
+     *     name: "EFFECT.StatusFear",
+     *     img: "icons/svg/terror.svg"
      *   },
      *   {
-     *     id: "burning";
-     *     name: "EFFECT.StatusBurning";
-     *     img: "icons/svg/fire.svg";
+     *     id: "burning",
+     *     name: "EFFECT.StatusBurning",
+     *     img: "icons/svg/fire.svg"
      *   },
      *   {
-     *     id: "frozen";
-     *     name: "EFFECT.StatusFrozen";
-     *     img: "icons/svg/frozen.svg";
+     *     id: "frozen",
+     *     name: "EFFECT.StatusFrozen",
+     *     img: "icons/svg/frozen.svg"
      *   },
      *   {
-     *     id: "shock";
-     *     name: "EFFECT.StatusShocked";
-     *     img: "icons/svg/lightning.svg";
+     *     id: "shock",
+     *     name: "EFFECT.StatusShocked",
+     *     img: "icons/svg/lightning.svg"
      *   },
      *   {
-     *     id: "corrode";
-     *     name: "EFFECT.StatusCorrode";
-     *     img: "icons/svg/acid.svg";
+     *     id: "corrode",
+     *     name: "EFFECT.StatusCorrode",
+     *     img: "icons/svg/acid.svg"
      *   },
      *   {
-     *     id: "bleeding";
-     *     name: "EFFECT.StatusBleeding";
-     *     img: "icons/svg/blood.svg";
+     *     id: "bleeding",
+     *     name: "EFFECT.StatusBleeding",
+     *     img: "icons/svg/blood.svg"
      *   },
      *   {
-     *     id: "disease";
-     *     name: "EFFECT.StatusDisease";
-     *     img: "icons/svg/biohazard.svg";
+     *     id: "disease",
+     *     name: "EFFECT.StatusDisease",
+     *     img: "icons/svg/biohazard.svg"
      *   },
      *   {
-     *     id: "poison";
-     *     name: "EFFECT.StatusPoison";
-     *     img: "icons/svg/poison.svg";
+     *     id: "poison",
+     *     name: "EFFECT.StatusPoison",
+     *     img: "icons/svg/poison.svg"
      *   },
      *   {
-     *     id: "curse";
-     *     name: "EFFECT.StatusCursed";
-     *     img: "icons/svg/sun.svg";
+     *     id: "curse",
+     *     name: "EFFECT.StatusCursed",
+     *     img: "icons/svg/sun.svg"
      *   },
      *   {
-     *     id: "regen";
-     *     name: "EFFECT.StatusRegen";
-     *     img: "icons/svg/regen.svg";
+     *     id: "regen",
+     *     name: "EFFECT.StatusRegen",
+     *     img: "icons/svg/regen.svg"
      *   },
      *   {
-     *     id: "degen";
-     *     name: "EFFECT.StatusDegen";
-     *     img: "icons/svg/degen.svg";
+     *     id: "degen",
+     *     name: "EFFECT.StatusDegen",
+     *     img: "icons/svg/degen.svg"
      *   },
      *   {
-     *     id: "hover";
-     *     name: "EFFECT.StatusHover";
-     *     img: "icons/svg/wingfoot.svg";
+     *     id: "hover",
+     *     name: "EFFECT.StatusHover",
+     *     img: "icons/svg/wingfoot.svg"
      *   },
      *   {
-     *     id: "burrow";
-     *     name: "EFFECT.StatusBurrow";
-     *     img: "icons/svg/mole.svg";
+     *     id: "burrow",
+     *     name: "EFFECT.StatusBurrow",
+     *     img: "icons/svg/mole.svg"
      *   },
      *   {
-     *     id: "upgrade";
-     *     name: "EFFECT.StatusUpgrade";
-     *     img: "icons/svg/upgrade.svg";
+     *     id: "upgrade",
+     *     name: "EFFECT.StatusUpgrade",
+     *     img: "icons/svg/upgrade.svg"
      *   },
      *   {
-     *     id: "downgrade";
-     *     name: "EFFECT.StatusDowngrade";
-     *     img: "icons/svg/downgrade.svg";
+     *     id: "downgrade",
+     *     name: "EFFECT.StatusDowngrade",
+     *     img: "icons/svg/downgrade.svg"
      *   },
      *   {
      *     id: "invisible",
@@ -532,39 +537,39 @@ declare global {
      *     img: "icons/svg/invisible.svg"
      *   },
      *   {
-     *     id: "target";
-     *     name: "EFFECT.StatusTarget";
-     *     img: "icons/svg/target.svg";
+     *     id: "target",
+     *     name: "EFFECT.StatusTarget",
+     *     img: "icons/svg/target.svg"
      *   },
      *   {
-     *     id: "eye";
-     *     name: "EFFECT.StatusMarked";
-     *     img: "icons/svg/eye.svg";
+     *     id: "eye",
+     *     name: "EFFECT.StatusMarked",
+     *     img: "icons/svg/eye.svg"
      *   },
      *   {
-     *     id: "bless";
-     *     name: "EFFECT.StatusBlessed";
-     *     img: "icons/svg/angel.svg";
+     *     id: "bless",
+     *     name: "EFFECT.StatusBlessed",
+     *     img: "icons/svg/angel.svg"
      *   },
      *   {
-     *     id: "fireShield";
-     *     name: "EFFECT.StatusFireShield";
-     *     img: "icons/svg/fire-shield.svg";
+     *     id: "fireShield",
+     *     name: "EFFECT.StatusFireShield",
+     *     img: "icons/svg/fire-shield.svg"
      *   },
      *   {
-     *     id: "coldShield";
-     *     name: "EFFECT.StatusIceShield";
-     *     img: "icons/svg/ice-shield.svg";
+     *     id: "coldShield",
+     *     name: "EFFECT.StatusIceShield",
+     *     img: "icons/svg/ice-shield.svg"
      *   },
      *   {
-     *     id: "magicShield";
-     *     name: "EFFECT.StatusMagicShield";
-     *     img: "icons/svg/mage-shield.svg";
+     *     id: "magicShield",
+     *     name: "EFFECT.StatusMagicShield",
+     *     img: "icons/svg/mage-shield.svg"
      *   },
      *   {
-     *     id: "holyShield";
-     *     name: "EFFECT.StatusHolyShield";
-     *     img: "icons/svg/holy-shield.svg";
+     *     id: "holyShield",
+     *     name: "EFFECT.StatusHolyShield",
+     *     img: "icons/svg/holy-shield.svg"
      *   }
      * ]
      * ```
