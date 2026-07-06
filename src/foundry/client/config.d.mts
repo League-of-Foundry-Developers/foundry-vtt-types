@@ -254,22 +254,7 @@ declare global {
      */
     compatibility: CONFIG.Compatibility;
 
-    compendium: {
-      /**
-       * Configure a table of compendium UUID redirects. Must be configured before the game *ready* hook is fired.
-       *
-       * @example Re-map individual UUIDs
-       * ```js
-       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes.Actor.Tf0JDPzHOrIxz6BH"] = "Compendium.system.villains.Actor.DKYLeIliXXzlAZ2G";
-       * ```
-       *
-       * @example Redirect UUIDs from one compendium to another.
-       * ```js
-       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes"] = "Compendium.system.villains";
-       * ```
-       */
-      uuidRedirects: Record<string, string>;
-    };
+    compendium: CONFIG.Compendium;
 
     /**
      * Configure the DatabaseBackend used to perform Document operations
@@ -989,6 +974,26 @@ declare global {
 
       /** @defaultValue `[]` */
       excludePatterns: RegExp[];
+    }
+
+    interface Compendium {
+      /**
+       * Configure a table of compendium UUID redirects. Must be configured before the game *ready* hook is fired.
+       *
+       * @example
+       * Re-map individual UUIDs
+       * ```js
+       * const newUuid = "Compendium.system.villains.Actor.DKYLeIliXXzlAZ2G";
+       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes.Actor.Tf0JDPzHOrIxz6BH"] = newUuid;
+       * ```
+       *
+       * @example
+       * Redirect UUIDs from one compendium to another.
+       * ```js
+       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes"] = "Compendium.system.villains";
+       * ```
+       */
+      uuidRedirects: Record<string, string>;
     }
 
     /**
