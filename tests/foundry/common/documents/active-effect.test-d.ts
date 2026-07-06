@@ -320,7 +320,7 @@ expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // // eslint-disable-next-line @typescript-eslint/no-deprecated
 // expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect], {}));
 
-expectTypeOf(TestActiveEffect["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
+expectTypeOf(TestActiveEffect._schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 
 expectTypeOf(

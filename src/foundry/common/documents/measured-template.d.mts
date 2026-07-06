@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -54,14 +54,14 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * Migrations:
    * - `user` to `author` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
    * - `user` to `author` (since v12, until v14)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated "You are accessing `user` which has been migrated to `author`" (since v12, until 14)
@@ -79,8 +79,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    */
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseMeasuredTemplate.ParentCollectionName | null;
 
   static override get implementation(): MeasuredTemplateDocument.ImplementationClass;
 
@@ -267,7 +265,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;
+  static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;
 
   static override get schema(): SchemaField<BaseMeasuredTemplate.Schema>;
 

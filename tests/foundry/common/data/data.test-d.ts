@@ -29,10 +29,10 @@ expectTypeOf(myLight.darkness.max).toBeNumber();
 const myShape = new foundry.data.ShapeData();
 
 expectTypeOf(myShape.type).toEqualTypeOf<"c" | "r" | "e" | "p">();
-expectTypeOf(myShape.width).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(myShape.height).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(myShape.radius).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(myShape.points).toEqualTypeOf<Array<number | undefined>>();
+expectTypeOf(myShape.width).toEqualTypeOf<number | null>();
+expectTypeOf(myShape.height).toEqualTypeOf<number | null>();
+expectTypeOf(myShape.radius).toEqualTypeOf<number | null>();
+expectTypeOf(myShape.points).toEqualTypeOf<number[]>();
 
 /******************************************************************/
 
@@ -88,8 +88,8 @@ const myProtoToken = new foundry.data.PrototypeToken();
 expectTypeOf(myProtoToken.name).toEqualTypeOf<string>();
 expectTypeOf(myProtoToken.randomImg).toBeBoolean();
 
-expectTypeOf(myProtoToken.actor).toEqualTypeOf<foundry.documents.BaseActor>();
-expectTypeOf(myProtoToken.toObject().actorId).toEqualTypeOf<string | undefined>();
+expectTypeOf(myProtoToken.actor).toEqualTypeOf<Actor.Implementation | null>();
+expectTypeOf(myProtoToken.toObject().actorId).toEqualTypeOf<string | null | undefined>();
 expectTypeOf(myProtoToken.getBarAttribute("foo")).toEqualTypeOf<
   TokenDocument.SingleAttributeBar | TokenDocument.ObjectAttributeBar | null
 >();
@@ -107,10 +107,12 @@ expectTypeOf(myTombstone._tombstone).toEqualTypeOf<boolean>();
 test("Test TextureData.Schema", () => {
   expectTypeOf<foundry.data.TextureData.Schema["src"]>().toEqualTypeOf<
     foundry.data.fields.FilePathField<{
+      required: true;
       categories: ["IMAGE", "VIDEO"];
       // Note(LukeAbby): The `initial` here in particular was broken for a while due to a usage of `EmptyObject`.
       initial: null;
       wildcard: false;
+      virtual: true;
       label: "";
     }>
   >();

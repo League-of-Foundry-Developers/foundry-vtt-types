@@ -55,7 +55,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -71,8 +71,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseJournalEntry.ParentCollectionName | null;
 
   static override get implementation(): JournalEntry.ImplementationClass;
 
@@ -293,7 +291,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseJournalEntry.Schema>;
+  static override _schema: SchemaField<BaseJournalEntry.Schema>;
 
   static override get schema(): SchemaField<BaseJournalEntry.Schema>;
 

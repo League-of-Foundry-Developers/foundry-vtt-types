@@ -58,7 +58,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -74,8 +74,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
 
   /* Document overrides */
-
-  readonly parentCollection: BaseRollTable.ParentCollectionName | null;
 
   static override get implementation(): RollTable.ImplementationClass;
 
@@ -291,7 +289,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<BaseRollTable.Schema>;
+  static override _schema: SchemaField<BaseRollTable.Schema>;
 
   static get schema(): SchemaField<BaseRollTable.Schema>;
 

@@ -75,7 +75,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static override canUserCreate(user: User.Implementation): boolean;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -93,8 +93,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseItem.ParentCollectionName | null;
 
   static override get implementation(): Item.ImplementationClass;
 
@@ -313,7 +311,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseItem.Schema>;
+  static override _schema: SchemaField<BaseItem.Schema>;
 
   static override get schema(): SchemaField<BaseItem.Schema>;
 

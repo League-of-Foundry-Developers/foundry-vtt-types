@@ -55,7 +55,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -71,8 +71,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    */
 
   /* Document overrides */
-
-  override readonly parentCollection: BasePlaylist.ParentCollectionName | null;
 
   static override get implementation(): Playlist.ImplementationClass;
 
@@ -289,7 +287,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BasePlaylist.Schema>;
+  static override _schema: SchemaField<BasePlaylist.Schema>;
 
   static override get schema(): SchemaField<BasePlaylist.Schema>;
 

@@ -1903,8 +1903,8 @@ declare global {
       rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
 
       movement: {
-        /** @defaultValue `data.TerrainData` */
-        TerrainData: typeof foundry.data.BaseTerrainData;
+        /** @defaultValue {@linkcode foundry.data.TerrainData | data.TerrainData} */
+        TerrainData: foundry.data.BaseTerrainData.Internal.AnyConstructor;
 
         /** The movement cost aggregator. */
         costAggregator: TokenDocument.MovementCostAggregator;

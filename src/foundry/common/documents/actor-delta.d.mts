@@ -1,4 +1,4 @@
-import type { AnyMutableObject, Identity, MaybeArray, OverlapsWith } from "#utils";
+import type { Identity, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -88,7 +88,7 @@ declare abstract class BaseActorDelta<
    *
    * Simply forwards to `BaseActor`
    */
-  static migrateData(source: AnyMutableObject): AnyMutableObject;
+  static migrateData(source: object): object;
 
   /**
    * Prepare changes to a descendent delta collection.
@@ -129,9 +129,6 @@ declare abstract class BaseActorDelta<
   set type(type);
 
   /* Document overrides */
-
-  // Even temporary `ActorDelta`s require parents, so this is never `null`.
-  override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
   static override get implementation(): ActorDelta.ImplementationClass;
 
@@ -352,7 +349,7 @@ declare abstract class BaseActorDelta<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseActorDelta.Schema>;
+  static override _schema: SchemaField<BaseActorDelta.Schema>;
 
   static override get schema(): SchemaField<BaseActorDelta.Schema>;
 

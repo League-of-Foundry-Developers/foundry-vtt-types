@@ -60,8 +60,6 @@ declare abstract class BaseJournalEntryPage<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseJournalEntryPage.ParentCollectionName | null;
-
   static override get implementation(): JournalEntryPage.ImplementationClass;
 
   static override get baseDocument(): typeof BaseJournalEntryPage;
@@ -249,7 +247,7 @@ declare abstract class BaseJournalEntryPage<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseJournalEntryPage.Schema>;
+  static override _schema: SchemaField<BaseJournalEntryPage.Schema>;
 
   static override get schema(): SchemaField<BaseJournalEntryPage.Schema>;
 
