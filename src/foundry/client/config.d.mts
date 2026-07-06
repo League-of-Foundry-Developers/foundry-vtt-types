@@ -222,19 +222,22 @@ declare global {
      *
      * @see {@linkcode CONST.COMPATIBILITY_MODES}
      *
-     * @example Include Specific Errors
+     * @example
+     * Include Specific Errors
      * ```js
      * const includeRgx = new RegExp("/systems/dnd5e/module/documents/active-effect.mjs");
      * CONFIG.compatibility.includePatterns.push(includeRgx);
      * ```
      *
-     * @example Exclude Specific Errors
+     * @example
+     * Exclude Specific Errors
      * ```js
      * const excludeRgx = new RegExp("/systems/dnd5e/");
      * CONFIG.compatibility.excludePatterns.push(excludeRgx);
      * ```
      *
-     * @example Both Include and Exclude
+     * @example
+     * Both Include and Exclude
      * ```js
      * const includeRgx = new RegExp("/systems/dnd5e/module/actor/");
      * const excludeRgx = new RegExp("/systems/dnd5e/module/actor/sheets/base.js");
@@ -242,17 +245,14 @@ declare global {
      * CONFIG.compatibility.excludePatterns.push(excludeRgx);
      * ```
      *
-     * @example Targeting more than filenames
+     * @example
+     * Targeting more than filenames
      * ```js
      * const includeRgx = new RegExp("applyActiveEffects");
      * CONFIG.compatibility.includePatterns.push(includeRgx);
      * ```
      */
-    compatibility: {
-      mode: CONST.COMPATIBILITY_MODES;
-      includePatterns: RegExp[];
-      excludePatterns: RegExp[];
-    };
+    compatibility: CONFIG.Compatibility;
 
     compendium: {
       /**
@@ -978,6 +978,17 @@ declare global {
         /** @defaultValue `false` */
         memory: boolean;
       }
+    }
+
+    interface Compatibility {
+      /** @defaultValue {@linkcode CONST.COMPATIBILITY_MODES.WARNING} */
+      mode: CONST.COMPATIBILITY_MODES;
+
+      /** @defaultValue `[]` */
+      includePatterns: RegExp[];
+
+      /** @defaultValue `[]` */
+      excludePatterns: RegExp[];
     }
 
     /**
