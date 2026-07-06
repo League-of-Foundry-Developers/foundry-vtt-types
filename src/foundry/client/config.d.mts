@@ -588,19 +588,7 @@ declare global {
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
      */
-    sounds: {
-      /** @defaultValue `"sounds/dice.wav"` */
-      dice: string;
-
-      /** @defaultValue `"sounds/lock.wav"` */
-      lock: string;
-
-      /** @defaultValue `"sounds/notify.wav"` */
-      notification: string;
-
-      /** @defaultValue `"sounds/drums.wav"` */
-      combat: string;
-    };
+    sounds: RemoveIndexSignatures<CONFIG.Sounds>;
 
     /**
      * Define the set of supported languages for localization
@@ -2542,6 +2530,22 @@ declare global {
 
       /** @defaultValue `"fly"` */
       FLY: string;
+    }
+
+    interface Sounds {
+      [soundName: string]: string;
+
+      /** @defaultValue `"sounds/dice.wav"` */
+      dice: string;
+
+      /** @defaultValue `"sounds/lock.wav"` */
+      lock: string;
+
+      /** @defaultValue `"sounds/notify.wav"` */
+      notification: string;
+
+      /** @defaultValue `"sounds/drums.wav"` */
+      combat: string;
     }
 
     interface WeatherEffects {
