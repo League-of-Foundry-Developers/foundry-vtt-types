@@ -334,29 +334,27 @@ declare global {
     DatabaseBackend: foundry.data.ClientDatabaseBackend;
 
     /**
-     * Configuration for the Actor document
+     * Configuration for the {@linkcode foundry.documents.Actor | Actor} document
      */
     Actor: CONFIG.Actor;
 
     /**
-     * Configuration for the Adventure document.
-     * Currently for internal use only.
-     * @internal
+     * Configuration for the {@linkcode foundry.documents.Adventure | Adventure} document
      */
     Adventure: CONFIG.Adventure;
 
     /**
-     * Configuration for the Cards primary Document type
+     * Configuration for the {@linkcode foundry.documents.Cards | Cards} document
      */
     Cards: CONFIG.Cards;
 
     /**
-     * Configuration for the ChatMessage document
+     * Configuration for the {@linkcode foundry.documents.ChatMessage | ChatMessage} document
      */
     ChatMessage: CONFIG.ChatMessage;
 
     /**
-     * Configuration for the Combat document
+     * Configuration for the {@linkcode foundry.documents.Combat | Combat} document
      */
     Combat: CONFIG.Combat;
 
@@ -366,49 +364,52 @@ declare global {
     Dice: CONFIG.Dice;
 
     /**
-     * Configuration for the FogExploration document
+     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
      */
     FogExploration: CONFIG.FogExploration;
 
     /**
-     * Configuration for the Folder entity
+     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
      */
     Folder: CONFIG.Folder;
 
     /**
-     * Configuration for the default Item entity class
+     * Configuration for the {@linkcode foundry.documents.Item | Item} document
      */
     Item: CONFIG.Item;
 
     /**
-     * Configuration for the JournalEntry entity
+     * Configuration for the {@linkcode foundry.documents.JournalEntry | JournalEntry} document
      */
     JournalEntry: CONFIG.JournalEntry;
 
     /**
-     * Configuration for the Macro entity
+     * Configuration for the {@linkcode foundry.documents.Macro | Macro} document
      */
     Macro: CONFIG.Macro;
 
     /**
-     * Configuration for the default Playlist entity class
+     * Configuration for the {@linkcode foundry.documents.Playlist | Playlist} document
      */
     Playlist: CONFIG.Playlist;
 
     /**
-     * Configuration for RollTable random draws
+     * Configuration for the {@linkcode foundry.documents.RollTable | RollTable} document
      */
     RollTable: CONFIG.RollTable;
 
     /**
-     * Configuration for the default Scene entity class
+     * Configuration for the {@linkcode foundry.documents.Scene | Scene} document
      */
     Scene: CONFIG.Scene;
 
+    /**
+     * Configuration for the {@linkcode foundry.documents.Setting | Setting} document
+     */
     Setting: CONFIG.Setting;
 
     /**
-     * Configuration for the User entity, it's roles, and permissions
+     * Configuration for the {@linkcode foundry.documents.User | User} document
      */
     User: CONFIG.User;
 
@@ -776,91 +777,102 @@ declare global {
     time: CONFIG.Time;
 
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the {@linkcode foundry.documents.ActiveEffect | ActiveEffect} embedded document type
      */
     ActiveEffect: CONFIG.ActiveEffect;
 
     /**
-     * Configuration for the ActorDelta embedded document type.
+     * Configuration for the {@linkcode foundry.documents.ActorDelta | ActorDelta} embedded document type.
      */
     ActorDelta: CONFIG.ActorDelta;
 
     /**
-     * Configuration for the Card embedded Document type
+     * Configuration for the {@linkcode foundry.documents.Card | Card} embedded document type
      */
     Card: CONFIG.Card;
 
     /**
-     * Configuration for the TableResult embedded document type
+     * Configuration for the {@linkcode foundry.documents.TableResult | TableResult} embedded document type
      */
     TableResult: CONFIG.TableResult;
 
+    /**
+     * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
+     */
     JournalEntryPage: CONFIG.JournalEntryPage;
 
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the {@linkcode foundry.documents.PlaylistSound | PlaylistSound} embedded document type
      */
     PlaylistSound: CONFIG.PlaylistSound;
 
     /**
-     * Configuration for the AmbientLight embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.AmbientLight | AmbientLight} embedded document
+     * type and its representation on the game Canvas
      */
     AmbientLight: CONFIG.AmbientLight;
 
     /**
-     * Configuration for the AmbientSound embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.AmbientSound | AmbientSound} embedded document
+     * type and its representation on the game Canvas
      */
     AmbientSound: CONFIG.AmbientSound;
 
     /**
-     * Configuration for the Combatant embedded document type within a Combat document
+     * Configuration for the {@linkcode foundry.documents.Combatant | Combatant} embedded document type
+     * within a {@linkcode foundry.documents.Combat | Combat} document
      */
     Combatant: CONFIG.Combatant;
 
     /**
-     * Configuration for the CombatantGroup embedded document type within a Combat document.
+     * Configuration for the {@linkcode foundry.documents.CombatantGroup | CombatantGroup}
+     * embedded document type within a {@linkcode foundry.documents.Combat | Combat} document.
      */
     CombatantGroup: CONFIG.CombatantGroup;
 
     /**
-     * Configuration for the Drawing embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
      */
     Drawing: CONFIG.Drawing;
 
     /**
-     * Configuration for the JournalEntryCategory embedded document type.
+     * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
      */
     JournalEntryCategory: CONFIG.JournalEntryCategory;
 
     /**
-     * Configuration for the MeasuredTemplate embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
+     * on the game Canvas
      */
     MeasuredTemplate: CONFIG.MeasuredTemplate;
 
     /**
-     * Configuration for the Note embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Note | Note} embedded document type and its representation on the game Canvas
      */
     Note: CONFIG.Note;
 
+    /**
+     * Configuration for the {@linkcode foundry.documents.Region | Region} embedded document type and its representation on the game Canvas
+     */
     Region: CONFIG.Region;
 
     /**
-     * Configuration for the RegionBehavior embedded document type
+     * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
      */
     RegionBehavior: CONFIG.RegionBehavior;
 
     /**
-     * Configuration for the Tile embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
      */
     Tile: CONFIG.Tile;
 
     /**
-     * Configuration for the Token embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Token | Token} embedded document type and its representation on the game Canvas
      */
     Token: CONFIG.Token;
 
     /**
-     * Configuration for the Wall embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Wall | Wall} embedded document type and its representation on the game Canvas
      */
     Wall: CONFIG.Wall;
 
