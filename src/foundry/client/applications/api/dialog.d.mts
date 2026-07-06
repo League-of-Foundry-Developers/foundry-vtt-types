@@ -411,12 +411,7 @@ declare namespace DialogV2 {
     dialog: Dialog,
   ) => Promise<void>;
 
-  // `content` is intentionally omitted from the `DeepInexactPartial<Configuration>` and re-declared
-  // below: deep-partialing `Configuration["content"]` recurses into `HTMLDivElement`, producing a
-  // massive `DeepInexactPartial<HTMLDivElement>` that both explodes assignability depth and is
-  // semantically wrong. See the note on `Internal.GetFormContent`.
-  interface WaitOptions<Dialog extends DialogV2.Any = DialogV2.Any>
-    extends DeepInexactPartial<Omit<Configuration<Dialog>, "content">> {
+  interface WaitOptions<Dialog extends DialogV2.Any = DialogV2.Any> extends DeepInexactPartial<Configuration<Dialog>> {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */
@@ -433,9 +428,6 @@ declare namespace DialogV2 {
      * @remarks `null` equivalent to `false`
      */
     rejectClose?: boolean | null | undefined;
-
-    // Re-declared here because it is `Omit`ted from the `DeepInexactPartial<Configuration>` above.
-    content?: string | HTMLDivElement | Content<AnyObject> | undefined;
 
     // TODO(LukeAbby): Once ApplicationV2's required options infrastructure is set up this shouldn't
     // be necessary.
