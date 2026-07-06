@@ -258,7 +258,7 @@ declare global {
 
     /**
      * Configure the DatabaseBackend used to perform Document operations
-     * @defaultValue `new foundry.data.ClientDatabaseBackend()`
+     * @defaultValue `new `{@linkcode foundry.data.ClientDatabaseBackend}`()`
      */
     DatabaseBackend: foundry.data.ClientDatabaseBackend;
 
