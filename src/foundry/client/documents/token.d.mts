@@ -2006,7 +2006,7 @@ declare namespace TokenDocument {
     MeasuredMovementWaypoint,
     "width" | "height" | "shape" | "action" | "terrain"
   > {
-    actionConfig: CONFIG.Token.MovementActionConfig;
+    actionConfig: CONFIG.Token.Movement.ActionConfig;
     teleport: boolean;
   }
 
