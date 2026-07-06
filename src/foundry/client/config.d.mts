@@ -1,4 +1,5 @@
 import type {
+  AnyConstructor,
   Brand,
   ConcreteKeys,
   GetKey,
@@ -813,7 +814,7 @@ declare global {
     /**
      * Configure the Application classes used to render various core UI elements in the application
      */
-    ui: CONFIG.UI;
+    ui: RemoveIndexSignatures<CONFIG.UI>;
 
     /**
      * Overrides for various core UI/UX helpers.
@@ -1483,69 +1484,76 @@ declare global {
       collection: typeof collections.Users;
     }
 
+    /**
+     * Everything in this interface gets instantiated into {@linkcode globalThis.ui} via `new` in
+     * {@linkcode foundry.Game.setupGame | Game#setupGame} between `setup` and `ready`.  Most things provided here by core are
+     * AppV2 classes, with the exception of `notifications`, but anything that can be `new`ed with no arguments can be put here.
+     */
     interface UI {
-      /** @defaultValue `MainMenu` */
-      menu: foundry.applications.ui.MainMenu.AnyConstructor;
+      [appName: string]: AnyConstructor;
 
-      /** @defaultValue `Sidebar` */
-      sidebar: foundry.applications.sidebar.Sidebar.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.MainMenu} */
+      menu: typeof foundry.applications.ui.MainMenu;
 
-      /** @defaultValue `Pause` */
-      pause: foundry.applications.ui.GamePause.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.Sidebar} */
+      sidebar: typeof foundry.applications.sidebar.Sidebar;
 
-      /** @defaultValue `SceneNavigation` */
-      nav: foundry.applications.ui.SceneNavigation.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.GamePause} */
+      pause: typeof foundry.applications.ui.GamePause;
 
-      /** @defaultValue `Notifications` */
-      notifications: foundry.applications.ui.Notifications.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.SceneNavigation} */
+      nav: typeof foundry.applications.ui.SceneNavigation;
 
-      /** @defaultValue `ActorDirectory` */
-      actors: foundry.applications.sidebar.tabs.ActorDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Notifications} */
+      notifications: typeof foundry.applications.ui.Notifications;
 
-      /** @defaultValue `CardsDirectory` */
-      cards: foundry.applications.sidebar.tabs.CardsDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ActorDirectory} */
+      actors: typeof foundry.applications.sidebar.tabs.ActorDirectory;
 
-      /** @defaultValue `ChatLog` */
-      chat: foundry.applications.sidebar.tabs.ChatLog.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CardsDirectory} */
+      cards: typeof foundry.applications.sidebar.tabs.CardsDirectory;
 
-      /** @defaultValue `CombatTracker` */
-      combat: foundry.applications.sidebar.tabs.CombatTracker.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ChatLog} */
+      chat: typeof foundry.applications.sidebar.tabs.ChatLog;
 
-      /** @defaultValue `CompendiumDirectory` */
-      compendium: foundry.applications.sidebar.tabs.CompendiumDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CombatTracker} */
+      combat: typeof foundry.applications.sidebar.tabs.CombatTracker;
 
-      /** @defaultValue `SceneControls` */
-      controls: foundry.applications.ui.SceneControls.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory} */
+      compendium: typeof foundry.applications.sidebar.tabs.CompendiumDirectory;
 
-      /** @defaultValue `Hotbar` */
-      hotbar: foundry.applications.ui.Hotbar.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.SceneControls} */
+      controls: typeof foundry.applications.ui.SceneControls;
 
-      /** @defaultValue `ItemDirectory` */
-      items: foundry.applications.sidebar.tabs.ItemDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Hotbar} */
+      hotbar: typeof foundry.applications.ui.Hotbar;
 
-      /** @defaultValue `JournalDirectory` */
-      journal: foundry.applications.sidebar.tabs.JournalDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ItemDirectory} */
+      items: typeof foundry.applications.sidebar.tabs.ItemDirectory;
 
-      /** @defaultValue `MacroDirectory` */
-      macros: foundry.applications.sidebar.tabs.MacroDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.JournalDirectory} */
+      journal: typeof foundry.applications.sidebar.tabs.JournalDirectory;
 
-      /** @defaultValue `PlayerList` */
-      players: foundry.applications.ui.Players.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.MacroDirectory} */
+      macros: typeof foundry.applications.sidebar.tabs.MacroDirectory;
 
-      /** @defaultValue `PlaylistDirectory` */
-      playlists: foundry.applications.sidebar.tabs.PlaylistDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Players} */
+      players: typeof foundry.applications.ui.Players;
 
-      /** @defaultValue `SceneDirectory` */
-      scenes: foundry.applications.sidebar.tabs.SceneDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory} */
+      playlists: typeof foundry.applications.sidebar.tabs.PlaylistDirectory;
 
-      /** @defaultValue `Settings` */
-      settings: foundry.applications.sidebar.tabs.Settings.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.SceneDirectory} */
+      scenes: typeof foundry.applications.sidebar.tabs.SceneDirectory;
 
-      /** @defaultValue `RollTableDirectory` */
-      tables: foundry.applications.sidebar.tabs.RollTableDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.Settings} */
+      settings: typeof foundry.applications.sidebar.tabs.Settings;
 
-      /** @defaultValue `CameraViews` */
-      webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory} */
+      tables: typeof foundry.applications.sidebar.tabs.RollTableDirectory;
+
+      /** @defaultValue {@linkcode foundry.applications.apps.av.CameraView} */
+      webrtc: typeof foundry.applications.apps.av.CameraViews;
     }
 
     interface UX {
