@@ -51,6 +51,7 @@ import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
@@ -1091,17 +1092,7 @@ declare namespace Document {
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
-  // TODO: Make this extensible to allow things like Complete Card Management (designating an existing Document type as Placeable)
-  type PlaceableType =
-    | "AmbientLight"
-    | "AmbientSound"
-    | "Drawing"
-    | "MeasuredTemplate"
-    | "Note"
-    | "Region"
-    | "Tile"
-    | "Token"
-    | "Wall";
+  type PlaceableType = ConcreteKeys<PlaceableObject.DefaultPlaceables>;
 
   type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
