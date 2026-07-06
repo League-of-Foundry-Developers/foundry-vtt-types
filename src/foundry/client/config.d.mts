@@ -708,11 +708,7 @@ declare global {
     /**
      * An enumeration of sound effects which can be applied to Sound instances.
      */
-    soundEffects: {
-      lowPass: { label: string; effectClass: AudioNode.AnyConstructor };
-      highpass: { label: string; effectClass: AudioNode.AnyConstructor };
-      reverb: { label: string; effectClass: AudioNode.AnyConstructor };
-    };
+    soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
 
     /**
      * Default configuration options for TinyMCE editors
@@ -3904,6 +3900,48 @@ declare global {
          */
         swivel: DoorAnimationConfig;
       }
+    }
+
+    interface SoundEffects {
+      [effectName: string]: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   label: "SOUND.EFFECTS.LOWPASS",
+       *   effectClass: audio.BiquadFilterEffect
+       * }
+       * ```
+       */
+      lowpass: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       *  {
+       *   label: "SOUND.EFFECTS.HIGHPASS",
+       *   effectClass: audio.BiquadFilterEffect
+       * }
+       * ```
+       */
+      highpass: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   label: "SOUND.EFFECTS.REVERB",
+       *   effectClass: audio.ConvolverEffect
+       * }
+       * ```
+       */
+      reverb: SoundEffect;
+    }
+
+    interface SoundEffect {
+      label: string;
+      effectClass: typeof BiquadFilterNode | typeof ConvolverNode;
     }
   }
 
