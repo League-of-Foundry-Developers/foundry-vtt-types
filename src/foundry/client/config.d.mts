@@ -350,7 +350,7 @@ declare global {
     /**
      * Configure the default Token text style so that it may be reused and overridden by modules
      * @defaultValue
-     * ```typescript
+     * ```ts
      * new PIXI.TextStyle({
      *   fontFamily: "Signika",
      *   fontSize: 36,
