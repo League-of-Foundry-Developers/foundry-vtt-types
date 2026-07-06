@@ -832,28 +832,6 @@ declare namespace TokenDocument {
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
-  interface PlannedWaypoint extends Omit<MeasuredMovementWaypoint, "userID" | "movementId"> {}
-
-  interface PlannedMovement {
-    /** The found path, which goes through all but the unreachable waypoints */
-    foundPath: PlannedWaypoint[];
-
-    /** The unreachable waypoints, which are those that are not reached by the found path */
-    unreachableWaypoints: PlannedWaypoint[];
-
-    /** The movement history */
-    history: MeasuredMovementWaypoint[];
-
-    /** Is the path hidden? */
-    hidden: boolean;
-
-    /** Is the pathfinding still in progress? */
-    searching: boolean;
-  }
-
-  /** @remarks Keys are Token IDs */
-  type PlannedMovements = Record<string, PlannedMovement | null>;
-
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
    * must be structured.
