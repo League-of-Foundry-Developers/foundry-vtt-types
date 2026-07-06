@@ -49,8 +49,8 @@ declare abstract class BaseTerrainData<Schema extends fields.DataSchema> extends
 }
 
 declare namespace BaseTerrainData {
-  type Implementation = FixedInstanceType<ImplementationClass>;
-  type ImplementationClass = CONFIG["Token"]["movement"]["TerrainData"];
+  interface ImplementationClass extends Identity<typeof CONFIG.Token.movement.TerrainData> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   namespace Internal {
     /** This only exists to be the return of {@linkcode BaseTerrainData.resolveTerrainEffects}. */

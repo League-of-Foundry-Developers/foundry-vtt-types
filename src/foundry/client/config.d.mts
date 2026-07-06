@@ -2802,7 +2802,7 @@ declare global {
     namespace Token {
       interface Movement {
         /** @defaultValue {@linkcode foundry.data.TerrainData} */
-        TerrainData: typeof foundry.data.BaseTerrainData;
+        TerrainData: foundry.data.BaseTerrainData.Internal.AnyConstructor;
 
         /** The movement cost aggregator. */
         costAggregator: TokenDocument.MovementCostAggregator;
@@ -3247,8 +3247,7 @@ declare global {
 
       /**
        * @defaultValue {@linkcode foundry.canvas.placeables.tokens.TokenRuler}
-       * TODO: fix the following link once Token has been updated
-       * @privateRemarks Instantiated via `new` in `linkcode foundry.canvas.placeables.Token._initializeRuler | Token#_initializeRuler`
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.placeables.Token._initializeRuler | Token#_initializeRuler}.
        */
       rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
 
