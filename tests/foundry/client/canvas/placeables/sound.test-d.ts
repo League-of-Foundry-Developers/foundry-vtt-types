@@ -5,6 +5,7 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Sound = foundry.audio.Sound;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 
+expectTypeOf(AmbientSound.implementation).toEqualTypeOf<AmbientSound.ImplementationClass>();
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
@@ -23,7 +24,7 @@ expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
 expectTypeOf(sound.applyEffects()).toBeVoid();
 expectTypeOf(sound.applyEffects({})).toBeVoid();
 expectTypeOf(sound.applyEffects({ muffled: true })).toBeVoid();
-expectTypeOf(sound.applyEffects({ muffled: null })).toBeVoid();
+expectTypeOf(sound.applyEffects({ muffled: undefined })).toBeVoid();
 
 expectTypeOf(sound.isAudible).toEqualTypeOf<boolean>();
 expectTypeOf(sound.bounds).toEqualTypeOf<PIXI.Rectangle>();
@@ -92,7 +93,7 @@ expectTypeOf(
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({})).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({ deleted: true })).toBeVoid();
-expectTypeOf(sound.initializeSoundSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(sound["_getSoundSourceData"]()).toEqualTypeOf<AmbientSound.SoundSourceData>();
 
 declare const someUser: User.Implementation;
@@ -103,7 +104,7 @@ expectTypeOf(sound["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(sound["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(sound["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onDragLeftMove"](pointerEvent)).toBeVoid();
@@ -122,4 +123,4 @@ expectTypeOf(sound.updateSource({})).toBeVoid();
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.updateSource({ deleted: undefined })).toBeVoid();

@@ -1037,182 +1037,7 @@ declare global {
     /**
      * Available Weather Effects implementations
      */
-    weatherEffects: {
-      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```ts
-       * {
-       *   id: "leaves",
-       *   label: "WEATHER.AutumnLeaves",
-       *   effects: [{
-       *     id: "leavesParticles",
-       *     effectClass: AutumnLeavesWeatherEffect
-       *   }]
-       * }
-       * ```
-       */
-      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```ts
-       * {
-       *   id: "rain",
-       *   label: "WEATHER.Rain",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       opacity: 0.25,
-       *       tint: [0.7, 0.9, 1.0],
-       *       intensity: 1,
-       *       strength: 1,
-       *       rotation: 0.2618,
-       *       speed: 0.2,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "rainStorm",
-       *   label: "WEATHER.RainStorm",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     performanceLevel: 2,
-       *     config: {
-       *       slope: 1.5,
-       *       intensity: 0.050,
-       *       speed: -55.0,
-       *       scale: 25,
-       *     }
-       *   },
-       *   {
-       *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       opacity: 0.45,
-       *       tint: [0.7, 0.9, 1.0],
-       *       intensity: 1.5,
-       *       strength: 1.5,
-       *       rotation: 0.5236,
-       *       speed: 0.30,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "fog",
-       *   label: "WEATHER.Fog",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       slope: 0.45,
-       *       intensity: 0.4,
-       *       speed: 0.4,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "snow",
-       *   label: "WEATHER.Snow",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       tint: [0.85, 0.95, 1],
-       *       direction: 0.5,
-       *       speed: 2,
-       *       scale: 2.5,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "blizzard",
-       *   label: "WEATHER.Blizzard",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       tint: [0.95, 1, 1],
-       *       direction: 0.80,
-       *       speed: 8,
-       *       scale: 2.5,
-       *     }
-       *   },
-       *   {
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     performanceLevel: 2,
-       *     config: {
-       *       slope: 1.0,
-       *       intensity: 0.15,
-       *       speed: -4.0,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
-    };
+    weatherEffects: CONFIG.WeatherEffects;
 
     /**
      * The control icons used for rendering common HUD operations
@@ -1734,8 +1559,12 @@ declare global {
       /** @defaultValue `typeof AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
 
-      /** @defaultValue `typeof LightingLayer` */
-      layerClass: canvasLayers.LightingLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.LightingLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The lighting layer can be set at {@linkcode CONFIG.Canvas.layers.lighting}
+       */
+      layerClass: typeof canvasLayers.LightingLayer;
     };
 
     /**
@@ -1759,8 +1588,12 @@ declare global {
       /** @defaultValue `typeof AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
 
-      /** @defaultValue `typeof SoundsLayer` */
-      layerClass: canvasLayers.SoundsLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.SoundsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The sounds layer can be set at {@linkcode CONFIG.Canvas.layers.sounds}
+       */
+      layerClass: typeof canvasLayers.SoundsLayer;
     };
 
     /**
@@ -1842,7 +1675,11 @@ declare global {
       /** @defaultValue `typeof Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
 
-      /** @defaultValue `typeof DrawingsLayer` */
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.DrawingsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The drawings layer can be set at {@linkcode CONFIG.Canvas.layers.drawings}
+       */
       layerClass: typeof canvasLayers.DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
@@ -1911,7 +1748,11 @@ declare global {
       /** @defaultValue `typeof MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
 
-      /** @defaultValue `typeof TemplateLayer` */
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TemplateLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The template layer can be set at {@linkcode CONFIG.Canvas.layers.templates}
+       */
       layerClass: typeof canvasLayers.TemplateLayer;
     };
 
@@ -1936,8 +1777,12 @@ declare global {
       /** @defaultValue `typeof Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
 
-      /** @defaultValue `typeof NotesLayer` */
-      layerClass: canvasLayers.NotesLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.NotesLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The notes layer can be set at {@linkcode CONFIG.Canvas.layers.notes}
+       */
+      layerClass: typeof canvasLayers.NotesLayer;
     };
 
     Region: {
@@ -1947,8 +1792,12 @@ declare global {
       /** @defaultValue `Region` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
 
-      /** @defaultValue `RegionLayer` */
-      layerClass: canvasLayers.RegionLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.RegionLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The regions layer can be set at {@linkcode CONFIG.Canvas.layers.regions}
+       */
+      layerClass: typeof canvasLayers.RegionLayer;
 
       /**
        * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
@@ -2002,8 +1851,12 @@ declare global {
       /** @defaultValue `typeof Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
 
-      /** @defaultValue `typeof TilesLayer` */
-      layerClass: canvasLayers.TilesLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TilesLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The tiles layer can be set at {@linkcode CONFIG.Canvas.layers.tiles}
+       */
+      layerClass: typeof canvasLayers.TilesLayer;
 
       /** @defaultValue `typeof TileHUD` */
       hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
@@ -2030,8 +1883,12 @@ declare global {
       /** @defaultValue `typeof Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
 
-      /** @defaultValue `typeof TokenLayer` */
-      layerClass: canvasLayers.TokenLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TokenLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The tokens layer can be set at {@linkcode CONFIG.Canvas.layers.tokens}
+       */
+      layerClass: typeof canvasLayers.TokenLayer;
 
       /** @defaultValue `typeof TokenConfig` */
       prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
@@ -2039,8 +1896,11 @@ declare global {
       /** @defaultValue `typeof TokenHUD` */
       hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
-      /** @defaultValue `typeof TokenRuler` */
-      rulerClass: foundry.canvas.placeables.tokens.TokenRuler.AnyConstructor;
+      /**
+       * @defaultValue `typeof TokenRuler`
+       * @privateRemarks `typeof` because the constructor must take a {@linkcode Token.Implementation}
+       */
+      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
 
       movement: {
         /** @defaultValue {@linkcode foundry.data.TerrainData | data.TerrainData} */
@@ -2170,8 +2030,12 @@ declare global {
       /** @defaultValue `typeof Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
 
-      /** @defaultValue `typeof WallsLayer` */
-      layerClass: canvasLayers.WallsLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.WallsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The walls layer can be set at {@linkcode CONFIG.Canvas.layers.walls}
+       */
+      layerClass: typeof canvasLayers.WallsLayer;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
@@ -3318,6 +3182,184 @@ declare global {
       FLY: string;
     }
 
+    interface WeatherEffects {
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "leaves",
+       *   label: "WEATHER.AutumnLeaves",
+       *   effects: [{
+       *     id: "leavesParticles",
+       *     effectClass: AutumnLeavesWeatherEffect
+       *   }]
+       * }
+       * ```
+       * @remarks See {@linkcode canvasLayers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
+       */
+      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "rain",
+       *   label: "WEATHER.Rain",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.25,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1,
+       *       strength: 1,
+       *       rotation: 0.2618,
+       *       speed: 0.2,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "rainStorm",
+       *   label: "WEATHER.RainStorm",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.5,
+       *       intensity: 0.050,
+       *       speed: -55.0,
+       *       scale: 25,
+       *     }
+       *   },
+       *   {
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.45,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1.5,
+       *       strength: 1.5,
+       *       rotation: 0.5236,
+       *       speed: 0.30,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "fog",
+       *   label: "WEATHER.Fog",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       slope: 0.45,
+       *       intensity: 0.4,
+       *       speed: 0.4,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "snow",
+       *   label: "WEATHER.Snow",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.85, 0.95, 1],
+       *       direction: 0.5,
+       *       speed: 2,
+       *       scale: 2.5,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "blizzard",
+       *   label: "WEATHER.Blizzard",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.95, 1, 1],
+       *       direction: 0.80,
+       *       speed: 8,
+       *       scale: 2.5,
+       *     }
+       *   },
+       *   {
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.0,
+       *       intensity: 0.15,
+       *       speed: -4.0,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
+    }
+
     namespace Cards {
       interface Preset {
         type: string;
@@ -3515,9 +3557,7 @@ declare global {
         ) => MovementActionCostFunction;
       }
 
-      interface MovementActionOptionalConfig extends InexactPartial<_MovementActionConfig> {}
-
-      interface MovementActionConfig extends MovementActionOptionalConfig {
+      interface MovementActionConfig extends InexactPartial<_MovementActionConfig> {
         /**
          * The label of the movement action.
          */

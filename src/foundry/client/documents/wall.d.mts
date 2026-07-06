@@ -337,7 +337,7 @@ declare namespace WallDocument {
 
     /**
      * The direction of effect imposed by this wall
-     * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+     * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
      */
     dir: fields.NumberField<
       {

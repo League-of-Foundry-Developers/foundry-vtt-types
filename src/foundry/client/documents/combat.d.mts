@@ -1375,13 +1375,15 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * Get the Combatant who has the current turn.
+   * @remarks Can be `undefined` if the combat has been started with no combatants.
    */
-  get combatant(): Combatant.Stored | null;
+  get combatant(): Combatant.Stored | null | undefined;
 
   /**
    * Get the Combatant who has the next turn.
+   * @remarks Can be `undefined` if there are no combatants.
    */
-  get nextCombatant(): Combatant.Stored;
+  get nextCombatant(): Combatant.Stored | undefined;
 
   /** Return the object of settings which modify the Combat Tracker behavior */
   get settings(): Combat.SettingData;

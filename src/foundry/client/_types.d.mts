@@ -1,3 +1,4 @@
+import type { Canvas } from "#client/canvas/_module.d.mts";
 import Token = foundry.canvas.placeables.Token;
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -25,13 +26,13 @@ type TokenFindMovementPathOptions = unknown;
 
 type TokenFindMovementPathJob = unknown;
 
-type TokenGEtTerrainMovementPathWaypoint = unknown;
+type TokenGetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
 
-type TokenTerrainMovementWaypoint = unknown;
+type TokenTerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
 type TokenRulerData = foundry.canvas.placeables.tokens.TokenRuler.Data;
 
-type TokenPlannedMovement = unknown;
+type TokenPlannedMovement = Token.PlannedMovement;
 
 type TokenRulerWaypointData = foundry.canvas.placeables.tokens.TokenRuler.WaypointData;
 
@@ -51,7 +52,7 @@ type TokenMovementActionCostFunction = unknown;
 
 type TokenMovementActionConfig = unknown;
 
-type CanvasViewPosition = unknown;
+type CanvasViewPosition = Canvas.PartialViewPosition;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 
@@ -63,9 +64,9 @@ type ReticuleOptions = unknown;
 
 type ActivityData = unknown;
 
-type CanvasPerformanceSettings = unknown;
+type CanvasPerformanceSettings = Canvas.PerformanceSettings;
 
-type CanvasSupportedComponents = unknown;
+type CanvasSupportedComponents = Canvas.SupportedComponents;
 
 type CanvasDimensions = unknown;
 

@@ -151,7 +151,7 @@ declare namespace Sound {
   > {}
 
   /** @internal */
-  type _PlayAtPositionOptions = InexactPartial<{
+  interface _PlayAtPositionOptions {
     /**
      * The maximum volume at which the effect should be played
      * @defaultValue `1.0`
@@ -185,15 +185,15 @@ declare namespace Sound {
     /**
      * Additional data passed to the SoundSource constructor
      */
-    sourceData: Sound.PartialSourceData;
+    sourceData: PointSoundSource.PartialSourceData;
 
     /**
      * Additional options passed to {@linkcode Sound.play | Sound#play}
      */
     playbackOptions: Sound.PlaybackOptionsPositional;
-  }>;
+  }
 
-  interface PlayAtPositionOptions extends _PlayAtPositionOptions {}
+  interface PlayAtPositionOptions extends InexactPartial<_PlayAtPositionOptions> {}
 
   /** @internal */
   type _FadeOptions = InexactPartial<{

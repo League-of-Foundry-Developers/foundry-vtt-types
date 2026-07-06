@@ -112,7 +112,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The width and/or height in grid units (must be positive)
    * @returns The width and height in pixels
    */
-  getSize(data?: TokenDocument.PartialShapelessDimensions): TokenDocument.ShapelessDimensions;
+  getSize(data?: TokenDocument.GetSizeDimensions): TokenDocument.ShapelessDimensions;
 
   /**
    * Get the center point of the Token.

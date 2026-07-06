@@ -9,7 +9,7 @@ expectTypeOf(combat.previous).toEqualTypeOf<Combat.HistoryData | undefined>();
 
 expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
-expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null>();
+expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null | undefined>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
 expectTypeOf(combat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();

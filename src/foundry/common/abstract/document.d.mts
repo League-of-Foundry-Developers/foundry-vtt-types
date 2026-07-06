@@ -1091,6 +1091,7 @@ declare namespace Document {
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
+  // TODO: Make this extensible to allow things like Complete Card Management (designating an existing Document type as Placeable)
   type PlaceableType =
     | "AmbientLight"
     | "AmbientSound"

@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { Container, DisplayObject } from "pixi.js";
 
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
 import BasePlaceableHUD = foundry.applications.hud.BasePlaceableHUD;
@@ -9,21 +8,31 @@ import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testPlaceablesLayer: CONFIG.Canvas.LayerDefinition<typeof SomeLightLayer, "primary">;
+    }
+  }
+}
 
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
+type SAL = AmbientLightDocument.Stored;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
-      name: "myLighting",
+      name: "testPlaceablesLayer",
     });
   }
 
   override options: PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> = SomeLightLayer.layerOptions;
 }
 
-expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
+expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | EffectsCanvasGroup.Implementation | undefined>();
 // The following fails as the static `layerOptions` can't access the `DocumentName` type param
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
@@ -50,15 +59,13 @@ expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.Implementatio
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Implementation> | null>();
-expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<CALDoc, Scene.Implementation> | null>();
+expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | null>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
 expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
 expectTypeOf(layer.controlled).toEqualTypeOf<CAL[]>();
-expectTypeOf(layer.getDocuments()).toEqualTypeOf<
-  EmbeddedCollection<AmbientLightDocument.Implementation, Scene.Implementation> | []
->();
+expectTypeOf(layer.getDocuments()).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | []>();
 
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 declare const someLight: CALDoc;
@@ -82,7 +89,6 @@ expectTypeOf(layer.controlAll({ releaseOthers: true })).toEqualTypeOf<CAL[]>();
 
 expectTypeOf(layer.releaseAll()).toEqualTypeOf<number>();
 expectTypeOf(layer.releaseAll({})).toEqualTypeOf<number>();
-expectTypeOf(layer.releaseAll({ trigger: true })).toEqualTypeOf<number>();
 
 expectTypeOf(
   layer.rotateMany({
@@ -101,24 +107,28 @@ expectTypeOf(
 expectTypeOf(layer.moveMany()).toEqualTypeOf<Promise<CAL[]> | undefined>();
 expectTypeOf(layer.moveMany({})).toEqualTypeOf<Promise<CAL[]> | undefined>();
 expectTypeOf(
-  layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: null }),
+  layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: undefined }),
 ).toEqualTypeOf<Promise<CAL[]> | undefined>();
 
-expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<CALDoc[]>>();
-expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
+expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<SAL[]>>();
+expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<"yes" | false | null>>();
 
-expectTypeOf(layer.storeHistory("create", { _id: someLight.id ?? "XXXXXSomeIDXXXXX" })).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("create", [{ _id: someLight.id ?? "XXXXXSomeIDXXXXX" }])).toEqualTypeOf<void>();
 expectTypeOf(
-  layer.storeHistory("update", {
-    ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
-  }),
+  layer.storeHistory("update", [
+    {
+      ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+      _id: someLight.id ?? "XXXXXSomeIDXXXXX",
+    },
+  ]),
 ).toEqualTypeOf<void>();
 expectTypeOf(
-  layer.storeHistory("delete", {
-    ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
-  }),
+  layer.storeHistory("delete", [
+    {
+      ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+      _id: someLight.id ?? "XXXXXSomeIDXXXXX",
+    },
+  ]),
 ).toEqualTypeOf<void>();
 
 // @ts-expect-error "new" is not a valid history type.
