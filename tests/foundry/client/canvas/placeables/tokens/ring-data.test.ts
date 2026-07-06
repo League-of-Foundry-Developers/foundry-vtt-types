@@ -86,7 +86,7 @@ describe("DynamicRingData Tests", () => {
     expectTypeOf(schema).toEqualTypeOf<SchemaField<DynamicRingData.Schema>>();
     expect(schema).toBeInstanceOf(SchemaField);
 
-    const _schema = DynamicRingData["_schema"];
+    const _schema = DynamicRingData._schema;
     expectTypeOf(_schema).toEqualTypeOf<SchemaField<DynamicRingData.Schema>>();
     expect(_schema).toBeInstanceOf(SchemaField);
 

@@ -9,7 +9,7 @@ declare class TurnMarkerData extends DataModel<TurnMarkerData.Schema> {
   static override defineSchema(): TurnMarkerData.Schema;
 
   // DataModel template overrides
-  protected static override _schema: fields.SchemaField<TurnMarkerData.Schema>;
+  static override _schema: fields.SchemaField<TurnMarkerData.Schema>;
 
   static override get schema(): fields.SchemaField<TurnMarkerData.Schema>;
 

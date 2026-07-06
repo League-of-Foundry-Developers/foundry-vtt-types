@@ -12,7 +12,7 @@ declare class DynamicRingData extends DataModel<DynamicRingData.Schema> {
   static override defineSchema(): DynamicRingData.Schema;
 
   // DataModel template overrides
-  protected static override _schema: fields.SchemaField<DynamicRingData.Schema>;
+  static override _schema: fields.SchemaField<DynamicRingData.Schema>;
 
   static override get schema(): fields.SchemaField<DynamicRingData.Schema>;
 
