@@ -12,6 +12,7 @@ import type {
   MaybePromise,
   PartialUntilInitialized,
   RemoveIndexSignatures,
+  ToMethod,
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
@@ -738,7 +739,7 @@ declare global {
      * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
      * Non-prefixed query names are reserved by core.
      */
-    queries: CONFIG.Queries;
+    queries: RemoveIndexSignatures<CONFIG.Queries>;
 
     /**
      * Configure custom cursor images to use when interacting with the application.
@@ -1504,9 +1505,12 @@ declare global {
     }
 
     interface Queries {
+      [query: string]: QueryHandler;
       dialog: typeof foundry.applications.api.DialogV2._handleQuery;
       confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery;
     }
+
+    type QueryHandler = ToMethod<(queryData: unknown, queryOptions?: { timeout?: number | undefined }) => unknown>;
 
     interface Canvas {
       /** @defaultValue `10` */
