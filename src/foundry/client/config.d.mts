@@ -2206,9 +2206,10 @@ declare global {
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
-       * @privateRemarks `TextEditor` is a collection of statics, and is never instantiated at all.
+       * @privateRemarks `TextEditor` is a collection of statics, and is never instantiated at all, but we've still done `typeof` because
+       * the difference doesn't really matter and this way doesn't leak `Internal`.
        */
-      TextEditor: foundry.applications.ux.TextEditor.Internal.AnyConstructor;
+      TextEditor: typeof foundry.applications.ux.TextEditor;
 
       /**
        * @defaultValue {@linkcode foundry.helpers.interaction.TooltipManager}
