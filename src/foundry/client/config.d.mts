@@ -382,42 +382,8 @@ declare global {
 
     /**
      * A collection of fonts to load either from the user's local system, or remotely.
-     * @defaultValue
-     * ```typescript
-     * {
-     *   Arial: { editor: true; fonts: [] };
-     *   Amiri: {
-     *     editor: true,
-     *     fonts: [
-     *       {urls: ["fonts/amiri/amiri-regular.woff2"]},
-     *       {urls: ["fonts/amiri/amiri-bold.woff2"], weight: 700}
-     *     ]
-     *   },
-     *   "Bruno Ace": {editor: true, fonts: [
-     *     {urls: ["fonts/bruno-ace/bruno-ace.woff2"]}
-     *   ]},
-     *   Courier: { editor: true; fonts: [] };
-     *   "Courier New": { editor: true; fonts: [] };
-     *   "Modesto Condensed": {
-     *     editor: true;
-     *     fonts: [
-     *       { urls: ["fonts/modesto-condensed/modesto-condensed.woff2"] },
-     *       { urls: ["fonts/modesto-condensed/modesto-condensed-bold.woff2"]; weight: 700 }
-     *     ];
-     *   };
-     *   Signika: {
-     *     editor: true;
-     *     fonts: [
-     *       { urls: ["fonts/signika/signika-regular.woff2"] },
-     *       { urls: ["fonts/signika/signika-bold.woff2"]; weight: 700 }
-     *     ];
-     *   };
-     *   Times: { editor: true; fonts: [] };
-     *   "Times New Roman": { editor: true; fonts: [] };
-     * }
-     * ```
      */
-    fontDefinitions: Record<string, CONFIG.Font.FamilyDefinition>;
+    fontDefinitions: RemoveIndexSignatures<CONFIG.FontDefinitions>;
 
     /**
      * The default font family used for text labels on the PIXI Canvas
@@ -2788,14 +2754,139 @@ declare global {
       wallDirection: string;
     }
 
+    interface FontDefinitions {
+      [fontName: string]: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Arial: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/amiri/amiri-regular.woff2"]},
+       *     {urls: ["fonts/amiri/amiri-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      Amiri: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/bruno-ace/bruno-ace.woff2"]}
+       *   ]}
+       * ```
+       */
+      "Bruno Ace": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Courier: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      "Courier New": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/modesto-condensed/modesto-condensed.woff2"]},
+       *     {urls: ["fonts/modesto-condensed/modesto-condensed-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      "Modesto Condensed": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/signika/signika-light.woff2"], weight: "300"},
+       *     {urls: ["fonts/signika/signika-regular.woff2"]},
+       *     {urls: ["fonts/signika/signika-medium.woff2"], weight: "500"},
+       *     {urls: ["fonts/signika/signika-semibold.woff2"], weight: "600"},
+       *     {urls: ["fonts/signika/signika-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      Signika: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Times: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      "Times New Roman": Font.FamilyDefinition;
+    }
+
+    // TODO: rename namespace Font to match interface FontDefinitions? CONFIG.FontDefinitions.Definition feels bad though,
+    // TODO: and deprecations are annoying.
     namespace Font {
       interface Definition extends FontFaceDescriptors {
+        /** An array of remote URLs the font files exist at. */
         urls: string[];
       }
 
       interface FamilyDefinition {
+        /** Whether the font is available in the rich text editor. This will also enable it for notes and drawings. */
         editor: boolean;
-        fonts: Definition[];
+
+        /**
+         * Individual font face definitions for this font family. If this is empty,
+         * the font family may only be loaded from the client's OS-installed fonts.
+         */
+        fonts: Font.Definition[];
       }
     }
 
