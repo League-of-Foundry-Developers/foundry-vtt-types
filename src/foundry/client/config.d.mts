@@ -373,7 +373,7 @@ declare global {
     /**
      * Available Weather Effects implementations
      */
-    weatherEffects: CONFIG.WeatherEffects;
+    weatherEffects: RemoveIndexSignatures<CONFIG.WeatherEffects>;
 
     /**
      * The control icons used for rendering common HUD operations
@@ -2617,7 +2617,7 @@ declare global {
        *   label: "WEATHER.AutumnLeaves",
        *   effects: [{
        *     id: "leavesParticles",
-       *     effectClass: AutumnLeavesWeatherEffect
+       *     effectClass: foundry.canvas.containers.AutumnLeavesWeatherEffect
        *   }]
        * }
        * ```
@@ -2636,8 +2636,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.RainShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       opacity: 0.25,
@@ -2655,7 +2655,7 @@ declare global {
 
       /**
        * @defaultValue
-       * ```
+       * ```ts
        * {
        *   id: "rainStorm",
        *   label: "WEATHER.RainStorm",
@@ -2664,8 +2664,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     performanceLevel: 2,
        *     config: {
@@ -2677,8 +2677,8 @@ declare global {
        *   },
        *   {
        *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.RainShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       opacity: 0.45,
@@ -2696,7 +2696,7 @@ declare global {
 
       /**
        * @defaultValue
-       * ```
+       * ```ts
        * {
        *   id: "fog",
        *   label: "WEATHER.Fog",
@@ -2705,8 +2705,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       slope: 0.45,
@@ -2730,8 +2730,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.SnowShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       tint: [0.85, 0.95, 1],
@@ -2756,8 +2756,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.SnowShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       tint: [0.95, 1, 1],
@@ -2768,8 +2768,8 @@ declare global {
        *   },
        *   {
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     performanceLevel: 2,
        *     config: {
