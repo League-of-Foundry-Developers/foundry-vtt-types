@@ -131,7 +131,7 @@ declare namespace TokenRuler {
 
   interface WaypointData {
     /** The config of the movement action */
-    actionConfig: CONFIG.Token.MovementActionConfig;
+    actionConfig: CONFIG.Token.Movement.ActionConfig;
 
     /** The ID of movement, or null if planned movement. */
     movementId: string | null;
