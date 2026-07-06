@@ -378,58 +378,7 @@ declare global {
     /**
      * The control icons used for rendering common HUD operations
      */
-    controlIcons: {
-      /** @defaultValue `"icons/svg/combat.svg"` */
-      combat: string;
-
-      /** @defaultValue `"icons/svg/cowled.svg"` */
-      visibility: string;
-
-      /** @defaultValue `"icons/svg/aura.svg"` */
-      effects: string;
-
-      /** @defaultValue `"icons/svg/padlock.svg"` */
-      lock: string;
-
-      /** @defaultValue `"icons/svg/up.svg"` */
-      up: string;
-
-      /** @defaultValue `"icons/svg/down.svg"` */
-      down: string;
-
-      /** @defaultValue `"icons/svg/skull.svg"` */
-      defeated: string;
-
-      /** @defaultValue `"icons/svg/light.svg"` */
-      light: string;
-
-      /** @defaultValue `"icons/svg/light-off.svg"` */
-      lightOff: string;
-
-      /** @defaultValue `"icons/svg/explosion.svg"` */
-      template: string;
-
-      /** @defaultValue `"icons/svg/sound.svg"` */
-      sound: string;
-
-      /** @defaultValue `"icons/svg/sound-off.svg"` */
-      soundOff: string;
-
-      /** @defaultValue `"icons/svg/door-closed-outline.svg"` */
-      doorClosed: string;
-
-      /** @defaultValue `"icons/svg/door-open-outline.svg"` */
-      doorOpen: string;
-
-      /** @defaultValue `"icons/svg/door-secret-outline.svg"` */
-      doorSecret: string;
-
-      /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
-      doorLocked: string;
-
-      /** @defaultValue `"icons/svg/wall-direction.svg"` */
-      wallDirection: string;
-    } & Record<string, string>;
+    controlIcons: RemoveIndexSignatures<CONFIG.ControlIcons>;
 
     /**
      * A collection of fonts to load either from the user's local system, or remotely.
@@ -2782,6 +2731,61 @@ declare global {
        * ```
        */
       blizzard: layers.WeatherEffects.AmbienceConfiguration;
+    }
+
+    interface ControlIcons {
+      [iconName: string]: string;
+
+      /** @defaultValue `"icons/svg/combat.svg"` */
+      combat: string;
+
+      /** @defaultValue `"icons/svg/cowled.svg"` */
+      visibility: string;
+
+      /** @defaultValue `"icons/svg/aura.svg"` */
+      effects: string;
+
+      /** @defaultValue `"icons/svg/padlock.svg"` */
+      lock: string;
+
+      /** @defaultValue `"icons/svg/up.svg"` */
+      up: string;
+
+      /** @defaultValue `"icons/svg/down.svg"` */
+      down: string;
+
+      /** @defaultValue `"icons/svg/skull.svg"` */
+      defeated: string;
+
+      /** @defaultValue `"icons/svg/light.svg"` */
+      light: string;
+
+      /** @defaultValue `"icons/svg/light-off.svg"` */
+      lightOff: string;
+
+      /** @defaultValue `"icons/svg/explosion.svg"` */
+      template: string;
+
+      /** @defaultValue `"icons/svg/sound.svg"` */
+      sound: string;
+
+      /** @defaultValue `"icons/svg/sound-off.svg"` */
+      soundOff: string;
+
+      /** @defaultValue `"icons/svg/door-closed-outline.svg"` */
+      doorClosed: string;
+
+      /** @defaultValue `"icons/svg/door-open-outline.svg"` */
+      doorOpen: string;
+
+      /** @defaultValue `"icons/svg/door-secret-outline.svg"` */
+      doorSecret: string;
+
+      /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
+      doorLocked: string;
+
+      /** @defaultValue `"icons/svg/wall-direction.svg"` */
+      wallDirection: string;
     }
 
     namespace Font {
