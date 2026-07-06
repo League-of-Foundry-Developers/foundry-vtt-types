@@ -718,13 +718,7 @@ declare global {
     /**
      * Rich text editing configuration.
      */
-    TextEditor: {
-      /**
-       * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
-       * custom patterns.
-       */
-      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
-    };
+    TextEditor: CONFIG.TextEditor;
 
     /**
      * Configuration for the WebRTC implementation class
@@ -3942,6 +3936,14 @@ declare global {
     interface SoundEffect {
       label: string;
       effectClass: typeof BiquadFilterNode | typeof ConvolverNode;
+    }
+
+    interface TextEditor {
+      /**
+       * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
+       * custom patterns.
+       */
+      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
     }
   }
 
