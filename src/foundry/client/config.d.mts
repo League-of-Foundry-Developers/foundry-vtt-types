@@ -3260,16 +3260,28 @@ declare global {
     }
 
     interface Time {
-      /** The Calendar configuration used for in-world timekeeping. */
+      /**
+       * The Calendar configuration used for in-world timekeeping.
+       * @defaultValue {@linkcode foundry.data.SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG}
+       */
       worldCalendarConfig: foundry.data.CalendarData.CreateData;
 
-      /** The CalendarData subclass is used for in-world timekeeping. */
+      /**
+       * The CalendarData subclass is used for in-world timekeeping.
+       * @defaultValue {@linkcode foundry.data.CalendarData}
+       */
       worldCalendarClass: typeof foundry.data.CalendarData;
 
-      /** The Calendar configuration used for IRL timekeeping. */
+      /**
+       * The Calendar configuration used for IRL timekeeping.
+       * @defaultValue {@linkcode foundry.data.SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG}
+       */
       earthCalendarConfig: foundry.data.CalendarData.CreateData;
 
-      /** The CalendarData subclass is used for IRL timekeeping. */
+      /**
+       * The CalendarData subclass is used for IRL timekeeping.
+       * @defaultValue {@linkcode foundry.data.CalendarData}
+       */
       earthCalendarClass: typeof foundry.data.CalendarData;
 
       /**
@@ -3285,11 +3297,12 @@ declare global {
       roundTime: number;
 
       /** Formatting functions used to display time data as strings. */
-      formatters: CONFIG.Time.formatters;
+      formatters: RemoveIndexSignatures<CONFIG.Time.formatters>;
     }
 
     namespace Time {
       interface formatters {
+        [formatterName: string]: foundry.data.CalendarData.TimeFormatter;
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
         ago: typeof foundry.data.CalendarData.formatAgo;
       }
