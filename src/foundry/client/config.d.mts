@@ -592,11 +592,8 @@ declare global {
 
     /**
      * Define the set of supported languages for localization
-     * @defaultValue `{ en: "English" }`
      */
-    supportedLanguages: {
-      en: string;
-    } & Record<string, string>;
+    supportedLanguages: RemoveIndexSignatures<CONFIG.SupportedLanguages>;
 
     /**
      * Localization constants.
@@ -2546,6 +2543,13 @@ declare global {
 
       /** @defaultValue `"sounds/drums.wav"` */
       combat: string;
+    }
+
+    interface SupportedLanguages {
+      [languageIdentifier: string]: string;
+
+      /** @defaultValue `"English"` */
+      en: string;
     }
 
     interface WeatherEffects {
