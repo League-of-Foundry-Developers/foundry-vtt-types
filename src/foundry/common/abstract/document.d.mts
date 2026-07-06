@@ -51,6 +51,7 @@ import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
@@ -95,8 +96,53 @@ declare class Uses<T> {
 }
 
 /**
- * An extension of the base DataModel which defines a Document.
- * Documents are special in that they are persisted to the database and referenced by _id.
+ * An extension of the base {@linkcode DataModel} which defines a Document.
+ * Documents are special in that they are persisted to the database and referenced by `_id`.
+ *
+ * @privateRemarks
+ * List of properties and methods that need to be templated out in each specific document file, for one reason or another:
+ * - Only templated because the static side can't see the `DocumentName` type param:
+ *   - {@linkcode Document.implementation}
+ *   - {@linkcode Document.baseDocument}
+ *   - {@linkcode Document.collectionName}
+ *   - {@linkcode Document.documentName}
+ *   - {@linkcode Document.TYPES}
+ *   - {@linkcode Document.hasTypeData}
+ *   - {@linkcode Document.getCollectionName}
+ * - Need to hide `User.Internal.Implementation` from users:
+ *   - {@linkcode Document.canUserCreate | Document#canUserCreate}
+ *   - {@linkcode Document.getUserLevel | Document#getUserLevel}
+ *   - {@linkcode Document.testUserPermission | Document#testUserPermission}
+ *   - {@linkcode Document.canUserModify | Document#canUserModify}
+ * - Circularity control:
+ *   - {@linkcode Document.system | Document#system}
+ *   - {@linkcode Document.parent | Document#parent}
+ * - Database operations (circularity bait and the statics can't see the `DocumentName`):
+ *   - {@linkcode Document.createDocuments}
+ *   - {@linkcode Document.updateDocuments}
+ *   - {@linkcode Document.deleteDocuments}
+ *   - {@linkcode Document.create}
+ *   - {@linkcode Document.update | Document#update}
+ *   - {@linkcode Document.delete | Document#delete}
+ *   - {@linkcode Document.get}
+ *   - {@linkcode Document.getEmbeddedCollection | Document#getEmbeddedCollection}
+ *   - {@linkcode Document.createEmbeddedDocuments | Document#createEmbeddedDocuments}
+ *   - {@linkcode Document.updateEmbeddedDocuments | Document#updateEmbeddedDocuments}
+ *   - {@linkcode Document.deleteEmbeddedDocuments | Document#deleteEmbeddedDocuments}
+ *   - {@linkcode Document.getFlag | Document#getFlag}
+ *   - {@linkcode Document.setFlag | Document#setFlag}
+ *   - {@linkcode Document.unsetFlag | Document#unsetFlag}
+ *   - {@linkcode Document._preCreate | Document#_preCreate}
+ *   - {@linkcode Document._onCreate | Document#_onCreate}
+ *   - {@linkcode Document._preCreateOperation}
+ *   - {@linkcode Document._preUpdate | Document#_preUpdate}
+ *   - {@linkcode Document._onUpdate | Document#_onUpdate}
+ *   - {@linkcode Document._preUpdateOperation}
+ *   - {@linkcode Document._preDelete | Document#_preDelete}
+ *   - {@linkcode Document._onDelete | Document#_onDelete}
+ *   - {@linkcode Document._preDeleteOperation}
+ *
+ * `Document`s are also {@linkcode DataModel}s, so the template methods listed there also apply.
  */
 declare abstract class Document<
   DocumentName extends Document.Type,
@@ -130,7 +176,7 @@ declare abstract class Document<
    * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
    * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
-  readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
+  readonly parentCollection: Document.ParentCollection<DocumentName>;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
@@ -1046,17 +1092,7 @@ declare namespace Document {
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
-  // TODO: Make this extensible to allow things like Complete Card Management (designating an existing Document type as Placeable)
-  type PlaceableType =
-    | "AmbientLight"
-    | "AmbientSound"
-    | "Drawing"
-    | "MeasuredTemplate"
-    | "Note"
-    | "Region"
-    | "Tile"
-    | "Token"
-    | "Wall";
+  type PlaceableType = ConcreteKeys<PlaceableObject.DefaultPlaceables>;
 
   type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
@@ -1275,6 +1311,15 @@ declare namespace Document {
     | "Folder"
     ? boolean
     : false;
+
+  /**
+   * Gets the map of subtypes to configured `TypeDataModel` classes for a given Document.
+   */
+  // TODO: Possibly convert to map of names to core models if docs other than RegionBehavior get any.
+  type TypeModelsFor<Name extends WithSystem> = Name extends "RegionBehavior"
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataModelConfig, Name, {}> & RegionBehavior.CoreBehaviors
+    : GetKey<DataModelConfig, Name, EmptyObject>;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1969,6 +2014,7 @@ declare namespace Document {
 
   /**
    * This ensures that Documents that require a parent even for temporary construction
+   * (only {@linkcode ActorDelta} as of 13.351) get passed one.
    * @internal
    */
   interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
@@ -1992,41 +2038,37 @@ declare namespace Document {
   interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
-  interface _ConstructionContext<Parent extends Document.Any | null>
-    extends
-      _ParentContext<Parent>,
-      NullishProps<{
-        /**
-         * The compendium collection ID which contains this Document, if any
-         * @defaultValue `null`
-         */
-        pack: string;
+  interface _ConstructionContext {
+    /**
+     * The compendium collection ID which contains this Document, if any
+     * @defaultValue `null`
+     */
+    pack: string;
 
-        /**
-         * Whether to validate initial data strictly?
-         * @defaultValue `true`
-         */
-        strict: boolean;
+    /**
+     * Whether to validate initial data strictly?
+     * @defaultValue `true`
+     */
+    strict: boolean;
 
-        /**
-         * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-         * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
-         * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
-         * {@linkcode Document.parentCollection | Document#parentCollection}.
-         */
-        parentCollection: string;
-      }> {}
+    /**
+     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+     * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
+     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+     * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+     * {@linkcode Document.parentCollection | Document#parentCollection}.
+     */
+    parentCollection: string;
+  }
 
   /**
-   * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
-   * but they're all still valid.
-   *
-   * `strict` is omitted from the DataModel interface so the Document interface's property
-   * description takes precedence.
+   * @privateRemarks `strict` is omitted from the `DataModel` interface so the `Document` interface's property description takes precedence.
    */
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
-    extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
+    extends
+      Omit<DataModel._ConstructionContext, "strict">,
+      InexactPartial<_ConstructionContext>,
+      _ParentContext<Parent> {}
 
   /**
    * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` and `strict` out of the passed context before
@@ -2042,6 +2084,10 @@ declare namespace Document {
   type Pack<Name extends Document.Type> =
     | null
     | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
+
+  type ParentCollection<Name extends Document.Type> =
+    | (Name extends "Adventure" ? never : Document.MetadataFor<Name>["collection"])
+    | (Name extends "ActorData" ? never : null);
 
   /**
    * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` out of the passed context before forwarding to

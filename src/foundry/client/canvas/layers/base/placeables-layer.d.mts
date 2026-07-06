@@ -509,6 +509,10 @@ declare namespace PlaceablesLayer {
     CONFIG["Canvas"]["layers"][DocumentNameToLayerNameMap[Name]]["layerClass"];
   type ImplementationFor<Name extends Document.PlaceableType> = FixedInstanceType<ImplementationClassFor<Name>>;
 
+  /**
+   * This interface is required because this information isn't actually available at runtime in an accessible way. There is no equivalent
+   * for `collection` in document metadata for layer names.
+   */
   interface DocumentNameToLayerNameMap {
     AmbientLight: "lighting";
     AmbientSound: "sounds";

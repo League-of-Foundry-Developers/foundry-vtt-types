@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -48,14 +48,14 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * - `z` to `sort` (since v12, no specified end)
    * - `roof` to `restrictions.light` and `restrictions.weather` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
    * - `z` to `sort` (since v12, until v14)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated "You are accessing `roof` which has been migrated to `restrictions.{`
@@ -89,8 +89,6 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    */
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseTile.ParentCollectionName | null;
 
   static override get implementation(): TileDocument.ImplementationClass;
 
@@ -277,7 +275,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseTile.Schema>;
+  static override _schema: SchemaField<BaseTile.Schema>;
 
   static override get schema(): SchemaField<BaseTile.Schema>;
 

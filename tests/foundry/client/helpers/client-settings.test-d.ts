@@ -3,6 +3,7 @@ import { expectTypeOf } from "vitest";
 import ClientSettings = foundry.helpers.ClientSettings;
 import SettingsConfig = foundry.applications.settings.SettingsConfig;
 import WorldSettings = foundry.documents.collections.WorldSettings;
+import fields = foundry.data.fields;
 
 const clientSettings = new ClientSettings([]);
 

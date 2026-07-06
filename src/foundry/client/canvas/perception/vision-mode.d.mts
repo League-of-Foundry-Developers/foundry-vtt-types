@@ -73,6 +73,18 @@ declare class VisionMode extends DataModel<
    * See {@link https://github.com/foundryvtt/foundryvtt/issues/13227}.
    */
   animate(dt: number): void;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VisionMode.Schema>;
+
+  static override get schema(): fields.SchemaField<VisionMode.Schema>;
+
+  static override validateJoint(data: VisionMode.Source): void;
+
+  static override fromSource(source: VisionMode.CreateData, context?: DataModel.FromSourceOptions): VisionMode;
+
+  static override fromJSON(json: string): VisionMode;
 }
 
 declare namespace VisionMode {
@@ -189,7 +201,10 @@ declare namespace VisionMode {
 
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
-  interface SourceData extends fields.SchemaField.SourceData<Schema> {}
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+
+  /** @deprecated Use {@linkcode DetectionMode.Source} instead. This type will be removed in v14. */
+  type SourceData = Source;
 }
 
 /**

@@ -166,7 +166,10 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    * @param plannedMovements - The planned movement data
    * @internal
    */
-  _updatePlannedMovements(user: User.Implementation, plannedMovements: TokenDocument.PlannedMovements | null): void;
+  _updatePlannedMovements(
+    user: User.Implementation,
+    plannedMovements: Record<string, Token.PlannedMovement | null> | null,
+  ): void;
 
   /**
    * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.

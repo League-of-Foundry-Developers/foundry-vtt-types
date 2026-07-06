@@ -232,7 +232,7 @@ declare namespace EmbeddedCollection {
      * @defaultValue `true`
      */
     // TODO: strip null when cleaning up DataModel types, this is only required because of a NullishProps somewhere
-    strict?: boolean | null | undefined;
+    strict?: boolean | undefined;
   }
 
   /**

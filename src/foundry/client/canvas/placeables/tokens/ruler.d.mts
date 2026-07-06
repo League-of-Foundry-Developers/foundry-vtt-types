@@ -126,12 +126,12 @@ declare namespace TokenRuler {
      * Movement planned by Users
      * @remarks Keys are User IDs.
      */
-    plannedMovement: Record<string, TokenDocument.PlannedMovement>;
+    plannedMovement: Record<string, foundry.canvas.placeables.Token.PlannedMovement>;
   }
 
   interface WaypointData {
     /** The config of the movement action */
-    actionConfig: CONFIG.Token.MovementActionConfig;
+    actionConfig: CONFIG.Token.Movement.ActionConfig;
 
     /** The ID of movement, or null if planned movement. */
     movementId: string | null;

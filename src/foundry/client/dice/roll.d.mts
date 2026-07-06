@@ -548,6 +548,8 @@ declare namespace Roll {
 
   type Mode = keyof CONFIG.Dice.RollModes;
 
+  type CoreDenominations = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
+
   // TODO: Make this actually configurable
   interface ImplementationClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

@@ -984,6 +984,19 @@ declare namespace RegionBehavior {
    *         REGIONBEHAVIOR-SPECIFIC TYPES         *
    *************************************************/
 
+  interface CoreBehaviors {
+    adjustDarknessLevel: typeof foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType;
+    displayScrollingText: typeof foundry.data.regionBehaviors.DisplayScrollingTextRegionBehaviorType;
+    executeMacro: typeof foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType;
+    executeScript: typeof foundry.data.regionBehaviors.ExecuteScriptRegionBehaviorType;
+    // TODO: Implement modifyMovementCost
+    // modifyMovementCost: typeof foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType;
+    pauseGame: typeof foundry.data.regionBehaviors.PauseGameRegionBehaviorType;
+    suppressWeather: typeof foundry.data.regionBehaviors.SuppressWeatherRegionBehaviorType;
+    teleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType;
+    toggleBehavior: typeof foundry.data.regionBehaviors.ToggleBehaviorRegionBehaviorType;
+  }
+
   /**
    * The arguments to construct the document.
    *

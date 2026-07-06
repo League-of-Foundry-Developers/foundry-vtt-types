@@ -1,4 +1,4 @@
-import type { Coalesce, Identity } from "#utils";
+import type { Coalesce, FixedInstanceType, Identity } from "#utils";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
@@ -183,9 +183,8 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * Retrieve the configured DragDrop implementation
-   * @privateRemarks TODO: Config.ux handling
    */
-  static get implementation(): typeof ContextMenu;
+  static get implementation(): ContextMenu.ImplementationClass;
 
   /**
    * @deprecated since v13 until v15
@@ -203,8 +202,19 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 }
 
 declare namespace ContextMenu {
-  interface Any extends AnyContextMenu {}
-  interface AnyConstructor extends Identity<typeof AnyContextMenu> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyContextMenu {}
+    interface AnyConstructor extends Identity<typeof AnyContextMenu> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["ux"]["ContextMenu"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface Entry<ElementType extends JQuery | HTMLElement> {
     /**

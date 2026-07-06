@@ -10,13 +10,14 @@ import type {
   InterfaceToObject,
   MaybeArray,
   MaybePromise,
+  PartialUntilInitialized,
   RemoveIndexSignatures,
 } from "#utils";
-import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
-import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
-import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
+import type * as layers from "#client/canvas/layers/_module.d.mts";
+import type * as groups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
@@ -24,6 +25,13 @@ import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
+import type { collections } from "#client/documents/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type Localization from "#client/helpers/localization.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type * as configuration from "#configuration";
 
 declare global {
   namespace CONFIG {
@@ -102,8 +110,6 @@ declare global {
       ) => Promise<number | void>;
 
       type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
-
-      type DTermDiceStrings = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
 
       interface Terms extends Record<string, foundry.dice.terms.DiceTerm.AnyConstructor> {
         c: foundry.dice.terms.Coin.AnyConstructor;
@@ -193,11 +199,6 @@ declare global {
        * @defaultValue `true`
        */
       hud?: boolean | { actorTypes: string[] } | undefined | null;
-    }
-
-    interface TrackableAttribute {
-      bar: string[];
-      value: string[];
     }
 
     interface TextEditorEngineRenderOptions extends foundry.applications.fields.EditorInputConfig {}
@@ -377,268 +378,29 @@ declare global {
     DatabaseBackend: foundry.data.ClientDatabaseBackend;
 
     /**
-     * Configuration for the Actor document
+     * Configuration for the {@linkcode foundry.documents.Actor | Actor} document
      */
-    Actor: {
-      /** @defaultValue `Actor` */
-      documentClass: Document.ImplementationClassFor<"Actor">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Actors}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Actors;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/actor-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-user"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Actor.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Actor">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<Actor.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /** @defaultValue `{}` */
-      trackableAttributes: Record<string, CONFIG.TrackableAttribute>;
-    };
+    Actor: CONFIG.Actor;
 
     /**
-     * Configuration for the Adventure document.
-     * Currently for internal use only.
-     * @internal
+     * Configuration for the {@linkcode foundry.documents.Adventure | Adventure} document
      */
-    Adventure: {
-      /** @defaultValue `foundry.documents.BaseAdventure` */
-      documentClass: Document.ImplementationClassFor<"Adventure">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Adventure">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/adventure-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fa-solid fa-treasure-chest"` */
-      sidebarIcon: string;
-    };
+    Adventure: CONFIG.Adventure;
 
     /**
-     * Configuration for the Cards primary Document type
+     * Configuration for the {@linkcode foundry.documents.Cards | Cards} document
      */
-    Cards: {
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.CardStacks}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.CardStacks;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `Cards` */
-      documentClass: Document.ImplementationClassFor<"Cards">;
-
-      /** @defaultValue `"fa-solid fa-cards"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Cards.Implementation>>;
-
-      /**
-       * @defaultValue
-       * ```typescript
-       * {
-       *    pokerDark: {
-       *      type: "deck",
-       *      label: "CARDS.DeckPresetPokerDark",
-       *      src: "cards/poker-deck-dark.json"
-       *    },
-       *    pokerLight: {
-       *      type: "deck",
-       *      label: "CARDS.DeckPresetPokerLight",
-       *      src: "cards/poker-deck-light.json"
-       *    }
-       * }
-       * ```
-       */
-      presets: Record<string, CONFIG.Cards.Preset>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Cards">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCards.SubType, string>;
-
-      typeIcons: {
-        /** @defaultValue `"fas fa-cards"` */
-        deck: string;
-
-        /** @defaultValue `"fa-duotone fa-cards"` */
-        hand: string;
-
-        /** @defaultValue `"fa-duotone fa-layer-group"` */
-        pile: string;
-
-        [type: Brand<string, "CONFIG.Cards.typeIcons">]: string;
-      };
-    };
+    Cards: CONFIG.Cards;
 
     /**
-     * Configuration for the ChatMessage document
+     * Configuration for the {@linkcode foundry.documents.ChatMessage | ChatMessage} document
      */
-    ChatMessage: {
-      /** @defaultValue `ChatMessage` */
-      documentClass: Document.ImplementationClassFor<"ChatMessage">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.ChatMessages}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.ChatMessages;
-
-      /** @defaultValue `"templates/sidebar/chat-message.html"` */
-      template: string;
-
-      /** @defaultValue `"fas fa-comments"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, ChatMessage.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ChatMessage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseChatMessage.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /** @defaultValue `100` */
-      batchSize: number;
-    };
+    ChatMessage: CONFIG.ChatMessage;
 
     /**
-     * Configuration for the Combat document
+     * Configuration for the {@linkcode foundry.documents.Combat | Combat} document
      */
-    Combat: {
-      /** @defaultValue `Combat` */
-      documentClass: Document.ImplementationClassFor<"Combat">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.CombatEncounters}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.CombatEncounters;
-
-      /** @defaultValue `new `{@linkcode foundry.data.CombatConfiguration}`()` */
-      settings: foundry.data.CombatConfiguration;
-
-      /** @defaultValue `"fas fa-swords"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Combat.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Combat">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCombat.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      initiative: {
-        /** @defaultValue `null` */
-        formula: string | null;
-
-        /** @defaultValue `2` */
-        decimals: number;
-      };
-
-      /** @defaultValue "icons/vtt-512.png" */
-      fallbackTurnMarker: string;
-
-      /**
-       * @defaultValue
-       * ```typescript
-       * {
-       *   "epic": {
-       *     label: "COMBAT.Sounds.Epic",
-       *     startEncounter: ["sounds/combat/epic-start-3hit.ogg", "sounds/combat/epic-start-horn.ogg"],
-       *     nextUp: ["sounds/combat/epic-next-horn.ogg"],
-       *     yourTurn: ["sounds/combat/epic-turn-1hit.ogg", "sounds/combat/epic-turn-2hit.ogg"]
-       *   },
-       *   "mc": {
-       *     label: "COMBAT.Sounds.MC",
-       *     startEncounter: ["sounds/combat/mc-start-battle.ogg", "sounds/combat/mc-start-begin.ogg", "sounds/combat/mc-start-fight.ogg", "sounds/combat/mc-start-fight2.ogg"],
-       *     nextUp: ["sounds/combat/mc-next-itwillbe.ogg", "sounds/combat/mc-next-makeready.ogg", "sounds/combat/mc-next-youare.ogg"],
-       *     yourTurn: ["sounds/combat/mc-turn-itisyour.ogg", "sounds/combat/mc-turn-itsyour.ogg"]
-       *   }
-       * }
-       * ```
-       */
-      sounds: CONFIG.Combat.Sounds;
-    };
+    Combat: CONFIG.Combat;
 
     /**
      * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
@@ -646,409 +408,54 @@ declare global {
     Dice: CONFIG.Dice;
 
     /**
-     * Configuration for the FogExploration document
+     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
      */
-    FogExploration: {
-      /** @defaultValue `FogExploration` */
-      documentClass: Document.ImplementationClassFor<"FogExploration">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"FogExploration">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.FogExplorations}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.FogExplorations;
-    };
+    FogExploration: CONFIG.FogExploration;
 
     /**
-     * Configuration for the Folder entity
+     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
      */
-    Folder: {
-      /** @defaultValue `Folder` */
-      documentClass: Document.ImplementationClassFor<"Folder">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Folders}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Folders;
-
-      /** @defaultValue `"fas fa-folder"` */
-      sidebarIcon: string;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Folder">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, string>;
-    };
+    Folder: CONFIG.Folder;
 
     /**
-     * Configuration for the default Item entity class
+     * Configuration for the {@linkcode foundry.documents.Item | Item} document
      */
-    Item: {
-      /** @defaultValue `Item` */
-      documentClass: Document.ImplementationClassFor<"Item">;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Items}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Items;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/item-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-suitcase"` */
-      sidebarIcon: string;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Item.Implementation>>;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseItem.SubType, string>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Item">;
-    };
+    Item: CONFIG.Item;
 
     /**
-     * Configuration for the JournalEntry entity
+     * Configuration for the {@linkcode foundry.documents.JournalEntry | JournalEntry} document
      */
-    JournalEntry: {
-      /** @defaultValue `JournalEntry` */
-      documentClass: Document.ImplementationClassFor<"JournalEntry">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntry">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Journal}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Journal;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/journalentry-banner.webp"` */
-      compendiumBanner: string;
-
-      noteIcons: {
-        /** @defaultValue `"icons/svg/anchor.svg"` */
-        Anchor: string;
-
-        /** @defaultValue `"icons/svg/barrel.svg"` */
-        Barrel: string;
-
-        /** @defaultValue `"icons/svg/book.svg"` */
-        Book: string;
-
-        /** @defaultValue `"icons/svg/bridge.svg"` */
-        Bridge: string;
-
-        /** @defaultValue `"icons/svg/cave.svg"` */
-        Cave: string;
-
-        /** @defaultValue `"icons/svg/castle.svg"` */
-        Castle: string;
-
-        /** @defaultValue `"icons/svg/chest.svg"` */
-        Chest: string;
-
-        /** @defaultValue `"icons/svg/city.svg"` */
-        City: string;
-
-        /** @defaultValue `"icons/svg/coins.svg"` */
-        Coins: string;
-
-        /** @defaultValue `"icons/svg/fire.svg"` */
-        Fire: string;
-
-        /** @defaultValue `"icons/svg/hanging-sign.svg"` */
-        "Hanging Sign": string;
-
-        /** @defaultValue `"icons/svg/house.svg"` */
-        House: string;
-
-        /** @defaultValue `"icons/svg/mountain.svg"` */
-        Mountain: string;
-
-        /** @defaultValue `"icons/svg/oak.svg"` */
-        "Oak Tree": string;
-
-        /** @defaultValue `"icons/svg/obelisk.svg"` */
-        Obelisk: string;
-
-        /** @defaultValue `"icons/svg/pawprint.svg"` */
-        Pawprint: string;
-
-        /** @defaultValue `"icons/svg/ruins.svg"` */
-        Ruins: string;
-
-        /** @defaultValue `"icons/svg/skull.svg"` */
-        Skull: string;
-
-        /** @defaultValue `"icons/svg/statue.svg"` */
-        Statue: string;
-
-        /** @defaultValue `"icons/svg/sword.svg"` */
-        Sword: string;
-
-        /** @defaultValue `"icons/svg/tankard.svg"` */
-        Tankard: string;
-
-        /** @defaultValue `"icons/svg/temple.svg"` */
-        Temple: string;
-
-        /** @defaultValue `"icons/svg/tower.svg"` */
-        Tower: string;
-
-        /** @defaultValue `"icons/svg/trap.svg"` */
-        Trap: string;
-
-        /** @defaultValue `"icons/svg/village.svg"` */
-        Village: string;
-
-        /** @defaultValue `"icons/svg/waterfall.svg"` */
-        Waterfall: string;
-
-        /** @defaultValue `"icons/svg/windmill.svg"` */
-        Windmill: string;
-      } & Record<string, string>;
-
-      /** @defaultValue `"fas fa-book-open"` */
-      sidebarIcon: string;
-    };
+    JournalEntry: CONFIG.JournalEntry;
 
     /**
-     * Configuration for the Macro entity
+     * Configuration for the {@linkcode foundry.documents.Macro | Macro} document
      */
-    Macro: {
-      /** @defaultValue `Macro` */
-      documentClass: Document.ImplementationClassFor<"Macro">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Macro">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Macros}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Macros;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/macro-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-code"` */
-      sidebarIcon: string;
-    };
+    Macro: CONFIG.Macro;
 
     /**
-     * Configuration for the default Playlist entity class
+     * Configuration for the {@linkcode foundry.documents.Playlist | Playlist} document
      */
-    Playlist: {
-      /** @defaultValue `Playlist` */
-      documentClass: Document.ImplementationClassFor<"Playlist">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Playlist">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Playlists}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Playlists;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/playlist-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-music"` */
-      sidebarIcon: string;
-
-      /** @defaultValue `20` */
-      autoPreloadSeconds: number;
-    };
+    Playlist: CONFIG.Playlist;
 
     /**
-     * Configuration for RollTable random draws
+     * Configuration for the {@linkcode foundry.documents.RollTable | RollTable} document
      */
-    RollTable: {
-      /** @defaultValue `RollTable` */
-      documentClass: Document.ImplementationClassFor<"RollTable">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"RollTable">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.RollTables}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.RollTables;
-
-      /** @defaultValue `["formula"]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/rolltable-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-th-list"` */
-      sidebarIcon: string;
-
-      /** @defaultValue `"icons/svg/d20-black.svg"` */
-      resultIcon: string;
-
-      /** @defaultValue `"templates/dice/table-result.html"` */
-      resultTemplate: string;
-    };
+    RollTable: CONFIG.RollTable;
 
     /**
-     * Configuration for the default Scene entity class
+     * Configuration for the {@linkcode foundry.documents.Scene | Scene} document
      */
-    Scene: {
-      /** @defaultValue `Scene` */
-      documentClass: Document.ImplementationClassFor<"Scene">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Scene">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Scenes}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Scenes;
-
-      /** @defaultValue `[]` */
-      compendiumIndexFields: string[];
-
-      /** @defaultValue `"ui/banners/scene-banner.webp"` */
-      compendiumBanner: string;
-
-      /** @defaultValue `"fas fa-map"` */
-      sidebarIcon: string;
-    };
-
-    Setting: {
-      /** @defaultValue `Setting` */
-      documentClass: Document.ImplementationClassFor<"Setting">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Setting">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.WorldSettings}
-       * @remarks {@linkcode foundry.helpers.ClientSettings | ClientSettings#constructor} instantiates `WorldSettings` by name, without referring to this property.
-       * It's only purpose seems to be allowing a {@linkcode WorldCollection.instance | CONFIG[primaryType]?.collection?.instance} reference in
-       * {@linkcode foundry.utils.parseUuid} to work.
-       */
-      collection: foundry.documents.collections.WorldSettings.Internal.AnyConstructor;
-    };
+    Scene: CONFIG.Scene;
 
     /**
-     * Configuration for the User entity, it's roles, and permissions
+     * Configuration for the {@linkcode foundry.documents.Setting | Setting} document
      */
-    User: {
-      /** @defaultValue `User` */
-      documentClass: Document.ImplementationClassFor<"User">;
+    Setting: CONFIG.Setting;
 
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"User">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /**
-       * @defaultValue {@linkcode foundry.documents.collections.Users}
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
-       */
-      collection: typeof foundry.documents.collections.Users;
-    };
+    /**
+     * Configuration for the {@linkcode foundry.documents.User | User} document
+     */
+    User: CONFIG.User;
 
     /**
      * Configuration settings for the Canvas and its contained layers and objects
@@ -1414,680 +821,104 @@ declare global {
     time: CONFIG.Time;
 
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the {@linkcode foundry.documents.ActiveEffect | ActiveEffect} embedded document type
      */
-    ActiveEffect: {
-      /** @defaultValue `ActiveEffect` */
-      documentClass: Document.ImplementationClassFor<"ActiveEffect">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, ActiveEffect.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ActiveEffect">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseActiveEffect.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-
-      /**
-       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
-       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
-       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
-       * if the transfer property on the Active Effect is true.
-       * @remarks Foundry states "\@deprecated since v11" but this is misleading for actual use
-       */
-      legacyTransferral: boolean;
-    };
+    ActiveEffect: CONFIG.ActiveEffect;
 
     /**
-     * Configuration for the ActorDelta embedded document type.
+     * Configuration for the {@linkcode foundry.documents.ActorDelta | ActorDelta} embedded document type.
      */
-    ActorDelta: {
-      /** @defaultValue `ActorDelta` */
-      documentClass: Document.ImplementationClassFor<"ActorDelta">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"ActorDelta">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    ActorDelta: CONFIG.ActorDelta;
 
     /**
-     * Configuration for the Card embedded Document type
+     * Configuration for the {@linkcode foundry.documents.Card | Card} embedded document type
      */
-    Card: {
-      /** @defaultValue `Card` */
-      documentClass: Document.ImplementationClassFor<"Card">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Card.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Card">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCard.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-    };
+    Card: CONFIG.Card;
 
     /**
-     * Configuration for the TableResult embedded document type
+     * Configuration for the {@linkcode foundry.documents.TableResult | TableResult} embedded document type
      */
-    TableResult: {
-      /** @defaultValue `TableResult` */
-      documentClass: Document.ImplementationClassFor<"TableResult">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"TableResult">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<foundry.documents.BaseTableResult.SubType, string>;
-    };
-
-    JournalEntryPage: {
-      /** @defaultValue `JournalEntryPage` */
-      documentClass: Document.ImplementationClassFor<"JournalEntryPage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, JournalEntryPage.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntryPage">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by {@linkcode foundry.helpers.Localization | Localization#initialize}, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseJournalEntryPage.SubType, string>;
-
-      typeIcons: {
-        [type: Brand<string, "CONFIG.JournalEntryPage">]: string;
-
-        /** @defaultValue `"fas fa-file-image"` */
-        image: string;
-
-        /** @defaultValue `"fas fa-file-pdf"` */
-        pdf: string;
-
-        /** @defaultValue `"fas fa-file-lines"` */
-        text: string;
-
-        /** @defaultValue `"fas fa-file-video"` */
-        video: string;
-      };
-
-      /** @defaultValue `"text"` */
-      defaultType: string;
-
-      /** @defaultValue `"fas fa-book-open"` */
-      sidebarIcon: string;
-    };
+    TableResult: CONFIG.TableResult;
 
     /**
-     * Configuration for the ActiveEffect embedded document type
+     * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
      */
-    PlaylistSound: {
-      /** @defaultValue `PlaylistSound` */
-      documentClass: Document.ImplementationClassFor<"PlaylistSound">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"PlaylistSound">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    JournalEntryPage: CONFIG.JournalEntryPage;
 
     /**
-     * Configuration for the AmbientLight embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.PlaylistSound | PlaylistSound} embedded document type
      */
-    AmbientLight: {
-      /** @defaultValue `AmbientLightDocument` */
-      documentClass: Document.ImplementationClassFor<"AmbientLight">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"AmbientLight">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof AmbientLightDocument` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.LightingLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The lighting layer can be set at {@linkcode CONFIG.Canvas.layers.lighting}
-       */
-      layerClass: typeof canvasLayers.LightingLayer;
-    };
+    PlaylistSound: CONFIG.PlaylistSound;
 
     /**
-     * Configuration for the AmbientSound embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.AmbientLight | AmbientLight} embedded document
+     * type and its representation on the game Canvas
      */
-    AmbientSound: {
-      /** @defaultValue `AmbientSoundDocument` */
-      documentClass: Document.ImplementationClassFor<"AmbientSound">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"AmbientSound">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof AmbientSound` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.SoundsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The sounds layer can be set at {@linkcode CONFIG.Canvas.layers.sounds}
-       */
-      layerClass: typeof canvasLayers.SoundsLayer;
-    };
+    AmbientLight: CONFIG.AmbientLight;
 
     /**
-     * Configuration for the Combatant embedded document type within a Combat document
+     * Configuration for the {@linkcode foundry.documents.AmbientSound | AmbientSound} embedded document
+     * type and its representation on the game Canvas
      */
-    Combatant: {
-      /** @defaultValue `Combatant` */
-      documentClass: Document.ImplementationClassFor<"Combatant">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, Combatant.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Combatant">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCombatant.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-    };
+    AmbientSound: CONFIG.AmbientSound;
 
     /**
-     * Configuration for the CombatantGroup embedded document type within a Combat document.
+     * Configuration for the {@linkcode foundry.documents.Combatant | Combatant} embedded document type
+     * within a {@linkcode foundry.documents.Combat | Combat} document
      */
-    CombatantGroup: {
-      /** @defaultValue `CombatantGroup` */
-      documentClass: Document.ImplementationClassFor<"CombatantGroup">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks `TypeDataModel` is preferred to `DataModel` per core Foundry team
-       */
-      dataModels: Record<string, typeof DataModel<any, CombatantGroup.Implementation>>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"CombatantGroup">;
-
-      /**
-       * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
-       */
-      typeLabels: Record<foundry.documents.BaseCombatantGroup.SubType, string>;
-
-      /** @defaultValue `{}` */
-      typeIcons: Record<string, string>;
-    };
+    Combatant: CONFIG.Combatant;
 
     /**
-     * Configuration for the Drawing embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.CombatantGroup | CombatantGroup}
+     * embedded document type within a {@linkcode foundry.documents.Combat | Combat} document.
      */
-    Drawing: {
-      /** @defaultValue `DrawingDocument` */
-      documentClass: Document.ImplementationClassFor<"Drawing">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Drawing">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Drawing` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.DrawingsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The drawings layer can be set at {@linkcode CONFIG.Canvas.layers.drawings}
-       */
-      layerClass: typeof canvasLayers.DrawingsLayer;
-
-      /** @defaultValue `typeof DrawingHUD` */
-      hudClass: typeof foundry.applications.hud.DrawingHUD;
-    };
+    CombatantGroup: CONFIG.CombatantGroup;
 
     /**
-     * Configuration for the JournalEntryCategory embedded document type.
+     * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
      */
-    JournalEntryCategory: {
-      /** @defaultValue `JournalEntryCategory` */
-      documentClass: Document.ImplementationClassFor<"JournalEntryCategory">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"JournalEntryCategory">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    Drawing: CONFIG.Drawing;
 
     /**
-     * Configuration for the MeasuredTemplate embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
      */
-    MeasuredTemplate: {
-      defaults: {
-        /** @defaultValue `53.13` */
-        angle: number;
-
-        /** @defaultValue `1` */
-        width: number;
-      };
-
-      types: {
-        /** @defaultValue `"Circle"` */
-        circle: string;
-
-        /** @defaultValue `"Cone"` */
-        cone: string;
-
-        /** @defaultValue `"Rectangle"` */
-        rect: string;
-
-        /** @defaultValue `"Ray"` */
-        ray: string;
-      };
-
-      /** @defaultValue `MeasuredTemplateDocument` */
-      documentClass: Document.ImplementationClassFor<"MeasuredTemplate">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"MeasuredTemplate">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof MeasuredTemplate` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TemplateLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The template layer can be set at {@linkcode CONFIG.Canvas.layers.templates}
-       */
-      layerClass: typeof canvasLayers.TemplateLayer;
-    };
+    JournalEntryCategory: CONFIG.JournalEntryCategory;
 
     /**
-     * Configuration for the Note embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
+     * on the game Canvas
      */
-    Note: {
-      /** @defaultValue `NoteDocument` */
-      documentClass: Document.ImplementationClassFor<"Note">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Note">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Note` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.NotesLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The notes layer can be set at {@linkcode CONFIG.Canvas.layers.notes}
-       */
-      layerClass: typeof canvasLayers.NotesLayer;
-    };
-
-    Region: {
-      /** @defaultValue `RegionDocument` */
-      documentClass: Document.ImplementationClassFor<"Region">;
-
-      /** @defaultValue `Region` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.RegionLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The regions layer can be set at {@linkcode CONFIG.Canvas.layers.regions}
-       */
-      layerClass: typeof canvasLayers.RegionLayer;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Region">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-    };
+    MeasuredTemplate: CONFIG.MeasuredTemplate;
 
     /**
-     * Configuration for the RegionBehavior embedded document type
+     * Configuration for the {@linkcode foundry.documents.Note | Note} embedded document type and its representation on the game Canvas
      */
-    RegionBehavior: {
-      documentClass: Document.ImplementationClassFor<"Region">;
-      dataModels: Record<
-        string,
-        typeof foundry.data.regionBehaviors.RegionBehaviorType<any, RegionBehavior.Implementation, AnyObject, AnyObject>
-      >;
-      typeLabels?: Record<"base", string>;
-      typeIcons: Record<string, string>;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"RegionBehavior">;
-    };
+    Note: CONFIG.Note;
 
     /**
-     * Configuration for the Tile embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Region | Region} embedded document type and its representation on the game Canvas
      */
-    Tile: {
-      /** @defaultValue `TileDocument` */
-      documentClass: Document.ImplementationClassFor<"Tile">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Tile">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Tile` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TilesLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The tiles layer can be set at {@linkcode CONFIG.Canvas.layers.tiles}
-       */
-      layerClass: typeof canvasLayers.TilesLayer;
-
-      /** @defaultValue `typeof TileHUD` */
-      hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
-    };
+    Region: CONFIG.Region;
 
     /**
-     * Configuration for the Token embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
      */
-    Token: {
-      /** @defaultValue `TokenDocument` */
-      documentClass: Document.ImplementationClassFor<"Token">;
-
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Token">;
-
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Token` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.TokenLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The tokens layer can be set at {@linkcode CONFIG.Canvas.layers.tokens}
-       */
-      layerClass: typeof canvasLayers.TokenLayer;
-
-      /** @defaultValue `typeof TokenConfig` */
-      prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
-
-      /** @defaultValue `typeof TokenHUD` */
-      hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
-
-      /**
-       * @defaultValue `typeof TokenRuler`
-       * @privateRemarks `typeof` because the constructor must take a {@linkcode Token.Implementation}
-       */
-      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
-
-      movement: {
-        /** @defaultValue `data.TerrainData` */
-        TerrainData: typeof foundry.data.BaseTerrainData;
-
-        /** The movement cost aggregator. */
-        costAggregator: TokenDocument.MovementCostAggregator;
-
-        /**
-         * The default movement animation speed in grid spaces per second.
-         * @defaultValue `6`
-         */
-        defaultSpeed: number;
-
-        /** @defaultValue `"walk"` */
-        defaultAction: string;
-
-        /**
-         * @defaultValue
-         * ```js
-         * {
-         *   walk: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
-         *     icon: "fa-solid fa-person-walking",
-         *     img: "icons/svg/walk.svg",
-         *     order: 0
-         *   },
-         *   fly: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
-         *     icon: "fa-solid fa-person-fairy",
-         *     img: "icons/svg/wing.svg",
-         *     order: 1
-         *   },
-         *   swim: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
-         *     icon: "fa-solid fa-person-swimming",
-         *     img: "icons/svg/whale.svg",
-         *     order: 2,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
-         *   },
-         *   burrow: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
-         *     icon: "fa-solid fa-person-digging",
-         *     img: "icons/svg/burrow.svg",
-         *     order: 3
-         *   },
-         *   crawl: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
-         *     icon: "fa-solid fa-person-praying",
-         *     img: "icons/svg/leg.svg",
-         *     order: 4,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-         *     deriveTerrainDifficulty: ({walk}) => walk,
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   climb: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
-         *     icon: "fa-solid fa-person-through-window",
-         *     img: "icons/svg/ladder.svg",
-         *     order: 5,
-         *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-         *     deriveTerrainDifficulty: ({walk}) => walk,
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   jump: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
-         *     icon: "fa-solid fa-person-running-fast",
-         *     img: "icons/svg/jump.svg",
-         *     order: 6,
-         *     deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
-         *     getCostFunction: () => cost => cost * 2
-         *   },
-         *   blink: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
-         *     icon: "fa-solid fa-person-from-portal",
-         *     img: "icons/svg/teleport.svg",
-         *     order: 7,
-         *     teleport: true,
-         *     getAnimationOptions: () => ({duration: 0}),
-         *     deriveTerrainDifficulty: () => 1
-         *   },
-         *   displace: {
-         *     label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
-         *     icon: "fa-solid fa-transporter-1",
-         *     img: "icons/svg/portal.svg",
-         *     order: 8,
-         *     teleport: true,
-         *     measure: false,
-         *     walls: null,
-         *     visualize: false,
-         *     getAnimationOptions: () => ({duration: 0}),
-         *     canSelect: () => false,
-         *     deriveTerrainDifficulty: () => 1,
-         *     getCostFunction: () => () => 0
-         *   }
-         * }
-         * ```
-         */
-        actions: Record<string, CONFIG.Token.MovementActionConfig>;
-      };
-
-      /** @defaultValue `"TOKEN.Adjectives"` */
-      adjectivesPrefix: string;
-
-      /** @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()` */
-      ring: foundry.canvas.placeables.tokens.TokenRingConfig;
-    };
+    RegionBehavior: CONFIG.RegionBehavior;
 
     /**
-     * Configuration for the Wall embedded document type and its representation on the game Canvas
+     * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
      */
-    Wall: {
-      /** @defaultValue `WallDocument` */
-      documentClass: Document.ImplementationClassFor<"Wall">;
+    Tile: CONFIG.Tile;
 
-      /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
-       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
-       */
-      sheetClasses: CONFIG.SheetClasses<"Wall">;
+    /**
+     * Configuration for the {@linkcode foundry.documents.Token | Token} embedded document type and its representation on the game Canvas
+     */
+    Token: CONFIG.Token;
 
-      /**
-       * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
-       */
-      typeLabels?: Record<"base", string>;
-
-      /** @defaultValue `typeof Wall` */
-      objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
-
-      /**
-       * @defaultValue {@linkcode foundry.canvas.layers.WallsLayer}
-       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
-       * The walls layer can be set at {@linkcode CONFIG.Canvas.layers.walls}
-       */
-      layerClass: typeof canvasLayers.WallsLayer;
-
-      /** @defaultValue `1` */
-      thresholdAttenuationMultiplier: number;
-
-      doorSounds: InterfaceToObject<CONFIG.Wall.DoorSounds>;
-
-      animationTypes: InterfaceToObject<CONFIG.Wall.DoorAnimations>;
-    };
+    /**
+     * Configuration for the {@linkcode foundry.documents.Wall | Wall} embedded document type and its representation on the game Canvas
+     */
+    Wall: CONFIG.Wall;
 
     /**
      * An enumeration of sound effects which can be applied to Sound instances.
@@ -2163,6 +994,516 @@ declare global {
   }
 
   namespace CONFIG {
+    /**
+     * Common properties of all document interfaces in `CONFIG`. Doesn't include `typeLabels`, because while all docs will have it defined,
+     * the (TS) types are different for docs that don't really have (foundry) types, which requires different JSDoc.
+     * @internal
+     */
+    interface _Document<Name extends Document.Type> {
+      documentClass: Document.ImplementationClassFor<Name>;
+
+      /**
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode foundry.Game | Game#constructor} as
+       * an empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
+       */
+      sheetClasses: CONFIG.SheetClasses<Name>;
+    }
+
+    /**
+     * Common properties for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
+     * `dataModels` and `typeIcons` fields, their `typeLabels` are defined in their `CONFIG` entry immediately,
+     * rather than being added later.
+     * @internal
+     */
+    interface _HasTypes<Name extends Document.WithSystem> {
+      /**
+       * @remarks In FVTT-Types, this just mirrors {@linkcode configuration.DataModelConfig | DataModelConfig}, which is where
+       * you must currently define your subtypes, in addition to setting this property at runtime.
+       */
+      dataModels: Document.TypeModelsFor<Name>;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Is empty prior to {@linkcode Localization.initialize | Localization#initialize} being called just before `i18nInit`,
+       * after which at least one entry per document is guaranteed.
+       */
+      typeLabels: PartialUntilInitialized<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Used by {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.toAnchor | ClientDocument#toAnchor}
+       * and the `RollTable`, `Region`, and `RegionBehavior` sheets in core. Unlike `typeLabels`, nothing comes along and fills this in for
+       * all subtypes; only `Cards`, `JournalEntryPage`, and `RegionBehavior` have any pre-defined as of 13.351.
+       */
+      typeIcons: IntentionalPartial<Record<Document.SubTypesOf<Name>, string>>;
+    }
+
+    /**
+     * A definition of `typeLabels` for the majority of Documents' `CONFIG` entries that do not have it defined prior to `i18nInit`
+     * @internal
+     */
+    interface _HasNoTypes<Name extends Document.Type> {
+      /**
+       * @remarks Not defined in `config.mjs`, this is added by {@linkcode Localization.initialize | Localization#initialize} just before
+       * the `i18nInit` hook.
+       */
+      typeLabels: InitializedOn<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
+    }
+
+    /**
+     * Common properties for Canvas document `CONFIG` entries.
+     * @internal
+     */
+    interface _CanvasDoc<Name extends Document.PlaceableType> {
+      objectClass: foundry.canvas.placeables.PlaceableObject.ImplementationClassFor<Name>;
+
+      /**
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11. The layer for a given Canvas Document
+       * can be set at `CONFIG.Canvas.layers[canvas.getLayerByEmbeddedName(documentName).constructor.layerOptions.name].layerClass`. Formal
+       * deprecation starts in v14:
+       *
+       * "`CONFIG.${documentName}.layerClass` has been deprecated. Use `CONFIG.Canvas.layers.${layerName}.layerClass` instead."
+       * (since v14, until v16)
+       *
+       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type.
+       */
+      layerClass: foundry.canvas.layers.PlaceablesLayer.ImplementationClassFor<Name>;
+    }
+
+    interface Actor extends _Document<"Actor">, _HasTypes<"Actor"> {
+      /**
+       * @defaultValue {@linkcode collections.Actors}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Actors;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/actor-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-user"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `{}` */
+      trackableAttributes: Actor.TrackableAttribute;
+    }
+
+    namespace Actor {
+      interface TrackableAttribute {
+        bar: string[];
+        value: string[];
+      }
+    }
+
+    /** @deprecated Use {@linkcode CONFIG.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
+    type TrackableAttribute = Actor.TrackableAttribute;
+
+    interface Adventure extends _Document<"Adventure">, _HasNoTypes<"Adventure"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.sheets.AdventureExporter}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.apps.Compendium}.
+       */
+      exporterClass: typeof foundry.applications.sheets.AdventureExporter;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/adventure-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-treasure-chest"` */
+      sidebarIcon: string;
+    }
+
+    interface Cards extends _Document<"Cards">, _HasTypes<"Cards"> {
+      /**
+       * @defaultValue {@linkcode collections.CardStacks}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.CardStacks;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/cards-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-cards"` */
+      sidebarIcon: string;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *    pokerDark: {
+       *      type: "deck",
+       *      label: "CARDS.DeckPresetPokerDark",
+       *      src: "cards/poker-deck-dark.json"
+       *    },
+       *    pokerLight: {
+       *      type: "deck",
+       *      label: "CARDS.DeckPresetPokerLight",
+       *      src: "cards/poker-deck-light.json"
+       *    }
+       * }
+       * ```
+       */
+      presets: Record<string, Cards.Preset>;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   deck: "fa-solid fa-cards",
+       *   hand: "fa-duotone fa-cards",
+       *   pile: "fa-duotone fa-layer-group"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"Cards">["typeIcons"];
+    }
+
+    namespace Cards {
+      interface Preset {
+        type: string;
+        label: string;
+        src: string;
+      }
+    }
+
+    interface ChatMessage extends _Document<"ChatMessage">, _HasTypes<"ChatMessage"> {
+      /**
+       * @defaultValue {@linkcode collections.ChatMessages}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.ChatMessages;
+
+      /** @defaultValue `"templates/sidebar/chat-message.html"` */
+      template: string;
+
+      /** @defaultValue `"fa-solid fa-comments"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `100` */
+      batchSize: number;
+    }
+
+    interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {
+      /**
+       * @defaultValue {@linkcode collections.CombatEncounters}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.CombatEncounters;
+
+      /**
+       * @privateRemarks This gets `defineProperty`'d to `{ writable: false, configurable: false }` near the bottom of `config.mjs`
+       */
+      readonly settings: foundry.data.CombatConfiguration;
+
+      sidebarIcon: string;
+
+      initiativeIcon: Combat.InitiativeIcon;
+
+      initiative: Combat.Initiative;
+
+      /** @defaultValue "icons/vtt-512.png" */
+      fallbackTurnMarker: string;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   epic: {
+       *     label: "COMBAT.Sounds.Epic",
+       *     startEncounter: ["sounds/combat/epic-start-3hit.ogg", "sounds/combat/epic-start-horn.ogg"],
+       *     nextUp: ["sounds/combat/epic-next-horn.ogg"],
+       *     yourTurn: ["sounds/combat/epic-turn-1hit.ogg", "sounds/combat/epic-turn-2hit.ogg"]
+       *   },
+       *   mc: {
+       *     label: "COMBAT.Sounds.MC",
+       *     startEncounter: [
+       *       "sounds/combat/mc-start-battle.ogg",
+       *       "sounds/combat/mc-start-begin.ogg",
+       *       "sounds/combat/mc-start-fight.ogg",
+       *       "sounds/combat/mc-start-fight2.ogg"
+       *     ],
+       *     nextUp: ["sounds/combat/mc-next-itwillbe.ogg", "sounds/combat/mc-next-makeready.ogg", "sounds/combat/mc-next-youare.ogg"],
+       *     yourTurn: ["sounds/combat/mc-turn-itisyour.ogg", "sounds/combat/mc-turn-itsyour.ogg"]
+       *   }
+       * }
+       * ```
+       */
+      sounds: RemoveIndexSignatures<Combat.Sounds>;
+    }
+
+    namespace Combat {
+      interface InitiativeIcon {
+        /** @defaultValue `../icons/svg/d20.svg` */
+        icon: string;
+
+        /** @defaultValue `../icons/svg/d20-highlight.svg` */
+        hover: string;
+      }
+
+      interface Initiative {
+        /** @defaultValue `null` */
+        formula: string | null;
+
+        /** @defaultValue `2` */
+        decimals: number;
+      }
+
+      interface SoundPreset {
+        label: string;
+        startEncounter: string[];
+        nextUp: string[];
+        yourTurn: string[];
+      }
+
+      interface Sounds {
+        [soundName: string]: SoundPreset;
+        epic: SoundPreset;
+        mc: SoundPreset;
+      }
+    }
+
+    interface FogExploration extends _Document<"FogExploration">, _HasNoTypes<"FogExploration"> {
+      /**
+       * @defaultValue {@linkcode collections.FogExplorations}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.FogExplorations;
+    }
+
+    interface Folder extends _Document<"Folder">, _HasNoTypes<"Folder"> {
+      /**
+       * @defaultValue {@linkcode collections.Folders}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Folders;
+
+      /** @defaultValue `"fa-solid fa-folder"` */
+      sidebarIcon: string;
+    }
+
+    interface Item extends _Document<"Item">, _HasTypes<"Item"> {
+      /**
+       * @defaultValue {@linkcode collections.Items}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Items;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/item-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-suitcase"` */
+      sidebarIcon: string;
+    }
+
+    interface JournalEntry extends _Document<"JournalEntry">, _HasNoTypes<"JournalEntry"> {
+      /**
+       * @defaultValue {@linkcode collections.Journal}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Journal;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/journalentry-banner.webp"` */
+      compendiumBanner: string;
+
+      noteIcons: RemoveIndexSignatures<JournalEntry.NoteIcons>;
+
+      /** @defaultValue `"fa-solid fa-book-open"` */
+      sidebarIcon: string;
+    }
+
+    namespace JournalEntry {
+      interface NoteIcons {
+        [iconName: string]: string;
+
+        /** @defaultValue `"icons/svg/anchor.svg";` */
+        Anchor: string;
+
+        /** @defaultValue `"icons/svg/barrel.svg";` */
+        Barrel: string;
+
+        /** @defaultValue `"icons/svg/book.svg";` */
+        Book: string;
+
+        /** @defaultValue `"icons/svg/bridge.svg";` */
+        Bridge: string;
+
+        /** @defaultValue `"icons/svg/cave.svg";` */
+        Cave: string;
+
+        /** @defaultValue `"icons/svg/castle.svg";` */
+        Castle: string;
+
+        /** @defaultValue `"icons/svg/chest.svg";` */
+        Chest: string;
+
+        /** @defaultValue `"icons/svg/city.svg";` */
+        City: string;
+
+        /** @defaultValue `"icons/svg/coins.svg";` */
+        Coins: string;
+
+        /** @defaultValue `"icons/svg/fire.svg";` */
+        Fire: string;
+
+        /** @defaultValue `"icons/svg/hanging-sign.svg"` */
+        "Hanging Sign": string;
+
+        /** @defaultValue `"icons/svg/house.svg";` */
+        House: string;
+
+        /** @defaultValue `"icons/svg/mountain.svg";` */
+        Mountain: string;
+
+        /** @defaultValue `"icons/svg/oak.svg";` */
+        "Oak Tree": string;
+
+        /** @defaultValue `"icons/svg/obelisk.svg";` */
+        Obelisk: string;
+
+        /** @defaultValue `"icons/svg/pawprint.svg";` */
+        Pawprint: string;
+
+        /** @defaultValue `"icons/svg/ruins.svg";` */
+        Ruins: string;
+
+        /** @defaultValue `"icons/svg/skull.svg";` */
+        Skull: string;
+
+        /** @defaultValue `"icons/svg/statue.svg";` */
+        Statue: string;
+
+        /** @defaultValue `"icons/svg/sword.svg";` */
+        Sword: string;
+
+        /** @defaultValue `"icons/svg/tankard.svg";` */
+        Tankard: string;
+
+        /** @defaultValue `"icons/svg/temple.svg";` */
+        Temple: string;
+
+        /** @defaultValue `"icons/svg/tower.svg";` */
+        Tower: string;
+
+        /** @defaultValue `"icons/svg/trap.svg";` */
+        Trap: string;
+
+        /** @defaultValue `"icons/svg/village.svg";` */
+        Village: string;
+
+        /** @defaultValue `"icons/svg/waterfall.svg";` */
+        Waterfall: string;
+
+        /** @defaultValue `"icons/svg/windmill.svg";` */
+        Windmill: string;
+      }
+    }
+
+    interface Macro extends _Document<"Macro">, _HasNoTypes<"Macro"> {
+      /**
+       * @defaultValue {@linkcode collections.Macros}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Macros;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/macro-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-code"` */
+      sidebarIcon: string;
+    }
+
+    interface Playlist extends _Document<"Playlist">, _HasNoTypes<"Playlist"> {
+      /**
+       * @defaultValue {@linkcode collections.Playlists}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Playlists;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/playlist-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-music"` */
+      sidebarIcon: string;
+
+      /** @remarks The number of seconds prior to the end of the current track to start preloading the next one. */
+      autoPreloadSeconds: number;
+    }
+
+    interface RollTable extends _Document<"RollTable">, _HasNoTypes<"RollTable"> {
+      /**
+       * @defaultValue {@linkcode collections.RollTables}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.RollTables;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/rolltable-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-table-list"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `"icons/svg/d20-black.svg"` */
+      resultIcon: string;
+
+      /** @defaultValue `"templates/dice/table-result.hbs"` */
+      resultTemplate: string;
+    }
+
+    interface Scene extends _Document<"Scene">, _HasNoTypes<"Scene"> {
+      /**
+       * @defaultValue {@linkcode collections.Scenes}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Scenes;
+
+      /** @defaultValue `[]` */
+      compendiumIndexFields: string[];
+
+      /** @defaultValue `"ui/banners/scene-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"fa-solid fa-table-map"` */
+      sidebarIcon: string;
+    }
+
+    interface Setting extends _Document<"Setting">, _HasNoTypes<"Setting"> {
+      /**
+       * @defaultValue {@linkcode collections.WorldSettings}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.WorldSettings;
+    }
+
+    interface User extends _Document<"User">, _HasNoTypes<"User"> {
+      /**
+       * @defaultValue {@linkcode collections.Users}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
+       */
+      collection: typeof collections.Users;
+    }
+
     interface UI {
       /** @defaultValue `MainMenu` */
       menu: foundry.applications.ui.MainMenu.AnyConstructor;
@@ -2229,12 +1570,44 @@ declare global {
     }
 
     interface UX {
-      ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
-      Draggable: foundry.applications.ux.Draggable.AnyConstructor;
-      DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
-      FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
-      TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
-      TooltipManager: foundry.helpers.interaction.TooltipManager.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
+       * among other places.
+       */
+      ContextMenu: typeof foundry.applications.ux.ContextMenu;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.Draggable}
+       * @privateRemarks Instantiated via `new` in
+       * {@linkcode foundry.applications.apps.av.CameraPopout._onFirstRender | CameraPopout#_onFirstRender}, among other places.
+       */
+      Draggable: typeof foundry.applications.ux.Draggable;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.DragDrop}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.initialize | Canvas#initialize}, among other places.
+       */
+      DragDrop: typeof foundry.applications.ux.DragDrop;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
+       * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
+       */
+      FilePicker: typeof foundry.applications.apps.FilePicker;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
+       * @privateRemarks `TextEditor` is a collection of statics, and is never instantiated at all, but we've still done `typeof` because
+       * the difference doesn't really matter and this way doesn't leak `Internal`.
+       */
+      TextEditor: typeof foundry.applications.ux.TextEditor;
+
+      /**
+       * @defaultValue {@linkcode foundry.helpers.interaction.TooltipManager}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initialize | Game#initialize}.
+       */
+      TooltipManager: typeof foundry.helpers.interaction.TooltipManager;
     }
 
     interface Queries {
@@ -2395,28 +1768,28 @@ declare global {
         // TODO: Index signature?
 
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
-        hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
+        hidden: CONFIG.Canvas.GroupDefinition<typeof groups.HiddenCanvasGroup>;
 
         /** @defaultValue `{ groupClass: RenderedCanvasGroup, parent: "stage" }` */
-        rendered: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.RenderedCanvasGroup>;
+        rendered: CONFIG.Canvas.GroupDefinition<typeof groups.RenderedCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EnvironmentCanvasGroup>;
+        environment: CONFIG.Canvas.GroupDefinition<typeof groups.EnvironmentCanvasGroup>;
 
         /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.PrimaryCanvasGroup>;
+        primary: CONFIG.Canvas.GroupDefinition<typeof groups.PrimaryCanvasGroup>;
 
         /** @defaultValue `{ groupClass: EffectsCanvasGroup, parent: "environment" }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.EffectsCanvasGroup>;
+        effects: CONFIG.Canvas.GroupDefinition<typeof groups.EffectsCanvasGroup>;
 
         /** @defaultValue `{ groupClass: CanvasVisibility, parent: "rendered" }` */
-        visibility: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.CanvasVisibility>;
+        visibility: CONFIG.Canvas.GroupDefinition<typeof groups.CanvasVisibility>;
 
         /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered", zIndexDrawings: 500, zIndexScrollingText: 1100 }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.InterfaceCanvasGroup>;
+        interface: CONFIG.Canvas.GroupDefinition<typeof groups.InterfaceCanvasGroup>;
 
         /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
-        overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
+        overlay: CONFIG.Canvas.GroupDefinition<typeof groups.OverlayCanvasGroup>;
       }
 
       /**
@@ -2451,45 +1824,45 @@ declare global {
 
       interface Layers {
         /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
-        weather: LayerDefinition<typeof canvasLayers.WeatherEffects, "primary">;
+        weather: LayerDefinition<typeof layers.WeatherEffects, "primary">;
 
         /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
-        grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
+        grid: LayerDefinition<typeof layers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
-        regions: LayerDefinition<typeof canvasLayers.RegionLayer, "interface">;
+        regions: LayerDefinition<typeof layers.RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
-        drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
+        drawings: LayerDefinition<typeof layers.DrawingsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
-        templates: LayerDefinition<typeof canvasLayers.TemplateLayer, "interface">;
+        templates: LayerDefinition<typeof layers.TemplateLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tiles: LayerDefinition<typeof canvasLayers.TilesLayer, "interface">;
+        tiles: LayerDefinition<typeof layers.TilesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
-        walls: LayerDefinition<typeof canvasLayers.WallsLayer, "interface">;
+        walls: LayerDefinition<typeof layers.WallsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
-        tokens: LayerDefinition<typeof canvasLayers.TokenLayer, "interface">;
+        tokens: LayerDefinition<typeof layers.TokenLayer, "interface">;
 
         /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
-        sounds: LayerDefinition<typeof canvasLayers.SoundsLayer, "interface">;
+        sounds: LayerDefinition<typeof layers.SoundsLayer, "interface">;
 
         /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
-        lighting: LayerDefinition<typeof canvasLayers.LightingLayer, "interface">;
+        lighting: LayerDefinition<typeof layers.LightingLayer, "interface">;
 
         /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
-        notes: LayerDefinition<typeof canvasLayers.NotesLayer, "interface">;
+        notes: LayerDefinition<typeof layers.NotesLayer, "interface">;
 
         /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
-        controls: LayerDefinition<typeof canvasLayers.ControlsLayer, "interface">;
+        controls: LayerDefinition<typeof layers.ControlsLayer, "interface">;
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
       interface LayerDefinition<
-        LayerClass extends typeof canvasLayers.CanvasLayer,
+        LayerClass extends typeof layers.CanvasLayer,
         Group extends keyof CONFIG["Canvas"]["groups"],
       > {
         layerClass: LayerClass;
@@ -2530,7 +1903,7 @@ declare global {
       }
 
       interface GridStyles {
-        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: canvasLayers.GridLayer.GridStyle;
+        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2544,7 +1917,7 @@ declare global {
          * }
          * ```
          */
-        solidLines: canvasLayers.GridLayer.GridStyle;
+        solidLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2558,7 +1931,7 @@ declare global {
          * }
          * ```
          */
-        dashedLines: canvasLayers.GridLayer.GridStyle;
+        dashedLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2572,7 +1945,7 @@ declare global {
          * }
          * ```
          */
-        dottedLines: canvasLayers.GridLayer.GridStyle;
+        dottedLines: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2586,7 +1959,7 @@ declare global {
          * }
          * ```
          */
-        squarePoints: canvasLayers.GridLayer.GridStyle;
+        squarePoints: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2600,7 +1973,7 @@ declare global {
          * }
          * ```
          */
-        diamondPoints: canvasLayers.GridLayer.GridStyle;
+        diamondPoints: layers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2614,7 +1987,7 @@ declare global {
          * }
          * ```
          */
-        roundPoints: canvasLayers.GridLayer.GridStyle;
+        roundPoints: layers.GridLayer.GridStyle;
       }
 
       interface LightSourceAnimationConfig
@@ -3232,7 +2605,7 @@ declare global {
     }
 
     interface WeatherEffects {
-      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3246,9 +2619,9 @@ declare global {
        *   }]
        * }
        * ```
-       * @remarks See {@linkcode canvasLayers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
+       * @remarks See {@linkcode layers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
        */
-      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      leaves: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3276,7 +2649,7 @@ declare global {
        * }
        * ```
        */
-      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      rain: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3317,7 +2690,7 @@ declare global {
        * }
        * ```
        */
-      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      rainStorm: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3342,7 +2715,7 @@ declare global {
        * }
        * ```
        */
-      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      fog: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3368,7 +2741,7 @@ declare global {
        * }
        * ```
        */
-      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      snow: layers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -3406,23 +2779,7 @@ declare global {
        * }
        * ```
        */
-      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
-    }
-
-    namespace Cards {
-      interface Preset {
-        type: string;
-        label: string;
-        src: string;
-      }
-    }
-    namespace Combat {
-      interface SoundPreset {
-        label: string;
-        startEncounter: string[];
-        nextUp: string[];
-        yourTurn: string[];
-      }
+      blizzard: layers.WeatherEffects.AmbienceConfiguration;
     }
 
     namespace Font {
@@ -3491,127 +2848,285 @@ declare global {
       }
     }
 
-    namespace Combat {
-      interface Sounds {
-        epic: CONFIG.Combat.SoundPreset;
-        mc: CONFIG.Combat.SoundPreset;
-      }
-    }
-
     namespace Token {
-      /** Returns the cost of the move between the grid spaces (nonnegative) */
-      type MovementActionCostFunction = (
-        /** The base cost (terrain cost) */
-        baseCost: number,
+      interface Movement {
+        /** @defaultValue {@linkcode foundry.data.TerrainData} */
+        TerrainData: foundry.data.BaseTerrainData.Internal.AnyConstructor;
+
+        /** The movement cost aggregator. */
+        costAggregator: TokenDocument.MovementCostAggregator;
 
         /**
-         * The offset that is moved from
-         * @remarks foundry marked as `readonly`
+         * The default movement animation speed in grid spaces per second.
+         * @defaultValue `6`
          */
-        from: foundry.grid.BaseGrid.Offset3D,
+        defaultSpeed: number;
 
-        /**
-         * The offset that is moved to
-         * @remarks foundry marked as `readonly`
-         */
-        to: foundry.grid.BaseGrid.Offset3D,
+        /** @defaultValue `"walk"` */
+        defaultAction: ConcreteKeys<Movement.Actions>;
 
-        /** The distance between the grid spaces */
-        distance: number,
-
-        /**
-         * The properties of the segment
-         * @remarks foundry marked as `readonly`
-         */
-        segment: TokenDocument.MovementSegmentData,
-      ) => number;
-
-      interface AnimationOptions extends Pick<
-        foundry.canvas.placeables.Token.AnimateOptions,
-        "duration" | "movementSpeed" | "easing" | "ontick"
-      > {}
-
-      interface _MovementActionConfig {
-        /**
-         * The FontAwesome icon class.
-         */
-        icon: string;
-
-        /**
-         * An image filename. Takes precedence over the icon if both are supplied.
-         */
-        img: string;
-
-        /**
-         * The number that is used to sort the movement actions / movement action configs.
-         * Determines the order in the Token Config/HUD and of cycling.
-         * @defaultValue `0`
-         */
-        order: number;
-
-        /**
-         * Is teleportation? If true, the movement does not go through all grid spaces
-         * between the origin and destination: it goes from teh origin immediately to the destination grid space.
-         * @defaultValue `false`
-         */
-        teleport: boolean;
-
-        /**
-         * Is the movement measured? The distance, cost, spaces, and diagonals
-         * of a segment that is not measured are always 0.
-         * @defaultValue `true`
-         */
-        measure: boolean;
-
-        /**
-         * The type of walls that block this movement, if any.
-         * @defaultValue `"move"`
-         */
-        walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
-
-        /**
-         * Is segment of the movement visualized by the ruler?
-         * @defaultValue `true`
-         */
-        visualize: boolean;
-
-        /**
-         * Get the default animation options for this movement action.
-         * @defaultValue `() => ({})`
-         */
-        getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
-
-        /**
-         * Can the current User select this movement action for the given Token? If selectable, the movement action of the
-         * Token can be set to this movement action by the User via the UI and when cycling.
-         * @defaultValue `() => true`
-         */
-        canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
-
-        /**
-         * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
-         * which are those that do not have `deriveTerrainDifficulty` set.
-         * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
-         * Derived terrain difficulties are not configurable via the behavior UI.
-         */
-        deriveTerrainDifficulty: ((nonDerivedDifficulties: { [action: string]: number }) => number) | null;
-
-        /**
-         * The cost modification function.
-         * @defaultValue `() => cost => cost`
-         */
-        getCostFunction: (
-          token: TokenDocument.Implementation,
-          options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
-        ) => MovementActionCostFunction;
+        actions: RemoveIndexSignatures<Movement.Actions>;
       }
 
-      interface MovementActionConfig extends InexactPartial<_MovementActionConfig> {
-        /**
-         * The label of the movement action.
-         */
-        label: string;
+      namespace Movement {
+        interface AnimationOptions extends Pick<
+          foundry.canvas.placeables.Token.AnimateOptions,
+          "duration" | "movementSpeed" | "easing" | "ontick"
+        > {}
+
+        /** Returns the cost of the move between the grid spaces (nonnegative) */
+        type MovementActionCostFunction = (
+          /** The base cost (terrain cost) */
+          baseCost: number,
+
+          /**
+           * The offset that is moved from
+           * @remarks foundry marked as `readonly`
+           */
+          from: foundry.grid.BaseGrid.Offset3D,
+
+          /**
+           * The offset that is moved to
+           * @remarks foundry marked as `readonly`
+           */
+          to: foundry.grid.BaseGrid.Offset3D,
+
+          /** The distance between the grid spaces */
+          distance: number,
+
+          /**
+           * The properties of the segment
+           * @remarks foundry marked as `readonly`
+           */
+          segment: TokenDocument.MovementSegmentData,
+        ) => number;
+
+        interface _ActionConfig {
+          /**
+           * The FontAwesome icon class.
+           */
+          icon: string;
+
+          /**
+           * An image filename. Takes precedence over the icon if both are supplied.
+           */
+          img: string;
+
+          /**
+           * The number that is used to sort the movement actions / movement action configs.
+           * Determines the order in the Token Config/HUD and of cycling.
+           * @defaultValue `0`
+           */
+          order: number;
+
+          /**
+           * Is teleportation? If true, the movement does not go through all grid spaces
+           * between the origin and destination: it goes from teh origin immediately to the destination grid space.
+           * @defaultValue `false`
+           */
+          teleport: boolean;
+
+          /**
+           * Is the movement measured? The distance, cost, spaces, and diagonals
+           * of a segment that is not measured are always 0.
+           * @defaultValue `true`
+           */
+          measure: boolean;
+
+          /**
+           * The type of walls that block this movement, if any.
+           * @defaultValue `"move"`
+           */
+          walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
+
+          /**
+           * Is segment of the movement visualized by the ruler?
+           * @defaultValue `true`
+           */
+          visualize: boolean;
+
+          /**
+           * Get the default animation options for this movement action.
+           * @defaultValue `() => ({})`
+           */
+          getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
+
+          /**
+           * Can the current User select this movement action for the given Token? If selectable, the movement action of the
+           * Token can be set to this movement action by the User via the UI and when cycling.
+           * @defaultValue `() => true`
+           */
+          canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
+
+          /**
+           * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
+           * which are those that do not have `deriveTerrainDifficulty` set.
+           * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
+           * Derived terrain difficulties are not configurable via the behavior UI.
+           */
+          deriveTerrainDifficulty: ((nonDerivedDifficulties: { [action: string]: number }) => number) | null;
+
+          /**
+           * The cost modification function.
+           * @defaultValue `() => cost => cost`
+           */
+          getCostFunction: (
+            token: TokenDocument.Implementation,
+            options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
+          ) => MovementActionCostFunction;
+        }
+
+        interface ActionConfig extends InexactPartial<_ActionConfig> {
+          /**
+           * The label of the movement action.
+           */
+          label: string;
+        }
+
+        interface Actions {
+          [action: string]: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
+           *   icon: "fa-solid fa-person-walking",
+           *   img: "icons/svg/walk.svg",
+           *   order: 0
+           * }
+           * ```
+           */
+          walk: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
+           *   icon: "fa-solid fa-person-fairy",
+           *   img: "icons/svg/wing.svg",
+           *   order: 1
+           * }
+           * ```
+           */
+          fly: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
+           *   icon: "fa-solid fa-person-swimming",
+           *   img: "icons/svg/whale.svg",
+           *   order: 2,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
+           * }
+           * ```
+           */
+          swim: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
+           *   icon: "fa-solid fa-person-digging",
+           *   img: "icons/svg/burrow.svg",
+           *   order: 3
+           * }
+           * ```
+           */
+          burrow: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
+           *   icon: "fa-solid fa-person-praying",
+           *   img: "icons/svg/leg.svg",
+           *   order: 4,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+           *   deriveTerrainDifficulty: ({walk}) => walk,
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          crawl: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
+           *   icon: "fa-solid fa-person-through-window",
+           *   img: "icons/svg/ladder.svg",
+           *   order: 5,
+           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
+           *   deriveTerrainDifficulty: ({walk}) => walk,
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          climb: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
+           *   icon: "fa-solid fa-person-running-fast",
+           *   img: "icons/svg/jump.svg",
+           *   order: 6,
+           *   deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
+           *   getCostFunction: () => cost => cost * 2
+           * }
+           * ```
+           */
+          jump: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
+           *   icon: "fa-solid fa-person-from-portal",
+           *   img: "icons/svg/teleport.svg",
+           *   order: 7,
+           *   teleport: true,
+           *   getAnimationOptions: () => ({duration: 0}),
+           *   deriveTerrainDifficulty: () => 1
+           * }
+           * ```
+           */
+          blink: ActionConfig;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
+           *   icon: "fa-solid fa-transporter-1",
+           *   img: "icons/svg/portal.svg",
+           *   order: 8,
+           *   teleport: true,
+           *   measure: false,
+           *   walls: null,
+           *   visualize: false,
+           *   getAnimationOptions: () => ({duration: 0}),
+           *   canSelect: () => false,
+           *   deriveTerrainDifficulty: () => 1,
+           *   getCostFunction: () => () => 0
+           * }
+           * ```
+           */
+          displace: ActionConfig;
+        }
       }
+
+      /** @deprecated Use {@linkcode CONFIG.Token.Movement.ActionConfig} instead. This warning will be removed in v14. */
+      type MovementActionConfig = Movement.ActionConfig;
     }
 
     interface Time {
@@ -3650,9 +3165,173 @@ declare global {
       }
     }
 
+    interface ActiveEffect extends _Document<"ActiveEffect">, _HasTypes<"ActiveEffect"> {
+      /**
+       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
+       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
+       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
+       * if the transfer property on the Active Effect is true.
+       * @defaultValue `false`
+       * @deprecated since V11. It can be set to true until V14, at which point it will be removed.
+       */
+      legacyTransferral: boolean;
+    }
+
+    interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}
+
+    interface Card extends _Document<"Card">, _HasTypes<"Card"> {}
+
+    interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult"> {}
+
+    interface JournalEntryCategory extends _Document<"JournalEntryCategory">, _HasNoTypes<"JournalEntryCategory"> {}
+
+    interface JournalEntryPage extends _Document<"JournalEntryPage">, _HasTypes<"JournalEntryPage"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   image: "fa-solid fa-file-image",
+       *   pdf: "fa-solid fa-file-pdf",
+       *   text: "fa-solid fa-file-lines",
+       *   video: "fa-solid fa-file-video"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"JournalEntryPage">["typeIcons"];
+
+      /** @defaultValue `"text"` */
+      defaultType: string;
+
+      /** @defaultValue `"fa-solid fa-book-open"` */
+      sidebarIcon: string;
+    }
+
+    interface PlaylistSound extends _Document<"PlaylistSound">, _HasNoTypes<"PlaylistSound"> {
+      /** @defaultValue `"fa-solid fa-music"` */
+      sidebarIcon: string;
+    }
+
+    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {}
+
+    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {}
+
+    interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
+
+    interface CombatantGroup extends _Document<"CombatantGroup">, _HasTypes<"CombatantGroup"> {}
+
+    interface Drawing extends _Document<"Drawing">, _HasNoTypes<"Drawing">, _CanvasDoc<"Drawing"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.DrawingHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.DrawingHUD;
+    }
+
+    interface MeasuredTemplate
+      extends _Document<"MeasuredTemplate">, _HasNoTypes<"MeasuredTemplate">, _CanvasDoc<"MeasuredTemplate"> {
+      defaults: MeasuredTemplate.Defaults;
+
+      /**
+       * @deprecated "`CONFIG.MeasuredTemplate.types` has been deprecated without replacement. Use {@linkcode CONST.MEASURED_TEMPLATE_TYPES}
+       * and `TEMPLATE.TYPES.${type}` instead." (since v13, until v15)
+       */
+      get types(): Record<string, string>;
+    }
+
+    namespace MeasuredTemplate {
+      interface Defaults {
+        /** @defaultValue `53.13` */
+        angle: number;
+
+        /** @defaultValue `1` */
+        width: number;
+      }
+    }
+
+    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
+
+    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {}
+
+    interface RegionBehavior extends _Document<"RegionBehavior">, _HasTypes<"RegionBehavior"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   adjustDarknessLevel: "fa-solid fa-circle-half-stroke",
+       *   displayScrollingText: "fa-solid fa-message-arrow-up",
+       *   executeMacro: "fa-solid fa-code",
+       *   executeScript: "fa-brands fa-js",
+       *   modifyMovementCost: "fa-solid fa-shoe-prints",
+       *   pauseGame: "fa-solid fa-pause",
+       *   suppressWeather: "fa-solid fa-cloud-slash",
+       *   teleportToken: "fa-solid fa-transporter-1",
+       *   toggleBehavior: "fa-solid fa-sliders"
+       * }
+       * ```
+       */
+      typeIcons: _HasTypes<"RegionBehavior">["typeIcons"];
+    }
+
+    interface Tile extends _Document<"Tile">, _HasNoTypes<"Tile">, _CanvasDoc<"Tile"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.TileHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.TileHUD;
+    }
+
+    interface Token extends _Document<"Token">, _HasNoTypes<"Token">, _CanvasDoc<"Token"> {
+      /**
+       * @defaultValue {@linkcode foundry.applications.sheets.PrototypeTokenConfig}
+       * @privateRemarks Instantiated via `new` in `ActorSheetV2##onConfigurePrototypeToken` and
+       * {@linkcode foundry.appv1.sheets.ActorSheet._onConfigureToken | ActorSheet#_onConfigureToken}.
+       */
+      prototypeSheetClass: typeof foundry.applications.sheets.PrototypeTokenConfig;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.hud.TokenHUD}
+       * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
+       */
+      hudClass: typeof foundry.applications.hud.TokenHUD;
+
+      /**
+       * @defaultValue {@linkcode foundry.canvas.placeables.tokens.TokenRuler}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.placeables.Token._initializeRuler | Token#_initializeRuler}.
+       */
+      rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
+
+      movement: Token.Movement;
+
+      /** @defaultValue `"TOKEN.Adjectives"` */
+      adjectivesPrefix: string;
+
+      /**
+       * @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()`
+       * @privateRemarks This gets `defineProperty`'d to `{ writable: false, configurable: false }` near the bottom of `config.mjs`
+       */
+      readonly ring: foundry.canvas.placeables.tokens.TokenRingConfig;
+    }
+
+    interface Wall extends _Document<"Wall">, _HasNoTypes<"Wall">, _CanvasDoc<"Wall"> {
+      // TODO: is InterfaceToObject required?
+      animationTypes: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorAnimations>>;
+
+      // TODO: is InterfaceToObject required?
+      doorSounds: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorSounds>>;
+
+      /**
+       * A default grid size in pixels which is used for rendering {@linkcode foundry.canvas.containers.DoorMesh} sizing.
+       * @defaultValue `200`
+       */
+      textureGridSize: number;
+
+      /** @defaultValue `1` */
+      thresholdAttenuationMultiplier: number;
+    }
+
     namespace Wall {
       /** @internal */
-      type _DoorSoundConfig = InexactPartial<{
+      interface _DoorSoundConfig {
         /**
          * One or more sound paths for when the door is closed
          * @remarks If an array is provided, a random entry is chosen
@@ -3682,9 +3361,9 @@ declare global {
          * @remarks If an array is provided, a random entry is chosen
          */
         unlock: MaybeArray<string>;
-      }>;
+      }
 
-      interface DoorSoundConfig extends _DoorSoundConfig {
+      interface DoorSoundConfig extends InexactPartial<_DoorSoundConfig> {
         /** A localization string label */
         label: string;
       }
@@ -3983,7 +3662,7 @@ declare global {
       type DoorAnimationHook = (this: DoorMesh, open: boolean) => MaybePromise<void>;
 
       /** @internal */
-      type _DoorAnimationConfig = InexactPartial<{
+      interface _DoorAnimationConfig {
         /**
          * @defaultValue `false`
          * @remarks Pivot about the midpoint, instead of the {@linkcode geometry.edges.Edge.a | a} endpoint of the Wall's Edge?
@@ -4001,9 +3680,9 @@ declare global {
 
         /** @remarks `postAnimate` hooks **are** awaited */
         postAnimate: DoorAnimationHook;
-      }>;
+      }
 
-      interface DoorAnimationConfig extends _DoorAnimationConfig {
+      interface DoorAnimationConfig extends InexactPartial<_DoorAnimationConfig> {
         /** @remarks Label (or localization key) for the animation select in {@linkcode foundry.applications.sheets.WallConfig | WallConfig}*/
         label: string;
 
@@ -4094,7 +3773,7 @@ type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.
   Fallback
 >;
 
-declare const _MixedCanvasGroup: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
+declare const _MixedCanvasGroup: groups.CanvasGroupMixin.AnyMixedConstructor;
 
 /**
  * @privateRemarks Used to enforce user-provided group classes taking no constructor arguments

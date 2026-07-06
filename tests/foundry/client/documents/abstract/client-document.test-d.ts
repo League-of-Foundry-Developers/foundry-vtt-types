@@ -148,7 +148,7 @@ declare const itemSource: Item.Source;
 const constructionContext = {
   dropInvalidEmbedded: false,
   fallback: true,
-  pack: null,
+  pack: undefined,
   parent: null,
   strict: true,
 };
