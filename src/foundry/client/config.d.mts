@@ -24,7 +24,6 @@ import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.
 import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
-import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
@@ -723,28 +722,7 @@ declare global {
     /**
      * Configuration for the WebRTC implementation class
      */
-    WebRTC: {
-      /** @defaultValue `SimplePeerAVClient` */
-      clientClass: GetKey<WebRTCConfig, "clientClass", SimplePeerAVClient.AnyConstructor>;
-
-      /** @defaultValue `50` */
-      detectPeerVolumeInterval: number;
-
-      /** @defaultValue `20` */
-      detectSelfVolumeInterval: number;
-
-      /** @defaultValue `25` */
-      emitVolumeInterval: number;
-
-      /** @defaultValue `2` */
-      speakingThresholdEvents: number;
-
-      /** @defaultValue `10` */
-      speakingHistoryLength: number;
-
-      /** @defaultValue `8` */
-      connectedUserPollIntervalS: number;
-    };
+    WebRTC: CONFIG.WebRTC;
 
     /**
      * Configure the Application classes used to render various core UI elements in the application
@@ -761,6 +739,29 @@ declare global {
      * Non-prefixed query names are reserved by core.
      */
     queries: CONFIG.Queries;
+
+    /**
+     * Configure custom cursor images to use when interacting with the application.
+     *
+     * @example
+     * Configuring a cursor with a hotspot in the default top-left.
+     * ```js
+     * Object.assign(CONFIG.cursors, {
+     *   default: "icons/cursors/default.avif",
+     *   "default-down": "icons/cursors/default-down.avif"
+     * });
+     * ```
+     *
+     * @example
+     * Configuring a cursor with a hotspot in the center.
+     * ```js
+     * Object.assign(CONFIG.cursors, {
+     *   default: { url: "icons/cursors/target.avif", x: 16, y: 16 },
+     *   "default-down": { url: "icons/cursors/target-down.avif", x: 16, y: 16 }
+     * });
+     * ```
+     */
+    cursors: CONFIG.Cursors;
   }
 
   namespace CONFIG {
@@ -3944,6 +3945,44 @@ declare global {
        * custom patterns.
        */
       enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
+    }
+
+    interface WebRTC {
+      /** @defaultValue `SimplePeerAVClient` */
+      clientClass: GetKey<WebRTCConfig, "clientClass", typeof foundry.av.clients.SimplePeerAVClient>;
+
+      /** @defaultValue `50` */
+      detectPeerVolumeInterval: number;
+
+      /** @defaultValue `20` */
+      detectSelfVolumeInterval: number;
+
+      /** @defaultValue `25` */
+      emitVolumeInterval: number;
+
+      /** @defaultValue `2` */
+      speakingThresholdEvents: number;
+
+      /** @defaultValue `10` */
+      speakingHistoryLength: number;
+
+      /** @defaultValue `8` */
+      connectedUserPollIntervalS: number;
+    }
+
+    interface Cursors extends Record<keyof typeof CONST.CURSOR_STYLES, string | CursorDescriptor> {}
+
+    interface _CursorDescriptor {
+      /** The X co-ordinate of the cursor hotspot. */
+      x: number;
+
+      /** The Y co-ordinate of the cursor hotspot. */
+      y: number;
+    }
+
+    interface CursorDescriptor extends InexactPartial<_CursorDescriptor> {
+      /** The URL of the cursor image. Must be no larger than 128x128. 32x32 is recommended. */
+      url: string;
     }
   }
 
