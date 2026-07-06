@@ -221,18 +221,15 @@ declare global {
       audio: boolean;
 
       /** @defaultValue `false` */
+      combat: boolean;
+
+      /** @defaultValue `false` */
       dice: boolean;
 
       /** @defaultValue `false` */
       documents: boolean;
 
-      fog: {
-        /** @defaultValue `false` */
-        extractor: boolean;
-
-        /** @defaultValue `false` */
-        manager: boolean;
-      };
+      fog: CONFIG.Debug.Fog;
 
       /** @defaultValue `false` */
       hooks: boolean;
@@ -242,6 +239,9 @@ declare global {
 
       /** @defaultValue `false` */
       avclient: boolean;
+
+      /** @defaultValue `false` */
+      i18n: boolean;
 
       /** @defaultValue `false` */
       mouseInteraction: boolean;
@@ -258,15 +258,15 @@ declare global {
       /** @defaultValue `false` */
       gamepad: boolean;
 
-      canvas: {
-        primary: {
-          /** @defaultValue `false` */
-          bounds: boolean;
-        };
-      };
+      canvas: CONFIG.Debug.Canvas;
+
+      /** @defaultValue `false` */
+      queries: boolean;
 
       /** @defaultValue `false` */
       rollParsing: boolean;
+
+      loader: CONFIG.Debug.Loader;
     };
 
     /**
@@ -945,6 +945,41 @@ declare global {
   }
 
   namespace CONFIG {
+    namespace Debug {
+      interface Fog {
+        /** @defaultValue `false` */
+        extractor: boolean;
+
+        /** @defaultValue `false` */
+        manager: boolean;
+      }
+
+      interface Canvas {
+        primary: Canvas.Primary;
+      }
+
+      namespace Canvas {
+        interface Primary {
+          /** @defaultValue `false` */
+          bounds: boolean;
+        }
+      }
+
+      interface Loader {
+        /** @defaultValue `false` */
+        load: boolean;
+
+        /** @defaultValue `false` */
+        cache: boolean;
+
+        /** @defaultValue `false` */
+        eviction: boolean;
+
+        /** @defaultValue `false` */
+        memory: boolean;
+      }
+    }
+
     /**
      * Common properties of all document interfaces in `CONFIG`. Doesn't include `typeLabels`, because while all docs will have it defined,
      * the (TS) types are different for docs that don't really have (foundry) types, which requires different JSDoc.
