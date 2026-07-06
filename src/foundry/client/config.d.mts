@@ -578,9 +578,12 @@ declare global {
 
     /**
      * A mapping of status effect IDs which provide some additional mechanical integration.
-     * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind", BURROW: "burrow", HOVER: "hover", FLY: "fly" }`
+     * @remarks See {@linkcode CONFIG.DefaultSpecialStatusEffects} for defaults.
      */
-    specialStatusEffects: HandleEmptyObject<CONFIG.SpecialStatusEffects, CONFIG.DefaultSpecialStatusEffects>;
+    specialStatusEffects: HandleEmptyObject<
+      RemoveIndexSignatures<CONFIG.SpecialStatusEffects>,
+      RemoveIndexSignatures<CONFIG.DefaultSpecialStatusEffects>
+    >;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
@@ -2513,16 +2516,31 @@ declare global {
       }
     }
 
-    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface SpecialStatusEffects {}
+    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing
+    // keys. It's never used when empty.
+    interface SpecialStatusEffects {
+      [specialStatusName: string]: string;
+    }
 
     interface DefaultSpecialStatusEffects {
+      [specialStatusName: string]: string;
+
+      /** @defaultValue `"dead"` */
       DEFEATED: string;
+
+      /** @defaultValue `"invisible"` */
       INVISIBLE: string;
+
+      /** @defaultValue `"blind"` */
       BLIND: string;
+
+      /** @defaultValue `"burrow"` */
       BURROW: string;
+
+      /** @defaultValue `"hover"` */
       HOVER: string;
+
+      /** @defaultValue `"fly"` */
       FLY: string;
     }
 
