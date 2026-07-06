@@ -389,7 +389,7 @@ declare global {
      * The default font family used for text labels on the PIXI Canvas
      * @defaultValue `"Signika"`
      */
-    defaultFontFamily: string;
+    defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
 
     /**
      * The array of status effect icons which can be applied to an Actor
