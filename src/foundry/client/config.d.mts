@@ -598,15 +598,7 @@ declare global {
     /**
      * Localization constants.
      */
-    i18n: {
-      /**
-       * In operations involving the document index, search prefixes must have at least this many characters to avoid too
-       * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
-       * search trees, so it should be safe to lower this number in those cases.
-       * @defaultValue `4`
-       */
-      searchMinimumCharacterLength: number;
-    };
+    i18n: CONFIG.Internationalization;
 
     /**
      * Configuration for time tracking
@@ -2550,6 +2542,16 @@ declare global {
 
       /** @defaultValue `"English"` */
       en: string;
+    }
+
+    interface Internationalization {
+      /**
+       * In operations involving the document index, search prefixes must have at least this many characters to avoid too
+       * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
+       * search trees, so it should be safe to lower this number in those cases.
+       * @defaultValue `4`
+       */
+      searchMinimumCharacterLength: number;
     }
 
     interface WeatherEffects {
