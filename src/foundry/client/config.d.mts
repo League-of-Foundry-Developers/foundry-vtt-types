@@ -1,5 +1,4 @@
 import type {
-  AnyConstructor,
   Brand,
   ConcreteKeys,
   GetKey,
@@ -1490,14 +1489,16 @@ declare global {
 
     /**
      * Everything in this interface gets instantiated into {@linkcode globalThis.ui} via `new` in
-     * {@linkcode foundry.Game.setupGame | Game#setupGame} between `setup` and `ready`.  Most things provided here by core are
-     * AppV2 classes, with the exception of `notifications`, but anything that can be `new`ed with no arguments can be put here.
+     * {@linkcode foundry.Game.setupGame | Game#setupGame} between `setup` and `ready`.
+     *
+     * Most things provided here by core are AppV2 classes, with the exception of `notifications`,
+     * but anything that can be `new`ed with no arguments can be put here.
      */
     interface UI {
-      [appName: string]: AnyConstructor;
+      [appName: string]: new () => unknown;
 
       /** @defaultValue {@linkcode foundry.applications.ui.MainMenu} */
-      menu: typeof foundry.applications.ui.MainMenu;
+      menu: typeof foundry.applications.ui.MainMenu<foundry.applications.ui.MainMenu.RenderContext>;
 
       /** @defaultValue {@linkcode foundry.applications.sidebar.Sidebar} */
       sidebar: typeof foundry.applications.sidebar.Sidebar;
@@ -1530,7 +1531,7 @@ declare global {
       controls: typeof foundry.applications.ui.SceneControls;
 
       /** @defaultValue {@linkcode foundry.applications.ui.Hotbar} */
-      hotbar: typeof foundry.applications.ui.Hotbar;
+      hotbar: typeof foundry.applications.ui.Hotbar<foundry.applications.ui.Hotbar.RenderContext>;
 
       /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ItemDirectory} */
       items: typeof foundry.applications.sidebar.tabs.ItemDirectory;
