@@ -70,7 +70,7 @@ const filledInPlayAtPositionOptions = {
   baseEffect: { type: "reverb", intensity: 3 },
   easing: true,
   gmAlways: false,
-  muffledEffect: { type: "lowPass", intensity: 7 },
+  muffledEffect: { type: "lowpass", intensity: 7 },
   playbackOptions: { delay: 1, duration: 3, fade: 200 },
   sourceData: { elevation: 20, radius: 500 },
   walls: true,
