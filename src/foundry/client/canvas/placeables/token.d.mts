@@ -5,7 +5,6 @@ import type {
   HandleEmptyObject,
   InexactPartial,
   IntentionalPartial,
-  NullishProps,
   RequiredProps,
 } from "#utils";
 import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
@@ -1351,33 +1350,32 @@ declare namespace Token {
   interface PrepareAnimationOptions extends InexactPartial<_PrepareAnimationOptions> {}
 
   /** @internal */
-  type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> &
-    InexactPartial<{
-      /**
-       * The name of the animation, or `null` if nameless.
-       */
-      name: string | symbol | null;
+  interface _AnimateOptions extends Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> {
+    /**
+     * The name of the animation, or `null` if nameless.
+     */
+    name: string | symbol | null;
 
-      /**
-       * Chain the animation to the existing one of the same name?
-       * @defaultValue `false`
-       */
-      chain: boolean;
+    /**
+     * Chain the animation to the existing one of the same name?
+     * @defaultValue `false`
+     */
+    chain: boolean;
 
-      /**
-       * The movement action.
-       */
-      action: string;
-    }> &
-    NullishProps<{
-      /**
-       * The terrain data.
-       * @defaultValue `null`
-       */
-      terrain: foundry.abstract.DataModel.Any | null;
-    }>;
+    /**
+     * The movement action.
+     */
+    action: string;
 
-  interface AnimateOptions extends _AnimateOptions, GetAnimationDurationOptions, PrepareAnimationOptions {
+    /**
+     * The terrain data.
+     * @defaultValue `null`
+     */
+    terrain: foundry.abstract.DataModel.Any | null;
+  }
+
+  interface AnimateOptions
+    extends InexactPartial<_AnimateOptions>, GetAnimationDurationOptions, PrepareAnimationOptions {
     /**
      * @remarks If `true`, the `duration` of the animation will be overridden by the calculated total movement animation duration in
      * `Token##onUpdateAnimation` (via {@linkcode Token._onUpdate | Token#_onUpdate}). Unused as of 13.351.

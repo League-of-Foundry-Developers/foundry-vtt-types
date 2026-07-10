@@ -82,9 +82,9 @@ declare namespace BatchRenderer {
   type PackInterleavedGeometryFunction = ToMethod<
     (
       /**
-       * @privateRemarks The `element` param is `Partial`'d here because at least one `_packInterleavedGeometry` implementation (`DepthSampleShader`'s)
-       * omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry implementations provide any default values for
-       * properties of this interface, so no `InexactPartial` or `NullishProps`.
+       * @privateRemarks The `element` param is `Partial`'d here because at least one `_packInterleavedGeometry` implementation
+       * (`DepthSampleShader`'s) omits properties from the parent PIXI interface. Neither `PIXI.BatchRenderer` nor any Foundry
+       * implementations provide any default values for properties of this interface, so straight `Partial`, no `Inexact`.
        */
       element: IntentionalPartial<PIXI.IBatchableElement>,
       attributeBuffer: PIXI.ViewableBuffer,

@@ -19,7 +19,6 @@ import type {
   InterfaceToObject,
   MaybeArray,
   MaybePromise,
-  NullishProps,
   Override,
   PickValue,
   PrettifyType,
@@ -3348,15 +3347,13 @@ declare namespace Document {
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
-  > = InexactPartial<foundry.appv1.api.Dialog.Options> &
-    NullishProps<{
-      /**
-       * A compendium pack within which the Document should be created
-       * @remarks Only checked if `parent` is falsey, and only used to generate the list of folders for the dialog
-       */
-      pack: string;
-    }> &
-    _PossibleSubtypesContext<DocumentName> &
+  > = InexactPartial<foundry.appv1.api.Dialog.Options> & {
+    /**
+     * A compendium pack within which the Document should be created
+     * @remarks Only checked if `parent` is falsey, and only used to generate the list of folders for the dialog
+     */
+    pack?: string | null | undefined;
+  } & _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
 
   /**
