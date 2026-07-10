@@ -229,11 +229,8 @@ declare abstract class DataField<
    * Cast a non-default value to ensure it is the correct type for the field
    * @param value - The provided non-default value
    * @returns The standardized value
-   * @remarks No longer so effectively abstract in v13, `DataField`'s implementation now simply returns the provided value,
-   * but since subclasses *should* still implement an `_cast` that matches their `AssignmentType` and `InitializedType`, it
-   * remains `abstract` here
    */
-  protected abstract _cast(value: unknown): AssignmentType;
+  protected _cast(value: unknown): AssignmentType;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -3137,6 +3134,7 @@ declare namespace EmbeddedCollectionField {
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
     EmbeddedCollection<
+      // TODO: Stored is only mostly accurate, this should be a specific Embedded type with only the id/uuid guarantees eventually
       Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
       ParentDataModel
     >,

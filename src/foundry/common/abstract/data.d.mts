@@ -405,9 +405,6 @@ declare namespace DataModel {
   // is always assignable.
   type CreateData<Schema extends DataSchema> = SchemaField.CreateData<Schema>;
 
-  /**
-   * If `CreateData` has no required fields, makes the first argument (`data`) optional.
-   */
   type ConstructorArgs<
     Schema extends DataSchema,
     Parent extends DataModel.Any | null = null,

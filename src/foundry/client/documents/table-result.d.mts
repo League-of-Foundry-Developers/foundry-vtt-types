@@ -1047,7 +1047,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   /**
    * @deprecated "`TableResult#getChatText` is deprecated. Use the asynchronous
-   * {@linkcode TableResult.getHTML | TableResult#getHTML} instead." (since V13 until V15)
+   * {@linkcode TableResult.getHTML | TableResult#getHTML} instead." (since v13, until v15)
    */
   getChatText(): string;
 

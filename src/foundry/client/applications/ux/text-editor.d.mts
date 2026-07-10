@@ -1,4 +1,4 @@
-import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise, InexactPartial } from "#utils";
+import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise, InexactPartial, FixedInstanceType } from "#utils";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
@@ -261,16 +261,26 @@ declare class TextEditor {
 
   /**
    * Retrieve the configured TextEditor implementation.
-   * @remarks TODO: Link up with CONFIG
    */
-  static get implementation(): typeof TextEditor;
+  static get implementation(): TextEditor.ImplementationClass;
 
   #private: true;
 }
 
 declare namespace TextEditor {
-  interface Any extends AnyTextEditor {}
-  interface AnyConstructor extends Identity<typeof AnyTextEditor> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyTextEditor {}
+    interface AnyConstructor extends Identity<typeof AnyTextEditor> {}
+  }
+
+  interface ImplementationClass extends Identity<typeof CONFIG.ux.TextEditor> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type TEXT_MIME_TYPES = ValueOf<typeof CONST.TEXT_FILE_EXTENSIONS>;
 

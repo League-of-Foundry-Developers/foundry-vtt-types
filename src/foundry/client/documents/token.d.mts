@@ -1988,7 +1988,7 @@ declare namespace TokenDocument {
 
   interface ShapelessDimensions extends Omit<Dimensions, "shape"> {}
 
-  interface PartialShapelessDimensions extends InexactPartial<ShapelessDimensions> {}
+  interface GetSizeDimensions extends InexactPartial<ShapelessDimensions> {}
 
   interface Dimensions2D extends InexactPartial<Canvas.Point>, InexactPartial<Dimensions> {}
 
@@ -2006,7 +2006,7 @@ declare namespace TokenDocument {
     MeasuredMovementWaypoint,
     "width" | "height" | "shape" | "action" | "terrain"
   > {
-    actionConfig: CONFIG.Token.MovementActionConfig;
+    actionConfig: CONFIG.Token.Movement.ActionConfig;
     teleport: boolean;
   }
 
@@ -2246,6 +2246,8 @@ declare namespace TokenDocument {
   interface MeasureMovementPathOptions extends InexactPartial<_MeasureMovementPathOptions> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
+
+  interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
 
   type PauseMovementReturn<Key extends string | undefined> =
     | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
@@ -2574,7 +2576,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * }
    * ```
    * @remarks
-   * @throws If the key has already been used on this token.
+   * @throws If the key has already been used on this token for this movement.
    */
   pauseMovement<Key extends string | undefined = undefined>(key?: Key): TokenDocument.PauseMovementReturn<Key>;
 

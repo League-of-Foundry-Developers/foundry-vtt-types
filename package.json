@@ -157,7 +157,7 @@
     "@playwright/test": "^1.59.1",
     "@types/debug": "^4.1.12",
     "@types/fvtt-types": "file:.",
-    "@types/node": "^25.9.1",
+    "@types/node": "^26.0.1",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "@typescript-eslint/scope-manager": "^8.31.0",

@@ -51,6 +51,7 @@ import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
+import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
@@ -1091,16 +1092,7 @@ declare namespace Document {
 
   type Type = CONST.ALL_DOCUMENT_TYPES;
 
-  type PlaceableType =
-    | "AmbientLight"
-    | "AmbientSound"
-    | "Drawing"
-    | "MeasuredTemplate"
-    | "Note"
-    | "Region"
-    | "Tile"
-    | "Token"
-    | "Wall";
+  type PlaceableType = ConcreteKeys<PlaceableObject.DefaultPlaceables>;
 
   type PrimaryType = CONST.PRIMARY_DOCUMENT_TYPES;
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
@@ -1319,6 +1311,15 @@ declare namespace Document {
     | "Folder"
     ? boolean
     : false;
+
+  /**
+   * Gets the map of subtypes to configured `TypeDataModel` classes for a given Document.
+   */
+  // TODO: Possibly convert to map of names to core models if docs other than RegionBehavior get any.
+  type TypeModelsFor<Name extends WithSystem> = Name extends "RegionBehavior"
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataModelConfig, Name, {}> & RegionBehavior.CoreBehaviors
+    : GetKey<DataModelConfig, Name, EmptyObject>;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {

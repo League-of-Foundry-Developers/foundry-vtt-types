@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 import fields = foundry.data.fields;
-// import DataModel = foundry.abstract.DataModel;
 
 declare const myItem: foundry.documents.BaseItem;
 

@@ -5,6 +5,14 @@ interface Schema extends fields.DataSchema {
   count: fields.NumberField;
 }
 
-class RegionBehaviorSubType extends RegionBehaviorType<Schema> {}
+export class RegionBehaviorSubType extends RegionBehaviorType<Schema> {}
 
-CONFIG.RegionBehavior.dataModels["subType"] = RegionBehaviorSubType;
+declare global {
+  interface DataModelConfig {
+    RegionBehavior: {
+      subType: typeof RegionBehaviorSubType;
+    };
+  }
+}
+
+CONFIG.RegionBehavior.dataModels.subType = RegionBehaviorSubType;

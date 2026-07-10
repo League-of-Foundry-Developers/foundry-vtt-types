@@ -1,4 +1,2 @@
-// import { expectTypeOf } from "vitest";
-// import BaseTokenRuler = foundry.canvas.placeables.tokens.BaseTokenRuler
-
-// TODO: new in v13
+// All actual methods in BaseTokenRuler are abstract; This file is left intentionally blank, tests in
+// the TokenRuler file.

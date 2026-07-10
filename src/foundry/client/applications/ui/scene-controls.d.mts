@@ -27,6 +27,7 @@ declare class SceneControls<
   /**
    * Prepared data of available controls.
    */
+  // TODO: Infer keys from InteractionLayer config and provide a method to register additions made via hook
   get controls(): Record<string, SceneControls.Control>;
 
   /**
@@ -145,9 +146,6 @@ declare namespace SceneControls {
 
     tools: Record<string, Tool>;
 
-    /**
-     * @remarks Should be an key in {@linkcode Control.tools | this.tools}.
-     */
     activeTool: string;
 
     /** A callback invoked when control set is activated or deactivated */
