@@ -116,9 +116,9 @@ declare global {
    * Unlike the {@linkcode CONST} analog which is frozen and immutable, the `CONFIG` object may be updated during the course of a
    * session or modified by system and module developers to adjust how the application behaves.
    */
-  interface CONFIG2 extends Mutable<typeof globalConfig> {}
+  interface CONFIG extends Mutable<typeof globalConfig> {}
 
-  const CONFIG2: CONFIG2;
+  const CONFIG: CONFIG;
 
   namespace foundry {
     export import Game = _Game;
