@@ -1,13 +1,14 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
+import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      RegionLayer: RegionLayer.Any;
+      RegionLayer: RegionLayer.Implementation;
     }
   }
 }
@@ -16,16 +17,12 @@ declare module "#configuration" {
  * The Region Container.
  */
 declare class RegionLayer extends PlaceablesLayer<"Region"> {
-  #regionLayer: true;
-
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["regions"];
 
   /**
    * @defaultValue
-   * ```
+   * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "regions",
    *  controllableObjects: true,
@@ -38,9 +35,7 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
    */
   static override get layerOptions(): RegionLayer.LayerOptions;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   override options: RegionLayer.LayerOptions;
 
   static override documentName: "Region";
@@ -51,12 +46,10 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
   get legend(): foundry.applications.ui.RegionLegend;
 
   /**
-   * Draw shapes as holes?
-   * @defaultValue `false`
-   * @remarks Foundry marked `@internal` but gets *and* sets it via the "hole" layer control toggle.
-   * Leaving public as this seems to be the source of truth for that.
+   * @deprecated Removed in v13, the source of truth for this is now `ui.controls.controls.regions.tools.hole.active`.
+   * This warning will be removed in v14.
    */
-  _holeMode: boolean;
+  _holeMode: never;
 
   protected override _activate(): void;
 
@@ -64,7 +57,8 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   override storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,
-    data: PlaceablesLayer.HistoryDataFor<Operation, "Region">,
+    data: PlaceablesLayer.HistoryDataFor<Operation, "Region">[],
+    options?: PlaceablesLayer.HistoryEntry<"Region">["options"],
   ): void;
 
   /** @remarks Core overrides this returning an empty array to prevent copy & paste behavior. */
@@ -74,14 +68,20 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   override getZIndex(): number;
 
+  // fake type override
+  override draw(options?: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<this>;
+
   protected override _draw(options: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
 
   /**
    * Highlight the shape or clear the highlight.
    * @param data - The shape to highlight, or null to clear the highlight
-   * @remarks Foundry marked `@internal`. If `data` is falsey, clears the current highly and returns early
+   * @internal
+   * @remarks If `data` is falsey, clears the current highlight and returns early
    */
-  protected _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
+  _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
+
+  static override prepareSceneControls(): SceneControls.Control;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
@@ -98,22 +98,48 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
   protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
+
+  #RegionLayer: true;
 }
 
 declare namespace RegionLayer {
-  interface Any extends AnyRegionLayer {}
-  interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
+  type Any = Internal.Any;
 
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyRegionLayer {}
+    interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
+  }
+
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.regions.layerClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ImplementationClass> {
     name: "regions";
     controllableObjects: true;
     confirmDeleteKey: true;
     quadtree: false;
-    zIndex: 100;
-    zIndexActive: 600;
+
+    /** @defaultValue `100` */
+    zIndex: number;
+
+    /** @defaultValue `600` */
+    zIndexActive: number;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  // `RegionLayer` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 }
 
 export default RegionLayer;

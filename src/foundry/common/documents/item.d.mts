@@ -1,6 +1,8 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
+import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Document definition for an Item.
@@ -63,22 +65,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * @returns Candidate item image
    * @remarks Core's implementation does not use `itemData`
    */
-  static getDefaultArtwork(itemData?: BaseItem.CreateData): Item.GetDefaultArtworkReturn;
+  static getDefaultArtwork(itemData?: BaseItem.CreateData): BaseItem.GetDefaultArtworkReturn;
 
+  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
-   */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
+  static override migrateData(source: object): object;
 
-  /** @remarks `source` instead of the parent's `data` here */
+  /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
@@ -93,16 +92,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   type: SubType;
 
-  aaaaa: SubType;
-
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseItem.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): Item.ImplementationClass;
 
@@ -116,7 +106,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseItem.Hierarchy;
+  static override readonly hierarchy: BaseItem.Hierarchy;
 
   override system: BaseItem.SystemOfType<SubType>;
 
@@ -124,71 +114,87 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override " fvtt_types_internal_document_parent": BaseItem.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Item", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Item.Implementation | BaseItem.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseItem.Database.Create<Temporary>>,
+    data: BaseItem.CreateInput[],
+    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseItem.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseItem.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseItem.Database.Update>,
-  ): Promise<Item.Implementation[]>;
+    updates: BaseItem.UpdateInput[],
+    operation?: BaseItem.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<Item.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseItem.Database.Delete>,
-  ): Promise<Item.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseItem.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<Item.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseItem.CreateData | BaseItem.CreateData[],
-    operation?: BaseItem.Database.CreateOperation<Temporary>,
-  ): Promise<BaseItem.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseItem.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseItem.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseItem.UpdateData | undefined,
-    operation?: BaseItem.Database.UpdateOperation,
+    data: BaseItem.UpdateInput,
+    operation?: BaseItem.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseItem.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseItem.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseItem.Database.GetOptions): Item.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseItem.Database.GetDocumentsOperation,
+  ): Item.Stored | CompendiumCollection.IndexEntry<"Item"> | null;
 
-  static override getCollectionName<CollectionName extends BaseItem.Embedded.Name>(
-    name: CollectionName,
-  ): BaseItem.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseItem.Embedded.CollectionName>,
+  ): BaseItem.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BaseItem.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BaseItem.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseItem.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseItem.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseItem.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BaseItem.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseItem.Flags.Scope, Key extends BaseItem.Flags.Key<Scope>>(
     scope: Scope,
@@ -199,110 +205,113 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     Scope extends BaseItem.Flags.Scope,
     Key extends BaseItem.Flags.Key<Scope>,
     Value extends BaseItem.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseItem.Flags.Scope, Key extends BaseItem.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseItem.CreateData,
     options: BaseItem.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseItem.CreateData,
-    options: BaseItem.Database.OnCreateOperation,
+    options: BaseItem.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Item.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseItem.Database.Create>,
-    user: User.Implementation,
+    operation: BaseItem.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Item.Implementation[],
-    operation: BaseItem.Database.Create,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: BaseItem.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseItem.UpdateData,
     options: BaseItem.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseItem.UpdateData,
-    options: BaseItem.Database.OnUpdateOperation,
+    options: BaseItem.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Item.Implementation[],
-    operation: BaseItem.Database.Update,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: BaseItem.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Item.Implementation[],
-    operation: BaseItem.Database.Update,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: BaseItem.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseItem.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseItem.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseItem.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Item.Implementation[],
-    operation: BaseItem.Database.Delete,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: BaseItem.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Item.Implementation[],
-    operation: BaseItem.Database.Delete,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: BaseItem.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Item._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Item.Implementation[],
-    context: Document.ModificationContext<BaseItem.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseItem.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Item._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Item.Implementation[],
-    context: Document.ModificationContext<BaseItem.Parent>,
+    documents: Item.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseItem.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Item._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Item.Implementation[],
-    context: Document.ModificationContext<BaseItem.Parent>,
+    documents: Item.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseItem.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseItem.Schema>;
+  static override _schema: SchemaField<BaseItem.Schema>;
 
   static override get schema(): SchemaField<BaseItem.Schema>;
 
@@ -336,7 +345,6 @@ declare namespace BaseItem {
   export import CollectionClass = Item.CollectionClass;
   export import Collection = Item.Collection;
   export import Invalid = Item.Invalid;
-  export import Stored = Item.Stored;
   export import Source = Item.Source;
   export import CreateData = Item.CreateData;
   export import CreateInput = Item.CreateInput;

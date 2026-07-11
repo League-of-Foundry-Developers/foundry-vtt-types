@@ -817,7 +817,7 @@ declare namespace Game {
     userId: string;
     world: foundry.packages.World["_source"];
   } & {
-    [DocumentType in  // eslint-disable-next-line @typescript-eslint/no-deprecated
+    [DocumentType in // eslint-disable-next-line @typescript-eslint/no-deprecated
       | foundry.CONST.DOCUMENT_TYPES
       | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
       Document.ImplementationClassFor<DocumentType>

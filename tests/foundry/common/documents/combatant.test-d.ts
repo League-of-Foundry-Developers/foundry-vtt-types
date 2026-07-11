@@ -4,8 +4,8 @@ expectTypeOf(foundry.documents.BaseCombatant.create({ actorId: "someID", tokenId
   Promise<Combatant.Stored | undefined>
 >();
 expectTypeOf(foundry.documents.BaseCombatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
-expectTypeOf(foundry.documents.BaseCombatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
-expectTypeOf(foundry.documents.BaseCombatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
+expectTypeOf(foundry.documents.BaseCombatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+expectTypeOf(foundry.documents.BaseCombatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
 
 const combatant = await foundry.documents.BaseCombatant.create(
   { name: "Another Combatant", type: "base" },

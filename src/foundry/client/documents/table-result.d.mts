@@ -1,17 +1,15 @@
 import type { ConfiguredTableResult } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseTableResult } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace TableResult {
   /**
@@ -200,7 +198,7 @@ declare namespace TableResult {
 
   /**
    * The helper type for the return of {@linkcode TableResult.create}, returning (a single | an array of) (temporary | stored)
-   * `TableResult `s.
+   * `TableResult`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -235,7 +233,7 @@ declare namespace TableResult {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode TableResult}. This is the source of truth for how an TableResult document
+   * The schema for {@linkcode TableResult}. This is the source of truth for how a `TableResult` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TableResult}. For example
@@ -325,121 +323,583 @@ declare namespace TableResult {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for TableResults */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<TableResult.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for TableResults */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<TableResult.CreateData, TableResult.Parent, Temporary> {
-      animate?: boolean;
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `TableResult` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<TableResult.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `TableResult` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `TableResult` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TableResult.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<TableResult.CreateInput, TableResult.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.create} or {@linkcode TableResult.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `TableResult` documents. (see {@linkcode TableResult.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `TableResult` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preCreate | TableResult#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateTableResult` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TableResult._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onCreate | TableResult#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createTableResult` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onCreateOperation} and `TableResult`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `TableResult` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TableResult.update | TableResult#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<TableResult.UpdateInput, TableResult.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.update | TableResult#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `TableResult` documents (see {@linkcode TableResult.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `TableResult` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preUpdate | TableResult#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateTableResult` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TableResult._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onUpdate | TableResult#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateTableResult` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onUpdateOperation} and `TableResult`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `TableResult` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TableResult.delete | TableResult#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<TableResult.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.delete | TableResult#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `TableResult` documents (see {@linkcode TableResult.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `TableResult` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preDelete | TableResult#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteTableResult` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TableResult._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onDelete | TableResult#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteTableResult` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TableResult._onDeleteOperation} and `TableResult`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: TableResult.Database.GetDocumentsOperation;
+        BackendGetOperation: TableResult.Database.BackendGetOperation;
+        GetOperation: TableResult.Database.GetOperation;
+
+        CreateDocumentsOperation: TableResult.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: TableResult.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: TableResult.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: TableResult.Database.CreateOperation<Temporary>;
+        PreCreateOptions: TableResult.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: TableResult.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: TableResult.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: TableResult.Database.OnCreateOptions;
+        OnCreateOperation: TableResult.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: TableResult.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: TableResult.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: TableResult.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: TableResult.Database.BackendUpdateOperation;
+        UpdateOperation: TableResult.Database.UpdateOperation;
+        PreUpdateOptions: TableResult.Database.PreUpdateOptions;
+        PreUpdateOperation: TableResult.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: TableResult.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: TableResult.Database.OnUpdateOptions;
+        OnUpdateOperation: TableResult.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: TableResult.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: TableResult.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: TableResult.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: TableResult.Database.BackendDeleteOperation;
+        DeleteOperation: TableResult.Database.DeleteOperation;
+        PreDeleteOptions: TableResult.Database.PreDeleteOptions;
+        PreDeleteOperation: TableResult.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: TableResult.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: TableResult.Database.OnDeleteOptions;
+        OnDeleteOperation: TableResult.Database.OnDeleteOperation;
+      }
     }
 
-    /** Options passed along in Delete operations for TableResults */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TableResult.Parent> {
-      animate?: boolean;
-    }
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
 
-    /** Options passed along in Update operations for TableResults */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      TableResult.UpdateData,
-      TableResult.Parent
-    > {
-      animate?: boolean;
-    }
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
 
-    /** Operation for {@linkcode TableResult.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      TableResult.Database.Create<Temporary>
-    > {}
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
 
-    /** Operation for {@linkcode TableResult.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<TableResult.Database.Update> {}
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
 
-    /** Operation for {@linkcode TableResult.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<TableResult.Database.Delete> {}
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
 
-    /** Operation for {@linkcode TableResult.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      TableResult.Database.Create<Temporary>
-    > {}
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
 
-    /** Operation for {@linkcode TableResult.update | TableResult#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
+    // CreateDocumentsOperation didn't change purpose or name
 
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
 
-    /** Options for {@linkcode TableResult.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
 
-    /** Options for {@linkcode TableResult._preCreate | TableResult#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
+    // PreCreateOptions didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._onCreate | TableResult#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
+    // OnCreateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode TableResult._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TableResult.Database.Create> {}
+    // PreCreateOperation didn't change purpose or name
 
-    /** Operation for {@linkcode TableResult._onCreateOperation | TableResult#_onCreateOperation} */
-    interface OnCreateOperation extends TableResult.Database.Create {}
+    // OnCreateOperation didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._preUpdate | TableResult#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
+    // PreUpdateOptions didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._onUpdate | TableResult#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
+    // OnUpdateOptions didn't change purpose or name
 
-    /** Operation for {@linkcode TableResult._preUpdateOperation} */
-    interface PreUpdateOperation extends TableResult.Database.Update {}
+    // PreUpdateOperation didn't change purpose or name
 
-    /** Operation for {@linkcode TableResult._onUpdateOperation | TableResult._preUpdateOperation} */
-    interface OnUpdateOperation extends TableResult.Database.Update {}
+    // OnUpdateOperation didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._preDelete | TableResult#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
+    // PreDeleteOptions didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._onDelete | TableResult#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
+    // OnDeleteOptions didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._preDeleteOperation | TableResult#_preDeleteOperation} */
-    interface PreDeleteOperation extends TableResult.Database.Delete {}
+    // PreDeleteOperation didn't change purpose or name
 
-    /** Options for {@linkcode TableResult._onDeleteOperation | TableResult#_onDeleteOperation} */
-    interface OnDeleteOperation extends TableResult.Database.Delete {}
+    // OnDeleteOperation didn't change purpose or name
 
-    /** Context for {@linkcode TableResult._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
 
-    /** Context for {@linkcode TableResult._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
 
-    /** Context for {@linkcode TableResult._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
 
-    /**
-     * Options for {@linkcode TableResult._preCreateDescendantDocuments | TableResult#_preCreateDescendantDocuments}
-     * and {@linkcode TableResult._onCreateDescendantDocuments | TableResult#_onCreateDescendantDocuments}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<TableResult.Database.Create> {}
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
 
-    /**
-     * Options for {@linkcode TableResult._preUpdateDescendantDocuments | TableResult#_preUpdateDescendantDocuments}
-     * and {@linkcode TableResult._onUpdateDescendantDocuments | TableResult#_onUpdateDescendantDocuments}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<TableResult.Database.Update> {}
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
 
-    /**
-     * Options for {@linkcode TableResult._preDeleteDescendantDocuments | TableResult#_preDeleteDescendantDocuments}
-     * and {@linkcode TableResult._onDeleteDescendantDocuments | TableResult#_onDeleteDescendantDocuments}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
 
-    /**
-     * Create options for {@linkcode TableResult.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -474,13 +934,59 @@ declare namespace TableResult {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode TableResult.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode TableResult.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode TableResult.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode TableResult.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode TableResult.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode TableResult.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode TableResult.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends TableResult.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<TableResult.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode TableResult.deleteDialog | TableResult#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    TableResult.Stored,
+    Config
+  >;
 
   /**
    * The arguments to construct the document.
@@ -517,7 +1023,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    */
   get icon(): string;
 
-  /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` or `compendium` type */
+  /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` type */
   override prepareBaseData(): void;
 
   /**
@@ -530,10 +1036,18 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    */
   documentToAnchor(): HTMLAnchorElement | null;
 
-  // _preUpdate is overridden but with no signature changes.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: TableResult.UpdateData,
+  //   options: TableResult.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`TableResult#getChatText` is deprecated. Use the asynchronous
+   * {@linkcode TableResult.getHTML | TableResult#getHTML} instead." (since v13, until v15)
    */
   getChatText(): string;
 
@@ -551,36 +1065,64 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: TableResult.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TableResult.CreateDialogOptions | undefined = undefined,
+  >(
     data: TableResult.CreateDialogData | undefined,
-    createOptions: TableResult.Database.DialogCreateOptions,
-    options?: TableResult.CreateDialogOptions,
-  ): Promise<TableResult.Stored | null | undefined>;
+    createOptions: TableResult.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<TableResult.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"TableResult">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode TableResult.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TableResult.CreateDialogOptions | undefined = undefined,
+  >(
+    data: TableResult.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: TableResult.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<TableResult.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: TableResult.DropData,
-    options?: TableResult.DropDataOptions,
-  ): Promise<TableResult.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TableResult.Database.DeleteOneDocumentOperation,
+  ): Promise<TableResult.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TableResult.Database.DeleteOneDocumentOperation,
+  ): Promise<TableResult.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: TableResult.DropData): Promise<TableResult.Implementation | undefined>;
 
   static override fromImport(
     source: TableResult.Source,
-    context?: Document.FromImportContext<TableResult.Parent> | null,
+    context?: Document.FromImportContext<TableResult.Parent>,
   ): Promise<TableResult.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
   // Embedded document operations have been left out because TableResult does not have any embedded documents.
 
-  static #TableResult: true;
+  #TableResult: true;
 }
 
 export default TableResult;

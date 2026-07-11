@@ -17,7 +17,13 @@ declare class JournalEntryPageSheet<
   RenderContext extends JournalEntryPageSheet.RenderContext = JournalEntryPageSheet.RenderContext,
   Configuration extends JournalEntryPageSheet.Configuration = JournalEntryPageSheet.Configuration,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
-> extends DocumentSheetV2<JournalEntryPage.Implementation, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentSheetV2<JournalEntryPage.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * The table of contents for this text page.
+   * @remarks Only `undefined` prior to the first time {@linkcode JournalEntryPageSheet._onRender | #_onRender} is called.
+   */
+  toc: JournalEntryPage.TOC | undefined;
+}
 
 declare namespace JournalEntryPageSheet {
   interface Any extends AnyJournalEntryPageSheet {}

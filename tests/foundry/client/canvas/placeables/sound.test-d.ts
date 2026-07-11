@@ -5,12 +5,14 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Sound = foundry.audio.Sound;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 
+expectTypeOf(AmbientSound.implementation).toEqualTypeOf<AmbientSound.ImplementationClass>();
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
 >();
 
 declare const doc: AmbientSoundDocument.Stored;
+declare const scene: Scene.Stored;
 const sound = new CONFIG.AmbientSound.objectClass(doc);
 
 expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();
@@ -22,7 +24,7 @@ expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
 expectTypeOf(sound.applyEffects()).toBeVoid();
 expectTypeOf(sound.applyEffects({})).toBeVoid();
 expectTypeOf(sound.applyEffects({ muffled: true })).toBeVoid();
-expectTypeOf(sound.applyEffects({ muffled: null })).toBeVoid();
+expectTypeOf(sound.applyEffects({ muffled: undefined })).toBeVoid();
 
 expectTypeOf(sound.isAudible).toEqualTypeOf<boolean>();
 expectTypeOf(sound.bounds).toEqualTypeOf<PIXI.Rectangle>();
@@ -68,24 +70,30 @@ expectTypeOf(sound.refreshControl()).toBeVoid();
 expectTypeOf(sound["_refreshElevation"]()).toBeVoid();
 
 expectTypeOf(
-  sound["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  sound["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   sound["_onUpdate"](
     // partial source data
     { easing: true, path: "path/to/sound.ogg", repeat: true, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(sound["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  sound["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({})).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({ deleted: true })).toBeVoid();
-expectTypeOf(sound.initializeSoundSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.initializeSoundSource({ deleted: undefined })).toBeVoid();
 expectTypeOf(sound["_getSoundSourceData"]()).toEqualTypeOf<AmbientSound.SoundSourceData>();
 
 declare const someUser: User.Implementation;
@@ -96,7 +104,7 @@ expectTypeOf(sound["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(sound["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(sound["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onDragLeftMove"](pointerEvent)).toBeVoid();
@@ -115,4 +123,4 @@ expectTypeOf(sound.updateSource({})).toBeVoid();
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();
+expectTypeOf(sound.updateSource({ deleted: undefined })).toBeVoid();

@@ -6,6 +6,9 @@ import Canvas = foundry.canvas.Canvas;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
+declare const scene: Scene.Stored;
+
+expectTypeOf(MeasuredTemplate.implementation).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -30,7 +33,7 @@ const template = new CONFIG.MeasuredTemplate.objectClass(doc);
 
 expectTypeOf(template.controlIcon).toEqualTypeOf<ControlIcon | null>();
 expectTypeOf(template.shape).toEqualTypeOf<PIXI.Circle | PIXI.Polygon | PIXI.Rectangle | undefined>();
-expectTypeOf(template.texture).toEqualTypeOf<PIXI.Texture | null | undefined>();
+expectTypeOf(template.texture).toEqualTypeOf<PIXI.Texture | null>();
 expectTypeOf(template.template).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(template.ruler).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(template["_borderThickness"]).toBeNumber();
@@ -87,19 +90,25 @@ expectTypeOf(template["_getGridHighlightPositions"]()).toEqualTypeOf<Canvas.Poin
 expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation>>();
 
 expectTypeOf(
-  template["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  template["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   template["_onUpdate"](
     // partial source data
     { elevation: 30, texture: "path/to/tex.webp", direction: 234, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(template["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  template["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
@@ -111,7 +120,7 @@ expectTypeOf(template["_canView"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(template["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(template["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(template["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(template["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<

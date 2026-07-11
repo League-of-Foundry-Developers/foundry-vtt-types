@@ -217,6 +217,28 @@ export interface DataConfig {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface GetDataConfig {}
 
+/**
+ * Merge into this interface to configure known subtypes for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}:
+ * `ActiveEffect`, `Actor`, `Card`, `Cards`, `ChatMessage`, `Combat`, `Combatant`, `CombatantGroup`, `Item`, `JournalEntryPage`,
+ * and `RegionBehavior`.
+ *
+ * The current design of this interface limits each document type to having to define all its types in a single merge, rather than spread
+ * out per type model file. However, for example, `Actor` and `Item` subtypes could be registered in separate merges.
+ * @example
+ * ```ts
+ * class NPCModel extends foundry.abstract.TypeDataModel<FooSchema, Actor.Implementation> {
+ *   //...
+ * }
+ *
+ * declare module "fvtt-types/configuration" {
+ *   interface DataModelConfig {
+ *     Actor {
+ *       npc: typeof NPCModel
+ *     }
+ *   }
+ * }
+ * ```
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DataModelConfig {}
 
@@ -274,7 +296,15 @@ export interface SettingConfig {
   "core.combatTrackerConfig": fields.SchemaField<foundry.data.CombatConfiguration.ConfigSettingSchema>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
-  "core.coneTemplateType": "round" | "flat";
+  "core.coneTemplateType": fields.StringField<{
+    required: true;
+    blank: false;
+    initial: "round";
+    choices: {
+      round: "TEMPLATE.ConeTypeRound";
+      flat: "TEMPLATE.ConeTypeFlat";
+    };
+  }>;
   "core.colorSchema": fields.StringField<{
     required: true;
     blank: true;
@@ -290,14 +320,12 @@ export interface SettingConfig {
     blank: false;
     initial: "none";
     choices: () => {
-      [K in keyof CONFIG.Combat.Sounds]: string;
+      [K in keyof typeof CONFIG.Combat.sounds]: string;
     };
   }>;
   "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
   "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
-  "core.diceConfiguration": {
-    [K in CONFIG.Dice.DTermDiceStrings]?: string | undefined;
-  };
+  "core.diceConfiguration": Record<string, string>;
   "core.disableResolutionScaling": boolean;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
@@ -311,13 +339,13 @@ export interface SettingConfig {
     initial: NonNullable<typeof game.i18n>["lang"];
     choices: typeof CONFIG.supportedLanguages;
   }>;
-  "core.leftClickRelease": fields.BooleanField<{ initial: true }>;
+  "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
   "core.maxFPS": fields.NumberField<{ required: true; min: 10; max: 60; step: 10; initial: 60 }>;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;
-  "core.notesDisplayToggle": boolean;
+  "core.notesDisplayToggle": fields.BooleanField<{ initial: true }>;
   "core.nue.shownTips": boolean;
   "core.performanceMode": fields.NumberField<{
     required: true;
@@ -352,8 +380,8 @@ export interface SettingConfig {
     foundry.dice.Roll.Mode,
     foundry.dice.Roll.Mode
   >;
-  "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
-  "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
+  "core.rtcClientSettings": AVSettings.SchemaFields["client"];
+  "core.rtcWorldSettings": AVSettings.SchemaFields["world"];
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
 
   /**

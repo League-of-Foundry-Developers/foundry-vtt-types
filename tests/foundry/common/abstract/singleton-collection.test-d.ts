@@ -17,7 +17,6 @@ describe("SingletonEmbeddedCollection Tests", async () => {
   docsToCleanUp.add(actor);
 
   const tokenDoc = await TokenDocument.implementation.create(
-    // @ts-expect-error `TokenDocument.create` will take a `TokenDocument` on the db-ops branch
     await actor.getTokenDocument({ x: 200, y: 200, actorLink: false }),
     {
       parent: scene,

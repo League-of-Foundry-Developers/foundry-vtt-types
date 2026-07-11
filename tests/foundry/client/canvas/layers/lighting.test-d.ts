@@ -32,4 +32,4 @@ expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toEqualTypeOf<Promise<AmbientLight.Implementation>>();
-expectTypeOf(layer["_onDarknessChange"](darknessChangeEvent)).toBeVoid();
+expectTypeOf(layer._onDarknessChange(darknessChangeEvent)).toBeVoid();

@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * A Document that represents a grouping of individual Combatants in a Combat.
@@ -56,13 +57,6 @@ declare abstract class BaseCombatantGroup<
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
-
-  override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): CombatantGroup.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatantGroup;
@@ -75,7 +69,7 @@ declare abstract class BaseCombatantGroup<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseCombatantGroup.Hierarchy;
+  static override readonly hierarchy: BaseCombatantGroup.Hierarchy;
 
   override system: BaseCombatantGroup.SystemOfType<SubType>;
 
@@ -83,42 +77,57 @@ declare abstract class BaseCombatantGroup<
 
   override " fvtt_types_internal_document_parent": BaseCombatantGroup.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"CombatantGroup", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<CombatantGroup.Implementation | BaseCombatantGroup.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseCombatantGroup.Database.Create<Temporary>>,
+    data: BaseCombatantGroup.CreateInput[],
+    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseCombatantGroup.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseCombatantGroup.Database.Update>,
-  ): Promise<CombatantGroup.Implementation[]>;
+    updates: BaseCombatantGroup.UpdateInput[],
+    operation?: BaseCombatantGroup.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<CombatantGroup.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseCombatantGroup.Database.Delete>,
-  ): Promise<CombatantGroup.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseCombatantGroup.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<CombatantGroup.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseCombatantGroup.CreateData | BaseCombatantGroup.CreateData[],
-    operation?: BaseCombatantGroup.Database.CreateOperation<Temporary>,
-  ): Promise<BaseCombatantGroup.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseCombatantGroup.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseCombatantGroup.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseCombatantGroup.UpdateData | undefined,
-    operation?: BaseCombatantGroup.Database.UpdateOperation,
+    data: BaseCombatantGroup.UpdateInput,
+    operation?: BaseCombatantGroup.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseCombatantGroup.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombatantGroup.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseCombatantGroup.Database.GetOptions,
-  ): CombatantGroup.Implementation | null;
+  // `CombatantGroup`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseCombatantGroup.Database.GetDocumentsOperation): null;
 
+  // `CombatantGroup`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   override getFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
@@ -129,110 +138,113 @@ declare abstract class BaseCombatantGroup<
     Scope extends BaseCombatantGroup.Flags.Scope,
     Key extends BaseCombatantGroup.Flags.Key<Scope>,
     Value extends BaseCombatantGroup.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseCombatantGroup.CreateData,
     options: BaseCombatantGroup.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseCombatantGroup.CreateData,
-    options: BaseCombatantGroup.Database.OnCreateOperation,
+    options: BaseCombatantGroup.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseCombatantGroup.Database.Create>,
-    user: User.Implementation,
+    operation: BaseCombatantGroup.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: BaseCombatantGroup.Database.Create,
-    user: User.Implementation,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseCombatantGroup.UpdateData,
     options: BaseCombatantGroup.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseCombatantGroup.UpdateData,
-    options: BaseCombatantGroup.Database.OnUpdateOperation,
+    options: BaseCombatantGroup.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: BaseCombatantGroup.Database.Update,
-    user: User.Implementation,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: BaseCombatantGroup.Database.Update,
-    user: User.Implementation,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCombatantGroup.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseCombatantGroup.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCombatantGroup.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: BaseCombatantGroup.Database.Delete,
-    user: User.Implementation,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: BaseCombatantGroup.Database.Delete,
-    user: User.Implementation,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `CombatantGroup._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `CombatantGroup._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `CombatantGroup._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCombatantGroup.Schema>;
+  static override _schema: SchemaField<BaseCombatantGroup.Schema>;
 
   static override get schema(): SchemaField<BaseCombatantGroup.Schema>;
 
@@ -267,7 +279,6 @@ declare namespace BaseCombatantGroup {
   export import CollectionClass = CombatantGroup.CollectionClass;
   export import Collection = CombatantGroup.Collection;
   export import Invalid = CombatantGroup.Invalid;
-  export import Stored = CombatantGroup.Stored;
   export import Source = CombatantGroup.Source;
   export import CreateData = CombatantGroup.CreateData;
   export import CreateInput = CombatantGroup.CreateInput;

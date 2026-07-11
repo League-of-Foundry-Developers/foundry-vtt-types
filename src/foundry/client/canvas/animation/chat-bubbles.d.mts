@@ -72,7 +72,7 @@ declare namespace ChatBubbles {
   interface AnyConstructor extends Identity<typeof AnyChatBubbles> {}
 
   /** @internal */
-  type _Options = InexactPartial<{
+  interface _Options {
     /**
      * An optional array of CSS classes to apply to the resulting bubble
      * @defaultValue `[]`
@@ -90,9 +90,9 @@ declare namespace ChatBubbles {
      * @defaultValue `false`
      */
     requireVisible: boolean;
-  }>;
+  }
 
-  interface Options extends _Options {}
+  interface Options extends InexactPartial<_Options> {}
 }
 
 export default ChatBubbles;

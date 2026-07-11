@@ -121,7 +121,7 @@ declare namespace PrimarySpriteMesh {
   type FitType = "fill" | "cover" | "contain" | "width" | "height";
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * Texture passed to the SpriteMesh.
      */
@@ -144,13 +144,13 @@ declare namespace PrimarySpriteMesh {
      * @defaultValue {@linkcode foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader | PrimaryBaseSamplerShader}
      */
     shaderClass: PrimaryBaseSamplerShader.AnyConstructor;
-  }>;
+  }
 
   /** The constructor options */
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   /** @internal */
-  type _ResizeOptions = InexactPartial<{
+  interface _ResizeOptions {
     /**
      * The fit type.
      * @defaultValue `"fill"`
@@ -168,12 +168,12 @@ declare namespace PrimarySpriteMesh {
      * @defaultValue `1`
      */
     scaleY: number;
-  }>;
+  }
 
-  interface ResizeOptions extends _ResizeOptions {}
+  interface ResizeOptions extends InexactPartial<_ResizeOptions> {}
 
   /** @internal */
-  type _BatchData = InexactPartial<{
+  interface _BatchData {
     /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
     elevation: PrimarySpriteMesh["elevation"];
 
@@ -197,9 +197,9 @@ declare namespace PrimarySpriteMesh {
 
     /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
     restrictionState: PrimarySpriteMesh["_restrictionState"];
-  }>;
+  }
 
-  interface BatchData extends SpriteMesh.BatchData, _BatchData {}
+  interface BatchData extends SpriteMesh.BatchData, InexactPartial<_BatchData> {}
 }
 
 export default PrimarySpriteMesh;

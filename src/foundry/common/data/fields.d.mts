@@ -3,7 +3,6 @@ import type {
   SimpleMerge,
   AnyObject,
   EmptyObject,
-  NullishProps,
   InexactPartial,
   FixedInstanceType,
   Identity,
@@ -229,11 +228,8 @@ declare abstract class DataField<
    * Cast a non-default value to ensure it is the correct type for the field
    * @param value - The provided non-default value
    * @returns The standardized value
-   * @remarks No longer so effectively abstract in v13, `DataField`'s implementation now simply returns the provided value,
-   * but since subclasses *should* still implement an `_cast` that matches their `AssignmentType` and `InitializedType`, it
-   * remains `abstract` here
    */
-  protected abstract _cast(value: unknown): AssignmentType;
+  protected _cast(value: unknown): AssignmentType;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -565,7 +561,7 @@ declare namespace DataField {
   }
 
   /** @internal */
-  type _Options<BaseAssignmentType> = InexactPartial<{
+  interface _Options<BaseAssignmentType> {
     /**
      * Is this field required to be populated?
      * @defaultValue `false`
@@ -607,9 +603,9 @@ declare namespace DataField {
      * is thrown in the validate function, the string message of that Error is used.
      */
     validationError: string;
-  }>;
+  }
 
-  interface Options<BaseAssignmentType> extends _Options<BaseAssignmentType> {}
+  interface Options<BaseAssignmentType> extends InexactPartial<_Options<BaseAssignmentType>> {}
 
   namespace Options {
     /** Any DataField.Options. */
@@ -709,18 +705,18 @@ declare namespace DataField {
   type InitializedType<Options extends DataField.Options.Any> = DerivedInitializedType<unknown, MergedOptions<Options>>;
 
   /** @internal */
-  type _ConstructionContext = InexactPartial<{
+  interface _ConstructionContext {
     /** A field name to assign to the constructed field */
     name: string;
 
     /** Another data field which is a hierarchical parent of this one */
     parent: DataField.Any;
-  }>;
+  }
 
-  interface ConstructionContext extends _ConstructionContext {}
+  interface ConstructionContext extends InexactPartial<_ConstructionContext> {}
 
   /** @internal */
-  type _AddTypesOptions = InexactPartial<{
+  interface _AddTypesOptions {
     /**
      * The root data model source
      * @remarks Not expected to be passed externally, the top level `_addTypes` call sets this to the passed `source`,
@@ -734,12 +730,12 @@ declare namespace DataField {
      * making it available to subsidiary calls
      */
     changes: AnyObject;
-  }>;
+  }
 
-  interface AddTypesOptions extends _AddTypesOptions {}
+  interface AddTypesOptions extends InexactPartial<_AddTypesOptions> {}
 
   /** @internal */
-  type _ValidationOptions = InexactPartial<{
+  interface _ValidationOptions {
     /** Whether this is a partial schema validation, or a complete one. */
     partial: boolean;
 
@@ -754,7 +750,7 @@ declare namespace DataField {
 
     /** The full source object being evaluated. */
     source: AnyObject;
-  }>;
+  }
 
   /**
    * @remarks This is the type for the options for `#validate` and associate methods *without* the
@@ -762,19 +758,19 @@ declare namespace DataField {
    *
    * If you are looking for the type with a generic formerly under this name, see {@link ValidateOptions | `DataField.ValidateOptions`}
    */
-  interface ValidationOptions extends _ValidationOptions {}
+  interface ValidationOptions extends InexactPartial<_ValidationOptions> {}
 
   /** @internal */
-  type _CleanOptions = InexactPartial<{
+  interface _CleanOptions {
     /** Whether to perform partial cleaning? */
     partial: boolean;
 
     /** The root data model being cleaned */
     source: AnyObject;
-  }>;
+  }
 
   /** An interface for the options of {@link DataField.clean | `DataField#clean`} and {@link DataField._cleanType | `DataField#_cleanType`}. */
-  interface CleanOptions extends _CleanOptions {}
+  interface CleanOptions extends InexactPartial<_CleanOptions> {}
 
   /**
    * @remarks The only place core checks the `options` for any property is in {@link TypeDataField._validateModel | `TypeDataField#_validateModel`},
@@ -1729,7 +1725,7 @@ declare namespace NumberField {
 
   /** @internal */
   type _ToInputConfig<InitializedType> = DataField.ToInputConfig<InitializedType> &
-    NullishProps<{
+    InexactPartial<{
       min: number;
       max: number;
       step: number;
@@ -2010,12 +2006,11 @@ declare namespace StringField {
   }
 
   /** @internal */
-  type _PrepareChoiceConfig = InexactPartial<
-    Pick<_FormInputConfig, "localize"> & Pick<_SelectInputConfig, "labelAttr" | "valueAttr">
-  >;
+  interface _PrepareChoiceConfig
+    extends Pick<_FormInputConfig, "localize">, Pick<_SelectInputConfig, "labelAttr" | "valueAttr"> {}
 
   /** Foundry's type `ChoiceInputConfig` includes both `choices` and `options` */
-  interface PrepareChoiceConfig extends _PrepareChoiceConfig {
+  interface PrepareChoiceConfig extends InexactPartial<_PrepareChoiceConfig> {
     choices: DataField.AnyChoices;
   }
 
@@ -3137,6 +3132,7 @@ declare namespace EmbeddedCollectionField {
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
     EmbeddedCollection<
+      // TODO: Stored is only mostly accurate, this should be a specific Embedded type with only the id/uuid guarantees eventually
       Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
       ParentDataModel
     >,
@@ -4894,7 +4890,7 @@ declare class DocumentStatsField<
    * `JournalEntry`, `Macro`, `Playlist`, `RollTable`, `Scene`)
    */
   // TODO: add this shim to DocumentFlagsField.InitializedType?
-  protected static _shimDocument(document: Document.AnyConstructor): void;
+  protected static _shimDocument(document: Document.Any): void;
 }
 
 declare namespace DocumentStatsField {

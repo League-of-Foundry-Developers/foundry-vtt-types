@@ -145,7 +145,7 @@ export type ArrayOverlaps<Arr, T> =
  * merged into an interface. When the type does not conform then `ConformTo` is
  * used instead.
  *
- * See `MustConform` for a version that throws a compilation error when the type
+ * See {@linkcode MustConform} for a version that throws a compilation error when the type
  * cannot be statically known to conform.
  */
 export type MakeConform<T, ConformTo, D extends ConformTo = ConformTo> = [T] extends [ConformTo] ? T : D;
@@ -913,7 +913,7 @@ export type AnyConcreteConstructor = new (...args: never) => unknown;
  *
  * Do not use this type or {@linkcode MaybePromise} for the return
  * type of asynchronous methods on classes. For example for
- * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
+ * {@linkcode Document._preCreate | Document#_preCreate} the typing
  * should be `Promise<void>` and not this type. In theory we could use
  * {@linkcode MaybePromise} in this context as well but this seems
  * more likely to be confusing than to be helpful.
@@ -935,7 +935,7 @@ export type MustBePromise<T> = Promise<T>;
  * `Promise<T>`.
  *
  * This should generally not be used in asynchronous methods. For example in
- * {@link foundry.abstract.Document._preCreate | `Document#_preCreate`} the typing
+ * {@linkcode Document._preCreate | Document#_preCreate} the typing
  * is `Promise<void>` because it's declared as an async method. Overriding an
  * asynchronous method with a synchronous method is more confusing than
  * helpful.
@@ -1413,3 +1413,13 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
  * @deprecated No replacement as this was deemed too niche.
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+
+/**
+ * Handles cases where an empty object is defined somewhere and then filled in some time before the given hook.
+ * See {@linkcode CONFIG.Actor.typeLabels}.
+ */
+export type PartialUntilInitialized<T extends object, HookName extends InitializationHook> = InitializedOn<
+  T,
+  HookName,
+  IntentionalPartial<T>
+>;

@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { OccludableSamplerShader, PrimaryBaseSamplerShader } from "../../_module.mjs";
 import type { BatchRenderer } from "../../../batching/_module.mjs";
@@ -35,9 +35,6 @@ declare class TokenRingSamplerShader extends PrimaryBaseSamplerShader {
   protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
 
   protected static override _packInterleavedGeometry(
-    /**
-     * @privateRemarks Calls super, which is the grandparent class in this case, with no new keys
-     */
     element: TokenRingSamplerShader.BatchData,
     attributeBuffer: PIXI.ViewableBuffer,
     indexBuffer: Uint16Array,
@@ -57,18 +54,27 @@ declare namespace TokenRingSamplerShader {
   interface AnyConstructor extends Identity<typeof AnyTokenRingSamplerShader> {}
 
   /** @internal */
-  type RingContainerObject = NullishProps<{
-    object: NullishProps<{
-      ring: TokenRing;
-    }>;
-  }>;
+  interface _RingObjectContainer {
+    ring: TokenRing;
+  }
+
+  /** The type for `element.object.object` in {@linkcode TokenRingSamplerShader._packInterleavedGeometry | #_packInterleavedGeometry}. */
+  interface RingObjectContainer extends InexactPartial<_RingObjectContainer> {}
+
+  /** @internal */
+  interface _RingObjectContainerContainer {
+    object: RingObjectContainer;
+  }
+
+  /** The type for `element.object` in {@linkcode TokenRingSamplerShader._packInterleavedGeometry | #_packInterleavedGeometry}. */
+  interface RingObjectContainerContainer extends InexactPartial<_RingObjectContainerContainer> {}
 
   interface BatchData extends OccludableSamplerShader.OccludableBatchData {
     /**
      * @remarks This key is required to be an object as `TokenRingSamplerShader._packInterleavedGeometry` does `element.object.object || {}`.
      * All `TokenRing` keys are then accessed via optional chaining with `??` defaults.
      */
-    object: RingContainerObject;
+    object: RingObjectContainerContainer;
   }
 }
 

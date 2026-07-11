@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Note.
@@ -52,7 +53,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
@@ -68,13 +69,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseNote.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): NoteDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseNote;
@@ -85,49 +79,65 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseNote.Hierarchy;
+  static override readonly hierarchy: BaseNote.Hierarchy;
 
   override parent: BaseNote.Parent;
 
   override " fvtt_types_internal_document_parent": BaseNote.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Note", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<NoteDocument.Implementation | BaseNote.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseNote.Database.Create<Temporary>>,
+    data: BaseNote.CreateInput[],
+    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseNote.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseNote.Database.Update>,
-  ): Promise<NoteDocument.Implementation[]>;
+    updates: BaseNote.UpdateInput[],
+    operation?: BaseNote.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<NoteDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseNote.Database.Delete>,
-  ): Promise<NoteDocument.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseNote.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<NoteDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseNote.CreateData | BaseNote.CreateData[],
-    operation?: BaseNote.Database.CreateOperation<Temporary>,
-  ): Promise<BaseNote.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseNote.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseNote.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseNote.UpdateData | undefined,
-    operation?: BaseNote.Database.UpdateOperation,
+    data: BaseNote.UpdateInput,
+    operation?: BaseNote.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseNote.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseNote.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseNote.Database.GetOptions): NoteDocument.Implementation | null;
+  // `NoteDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseNote.Database.GetDocumentsOperation): null;
 
+  // `NoteDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(
     scope: Scope,
@@ -138,110 +148,113 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     Scope extends BaseNote.Flags.Scope,
     Key extends BaseNote.Flags.Key<Scope>,
     Value extends BaseNote.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseNote.CreateData,
     options: BaseNote.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseNote.CreateData,
-    options: BaseNote.Database.OnCreateOperation,
+    options: BaseNote.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: NoteDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseNote.Database.Create>,
-    user: User.Implementation,
+    operation: BaseNote.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: NoteDocument.Implementation[],
-    operation: BaseNote.Database.Create,
-    user: User.Implementation,
+    documents: NoteDocument.Stored[],
+    operation: BaseNote.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseNote.UpdateData,
     options: BaseNote.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseNote.UpdateData,
-    options: BaseNote.Database.OnUpdateOperation,
+    options: BaseNote.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: NoteDocument.Implementation[],
-    operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    documents: NoteDocument.Stored[],
+    operation: BaseNote.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: NoteDocument.Implementation[],
-    operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    documents: NoteDocument.Stored[],
+    operation: BaseNote.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseNote.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseNote.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseNote.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: NoteDocument.Implementation[],
-    operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    documents: NoteDocument.Stored[],
+    operation: BaseNote.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: NoteDocument.Implementation[],
-    operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    documents: NoteDocument.Stored[],
+    operation: BaseNote.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `NoteDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseNote.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `NoteDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseNote.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `NoteDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseNote.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseNote.Schema>;
+  static override _schema: SchemaField<BaseNote.Schema>;
 
   static override get schema(): SchemaField<BaseNote.Schema>;
 
@@ -273,7 +286,6 @@ declare namespace BaseNote {
   export import CollectionClass = NoteDocument.CollectionClass;
   export import Collection = NoteDocument.Collection;
   export import Invalid = NoteDocument.Invalid;
-  export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import CreateData = NoteDocument.CreateData;
   export import CreateInput = NoteDocument.CreateInput;

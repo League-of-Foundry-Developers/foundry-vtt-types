@@ -95,15 +95,14 @@ npm run test
 
 ### Style
 
-We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct
+We use [oxfmt](https://oxc.rs/) to automatically format the code and have ESlint check for the correct
 formatting. This even runs automatically as a pre-commit hook, so usually you don't have to care for much here. However,
-there is one additional style guideline that prettier doesn't enforce for us:
+there is one additional style guideline that oxfmt doesn't enforce for us:
 
 In TSDoc comments, always make sure to align the `-` for all `@param`s.
 
-In very rare occasions, it is acceptable to disable prettier for a specific part of the code to improve the formatting
-manually, e.g. for deeply nested conditional types, which are simply unreadable if we let prettier format them. See
-[Prettier – Ignoring Code](https://prettier.io/docs/en/ignore.html#javascript) to find out how to do this.
+In very rare occasions, it is acceptable to disable oxfmt for a specific part of the code to improve the formatting
+manually. See [Oxfmt – Inline ignore comments](https://oxc.rs/docs/guide/usage/formatter/ignore-comments.html) to find out how to do this.
 
 ### General Guidelines
 

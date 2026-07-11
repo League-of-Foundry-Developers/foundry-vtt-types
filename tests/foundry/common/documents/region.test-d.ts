@@ -5,17 +5,23 @@ import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestRegion extends BaseRegion {}
+class TestBaseRegion extends BaseRegion {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Region">)
+      : null;
+  }
+}
 
 declare const someScriptBehavior: RegionBehavior.OfType<"executeScript">;
 
 // @ts-expect-error Region construction requires a `name`
-new TestRegion();
+new TestBaseRegion();
 
 // @ts-expect-error Region construction requires a `name`
-new TestRegion({});
+new TestBaseRegion({});
 
-new TestRegion({
+new TestBaseRegion({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Region",
   color: "#ABEFCD",
@@ -46,7 +52,7 @@ new TestRegion({
   },
 });
 
-new TestRegion({
+new TestBaseRegion({
   _id: null,
   name: "Some Region",
   color: null,
@@ -61,12 +67,12 @@ new TestRegion({
   flags: null,
 });
 
-new TestRegion({
+new TestBaseRegion({
   name: "Some Region",
   elevation: null,
 });
 
-new TestRegion({
+new TestBaseRegion({
   _id: undefined,
   name: "Some Region",
   color: undefined,
@@ -81,12 +87,12 @@ new TestRegion({
   flags: undefined,
 });
 
-const myRegion = new TestRegion({
+const myRegion = new TestBaseRegion({
   name: "Some Region",
   elevation: undefined,
 });
 
-expectTypeOf(myRegion).toEqualTypeOf<BaseRegion>();
+expectTypeOf(myRegion).toEqualTypeOf<TestBaseRegion>();
 
 expectTypeOf(myRegion._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRegion.name).toBeString();

@@ -10,7 +10,7 @@ declare namespace Sound {
   interface AnyConstructor extends Identity<typeof AnySound> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * Force use of an AudioBufferSourceNode even if the audio duration is long
      * @defaultValue `false`
@@ -22,9 +22,9 @@ declare namespace Sound {
      * @defaultValue `game.audio.music`
      */
     context: AudioContext;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   type STATES = Brand<number, "Sound.STATES">;
 
@@ -41,7 +41,7 @@ declare namespace Sound {
   }
 
   /** @internal */
-  type _LoadOptions = InexactPartial<{
+  interface _LoadOptions {
     /**
      * Automatically begin playback of the sound once loaded
      * @defaultValue `false`
@@ -53,9 +53,9 @@ declare namespace Sound {
      * @defaultValue `{}`
      */
     autoplayOptions: Sound.PlaybackOptions;
-  }>;
+  }
 
-  interface LoadOptions extends _LoadOptions {}
+  interface LoadOptions extends InexactPartial<_LoadOptions> {}
 
   /**
    * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
@@ -63,7 +63,7 @@ declare namespace Sound {
    * by `Sound##configurePlayback`
    * @internal
    */
-  type _PlaybackOptions = InexactPartial<{
+  interface _PlaybackOptions {
     /**
      * A delay in seconds by which to delay playback
      * @defaultValue `0`
@@ -137,10 +137,10 @@ declare namespace Sound {
      * no playback history
      */
     volume: number;
-  }>;
+  }
 
   /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
-  interface PlaybackOptions extends _PlaybackOptions {}
+  interface PlaybackOptions extends InexactPartial<_PlaybackOptions> {}
 
   /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}  */
   interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
@@ -151,7 +151,7 @@ declare namespace Sound {
   > {}
 
   /** @internal */
-  type _PlayAtPositionOptions = InexactPartial<{
+  interface _PlayAtPositionOptions {
     /**
      * The maximum volume at which the effect should be played
      * @defaultValue `1.0`
@@ -185,18 +185,18 @@ declare namespace Sound {
     /**
      * Additional data passed to the SoundSource constructor
      */
-    sourceData: Sound.PartialSourceData;
+    sourceData: PointSoundSource.PartialSourceData;
 
     /**
      * Additional options passed to {@linkcode Sound.play | Sound#play}
      */
     playbackOptions: Sound.PlaybackOptionsPositional;
-  }>;
+  }
 
-  interface PlayAtPositionOptions extends _PlayAtPositionOptions {}
+  interface PlayAtPositionOptions extends InexactPartial<_PlayAtPositionOptions> {}
 
   /** @internal */
-  type _FadeOptions = InexactPartial<{
+  interface _FadeOptions {
     /**
      * The duration of the fade effect in milliseconds
      * @defaultValue `1000`
@@ -214,9 +214,9 @@ declare namespace Sound {
      * @defaultValue `this.gain.value`
      */
     from: number;
-  }>;
+  }
 
-  interface FadeOptions extends _FadeOptions {}
+  interface FadeOptions extends InexactPartial<_FadeOptions> {}
 
   type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
 }

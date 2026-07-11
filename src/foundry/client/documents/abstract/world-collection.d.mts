@@ -12,7 +12,6 @@ import type {
   DocumentCollection,
 } from "#client/documents/abstract/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
-import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.
@@ -59,16 +58,12 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * TODO: Change return type to Document.Stored in v14
    * TODO: Infer Document subtype from `updateData` if possible
    */
-  // TODO: this is updated on the db-ops branch
-  importFromCompendium(
+  importFromCompendium<Temporary extends boolean | undefined = undefined>(
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
-    // The name `updateData` is a misnomer. It's merged with the create data.
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
-    options?: InexactPartial<
-      Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
-    >,
-  ): Promise<Document.StoredForName<DocumentName>>;
+    options?: WorldCollection.ImportFromCompendiumOptions<DocumentName, Temporary>,
+  ): Promise<Document.TemporaryIfForName<DocumentName, Temporary>>;
 
   /**
    * Apply data transformations when importing a Document from a Compendium pack
@@ -191,7 +186,7 @@ declare namespace WorldCollection {
     : DocumentDirectory<Document.ImplementationClassFor<DocumentName>> | undefined;
 
   /** @internal */
-  type _FromCompendiumOptions = InexactPartial<{
+  interface _FromCompendiumOptions {
     /**
      * Clear the currently assigned folder.
      * @defaultValue `false`
@@ -223,9 +218,9 @@ declare namespace WorldCollection {
      * @defaultValue `true`
      */
     clearState: boolean;
-  }>;
+  }
 
-  interface FromCompendiumOptions extends _FromCompendiumOptions {
+  interface FromCompendiumOptions extends InexactPartial<_FromCompendiumOptions> {
     /**
      * @deprecated "The `addFlags` option for {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}
      * has been removed." (since v12, until v14)
@@ -259,10 +254,9 @@ declare namespace WorldCollection {
    */
   type ImportFromCompendiumOptions<
     DocumentName extends Document.WorldType,
-    // TODO: Temporary works in db-ops branch, this is a placeholder
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Temporary extends boolean | undefined = boolean | undefined,
-  > = Document.Database.CreateOperation<Document.Database.CreateForName<DocumentName>> & FromCompendiumOptions;
+  > = Document.Database.CreateDocumentsOperation<Document.Database.CreateOperationForName<DocumentName, Temporary>> &
+    FromCompendiumOptions;
 
   type Pack<DocumentName extends Document.WorldType> = DocumentName extends CompendiumCollection.DocumentName
     ? CompendiumCollection<DocumentName>

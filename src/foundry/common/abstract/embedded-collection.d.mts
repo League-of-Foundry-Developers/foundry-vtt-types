@@ -1,10 +1,10 @@
 import type { Identity, InexactPartial } from "#utils";
 import type Collection from "../utils/collection.d.mts";
-/** @privateRemarks `EmbeddedCollectionDelta` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Document, EmbeddedCollectionDelta } from "#common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
-import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type EmbeddedCollectionDelta from "#common/abstract/embedded-collection-delta.d.mts";
 
 /**
  * An extension of the Collection.
@@ -14,9 +14,9 @@ import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
  * breaks the `AnyEmbeddedDocument` type, among other things.
  */
 declare class EmbeddedCollection<
-  ContainedDocument extends Document.Any,
-  ParentDocument extends Document.Any,
-  Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
+  out ContainedDocument extends Document.Any,
+  out ParentDocument extends Document.Any,
+  out Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
 > extends Collection<ContainedDocument, Methods> {
   /**
    * @param name        - The name of this collection in the parent Document.
@@ -165,13 +165,12 @@ declare class EmbeddedCollection<
    * @param user      - The User who performed the operation
    * @internal
    */
-  // TODO: This is updated on the db-ops branch
-  _onModifyContents(
-    action: DatabaseAction,
-    documents: foundry.abstract.Document.Any[],
-    result: unknown,
-    operation: DatabaseOperation,
-    user: User.Implementation,
+  _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Document.StoredForName<ContainedDocument["documentName"]>[],
+    result: Collection.OnModifyContentsResult<ContainedDocument["documentName"], Action>,
+    operation: Collection.OnModifyContentsOperation<ContainedDocument["documentName"], Action>,
+    user: User.Stored,
   ): void;
 
   /**
@@ -232,8 +231,7 @@ declare namespace EmbeddedCollection {
      * Whether to throw an error or only log a warning.
      * @defaultValue `true`
      */
-    // TODO: strip null when cleaning up DataModel types, this is only required because of a NullishProps somewhere
-    strict?: boolean | null | undefined;
+    strict?: boolean | undefined;
   }
 
   /**
@@ -241,7 +239,7 @@ declare namespace EmbeddedCollection {
    * @privateRemarks Despite extending interfaces containing only the keys `strict` and `invalid`,
    * both are redefined here for the more specific property description.
    */
-  interface GetOptions extends Collection._GetOptions, Collection._InvalidOption {
+  interface GetOptions extends Collection.GetOptions, InexactPartial<Collection._InvalidOption> {
     /**
      * Throw an Error if the requested Embedded Document does not exist.
      * @defaultValue `false`
@@ -264,13 +262,13 @@ declare namespace EmbeddedCollection {
    * Re-used with the same property description and default in both {@linkcode SetOptions} and {@linkcode DeleteOptions}
    * @internal
    */
-  type _ModifySource = InexactPartial<{
+  interface _ModifySource {
     /**
      * Whether to modify the collection's source as part of the operation.
      * @defaultValue `true`
      */
     modifySource: boolean;
-  }>;
+  }
 
   /**
    * Options for {@linkcode EmbeddedCollection.set | EmbeddedCollection#set}
@@ -281,7 +279,7 @@ declare namespace EmbeddedCollection {
    *
    * @see {@linkcode EmbeddedCollectionDelta.SetOptions}.
    */
-  interface SetOptions extends _ModifySource {}
+  interface SetOptions extends InexactPartial<_ModifySource> {}
 
   /**
    * Options for {@linkcode EmbeddedCollection.delete | EmbeddedCollection#_delete}
@@ -293,10 +291,10 @@ declare namespace EmbeddedCollection {
    *
    * @see {@linkcode EmbeddedCollectionDelta.DeleteOptions}.
    */
-  interface DeleteOptions extends _ModifySource {}
+  interface DeleteOptions extends InexactPartial<_ModifySource> {}
 
   /** Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}. */
-  interface GetInvalidOptions extends Collection._GetInvalidOptions {}
+  interface GetInvalidOptions extends InexactPartial<Collection._GetInvalidOptions> {}
 
   /**
    * The return type for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}.

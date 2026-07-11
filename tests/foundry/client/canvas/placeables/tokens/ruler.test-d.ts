@@ -1,7 +1,9 @@
-// import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 import type { DeepReadonly } from "fvtt-types/utils";
+
 import TokenRuler = foundry.canvas.placeables.tokens.TokenRuler;
 import Ruler = foundry.canvas.interaction.Ruler;
+import Token = foundry.canvas.placeables.Token;
 
 /**
  * Draw Steel implementation of the core token ruler
@@ -17,7 +19,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
    */
   static applyDSMovementConfig() {
     // Adjusting `Blink (Teleport)` to just be Teleport and maintain its use elsewhere
-    const teleport = { ...CONFIG.Token.movement.actions["blink"], label: "TOKEN.MOVEMENT.ACTIONS.teleport.label" };
+    const teleport = { ...CONFIG.Token.movement.actions.blink, label: "TOKEN.MOVEMENT.ACTIONS.teleport.label" };
     foundry.utils.mergeObject(
       CONFIG.Token.movement.actions,
       {
@@ -84,7 +86,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
     waypoint: TokenRuler.Waypoint,
     state: DrawSteelTokenRuler.State,
   ): DrawSteelTokenRuler.WaypointContext | void {
-    const context = super._getWaypointLabelContext(waypoint, state) as DrawSteelTokenRuler.WaypointContext | void;
+    const context: DrawSteelTokenRuler.WaypointContext | void = super._getWaypointLabelContext(waypoint, state);
 
     if (!this.token.inCombat) return context;
 
@@ -169,3 +171,77 @@ declare namespace DrawSteelTokenRuler {
 }
 
 declare const _testRuler: DrawSteelTokenRuler;
+declare const token: Token.Implementation;
+declare const mmw: TokenDocument.MeasuredMovementWaypoint;
+declare const pm: Token.PlannedMovement;
+
+const rulerWaypoint = {
+  action: "displace",
+  actionConfig: { label: "foo" },
+  center: new PIXI.Point(50, 50),
+  checkpoint: true,
+  cost: 1,
+  elevation: 0,
+  explicit: true,
+  height: 1,
+  hidden: false,
+  index: 1,
+  intermediate: false,
+  measurement: { backward: null, forward: null, cost: 1, diagonals: 0, distance: 1, euclidean: 1, spaces: 1 },
+  movementId: "ARandomIDForTest",
+  next: null,
+  previous: null,
+  ray: new foundry.canvas.geometry.Ray({ x: 50, y: 50 }, { x: 100, y: 50 }),
+  shape: CONST.TOKEN_SHAPES.RECTANGLE_1,
+  size: { width: 100, height: 100 },
+  snapped: true,
+  stage: "planned",
+  terrain: null,
+  unreachable: false,
+  userId: "ARandomIDForTest",
+  width: 1,
+  x: 0,
+  y: 0,
+} satisfies TokenRuler.Waypoint;
+
+describe("TokenRuler Tests", async () => {
+  test("Construction", () => {
+    expectTypeOf(new TokenRuler(token)).toEqualTypeOf<TokenRuler>();
+  });
+
+  const tr = new TokenRuler(token);
+
+  test("BaseTokenRuler getters", () => {
+    expectTypeOf(tr.token).toEqualTypeOf<Token.Implementation>();
+    expectTypeOf(tr.visible).toBeBoolean();
+    tr.visible = true; // Setter
+    expectTypeOf(tr.isVisible).toBeBoolean();
+  });
+
+  test("BaseTokenRuler abstract methods", async () => {
+    expectTypeOf(tr["_onVisibleChange"]()).toBeVoid();
+    expectTypeOf(await tr.draw()).toBeVoid();
+    expectTypeOf(tr.clear()).toBeVoid();
+    expectTypeOf(tr.destroy()).toBeVoid();
+    expectTypeOf(
+      tr.refresh({
+        passedWaypoints: [mmw],
+        pendingWaypoints: [mmw],
+        plannedMovement: { ARandomIDForTest: pm },
+      }),
+    ).toBeVoid();
+  });
+
+  test("Context and Style", () => {
+    expectTypeOf(tr["_getWaypointLabelContext"](rulerWaypoint, {})).toEqualTypeOf<TokenRuler.WaypointContext | void>();
+    expectTypeOf(
+      tr["_getWaypointLabelContext"](rulerWaypoint, { hasElevation: true, initialized: true, previousElevation: 0 }),
+    ).toEqualTypeOf<TokenRuler.WaypointContext | void>();
+
+    expectTypeOf(tr["_getWaypointStyle"](rulerWaypoint)).toEqualTypeOf<Ruler.WaypointStyle>();
+    expectTypeOf(tr["_getSegmentStyle"](rulerWaypoint)).toEqualTypeOf<Ruler.SegmentStyle>();
+    expectTypeOf(
+      tr["_getGridHighlightStyle"](rulerWaypoint, { i: 0, j: 1, k: 0 }),
+    ).toEqualTypeOf<TokenRuler.GridHighlightStyle>();
+  });
+});

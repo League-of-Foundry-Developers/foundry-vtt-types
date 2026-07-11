@@ -7,10 +7,10 @@ expectTypeOf(foundry.documents.BaseCombatantGroup.createDocuments([])).toEqualTy
   Promise<CombatantGroup.Stored[]>
 >();
 expectTypeOf(foundry.documents.BaseCombatantGroup.updateDocuments([])).toEqualTypeOf<
-  Promise<CombatantGroup.Implementation[]>
+  Promise<CombatantGroup.Stored[]>
 >();
 expectTypeOf(foundry.documents.BaseCombatantGroup.deleteDocuments([])).toEqualTypeOf<
-  Promise<CombatantGroup.Implementation[]>
+  Promise<CombatantGroup.Stored[]>
 >();
 
 const combatantGroup = await foundry.documents.BaseCombatantGroup.create(

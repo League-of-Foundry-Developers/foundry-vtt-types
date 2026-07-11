@@ -1,3 +1,5 @@
+import type { PackageCompendiumFolder, PackageRelationships } from "#common/packages/base-package.d.mts";
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -7,21 +9,36 @@
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-// TODO: Stubs
 export {};
 
-type PackageAuthorData = unknown;
+type PackageAuthorData = foundry.packages.BasePackage.AuthorData;
 
-type PackageCompendiumData = unknown;
+type CompendiumArtFlag = foundry.packages.BasePackage.Flags.CompendiumArtFlag;
 
-type PackageLanguageData = unknown;
+type PackageFlagsData = foundry.packages.BasePackage.Flags.Core;
 
-type RelatedPackageData = unknown;
+type PackageMediaData = foundry.packages.BasePackage.MediaData;
 
-type PackageCompatibilityData = unknown;
+type PackageCompendiumData = foundry.packages.BasePackage.CompendiumData;
 
-type PackageRelationshipsData = unknown;
+type PackFolderData = PackageCompendiumFolder.Data;
 
-type PackageManifestData = unknown;
+type PackageLanguageData = foundry.packages.BasePackage.LanguageData;
 
-type DocumentTypesConfiguration = unknown;
+type RelatedPackageData = foundry.packages.RelatedPackage.Data;
+
+type PackageCompatibilityData = foundry.packages.PackageCompatibility.Data;
+
+type PackageRelationshipsData = PackageRelationships.Data;
+
+type PackageManifestData = foundry.packages.BasePackage.ManifestData;
+
+type ServerSanitizationFields = foundry.packages.AdditionalTypesField.ServerSanitizationFields;
+
+type DocumentTypesConfiguration = foundry.packages.AdditionalTypesField.DocumentTypesConfiguration;
+
+type SystemManifestData = foundry.packages.System.ManifestData;
+
+type ModuleManifestData = foundry.packages.Module.ManifestData;
+
+type WorldManifestData = foundry.packages.World.ManifestData;

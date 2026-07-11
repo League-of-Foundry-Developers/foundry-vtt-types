@@ -8,7 +8,7 @@ const doc = new AmbientLightDocument.implementation();
 
 // Test the inheritance
 expectTypeOf(doc.documentName).toEqualTypeOf<"AmbientLight">(); // Document
-expectTypeOf(doc.uuid).toEqualTypeOf<string>(); // clientDocumentMixin
+expectTypeOf(doc.uuid).toEqualTypeOf<string | null>(); // clientDocumentMixin
 expectTypeOf(CONFIG.AmbientLight.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>(); // proof the following should work
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>(); // canvasDocumentMixin
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer>(); // canvasDocumentMixin
@@ -19,9 +19,9 @@ expectTypeOf(doc.compendium).toEqualTypeOf<foundry.documents.collections.Compend
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
 expectTypeOf(
   AmbientLightDocument.createDialog({}, { parent: new Scene.implementation({ name: "Scene" }) }),
-).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | undefined>>(); // ClientDocumentMixin
+).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null>>(); // ClientDocumentMixin
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();
-expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Any>();
+expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Implementation>();
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

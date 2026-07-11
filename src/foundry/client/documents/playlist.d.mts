@@ -1,16 +1,15 @@
 import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BasePlaylist, BasePlaylistSound } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace Playlist {
   /**
@@ -118,8 +117,10 @@ declare namespace Playlist {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -131,12 +132,10 @@ declare namespace Playlist {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -156,11 +155,30 @@ declare namespace Playlist {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode Playlist.getCollectionName | Playlist#getCollectionName}. If the
+     * passed name is not a known valid embedded document type/collection name for `Playlist`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode Playlist.getEmbeddedDocument | Playlist#getEmbeddedDocument}.
+     * See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -254,7 +272,7 @@ declare namespace Playlist {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Playlist}. This is the source of truth for how an Playlist document
+   * The schema for {@linkcode Playlist}. This is the source of truth for how a `Playlist` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Playlist}. For example
@@ -377,110 +395,599 @@ declare namespace Playlist {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Playlists */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Playlist.Parent> {}
-
-    /** Options passed along in Create operations for Playlists */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Playlist.CreateData, Playlist.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Playlists */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Playlist.Parent> {}
-
-    /** Options passed along in Update operations for Playlists */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
-
-    /** Operation for {@linkcode Playlist.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Playlist.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Playlist.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Playlist.Database.Update> {}
-
-    /** Operation for {@linkcode Playlist.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete> {}
-
-    /** Operation for {@linkcode Playlist.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Playlist.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Playlist.update | Playlist#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Playlist.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode Playlist._preCreate | Playlist#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode Playlist._onCreate | Playlist#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Playlist._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Playlist.Database.Create> {}
-
-    /** Operation for {@linkcode Playlist._onCreateOperation | Playlist#_onCreateOperation} */
-    interface OnCreateOperation extends Playlist.Database.Create {}
-
-    /** Options for {@linkcode Playlist._preUpdate | Playlist#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode Playlist._onUpdate | Playlist#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Playlist._preUpdateOperation} */
-    interface PreUpdateOperation extends Playlist.Database.Update {}
-
-    /** Operation for {@linkcode Playlist._onUpdateOperation | Playlist._preUpdateOperation} */
-    interface OnUpdateOperation extends Playlist.Database.Update {}
-
-    /** Options for {@linkcode Playlist._preDelete | Playlist#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode Playlist._onDelete | Playlist#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode Playlist._preDeleteOperation | Playlist#_preDeleteOperation} */
-    interface PreDeleteOperation extends Playlist.Database.Delete {}
-
-    /** Options for {@linkcode Playlist._onDeleteOperation | Playlist#_onDeleteOperation} */
-    interface OnDeleteOperation extends Playlist.Database.Delete {}
-
-    /** Context for {@linkcode Playlist._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
-
-    /** Context for {@linkcode Playlist._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
-
-    /** Context for {@linkcode Playlist._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode Playlist._preCreateDescendantDocuments | Playlist#_preCreateDescendantDocuments}
-     * and {@linkcode Playlist._onCreateDescendantDocuments | Playlist#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Playlist` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<Playlist.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<Playlist.Parent> {}
 
     /**
-     * Options for {@linkcode Playlist._preUpdateDescendantDocuments | Playlist#_preUpdateDescendantDocuments}
-     * and {@linkcode Playlist._onUpdateDescendantDocuments | Playlist#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode Playlist.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Playlist.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode Playlist._preDeleteDescendantDocuments | Playlist#_preDeleteDescendantDocuments}
-     * and {@linkcode Playlist._onDeleteDescendantDocuments | Playlist#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Playlist` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Playlist.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode Playlist.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Playlist` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Playlist.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Playlist.CreateInput, Playlist.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode Playlist.create} or {@linkcode Playlist.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Playlist` documents. (see {@linkcode Playlist.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Playlist` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preCreate | Playlist#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreatePlaylist` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Playlist._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onCreate | Playlist#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createPlaylist` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onCreateOperation} and `Playlist`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Playlist` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Playlist.update | Playlist#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Playlist.UpdateInput, Playlist.Parent> {
+      /**
+       * @remarks If `true`, {@linkcode Playlist._onUpdate | Playlist#_onUpdate} will call {@linkcode PlaylistSound.sync | sync} for every
+       * `PlaylistSound` in its {@linkcode Playlist.sounds | sounds}, even if no `sounds` changed (provided {@linkcode game.audio.locked}
+       * is false)
+       */
+      forceSync?: boolean;
+    }
+
+    /**
+     * The interface for passing to {@linkcode Playlist.update | Playlist#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Playlist` documents (see {@linkcode Playlist.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Playlist.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Playlist` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preUpdate | Playlist#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdatePlaylist` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Playlist._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onUpdate | Playlist#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updatePlaylist` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onUpdateOperation} and `Playlist`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Playlist` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Playlist.delete | Playlist#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Playlist.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Playlist.delete | Playlist#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Playlist` documents (see {@linkcode Playlist.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Playlist.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Playlist` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preDelete | Playlist#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeletePlaylist` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Playlist._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onDelete | Playlist#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deletePlaylist` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Playlist._onDeleteOperation} and `Playlist`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Playlist.Database.GetDocumentsOperation;
+        BackendGetOperation: Playlist.Database.BackendGetOperation;
+        GetOperation: Playlist.Database.GetOperation;
+
+        CreateDocumentsOperation: Playlist.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: Playlist.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Playlist.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Playlist.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Playlist.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Playlist.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Playlist.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Playlist.Database.OnCreateOptions;
+        OnCreateOperation: Playlist.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Playlist.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: Playlist.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Playlist.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Playlist.Database.BackendUpdateOperation;
+        UpdateOperation: Playlist.Database.UpdateOperation;
+        PreUpdateOptions: Playlist.Database.PreUpdateOptions;
+        PreUpdateOperation: Playlist.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Playlist.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Playlist.Database.OnUpdateOptions;
+        OnUpdateOperation: Playlist.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Playlist.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: Playlist.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Playlist.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Playlist.Database.BackendDeleteOperation;
+        DeleteOperation: Playlist.Database.DeleteOperation;
+        PreDeleteOptions: Playlist.Database.PreDeleteOptions;
+        PreDeleteOperation: Playlist.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Playlist.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Playlist.Database.OnDeleteOptions;
+        OnDeleteOperation: Playlist.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -515,13 +1022,59 @@ declare namespace Playlist {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Playlist.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Playlist.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Playlist.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Playlist.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Playlist.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Playlist.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Playlist.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends Playlist.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Playlist.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode Playlist.deleteDialog | Playlist#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Playlist.Stored,
+    Config
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Playlist.Stored,
@@ -564,7 +1117,7 @@ declare namespace Playlist {
    *************************************************/
 
   /** @internal */
-  type _PlayNextOptions = InexactPartial<{
+  interface _PlayNextOptions {
     /**
      * Whether to advance forward (if 1) or backwards (if -1)
      * @defaultValue `1`
@@ -572,9 +1125,17 @@ declare namespace Playlist {
      * @privateRemarks This is only checked for `=== 1`, restricting 'backward' values to `-1` based on core's description
      */
     direction: 1 | -1;
-  }>;
+  }
 
-  interface PlayNextOptions extends _PlayNextOptions {}
+  interface PlayNextOptions extends InexactPartial<_PlayNextOptions> {}
+
+  /**
+   * @privateRemarks There's no user opportunity to pass additional config to {@linkcode Playlist.bulkImportDialog | #bulkImportDialog},
+   * so no merging necessary.
+   */
+  type BulkImportDialogReturn = DialogV2.PromptReturn<{
+    ok: { callback: (event: Event, button: HTMLElement) => boolean };
+  }>;
 
   /**
    * The arguments to construct the document.
@@ -615,8 +1176,9 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   /**
    * Find all content links belonging to a given {@linkcode Playlist} or {@linkcode PlaylistSound}.
    * @param doc - The Playlist or PlaylistSound.
+   * @privateRemarks The doc's `uuid` is checked, so `Stored` over `Implementation`.
    */
-  static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;
+  protected static _getSoundContentLinks(doc: Playlist.Stored | PlaylistSound.Stored): NodeListOf<Element>;
 
   override prepareDerivedData(): void;
 
@@ -632,23 +1194,25 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param options - Additional options which configure the next track
    * @returns If successfully updated, this Playlist document
    */
-  playNext(soundId?: string | null, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
+  playNext(soundId?: string, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
 
   /**
    * Begin playback of a specific Sound within this Playlist.
    * Determine which other sounds should remain playing, if any.
    * @param sound - The desired sound that should play
    * @returns The updated Playlist
+   * @privateRemarks The sound's `id` is checked and used in an update, so `Stored` over `Implementation`.
    */
-  playSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
+  playSound(sound: PlaylistSound.Stored): Promise<this | undefined>;
 
   /**
    * Stop playback of a specific Sound within this Playlist.
    * Determine which other sounds should remain playing, if any.
    * @param sound - The desired sound that should play
    * @returns The updated Playlist
+   * @privateRemarks The sound's `id` is checked and used in an update, so `Stored` over `Implementation`.
    */
-  stopSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
+  stopSound(sound: PlaylistSound.Stored): Promise<this | undefined>;
 
   /**
    * End playback for any/all currently playing sounds within the Playlist.
@@ -664,13 +1228,11 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   /**
    * Get the next sound in the cached playback order. For internal use.
-   * @private
    */
   protected _getNextSound(soundId: string): PlaylistSound.Implementation | undefined;
 
   /**
    * Get the previous sound in the cached playback order. For internal use.
-   * @private
    */
   protected _getPreviousSound(soundId: string): PlaylistSound.Implementation | undefined;
 
@@ -678,18 +1240,33 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * Define the sorting order for the Sounds within this Playlist. For internal use.
    * If sorting alphabetically, the sounds are sorted with a locale-independent comparator
    * to ensure the same order on all clients.
-   * @private
+   * @privateRemarks Only `name`s are compared, so `Implementation`s are allowed
    */
   protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
-  override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+  override toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
    * @remarks Returns {@linkcode Playlist.playAll | this.playAll()} or {@linkcode Playlist.stopAll | this.stopAll()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
-  // _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: Playlist.Database.OnDeleteOptions, userId: string): void;
 
   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs): void;
 
@@ -715,13 +1292,13 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * Spawn a dialog for bulk importing sound files into a playlist.
    * @returns Returns true if any sound files were successfully imported.
    */
-  bulkImportDialog(): Promise<boolean>;
+  bulkImportDialog(): Promise<Playlist.BulkImportDialogReturn>;
 
   /**
    * Create PlaylistSounds in this Playlist from the given file paths.
    * @param paths - File paths to import.
    */
-  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Implementation[]>;
+  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Stored[]>;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -744,31 +1321,65 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs): void;
 
+  // `_onCreateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: Playlist.PreUpdateDescendantDocumentsArgs): void;
+
+  // `_onUpdateDescendantDocuments` omitted from template due to real override above.
 
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
+  // `_onDeleteDescendantDocuments` omitted from template due to real override above.
+
   static override defaultName(context?: Playlist.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Playlist.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Playlist.CreateDialogData,
-    createOptions?: Playlist.Database.DialogCreateOptions,
-    options?: Playlist.CreateDialogOptions,
-  ): Promise<Playlist.Stored | null | undefined>;
+    createOptions?: Playlist.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Playlist.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Playlist">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Playlist.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Playlist.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Playlist.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Playlist.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Playlist.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: Playlist.DropData,
-    options?: Playlist.DropDataOptions,
-  ): Promise<Playlist.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Playlist.Database.DeleteOneDocumentOperation,
+  ): Promise<Playlist.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Playlist.Database.DeleteOneDocumentOperation,
+  ): Promise<Playlist.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Playlist.DropData): Promise<Playlist.Implementation | undefined>;
 
   static override fromImport(
     source: Playlist.Source,
-    context?: Document.FromImportContext<Playlist.Parent> | null,
+    context?: Document.FromImportContext<Playlist.Parent>,
   ): Promise<Playlist.Implementation>;
 
   #Playlist: true;

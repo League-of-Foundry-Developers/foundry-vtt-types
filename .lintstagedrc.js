@@ -5,7 +5,7 @@ const lintStagedConfig = {
     "npm run test-types",
     "eslint . --cache",
   ],
-  "**/*.({c,m,}{ts,js}|{css,md,json})": "prettier --write",
+  "**/*.({c,m,}{ts,js}|{css,md,json})": "oxfmt --write",
 };
 
 export default lintStagedConfig;

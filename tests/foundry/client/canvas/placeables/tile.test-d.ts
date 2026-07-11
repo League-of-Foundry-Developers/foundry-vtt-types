@@ -1,12 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 import Tile = foundry.canvas.placeables.Tile;
-import Token = foundry.canvas.placeables.Token;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 
 declare const doc: TileDocument.Stored;
+declare const scene: Scene.Stored;
 
+expectTypeOf(Tile.implementation).toEqualTypeOf<Tile.ImplementationClass>();
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
 expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -30,12 +31,12 @@ const tile = new CONFIG.Tile.objectClass(doc);
 
 expectTypeOf(tile.controlIcon).toBeNull();
 expectTypeOf(tile.frame).toEqualTypeOf<Tile.FrameContainer | undefined>();
-expectTypeOf(tile.texture).toEqualTypeOf<PIXI.Texture | null | undefined>();
-expectTypeOf(tile.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(tile.mesh).toEqualTypeOf<PrimarySpriteMesh | null | undefined>();
+expectTypeOf(tile.texture).toEqualTypeOf<PIXI.Texture | null>();
+expectTypeOf(tile.bg).toEqualTypeOf<PIXI.Graphics | null>();
+expectTypeOf(tile.mesh).toEqualTypeOf<PrimarySpriteMesh | null>();
 expectTypeOf(tile.aspectRatio).toEqualTypeOf<number>();
 expectTypeOf(tile.bounds).toEqualTypeOf<PIXI.Rectangle>();
-expectTypeOf(tile.sourceElement).toEqualTypeOf<PIXI.ImageSource | undefined>();
+expectTypeOf(tile.sourceElement).toEqualTypeOf<PIXI.ImageSource | null>();
 expectTypeOf(tile.isVideo).toBeBoolean();
 expectTypeOf(tile.isVisible).toBeBoolean();
 expectTypeOf(tile.occluded).toBeBoolean();
@@ -46,7 +47,7 @@ expectTypeOf(tile.volume).toBeNumber();
 expectTypeOf(tile["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(tile["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(tile.clear()).toBeVoid();
+expectTypeOf(tile.clear()).toEqualTypeOf<typeof tile>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(tile["_destroy"]()).toBeVoid();
@@ -89,7 +90,11 @@ expectTypeOf(tile["_refreshVideo"]()).toBeVoid();
 expectTypeOf(tile.activateListeners()).toBeVoid();
 
 expectTypeOf(
-  tile["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  tile["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
@@ -101,19 +106,21 @@ expectTypeOf(
       restrictions: { weather: false },
       flags: { core: { sheetLock: true } },
     },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(tile["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  tile["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
 expectTypeOf(tile["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(tile["_onHoverIn"](pointerEvent, {})).toBeVoid();
 expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(tile["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(tile["_onDragLeftStart"](pointerEvent)).toBeVoid();
@@ -133,22 +140,3 @@ expectTypeOf(tile["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Pl
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
-declare const someToken: Token.Implementation;
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, { corners: undefined })).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.containsPixel(50, 50)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.containsPixel(50, 50, 0.3)).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.getPixelAlpha(50, 50)).toBeNumber();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile._getAlphaBounds()).toEqualTypeOf<PIXI.Rectangle | undefined>;

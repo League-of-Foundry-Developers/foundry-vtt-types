@@ -685,6 +685,12 @@ declare namespace BaseGrid {
 
     /** The total cost of the direct path ({@link BaseGrid.getDirectPath | `BaseGrid#getDirectPath`}) through all waypoints. */
     cost: number;
+
+    /** The total number of diagonals moved along a direct path through all waypoints. */
+    diagonals: number;
+
+    /** The total Euclidean length of the straight line path through all waypoints. */
+    euclidean: number;
   }
 
   /**

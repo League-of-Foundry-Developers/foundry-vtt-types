@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The PlaylistSound Document.
@@ -61,13 +62,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BasePlaylistSound.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): PlaylistSound.ImplementationClass;
 
   static override get baseDocument(): typeof BasePlaylistSound;
@@ -78,52 +72,65 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BasePlaylistSound.Hierarchy;
+  static override readonly hierarchy: BasePlaylistSound.Hierarchy;
 
   override parent: BasePlaylistSound.Parent;
 
   override " fvtt_types_internal_document_parent": BasePlaylistSound.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"PlaylistSound", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<PlaylistSound.Implementation | BasePlaylistSound.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BasePlaylistSound.Database.Create<Temporary>>,
+    data: BasePlaylistSound.CreateInput[],
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BasePlaylistSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BasePlaylistSound.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BasePlaylistSound.Database.Update>,
-  ): Promise<PlaylistSound.Implementation[]>;
+    updates: BasePlaylistSound.UpdateInput[],
+    operation?: BasePlaylistSound.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<PlaylistSound.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BasePlaylistSound.Database.Delete>,
-  ): Promise<PlaylistSound.Implementation[]>;
+    ids: readonly string[],
+    operation?: BasePlaylistSound.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<PlaylistSound.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BasePlaylistSound.CreateData | BasePlaylistSound.CreateData[],
-    operation?: BasePlaylistSound.Database.CreateOperation<Temporary>,
-  ): Promise<BasePlaylistSound.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BasePlaylistSound.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BasePlaylistSound.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BasePlaylistSound.UpdateData | undefined,
-    operation?: BasePlaylistSound.Database.UpdateOperation,
+    data: BasePlaylistSound.UpdateInput,
+    operation?: BasePlaylistSound.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BasePlaylistSound.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BasePlaylistSound.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BasePlaylistSound.Database.GetOptions,
-  ): PlaylistSound.Implementation | null;
+  // `PlaylistSound`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BasePlaylistSound.Database.GetDocumentsOperation): null;
 
+  // `PlaylistSound`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
@@ -134,110 +141,113 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     Scope extends BasePlaylistSound.Flags.Scope,
     Key extends BasePlaylistSound.Flags.Key<Scope>,
     Value extends BasePlaylistSound.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BasePlaylistSound.CreateData,
     options: BasePlaylistSound.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BasePlaylistSound.CreateData,
-    options: BasePlaylistSound.Database.OnCreateOperation,
+    options: BasePlaylistSound.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: PlaylistSound.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BasePlaylistSound.Database.Create>,
-    user: User.Implementation,
+    operation: BasePlaylistSound.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: PlaylistSound.Implementation[],
-    operation: BasePlaylistSound.Database.Create,
-    user: User.Implementation,
+    documents: PlaylistSound.Stored[],
+    operation: BasePlaylistSound.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BasePlaylistSound.UpdateData,
     options: BasePlaylistSound.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BasePlaylistSound.UpdateData,
-    options: BasePlaylistSound.Database.OnUpdateOperation,
+    options: BasePlaylistSound.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: PlaylistSound.Implementation[],
-    operation: BasePlaylistSound.Database.Update,
-    user: User.Implementation,
+    documents: PlaylistSound.Stored[],
+    operation: BasePlaylistSound.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: PlaylistSound.Implementation[],
-    operation: BasePlaylistSound.Database.Update,
-    user: User.Implementation,
+    documents: PlaylistSound.Stored[],
+    operation: BasePlaylistSound.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BasePlaylistSound.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BasePlaylistSound.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BasePlaylistSound.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: PlaylistSound.Implementation[],
-    operation: BasePlaylistSound.Database.Delete,
-    user: User.Implementation,
+    documents: PlaylistSound.Stored[],
+    operation: BasePlaylistSound.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: PlaylistSound.Implementation[],
-    operation: BasePlaylistSound.Database.Delete,
-    user: User.Implementation,
+    documents: PlaylistSound.Stored[],
+    operation: BasePlaylistSound.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `PlaylistSound._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylistSound.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `PlaylistSound._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    documents: PlaylistSound.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylistSound.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `PlaylistSound._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    documents: PlaylistSound.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylistSound.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BasePlaylistSound.Schema>;
+  static override _schema: SchemaField<BasePlaylistSound.Schema>;
 
   static override get schema(): SchemaField<BasePlaylistSound.Schema>;
 
@@ -269,7 +279,6 @@ declare namespace BasePlaylistSound {
   export import CollectionClass = PlaylistSound.CollectionClass;
   export import Collection = PlaylistSound.Collection;
   export import Invalid = PlaylistSound.Invalid;
-  export import Stored = PlaylistSound.Stored;
   export import Source = PlaylistSound.Source;
   export import CreateData = PlaylistSound.CreateData;
   export import CreateInput = PlaylistSound.CreateInput;

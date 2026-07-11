@@ -8,7 +8,6 @@ import type {
   IntentionalPartial,
   PrettifyType,
   SimpleMerge,
-  UnionToIntersection,
 } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -17,7 +16,11 @@ import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { Game } from "#client/_module.d.mts";
 import type { SocketInterface } from "#client/helpers/_module.d.mts";
 import type { BasePackage } from "#common/packages/_module.d.mts";
-import type { DocumentCollection, DirectoryCollectionMixin } from "#client/documents/abstract/_module.d.mts";
+import type {
+  DocumentCollection,
+  DirectoryCollectionMixin,
+  WorldCollection,
+} from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
 
 /** @privateRemarks `AllHooks` only used for links */
@@ -44,7 +47,7 @@ declare class CompendiumCollection<
   metadata: CompendiumCollection.Metadata<DocumentName>;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
-  index: IndexTypeForMetadata<DocumentName>;
+  index: Collection<CompendiumCollection.IndexEntry<DocumentName>>;
 
   /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
   _flush: never;
@@ -328,16 +331,24 @@ declare class CompendiumCollection<
    */
   migrate(options?: CompendiumCollection.MigrateOptions): Promise<this>;
 
-  // TODO: `updateAll` and `_onModifyContents` are working on the db-ops branch
+  override updateAll(
+    transformation: DocumentCollection.Transformation<DocumentName>,
+    condition?: ((doc: Document.StoredForName<DocumentName>) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<DocumentName>,
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
   override search(search: DocumentCollection.SearchOptions): CompendiumCollection.IndexEntry<DocumentName>[];
 
-  /**
-   * @remarks Calls {@linkcode DocumentCollection.render | super}, and, if the right `renderContext` is passed in `options`, calls
-   * {@linkcode ClientDocumentMixin.AnyMixed.render | ClientDocument#render} for all contained Documents.
-   */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
+
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Document.StoredForName<DocumentName>[],
+    result: Collection.OnModifyContentsResult<DocumentName, Action>,
+    operation: Collection.OnModifyContentsOperation<DocumentName, Action>,
+    user: User.Stored,
+  ): void;
 
   /**
    * Handle changes to the world compendium configuration setting.
@@ -489,9 +500,10 @@ declare namespace CompendiumCollection {
   // TODO: Improve automatic index properties based on document type
   // TODO(LukeAbby): Switch to `Document.StoredSourceForName`.
   // Investigate why the `DeepPartial` too
-  type IndexEntry<Type extends DocumentName> = { _id: string; uuid: string } & DeepPartial<
-    Document.SourceForName<Type>
-  >;
+  type IndexEntry<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> = {
+    _id: string;
+    uuid: string;
+  } & DeepPartial<Omit<Document.SourceForName<Type>, "_id" | "uuid">>;
 
   type ImportDocumentReturn<Doc extends DocOrFolder<CompendiumCollection.DocumentName>> =
     Doc extends Folder.Implementation
@@ -555,96 +567,105 @@ declare namespace CompendiumCollection {
     result: ManageCompendiumResult<Action, Type>;
   }
 
-  /**
-   * `IntentionalPartial` because this goes over the socket, where `undefined`-value keys get dropped. This type can't be folded into
-   * {@linkcode ManageCompendiumSocketOptions}; doing so causes errors about lack of index signature where
-   * {@linkcode ManageCompendiumRequest} extends {@linkcode SocketInterface.Request}.
-   * @internal
-   */
-  type _ManageCompendiumSocketOptions = IntentionalPartial<{
+  /** @internal*/
+  interface _ManageCompendiumSocketOptions {
     /**
      * @remarks {@linkcode CompendiumCollection.duplicateCompendium | CompendiumCollection#duplicateCompendium} passes
      * {@linkcode CompendiumCollection.collection | this.collection} when calling {@linkcode CompendiumCollection.createCompendium}.
      */
     source: string;
-  }>;
+  }
 
   /**
    * The interface for {@linkcode ManageCompendiumRequest.options}.
    *
-   * @remarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
+   * @privateRemarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
    * `MigrateOptions` (one for each {@linkcode ManageCompendiumAction}), but as of 13.351 the only valid `options` key for any operation is
    * {@linkcode ManageCompendiumSocketOptions.source | source} for `create`, with `delete` using no options and `migrate` only taking an
    * `onProgress` function that wouldn't survive the socket and {@linkcode MigrateOptions.notify | notify} which, since `migrate` operations
    * don't return a response (inferred by reading the {@linkcode CompendiumCollection._activateSocketListeners} body), and it has no effect
    * server-side, is pointless to allow.
+   *
+   * `IntentionalPartial` because this goes over the socket, where `undefined`-value keys get dropped. This type can't be folded into
+   * {@linkcode ManageCompendiumSocketOptions}; doing so causes errors about lack of index signature where
+   * {@linkcode ManageCompendiumRequest} extends {@linkcode SocketInterface.Request}.
    */
-  interface ManageCompendiumSocketOptions extends _ManageCompendiumSocketOptions {}
+  interface ManageCompendiumSocketOptions extends IntentionalPartial<_ManageCompendiumSocketOptions> {}
 
-  interface TestUserPermissionOptions extends Document._TestUserPermissionsOptions {}
+  interface TestUserPermissionOptions extends InexactPartial<Document._TestUserPermissionsOptions> {}
 
   /**
    * Used in {@linkcode ImportFolderOptions} and {@linkcode ImportFoldersOptions}.
    * @internal
    */
-  type _ImportParents = InexactPartial<{
+  interface _ImportParents {
     /**
      * Import any parent folders which are not already present in the Compendium
      * @defaultValue `true`
      */
     importParents: boolean;
-  }>;
+  }
 
-  interface ImportFolderOptions extends _ImportParents {}
+  interface ImportFolderOptions extends InexactPartial<_ImportParents> {}
 
-  interface ImportFoldersOptions extends _ImportParents {}
+  interface ImportFoldersOptions extends InexactPartial<_ImportParents> {}
 
-  // TODO: this is updated on the db-ops branch
-  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = SimpleMerge<
-    UnionToIntersection<Document.Database.CreateOperationForName<Type>>,
-    foundry.documents.abstract.WorldCollection.FromCompendiumOptions
-  > & {
+  /** @internal */
+  interface _ImportAllOptions {
     /**
      * An existing Folder _id to use.
      * @defaultValue `null`
      */
-    folderId?: string | null | undefined;
+    folderId: string | null;
 
     /**
      * A new Folder name to create.
      * @defaultValue `""`
      */
-    folderName?: string | undefined;
-  };
+    folderName: string;
+  }
+
+  /**
+   * The interface for passing to {@linkcode CompendiumCollection.importAll | CompendiumCollection#importAll}.
+   *
+   * @remarks The same options object is passed to {@linkcode WorldCollection.fromCompendium | WorldCompendium#fromCompendium} and
+   * {@linkcode Document.createDocuments | documentClass.createDocuments}, after having `folderId` and `folderName` pulled out.
+   *
+   * @privateRemarks Needs to be a type here, rather than interface, because `CreateDocumentsOperationForName`
+   * doesn't have statically known keys.
+   */
+  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = WorldCollection.FromCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Type> &
+    InexactPartial<_ImportAllOptions>;
 
   /** @internal */
-  type _ImportDialogOptions = InexactPartial<{
+  interface _ImportDialogOptions {
     /**
      * @remarks Should the `Keep ID` checkbox start checked or not ?
      * @defaultValue `false`
      */
     keepId: boolean;
-  }>;
+  }
 
-  interface ImportDialogOptions extends DialogV2.ConfirmConfig, _ImportDialogOptions {}
+  interface ImportDialogOptions extends DialogV2.ConfirmConfig, InexactPartial<_ImportDialogOptions> {}
 
   type ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,
-    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    Config extends DialogV2.ConfirmConfig | undefined,
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  > = _ImportDialogReturn<DocumentName, Coalesce<PassedConfig, {}>>;
+  > = _ImportDialogReturn<DocumentName, Coalesce<Config, {}>>;
 
   type _ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,
-    PassedConfig extends DialogV2.ConfirmConfig,
+    Config extends DialogV2.ConfirmConfig,
   > = DialogV2.ConfirmReturn<
     SimpleMerge<
-      PassedConfig,
+      Config,
       {
         yes: SimpleMerge<
           { callback: (event: Event) => Promise<Document.StoredForName<DocumentName>[]> },
           // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-          GetKey<PassedConfig, "yes", {}>
+          GetKey<Config, "yes", {}>
         >;
       }
     >
@@ -656,15 +677,15 @@ declare namespace CompendiumCollection {
   }
 
   /** @internal */
-  type _MigrateOptions = InexactPartial<{
+  interface _MigrateOptions {
     /**
      * Display notifications
      * @defaultValue `true`
      */
     notify: boolean;
-  }>;
+  }
 
-  interface MigrateOptions extends _MigrateOptions {}
+  interface MigrateOptions extends InexactPartial<_MigrateOptions> {}
 
   // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
   // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.
@@ -698,10 +719,6 @@ declare namespace CompendiumCollection {
 export default CompendiumCollection;
 
 type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
-
-type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = Collection<
-  CompendiumCollection.IndexEntry<Type>
->;
 
 declare abstract class AnyCompendiumCollection extends CompendiumCollection<CompendiumCollection.DocumentName> {
   constructor(...args: never);

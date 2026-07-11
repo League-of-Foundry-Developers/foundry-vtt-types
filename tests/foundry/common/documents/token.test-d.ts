@@ -5,7 +5,13 @@ import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
-class TestBaseToken extends foundry.documents.BaseToken {}
+class TestBaseToken extends BaseToken {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Token">)
+      : null;
+  }
+}
 
 // Token has no hard required fields for construction
 new TestBaseToken();
@@ -21,8 +27,6 @@ const myToken = new TestBaseToken({
     // not going to include the entire Actor schema here
     name: "Foo the Barbazian",
   },
-  appendNumber: true,
-  prependAdjective: true,
   width: 2,
   height: 3,
   texture: {
@@ -117,7 +121,7 @@ const myToken = new TestBaseToken({
 
 // omitting the null and undefined construction cases due to size and coverage on other documents
 
-expectTypeOf(myToken).toEqualTypeOf<BaseToken>();
+expectTypeOf(myToken).toEqualTypeOf<TestBaseToken>();
 
 expectTypeOf(myToken._id).toEqualTypeOf<string | null>();
 expectTypeOf(myToken.name).toBeString();
@@ -125,8 +129,6 @@ expectTypeOf(myToken.displayName).toEqualTypeOf<CONST.TOKEN_DISPLAY_MODES>();
 expectTypeOf(myToken.actorId).toEqualTypeOf<string | null>();
 expectTypeOf(myToken.actorLink).toBeBoolean();
 expectTypeOf(myToken.delta).toEqualTypeOf<ActorDelta.Implementation | null>();
-expectTypeOf(myToken.appendNumber).toBeBoolean();
-expectTypeOf(myToken.prependAdjective).toBeBoolean();
 
 // TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
 expectTypeOf(myToken.texture).toEqualTypeOf<

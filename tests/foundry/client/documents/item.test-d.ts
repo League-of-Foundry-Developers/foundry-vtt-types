@@ -1,5 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
+import * as activeEffectHelpers from "./active-effect.test-d.ts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -32,6 +33,77 @@ declare global {
   }
 }
 
+Object.assign(CONFIG.Item.dataModels, { armor: ArmorData, weapon: WeaponData });
+
+export const source = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor",
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
+
+export const sourceWithEmbedded = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor", // using one of our test subtypes because a blank system is disallowed, so using `base` is out
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [activeEffectHelpers.source],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
+
+export const minimalCreateData = {
+  name: "FVTT-Types Test Item",
+  type: "base",
+} satisfies Item.CreateData;
+
 // @ts-expect-error Item requires name and type.
 new Item.implementation();
 
@@ -50,7 +122,7 @@ await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
-expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
+expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Stored[]>();
 expectTypeOf(item.type).toEqualTypeOf<"weapon">();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
@@ -81,13 +153,13 @@ test("update regression test", () => {
 declare global {
   namespace Item {
     namespace Database {
-      interface Create {
+      interface CreateOperation {
         foo?: string;
       }
-      interface Update {
+      interface UpdateOperation {
         bar?: number;
       }
-      interface Delete {
+      interface DeleteOperation {
         foobar?: boolean;
       }
     }
@@ -100,9 +172,9 @@ Item.deleteDocuments([foundry.utils.randomID()], { foobar: false });
 
 class BoilerplateItem extends Item {
   protected static override async _onUpdateOperation(
-    documents: Item.Implementation[],
-    operation: Item.Database.Update,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: Item.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void> {
     if (operation.bar) {
       console.log(documents[0]!.id, operation.diff, user.id);

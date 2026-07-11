@@ -1,17 +1,15 @@
 import type { ConfiguredActorDelta } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace ActorDelta {
   /**
@@ -20,7 +18,7 @@ declare namespace ActorDelta {
   type Name = "ActorDelta";
 
   /**
-   * The context used to create a `ActorDelta`.
+   * The context used to create an `ActorDelta`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -177,8 +175,10 @@ declare namespace ActorDelta {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -190,12 +190,10 @@ declare namespace ActorDelta {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -215,11 +213,30 @@ declare namespace ActorDelta {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode ActorDelta.getCollectionName | ActorDelta#getCollectionName}. If the
+     * passed name is not a known valid embedded document type/collection name for `ActorDelta`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode ActorDelta.getEmbeddedDocument | ActorDelta#getEmbeddedDocument}.
+     * See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -249,7 +266,7 @@ declare namespace ActorDelta {
   /**
    * An instance of `ActorDelta` that comes from the database.
    */
-  type Stored = Document.Internal.Stored<ActorDelta.Implementation>;
+  type Stored<SubType extends ActorDelta.SubType = ActorDelta.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@linkcode ActorDelta._source | ActorDelta#_source}. This data is what was
@@ -319,7 +336,7 @@ declare namespace ActorDelta {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an ActorDelta document
+   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an `ActorDelta` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActorDelta}. For example
@@ -380,110 +397,620 @@ declare namespace ActorDelta {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for ActorDeltas */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<ActorDelta.Parent> {}
-
-    /** Options passed along in Create operations for ActorDeltas */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<ActorDelta.CreateData, ActorDelta.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for ActorDeltas */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActorDelta.Parent> {}
-
-    /** Options passed along in Update operations for ActorDeltas */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<ActorDelta.UpdateData, ActorDelta.Parent> {}
-
-    /** Operation for {@linkcode ActorDelta.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      ActorDelta.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode ActorDelta.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<ActorDelta.Database.Update> {}
-
-    /** Operation for {@linkcode ActorDelta.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete> {}
-
-    /** Operation for {@linkcode ActorDelta.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      ActorDelta.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode ActorDelta.update | ActorDelta#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode ActorDelta.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode ActorDelta._preCreate | ActorDelta#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode ActorDelta._onCreate | ActorDelta#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode ActorDelta._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create> {}
-
-    /** Operation for {@linkcode ActorDelta._onCreateOperation | ActorDelta#_onCreateOperation} */
-    interface OnCreateOperation extends ActorDelta.Database.Create {}
-
-    /** Options for {@linkcode ActorDelta._preUpdate | ActorDelta#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode ActorDelta._preUpdateOperation} */
-    interface PreUpdateOperation extends ActorDelta.Database.Update {}
-
-    /** Operation for {@linkcode ActorDelta._onUpdateOperation | ActorDelta._preUpdateOperation} */
-    interface OnUpdateOperation extends ActorDelta.Database.Update {}
-
-    /** Options for {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode ActorDelta._onDelete | ActorDelta#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode ActorDelta._preDeleteOperation | ActorDelta#_preDeleteOperation} */
-    interface PreDeleteOperation extends ActorDelta.Database.Delete {}
-
-    /** Options for {@linkcode ActorDelta._onDeleteOperation | ActorDelta#_onDeleteOperation} */
-    interface OnDeleteOperation extends ActorDelta.Database.Delete {}
-
-    /** Context for {@linkcode ActorDelta._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
-
-    /** Context for {@linkcode ActorDelta._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
-
-    /** Context for {@linkcode ActorDelta._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode ActorDelta._preCreateDescendantDocuments | ActorDelta#_preCreateDescendantDocuments}
-     * and {@linkcode ActorDelta._onCreateDescendantDocuments | ActorDelta#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `ActorDelta` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<ActorDelta.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<ActorDelta.Parent> {}
 
     /**
-     * Options for {@linkcode ActorDelta._preUpdateDescendantDocuments | ActorDelta#_preUpdateDescendantDocuments}
-     * and {@linkcode ActorDelta._onUpdateDescendantDocuments | ActorDelta#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode ActorDelta.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<ActorDelta.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode ActorDelta._preDeleteDescendantDocuments | ActorDelta#_preDeleteDescendantDocuments}
-     * and {@linkcode ActorDelta._onDeleteDescendantDocuments | ActorDelta#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `ActorDelta` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode ActorDelta.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `ActorDelta` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode ActorDelta.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<ActorDelta.CreateInput, ActorDelta.Parent, Temporary> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+    }
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.create} or {@linkcode ActorDelta.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `ActorDelta` documents. (see {@linkcode ActorDelta.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `ActorDelta` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preCreate | ActorDelta#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateActorDelta` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode ActorDelta._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onCreate | ActorDelta#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createActorDelta` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onCreateOperation} and `ActorDelta`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `ActorDelta` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode ActorDelta.update | ActorDelta#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<ActorDelta.UpdateInput, ActorDelta.Parent> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+    }
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.update | ActorDelta#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `ActorDelta` documents (see {@linkcode ActorDelta.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `ActorDelta` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preUpdate | ActorDelta#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateActorDelta` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode ActorDelta._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateActorDelta` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onUpdateOperation} and `ActorDelta`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `ActorDelta` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode ActorDelta.delete | ActorDelta#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<ActorDelta.Parent> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * As of 13.351, in core this will only appear in a `DeleteOperation` if it's triggered via
+       * {@linkcode ActorDelta.restore | ActorDelta#restore}.
+       */
+      restoreDelta?: boolean;
+    }
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.delete | ActorDelta#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `ActorDelta` documents (see {@linkcode ActorDelta.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `ActorDelta` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteActorDelta` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode ActorDelta._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onDelete | ActorDelta#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteActorDelta` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode ActorDelta._onDeleteOperation} and `ActorDelta`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: ActorDelta.Database.GetDocumentsOperation;
+        BackendGetOperation: ActorDelta.Database.BackendGetOperation;
+        GetOperation: ActorDelta.Database.GetOperation;
+
+        CreateDocumentsOperation: ActorDelta.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: ActorDelta.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: ActorDelta.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: ActorDelta.Database.CreateOperation<Temporary>;
+        PreCreateOptions: ActorDelta.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: ActorDelta.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: ActorDelta.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: ActorDelta.Database.OnCreateOptions;
+        OnCreateOperation: ActorDelta.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: ActorDelta.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: ActorDelta.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: ActorDelta.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: ActorDelta.Database.BackendUpdateOperation;
+        UpdateOperation: ActorDelta.Database.UpdateOperation;
+        PreUpdateOptions: ActorDelta.Database.PreUpdateOptions;
+        PreUpdateOperation: ActorDelta.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: ActorDelta.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: ActorDelta.Database.OnUpdateOptions;
+        OnUpdateOperation: ActorDelta.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: ActorDelta.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: ActorDelta.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: ActorDelta.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: ActorDelta.Database.BackendDeleteOperation;
+        DeleteOperation: ActorDelta.Database.DeleteOperation;
+        PreDeleteOptions: ActorDelta.Database.PreDeleteOptions;
+        PreDeleteOperation: ActorDelta.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: ActorDelta.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: ActorDelta.Database.OnDeleteOptions;
+        OnDeleteOperation: ActorDelta.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -517,6 +1044,60 @@ declare namespace ActorDelta {
   /* ***********************************************
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
+
+  /** The interface {@linkcode ActorDelta.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode ActorDelta.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode ActorDelta.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends ActorDelta.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ActorDelta.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode ActorDelta.deleteDialog | ActorDelta#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    ActorDelta.Stored,
+    Config
+  >;
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -566,28 +1147,47 @@ declare namespace ActorDelta {
       >
     | Item.OnDeleteDescendantDocumentsArgs;
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /* ***********************************************
    *           ACTOR-DELTA-SPECIFIC TYPES          *
    *************************************************/
 
+  /**
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   *
+   * @internal
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    /**
+     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
+     * overriding the provided default of `parent: delta.parent` is nonsensical
+     */
+    parent?: never;
+  }
+
   /** @internal */
-  type _InitializeOptions = NullishProps<{
+  interface _InitializeOptions {
     /**
      * @remarks Is this initialization part of a {@linkcode Scene.reset | Scene#reset} call? (skips further initialization if truthy)
      * @defaultValue `false`
      */
     sceneReset: boolean;
-  }>;
+  }
 
-  interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+  interface InitializeOptions extends Document.InitializeOptions, InexactPartial<_InitializeOptions> {}
+
+  interface _CreateSyntheticActorOptions {
+    /**
+     * Whether to fully re-initialize this ActorDelta's collections in
+     * order to re-retrieve embedded Documents from the synthetic
+     * Actor.
+     */
+    reinitializeCollections: boolean;
+  }
+
+  interface CreateSyntheticActorOptions extends InexactPartial<_CreateSyntheticActorOptions> {}
 
   /**
    * The arguments to construct the document.
@@ -627,39 +1227,39 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   set type(type);
 
-  protected _type: string;
+  /** @internal */
+  _type: string;
 
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
    * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
-  apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
+  apply(context?: ActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
 
-  // TODO: accurately type changes and return type
   override updateSource(
-    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
-    // However it's likely the overlap between these two types is pretty high.
-    changes?: ActorDelta.Source,
+    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });`,
+    // `this.syntheticActor.updateSource`, and `super.updateSource`. However it's likely the overlap between these types is pretty high.
+    changes: ActorDelta.CreateData,
     options?: DataModel.UpdateOptions,
-  ): object;
+  ): ActorDelta.UpdateData;
 
   override reset(): void;
 
   /**
    * Generate a synthetic Actor instance when constructed, or when the represented Actor, or actorLink status changes.
+   * @internal
    */
-  protected _createSyntheticActor(options?: {
-    /**
-     * Whether to fully re-initialize this ActorDelta's collections in
-     * order to re-retrieve embedded Documents from the synthetic
-     * Actor.
-     */
-    reinitializeCollections: boolean;
-  }): void;
+  _createSyntheticActor(options?: ActorDelta.CreateSyntheticActorOptions): void;
+
+  /**
+   * @remarks Created by `Object.defineProperty` in {@linkcode _createSyntheticActor} with an unnecessary `{ configurable: true }`.
+   * Since that method is called by {@linkcode _configure} during construction, it's not optional.
+   */
+  syntheticActor: Actor.Stored<SubType> | Actor.OfType<SubType> | null;
 
   /**
    * Update the synthetic Actor instance with changes from the delta or the base Actor.
@@ -670,20 +1270,35 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * Restore this delta to empty, inheriting all its properties from the base actor.
    * @returns The restored synthetic Actor.
    */
-  restore(): Promise<Actor.Implementation>;
+  restore(): Promise<Actor.Stored>;
 
   /**
    * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
    * @param doc - The parent whose immediate children have been modified.
+   * @internal
    */
   _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
-  /** @remarks `"No-op as ActorDeltas do not have sheets."` */
+  /** @remarks Foundry comments: "No-op as ActorDeltas do not have sheets." */
   protected override _onSheetChange(): Promise<void>;
 
-  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
+  override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
-  // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preDelete(
+  //   options: ActorDelta.Database.PreDeleteOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: ActorDelta.UpdateData,
+  //   options: ActorDelta.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ActorDelta.Database.OnDeleteOptions, userId: string): void;
 
   protected override _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -716,29 +1331,57 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
+  >(
     data: ActorDelta.CreateDialogData | undefined,
-    createOptions: ActorDelta.Database.DialogCreateOptions,
-    options?: ActorDelta.CreateDialogOptions,
-  ): Promise<ActorDelta.Stored | null | undefined>;
+    createOptions: ActorDelta.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: ActorDelta.Database.DeleteOperation,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode ActorDelta.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
+  >(
+    data: ActorDelta.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: ActorDelta.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: ActorDelta.DropData,
-    options?: ActorDelta.DropDataOptions,
-  ): Promise<ActorDelta.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
+  ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
+  ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: ActorDelta.DropData): Promise<ActorDelta.Implementation | undefined>;
 
   static override fromImport(
     source: ActorDelta.Source,
-    context?: Document.FromImportContext<ActorDelta.Parent> | null,
+    context?: Document.FromImportContext<ActorDelta.Parent>,
   ): Promise<ActorDelta.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

@@ -134,10 +134,11 @@ declare namespace CanvasAnimation {
   ) => void;
 
   /**
-   * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take
+   * `CanvasAnimation.AnimationData<this>`
    * @internal
    */
-  type _AnimateOptions<AnimationParent extends object = object> = InexactPartial<{
+  interface _AnimateOptions<AnimationParent extends object = object> {
     /**
      * A DisplayObject which defines context to the PIXI.Ticker function
      * @defaultValue {@linkcode foundry.canvas.Canvas.stage | canvas.stage}
@@ -160,7 +161,8 @@ declare namespace CanvasAnimation {
      * A priority in {@linkcode PIXI.UPDATE_PRIORITY} which defines when the animation
      * should be evaluated related to others
      * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.LOW}`+ 1`
-     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due to the Branded enum
+     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be
+     * cast `as PIXI.UPDATE_PRIORITY` due to the `Brand`ed enum.
      */
     priority: PIXI.UPDATE_PRIORITY;
 
@@ -175,23 +177,23 @@ declare namespace CanvasAnimation {
 
     /** The animation isn't started until this promise resolves */
     wait: Promise<void>;
-  }>;
+  }
 
   /**
    * @privateRemarks `extends object[]` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface AnimateOptions<Parents extends object[] = object[]> extends CanvasAnimation._AnimateOptions<
-    Parents[number]
+  interface AnimateOptions<Parents extends object[] = object[]> extends InexactPartial<
+    _AnimateOptions<Parents[number]>
   > {}
 
   /** @internal */
-  type _AnimationAttribute = InexactPartial<{
+  interface _AnimationAttribute {
     /**
      * An initial value of the attribute, otherwise `parent[attribute]` is used
      * @remarks Will be replaced inside {@linkcode CanvasAnimation.animate} with {@linkcode Color.from | Color.from(from)} if `to` is a `Color`
      */
     from: number | Color;
-  }>;
+  }
 
   /**
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
@@ -207,7 +209,7 @@ declare namespace CanvasAnimation {
    *
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface Attribute<AnimationParent extends object = object> extends _AnimationAttribute {
+  interface Attribute<AnimationParent extends object = object> extends InexactPartial<_AnimationAttribute> {
     /**
      * The attribute name being animated
      * @remarks Does not support dotkeys

@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * An embedded Document that represents a category in a JournalEntry.
@@ -56,13 +57,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
-
-  override readonly parentCollection: BaseJournalEntryCategory.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): JournalEntryCategory.ImplementationClass;
 
   static override get baseDocument(): typeof BaseJournalEntryCategory;
@@ -73,50 +67,65 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseJournalEntryCategory.Hierarchy;
+  static override readonly hierarchy: BaseJournalEntryCategory.Hierarchy;
 
   override parent: BaseJournalEntryCategory.Parent;
 
   override " fvtt_types_internal_document_parent": BaseJournalEntryCategory.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"JournalEntryCategory", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<JournalEntryCategory.Implementation | BaseJournalEntryCategory.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseJournalEntryCategory.Database.Create<Temporary>>,
+    data: BaseJournalEntryCategory.CreateInput[],
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntryCategory.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseJournalEntryCategory.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntryCategory.Database.Update>,
-  ): Promise<JournalEntryCategory.Implementation[]>;
+    updates: BaseJournalEntryCategory.UpdateInput[],
+    operation?: BaseJournalEntryCategory.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<JournalEntryCategory.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntryCategory.Database.Delete>,
-  ): Promise<JournalEntryCategory.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseJournalEntryCategory.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<JournalEntryCategory.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseJournalEntryCategory.CreateData | BaseJournalEntryCategory.CreateData[],
-    operation?: BaseJournalEntryCategory.Database.CreateOperation<Temporary>,
-  ): Promise<BaseJournalEntryCategory.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseJournalEntryCategory.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseJournalEntryCategory.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseJournalEntryCategory.UpdateData | undefined,
-    operation?: BaseJournalEntryCategory.Database.UpdateOperation,
+    data: BaseJournalEntryCategory.UpdateInput,
+    operation?: BaseJournalEntryCategory.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntryCategory.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntryCategory.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseJournalEntryCategory.Database.GetOptions,
-  ): JournalEntryCategory.Implementation | null;
+  // `JournalEntryCategory`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseJournalEntryCategory.Database.GetDocumentsOperation): null;
 
+  // `JournalEntryCategory`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   override getFlag<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
@@ -127,110 +136,113 @@ declare abstract class BaseJournalEntryCategory extends Document<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
     Key extends BaseJournalEntryCategory.Flags.Key<Scope>,
     Value extends BaseJournalEntryCategory.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
     Key extends BaseJournalEntryCategory.Flags.Key<Scope>,
-  >(scope: Scope, key: Key): Promise<this>;
+  >(scope: Scope, key: Key): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseJournalEntryCategory.CreateData,
     options: BaseJournalEntryCategory.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseJournalEntryCategory.CreateData,
-    options: BaseJournalEntryCategory.Database.OnCreateOperation,
+    options: BaseJournalEntryCategory.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntryCategory.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseJournalEntryCategory.Database.Create>,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database.Create,
-    user: User.Implementation,
+    documents: JournalEntryCategory.Stored[],
+    operation: BaseJournalEntryCategory.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
     options: BaseJournalEntryCategory.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
-    options: BaseJournalEntryCategory.Database.OnUpdateOperation,
+    options: BaseJournalEntryCategory.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database.Update,
-    user: User.Implementation,
+    documents: JournalEntryCategory.Stored[],
+    operation: BaseJournalEntryCategory.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database.Update,
-    user: User.Implementation,
+    documents: JournalEntryCategory.Stored[],
+    operation: BaseJournalEntryCategory.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseJournalEntryCategory.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database.Delete,
-    user: User.Implementation,
+    documents: JournalEntryCategory.Stored[],
+    operation: BaseJournalEntryCategory.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database.Delete,
-    user: User.Implementation,
+    documents: JournalEntryCategory.Stored[],
+    operation: BaseJournalEntryCategory.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `JournalEntryCategory._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `JournalEntryCategory._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    documents: JournalEntryCategory.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `JournalEntryCategory._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    documents: JournalEntryCategory.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
+  static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
 
   static override get schema(): SchemaField<BaseJournalEntryCategory.Schema>;
 

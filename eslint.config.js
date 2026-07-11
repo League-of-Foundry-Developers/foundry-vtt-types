@@ -2,7 +2,7 @@
 /* eslint-disable jsdoc/no-types, jsdoc/require-param-description, jsdoc/require-returns-description */
 
 import globals from "globals";
-import { includeIgnoreFile } from "@eslint/compat";
+import { includeIgnoreFile } from "@eslint/config-helpers";
 import js from "@eslint/js";
 import tsESLint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
@@ -296,6 +296,7 @@ const rules = [
   ...tsESLint.configs.stylisticTypeChecked,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
+  // Necessary for oxfmt, despite the name.
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
@@ -459,7 +460,7 @@ const rules = [
   },
 
   {
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
     languageOptions: {
       globals: {
         ...globals.node,

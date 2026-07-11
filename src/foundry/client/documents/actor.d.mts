@@ -1,21 +1,19 @@
-import type { AnyObject, InexactPartial, NullishProps, MaybeArray, Merge, Identity } from "#utils";
+import type { AnyObject, InexactPartial, MaybeArray, Merge, Identity } from "#utils";
 import type { ConfiguredActor } from "#configuration";
 import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { IterableWeakMap, IterableWeakSet } from "#common/utils/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
-/** @privateRemarks `hookEvents` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
 
 declare namespace Actor {
@@ -199,8 +197,10 @@ declare namespace Actor {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -212,12 +212,10 @@ declare namespace Actor {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -237,11 +235,29 @@ declare namespace Actor {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode Actor.getCollectionName | Actor#getCollectionName}. If the passed name is not a known valid embedded
+     * document type/collection name for `Actor`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode Actor.getEmbeddedDocument | Actor#getEmbeddedDocument}. See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -335,7 +351,7 @@ declare namespace Actor {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Actor}. This is the source of truth for how an Actor document
+   * The schema for {@linkcode Actor}. This is the source of truth for how an `Actor` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Actor}. For example
@@ -419,110 +435,602 @@ declare namespace Actor {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Actors */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
-
-    /** Options passed along in Create operations for Actors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Actors */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
-
-    /** Options passed along in Update operations for Actors */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
-
-    /** Operation for {@linkcode Actor.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Actor.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Actor.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
-
-    /** Operation for {@linkcode Actor.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
-
-    /** Operation for {@linkcode Actor.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      Actor.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode Actor.update | Actor#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Actor.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode Actor._preCreate | Actor#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode Actor._onCreate | Actor#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Actor._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Actor.Database.Create> {}
-
-    /** Operation for {@linkcode Actor._onCreateOperation | Actor#_onCreateOperation} */
-    interface OnCreateOperation extends Actor.Database.Create {}
-
-    /** Options for {@linkcode Actor._preUpdate | Actor#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode Actor._onUpdate | Actor#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Actor._preUpdateOperation} */
-    interface PreUpdateOperation extends Actor.Database.Update {}
-
-    /** Operation for {@linkcode Actor._onUpdateOperation | Actor._preUpdateOperation} */
-    interface OnUpdateOperation extends Actor.Database.Update {}
-
-    /** Options for {@linkcode Actor._preDelete | Actor#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode Actor._onDelete | Actor#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode Actor._preDeleteOperation | Actor#_preDeleteOperation} */
-    interface PreDeleteOperation extends Actor.Database.Delete {}
-
-    /** Options for {@linkcode Actor._onDeleteOperation | Actor#_onDeleteOperation} */
-    interface OnDeleteOperation extends Actor.Database.Delete {}
-
-    /** Context for {@linkcode Actor._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
-
-    /** Context for {@linkcode Actor._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
-
-    /** Context for {@linkcode Actor._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode Actor._preCreateDescendantDocuments | Actor#_preCreateDescendantDocuments}
-     * and {@linkcode Actor._onCreateDescendantDocuments | Actor#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Actor` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<Actor.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<Actor.Parent> {}
 
     /**
-     * Options for {@linkcode Actor._preUpdateDescendantDocuments | Actor#_preUpdateDescendantDocuments}
-     * and {@linkcode Actor._onUpdateDescendantDocuments | Actor#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode Actor.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Actor.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode Actor._preDeleteDescendantDocuments | Actor#_preDeleteDescendantDocuments}
-     * and {@linkcode Actor._onDeleteDescendantDocuments | Actor#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Actor` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode Actor.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Actor` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Actor.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Actor.CreateInput, Actor.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.create} or {@linkcode Actor.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `Actor` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Actor` documents. (see {@linkcode Actor.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Actor` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._preCreate | Actor#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateActor` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Actor._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onCreate | Actor#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createActor` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onCreateOperation} and `Actor`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Actor` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Actor.update | Actor#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Actor.UpdateInput, Actor.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.update | Actor#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `Actor` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Actor` documents (see {@linkcode Actor.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Actor` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._preUpdate | Actor#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateActor` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * As of 13.351, in core this will only appear in an `Actor`'s `PreUpdateOptions` as part of an "emulated" update in
+       * {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete}.
+       */
+      restoreDelta?: boolean;
+    }
+
+    /**
+     * The interface passed to {@linkcode Actor._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Actor._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onUpdate | Actor#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateActor` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onUpdateOperation} and `Actor`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Actor` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Actor.delete | Actor#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Actor.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.delete | Actor#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `Actor` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Actor` documents (see {@linkcode Actor.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Actor` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._preDelete | Actor#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteActor` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Actor._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onDelete | Actor#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteActor` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Actor._onDeleteOperation} and `Actor`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Actor.Database.GetDocumentsOperation;
+        BackendGetOperation: Actor.Database.BackendGetOperation;
+        GetOperation: Actor.Database.GetOperation;
+
+        CreateDocumentsOperation: Actor.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: Actor.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Actor.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Actor.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Actor.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Actor.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Actor.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Actor.Database.OnCreateOptions;
+        OnCreateOperation: Actor.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Actor.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: Actor.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Actor.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Actor.Database.BackendUpdateOperation;
+        UpdateOperation: Actor.Database.UpdateOperation;
+        PreUpdateOptions: Actor.Database.PreUpdateOptions;
+        PreUpdateOperation: Actor.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Actor.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Actor.Database.OnUpdateOptions;
+        OnUpdateOperation: Actor.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Actor.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: Actor.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Actor.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Actor.Database.BackendDeleteOperation;
+        DeleteOperation: Actor.Database.DeleteOperation;
+        PreDeleteOptions: Actor.Database.PreDeleteOptions;
+        PreDeleteOperation: Actor.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Actor.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Actor.Database.OnDeleteOptions;
+        OnDeleteOperation: Actor.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -556,6 +1064,60 @@ declare namespace Actor {
   /* ***********************************************
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
+
+  /** The interface {@linkcode Actor.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Actor.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Actor.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Actor.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Actor.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends Actor.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Actor.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode Actor.deleteDialog | Actor#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Actor.Stored,
+    Config
+  >;
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -605,68 +1167,58 @@ declare namespace Actor {
       >
     | Item.OnDeleteDescendantDocumentsArgs;
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /* ***********************************************
    *             ACTOR-SPECIFIC TYPES              *
    *************************************************/
 
   interface GetDefaultArtworkReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     img: string;
+
     texture: GetDefaultArtworkTextureReturn;
   }
 
   interface GetDefaultArtworkTextureReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     src: string;
   }
 
   type ItemTypes = {
     // Note(LukeAbby): `keyof Item._SystemMap` is used to preserve optional modifiers
-    [SubType in keyof Item._SystemMap]: Array<Item.OfType<SubType>>;
+    [SubType in keyof Item._SystemMap]: Array<Item.Stored<SubType>>;
   };
 
   type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true
-    ? TokenDocument.Implementation[]
+    ? TokenDocument.Stored[]
     : Token.Implementation[];
 
   /** @internal */
-  type _RollInitiativeOptions = NullishProps<{
+  interface _RollInitiativeOptions {
     /**
-     * Create new Combatant entries for Tokens associated with this actor.
+     * Create new `Combatant` entries for `Token`s associated with this actor.
      * @defaultValue `false`
      */
     createCombatants: boolean;
 
     /**
-     * Re-roll the initiative for this Actor if it has already been rolled.
+     * Re-roll the initiative for this `Actor` if it has already been rolled.
      * @defaultValue `false`
      */
     rerollInitiative: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * Additional options passed to the Combat#rollInitiative method.
-       * @defaultValue `{}`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      initiativeOptions: Combat.InitiativeOptions;
-    }>;
 
-  interface RollInitiativeOptions extends _RollInitiativeOptions {}
+    /**
+     * Additional options passed to the {@linkcode Combat.rollInitiative | Combat#rollInitiative} method.
+     * @defaultValue `{}`
+     */
+    initiativeOptions: Combat.InitiativeOptions;
+  }
+
+  interface RollInitiativeOptions extends InexactPartial<_RollInitiativeOptions> {}
 
   /** @internal */
-  type _ToggleStatusEffectOptions = NullishProps<{
+  interface _ToggleStatusEffectOptions {
     /**
      * Force a certain active state for the effect
-     * @defaultValue `undefined`
-     * @remarks `null` is treated as `false`, `undefined` or omitted is treated as `true` *if no status
-     * with the given ID already exists*, otherwise also as `false`
      */
     active: boolean;
 
@@ -675,39 +1227,28 @@ declare namespace Actor {
      * @defaultValue `false`
      */
     overlay: boolean;
-  }>;
+  }
 
-  interface ToggleStatusEffectOptions extends _ToggleStatusEffectOptions {}
-
-  /** @internal */
-  type _RequestTokenImagesOptions = NullishProps<{
-    /**
-     * The name of the compendium the actor is in.
-     * @defaultValue `null`
-     * @remarks The default comes from the `"requestTokenImages"` socket handler in `dist/database/documents/actor.mjs` where it's the parameter default
-     */
-    pack: string;
-  }>;
-
-  interface RequestTokenImagesOptions extends _RequestTokenImagesOptions {}
+  interface ToggleStatusEffectOptions extends InexactPartial<_ToggleStatusEffectOptions> {}
 
   /** @internal */
-  type _GetDependentTokensOptions = NullishProps<{
+  interface _GetDependentTokensOptions {
     /**
      * A single Scene, or list of Scenes to filter by.
      * @defaultValue `Array.from(this._dependentTokens.keys())`
      */
-    scenes: Scene.Implementation | Scene.Implementation[];
+    scenes: MaybeArray<Scene.Implementation>;
 
     /**
      * Limit the results to tokens that are linked to the actor.
      * @defaultValue `false`
      */
     linked: boolean;
-  }>;
+  }
 
-  interface GetDependentTokensOptions extends _GetDependentTokensOptions {}
+  interface GetDependentTokensOptions extends InexactPartial<_GetDependentTokensOptions> {}
 
+  /** The interface passed to the {@linkcode Hooks.StaticCallbacks.modifyTokenAttribute | modifyTokenAttribute} hook. */
   interface ModifyTokenAttributeData {
     /** The attribute path */
     attribute: string;
@@ -746,7 +1287,8 @@ declare namespace Actor {
  * @see {@linkcode Actors}            The world-level collection of Actor documents
  * @see {@linkcode ActorSheet}     The Actor configuration application
  *
- * @example <caption>Create a new Actor</caption>
+ * @example
+ * Create a new Actor
  * ```typescript
  * let actor = await Actor.create({
  *   name: "New Test Actor",
@@ -755,7 +1297,8 @@ declare namespace Actor {
  * });
  * ```
  *
- * @example <caption>Retrieve an existing Actor</caption>
+ * @example
+ * Retrieve an existing Actor
  * ```typescript
  * let actor = game.actors.get(actorId);
  * ```
@@ -773,12 +1316,10 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   /**
    * Maintain a list of Token Documents that represent this Actor, stored by Scene. This list may include unpersisted
    * Token Documents (along with possibly unpersisted parent Scenes), including those with a null `_id`.
+   * @internal
    * @remarks `defineProperty`'d at construction with no options specified
    */
-  protected _dependentTokens?: foundry.utils.IterableWeakMap<
-    Scene.Implementation,
-    foundry.utils.IterableWeakSet<TokenDocument.Implementation>
-  >;
+  _dependentTokens: IterableWeakMap<Scene.Implementation, IterableWeakSet<TokenDocument.Implementation>>;
 
   /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
   protected override _initializeSource(
@@ -822,12 +1363,12 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   /**
    * Retrieve the list of ActiveEffects that are currently applied to this Actor.
    */
-  get appliedEffects(): ActiveEffect.Implementation[];
+  get appliedEffects(): ActiveEffect.Stored[];
 
   /**
    * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
    */
-  get temporaryEffects(): ActiveEffect.Implementation[];
+  get temporaryEffects(): ActiveEffect.Stored[];
 
   /**
    * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -839,8 +1380,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   get inCombat(): boolean;
 
-  override clone<Save extends boolean | null | undefined = false>(
-    data?: Actor.CreateData,
+  /**
+   * @remarks If cloning without saving, but while keeping ID, copies dependent tokens over.
+   */
+  override clone<Save extends boolean | undefined = false>(
+    data?: Actor.UpdateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
 
@@ -856,8 +1400,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *
    * @param linked   - Limit results to Tokens which are linked to the Actor. Otherwise return all
    *                   Tokens even those which are not linked. (default: `false`)
-   * @param document - Return the Document instance rather than the PlaceableObject
-   *                   (default: `false`)
+   * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
    * @returns An array of Token instances in the current Scene which reference this Actor.
    */
   getActiveTokens<ReturnDocument extends boolean | undefined = false>(
@@ -871,7 +1414,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
-  allApplicableEffects(): Generator<ActiveEffect.Implementation, void, undefined>;
+  allApplicableEffects(): Generator<ActiveEffect.Stored, void, undefined>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -883,6 +1426,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Create a new TokenData object which can be used to create a Token representation of the Actor.
    * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
    * @returns The created TokenData instance
+   * @privateRemarks `TokenDocument.CreateData` has no required properties and so needs no additional `Partial`ing.
    */
   getTokenDocument(
     data?: TokenDocument.CreateData,
@@ -902,15 +1446,9 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param isDelta   - Whether the number represents a relative change (true) or an absolute change (false) (default: `false`)
    * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value (default: `true`)
    * @returns The updated Actor document
+   * @privateRemarks Must be kept in sync with {@linkcode Actor.ModifyTokenAttributeData}
    */
-  // Note: Must be kept in sync with `Actor.ModifyTokenAttributeData`
-  modifyTokenAttribute(
-    attribute: string,
-    // TODO: tighten Combatant.Resource with the justification of this being simply `number`
-    value: number,
-    isDelta?: boolean,
-    isBar?: boolean,
-  ): Promise<this | undefined>;
+  modifyTokenAttribute(attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this | undefined>;
 
   override prepareData(): void;
 
@@ -924,7 +1462,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Implementation | null>;
+  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Stored | null>;
 
   /**
    * Toggle a configured status effect for the Actor.
@@ -939,89 +1477,48 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   toggleStatusEffect(
     statusId: string,
     options?: Actor.ToggleStatusEffectOptions,
-  ): Promise<ActiveEffect.Implementation | boolean | undefined>;
+  ): Promise<ActiveEffect.Stored | boolean | undefined>;
 
   /**
    * Get this actor's dependent tokens.
    * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
    */
-  getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Implementation[];
+  getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Stored[];
 
   /**
    * Register a token as a dependent of this actor.
    * @param token - The Token
    * @internal
    */
-  protected _registerDependantToken(token: TokenDocument.Implementation): void;
+  _registerDependantToken(token: TokenDocument.Implementation): void;
 
   /**
    * Remove a token from this actor's dependents.
    * @param token - The Token
    * @internal
    */
-  protected _unregisterDependentToken(token: TokenDocument.Implementation): void;
+  _unregisterDependentToken(token: TokenDocument.Implementation): void;
 
   /**
    * Prune a whole scene from this actor's dependent tokens.
    * @param scene - The scene
    * @internal
    */
-  protected _unregisterDependentScene(scene: Scene.Implementation): void;
+  _unregisterDependentScene(scene: Scene.Implementation): void;
 
-  // _onUpdate is overridden but with no signature changes from BaseActor.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsActor extends Actor {
-   *   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // protected override _onUpdate(
+  //   changed: Actor.UpdateData,
+  //   options: Actor.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eActor extends Actor {
-   *   protected override _onUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesActor extends Actor {
-   *   protected override _onDeleteDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Actor.OnDeleteDescendantDocumentsArgs): void;
 
   /**
@@ -1035,7 +1532,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - The update context.
    * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
-  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.UpdateOperation): void;
+  protected _updateDependentTokens(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOptions): void;
 
   /*
    * After this point these are not really overridden methods.
@@ -1049,81 +1546,67 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeActor extends Actor {
-   *   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerActor extends Actor {
-   *   protected override _preUpdateDescendantDocuments(...args: Actor.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // `_onCreateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: Actor.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultActor extends Actor {
-   *   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // `_onUpdateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
+
+  // `_onDeleteDescendantDocuments` omitted from template due to real override above.
 
   static override defaultName(context?: Actor.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Actor.CreateDialogData,
-    createOptions?: Actor.Database.DialogCreateOptions,
-    options?: Actor.CreateDialogOptions,
-  ): Promise<Actor.Stored | null | undefined>;
+    createOptions?: Actor.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Actor">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Actor.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Actor.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Actor.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: Actor.DropData,
-    options?: Actor.DropDataOptions,
-  ): Promise<Actor.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Actor.DropData): Promise<Actor.Implementation | undefined>;
 
   static override fromImport(
     source: Actor.Source,
-    context?: Document.FromImportContext<Actor.Parent> | null,
+    context?: Document.FromImportContext<Actor.Parent>,
   ): Promise<Actor.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

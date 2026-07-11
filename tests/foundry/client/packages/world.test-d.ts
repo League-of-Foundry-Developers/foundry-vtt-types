@@ -5,20 +5,14 @@ import ClientPackageMixin = foundry.packages.ClientPackageMixin;
 
 declare const world: World;
 expectTypeOf(world.favorite).toEqualTypeOf<false>();
-expectTypeOf(world.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.PackageCompatibilityBadge | null>();
+expectTypeOf(world.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 expectTypeOf(world.install()).toEqualTypeOf<void>();
 expectTypeOf(world.uninstall()).toEqualTypeOf<void>();
-expectTypeOf(world.getSystemBadge()).toEqualTypeOf<ClientPackageMixin.PackageCompatibilityBadge | null>();
+expectTypeOf(world.getSystemBadge()).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 
 expectTypeOf(
-  World.getVersionBadge(CONST.PACKAGE_AVAILABILITY_CODES.MISSING_DEPENDENCY, {}, {}),
-).toEqualTypeOf<ClientPackageMixin.PackageCompatibilityBadge | null>();
+  World.getVersionBadge(CONST.PACKAGE_AVAILABILITY_CODES.MISSING_DEPENDENCY, world, {}),
+).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 expectTypeOf(World.uninstall("")).toEqualTypeOf<void>();
 
-const clientPackage = await World.fromRemoteManifest("", { strict: true });
-if (clientPackage) {
-  expectTypeOf(clientPackage.favorite).toEqualTypeOf<false>();
-  expectTypeOf(clientPackage.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.PackageCompatibilityBadge | null>();
-  expectTypeOf(clientPackage.install()).toEqualTypeOf<void>();
-  expectTypeOf(clientPackage.uninstall()).toEqualTypeOf<void>();
-}
+expectTypeOf(await World.fromRemoteManifest("", { strict: false })).toBeNull();

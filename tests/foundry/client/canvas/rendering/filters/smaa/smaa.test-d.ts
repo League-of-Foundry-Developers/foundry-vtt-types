@@ -3,9 +3,9 @@ import SMAAFilter = foundry.canvas.rendering.filters.SMAAFilter;
 
 expectTypeOf(SMAAFilter.PRESETS).toExtend<Record<keyof SMAAFilter.Presets, SMAAFilter.PRESETS>>();
 
-let smaaFilter = new SMAAFilter();
-smaaFilter = new SMAAFilter({});
-smaaFilter = new SMAAFilter({
+const smaaFilter = new SMAAFilter();
+new SMAAFilter({});
+new SMAAFilter({
   threshold: 0.07,
   cornerRounding: 32,
   disableCornerDetection: true,
@@ -15,7 +15,7 @@ smaaFilter = new SMAAFilter({
   maxSearchStepsDiag: 6,
 });
 // effectively testing runtime, as core never passes anything
-smaaFilter = new SMAAFilter({
+new SMAAFilter({
   threshold: undefined,
   cornerRounding: undefined,
   disableCornerDetection: undefined,

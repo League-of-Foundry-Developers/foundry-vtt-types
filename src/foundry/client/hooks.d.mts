@@ -4,10 +4,9 @@ import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
-import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
-import type Hooks from "./helpers/hooks.d.mts";
+import type { ClientSettings, Hooks } from "#client/helpers/_module.d.mts";
 import type { Canvas, layers } from "#client/canvas/_module.d.mts";
 import type {
   CanvasGroupMixin,
@@ -15,9 +14,9 @@ import type {
   EffectsCanvasGroup,
   EnvironmentCanvasGroup,
 } from "#client/canvas/groups/_module.d.mts";
-
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;
@@ -310,7 +309,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode Hooks.onError}
    */
-  error: (...args: ValueOf<Hooks.ErrorCallbackParameters>) => void;
+  error: (...[location, err, data]: ValueOf<Hooks.ErrorCallbackParameters>) => void;
 
   /* Game */
 
@@ -321,7 +320,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks
    * @see {@linkcode Game.togglePause | Game#togglePause}
    */
-  pauseGame: (paused: boolean, pauseOptions: foundry.Game.TogglePauseOptions) => void;
+  pauseGame: (paused: boolean, options: foundry.Game.TogglePauseOptions) => void;
 
   /**
    * A hook event that fires when the World time has been updated.
@@ -332,12 +331,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
-  updateWorldTime: (
-    worldTime: number,
-    delta: number,
-    options: Setting.Database.UpdateOperation,
-    userId: string,
-  ) => void;
+  updateWorldTime: (worldTime: number, delta: number, options: ClientSettings.OnChangeOptions, userId: string) => void;
 
   /* CanvasLifecycle */
 
@@ -365,7 +359,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode Canvas.pan | Canvas#pan}
    * @see {@linkcode Canvas.animatePan | Canvas#animatePan}
    */
-  canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
+  canvasPan: (canvas: Canvas, view: Canvas.PartialViewPosition) => void;
 
   /**
    * A hook event that fires when the Canvas is ready.
@@ -689,18 +683,54 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@linkcode foundry.documents.collections.CompendiumCollection._onModifyContents | foundry.documents.collections.CompendiumCollection#_onModifyContents}
+   *
+   * Since {@linkcode CompendiumCollection._onModifyContents | CompendiumCollection#_onModifyContents} does not forward the `action`, we
+   * can't know ahead of time if the `options` will be a `create`, `update`, or `delete` operation.
    */
-  updateCompendium: (
-    pack: foundry.documents.collections.CompendiumCollection.Any,
-    documents: Document.Any[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+  updateCompendium: <DocumentName extends CompendiumCollection.DocumentName>(
+    pack: CompendiumCollection<DocumentName>,
+    documents: Document.StoredForName<DocumentName>[],
+    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database.OperationAction>,
     userId: string,
   ) => void;
 
   /* TokenDocument */
 
-  // TODO: `preMoveToken` and `moveToken`
+  /**
+   * A hook event that fires for every Token document that is about to me moved before the conclusion of
+   * an update workflow. This hook only fires for the client who is initiating the update request.
+   * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
+   * @param document  - The existing Document which was updated
+   * @param movement  - The pending movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @returns If false, the movement is prevented
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  preMoveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.PreUpdateOptions,
+  ) => boolean | void;
+
+  /**
+   * A hook event that fires for every Token document that was moved after conclusion of an update
+   * workflow. This hook fires for all connected clients after the update has been processed.
+   * @param document  - The existing TokenDocument which was updated
+   * @param movement  - The movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @param user      - The User that requested the update operation
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   *
+   * @privateRemarks Foundry types `movement` as `DeepReadonly`, which appears to be true at runtime, despite there being no `seal` or
+   * `freeze` calls after the client gets the operation back from the server; `movement` has therefore been given the pre-server type in
+   * lieu of more complete understanding.
+   */
+  moveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.OnUpdateOptions,
+    user: User.Stored,
+  ) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is stopped.
@@ -797,11 +827,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context            - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  dealCards: (
-    origin: Cards.Implementation,
-    destinations: Cards.Implementation[],
-    context: Cards.DealContext,
-  ) => boolean | void;
+  dealCards: (origin: Cards.Stored, destinations: Cards.Stored[], context: Cards.DealContext) => boolean | void;
 
   /**
    * A hook event that fires when Cards are passed from one stack to another
@@ -810,11 +836,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context     - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  passCards: (
-    origin: Cards.Implementation,
-    destination: Cards.Implementation,
-    context: Cards.PassContext,
-  ) => boolean | void;
+  passCards: (origin: Cards.Stored, destination: Cards.Stored, context: Cards.PassContext) => boolean | void;
 
   /**
    * A hook event that fires when a stack of Cards are returned to the decks they originally came from.
@@ -837,9 +859,8 @@ export interface AllHooks extends DynamicHooks {
    * @param source        - The Document's source data.
    * @param pack          - The Document's compendium.
    * @param art           - The art being applied.
-   * @remarks Called as part of _initializeSource, after data migration, cleaning, and shims
-   * @remarks Currently only called by Actor but comments are more generic
-   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @remarks This is called by {@linkcode Hooks.callAll}. Currently only called, after data migration, cleaning, and shims, by
+   * {@linkcode Actor._initializeSource | Actor#_initializeSource}, though the comments are more generic.
    */
   applyCompendiumArt: (
     documentClass: Actor.ImplementationClass,
@@ -855,8 +876,7 @@ export interface AllHooks extends DynamicHooks {
    * @param actor - The Actor
    * @param sheet - The ActorSheet application
    * @param data  - The data that has been dropped onto the sheet
-   * @remarks This is called by {@linkcode Hooks.call}.
-   * @remarks An explicit return value of `false` prevents the Document being created.
+   * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the Document being created.
    * @see {@linkcode ActorSheet._onDrop | ActorSheet#_onDrop}
    */
   dropActorSheetData: (
@@ -918,7 +938,7 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires during light source initialization.
    * This hook can be used to add programmatic light sources to the Scene.
-   * @param source - The {@linkcode EffectsCanvasGroup} where light sources are initialized
+   * @param group - The {@linkcode EffectsCanvasGroup} where light sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode EffectsCanvasGroup.Implementation.initializeLightSources | EffectsCanvasGroup#initializeLightSources}
    */
@@ -976,8 +996,8 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires after an Adventure has been imported into the World.
    * @param adventure - The Adventure document from which content is being imported
    * @param formData  - Processed data from the importer form
-   * @param toCreate  - Adventure data which needs to be created in the World
-   * @param toUpdate  - Adventure data which needs to be updated in the World
+   * @param created   - Adventure data which needs to be created in the World
+   * @param updated   - Adventure data which needs to be updated in the World
    * @returns False to prevent the core software from handling the import
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
@@ -1016,16 +1036,7 @@ export interface AllHooks extends DynamicHooks {
    * @param combat     - The Combat encounter which is starting
    * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
    */
-  combatStart: (
-    combat: Combat.Implementation,
-    updateData: {
-      /** The initial round */
-      round: number;
-
-      /** The initial turn */
-      turn: number;
-    },
-  ) => void;
+  combatStart: (combat: Combat.Implementation, updateData: Combat.CombatStartData) => void;
 
   /**
    * A hook event that fires when the turn of the Combat encounter changes.
@@ -1036,20 +1047,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatTurn: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The current round of combat */
-      round: number;
-
-      /** The new turn number */
-      turn: number;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.TurnUpdateData,
+    updateOptions: Combat.TurnUpdateOptions,
   ) => void;
 
   /**
@@ -1060,23 +1059,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatRound: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The new round of combat */
-      round: number;
-
-      /**
-       * The new turn number
-       * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
-       */
-      turn: number | null;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.RoundUpdateData,
+    updateOptions: Combat.RoundUpdateOptions,
   ) => void;
 
   /**
@@ -1206,11 +1190,17 @@ export interface AllHooks extends DynamicHooks {
    * @param settings - The AVSettings manager
    * @param changed  - The delta of the settings that have been changed
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@linkcode AVSettings._onSettingsChanged | AVSettings#_onSettingsChanged}
    */
   rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
-  // TODO: `clientSettingChanged`
+  /**
+   * A hook event that fires when a client setting changes.
+   * @param key     - The setting key which changed
+   * @param value   - The new setting value
+   * @param options - Additional options passed with the request
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  clientSettingChanged: (key: string, value: unknown, options: ClientSettings.OnChangeOptions) => void;
 
   /* RollTableConfig */
 
@@ -1289,7 +1279,12 @@ declare global {
       /** The relative file path which was modified */
       path: string;
 
-      /** The file extension which was modified, e.g. "js", "css", "html" */
+      /**
+       * The file extension which was modified, e.g. "js", "css", "html"
+       * @remarks `Game##handleHotReload` only does anything for the enumerated extensions below, but will call the hook
+       * for files with any extension specified in the relevant manifest. Packages can specify extensions with or without
+       * leading `.`s; either way they are stripped before being sent over the socket.
+       */
       extension: "js" | "css" | "html" | "hbs" | (string & {});
     }
 
@@ -1439,7 +1434,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
-      data: PlaceableObject.PasteObjectReturn<P["document"]>,
+      data: Document.SourceForName<P["document"]["documentName"]>,
       options: Hooks.PastePlaceableObjectOptions,
     ) => boolean | void;
 
@@ -1501,7 +1496,7 @@ declare global {
      * @template P   - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode PlaceableObject._onHoverIn |  PlaceableObject#_onHoverIn}
+     * @see {@linkcode PlaceableObject._onHoverIn | PlaceableObject#_onHoverIn}
      * @see {@linkcode PlaceableObject._onHoverOut | PlaceableObject#_onHoverOut}
      */
     type HoverObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, hover: boolean) => void;
@@ -1524,13 +1519,11 @@ declare global {
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preCreateDocumentArray | ClientDatabaseBackend#_preCreateDocumentArray}
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      options: Document.Database.PreCreateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1545,12 +1538,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postCreateDocumentCallbacks | ClientDatabaseBackend#_postCreateDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.CreateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1570,13 +1561,11 @@ declare global {
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preUpdateDocumentArray | ClientDatabaseBackend#_preUpdateDocumentArray}
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.PreUpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1592,13 +1581,11 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postUpdateDocumentCallbacks | ClientDatabaseBackend#_postUpdateDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       change: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.UpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1617,12 +1604,10 @@ declare global {
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@linkcode ClientDatabaseBackend._preDeleteDocumentArray | ClientDatabaseBackend#_preDeleteDocumentArray}.
-     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.PreDeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.PreDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1637,12 +1622,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode ClientDatabaseBackend._postDeleteDocumentCallbacks | ClientDatabaseBackend#_postDeleteDocumentCallbacks}
-     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.DeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.OnDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1655,6 +1638,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
+    // TODO: this is currently unused and needs to be properly wired up
     type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;

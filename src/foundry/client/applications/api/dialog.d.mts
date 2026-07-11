@@ -487,7 +487,7 @@ declare namespace DialogV2 {
     callback: () => false;
   }
 
-  type ConfirmReturn<Options extends ConfirmConfig<never> | undefined> =
+  type ConfirmReturn<Options extends ConfirmConfig<never> | undefined = undefined> =
     Options extends ConfirmConfig<never>
       ? WaitReturn<
           {

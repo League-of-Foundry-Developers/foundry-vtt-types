@@ -25,7 +25,7 @@ declare namespace PrimaryGraphics {
   interface AnyConstructor extends Identity<typeof AnyPrimaryGraphics> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * A geometry passed to the graphics.
      * @defaultValue {@linkcode PIXI.smooth.SmoothGraphicsGeometry | new PIXI.smooth.SmoothGraphicsGeometry()}
@@ -47,9 +47,9 @@ declare namespace PrimaryGraphics {
      * See {@linkcode PrimaryCanvasObjectMixin.AnyMixed.object | PrimaryCanvasObject#object}
      */
     object: PlaceableObject.Any | null;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 }
 
 export default PrimaryGraphics;

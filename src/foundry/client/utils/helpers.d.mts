@@ -24,7 +24,7 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
 export function readTextFromFile(file: File): Promise<string>;
 
 /** @internal */
-type _FromUuidOptions = InexactPartial<{
+interface _FromUuidOptions {
   /** A Document to resolve relative UUIDs against. */
   relative: Document.Any;
 
@@ -33,9 +33,9 @@ type _FromUuidOptions = InexactPartial<{
    * @defaultValue `false`
    */
   invalid: boolean;
-}>;
+}
 
-export interface FromUuidOptions extends _FromUuidOptions {}
+export interface FromUuidOptions extends InexactPartial<_FromUuidOptions> {}
 
 /**
  * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
@@ -48,15 +48,15 @@ export function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument
 ): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
 
 /** @internal */
-type _FromUuidSyncOptions = InexactPartial<{
+interface _FromUuidSyncOptions {
   /**
    * Throw an error if the UUID cannot be resolved synchronously.
    * @defaultValue `true`
    */
   strict: boolean;
-}>;
+}
 
-export interface FromUuidSyncOptions extends _FromUuidOptions, _FromUuidSyncOptions {}
+export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, InexactPartial<_FromUuidSyncOptions> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -81,12 +81,13 @@ type __UnsetDocument = Document.Any & {
   [__Unset]: true;
 };
 
-declare class InvalidUuid extends foundry.abstract.Document<any, any, any> {}
+declare const AnyDocumentClass: Document.AnyConstructor;
+declare abstract class InvalidUuid extends AnyDocumentClass {}
 
 type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
   ? FromUuid<Rest>
   : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
-    ? Document.ImplementationFor<DocumentType>
+    ? Document.StoredForName<DocumentType>
     : InvalidUuid;
 
 type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid
@@ -189,15 +190,15 @@ export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
 export function getCacheBustURL(src: string): string | false;
 
 /** @internal */
-type _FetchResourceOptions = InexactPartial<{
+interface _FetchResourceOptions {
   /**
    * Append a cache-busting query parameter to the request.
    * @defaultValue `false`
    */
   bustCache: boolean;
-}>;
+}
 
-interface FetchResourceOptions extends _FetchResourceOptions {}
+export interface FetchResourceOptions extends InexactPartial<_FetchResourceOptions> {}
 
 /**
  * Use the Fetch API to retrieve a resource and return a Blob instance for it.

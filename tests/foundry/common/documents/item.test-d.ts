@@ -68,7 +68,9 @@ expectTypeOf(baseItem.getFlag("another-system", "value")).toEqualTypeOf<unknown>
 expectTypeOf(baseItem.getFlag("invalid-system", "value")).toEqualTypeOf<never>();
 
 // returns `this`
-expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<Promise<foundry.documents.BaseItem>>();
+expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
+  Promise<foundry.documents.BaseItem | undefined>
+>();
 
 // @ts-expect-error my-system.countable is a boolean not a number.
 baseItem.setFlag("my-system", "countable", 2);
@@ -77,7 +79,9 @@ baseItem.setFlag("my-system", "countable", 2);
 baseItem.setFlag("my-system", "unknown-key", 2);
 
 // returns `this`
-expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<Promise<foundry.documents.BaseItem>>();
+expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
+  Promise<foundry.documents.BaseItem | undefined>
+>();
 
 // This test is necessary because seemingly more DRY ways of writing `getFlag` or `setFlag` will fail to typecheck.
 // For example `ConcreteMetadata["name"]` is written a lot instead of `this` because `this` is inherently "generic-like" in its safety requirements.
@@ -85,11 +89,16 @@ expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<Pro
 class _TestFlags extends Item {
   testFlags() {
     expectTypeOf(this.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
-    expectTypeOf(this.setFlag("my-system", "countable", false)).toEqualTypeOf<Promise<this>>();
+    expectTypeOf(this.setFlag("my-system", "countable", false)).toEqualTypeOf<Promise<this | undefined>>();
   }
 }
 
 class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+
   testFlagsFail() {
     // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.getFlag("my-system", "countable");

@@ -1,28 +1,22 @@
 import type { ConfiguredDocumentClass } from "../../../types/documentConfiguration.d.mts";
-import type {
-  AnyObject,
-  FixedInstanceType,
-  InexactPartial,
-  IntentionalPartial,
-  MaybeArray,
-  Merge,
-  NullishProps,
-} from "#utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { AVSettings } from "#client/av/_module.d.mts";
+import type { Users } from "#client/documents/collections/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ControlsLayer from "#client/canvas/layers/controls.d.mts";
 
 declare namespace User {
   /**
@@ -116,12 +110,12 @@ declare namespace User {
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Users.ImplementationClass;
+  type CollectionClass = Users.ImplementationClass;
 
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Users.Implementation;
+  type Collection = Users.Implementation;
 
   /**
    * An instance of `User` that comes from the database but failed validation meaning that
@@ -194,7 +188,7 @@ declare namespace User {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode User}. This is the source of truth for how an User document
+   * The schema for {@linkcode User}. This is the source of truth for how a `User` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode User}. For example
@@ -313,110 +307,596 @@ declare namespace User {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for Users */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
-
-    /** Options passed along in Create operations for Users */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Users */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
-
-    /** Options passed along in Update operations for Users */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
-
-    /** Operation for {@linkcode User.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      User.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode User.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
-
-    /** Operation for {@linkcode User.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
-
-    /** Operation for {@linkcode User.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      User.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode User.update | User#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode User.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode User._preCreate | User#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode User._onCreate | User#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode User._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<User.Database.Create> {}
-
-    /** Operation for {@linkcode User._onCreateOperation | User#_onCreateOperation} */
-    interface OnCreateOperation extends User.Database.Create {}
-
-    /** Options for {@linkcode User._preUpdate | User#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode User._onUpdate | User#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode User._preUpdateOperation} */
-    interface PreUpdateOperation extends User.Database.Update {}
-
-    /** Operation for {@linkcode User._onUpdateOperation | User._preUpdateOperation} */
-    interface OnUpdateOperation extends User.Database.Update {}
-
-    /** Options for {@linkcode User._preDelete | User#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode User._onDelete | User#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode User._preDeleteOperation | User#_preDeleteOperation} */
-    interface PreDeleteOperation extends User.Database.Delete {}
-
-    /** Options for {@linkcode User._onDeleteOperation | User#_onDeleteOperation} */
-    interface OnDeleteOperation extends User.Database.Delete {}
-
-    /** Context for {@linkcode User._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<User.Parent> {}
-
-    /** Context for {@linkcode User._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<User.Parent> {}
-
-    /** Context for {@linkcode User._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<User.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode User._preCreateDescendantDocuments | User#_preCreateDescendantDocuments}
-     * and {@linkcode User._onCreateDescendantDocuments | User#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `User` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<User.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<User.Parent> {}
 
     /**
-     * Options for {@linkcode User._preUpdateDescendantDocuments | User#_preUpdateDescendantDocuments}
-     * and {@linkcode User._onUpdateDescendantDocuments | User#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode User.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<User.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode User._preDeleteDescendantDocuments | User#_preDeleteDescendantDocuments}
-     * and {@linkcode User._onDeleteDescendantDocuments | User#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `User` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode User.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `User` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode User.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<User.CreateInput, User.Parent, Temporary> {
+      // `updateWorld` is omitted here as it only sees use server side and it's not something users should be passing
+    }
+
+    /**
+     * The interface for passing to {@linkcode User.create} or {@linkcode User.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `User` documents. (see {@linkcode User.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `User` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode User._preCreate | User#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateUser` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode User._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode User._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode User._onCreate | User#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createUser` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._onCreateOperation} and `User`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `User` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode User.update | User#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<User.UpdateInput, User.Parent> {
+      // `updateWorld` is omitted here as it only sees use server side and it's not something users should be passing
+    }
+
+    /**
+     * The interface for passing to {@linkcode User.update | User#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `User` documents (see {@linkcode User.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode User.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `User` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._preUpdate | User#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateUser` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode User._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._onUpdate | User#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateUser` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._onUpdateOperation} and `User`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `User` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode User.delete | User#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<User.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode User.delete | User#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `User` documents (see {@linkcode User.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode User.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `User` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._preDelete | User#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteUser` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode User._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._onDelete | User#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteUser` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode User._onDeleteOperation} and `User`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: User.Database.GetDocumentsOperation;
+        BackendGetOperation: User.Database.BackendGetOperation;
+        GetOperation: User.Database.GetOperation;
+
+        CreateDocumentsOperation: User.Database.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: User.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: User.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: User.Database.CreateOperation<Temporary>;
+        PreCreateOptions: User.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: User.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: User.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: User.Database.OnCreateOptions;
+        OnCreateOperation: User.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: User.Database.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: User.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: User.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: User.Database.BackendUpdateOperation;
+        UpdateOperation: User.Database.UpdateOperation;
+        PreUpdateOptions: User.Database.PreUpdateOptions;
+        PreUpdateOperation: User.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: User.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: User.Database.OnUpdateOptions;
+        OnUpdateOperation: User.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: User.Database.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: User.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: User.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: User.Database.BackendDeleteOperation;
+        DeleteOperation: User.Database.DeleteOperation;
+        PreDeleteOptions: User.Database.PreDeleteOptions;
+        PreDeleteOperation: User.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: User.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: User.Database.OnDeleteOptions;
+        OnDeleteOperation: User.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -451,13 +931,59 @@ declare namespace User {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode User.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode User.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode User.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode User.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode User.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode User.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode User.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends User.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<User.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode User.deleteDialog | User#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    User.Stored,
+    Config
+  >;
 
   /* ***********************************************
    *             USER-SPECIFIC TYPES               *
@@ -471,46 +997,35 @@ declare namespace User {
   }
 
   /** @internal */
-  type _PingData = InexactPartial<{
+  interface _HasRoleOptions {
     /**
-     * The zoom level at which the ping was made.
-     * @defaultValue `1`
-     * @remarks Can't be `null` because it only has a parameter default and is eventually used as a divisor in `Canvas#_constrainView`
+     * Require the role match to be exact
+     * @defaultValue `false`
      */
-    zoom: number;
-  }> &
-    NullishProps<{
-      /**
-       * Pulls all connected clients' views to the pinged co-ordinates.
-       */
-      pull: boolean;
-
-      /**
-       * The ping style, see CONFIG.Canvas.pings.
-       * @defaultValue `"pulse"`
-       * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
-       *
-       * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
-       */
-      style: Ping.ConfiguredStyles;
-    }>;
-
-  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
-  interface PingData extends _PingData {
-    /**
-     * The ID of the scene that was pinged.
-     */
-    scene: string;
+    exact?: boolean;
   }
+
+  /** Used by {@linkcode BaseUser.hasRole | BaseUser#hasRole}. */
+  interface HasRoleOptions extends InexactPartial<_HasRoleOptions> {}
+
+  /** Used by {@linkcode BaseUser.can | BaseUser#can}. */
+  type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
+  /**
+   * A callback for {@linkcode User.isDesignated | User#isDesignated}. Will be passed to
+   * {@linkcode Users.getDesignatedUser | Users#getDesignatedUser}, where it's used as a
+   * {@linkcode Collection.filter | filter} conditional.
+   */
+  type DesignationCallback = (user: User.Stored) => boolean;
 
   /**
    * No core {@linkcode User.broadcastActivity | User#broadcastActivity} call provides all keys, most only provide one,
    * this is essentially bundling a bunch of unrelated update types into one socket handler, but the socket drops
-   * explicit `undefined` keys, so `IntentionalPartial` and `| null` as appropriate it is.
+   * explicit `undefined` keys, so we use `IntentionalPartial` below.
    *
    * @internal
    */
-  type _ActivityData = IntentionalPartial<{
+  interface _ActivityData {
     /**
      * The ID of the scene that the user is viewing.
      * @remarks Foundry types this as possibly being `null`, but no code path in core seems to be able to produce such a broadcast,
@@ -559,62 +1074,84 @@ declare namespace User {
      * which has no default and has `in` checks applied.
      */
     av: AVSettings.Data;
-  }>;
+  }
 
-  interface ActivityData extends _ActivityData {}
+  interface ActivityData extends IntentionalPartial<_ActivityData> {}
 
   /** @internal */
-  type _BroadcastActivityOptions = NullishProps<{
+  interface _AssignHotbarMacroOptions {
+    /**
+     * An optional origin slot from which the Macro is being shifted
+     * @remarks No default value, and non-{@linkcode Number.isNumeric | numeric} values are ignored
+     */
+    fromSlot: number | `${number}`;
+  }
+
+  interface AssignHotbarMacroOptions extends InexactPartial<_AssignHotbarMacroOptions> {}
+
+  /** @internal */
+  interface _BroadcastActivityOptions {
     /**
      * If undefined, volatile is inferred from the activity data.
      * @remarks The update is assumed volatile if it has `av`, `targets`, or `ping` data,
      *  lacks a `sceneId`, or has `ruler` data of exactly `null`
      */
     volatile: boolean;
-  }>;
+  }
 
-  interface BroadcastActivityOptions extends _BroadcastActivityOptions {}
-
-  /** @internal */
-  type _HasRoleOptions = NullishProps<{
-    /**
-     * Require the role match to be exact
-     * @defaultValue `false`
-     */
-    exact?: boolean | undefined;
-  }>;
-
-  interface HasRoleOptions extends _HasRoleOptions {}
-
-  /** @internal */
-  type _AssignHotbarMacroOptions = NullishProps<{
-    /**
-     * An optional origin slot from which the Macro is being shifted
-     * @remarks No default value, and non-numeric values are ignored
-     */
-    fromSlot: number;
-  }>;
-
-  interface AssignHotbarMacroOptions extends _AssignHotbarMacroOptions {}
+  interface BroadcastActivityOptions extends InexactPartial<_BroadcastActivityOptions> {}
 
   /** The data {@linkcode User.getHotbarMacros | User#getHotbarMacros} returns for each of the 10 entries in its returned array */
   interface GetHotbarMacrosData {
     slot: number;
-    macro: Macro.Implementation | null;
+    macro: Macro.Stored | null;
   }
 
-  type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
-
-  interface QueryOptions {
+  /** @internal */
+  interface _QueryOptions {
     /**
      * The timeout in milliseconds
      */
-    timeout?: number | undefined;
+    timeout: number;
   }
+
+  interface QueryOptions extends InexactPartial<_QueryOptions> {}
 
   type QueryName = keyof typeof CONFIG.queries;
   type QueryData<QueryName extends User.QueryName> = Parameters<(typeof CONFIG.queries)[QueryName]>[0];
   type QueryReturn<QueryName extends User.QueryName> = Awaited<ReturnType<(typeof CONFIG.queries)[QueryName]>>;
+
+  /** @internal */
+  interface _PingData {
+    /**
+     * The zoom level at which the ping was made.
+     * @defaultValue `1`
+     */
+    zoom: number;
+
+    /**
+     * Pulls all connected clients' views to the pinged co-ordinates.
+     */
+    pull: boolean;
+
+    /**
+     * The ping style, see CONFIG.Canvas.pings.
+     * @defaultValue `"pulse"`
+     * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
+     *
+     * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive
+     * mode is enabled and the ping is within the viewport.
+     */
+    style: Ping.ConfiguredStyles;
+  }
+
+  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
+  interface PingData extends InexactPartial<_PingData> {
+    /**
+     * The ID of the scene that was pinged.
+     */
+    scene: string;
+  }
 
   /**
    * The arguments to construct the document.
@@ -660,7 +1197,8 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Track the Token documents that this User is currently moving.
-   * @remarks foundry marks as `@readonly`
+   * @remarks foundry marks as `@readonly`, but really just mean `@internal`; Tokens are added by `TokenDocument##onUpdateMovement`,
+   * and deleted by that method and `##stopMovement`.
    */
   movingTokens: Set<TokenDocument.Implementation>;
 
@@ -695,17 +1233,17 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Is this User the designated User among the Users that satisfy the given condition?
-   * This function calls {@linkcode foundry.documents.collections.Users.getDesignatedUser | `foundry.documents.collections.Users#getDesignatedUser`} and compares the designated User
+   * This function calls {@linkcode Users.getDesignatedUser | game.users.Users#getDesignatedUser} and compares the designated User
    * to this User.
    * @example
-   * // Is the current User the designated User to create Tokens?
    * ```js
+   * // Is the current User the designated User to create Tokens?
    * const isDesignated = game.user.isDesignated(user => user.active && user.can("TOKEN_CREATE"));
    * ```
    * @param condition - The condition the Users must satisfy
    * @returns Is designated User?
    */
-  isDesignated(condition: (user: User.Implementation) => boolean): boolean;
+  isDesignated(condition: User.DesignationCallback): boolean;
 
   /**
    * @remarks Doesn't exist prior to data prep, set in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
@@ -725,8 +1263,14 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @throws If `slot` is provided and either less than `1` or more than `50`, or not provided when there's no open slots
    */
   assignHotbarMacro(
-    macro: Macro.Implementation | null,
+    macro: Macro.Stored,
     slot?: `${number}` | number,
+    options?: User.AssignHotbarMacroOptions,
+  ): Promise<this | undefined>;
+
+  assignHotbarMacro(
+    macro: null,
+    slot: `${number}` | number,
     options?: User.AssignHotbarMacroOptions,
   ): Promise<this | undefined>;
 
@@ -734,7 +1278,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Assign a specific boolean permission to this user.
    * Modifies the user permissions to grant or restrict access to a feature.
    *
-   * @param permission - The permission name from USER_PERMISSIONS
+   * @param permission - The permission name from {@linkcode CONST.USER_PERMISSIONS}
    * @param allowed    - Whether to allow or restrict the permission
    * @remarks
    * @throws If the calling user is not at least an Assistant GM
@@ -760,6 +1304,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Update the set of Token targets for the user given an array of provided Token ids.
    * This function handles changes made elsewhere and does not broadcast to other connected clients.
    * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
+   * @internal
    */
   protected _onUpdateTokenTargets(targetIds?: string[]): void;
 
@@ -773,11 +1318,15 @@ declare class User extends BaseUser.Internal.ClientDocument {
   query<QueryName extends User.QueryName>(
     queryName: QueryName,
     queryData: User.QueryData<QueryName>,
-    { timeout }?: User.QueryOptions,
+    queryOptions?: User.QueryOptions,
   ): Promise<User.QueryReturn<QueryName>>;
 
-  // _onUpdate and _onDelete are overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOptions, userId: string): void;
+
+  // protected override _onDelete(options: User.Database.OnDeleteOptions, userId: string): void;
 
   /*
    * After this point these are not really overridden methods.
@@ -795,25 +1344,53 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   static override defaultName(context?: User.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends User.CreateDialogOptions | undefined = undefined,
+  >(
     data?: User.CreateDialogData,
-    createOptions?: User.Database.DialogCreateOptions,
-    options?: User.CreateDialogOptions,
-  ): Promise<User.Stored | null | undefined>;
+    createOptions?: User.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<User.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"User">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode User.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends User.CreateDialogOptions | undefined = undefined,
+  >(
+    data: User.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: User.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<User.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: User.DropData,
-    options?: User.DropDataOptions,
-  ): Promise<User.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: User.Database.DeleteOneDocumentOperation,
+  ): Promise<User.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: User.Database.DeleteOneDocumentOperation,
+  ): Promise<User.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: User.DropData): Promise<User.Implementation | undefined>;
 
   static override fromImport(
     source: User.Source,
-    context?: Document.FromImportContext<User.Parent> | null,
+    context?: Document.FromImportContext<User.Parent>,
   ): Promise<User.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

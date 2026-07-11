@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -48,13 +49,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseAmbientLight.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): AmbientLightDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAmbientLight;
@@ -65,52 +59,65 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseAmbientLight.Hierarchy;
+  static override readonly hierarchy: BaseAmbientLight.Hierarchy;
 
   override parent: BaseAmbientLight.Parent;
 
   override " fvtt_types_internal_document_parent": BaseAmbientLight.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"AmbientLight", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<AmbientLightDocument.Implementation | BaseAmbientLight.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseAmbientLight.Database.Create<Temporary>>,
+    data: BaseAmbientLight.CreateInput[],
+    operation?: BaseAmbientLight.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseAmbientLight.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseAmbientLight.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseAmbientLight.Database.Update>,
-  ): Promise<AmbientLightDocument.Implementation[]>;
+    updates: BaseAmbientLight.UpdateInput[],
+    operation?: BaseAmbientLight.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<AmbientLightDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientLight.Database.Delete>,
-  ): Promise<AmbientLightDocument.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseAmbientLight.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<AmbientLightDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseAmbientLight.CreateData | BaseAmbientLight.CreateData[],
-    operation?: BaseAmbientLight.Database.CreateOperation<Temporary>,
-  ): Promise<BaseAmbientLight.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseAmbientLight.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseAmbientLight.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseAmbientLight.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseAmbientLight.UpdateData | undefined,
-    operation?: BaseAmbientLight.Database.UpdateOperation,
+    data: BaseAmbientLight.UpdateInput,
+    operation?: BaseAmbientLight.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseAmbientLight.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseAmbientLight.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseAmbientLight.Database.GetOptions,
-  ): AmbientLightDocument.Implementation | null;
+  // `AmbientLightDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseAmbientLight.Database.GetDocumentsOperation): null;
 
+  // `AmbientLightDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseAmbientLight.Flags.Scope, Key extends BaseAmbientLight.Flags.Key<Scope>>(
     scope: Scope,
@@ -121,110 +128,113 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     Scope extends BaseAmbientLight.Flags.Scope,
     Key extends BaseAmbientLight.Flags.Key<Scope>,
     Value extends BaseAmbientLight.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseAmbientLight.Flags.Scope, Key extends BaseAmbientLight.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseAmbientLight.CreateData,
     options: BaseAmbientLight.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseAmbientLight.CreateData,
-    options: BaseAmbientLight.Database.OnCreateOperation,
+    options: BaseAmbientLight.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: AmbientLightDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseAmbientLight.Database.Create>,
-    user: User.Implementation,
+    operation: BaseAmbientLight.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: AmbientLightDocument.Implementation[],
-    operation: BaseAmbientLight.Database.Create,
-    user: User.Implementation,
+    documents: AmbientLightDocument.Stored[],
+    operation: BaseAmbientLight.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseAmbientLight.UpdateData,
     options: BaseAmbientLight.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseAmbientLight.UpdateData,
-    options: BaseAmbientLight.Database.OnUpdateOperation,
+    options: BaseAmbientLight.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: AmbientLightDocument.Implementation[],
-    operation: BaseAmbientLight.Database.Update,
-    user: User.Implementation,
+    documents: AmbientLightDocument.Stored[],
+    operation: BaseAmbientLight.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: AmbientLightDocument.Implementation[],
-    operation: BaseAmbientLight.Database.Update,
-    user: User.Implementation,
+    documents: AmbientLightDocument.Stored[],
+    operation: BaseAmbientLight.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseAmbientLight.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseAmbientLight.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseAmbientLight.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: AmbientLightDocument.Implementation[],
-    operation: BaseAmbientLight.Database.Delete,
-    user: User.Implementation,
+    documents: AmbientLightDocument.Stored[],
+    operation: BaseAmbientLight.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: AmbientLightDocument.Implementation[],
-    operation: BaseAmbientLight.Database.Delete,
-    user: User.Implementation,
+    documents: AmbientLightDocument.Stored[],
+    operation: BaseAmbientLight.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `AmbientLightDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientLight.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `AmbientLightDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    documents: AmbientLightDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientLight.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `AmbientLightDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    documents: AmbientLightDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientLight.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAmbientLight.Schema>;
+  static override _schema: SchemaField<BaseAmbientLight.Schema>;
 
   static override get schema(): SchemaField<BaseAmbientLight.Schema>;
 
@@ -256,7 +266,6 @@ declare namespace BaseAmbientLight {
   export import CollectionClass = AmbientLightDocument.CollectionClass;
   export import Collection = AmbientLightDocument.Collection;
   export import Invalid = AmbientLightDocument.Invalid;
-  export import Stored = AmbientLightDocument.Stored;
   export import Source = AmbientLightDocument.Source;
   export import CreateData = AmbientLightDocument.CreateData;
   export import CreateInput = AmbientLightDocument.CreateInput;

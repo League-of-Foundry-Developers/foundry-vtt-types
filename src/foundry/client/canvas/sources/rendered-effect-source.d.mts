@@ -278,7 +278,7 @@ declare namespace RenderedEffectSource {
   type AnimationFunction = (this: RenderedEffectSource.Any, dt: number, options?: AnimationFunctionOptions) => void;
 
   /** @internal */
-  type _AnimationFunctionOptions = InexactPartial<{
+  interface _AnimationFunctionOptions {
     /**
      * The animation speed, from 0 to 10
      * @defaultValue `5`
@@ -296,13 +296,13 @@ declare namespace RenderedEffectSource {
      * @defaultValue `false`
      */
     reverse: boolean;
-  }>;
+  }
 
   /**
    * Shared options for the {@linkcode RenderedEffectSource.AnimationFunction | AnimationFunction}s
    * provided by {@linkcode RenderedEffectSource} and subclasses
    */
-  interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
+  interface AnimationFunctionOptions extends InexactPartial<_AnimationFunctionOptions> {}
 
   /**
    * Properties *every* {@linkcode CONFIG.Canvas.lightAnimations}/{@linkcode CONFIG.Canvas.darknessAnimations | darknessAnimations} entry requires
@@ -325,7 +325,7 @@ declare namespace RenderedEffectSource {
   }
 
   /** @internal */
-  type _Seed = InexactPartial<{
+  interface _Seed {
     /**
      * The animation seed
      * @defaultValue `Math.floor(Math.random() * 100000)`
@@ -333,7 +333,7 @@ declare namespace RenderedEffectSource {
      * specifies this, but it would be respected if set.
      */
     seed: number;
-  }>;
+  }
 
   /**
    * Shaders to override the defaults for each rendering layer this effect affects.
@@ -373,19 +373,19 @@ declare namespace RenderedEffectSource {
   }
 
   /** @internal */
-  type _AnimationConfig = InexactPartial<
-    _AnimationConfigBase &
-      _AnimationConfigLightingShaders &
-      _AnimationConfigDarknessShaders &
-      _Seed &
-      LightData.AnimationData & {
-        /**
-         * The animation time
-         * @remarks Always computed. Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
-         */
-        time?: number;
-      }
-  >;
+  interface _AnimationConfig
+    extends
+      InexactPartial<_AnimationConfigBase>,
+      InexactPartial<_AnimationConfigLightingShaders>,
+      InexactPartial<_AnimationConfigDarknessShaders>,
+      InexactPartial<_Seed>,
+      InexactPartial<LightData.AnimationData> {
+    /**
+     * The animation time
+     * @remarks Always computed. Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
+     */
+    time?: number | undefined;
+  }
 
   /**
    * @remarks The type for {@linkcode RenderedEffectSource.animation | RenderedEffectSource#animation} and

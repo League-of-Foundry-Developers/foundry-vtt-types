@@ -94,21 +94,25 @@ declare class EffectsCanvasGroup<
 
   /**
    * A layer of background alteration effects which change the appearance of the primary group render texture.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   background: layers.CanvasBackgroundAlterationEffects.Any;
 
   /**
    * A layer which adds illumination-based effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   illumination: layers.CanvasIlluminationEffects.Any;
 
   /**
    * A layer which adds color-based effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   coloration: layers.CanvasColorationEffects.Any;
 
   /**
    * A layer which adds darkness effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   darkness: layers.CanvasDarknessEffects.Any;
 
@@ -284,33 +288,33 @@ declare namespace EffectsCanvasGroup {
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /** @internal */
-  type _TestInsideLightOptions = InexactPartial<{
+  interface _TestInsideLightOptions {
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
     condition: (source: sources.PointLightSource.Internal.Any | sources.GlobalLightSource.Any) => boolean;
-  }>;
+  }
 
-  interface TestInsideLightOptions extends _TestInsideLightOptions {}
+  interface TestInsideLightOptions extends InexactPartial<_TestInsideLightOptions> {}
 
   /** @internal */
-  type _TestInsideDarknessOptions = InexactPartial<{
+  interface _TestInsideDarknessOptions {
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
     condition: (source: sources.PointDarknessSource.Internal.Any) => boolean;
-  }>;
+  }
 
-  interface TestInsideDarknessOptions extends _TestInsideLightOptions {}
+  interface TestInsideDarknessOptions extends InexactPartial<_TestInsideDarknessOptions> {}
 
   /** @internal */
-  type _AnimateDarknessOptions = InexactPartial<{
+  interface _AnimateDarknessOptions {
     /**
      * The desired animation time in milliseconds. Default is 10 seconds
      * @defaultValue `10000`
      */
     duration: number;
-  }>;
+  }
 
-  interface AnimateDarknessOptions extends _AnimateDarknessOptions {}
+  interface AnimateDarknessOptions extends InexactPartial<_AnimateDarknessOptions> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

@@ -12,7 +12,7 @@ const testEffect = new ActiveEffect.implementation({ name: "Test Effect" });
 
 const anyMacro = new Macro.implementation<Macro.SubType>({ name: "my macro", scope: "global", type: "script" });
 expectTypeOf(anyMacro.execute()).toEqualTypeOf<
-  Promise<ChatMessage.Implementation | undefined | void> | Promise<unknown> | void
+  Promise<ChatMessage.Stored | undefined | void> | Promise<unknown> | void
 >();
 
 const script = new Macro.implementation({ name: "my macro", scope: "global", type: "script" });
@@ -50,7 +50,7 @@ expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | undefined>>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null>>();
 
 // properties of `Document`
 expectTypeOf(script.parent).toEqualTypeOf<null>();
@@ -59,5 +59,5 @@ expectTypeOf(script.pack).toEqualTypeOf<string | null>();
 // static properties of `Document`
 expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
 expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
-expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
-expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
+expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();

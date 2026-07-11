@@ -12,7 +12,7 @@ new Playlist.implementation({});
 const playlist = new Playlist.implementation({ name: "Some Playlist" });
 expectTypeOf(playlist).toEqualTypeOf<Playlist.Implementation>();
 
-const playlistSound = new PlaylistSound.implementation({ name: "Some PlaylistSound" });
+declare const playlistSound: PlaylistSound.Stored;
 
 expectTypeOf(playlist.playbackOrder).toEqualTypeOf<string[]>();
 expectTypeOf(playlist.visible).toEqualTypeOf<boolean>();

@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.mjs";
+import type { SchemaField } from "#common/data/fields.mjs";
 
 /**
  * The RegionBehavior Document.
@@ -57,7 +58,6 @@ declare abstract class BaseRegionBehavior<
   /** @defaultValue `["DOCUMENT", "BEHAVIOR"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** @remarks Returns `user.isGM` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   /*
@@ -74,13 +74,6 @@ declare abstract class BaseRegionBehavior<
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseRegionBehavior.ParentCollectionName | null;
-
-  override readonly pack: string | null;
-
   static override get implementation(): RegionBehavior.ImplementationClass;
 
   static override get baseDocument(): typeof BaseRegionBehavior;
@@ -93,7 +86,7 @@ declare abstract class BaseRegionBehavior<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseRegionBehavior.Hierarchy;
+  static override readonly hierarchy: BaseRegionBehavior.Hierarchy;
 
   override system: BaseRegionBehavior.SystemOfType<SubType>;
 
@@ -101,44 +94,57 @@ declare abstract class BaseRegionBehavior<
 
   override " fvtt_types_internal_document_parent": BaseRegionBehavior.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"RegionBehavior", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<RegionBehavior.Implementation | BaseRegionBehavior.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<BaseRegionBehavior.Database.Create<Temporary>>,
+    data: BaseRegionBehavior.CreateInput[],
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseRegionBehavior.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseRegionBehavior.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<BaseRegionBehavior.Database.Update>,
-  ): Promise<RegionBehavior.Implementation[]>;
+    updates: BaseRegionBehavior.UpdateInput[],
+    operation?: BaseRegionBehavior.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<RegionBehavior.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<BaseRegionBehavior.Database.Delete>,
-  ): Promise<RegionBehavior.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseRegionBehavior.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<RegionBehavior.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseRegionBehavior.CreateData | BaseRegionBehavior.CreateData[],
-    operation?: BaseRegionBehavior.Database.CreateOperation<Temporary>,
-  ): Promise<BaseRegionBehavior.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseRegionBehavior.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseRegionBehavior.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseRegionBehavior.UpdateData | undefined,
-    operation?: BaseRegionBehavior.Database.UpdateOperation,
+    data: BaseRegionBehavior.UpdateInput,
+    operation?: BaseRegionBehavior.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseRegionBehavior.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseRegionBehavior.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseRegionBehavior.Database.GetOptions,
-  ): RegionBehavior.Implementation | null;
+  // `RegionBehavior`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseRegionBehavior.Database.GetDocumentsOperation): null;
 
+  // `RegionBehavior`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseRegionBehavior.Flags.Scope, Key extends BaseRegionBehavior.Flags.Key<Scope>>(
     scope: Scope,
@@ -149,110 +155,113 @@ declare abstract class BaseRegionBehavior<
     Scope extends BaseRegionBehavior.Flags.Scope,
     Key extends BaseRegionBehavior.Flags.Key<Scope>,
     Value extends BaseRegionBehavior.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseRegionBehavior.Flags.Scope, Key extends BaseRegionBehavior.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseRegionBehavior.CreateData,
     options: BaseRegionBehavior.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseRegionBehavior.CreateData,
-    options: BaseRegionBehavior.Database.OnCreateOperation,
+    options: BaseRegionBehavior.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: RegionBehavior.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseRegionBehavior.Database.Create>,
-    user: User.Implementation,
+    operation: BaseRegionBehavior.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: RegionBehavior.Implementation[],
-    operation: BaseRegionBehavior.Database.Create,
-    user: User.Implementation,
+    documents: RegionBehavior.Stored[],
+    operation: BaseRegionBehavior.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseRegionBehavior.UpdateData,
     options: BaseRegionBehavior.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseRegionBehavior.UpdateData,
-    options: BaseRegionBehavior.Database.OnUpdateOperation,
+    options: BaseRegionBehavior.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: RegionBehavior.Implementation[],
-    operation: BaseRegionBehavior.Database.Update,
-    user: User.Implementation,
+    documents: RegionBehavior.Stored[],
+    operation: BaseRegionBehavior.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: RegionBehavior.Implementation[],
-    operation: BaseRegionBehavior.Database.Update,
-    user: User.Implementation,
+    documents: RegionBehavior.Stored[],
+    operation: BaseRegionBehavior.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseRegionBehavior.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseRegionBehavior.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseRegionBehavior.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: RegionBehavior.Implementation[],
-    operation: BaseRegionBehavior.Database.Delete,
-    user: User.Implementation,
+    documents: RegionBehavior.Stored[],
+    operation: BaseRegionBehavior.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: RegionBehavior.Implementation[],
-    operation: BaseRegionBehavior.Database.Delete,
-    user: User.Implementation,
+    documents: RegionBehavior.Stored[],
+    operation: BaseRegionBehavior.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `RegionBehavior._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegionBehavior.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `RegionBehavior._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    documents: RegionBehavior.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegionBehavior.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `RegionBehavior._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    documents: RegionBehavior.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegionBehavior.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseRegionBehavior.Schema>;
+  static override _schema: SchemaField<BaseRegionBehavior.Schema>;
 
   static override get schema(): SchemaField<BaseRegionBehavior.Schema>;
 
@@ -291,7 +300,6 @@ declare namespace BaseRegionBehavior {
   export import CollectionClass = RegionBehavior.CollectionClass;
   export import Collection = RegionBehavior.Collection;
   export import Invalid = RegionBehavior.Invalid;
-  export import Stored = RegionBehavior.Stored;
   export import Source = RegionBehavior.Source;
   export import CreateData = RegionBehavior.CreateData;
   export import CreateInput = RegionBehavior.CreateInput;

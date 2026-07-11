@@ -203,7 +203,7 @@ declare namespace ClientKeybindings {
    * Properties of {@linkcode StoredKeybindActionConfig} that are neither computed nor provided defaults by {@linkcode ClientKeybindings.register | #register}
    * @internal
    */
-  type _KeybindActionConfigOptional = InexactPartial<{
+  interface _KeybindActionConfigOptional {
     /** An additional human readable hint */
     hint: string;
 
@@ -221,14 +221,14 @@ declare namespace ClientKeybindings {
 
     /** If true, only a GM can edit and execute this Action */
     restricted: boolean;
-  }>;
+  }
 
   /**
    * A Client Keybinding Action Configuration
    * @remarks The shape of stored ({@linkcode ClientKeybindings.actions | #actions}) action configs, after defaults provided by
    * {@linkcode ClientKeybindings.register | #register} are applied.
    */
-  interface StoredKeybindingActionConfig extends _KeybindActionConfigOptional {
+  interface StoredKeybindingActionConfig extends InexactPartial<_KeybindActionConfigOptional> {
     /**
      * The namespace within which the action was registered
      * @remarks e.g `"core"`, `"my-package"`
@@ -299,16 +299,16 @@ declare namespace ClientKeybindings {
   interface KeybindingActionConfig extends _KeybindingActionConfig {}
 
   /** @internal */
-  type _StoredKeybindingActionBindingComputed = InexactPartial<{
+  interface _StoredKeybindingActionBindingComputed {
     /**
      * A numeric index which tracks this bindings position during form rendering
      * @remarks Appears to never exist on stored bindings in {@linkcode ClientKeybindings.bindings | ClientKeybindings#bindings},
      * only existing on values in the `ControlsConfig##pendingEdits` private Map during a binding setting operation in the UI
      */
     index: number;
-  }>;
+  }
 
-  interface StoredKeybindingActionBinding extends _StoredKeybindingActionBindingComputed {
+  interface StoredKeybindingActionBinding extends InexactPartial<_StoredKeybindingActionBindingComputed> {
     /**
      * The {@linkcode KeyboardEvent.code | KeyboardEvent#code} value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}
      * @remarks Registration will throw if one of {@linkcode KeyboardManager.PROTECTED_KEYS} is passed
@@ -332,7 +332,7 @@ declare namespace ClientKeybindings {
   }
 
   /**
-   * See {@linkcode _StoredKeybindingActionBindingComputed.index}
+   * See {@linkcode StoredKeybindingActionBindingComputed.index}
    * @internal
    */
   interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}

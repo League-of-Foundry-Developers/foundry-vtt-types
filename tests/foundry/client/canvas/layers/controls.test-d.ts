@@ -1,30 +1,24 @@
 import { expectTypeOf } from "vitest";
 
-import utils = foundry.utils;
-import Canvas = foundry.canvas.Canvas;
 import Cursor = foundry.canvas.containers.Cursor;
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
 import ControlsLayer = foundry.canvas.layers.ControlsLayer;
 import Ruler = foundry.canvas.interaction.Ruler;
-import Ray = foundry.canvas.geometry.Ray;
+
+declare const pixiPoint: PIXI.Point;
 
 expectTypeOf(ControlsLayer.instance).toExtend<ControlsLayer.Implementation | undefined>();
 expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 const layer = new ControlsLayer();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof InteractionLayer>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<InteractionLayer.AnyConstructor>();
 expectTypeOf(layer.options).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 expectTypeOf(layer.doors).toEqualTypeOf<PIXI.Container>();
 expectTypeOf(layer.cursors).toEqualTypeOf<PIXI.Container>();
-expectTypeOf(layer.rulers).toEqualTypeOf<PIXI.Container>();
 expectTypeOf(layer.debug).toEqualTypeOf<PIXI.Graphics>();
 expectTypeOf(layer.select).toEqualTypeOf<PIXI.Graphics | undefined>();
-
-expectTypeOf(layer._cursors).toEqualTypeOf<Record<string, Cursor>>();
-expectTypeOf(layer["_rulers"]).toEqualTypeOf<Record<string, Ruler.Implementation>>();
-expectTypeOf(layer["_offscreenPings"]).toEqualTypeOf<Record<string, Canvas.Point>>();
 
 expectTypeOf(layer.ruler).toEqualTypeOf<Ruler.Implementation | null>();
 expectTypeOf(layer.getRulerForUser("afasfasg")).toEqualTypeOf<Ruler.Implementation | null>();
@@ -33,14 +27,14 @@ expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(layer.drawCursors()).toBeVoid();
-expectTypeOf(layer.drawRulers()).toBeVoid();
+expectTypeOf(layer.drawRulers()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer.drawDoors()).toBeVoid();
 
 declare const someRect: PIXI.ICanvasRect;
 expectTypeOf(layer.drawSelect(someRect)).toBeVoid();
 
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
-expectTypeOf(layer["_onMouseMove"]()).toBeVoid();
+expectTypeOf(layer["_onMouseMove"](pixiPoint)).toBeVoid();
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const somePoint: PIXI.Point;
 expectTypeOf(layer["_onLongPress"](pointerEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
@@ -64,7 +58,7 @@ expectTypeOf(
     color: 0xfaddaf,
     duration: 2323,
     name: "SomePing.ASFASDFAS",
-    pull: null,
+    pull: true,
     size: 120,
     style: "alert",
     zoom: 2.6,
@@ -92,15 +86,10 @@ expectTypeOf(
     name: "bizzfuzz",
     duration: 1000,
     size: 250,
-    style: null,
-    user: null,
+    style: undefined,
+    user: undefined,
   }),
 ).toEqualTypeOf<Promise<boolean>>();
-
-expectTypeOf(layer["_findViewportIntersection"](somePoint)).toEqualTypeOf<{
-  ray: Ray;
-  intersection: utils.LineIntersection | undefined;
-}>();
 
 Hooks.on("drawControlsLayer", (layer) => {
   expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();

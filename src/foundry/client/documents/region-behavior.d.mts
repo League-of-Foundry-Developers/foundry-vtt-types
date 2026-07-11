@@ -1,17 +1,15 @@
 import type { ConfiguredRegionBehavior } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseRegionBehavior } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace RegionBehavior {
   /**
@@ -263,7 +261,7 @@ declare namespace RegionBehavior {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
+   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how a `RegionBehavior` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionBehavior}. For example
@@ -314,115 +312,586 @@ declare namespace RegionBehavior {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for RegionBehaviors */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionBehavior.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for RegionBehaviors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<RegionBehavior.CreateData, RegionBehavior.Parent, Temporary> {}
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `RegionBehavior` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<RegionBehavior.Parent> {}
 
-    /** Options passed along in Delete operations for RegionBehaviors */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionBehavior.Parent> {}
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
-    /** Options passed along in Update operations for RegionBehaviors */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      RegionBehavior.UpdateData,
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `RegionBehavior` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `RegionBehavior` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionBehavior.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<RegionBehavior.CreateInput, RegionBehavior.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.create} or {@linkcode RegionBehavior.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `RegionBehavior` documents. (see {@linkcode RegionBehavior.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `RegionBehavior` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._preCreate | RegionBehavior#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionBehavior._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onCreate | RegionBehavior#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onCreateOperation} and `RegionBehavior`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `RegionBehavior` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionBehavior.update | RegionBehavior#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      RegionBehavior.UpdateInput,
       RegionBehavior.Parent
     > {}
 
-    /** Operation for {@linkcode RegionBehavior.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      RegionBehavior.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode RegionBehavior.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
-
-    /** Operation for {@linkcode RegionBehavior.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
-
-    /** Operation for {@linkcode RegionBehavior.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      RegionBehavior.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode RegionBehavior.update | RegionBehavior#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode RegionBehavior.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode RegionBehavior._preCreate | RegionBehavior#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode RegionBehavior._onCreate | RegionBehavior#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode RegionBehavior._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create> {}
-
-    /** Operation for {@linkcode RegionBehavior._onCreateOperation | RegionBehavior#_onCreateOperation} */
-    interface OnCreateOperation extends RegionBehavior.Database.Create {}
-
-    /** Options for {@linkcode RegionBehavior._preUpdate | RegionBehavior#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode RegionBehavior._onUpdate | RegionBehavior#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode RegionBehavior._preUpdateOperation} */
-    interface PreUpdateOperation extends RegionBehavior.Database.Update {}
-
-    /** Operation for {@linkcode RegionBehavior._onUpdateOperation | RegionBehavior._preUpdateOperation} */
-    interface OnUpdateOperation extends RegionBehavior.Database.Update {}
-
-    /** Options for {@linkcode RegionBehavior._preDelete | RegionBehavior#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode RegionBehavior._onDelete | RegionBehavior#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode RegionBehavior._preDeleteOperation | RegionBehavior#_preDeleteOperation} */
-    interface PreDeleteOperation extends RegionBehavior.Database.Delete {}
-
-    /** Options for {@linkcode RegionBehavior._onDeleteOperation | RegionBehavior#_onDeleteOperation} */
-    interface OnDeleteOperation extends RegionBehavior.Database.Delete {}
-
-    /** Context for {@linkcode RegionBehavior._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
-
-    /** Context for {@linkcode RegionBehavior._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
-
-    /** Context for {@linkcode RegionBehavior._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.update | RegionBehavior#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
-     * Options for {@linkcode RegionBehavior._preCreateDescendantDocuments | RegionBehavior#_preCreateDescendantDocuments}
-     * and {@linkcode RegionBehavior._onCreateDescendantDocuments | RegionBehavior#_onCreateDescendantDocuments}
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `RegionBehavior` documents (see {@linkcode RegionBehavior.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<RegionBehavior.Database.Create> {}
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
 
     /**
-     * Options for {@linkcode RegionBehavior._preUpdateDescendantDocuments | RegionBehavior#_preUpdateDescendantDocuments}
-     * and {@linkcode RegionBehavior._onUpdateDescendantDocuments | RegionBehavior#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode RegionBehavior.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<RegionBehavior.Database.Update> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
-     * Options for {@linkcode RegionBehavior._preDeleteDescendantDocuments | RegionBehavior#_preDeleteDescendantDocuments}
-     * and {@linkcode RegionBehavior._onDeleteDescendantDocuments | RegionBehavior#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `RegionBehavior` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
-     * Create options for {@linkcode RegionBehavior.createDialog}.
+     * The interface passed to {@linkcode RegionBehavior._preUpdate | RegionBehavior#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionBehavior._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onUpdate | RegionBehavior#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onUpdateOperation} and `RegionBehavior`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `RegionBehavior` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RegionBehavior.delete | RegionBehavior#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<RegionBehavior.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.delete | RegionBehavior#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `RegionBehavior` documents (see {@linkcode RegionBehavior.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `RegionBehavior` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._preDelete | RegionBehavior#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RegionBehavior._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onDelete | RegionBehavior#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteRegionBehavior` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RegionBehavior._onDeleteOperation} and `RegionBehavior`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: RegionBehavior.Database.GetDocumentsOperation;
+        BackendGetOperation: RegionBehavior.Database.BackendGetOperation;
+        GetOperation: RegionBehavior.Database.GetOperation;
+
+        CreateDocumentsOperation: RegionBehavior.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: RegionBehavior.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: RegionBehavior.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: RegionBehavior.Database.CreateOperation<Temporary>;
+        PreCreateOptions: RegionBehavior.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: RegionBehavior.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: RegionBehavior.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: RegionBehavior.Database.OnCreateOptions;
+        OnCreateOperation: RegionBehavior.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: RegionBehavior.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: RegionBehavior.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: RegionBehavior.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: RegionBehavior.Database.BackendUpdateOperation;
+        UpdateOperation: RegionBehavior.Database.UpdateOperation;
+        PreUpdateOptions: RegionBehavior.Database.PreUpdateOptions;
+        PreUpdateOperation: RegionBehavior.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: RegionBehavior.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: RegionBehavior.Database.OnUpdateOptions;
+        OnUpdateOperation: RegionBehavior.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: RegionBehavior.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: RegionBehavior.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: RegionBehavior.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: RegionBehavior.Database.BackendDeleteOperation;
+        DeleteOperation: RegionBehavior.Database.DeleteOperation;
+        PreDeleteOptions: RegionBehavior.Database.PreDeleteOptions;
+        PreDeleteOperation: RegionBehavior.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: RegionBehavior.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: RegionBehavior.Database.OnDeleteOptions;
+        OnDeleteOperation: RegionBehavior.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -457,13 +926,76 @@ declare namespace RegionBehavior {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode RegionBehavior.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode RegionBehavior.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode RegionBehavior.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    Config extends RegionBehavior.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RegionBehavior.TemporaryIf<Temporary>, Config>;
+
+  /**
+   * The return type for {@linkcode RegionBehavior.deleteDialog | RegionBehavior#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    RegionBehavior.Stored,
+    Config
+  >;
+
+  /* ***********************************************
+   *         REGIONBEHAVIOR-SPECIFIC TYPES         *
+   *************************************************/
+
+  interface CoreBehaviors {
+    adjustDarknessLevel: typeof foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType;
+    displayScrollingText: typeof foundry.data.regionBehaviors.DisplayScrollingTextRegionBehaviorType;
+    executeMacro: typeof foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType;
+    executeScript: typeof foundry.data.regionBehaviors.ExecuteScriptRegionBehaviorType;
+    // TODO: Implement modifyMovementCost
+    // modifyMovementCost: typeof foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType;
+    pauseGame: typeof foundry.data.regionBehaviors.PauseGameRegionBehaviorType;
+    suppressWeather: typeof foundry.data.regionBehaviors.SuppressWeatherRegionBehaviorType;
+    teleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType;
+    toggleBehavior: typeof foundry.data.regionBehaviors.ToggleBehaviorRegionBehaviorType;
+  }
 
   /**
    * The arguments to construct the document.
@@ -492,10 +1024,16 @@ declare class RegionBehavior<
    */
   constructor(data: RegionBehavior.CreateData<SubType>, context?: RegionBehavior.ConstructionContext);
 
-  /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the RegionDocument which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Region, so `Implementation`
+   */
   get region(): RegionDocument.Implementation | null;
 
-  /** A convenience reference to the Scene which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the Scene which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Scene, so `Implementation`
+   */
   get scene(): Scene.Implementation | null;
 
   /** A RegionBehavior is active if and only if it was created, hasn't been deleted yet, and isn't disabled. */
@@ -510,6 +1048,7 @@ declare class RegionBehavior<
    * Does this RegionBehavior handle the Region events with the given name?
    * @param eventName - The Region event name
    */
+  // TODO: are event names statically known?
   hasEvent(eventName: string): boolean;
 
   /**
@@ -519,16 +1058,31 @@ declare class RegionBehavior<
    */
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
-  /**
-   * @remarks `createOptions` must contain a `pack` or `parent`.
-   *
-   * Also this override removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
-   */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
+  >(
     data: RegionBehavior.CreateDialogData | undefined,
-    createOptions: RegionBehavior.Database.DialogCreateOptions,
-    dialogoptions?: RegionBehavior.CreateDialogOptions,
-  ): Promise<RegionBehavior.Stored | null | undefined>;
+    createOptions: RegionBehavior.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode RegionBehavior.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
+  >(
+    data: RegionBehavior.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: RegionBehavior.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
 
   /*
    * After this point these are not really overridden methods.
@@ -544,22 +1098,33 @@ declare class RegionBehavior<
 
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
-  ): Promise<this | false | null | undefined>;
+  // `createDialog` omitted from template due to real override above.
 
-  static override fromDropData(
-    data: RegionBehavior.DropData,
-    options?: RegionBehavior.DropDataOptions,
-  ): Promise<RegionBehavior.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
+  ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
+  ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: RegionBehavior.DropData): Promise<RegionBehavior.Implementation | undefined>;
 
   static override fromImport(
     source: RegionBehavior.Source,
-    context?: Document.FromImportContext<RegionBehavior.Parent> | null,
+    context?: Document.FromImportContext<RegionBehavior.Parent>,
   ): Promise<RegionBehavior.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

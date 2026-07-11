@@ -89,7 +89,7 @@ declare namespace CollisionResult {
   interface Any extends AnyCollisionResult {}
   interface AnyConstructor extends Identity<typeof AnyCollisionResult> {}
 
-  type _ConstructorValues = InexactPartial<{
+  interface _ConstructorValues {
     /**
      * The set of edges connected to the target vertex that continue clockwise
      */
@@ -114,9 +114,9 @@ declare namespace CollisionResult {
      * @defaultValue `[]`
      */
     collisions: PolygonVertex[];
-  }>;
+  }
 
-  interface ConstructorValues extends _ConstructorValues {
+  interface ConstructorValues extends InexactPartial<_ConstructorValues> {
     /**
      * The vertex that was the target of this result
      */

@@ -6,7 +6,7 @@ import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffec
 
 const layer = new CanvasColorationEffects();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof CanvasLayer>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<CanvasLayer.AnyConstructor>();
 expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.Implementation | undefined>();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasColorationEffects>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();

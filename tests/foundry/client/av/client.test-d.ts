@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 import AVClient = foundry.av.AVClient;
 import AVMaster = foundry.av.AVMaster;
+import AVSettings = foundry.av.AVSettings;
 
 declare class CustomAVCLient extends AVClient {
   updateLocalStream(): Promise<void>;

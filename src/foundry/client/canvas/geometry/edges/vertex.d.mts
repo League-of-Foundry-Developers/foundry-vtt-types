@@ -174,7 +174,7 @@ declare namespace PolygonVertex {
   interface AnyConstructor extends Identity<typeof AnyPolygonVertex> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /** A known distance from a polygon origin to this vertex. */
     distance: number;
 
@@ -186,9 +186,9 @@ declare namespace PolygonVertex {
      * @defaultValue `false`
      */
     round: boolean;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 }
 
 export default PolygonVertex;

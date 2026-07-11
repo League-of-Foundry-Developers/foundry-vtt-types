@@ -41,17 +41,17 @@ declare namespace WordTree {
   interface AnyConstructor extends Identity<typeof AnyWordTree> {}
 
   /** @internal */
-  type _LookupOptions = InexactPartial<{
+  interface _LookupOptions {
     /**
      * The maximum number of items to retrieve. It is important to set this value
      * as very short prefixes will naturally match large numbers of entries.
      * @defaultValue `10`
      */
     limit: number;
-  }>;
+  }
 
   interface LookupOptions<DocumentName extends Document.Type>
-    extends Omit<StringTree.LookupOptions<Entry<DocumentName>>, "limit">, _LookupOptions {}
+    extends Omit<StringTree.LookupOptions<Entry<DocumentName>>, "limit">, InexactPartial<_LookupOptions> {}
 
   /**
    * A leaf entry in the tree.

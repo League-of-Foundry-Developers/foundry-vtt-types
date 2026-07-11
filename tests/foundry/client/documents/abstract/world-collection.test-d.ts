@@ -67,8 +67,8 @@ describe("WorldCollection Tests", async () => {
     // @ts-expect-error Folder.Stored<"Actor"> id not assignable to Folder.Stored<"Item">
     expectTypeOf(wic.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
 
-    expectTypeOf(wac.directory).toEqualTypeOf<sidebar.tabs.ActorDirectory.Any | undefined>();
-    expectTypeOf(wic.directory).toEqualTypeOf<sidebar.tabs.ItemDirectory.Any | undefined>();
+    expectTypeOf(wac.directory).toEqualTypeOf<sidebar.tabs.ActorDirectory | undefined>();
+    expectTypeOf(wic.directory).toEqualTypeOf<sidebar.tabs.ItemDirectory | undefined>();
     // `Users#directory` will be `undefined` at runtime, but we leave open the possibility of users registering one in `ui.users`
     expectTypeOf(wuc.directory).toEqualTypeOf<sidebar.DocumentDirectory<User.ImplementationClass> | undefined>();
 
@@ -81,9 +81,18 @@ describe("WorldCollection Tests", async () => {
     expectTypeOf(wuc.search({})).toEqualTypeOf<User.Stored[]>();
   });
 
-  test("importFromCompendium", () => {
-    // TODO: update tests on db-ops branch, include temporary
+  test("importFromCompendium", async () => {
     expectTypeOf(wac.importFromCompendium(actorPack, "id")).toEqualTypeOf<Promise<Actor.Stored>>();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, {})).toEqualTypeOf<Promise<Actor.Stored>>();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, { temporary: false })).toEqualTypeOf<
+      Promise<Actor.Stored>
+    >();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, { temporary: undefined })).toEqualTypeOf<
+      Promise<Actor.Stored>
+    >();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, { temporary: true })).toEqualTypeOf<
+      Promise<Actor.Implementation>
+    >();
   });
 
   test("fromCompendium", () => {
