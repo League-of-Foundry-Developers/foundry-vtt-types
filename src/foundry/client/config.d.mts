@@ -210,64 +210,8 @@ declare global {
    * session or modified by system and module developers to adjust how the application behaves.
    */
   interface CONFIG {
-    /**
-     * Configure debugging flags to display additional information
-     */
-    debug: {
-      /** @defaultValue `false` */
-      applications: boolean;
-
-      /** @defaultValue `false` */
-      audio: boolean;
-
-      /** @defaultValue `false` */
-      dice: boolean;
-
-      /** @defaultValue `false` */
-      documents: boolean;
-
-      fog: {
-        /** @defaultValue `false` */
-        extractor: boolean;
-
-        /** @defaultValue `false` */
-        manager: boolean;
-      };
-
-      /** @defaultValue `false` */
-      hooks: boolean;
-
-      /** @defaultValue `false` */
-      av: boolean;
-
-      /** @defaultValue `false` */
-      avclient: boolean;
-
-      /** @defaultValue `false` */
-      mouseInteraction: boolean;
-
-      /** @defaultValue `false` */
-      time: boolean;
-
-      /** @defaultValue `false` */
-      keybindings: boolean;
-
-      /** @defaultValue `false` */
-      polygons: boolean;
-
-      /** @defaultValue `false` */
-      gamepad: boolean;
-
-      canvas: {
-        primary: {
-          /** @defaultValue `false` */
-          bounds: boolean;
-        };
-      };
-
-      /** @defaultValue `false` */
-      rollParsing: boolean;
-    };
+    /** Configure debugging flags to display additional information */
+    debug: CONFIG.Debug;
 
     /**
      * Configure the verbosity of compatibility warnings generated throughout the software.
@@ -945,6 +889,97 @@ declare global {
   }
 
   namespace CONFIG {
+    interface Debug {
+      /** @defaultValue `false` */
+      applications: boolean;
+
+      /** @defaultValue `false` */
+      audio: boolean;
+
+      /** @defaultValue `false` */
+      combat: boolean;
+
+      /** @defaultValue `false` */
+      dice: boolean;
+
+      /** @defaultValue `false` */
+      documents: boolean;
+
+      fog: Debug.Fog;
+
+      /** @defaultValue `false` */
+      hooks: boolean;
+
+      /** @defaultValue `false` */
+      av: boolean;
+
+      /** @defaultValue `false` */
+      avclient: boolean;
+
+      /** @defaultValue `false` */
+      i18n: boolean;
+
+      /** @defaultValue `false` */
+      mouseInteraction: boolean;
+
+      /** @defaultValue `false` */
+      time: boolean;
+
+      /** @defaultValue `false` */
+      keybindings: boolean;
+
+      /** @defaultValue `false` */
+      polygons: boolean;
+
+      /** @defaultValue `false` */
+      gamepad: boolean;
+
+      canvas: Debug.Canvas;
+
+      /** @defaultValue `false` */
+      queries: boolean;
+
+      /** @defaultValue `false` */
+      rollParsing: boolean;
+
+      loader: Debug.Loader;
+    }
+
+    namespace Debug {
+      interface Fog {
+        /** @defaultValue `false` */
+        extractor: boolean;
+
+        /** @defaultValue `false` */
+        manager: boolean;
+      }
+
+      interface Canvas {
+        primary: Canvas.Primary;
+      }
+
+      namespace Canvas {
+        interface Primary {
+          /** @defaultValue `false` */
+          bounds: boolean;
+        }
+      }
+
+      interface Loader {
+        /** @defaultValue `false` */
+        load: boolean;
+
+        /** @defaultValue `false` */
+        cache: boolean;
+
+        /** @defaultValue `false` */
+        eviction: boolean;
+
+        /** @defaultValue `false` */
+        memory: boolean;
+      }
+    }
+
     /**
      * Common properties of all document interfaces in `CONFIG`. Doesn't include `typeLabels`, because while all docs will have it defined,
      * the (TS) types are different for docs that don't really have (foundry) types, which requires different JSDoc.
