@@ -1,3 +1,5 @@
+import type { Mutable } from "#utils";
+
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
@@ -27,7 +29,6 @@ import * as _nue from "./nue/_module.mjs";
 import * as _utils from "./utils/_module.mjs"; // moved here to match other client exports
 
 import * as globalConfig from "./config.mjs";
-import type { Mutable } from "#utils";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
