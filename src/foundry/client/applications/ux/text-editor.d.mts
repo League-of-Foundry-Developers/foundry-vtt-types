@@ -451,24 +451,33 @@ declare namespace TextEditor {
   // Defined in `client/config.mjs`
   type Enricher = (match: RegExpMatchArray, options?: EnrichmentOptions) => MaybePromise<HTMLElement | null>;
 
-  // Defined in `client/config.mjs`
-  interface EnricherConfig {
-    /** The string pattern to match. Must be flagged as global. */
-    pattern: RegExp;
+  /** @internal */
+  interface _EnricherConfig {
+    /**
+     * A unique ID to assign to the enricher type. Required if you want to use the onRender callback.
+     */
+    id: string;
 
     /**
      * Hoist the replacement element out of its containing element if it replaces the entire contents of the element.
      * @defaultValue `false`
      */
-    replaceParent?: boolean | undefined;
+    replaceParent: boolean;
+
+    /** An optional callback that is invoked when the enriched content is added to the DOM. */
+    onRender: (el: HTMLEnrichedContentElement) => void;
+  }
+
+  // Defined in `client/config.mjs`
+  interface EnricherConfig extends InexactPartial<_EnricherConfig> {
+    /** The string pattern to match. Must be flagged as global. */
+    pattern: RegExp;
 
     /**
      * The function that will be called on each match. It is expected that this returns an HTML element
      * to be inserted into the final enriched content.
      */
     enricher: Enricher;
-
-    onRender?: ((el: HTMLEnrichedContentElement) => void) | undefined | null;
   }
 
   interface TruncateTextOptions {

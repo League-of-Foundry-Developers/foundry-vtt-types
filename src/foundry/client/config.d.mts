@@ -12,6 +12,7 @@ import type {
   MaybePromise,
   PartialUntilInitialized,
   RemoveIndexSignatures,
+  ToMethod,
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
@@ -24,7 +25,6 @@ import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.
 import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
-import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
@@ -172,33 +172,38 @@ declare global {
       fulfillment: CONFIG.Dice.FulfillmentConfiguration;
     }
 
+    /** @internal */
+    interface _StatusEffect {
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
+       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of
+       * {@linkcode StatusEffectConfig.name | StatusEffectConfig#name}"  (since v12, until v14)
+       */
+      label: string;
+
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
+       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of
+       * {@linkcode StatusEffectConfig.img | StatusEffectConfig#img}"  (since v12, until v14)
+       */
+      icon: string;
+
+      /**
+       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
+       * if the Token's Actor sub-type is one of the configured ones.
+       * @defaultValue `true`
+       */
+      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
+    }
+
     /**
      * Configured status effects which are recognized by the game system
      */
-    interface StatusEffect extends foundry.documents.BaseActiveEffect.CreateData {
+    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
       /**
        * A string identifier for the effect
        */
       id: string;
-
-      /**
-       * Alias for ActiveEffectData#name
-       * @deprecated since v11, will be removed in v13
-       */
-      label?: string | undefined | null;
-
-      /**
-       * Alias for ActiveEffectData#img
-       * @deprecated since v12, will be removed in v14
-       */
-      icon?: string | undefined | null;
-
-      /**
-       * Should this effect be selectable in the Token HUD?
-       * This effect is only selectable in the Token HUD if the Token's Actor sub-type is one of the configured ones.
-       * @defaultValue `true`
-       */
-      hud?: boolean | { actorTypes: string[] } | undefined | null;
     }
   }
 
@@ -222,19 +227,22 @@ declare global {
      *
      * @see {@linkcode CONST.COMPATIBILITY_MODES}
      *
-     * @example Include Specific Errors
+     * @example
+     * Include Specific Errors
      * ```js
      * const includeRgx = new RegExp("/systems/dnd5e/module/documents/active-effect.mjs");
      * CONFIG.compatibility.includePatterns.push(includeRgx);
      * ```
      *
-     * @example Exclude Specific Errors
+     * @example
+     * Exclude Specific Errors
      * ```js
      * const excludeRgx = new RegExp("/systems/dnd5e/");
      * CONFIG.compatibility.excludePatterns.push(excludeRgx);
      * ```
      *
-     * @example Both Include and Exclude
+     * @example
+     * Both Include and Exclude
      * ```js
      * const includeRgx = new RegExp("/systems/dnd5e/module/actor/");
      * const excludeRgx = new RegExp("/systems/dnd5e/module/actor/sheets/base.js");
@@ -242,38 +250,20 @@ declare global {
      * CONFIG.compatibility.excludePatterns.push(excludeRgx);
      * ```
      *
-     * @example Targeting more than filenames
+     * @example
+     * Targeting more than filenames
      * ```js
      * const includeRgx = new RegExp("applyActiveEffects");
      * CONFIG.compatibility.includePatterns.push(includeRgx);
      * ```
      */
-    compatibility: {
-      mode: CONST.COMPATIBILITY_MODES;
-      includePatterns: RegExp[];
-      excludePatterns: RegExp[];
-    };
+    compatibility: CONFIG.Compatibility;
 
-    compendium: {
-      /**
-       * Configure a table of compendium UUID redirects. Must be configured before the game *ready* hook is fired.
-       *
-       * @example Re-map individual UUIDs
-       * ```js
-       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes.Actor.Tf0JDPzHOrIxz6BH"] = "Compendium.system.villains.Actor.DKYLeIliXXzlAZ2G";
-       * ```
-       *
-       * @example Redirect UUIDs from one compendium to another.
-       * ```js
-       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes"] = "Compendium.system.villains";
-       * ```
-       */
-      uuidRedirects: Record<string, string>;
-    };
+    compendium: CONFIG.Compendium;
 
     /**
      * Configure the DatabaseBackend used to perform Document operations
-     * @defaultValue `new foundry.data.ClientDatabaseBackend()`
+     * @defaultValue `new `{@linkcode foundry.data.ClientDatabaseBackend}`()`
      */
     DatabaseBackend: foundry.data.ClientDatabaseBackend;
 
@@ -365,7 +355,7 @@ declare global {
     /**
      * Configure the default Token text style so that it may be reused and overridden by modules
      * @defaultValue
-     * ```typescript
+     * ```ts
      * new PIXI.TextStyle({
      *   fontFamily: "Signika",
      *   fontSize: 36,
@@ -388,243 +378,158 @@ declare global {
     /**
      * Available Weather Effects implementations
      */
-    weatherEffects: CONFIG.WeatherEffects;
+    weatherEffects: RemoveIndexSignatures<CONFIG.WeatherEffects>;
 
     /**
      * The control icons used for rendering common HUD operations
      */
-    controlIcons: {
-      /** @defaultValue `"icons/svg/combat.svg"` */
-      combat: string;
-
-      /** @defaultValue `"icons/svg/cowled.svg"` */
-      visibility: string;
-
-      /** @defaultValue `"icons/svg/aura.svg"` */
-      effects: string;
-
-      /** @defaultValue `"icons/svg/padlock.svg"` */
-      lock: string;
-
-      /** @defaultValue `"icons/svg/up.svg"` */
-      up: string;
-
-      /** @defaultValue `"icons/svg/down.svg"` */
-      down: string;
-
-      /** @defaultValue `"icons/svg/skull.svg"` */
-      defeated: string;
-
-      /** @defaultValue `"icons/svg/light.svg"` */
-      light: string;
-
-      /** @defaultValue `"icons/svg/light-off.svg"` */
-      lightOff: string;
-
-      /** @defaultValue `"icons/svg/explosion.svg"` */
-      template: string;
-
-      /** @defaultValue `"icons/svg/sound.svg"` */
-      sound: string;
-
-      /** @defaultValue `"icons/svg/sound-off.svg"` */
-      soundOff: string;
-
-      /** @defaultValue `"icons/svg/door-closed-outline.svg"` */
-      doorClosed: string;
-
-      /** @defaultValue `"icons/svg/door-open-outline.svg"` */
-      doorOpen: string;
-
-      /** @defaultValue `"icons/svg/door-secret-outline.svg"` */
-      doorSecret: string;
-
-      /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
-      doorLocked: string;
-
-      /** @defaultValue `"icons/svg/wall-direction.svg"` */
-      wallDirection: string;
-    } & Record<string, string>;
+    controlIcons: RemoveIndexSignatures<CONFIG.ControlIcons>;
 
     /**
      * A collection of fonts to load either from the user's local system, or remotely.
-     * @defaultValue
-     * ```typescript
-     * {
-     *   Arial: { editor: true; fonts: [] };
-     *   Amiri: {
-     *     editor: true,
-     *     fonts: [
-     *       {urls: ["fonts/amiri/amiri-regular.woff2"]},
-     *       {urls: ["fonts/amiri/amiri-bold.woff2"], weight: 700}
-     *     ]
-     *   },
-     *   "Bruno Ace": {editor: true, fonts: [
-     *     {urls: ["fonts/bruno-ace/bruno-ace.woff2"]}
-     *   ]},
-     *   Courier: { editor: true; fonts: [] };
-     *   "Courier New": { editor: true; fonts: [] };
-     *   "Modesto Condensed": {
-     *     editor: true;
-     *     fonts: [
-     *       { urls: ["fonts/modesto-condensed/modesto-condensed.woff2"] },
-     *       { urls: ["fonts/modesto-condensed/modesto-condensed-bold.woff2"]; weight: 700 }
-     *     ];
-     *   };
-     *   Signika: {
-     *     editor: true;
-     *     fonts: [
-     *       { urls: ["fonts/signika/signika-regular.woff2"] },
-     *       { urls: ["fonts/signika/signika-bold.woff2"]; weight: 700 }
-     *     ];
-     *   };
-     *   Times: { editor: true; fonts: [] };
-     *   "Times New Roman": { editor: true; fonts: [] };
-     * }
-     * ```
      */
-    fontDefinitions: Record<string, CONFIG.Font.FamilyDefinition>;
+    fontDefinitions: RemoveIndexSignatures<CONFIG.FontDefinitions>;
 
     /**
      * The default font family used for text labels on the PIXI Canvas
      * @defaultValue `"Signika"`
      */
-    defaultFontFamily: string;
+    defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
 
     /**
-     * The array of status effect icons which can be applied to an Actor
+     * The array of status effects which can be applied to an Actor.
      * @defaultValue
      * ```js
      * [
      *   {
-     *     id: "dead";
-     *     name: "EFFECT.StatusDead";
-     *     img: "icons/svg/skull.svg";
+     *     id: "dead",
+     *     name: "EFFECT.StatusDead",
+     *     img: "icons/svg/skull.svg"
      *   },
      *   {
-     *     id: "unconscious";
-     *     name: "EFFECT.StatusUnconscious";
-     *     img: "icons/svg/unconscious.svg";
+     *     id: "unconscious",
+     *     name: "EFFECT.StatusUnconscious",
+     *     img: "icons/svg/unconscious.svg"
      *   },
      *   {
-     *     id: "sleep";
-     *     name: "EFFECT.StatusAsleep";
-     *     img: "icons/svg/sleep.svg";
+     *     id: "sleep",
+     *     name: "EFFECT.StatusAsleep",
+     *     img: "icons/svg/sleep.svg"
      *   },
      *   {
-     *     id: "stun";
-     *     name: "EFFECT.StatusStunned";
-     *     img: "icons/svg/daze.svg";
+     *     id: "stun",
+     *     name: "EFFECT.StatusStunned",
+     *     img: "icons/svg/daze.svg"
      *   },
      *   {
-     *     id: "prone";
-     *     name: "EFFECT.StatusProne";
-     *     img: "icons/svg/falling.svg";
+     *     id: "prone",
+     *     name: "EFFECT.StatusProne",
+     *     img: "icons/svg/falling.svg"
      *   },
      *   {
-     *     id: "restrain";
-     *     name: "EFFECT.StatusRestrained";
-     *     img: "icons/svg/net.svg";
+     *     id: "restrain",
+     *     name: "EFFECT.StatusRestrained",
+     *     img: "icons/svg/net.svg"
      *   },
      *   {
-     *     id: "paralysis";
-     *     name: "EFFECT.StatusParalysis";
-     *     img: "icons/svg/paralysis.svg";
+     *     id: "paralysis",
+     *     name: "EFFECT.StatusParalysis",
+     *     img: "icons/svg/paralysis.svg"
      *   },
      *   {
-     *     id: "fly";
-     *     name: "EFFECT.StatusFlying";
-     *     img: "icons/svg/wing.svg";
+     *     id: "fly",
+     *     name: "EFFECT.StatusFlying",
+     *     img: "icons/svg/wing.svg"
      *   },
      *   {
-     *     id: "blind";
-     *     name: "EFFECT.StatusBlind";
-     *     img: "icons/svg/blind.svg";
+     *     id: "blind",
+     *     name: "EFFECT.StatusBlind",
+     *     img: "icons/svg/blind.svg"
      *   },
      *   {
-     *     id: "deaf";
-     *     name: "EFFECT.StatusDeaf";
-     *     img: "icons/svg/deaf.svg";
+     *     id: "deaf",
+     *     name: "EFFECT.StatusDeaf",
+     *     img: "icons/svg/deaf.svg"
      *   },
      *   {
-     *     id: "silence";
-     *     name: "EFFECT.StatusSilenced";
-     *     img: "icons/svg/silenced.svg";
+     *     id: "silence",
+     *     name: "EFFECT.StatusSilenced",
+     *     img: "icons/svg/silenced.svg"
      *   },
      *   {
-     *     id: "fear";
-     *     name: "EFFECT.StatusFear";
-     *     img: "icons/svg/terror.svg";
+     *     id: "fear",
+     *     name: "EFFECT.StatusFear",
+     *     img: "icons/svg/terror.svg"
      *   },
      *   {
-     *     id: "burning";
-     *     name: "EFFECT.StatusBurning";
-     *     img: "icons/svg/fire.svg";
+     *     id: "burning",
+     *     name: "EFFECT.StatusBurning",
+     *     img: "icons/svg/fire.svg"
      *   },
      *   {
-     *     id: "frozen";
-     *     name: "EFFECT.StatusFrozen";
-     *     img: "icons/svg/frozen.svg";
+     *     id: "frozen",
+     *     name: "EFFECT.StatusFrozen",
+     *     img: "icons/svg/frozen.svg"
      *   },
      *   {
-     *     id: "shock";
-     *     name: "EFFECT.StatusShocked";
-     *     img: "icons/svg/lightning.svg";
+     *     id: "shock",
+     *     name: "EFFECT.StatusShocked",
+     *     img: "icons/svg/lightning.svg"
      *   },
      *   {
-     *     id: "corrode";
-     *     name: "EFFECT.StatusCorrode";
-     *     img: "icons/svg/acid.svg";
+     *     id: "corrode",
+     *     name: "EFFECT.StatusCorrode",
+     *     img: "icons/svg/acid.svg"
      *   },
      *   {
-     *     id: "bleeding";
-     *     name: "EFFECT.StatusBleeding";
-     *     img: "icons/svg/blood.svg";
+     *     id: "bleeding",
+     *     name: "EFFECT.StatusBleeding",
+     *     img: "icons/svg/blood.svg"
      *   },
      *   {
-     *     id: "disease";
-     *     name: "EFFECT.StatusDisease";
-     *     img: "icons/svg/biohazard.svg";
+     *     id: "disease",
+     *     name: "EFFECT.StatusDisease",
+     *     img: "icons/svg/biohazard.svg"
      *   },
      *   {
-     *     id: "poison";
-     *     name: "EFFECT.StatusPoison";
-     *     img: "icons/svg/poison.svg";
+     *     id: "poison",
+     *     name: "EFFECT.StatusPoison",
+     *     img: "icons/svg/poison.svg"
      *   },
      *   {
-     *     id: "curse";
-     *     name: "EFFECT.StatusCursed";
-     *     img: "icons/svg/sun.svg";
+     *     id: "curse",
+     *     name: "EFFECT.StatusCursed",
+     *     img: "icons/svg/sun.svg"
      *   },
      *   {
-     *     id: "regen";
-     *     name: "EFFECT.StatusRegen";
-     *     img: "icons/svg/regen.svg";
+     *     id: "regen",
+     *     name: "EFFECT.StatusRegen",
+     *     img: "icons/svg/regen.svg"
      *   },
      *   {
-     *     id: "degen";
-     *     name: "EFFECT.StatusDegen";
-     *     img: "icons/svg/degen.svg";
+     *     id: "degen",
+     *     name: "EFFECT.StatusDegen",
+     *     img: "icons/svg/degen.svg"
      *   },
      *   {
-     *     id: "hover";
-     *     name: "EFFECT.StatusHover";
-     *     img: "icons/svg/wingfoot.svg";
+     *     id: "hover",
+     *     name: "EFFECT.StatusHover",
+     *     img: "icons/svg/wingfoot.svg"
      *   },
      *   {
-     *     id: "burrow";
-     *     name: "EFFECT.StatusBurrow";
-     *     img: "icons/svg/mole.svg";
+     *     id: "burrow",
+     *     name: "EFFECT.StatusBurrow",
+     *     img: "icons/svg/mole.svg"
      *   },
      *   {
-     *     id: "upgrade";
-     *     name: "EFFECT.StatusUpgrade";
-     *     img: "icons/svg/upgrade.svg";
+     *     id: "upgrade",
+     *     name: "EFFECT.StatusUpgrade",
+     *     img: "icons/svg/upgrade.svg"
      *   },
      *   {
-     *     id: "downgrade";
-     *     name: "EFFECT.StatusDowngrade";
-     *     img: "icons/svg/downgrade.svg";
+     *     id: "downgrade",
+     *     name: "EFFECT.StatusDowngrade",
+     *     img: "icons/svg/downgrade.svg"
      *   },
      *   {
      *     id: "invisible",
@@ -632,39 +537,39 @@ declare global {
      *     img: "icons/svg/invisible.svg"
      *   },
      *   {
-     *     id: "target";
-     *     name: "EFFECT.StatusTarget";
-     *     img: "icons/svg/target.svg";
+     *     id: "target",
+     *     name: "EFFECT.StatusTarget",
+     *     img: "icons/svg/target.svg"
      *   },
      *   {
-     *     id: "eye";
-     *     name: "EFFECT.StatusMarked";
-     *     img: "icons/svg/eye.svg";
+     *     id: "eye",
+     *     name: "EFFECT.StatusMarked",
+     *     img: "icons/svg/eye.svg"
      *   },
      *   {
-     *     id: "bless";
-     *     name: "EFFECT.StatusBlessed";
-     *     img: "icons/svg/angel.svg";
+     *     id: "bless",
+     *     name: "EFFECT.StatusBlessed",
+     *     img: "icons/svg/angel.svg"
      *   },
      *   {
-     *     id: "fireShield";
-     *     name: "EFFECT.StatusFireShield";
-     *     img: "icons/svg/fire-shield.svg";
+     *     id: "fireShield",
+     *     name: "EFFECT.StatusFireShield",
+     *     img: "icons/svg/fire-shield.svg"
      *   },
      *   {
-     *     id: "coldShield";
-     *     name: "EFFECT.StatusIceShield";
-     *     img: "icons/svg/ice-shield.svg";
+     *     id: "coldShield",
+     *     name: "EFFECT.StatusIceShield",
+     *     img: "icons/svg/ice-shield.svg"
      *   },
      *   {
-     *     id: "magicShield";
-     *     name: "EFFECT.StatusMagicShield";
-     *     img: "icons/svg/mage-shield.svg";
+     *     id: "magicShield",
+     *     name: "EFFECT.StatusMagicShield",
+     *     img: "icons/svg/mage-shield.svg"
      *   },
      *   {
-     *     id: "holyShield";
-     *     name: "EFFECT.StatusHolyShield";
-     *     img: "icons/svg/holy-shield.svg";
+     *     id: "holyShield",
+     *     name: "EFFECT.StatusHolyShield",
+     *     img: "icons/svg/holy-shield.svg"
      *   }
      * ]
      * ```
@@ -673,47 +578,27 @@ declare global {
 
     /**
      * A mapping of status effect IDs which provide some additional mechanical integration.
-     * @defaultValue `{ DEFEATED: "dead", INVISIBLE: "invisible", BLIND: "blind", BURROW: "burrow", HOVER: "hover", FLY: "fly" }`
+     * @remarks See {@linkcode CONFIG.DefaultSpecialStatusEffects} for defaults.
      */
-    specialStatusEffects: HandleEmptyObject<CONFIG.SpecialStatusEffects, CONFIG.DefaultSpecialStatusEffects>;
+    specialStatusEffects: HandleEmptyObject<
+      RemoveIndexSignatures<CONFIG.SpecialStatusEffects>,
+      RemoveIndexSignatures<CONFIG.DefaultSpecialStatusEffects>
+    >;
 
     /**
      * A mapping of core audio effects used which can be replaced by systems or mods
      */
-    sounds: {
-      /** @defaultValue `"sounds/dice.wav"` */
-      dice: string;
-
-      /** @defaultValue `"sounds/lock.wav"` */
-      lock: string;
-
-      /** @defaultValue `"sounds/notify.wav"` */
-      notification: string;
-
-      /** @defaultValue `"sounds/drums.wav"` */
-      combat: string;
-    };
+    sounds: RemoveIndexSignatures<CONFIG.Sounds>;
 
     /**
      * Define the set of supported languages for localization
-     * @defaultValue `{ en: "English" }`
      */
-    supportedLanguages: {
-      en: string;
-    } & Record<string, string>;
+    supportedLanguages: RemoveIndexSignatures<CONFIG.SupportedLanguages>;
 
     /**
      * Localization constants.
      */
-    i18n: {
-      /**
-       * In operations involving the document index, search prefixes must have at least this many characters to avoid too
-       * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
-       * search trees, so it should be safe to lower this number in those cases.
-       * @defaultValue `4`
-       */
-      searchMinimumCharacterLength: number;
-    };
+    i18n: CONFIG.Internationalization;
 
     /**
      * Configuration for time tracking
@@ -823,11 +708,7 @@ declare global {
     /**
      * An enumeration of sound effects which can be applied to Sound instances.
      */
-    soundEffects: {
-      lowPass: { label: string; effectClass: AudioNode.AnyConstructor };
-      highpass: { label: string; effectClass: AudioNode.AnyConstructor };
-      reverb: { label: string; effectClass: AudioNode.AnyConstructor };
-    };
+    soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
 
     /**
      * Default configuration options for TinyMCE editors
@@ -837,39 +718,12 @@ declare global {
     /**
      * Rich text editing configuration.
      */
-    TextEditor: {
-      /**
-       * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
-       * custom patterns.
-       */
-      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
-    };
+    TextEditor: CONFIG.TextEditor;
 
     /**
      * Configuration for the WebRTC implementation class
      */
-    WebRTC: {
-      /** @defaultValue `SimplePeerAVClient` */
-      clientClass: GetKey<WebRTCConfig, "clientClass", SimplePeerAVClient.AnyConstructor>;
-
-      /** @defaultValue `50` */
-      detectPeerVolumeInterval: number;
-
-      /** @defaultValue `20` */
-      detectSelfVolumeInterval: number;
-
-      /** @defaultValue `25` */
-      emitVolumeInterval: number;
-
-      /** @defaultValue `2` */
-      speakingThresholdEvents: number;
-
-      /** @defaultValue `10` */
-      speakingHistoryLength: number;
-
-      /** @defaultValue `8` */
-      connectedUserPollIntervalS: number;
-    };
+    WebRTC: CONFIG.WebRTC;
 
     /**
      * Configure the Application classes used to render various core UI elements in the application
@@ -885,7 +739,30 @@ declare global {
      * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
      * Non-prefixed query names are reserved by core.
      */
-    queries: CONFIG.Queries;
+    queries: RemoveIndexSignatures<CONFIG.Queries>;
+
+    /**
+     * Configure custom cursor images to use when interacting with the application.
+     *
+     * @example
+     * Configuring a cursor with a hotspot in the default top-left.
+     * ```js
+     * Object.assign(CONFIG.cursors, {
+     *   default: "icons/cursors/default.avif",
+     *   "default-down": "icons/cursors/default-down.avif"
+     * });
+     * ```
+     *
+     * @example
+     * Configuring a cursor with a hotspot in the center.
+     * ```js
+     * Object.assign(CONFIG.cursors, {
+     *   default: { url: "icons/cursors/target.avif", x: 16, y: 16 },
+     *   "default-down": { url: "icons/cursors/target-down.avif", x: 16, y: 16 }
+     * });
+     * ```
+     */
+    cursors: CONFIG.Cursors;
   }
 
   namespace CONFIG {
@@ -978,6 +855,37 @@ declare global {
         /** @defaultValue `false` */
         memory: boolean;
       }
+    }
+
+    interface Compatibility {
+      /** @defaultValue {@linkcode CONST.COMPATIBILITY_MODES.WARNING} */
+      mode: CONST.COMPATIBILITY_MODES;
+
+      /** @defaultValue `[]` */
+      includePatterns: RegExp[];
+
+      /** @defaultValue `[]` */
+      excludePatterns: RegExp[];
+    }
+
+    interface Compendium {
+      /**
+       * Configure a table of compendium UUID redirects. Must be configured before the game *ready* hook is fired.
+       *
+       * @example
+       * Re-map individual UUIDs
+       * ```js
+       * const newUuid = "Compendium.system.villains.Actor.DKYLeIliXXzlAZ2G";
+       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes.Actor.Tf0JDPzHOrIxz6BH"] = newUuid;
+       * ```
+       *
+       * @example
+       * Redirect UUIDs from one compendium to another.
+       * ```js
+       * CONFIG.compendium.uuidRedirects["Compendium.system.heroes"] = "Compendium.system.villains";
+       * ```
+       */
+      uuidRedirects: Record<string, string>;
     }
 
     /**
@@ -1597,9 +1505,12 @@ declare global {
     }
 
     interface Queries {
+      [query: string]: QueryHandler;
       dialog: typeof foundry.applications.api.DialogV2._handleQuery;
       confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery;
     }
+
+    type QueryHandler = ToMethod<(queryData: unknown, queryOptions?: { timeout?: number | undefined }) => unknown>;
 
     interface Canvas {
       /** @defaultValue `10` */
@@ -2577,17 +2488,65 @@ declare global {
       }
     }
 
-    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing keys. It's never used when empty.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface SpecialStatusEffects {}
+    // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing
+    // keys. It's never used when empty.
+    interface SpecialStatusEffects {
+      [specialStatusName: string]: string;
+    }
 
     interface DefaultSpecialStatusEffects {
+      [specialStatusName: string]: string;
+
+      /** @defaultValue `"dead"` */
       DEFEATED: string;
+
+      /** @defaultValue `"invisible"` */
       INVISIBLE: string;
+
+      /** @defaultValue `"blind"` */
       BLIND: string;
+
+      /** @defaultValue `"burrow"` */
       BURROW: string;
+
+      /** @defaultValue `"hover"` */
       HOVER: string;
+
+      /** @defaultValue `"fly"` */
       FLY: string;
+    }
+
+    interface Sounds {
+      [soundName: string]: string;
+
+      /** @defaultValue `"sounds/dice.wav"` */
+      dice: string;
+
+      /** @defaultValue `"sounds/lock.wav"` */
+      lock: string;
+
+      /** @defaultValue `"sounds/notify.wav"` */
+      notification: string;
+
+      /** @defaultValue `"sounds/drums.wav"` */
+      combat: string;
+    }
+
+    interface SupportedLanguages {
+      [languageIdentifier: string]: string;
+
+      /** @defaultValue `"English"` */
+      en: string;
+    }
+
+    interface Internationalization {
+      /**
+       * In operations involving the document index, search prefixes must have at least this many characters to avoid too
+       * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
+       * search trees, so it should be safe to lower this number in those cases.
+       * @defaultValue `4`
+       */
+      searchMinimumCharacterLength: number;
     }
 
     interface WeatherEffects {
@@ -2601,7 +2560,7 @@ declare global {
        *   label: "WEATHER.AutumnLeaves",
        *   effects: [{
        *     id: "leavesParticles",
-       *     effectClass: AutumnLeavesWeatherEffect
+       *     effectClass: foundry.canvas.containers.AutumnLeavesWeatherEffect
        *   }]
        * }
        * ```
@@ -2620,8 +2579,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.RainShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       opacity: 0.25,
@@ -2639,7 +2598,7 @@ declare global {
 
       /**
        * @defaultValue
-       * ```
+       * ```ts
        * {
        *   id: "rainStorm",
        *   label: "WEATHER.RainStorm",
@@ -2648,8 +2607,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     performanceLevel: 2,
        *     config: {
@@ -2661,8 +2620,8 @@ declare global {
        *   },
        *   {
        *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.RainShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       opacity: 0.45,
@@ -2680,7 +2639,7 @@ declare global {
 
       /**
        * @defaultValue
-       * ```
+       * ```ts
        * {
        *   id: "fog",
        *   label: "WEATHER.Fog",
@@ -2689,8 +2648,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       slope: 0.45,
@@ -2714,8 +2673,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.SnowShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       tint: [0.85, 0.95, 1],
@@ -2740,8 +2699,8 @@ declare global {
        *   },
        *   effects: [{
        *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.SnowShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     config: {
        *       tint: [0.95, 1, 1],
@@ -2752,8 +2711,8 @@ declare global {
        *   },
        *   {
        *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
+       *     effectClass: foundry.canvas.rendering.shaders.WeatherShaderEffect,
+       *     shaderClass: foundry.canvas.rendering.shaders.FogShader,
        *     blendMode: PIXI.BLEND_MODES.SCREEN,
        *     performanceLevel: 2,
        *     config: {
@@ -2768,14 +2727,194 @@ declare global {
       blizzard: layers.WeatherEffects.AmbienceConfiguration;
     }
 
+    interface ControlIcons {
+      [iconName: string]: string;
+
+      /** @defaultValue `"icons/svg/combat.svg"` */
+      combat: string;
+
+      /** @defaultValue `"icons/svg/cowled.svg"` */
+      visibility: string;
+
+      /** @defaultValue `"icons/svg/aura.svg"` */
+      effects: string;
+
+      /** @defaultValue `"icons/svg/padlock.svg"` */
+      lock: string;
+
+      /** @defaultValue `"icons/svg/up.svg"` */
+      up: string;
+
+      /** @defaultValue `"icons/svg/down.svg"` */
+      down: string;
+
+      /** @defaultValue `"icons/svg/skull.svg"` */
+      defeated: string;
+
+      /** @defaultValue `"icons/svg/light.svg"` */
+      light: string;
+
+      /** @defaultValue `"icons/svg/light-off.svg"` */
+      lightOff: string;
+
+      /** @defaultValue `"icons/svg/explosion.svg"` */
+      template: string;
+
+      /** @defaultValue `"icons/svg/sound.svg"` */
+      sound: string;
+
+      /** @defaultValue `"icons/svg/sound-off.svg"` */
+      soundOff: string;
+
+      /** @defaultValue `"icons/svg/door-closed-outline.svg"` */
+      doorClosed: string;
+
+      /** @defaultValue `"icons/svg/door-open-outline.svg"` */
+      doorOpen: string;
+
+      /** @defaultValue `"icons/svg/door-secret-outline.svg"` */
+      doorSecret: string;
+
+      /** @defaultValue `"icons/svg/door-locked-outline.svg"` */
+      doorLocked: string;
+
+      /** @defaultValue `"icons/svg/wall-direction.svg"` */
+      wallDirection: string;
+    }
+
+    interface FontDefinitions {
+      [fontName: string]: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Arial: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/amiri/amiri-regular.woff2"]},
+       *     {urls: ["fonts/amiri/amiri-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      Amiri: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/bruno-ace/bruno-ace.woff2"]}
+       *   ]}
+       * ```
+       */
+      "Bruno Ace": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Courier: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      "Courier New": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/modesto-condensed/modesto-condensed.woff2"]},
+       *     {urls: ["fonts/modesto-condensed/modesto-condensed-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      "Modesto Condensed": Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: [
+       *     {urls: ["fonts/signika/signika-light.woff2"], weight: "300"},
+       *     {urls: ["fonts/signika/signika-regular.woff2"]},
+       *     {urls: ["fonts/signika/signika-medium.woff2"], weight: "500"},
+       *     {urls: ["fonts/signika/signika-semibold.woff2"], weight: "600"},
+       *     {urls: ["fonts/signika/signika-bold.woff2"], weight: "700"}
+       *   ]
+       * }
+       * ```
+       */
+      Signika: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      Times: Font.FamilyDefinition;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   editor: true,
+       *   fonts: []
+       * }
+       * ```
+       */
+      "Times New Roman": Font.FamilyDefinition;
+    }
+
+    // TODO: rename namespace Font to match interface FontDefinitions? CONFIG.FontDefinitions.Definition feels bad though,
+    // TODO: and deprecations are annoying.
     namespace Font {
       interface Definition extends FontFaceDescriptors {
+        /** An array of remote URLs the font files exist at. */
         urls: string[];
       }
 
       interface FamilyDefinition {
+        /** Whether the font is available in the rich text editor. This will also enable it for notes and drawings. */
         editor: boolean;
-        fonts: Definition[];
+
+        /**
+         * Individual font face definitions for this font family. If this is empty,
+         * the font family may only be loaded from the client's OS-installed fonts.
+         */
+        fonts: Font.Definition[];
       }
     }
 
@@ -3116,16 +3255,28 @@ declare global {
     }
 
     interface Time {
-      /** The Calendar configuration used for in-world timekeeping. */
+      /**
+       * The Calendar configuration used for in-world timekeeping.
+       * @defaultValue {@linkcode foundry.data.SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG}
+       */
       worldCalendarConfig: foundry.data.CalendarData.CreateData;
 
-      /** The CalendarData subclass is used for in-world timekeeping. */
+      /**
+       * The CalendarData subclass is used for in-world timekeeping.
+       * @defaultValue {@linkcode foundry.data.CalendarData}
+       */
       worldCalendarClass: typeof foundry.data.CalendarData;
 
-      /** The Calendar configuration used for IRL timekeeping. */
+      /**
+       * The Calendar configuration used for IRL timekeeping.
+       * @defaultValue {@linkcode foundry.data.SIMPLIFIED_GREGORIAN_CALENDAR_CONFIG}
+       */
       earthCalendarConfig: foundry.data.CalendarData.CreateData;
 
-      /** The CalendarData subclass is used for IRL timekeeping. */
+      /**
+       * The CalendarData subclass is used for IRL timekeeping.
+       * @defaultValue {@linkcode foundry.data.CalendarData}
+       */
       earthCalendarClass: typeof foundry.data.CalendarData;
 
       /**
@@ -3141,11 +3292,12 @@ declare global {
       roundTime: number;
 
       /** Formatting functions used to display time data as strings. */
-      formatters: CONFIG.Time.formatters;
+      formatters: RemoveIndexSignatures<CONFIG.Time.formatters>;
     }
 
     namespace Time {
       interface formatters {
+        [formatterName: string]: foundry.data.CalendarData.TimeFormatter;
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
         ago: typeof foundry.data.CalendarData.formatAgo;
       }
@@ -3747,6 +3899,94 @@ declare global {
          */
         swivel: DoorAnimationConfig;
       }
+    }
+
+    interface SoundEffects {
+      [effectName: string]: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   label: "SOUND.EFFECTS.LOWPASS",
+       *   effectClass: audio.BiquadFilterEffect
+       * }
+       * ```
+       */
+      lowpass: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       *  {
+       *   label: "SOUND.EFFECTS.HIGHPASS",
+       *   effectClass: audio.BiquadFilterEffect
+       * }
+       * ```
+       */
+      highpass: SoundEffect;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   label: "SOUND.EFFECTS.REVERB",
+       *   effectClass: audio.ConvolverEffect
+       * }
+       * ```
+       */
+      reverb: SoundEffect;
+    }
+
+    interface SoundEffect {
+      label: string;
+      effectClass: typeof BiquadFilterNode | typeof ConvolverNode;
+    }
+
+    interface TextEditor {
+      /**
+       * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
+       * custom patterns.
+       */
+      enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
+    }
+
+    interface WebRTC {
+      /** @defaultValue `SimplePeerAVClient` */
+      clientClass: GetKey<WebRTCConfig, "clientClass", typeof foundry.av.clients.SimplePeerAVClient>;
+
+      /** @defaultValue `50` */
+      detectPeerVolumeInterval: number;
+
+      /** @defaultValue `20` */
+      detectSelfVolumeInterval: number;
+
+      /** @defaultValue `25` */
+      emitVolumeInterval: number;
+
+      /** @defaultValue `2` */
+      speakingThresholdEvents: number;
+
+      /** @defaultValue `10` */
+      speakingHistoryLength: number;
+
+      /** @defaultValue `8` */
+      connectedUserPollIntervalS: number;
+    }
+
+    interface Cursors extends Record<keyof typeof CONST.CURSOR_STYLES, string | CursorDescriptor> {}
+
+    interface _CursorDescriptor {
+      /** The X co-ordinate of the cursor hotspot. */
+      x: number;
+
+      /** The Y co-ordinate of the cursor hotspot. */
+      y: number;
+    }
+
+    interface CursorDescriptor extends InexactPartial<_CursorDescriptor> {
+      /** The URL of the cursor image. Must be no larger than 128x128. 32x32 is recommended. */
+      url: string;
     }
   }
 
