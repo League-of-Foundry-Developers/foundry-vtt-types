@@ -72,12 +72,12 @@ declare namespace PointSoundSource {
   >;
 
   /** @internal */
-  type _GetVolumeMultiplierOptions = InexactPartial<{
+  interface _GetVolumeMultiplierOptions {
     /** @defaultValue `true` */
     easing: boolean;
-  }>;
+  }
 
-  interface GetVolumeMultiplierOptions extends _GetVolumeMultiplierOptions {}
+  interface GetVolumeMultiplierOptions extends InexactPartial<_GetVolumeMultiplierOptions> {}
 
   interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
 

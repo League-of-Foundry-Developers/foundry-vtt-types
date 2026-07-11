@@ -75,11 +75,11 @@ declare namespace VisibilityFilter {
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /** @internal */
-  type _FragmentShaderOptions = InexactPartial<{
+  interface _FragmentShaderOptions {
     persistentVision: boolean;
-  }>;
+  }
 
-  interface FragmentShaderOptions extends _FragmentShaderOptions {}
+  interface FragmentShaderOptions extends InexactPartial<_FragmentShaderOptions> {}
 }
 
 export default VisibilityFilter;

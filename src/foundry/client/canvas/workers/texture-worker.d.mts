@@ -107,27 +107,27 @@ declare namespace TextureCompressor {
   interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   /** @internal */
-  type _CommonOptions = InexactPartial<{
+  interface _CommonOptions {
     /** The precomputed hash. */
     hash: string;
 
     /** The debug option. */
     debug: boolean;
-  }>;
+  }
 
   /** @internal */
-  type _Out = InexactPartial<{
+  interface _Out {
     /** The output buffer to write the reduced pixels to. May be detached. */
     out: ArrayBuffer;
-  }>;
+  }
 
-  interface CompressBufferBase64Options extends _CommonOptions {}
+  interface CompressBufferBase64Options extends InexactPartial<_CommonOptions> {}
 
-  interface ExpandBufferOptions extends _CommonOptions, _Out {}
+  interface ExpandBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
 
-  interface ReduceBufferOptions extends _CommonOptions, _Out {}
+  interface ReduceBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
 
-  interface CopyBufferOptions extends _CommonOptions, _Out {}
+  interface CopyBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
 
   /**
    * @remarks As of v13, {@linkcode TextureCompressor.compressBufferBase64 | TextureCompressor#compressBufferBase64},

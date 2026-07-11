@@ -53,7 +53,7 @@ declare namespace BiquadFilterEffect {
   type AllowedFilterType = Extract<"highpass" | "lowpass", AspirationalAllowedFilterType>;
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The initial intensity of the effect
      * @defaultValue `5`
@@ -66,16 +66,17 @@ declare namespace BiquadFilterEffect {
      * @remarks Only allows a subset of {@linkcode BiquadFilterType}s
      */
     type: AllowedFilterType;
-  }>;
+  }
 
   /**
    * @privateRemarks The {@linkcode BiquadFilterEffect} constructor only adds the one
    * new property (`intensity`) to the parent interface. `type` is omitted and reimplemented to allow
    * explicit `undefined`, as there's a parameter default available, and limit to Foundry's allowed values
    */
-  interface ConstructorOptions extends _ConstructorOptions, Omit<BiquadFilterOptions, "type"> {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions>, Omit<BiquadFilterOptions, "type"> {}
 
-  type _UpdateOptions = InexactPartial<{
+  /** @internal */
+  interface _UpdateOptions {
     /**
      * A new effect intensity
      * @remarks This is ignored if it fails a `Number.isFinite` check
@@ -88,9 +89,9 @@ declare namespace BiquadFilterEffect {
      * @see {@linkcode BiquadFilterEffect.AspirationalAllowedFilterType}
      */
     type: AllowedFilterType;
-  }>;
+  }
 
-  interface UpdateOptions extends _UpdateOptions {}
+  interface UpdateOptions extends InexactPartial<_UpdateOptions> {}
 }
 
 export default BiquadFilterEffect;

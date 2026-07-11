@@ -23,15 +23,15 @@ declare namespace ArrowPing {
   interface AnyConstructor extends Identity<typeof AnyArrowPing> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The angle of the arrow in radians.
      * @defaultValue `0`
      */
     rotation: number;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions, PulsePing.ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions>, PulsePing.ConstructorOptions {}
 }
 
 export default ArrowPing;

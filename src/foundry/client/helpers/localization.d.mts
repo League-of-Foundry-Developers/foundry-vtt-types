@@ -173,15 +173,16 @@ declare namespace Localization {
     prefixPath?: string | undefined;
   }
 
-  type _LocalizeSchemaOptions = InexactPartial<{
+  interface _LocalizeSchemaOptions {
     /**
      * @defaultValue `new Set()`
      * @remarks Used for recursive calls, not intended to be passed externally
      */
     seenFields: Set<foundry.data.fields.DataField.Any>;
-  }>;
+  }
 
-  interface LocalizeSchemaOptions extends _LocalizeSchemaOptions, Pick<LocalizeDataModelOptions, "prefixPath"> {}
+  interface LocalizeSchemaOptions
+    extends InexactPartial<_LocalizeSchemaOptions>, Pick<LocalizeDataModelOptions, "prefixPath"> {}
 
   interface GetListFormatterOptions {
     /**

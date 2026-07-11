@@ -27,15 +27,15 @@ declare namespace PreciseText {
   interface AnyConstructor extends Identity<typeof AnyPreciseText> {}
 
   /** @internal */
-  type _GetTextStyleOptions = InexactPartial<{
+  interface _GetTextStyleOptions {
     /**
      * A text anchor point from {@linkcode CONST.TEXT_ANCHOR_POINTS}
      * @remarks Only checked against `.RIGHT` and `.LEFT`, and only if an `align` key is omitted
      */
     anchor: CONST.TEXT_ANCHOR_POINTS;
-  }>;
+  }
 
-  interface GetTextStyleOptions extends _GetTextStyleOptions, InexactPartial<PIXI.ITextStyle> {}
+  interface GetTextStyleOptions extends InexactPartial<_GetTextStyleOptions>, InexactPartial<PIXI.ITextStyle> {}
 }
 
 export default PreciseText;

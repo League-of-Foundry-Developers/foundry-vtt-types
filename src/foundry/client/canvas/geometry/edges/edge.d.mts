@@ -177,7 +177,7 @@ declare namespace Edge {
   interface AnyConstructor extends Identity<typeof AnyEdge> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * A string used to uniquely identify this edge
      *
@@ -237,9 +237,9 @@ declare namespace Edge {
      * @defaultValue `0`
      */
     priority: number;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   type EdgeTypes = "wall" | "darkness" | "light" | "innerBounds" | "outerBounds";
 

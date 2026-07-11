@@ -101,7 +101,7 @@ declare namespace ImageHelper {
   type IMAGE_MIME_TYPES = ValueOf<typeof CONST.IMAGE_FILE_EXTENSIONS>;
 
   /** @internal */
-  type _CompositeOptions = InexactPartial<{
+  interface _CompositeOptions {
     /**
      * Center the texture in the rendered frame?
      * @defaultValue `true`
@@ -131,18 +131,18 @@ declare namespace ImageHelper {
      * @defaultValue The width of the object passed to {@linkcode ImageHelper.compositeCanvasTexture}
      */
     width: number;
-  }>;
+  }
 
   /**
    * An interface for options for the {@linkcode ImageHelper.createThumbnail} and {@linkcode ImageHelper.compositeCanvasTexture}
    * methods.
    */
-  interface CompositeOptions extends _CompositeOptions {}
+  interface CompositeOptions extends InexactPartial<_CompositeOptions> {}
 
   interface CreateThumbnailOptions extends CompositeOptions, TextureToImageOptions {}
 
   /** @internal */
-  type _TextureToImageOptions = InexactPartial<{
+  interface _TextureToImageOptions {
     /**
      * Image format, e.g. "image/jpeg" or "image/webp".
      * @defaultValue `"image/png"`
@@ -154,12 +154,12 @@ declare namespace ImageHelper {
      * @defaultValue `0.92`
      */
     quality: number;
-  }>;
+  }
 
-  interface TextureToImageOptions extends _TextureToImageOptions {}
+  interface TextureToImageOptions extends InexactPartial<_TextureToImageOptions> {}
 
   /** @internal */
-  type _UploadBase64Options = InexactPartial<{
+  interface _UploadBase64Options {
     /**
      * The data storage location to which the file should be uploaded
      * @defaultValue `"data"`
@@ -177,9 +177,9 @@ declare namespace ImageHelper {
      * @defaultValue `true`
      */
     notify: boolean;
-  }>;
+  }
 
-  interface UploadBase64Options extends _UploadBase64Options {}
+  interface UploadBase64Options extends InexactPartial<_UploadBase64Options> {}
 
   /**
    * An interface for return values of the {@linkcode ImageHelper.createThumbnail} method.
@@ -211,7 +211,7 @@ declare namespace ImageHelper {
     width: number;
   }
 
-  type _PixelsToCanvasOptions = InexactPartial<{
+  interface _PixelsToCanvasOptions {
     /**
      * The element to use.
      * @remarks If not provided, a new HTMLCanvasElement is created.
@@ -223,9 +223,9 @@ declare namespace ImageHelper {
 
     /** Specified height for the element (default to buffer image height). */
     eh: number;
-  }>;
+  }
 
-  interface PixelsToCanvasOptions extends _PixelsToCanvasOptions {}
+  interface PixelsToCanvasOptions extends InexactPartial<_PixelsToCanvasOptions> {}
 }
 
 export default ImageHelper;

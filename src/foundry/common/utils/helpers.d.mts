@@ -61,15 +61,15 @@ export const debouncedReload: () => void;
 export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFreezeOptions): DeepReadonly<T>;
 
 /** @internal */
-type _DeepFreezeOptions = InexactPartial<{
+interface _DeepFreezeOptions {
   /**
    * Throw an Error if deepFreeze is unable to freeze something instead of returning the original
    * @defaultValue `false`
    */
   strict: boolean;
-}>;
+}
 
-export interface DeepFreezeOptions extends _DeepFreezeOptions {}
+export interface DeepFreezeOptions extends InexactPartial<_DeepFreezeOptions> {}
 
 /**
  * Recursively seals ({@linkcode Object.seal}) the object (or value).
@@ -84,15 +84,15 @@ export interface DeepFreezeOptions extends _DeepFreezeOptions {}
 export function deepSeal<T extends AnyObject>(obj: T, options?: DeepSealOptions): T;
 
 /** @internal */
-type _DeepSealOptions = InexactPartial<{
+interface _DeepSealOptions {
   /**
    * Throw an Error if deepSeal is unable to seal something
    * @defaultValue `false`
    */
   strict: boolean;
-}>;
+}
 
-export interface DeepSealOptions extends _DeepSealOptions {}
+export interface DeepSealOptions extends InexactPartial<_DeepSealOptions> {}
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
@@ -108,15 +108,15 @@ export interface DeepSealOptions extends _DeepSealOptions {}
 export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
 
 /** @internal */
-type _DeepCloneOptions = InexactPartial<{
+interface _DeepCloneOptions {
   /**
    * Throw an Error if deepClone is unable to clone something instead of returning the original
    * @defaultValue `false`
    */
   strict: boolean;
-}>;
+}
 
-export interface DeepCloneOptions extends _DeepCloneOptions {}
+export interface DeepCloneOptions extends InexactPartial<_DeepCloneOptions> {}
 
 /**
  * Deeply difference an object against some other, returning the update keys and values.
@@ -128,7 +128,7 @@ export interface DeepCloneOptions extends _DeepCloneOptions {}
 export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
 
 /** @internal */
-type _DiffObjectOptions = InexactPartial<{
+interface _DiffObjectOptions {
   /**
    * Only recognize differences in other for keys which also exist in original
    * @defaultValue `false`
@@ -149,9 +149,9 @@ type _DiffObjectOptions = InexactPartial<{
    * and that pattern was copied for `deepFreeze` and `deepSeal`; Not sure why they didn't use it here.
    */
   _d: number;
-}>;
+}
 
-export interface DiffObjectOptions extends _DiffObjectOptions {}
+export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
 
 /**
  * Recurse through an object, applying all special keys.
@@ -254,7 +254,7 @@ export function expandObject(obj: object): object;
 export function filterObject(source: object, template: object, options?: FilterObjectOptions): object;
 
 /** @internal */
-type _FilterObjectOptions = InexactPartial<{
+interface _FilterObjectOptions {
   /**
    * Whether to keep deletion keys
    * @defaultValue `false`
@@ -266,9 +266,9 @@ type _FilterObjectOptions = InexactPartial<{
    * @defaultValue `false`
    */
   templateValues: boolean;
-}>;
+}
 
-export interface FilterObjectOptions extends _FilterObjectOptions {}
+export interface FilterObjectOptions extends InexactPartial<_FilterObjectOptions> {}
 
 /**
  * Flatten a possibly multidimensional object to a one-dimensional one by converting all nested keys to dot notation
@@ -293,15 +293,15 @@ export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
 export function getRoute(path: string, { prefix }?: GetRouteOptions): string;
 
 /** @internal */
-type _GetRouteOptions = InexactPartial<{
+interface _GetRouteOptions {
   /**
    * A path prefix to apply
    * @defaultValue {@linkcode globalThis.ROUTE_PREFIX}
    */
   prefix: string | null;
-}>;
+}
 
-export interface GetRouteOptions extends _GetRouteOptions {}
+export interface GetRouteOptions extends InexactPartial<_GetRouteOptions> {}
 
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
@@ -462,7 +462,7 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
 >;
 
 /** @internal */
-type _MergeObjectOptions = InexactPartial<{
+interface _MergeObjectOptions {
   /**
    * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
    * @defaultValue `true`
@@ -504,9 +504,9 @@ type _MergeObjectOptions = InexactPartial<{
    * @defaultValue `false`
    */
   performDeletions: boolean; // TODO: implement this in the mergeObject return type
-}>;
+}
 
-export interface MergeObjectOptions extends _MergeObjectOptions {}
+export interface MergeObjectOptions extends InexactPartial<_MergeObjectOptions> {}
 
 /**
  * Parse an S3 key to learn the bucket and the key prefix used for the request.
@@ -537,7 +537,7 @@ export function randomID(length?: number): string;
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
 /** @internal */
-type _FormatFileSizeOptions = InexactPartial<{
+interface _FormatFileSizeOptions {
   /**
    * The number of decimal places to round to.
    * @defaultValue `2`
@@ -550,9 +550,9 @@ type _FormatFileSizeOptions = InexactPartial<{
    * @remarks Foundry only actually checks if the base is `2` or not; all other values are treated as `10`
    */
   base: 2 | 10;
-}>;
+}
 
-export interface FormatFileSizeOptions extends _FormatFileSizeOptions {}
+export interface FormatFileSizeOptions extends InexactPartial<_FormatFileSizeOptions> {}
 
 export interface ResolvedUUID {
   /**
@@ -615,14 +615,14 @@ export interface ResolvedUUID {
 export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
 
 /** @internal */
-type _ParseUUIDOptions = InexactPartial<{
+interface _ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
   relative: Document.Any;
-}>;
+}
 
-export interface ParseUUIDOptions extends _ParseUUIDOptions {}
+export interface ParseUUIDOptions extends InexactPartial<_ParseUUIDOptions> {}
 
 /**
  * Escape the given unescaped string.
@@ -658,7 +658,7 @@ export function unescapeHTML(value: string): string;
 export function buildUuid(context?: BuildUUIDContext): string | null;
 
 /** @internal */
-type _BuildUUIDContext = InexactPartial<{
+interface _BuildUUIDContext {
   /**
    * The document name (or type)
    * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
@@ -676,9 +676,9 @@ type _BuildUUIDContext = InexactPartial<{
    * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
    */
   pack: string | null;
-}>;
+}
 
-export interface BuildUUIDContext extends _BuildUUIDContext {
+export interface BuildUUIDContext extends InexactPartial<_BuildUUIDContext> {
   /** The identifier of the document */
   id: string;
 }

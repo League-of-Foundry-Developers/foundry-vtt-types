@@ -227,15 +227,15 @@ declare namespace Collection {
   }
 
   /** @internal */
-  type _GetOptions = InexactPartial<{
+  interface _GetOptions {
     /**
      * Throw an Error if the requested key does not exist.
      * @defaultValue `false`
      */
     strict: boolean;
-  }>;
+  }
 
-  interface GetOptions extends _GetOptions {}
+  interface GetOptions extends InexactPartial<_GetOptions> {}
 
   /**
    * Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} and
@@ -245,25 +245,25 @@ declare namespace Collection {
    * so put here for re-use.
    * @internal
    */
-  type _GetInvalidOptions = InexactPartial<{
+  interface _GetInvalidOptions {
     /**
      * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
      * @defaultValue `true`
      */
     strict: boolean;
-  }>;
+  }
 
   /**
    * Used for {@linkcode EmbeddedCollection.GetOptions} and {@linkcode DocumentCollection.GetOptions}.
    * @internal
    */
-  type _InvalidOption = InexactPartial<{
+  interface _InvalidOption {
     /**
      * Allow retrieving an invalid Document.
      * @defaultValue `false`
      */
     invalid: boolean;
-  }>;
+  }
 
   /**
    * The `#get` and `#getInvalid` methods of `Collection` and its various subclasses all take a `strict` boolean in their options, changing
@@ -272,7 +272,7 @@ declare namespace Collection {
    * - `false`: return `undefined`
    * @internal
    */
-  type _ApplyStrict<Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+  type _ApplyStrict<Options extends Readonly<GetOptions> | undefined, StrictDefault extends boolean = false> =
     false extends Coalesce<GetKey<Options, "strict", undefined>, StrictDefault> ? undefined : never;
 
   /**
@@ -284,7 +284,7 @@ declare namespace Collection {
    * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
    * @internal
    */
-  type _GetReturn<V, Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+  type _GetReturn<V, Options extends Readonly<GetOptions> | undefined, StrictDefault extends boolean = false> =
     | V
     | _ApplyStrict<Options, StrictDefault>;
 
@@ -303,7 +303,7 @@ declare namespace Collection {
    */
   type _ApplyInvalid<
     DocumentName extends Document.Type,
-    Options extends Readonly<_InvalidOption> | undefined,
+    Options extends Readonly<InexactPartial<_InvalidOption>> | undefined,
     InvalidDefault extends boolean = false,
   > =
     | Document.StoredForName<DocumentName>

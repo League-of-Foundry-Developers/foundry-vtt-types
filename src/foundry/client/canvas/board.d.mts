@@ -939,7 +939,7 @@ declare namespace Canvas {
      * @internal
      */
     // TODO: audit in v14
-    type _InteractionData<ObjectFor extends PIXI.DisplayObject> = InexactPartial<{
+    interface _InteractionData<ObjectFor extends PIXI.DisplayObject> {
       /**
        * @remarks Set in `MouseInteractionManager##assignInteractionData`, which is called in
        * {@linkcode MouseInteractionManager.callback | #callback}, so this will always be available
@@ -1088,11 +1088,11 @@ declare namespace Canvas {
        * @privateRemarks Set in {@linkcode WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
        */
       fixed: boolean;
-    }>;
+    }
 
-    interface InteractionData<
-      ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject,
-    > extends _InteractionData<ObjectFor> {}
+    interface InteractionData<ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject> extends InexactPartial<
+      _InteractionData<ObjectFor>
+    > {}
 
     /** @internal */
     interface _Base<

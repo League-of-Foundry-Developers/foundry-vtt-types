@@ -69,7 +69,7 @@ declare namespace ControlIcon {
   interface AnyConstructor extends Identity<typeof AnyControlIcon> {}
 
   /** @internal */
-  type _Options = InexactPartial<{
+  interface _Options {
     /** @defaultValue `40` */
     size: number;
 
@@ -84,22 +84,22 @@ declare namespace ControlIcon {
 
     /** @defaultValue `number` */
     elevation: number;
-  }>;
+  }
 
-  interface Options extends _Options {
+  interface Options extends InexactPartial<_Options> {
     /** A source string for the icon's texture */
     texture: string;
   }
 
   /** @internal */
-  type _RefreshOptions = InexactPartial<{
+  interface _RefreshOptions {
     visible: boolean;
     iconColor: number;
     borderColor: number;
     borderVisible: boolean;
-  }>;
+  }
 
-  interface RefreshOptions extends _RefreshOptions {}
+  interface RefreshOptions extends InexactPartial<_RefreshOptions> {}
 }
 
 export default ControlIcon;

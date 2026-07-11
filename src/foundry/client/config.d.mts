@@ -1981,7 +1981,7 @@ declare global {
           RenderedEffectSource._AnimationConfigBase,
           Pick<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">,
           InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
-          RenderedEffectSource._Seed {}
+          InexactPartial<RenderedEffectSource._Seed> {}
 
       interface LightAnimations {
         [animationID: Brand<string, "CONFIG.Canvas.lightAnimations">]: LightSourceAnimationConfig;
@@ -2250,7 +2250,7 @@ declare global {
         extends
           RenderedEffectSource._AnimationConfigBase,
           RenderedEffectSource._AnimationConfigDarknessShaders,
-          RenderedEffectSource._Seed {}
+          InexactPartial<RenderedEffectSource._Seed> {}
 
       interface DarknessAnimations {
         [animationID: Brand<string, "CONFIG.Canvas.darknessAnimations">]: DarknessSourceAnimationConfig;

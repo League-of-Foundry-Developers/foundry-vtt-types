@@ -165,16 +165,16 @@ declare namespace PrimaryOccludableObjectMixin {
   type BaseClass = PIXI.Container.AnyConstructor;
 
   /** @internal */
-  type _TestOcclusionOptions = InexactPartial<{
+  interface _TestOcclusionOptions {
     /**
      * Test corners of the hit-box in addition to the token center?
      * @defaultValue `true`
      */
     corners: boolean;
-  }>;
+  }
 
   /** Additional options that affect testing */
-  interface TestOcclusionOptions extends _TestOcclusionOptions {}
+  interface TestOcclusionOptions extends InexactPartial<_TestOcclusionOptions> {}
 
   interface OcclusionState {
     /** The amount of FADE occlusion */

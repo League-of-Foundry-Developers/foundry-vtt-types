@@ -269,7 +269,7 @@ declare namespace DocumentCollection {
         [K in string]: SearchableField;
       };
 
-  interface GetInvalidOptions extends Collection._GetInvalidOptions {}
+  interface GetInvalidOptions extends InexactPartial<Collection._GetInvalidOptions> {}
 
   /**
    * @remarks Differs from {@linkcode Collection.GetReturn} only in the default value of `strict` (and that it doesn't return the exact `V`
@@ -280,7 +280,7 @@ declare namespace DocumentCollection {
     Options extends DocumentCollection.GetInvalidOptions | undefined,
   > = Collection._GetReturn<Document.InvalidForName<DocumentName>, Options, true>;
 
-  interface GetOptions extends Collection.GetOptions, Collection._InvalidOption {}
+  interface GetOptions extends Collection.GetOptions, InexactPartial<Collection._InvalidOption> {}
 
   type GetReturn<DocumentType extends Document.Type, Options extends GetOptions | undefined> = Collection._GetReturn<
     Collection._ApplyInvalid<DocumentType, Options, false>,

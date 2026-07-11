@@ -364,7 +364,7 @@ declare namespace MouseInteractionManager {
   > {}
 
   /** @internal */
-  type _Options = InexactPartial<{
+  interface _Options {
     /**
      * If provided, the property name on `object` which references a {@linkcode foundry.canvas.containers.ControlIcon | ControlIcon}.
      * This is used to set {@linkcode MouseInteractionManager.controlIcon | MouseInteractionManager#controlIcon}.
@@ -385,15 +385,15 @@ declare namespace MouseInteractionManager {
      * {@linkcode Canvas.app | canvas.app} if not provided.
      */
     application: PIXI.Application;
-  }>;
+  }
 
   /**
    * Interaction options which configure handling workflows
    */
-  interface Options extends _Options {}
+  interface Options extends InexactPartial<_Options> {}
 
   /** @internal */
-  type _ResetOptions = InexactPartial<{
+  interface _ResetOptions {
     /**
      * Reset the interaction data?
      * @defaultValue `true`
@@ -405,9 +405,9 @@ declare namespace MouseInteractionManager {
      * @defaultValue `true`
      */
     state: boolean;
-  }>;
+  }
 
-  interface ResetOptions extends _ResetOptions {}
+  interface ResetOptions extends InexactPartial<_ResetOptions> {}
 
   interface InteractionData<ObjectFor extends PIXI.Container = PIXI.Container> extends Pick<
     Canvas.Event.InteractionData<ObjectFor>,

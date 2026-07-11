@@ -378,7 +378,6 @@ expectTypeOf(
     keepId: true,
   }),
 ).toBeVoid();
-
 expectTypeOf(
   tempItem.exportToJSON({
     clearFlags: undefined,

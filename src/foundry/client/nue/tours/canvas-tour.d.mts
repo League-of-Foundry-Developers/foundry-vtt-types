@@ -34,7 +34,7 @@ declare namespace CanvasTour {
   }
 
   /** @internal */
-  type _Step = InexactPartial<{
+  interface _Step {
     /**
      * Activates a particular canvas layer and its respective control group. Usable in `CanvasTour` instances
      * @privateRemarks This is just `string` for now, but we may narrow the controls type to only configured values in future
@@ -43,9 +43,9 @@ declare namespace CanvasTour {
 
     /** Activates a particular tool. Usable in `CanvasTour` instances. */
     tool: string;
-  }>;
+  }
 
-  interface Step extends Tour.Step, _Step {}
+  interface Step extends Tour.Step, InexactPartial<_Step> {}
 }
 
 export default CanvasTour;

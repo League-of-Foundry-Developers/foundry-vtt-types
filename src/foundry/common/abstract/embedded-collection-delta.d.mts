@@ -107,7 +107,7 @@ declare namespace EmbeddedCollectionDelta {
   interface AnyConstructor extends Identity<typeof AnyEmbeddedCollectionDelta> {}
 
   /** @internal */
-  type _InitializeOptions = InexactPartial<{
+  interface _InitializeOptions {
     /**
      * @defaultValue `false`
      *
@@ -117,30 +117,30 @@ declare namespace EmbeddedCollectionDelta {
      * {@linkcode EmbeddedCollectionDelta._initializeDocument | #_initializeDocument}, so the interface there doesn't need to change.
      */
     full: boolean;
-  }>;
+  }
 
-  interface InitializeOptions extends EmbeddedCollection.InitializeOptions, _InitializeOptions {}
+  interface InitializeOptions extends EmbeddedCollection.InitializeOptions, InexactPartial<_InitializeOptions> {}
 
   /** @internal */
-  type _RestoreDelta = InexactPartial<{
+  interface _RestoreDelta {
     /**
      * An advanced option used specifically and internally by the ActorDelta model
      * @defaultValue `false`
      */
     restoreDelta: boolean;
-  }>;
+  }
 
   /**
    * Options for {@linkcode EmbeddedCollectionDelta.set | EmbeddedCollectionDelta#set} and
    * {@linkcode EmbeddedCollectionDelta._set | #_set}
    */
-  interface SetOptions extends EmbeddedCollection.SetOptions, _RestoreDelta {}
+  interface SetOptions extends EmbeddedCollection.SetOptions, InexactPartial<_RestoreDelta> {}
 
   /**
    * Options for {@linkcode EmbeddedCollectionDelta.delete | EmbeddedCollectionDelta#delete} and
    * {@linkcode EmbeddedCollectionDelta._delete | #_delete}
    */
-  interface DeleteOptions extends EmbeddedCollection.DeleteOptions, _RestoreDelta {}
+  interface DeleteOptions extends EmbeddedCollection.DeleteOptions, InexactPartial<_RestoreDelta> {}
 
   /**
    * The method signatures for {@linkcode EmbeddedCollectionDelta}.

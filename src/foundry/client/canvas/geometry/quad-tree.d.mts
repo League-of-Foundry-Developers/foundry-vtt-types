@@ -190,10 +190,10 @@ declare namespace Quadtree {
   interface AnyConstructor extends Identity<typeof AnyQuadtree> {}
 
   /** @internal */
-  type _OptionalSet<T> = InexactPartial<{
+  interface _OptionalSet<T> {
     /** @remarks Foundry never passes an object including `n`, which is handled by `obj.n = obj.n || new Set()` in `#insert()` */
-    n?: Set<Quadtree<T>>;
-  }>;
+    n: Set<Quadtree<T>>;
+  }
 
   /** @internal */
   interface _ObjectBase<T> {
@@ -201,7 +201,7 @@ declare namespace Quadtree {
     t: T;
   }
 
-  interface Object<T> extends _ObjectBase<T>, _OptionalSet<T> {}
+  interface Object<T> extends _ObjectBase<T>, InexactPartial<_OptionalSet<T>> {}
 
   type INDICES = Brand<number, "Quadtree.INDICES">;
 
@@ -213,7 +213,7 @@ declare namespace Quadtree {
   }
 
   /** @internal */
-  type _Options<T> = InexactPartial<{
+  interface _Options<T> {
     /**
      * The maximum number of objects per node
      * @defaultValue `20`
@@ -239,17 +239,17 @@ declare namespace Quadtree {
      * @internal
      */
     _root: Quadtree<T> | null;
-  }>;
+  }
 
   /**
    * Additional options which configure the Quadtree
    */
-  interface Options<T> extends _Options<T> {}
+  interface Options<T> extends InexactPartial<_Options<T>> {}
 
   type CollisionTestFunction<T> = ToMethod<(o: Quadtree.Object<T>, rect: PIXI.Rectangle) => boolean>;
 
   /** @internal */
-  type _GetObjectsOptions<T> = InexactPartial<{
+  interface _GetObjectsOptions<T> {
     /**
      * Function to further refine objects to return
      * after a potential collision is found. Parameters are the object and rect, and the
@@ -264,20 +264,20 @@ declare namespace Quadtree {
      * @internal
      */
     _s: Set<T>;
-  }>;
+  }
 
-  interface GetObjectsOptions<T> extends _GetObjectsOptions<T> {}
+  interface GetObjectsOptions<T> extends InexactPartial<_GetObjectsOptions<T>> {}
 
   /** @internal */
-  type _VisualizeOptions = InexactPartial<{
+  interface _VisualizeOptions {
     /**
      * Visualize the rectangular bounds of objects in the Quadtree.
      * @defaultValue `false`
      */
     objects: boolean;
-  }>;
+  }
 
-  interface VisualizeOptions extends _VisualizeOptions {}
+  interface VisualizeOptions extends InexactPartial<_VisualizeOptions> {}
 }
 
 /**

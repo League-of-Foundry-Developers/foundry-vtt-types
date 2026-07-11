@@ -82,15 +82,15 @@ declare namespace ClientIssues {
   type Severity = "error" | "warning" | "info";
 
   /** @internal */
-  type _CountDocumentSubTypesOptions = InexactPartial<{
+  interface _CountDocumentSubTypesOptions {
     /**
      * Decrement the counter rather than incrementing it.
      * @defaultValue `false`
      */
     decrement: boolean;
-  }>;
+  }
 
-  interface CountDocumentSubTypesOptions extends _CountDocumentSubTypesOptions {}
+  interface CountDocumentSubTypesOptions extends InexactPartial<_CountDocumentSubTypesOptions> {}
 
   interface ValidationFailure {
     name: string;

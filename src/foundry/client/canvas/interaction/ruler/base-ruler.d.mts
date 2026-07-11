@@ -197,30 +197,30 @@ declare namespace BaseRuler {
   type Path = ReadonlyArray<Readonly<Canvas.ElevatedPoint>>;
 
   /** @internal */
-  type _AddDragWaypointOptions = InexactPartial<{
+  interface _AddDragWaypointOptions {
     /**
      * Snap the added waypoint?
      * @defaultValue `false`
      */
     snap: boolean;
-  }>;
+  }
 
-  interface AddDragWaypointOptions extends _AddDragWaypointOptions {}
+  interface AddDragWaypointOptions extends InexactPartial<_AddDragWaypointOptions> {}
 
   /** @internal */
-  type _ChangeDragElevationOptions = InexactPartial<{
+  interface _ChangeDragElevationOptions {
     /**
      * Round elevations to multiples of the grid distance divided by {@linkcode CONFIG.Canvas.elevationSnappingPrecision}?
      * If false, rounds to multiples of the grid distance.
      * @defaultValue `false`
      */
     precise: boolean;
-  }>;
+  }
 
-  interface ChangeDragElevationOptions extends _ChangeDragElevationOptions {}
+  interface ChangeDragElevationOptions extends InexactPartial<_ChangeDragElevationOptions> {}
 
   /** @internal */
-  type _UpdateData = IntentionalPartial<{
+  interface _UpdateData {
     /**
      * @defaultValue `[]`
      * @remarks Can't be `undefined` because of an `in` check.
@@ -232,9 +232,10 @@ declare namespace BaseRuler {
      * @remarks Can't be `undefined` because of an `in` check.
      */
     hidden: boolean;
-  }>;
+  }
 
-  interface UpdateData extends _UpdateData {}
+  /** @privateRemarks Some properties can't be `undefined`, so `IntentionalPartial`. */
+  interface UpdateData extends IntentionalPartial<_UpdateData> {}
 }
 
 export default BaseRuler;

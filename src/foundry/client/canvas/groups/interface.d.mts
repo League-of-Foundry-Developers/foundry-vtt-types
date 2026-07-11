@@ -69,8 +69,13 @@ declare namespace InterfaceCanvasGroup {
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.interface.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  /** @internal */
-  type _CreateScrollingTextOptions = InexactPartial<{
+  /**
+   * Additional parameters of PIXI.TextStyle which are applied to the text.
+   * Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`,
+   * so this doesn't fall under the usual 'no InexactPartial on external interfaces' rule
+   * @internal
+   */
+  interface _CreateScrollingTextOptions extends InexactPartial<PIXI.ITextStyle> {
     /**
      * The distance in pixels that the scrolling text should travel
      * @defaultValue Double the width or height of the text, depending on direction
@@ -101,13 +106,9 @@ declare namespace InterfaceCanvasGroup {
      * @defaultValue `2000`
      */
     duration: number;
-  }> &
-    // Additional parameters of PIXI.TextStyle which are applied to the text
-    // Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`,
-    // so this doesn't fall under the usual 'no InexactPartial on external interfaces' rule
-    InexactPartial<PIXI.ITextStyle>;
+  }
 
-  interface CreateScrollingTextOptions extends _CreateScrollingTextOptions {}
+  interface CreateScrollingTextOptions extends InexactPartial<_CreateScrollingTextOptions> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 
