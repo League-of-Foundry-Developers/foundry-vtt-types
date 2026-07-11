@@ -36,6 +36,555 @@ import type Localization from "#client/helpers/localization.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type * as configuration from "#configuration";
 
+/** Configure debugging flags to display additional information */
+export declare const debug: CONFIG.Debug;
+
+/**
+ * Configure the verbosity of compatibility warnings generated throughout the software.
+ * The compatibility mode defines the logging level of any displayed warnings.
+ * The includePatterns and excludePatterns arrays provide a set of regular expressions which can either only
+ * include or specifically exclude certain file paths or warning messages.
+ * Exclusion rules take precedence over inclusion rules.
+ *
+ * @see {@linkcode CONST.COMPATIBILITY_MODES}
+ *
+ * @example
+ * Include Specific Errors
+ * ```js
+ * const includeRgx = new RegExp("/systems/dnd5e/module/documents/active-effect.mjs");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * ```
+ *
+ * @example
+ * Exclude Specific Errors
+ * ```js
+ * const excludeRgx = new RegExp("/systems/dnd5e/");
+ * CONFIG.compatibility.excludePatterns.push(excludeRgx);
+ * ```
+ *
+ * @example
+ * Both Include and Exclude
+ * ```js
+ * const includeRgx = new RegExp("/systems/dnd5e/module/actor/");
+ * const excludeRgx = new RegExp("/systems/dnd5e/module/actor/sheets/base.js");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * CONFIG.compatibility.excludePatterns.push(excludeRgx);
+ * ```
+ *
+ * @example
+ * Targeting more than filenames
+ * ```js
+ * const includeRgx = new RegExp("applyActiveEffects");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * ```
+ */
+export declare const compatibility: CONFIG.Compatibility;
+
+export declare const compendium: CONFIG.Compendium;
+
+/**
+ * Configure the DatabaseBackend used to perform Document operations
+ * @defaultValue `new `{@linkcode foundry.data.ClientDatabaseBackend}`()`
+ */
+export declare let DatabaseBackend: foundry.data.ClientDatabaseBackend;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Actor | Actor} document
+ */
+export declare const Actor: CONFIG.Actor;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Adventure | Adventure} document
+ */
+export declare const Adventure: CONFIG.Adventure;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Cards | Cards} document
+ */
+export declare const Cards: CONFIG.Cards;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ChatMessage | ChatMessage} document
+ */
+export declare const ChatMessage: CONFIG.ChatMessage;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Combat | Combat} document
+ */
+export declare const Combat: CONFIG.Combat;
+
+/**
+ * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
+ */
+export declare const Dice: CONFIG.Dice;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
+ */
+export declare const FogExploration: CONFIG.FogExploration;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
+ */
+export declare const Folder: CONFIG.Folder;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Item | Item} document
+ */
+export declare const Item: CONFIG.Item;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntry | JournalEntry} document
+ */
+export declare const JournalEntry: CONFIG.JournalEntry;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Macro | Macro} document
+ */
+export declare const Macro: CONFIG.Macro;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Playlist | Playlist} document
+ */
+export declare const Playlist: CONFIG.Playlist;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.RollTable | RollTable} document
+ */
+export declare const RollTable: CONFIG.RollTable;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Scene | Scene} document
+ */
+export declare const Scene: CONFIG.Scene;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Setting | Setting} document
+ */
+export declare const Setting: CONFIG.Setting;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.User | User} document
+ */
+export declare const User: CONFIG.User;
+
+/**
+ * Configuration settings for the Canvas and its contained layers and objects
+ */
+export declare const Canvas: CONFIG.Canvas;
+
+/**
+ * Configure the default Token text style so that it may be reused and overridden by modules
+ * @defaultValue
+ * ```ts
+ * new PIXI.TextStyle({
+ *   fontFamily: "Signika",
+ *   fontSize: 36,
+ *   fill: "#FFFFFF",
+ *   stroke: "#111111",
+ *   strokeThickness: 1,
+ *   dropShadow: true,
+ *   dropShadowColor: "#000000",
+ *   dropShadowBlur: 2,
+ *   dropShadowAngle: 0,
+ *   dropShadowDistance: 0,
+ *   align: "center",
+ *   wordWrap: false,
+ *   padding: 1
+ * })
+ * ```
+ */
+export declare let canvasTextStyle: PIXI.TextStyle;
+
+/**
+ * Available Weather Effects implementations
+ */
+export declare const weatherEffects: RemoveIndexSignatures<CONFIG.WeatherEffects>;
+
+/**
+ * The control icons used for rendering common HUD operations
+ */
+export declare const controlIcons: RemoveIndexSignatures<CONFIG.ControlIcons>;
+
+/**
+ * A collection of fonts to load either from the user's local system, or remotely.
+ */
+export declare const fontDefinitions: RemoveIndexSignatures<CONFIG.FontDefinitions>;
+
+/**
+ * The default font family used for text labels on the PIXI Canvas
+ * @defaultValue `"Signika"`
+ */
+export declare let defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
+
+/**
+ * The array of status effects which can be applied to an Actor.
+ * @defaultValue
+ * ```js
+ * [
+ *   {
+ *     id: "dead",
+ *     name: "EFFECT.StatusDead",
+ *     img: "icons/svg/skull.svg"
+ *   },
+ *   {
+ *     id: "unconscious",
+ *     name: "EFFECT.StatusUnconscious",
+ *     img: "icons/svg/unconscious.svg"
+ *   },
+ *   {
+ *     id: "sleep",
+ *     name: "EFFECT.StatusAsleep",
+ *     img: "icons/svg/sleep.svg"
+ *   },
+ *   {
+ *     id: "stun",
+ *     name: "EFFECT.StatusStunned",
+ *     img: "icons/svg/daze.svg"
+ *   },
+ *   {
+ *     id: "prone",
+ *     name: "EFFECT.StatusProne",
+ *     img: "icons/svg/falling.svg"
+ *   },
+ *   {
+ *     id: "restrain",
+ *     name: "EFFECT.StatusRestrained",
+ *     img: "icons/svg/net.svg"
+ *   },
+ *   {
+ *     id: "paralysis",
+ *     name: "EFFECT.StatusParalysis",
+ *     img: "icons/svg/paralysis.svg"
+ *   },
+ *   {
+ *     id: "fly",
+ *     name: "EFFECT.StatusFlying",
+ *     img: "icons/svg/wing.svg"
+ *   },
+ *   {
+ *     id: "blind",
+ *     name: "EFFECT.StatusBlind",
+ *     img: "icons/svg/blind.svg"
+ *   },
+ *   {
+ *     id: "deaf",
+ *     name: "EFFECT.StatusDeaf",
+ *     img: "icons/svg/deaf.svg"
+ *   },
+ *   {
+ *     id: "silence",
+ *     name: "EFFECT.StatusSilenced",
+ *     img: "icons/svg/silenced.svg"
+ *   },
+ *   {
+ *     id: "fear",
+ *     name: "EFFECT.StatusFear",
+ *     img: "icons/svg/terror.svg"
+ *   },
+ *   {
+ *     id: "burning",
+ *     name: "EFFECT.StatusBurning",
+ *     img: "icons/svg/fire.svg"
+ *   },
+ *   {
+ *     id: "frozen",
+ *     name: "EFFECT.StatusFrozen",
+ *     img: "icons/svg/frozen.svg"
+ *   },
+ *   {
+ *     id: "shock",
+ *     name: "EFFECT.StatusShocked",
+ *     img: "icons/svg/lightning.svg"
+ *   },
+ *   {
+ *     id: "corrode",
+ *     name: "EFFECT.StatusCorrode",
+ *     img: "icons/svg/acid.svg"
+ *   },
+ *   {
+ *     id: "bleeding",
+ *     name: "EFFECT.StatusBleeding",
+ *     img: "icons/svg/blood.svg"
+ *   },
+ *   {
+ *     id: "disease",
+ *     name: "EFFECT.StatusDisease",
+ *     img: "icons/svg/biohazard.svg"
+ *   },
+ *   {
+ *     id: "poison",
+ *     name: "EFFECT.StatusPoison",
+ *     img: "icons/svg/poison.svg"
+ *   },
+ *   {
+ *     id: "curse",
+ *     name: "EFFECT.StatusCursed",
+ *     img: "icons/svg/sun.svg"
+ *   },
+ *   {
+ *     id: "regen",
+ *     name: "EFFECT.StatusRegen",
+ *     img: "icons/svg/regen.svg"
+ *   },
+ *   {
+ *     id: "degen",
+ *     name: "EFFECT.StatusDegen",
+ *     img: "icons/svg/degen.svg"
+ *   },
+ *   {
+ *     id: "hover",
+ *     name: "EFFECT.StatusHover",
+ *     img: "icons/svg/wingfoot.svg"
+ *   },
+ *   {
+ *     id: "burrow",
+ *     name: "EFFECT.StatusBurrow",
+ *     img: "icons/svg/mole.svg"
+ *   },
+ *   {
+ *     id: "upgrade",
+ *     name: "EFFECT.StatusUpgrade",
+ *     img: "icons/svg/upgrade.svg"
+ *   },
+ *   {
+ *     id: "downgrade",
+ *     name: "EFFECT.StatusDowngrade",
+ *     img: "icons/svg/downgrade.svg"
+ *   },
+ *   {
+ *     id: "invisible",
+ *     name: "EFFECT.StatusInvisible",
+ *     img: "icons/svg/invisible.svg"
+ *   },
+ *   {
+ *     id: "target",
+ *     name: "EFFECT.StatusTarget",
+ *     img: "icons/svg/target.svg"
+ *   },
+ *   {
+ *     id: "eye",
+ *     name: "EFFECT.StatusMarked",
+ *     img: "icons/svg/eye.svg"
+ *   },
+ *   {
+ *     id: "bless",
+ *     name: "EFFECT.StatusBlessed",
+ *     img: "icons/svg/angel.svg"
+ *   },
+ *   {
+ *     id: "fireShield",
+ *     name: "EFFECT.StatusFireShield",
+ *     img: "icons/svg/fire-shield.svg"
+ *   },
+ *   {
+ *     id: "coldShield",
+ *     name: "EFFECT.StatusIceShield",
+ *     img: "icons/svg/ice-shield.svg"
+ *   },
+ *   {
+ *     id: "magicShield",
+ *     name: "EFFECT.StatusMagicShield",
+ *     img: "icons/svg/mage-shield.svg"
+ *   },
+ *   {
+ *     id: "holyShield",
+ *     name: "EFFECT.StatusHolyShield",
+ *     img: "icons/svg/holy-shield.svg"
+ *   }
+ * ]
+ * ```
+ */
+export declare const statusEffects: CONFIG.StatusEffect[];
+
+/**
+ * A mapping of status effect IDs which provide some additional mechanical integration.
+ * @remarks See {@linkcode CONFIG.DefaultSpecialStatusEffects} for defaults.
+ */
+export declare const specialStatusEffects: HandleEmptyObject<
+  RemoveIndexSignatures<CONFIG.SpecialStatusEffects>,
+  RemoveIndexSignatures<CONFIG.DefaultSpecialStatusEffects>
+>;
+
+/**
+ * A mapping of core audio effects used which can be replaced by systems or mods
+ */
+export declare const sounds: RemoveIndexSignatures<CONFIG.Sounds>;
+
+/**
+ * Define the set of supported languages for localization
+ */
+export declare const supportedLanguages: RemoveIndexSignatures<CONFIG.SupportedLanguages>;
+
+/**
+ * Localization constants.
+ */
+export declare const i18n: CONFIG.Internationalization;
+
+/**
+ * Configuration for time tracking
+ */
+export declare const time: CONFIG.Time;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ActiveEffect | ActiveEffect} embedded document type
+ */
+export declare const ActiveEffect: CONFIG.ActiveEffect;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ActorDelta | ActorDelta} embedded document type.
+ */
+export declare const ActorDelta: CONFIG.ActorDelta;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Card | Card} embedded document type
+ */
+export declare const Card: CONFIG.Card;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.TableResult | TableResult} embedded document type
+ */
+export declare const TableResult: CONFIG.TableResult;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
+ */
+export declare const JournalEntryPage: CONFIG.JournalEntryPage;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.PlaylistSound | PlaylistSound} embedded document type
+ */
+export declare const PlaylistSound: CONFIG.PlaylistSound;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.AmbientLight | AmbientLight} embedded document
+ * type and its representation on the game Canvas
+ */
+export declare const AmbientLight: CONFIG.AmbientLight;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.AmbientSound | AmbientSound} embedded document
+ * type and its representation on the game Canvas
+ */
+export declare const AmbientSound: CONFIG.AmbientSound;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Combatant | Combatant} embedded document type
+ * within a {@linkcode foundry.documents.Combat | Combat} document
+ */
+export declare const Combatant: CONFIG.Combatant;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.CombatantGroup | CombatantGroup}
+ * embedded document type within a {@linkcode foundry.documents.Combat | Combat} document.
+ */
+export declare const CombatantGroup: CONFIG.CombatantGroup;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
+ */
+export declare const Drawing: CONFIG.Drawing;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
+ */
+export declare const JournalEntryCategory: CONFIG.JournalEntryCategory;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
+ * on the game Canvas
+ */
+export declare const MeasuredTemplate: CONFIG.MeasuredTemplate;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Note | Note} embedded document type and its representation on the game Canvas
+ */
+export declare const Note: CONFIG.Note;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Region | Region} embedded document type and its representation on the game Canvas
+ */
+export declare const Region: CONFIG.Region;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
+ */
+export declare const RegionBehavior: CONFIG.RegionBehavior;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
+ */
+export declare const Tile: CONFIG.Tile;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Token | Token} embedded document type and its representation on the game Canvas
+ */
+export declare const Token: CONFIG.Token;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Wall | Wall} embedded document type and its representation on the game Canvas
+ */
+export declare const Wall: CONFIG.Wall;
+
+/**
+ * An enumeration of sound effects which can be applied to Sound instances.
+ */
+export declare const soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
+
+/**
+ * Default configuration options for TinyMCE editors
+ */
+export declare const TinyMCE: tinyMCE.RawEditorOptions;
+
+/**
+ * Rich text editing configuration.
+ */
+export declare const TextEditor: CONFIG.TextEditor;
+
+/**
+ * Configuration for the WebRTC implementation class
+ */
+export declare const WebRTC: CONFIG.WebRTC;
+
+/**
+ * Configure the Application classes used to render various core UI elements in the application
+ */
+export declare const ui: RemoveIndexSignatures<CONFIG.UI>;
+
+/**
+ * Overrides for various core UI/UX helpers.
+ */
+export declare const ux: CONFIG.UX;
+
+/**
+ * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
+ * Non-prefixed query names are reserved by core.
+ */
+export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
+
+/**
+ * Configure custom cursor images to use when interacting with the application.
+ *
+ * @example
+ * Configuring a cursor with a hotspot in the default top-left.
+ * ```js
+ * Object.assign(CONFIG.cursors, {
+ *   default: "icons/cursors/default.avif",
+ *   "default-down": "icons/cursors/default-down.avif"
+ * });
+ * ```
+ *
+ * @example
+ * Configuring a cursor with a hotspot in the center.
+ * ```js
+ * Object.assign(CONFIG.cursors, {
+ *   default: { url: "icons/cursors/target.avif", x: 16, y: 16 },
+ *   "default-down": { url: "icons/cursors/target-down.avif", x: 16, y: 16 }
+ * });
+ * ```
+ */
+export declare const cursors: CONFIG.Cursors;
+
 declare global {
   namespace CONFIG {
     type SheetClasses<Name extends Document.Type> = InitializedOn<
@@ -715,6 +1264,11 @@ declare global {
     TableResult: CONFIG.TableResult;
 
     /**
+     * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
+     */
+    JournalEntryCategory: CONFIG.JournalEntryCategory;
+
+    /**
      * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
      */
     JournalEntryPage: CONFIG.JournalEntryPage;
@@ -752,11 +1306,6 @@ declare global {
      * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
      */
     Drawing: CONFIG.Drawing;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
-     */
-    JournalEntryCategory: CONFIG.JournalEntryCategory;
 
     /**
      * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
