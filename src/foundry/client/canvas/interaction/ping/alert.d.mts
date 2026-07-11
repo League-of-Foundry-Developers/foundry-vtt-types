@@ -23,15 +23,16 @@ declare namespace AlertPing {
    * Only exists to change the default value of `color`
    * @internal
    */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The color of the ping graphic.
      * @defaultValue `"#ff0000"`
      */
     color: Color.Source;
-  }>;
+  }
 
-  interface ConstructorOptions extends Omit<PulsePing.ConstructorOptions, "color">, _ConstructorOptions {}
+  interface ConstructorOptions
+    extends Omit<PulsePing.ConstructorOptions, "color">, InexactPartial<_ConstructorOptions> {}
 }
 
 export default AlertPing;

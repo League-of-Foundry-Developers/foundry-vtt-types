@@ -93,8 +93,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCombat.ParentCollectionName | null;
-
   static override get implementation(): Combat.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombat;
@@ -304,7 +302,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCombat.Schema>;
+  static override _schema: SchemaField<BaseCombat.Schema>;
 
   static override get schema(): SchemaField<BaseCombat.Schema>;
 

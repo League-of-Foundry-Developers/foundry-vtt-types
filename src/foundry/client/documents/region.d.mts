@@ -70,8 +70,8 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
-   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime;
-   * A reference to the private, but unfrozen, array is returned.
+   * @remarks Foundry types the return as `Readonly` but does nothing to that effect at runtime;
+   * A reference to the private, but unfrozen, object is returned.
    */
   get triangulation(): RegionDocument.Triangulation;
 

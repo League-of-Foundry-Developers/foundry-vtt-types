@@ -14,7 +14,7 @@ declare const wheelEvent: WheelEvent;
 declare const dragEvent: DragEvent;
 declare const combat: Combat.Implementation;
 declare const keyboardEvent: KeyboardEvent;
-declare const plannedMovement: TokenDocument.PlannedMovement;
+declare const plannedMovement: Token.PlannedMovement;
 
 describe("TokenLayer Tests", () => {
   test("Construction", () => {

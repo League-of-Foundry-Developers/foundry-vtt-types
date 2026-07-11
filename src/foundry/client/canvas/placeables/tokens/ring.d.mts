@@ -11,7 +11,10 @@ declare class TokenRing {
   /** A `TokenRing` is constructed by providing a reference to a `Token` object. */
   constructor(token: Token.Implementation);
 
-  /** The effects which could be applied to a token ring (using bitwise operations) */
+  /**
+   * The effects which could be applied to a token ring (using bitwise operations)
+   * @remarks Frozen.
+   */
   static effects: Readonly<TokenRing.Effects>;
 
   /**
@@ -253,7 +256,7 @@ declare namespace TokenRing {
     /**
      * A duration in milliseconds over which the animation should occur
      * @defaultValue `1600`
-     * @remarks **and maximum** changes to `1000`
+     * @remarks If photosensitive mode is active, this gets `Math.max(1000, duration)`ed, preventing flashes faster than 1 second.
      */
     duration?: number;
 

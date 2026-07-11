@@ -230,7 +230,7 @@ declare abstract class BaseGrid {
   /**
    * Measure a shortest, direct path through the given waypoints.
    * @param waypoints - The waypoints the path must pass through
-   * @param options   - Additional measurement options
+   * @param options   - Additional measurement options (default: `{}`)
    * @returns The measurements a shortest, direct path through the given waypoints.
    * @privateRemarks This uses `never` because it needs to be wide enough to allow the override in
    * {@linkcode HexagonalGrid.measurePath | HexagonalGrid}, but re-narrowing in {@linkcode SquareGrid.measurePath | SquareGrid} and

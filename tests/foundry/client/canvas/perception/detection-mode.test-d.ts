@@ -38,7 +38,10 @@ describe("DetectionMode tests", () => {
   } satisfies TokenDocument.DetectionModeData;
 
   test("Construction", () => {
+    // @ts-expect-error DetectionModes require a `type`
     new DetectionMode();
+    // technically only requires a `type`
+    new DetectionMode({ type: DetectionMode.DETECTION_TYPES.MOVE });
     new DetectionMode(source);
   });
 

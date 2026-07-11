@@ -49,15 +49,16 @@ declare namespace Ping {
   type ConfiguredStyles = keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
   /** @internal */
-  type _ConstructorOptions = IntentionalPartial<{
+  interface _ConstructorOptions {
     /**
      * The duration of the animation in milliseconds.
      * @defaultValue `900`
-     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
+     * @remarks This is allowed to be be `undefined` despite the default being provided via `mergeObject`, because it's only ever passed on
+     * to {@linkcode CanvasAnimation.animate}, which has a signature default for it.
      *
      * See {@linkcode CanvasAnimation.AnimateOptions.duration}
      */
-    duration: number;
+    duration: number | undefined;
 
     /**
      * The size of the ping graphic.
@@ -79,9 +80,10 @@ declare namespace Ping {
      * See {@linkcode CanvasAnimation.AnimateOptions.name}
      */
     name: PropertyKey | undefined;
-  }>;
+  }
 
-  interface ConstructorOptions extends Ping._ConstructorOptions {}
+  /** @privateRemarks Some properties can't be `undefined`, so `IntentionalPartial`. */
+  interface ConstructorOptions extends IntentionalPartial<_ConstructorOptions> {}
 }
 
 export default Ping;

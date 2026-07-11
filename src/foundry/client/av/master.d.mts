@@ -1,8 +1,7 @@
-import type { DeepPartial, FixedInstanceType } from "#utils";
-
-import KeyboardManager = foundry.helpers.interaction.KeyboardManager;
-import AVSettings = foundry.av.AVSettings;
-import type AVConfig from "#client/applications/settings/menus/av-config.mjs";
+import type { DeepPartial } from "#utils";
+import type { KeyboardManager } from "#client/helpers/interaction/_module.d.mts";
+import type { AVClient, AVSettings } from "#client/av/_module.d.mts";
+import type { AVConfig } from "#client/applications/settings/menus/_module.d.mts";
 
 /**
  * The master Audio/Video controller instance.
@@ -11,18 +10,22 @@ import type AVConfig from "#client/applications/settings/menus/av-config.mjs";
 declare class AVMaster {
   constructor();
 
+  /** @privateRemarks Defined during construction. */
   settings: AVSettings;
 
+  /** @privateRemarks Defined during construction. */
   config: AVConfig;
 
   /**
    * The Audio/Video client class
+   * @privateRemarks Defined during construction.
    */
-  client: FixedInstanceType<CONFIG["WebRTC"]["clientClass"]>;
+  client: AVClient.Implementation;
 
   /**
    * A flag to track whether the current user is actively broadcasting their microphone.
    * @defaultValue `false`
+   * @privateRemarks Defined during construction.
    */
   broadcasting: boolean;
 
@@ -31,36 +34,48 @@ declare class AVMaster {
    * This is required for synchronization between connection and reconnection attempts.
    * @defaultValue `false`
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _connected: boolean;
+  protected _connected: never;
 
   /**
    * The cached connection promise.
    * This is required to prevent re-triggering a connection while one is already in progress.
    * @defaultValue `null`
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _connecting: Promise<boolean> | null;
+  protected _connecting: never;
 
   /**
    * A flag to track whether the A/V system is currently in the process of reconnecting.
    * This occurs if the connection is lost or interrupted.
    * @defaultValue `false`
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _reconnecting: boolean;
+  protected _reconnecting: never;
 
   /**
-   * @defaultValue `{}`
+   * @defaultValue `{ speaking: false, volumeHistories: [] }`
    * @internal
+   * @privateRemarks Defined during construction by simple assignment.
    */
-  protected _speakingData: { speaking: boolean; volumeHistories: number[] };
+  _speakingData: AVMaster.SpeakingData;
 
   /**
    * @defaultValue `0`
    * @internal
+   * @privateRemarks Defined during construction by simple assignment.
    */
-  protected _pttMuteTimeout: number;
+  _pttMuteTimeout: number;
+
+  /**
+   * @defaultValue `3000`
+   * @internal
+   * @privateRemarks Defined during construction by simple assignment.
+   */
+  _reconnectPeriodMS: number;
 
   get mode(): AVSettings.AV_MODES;
 
@@ -84,8 +99,9 @@ declare class AVMaster {
   /**
    * Initialize the local broadcast state.
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _initialize(): void;
+  protected _initialize(): never;
 
   /**
    * A user can broadcast audio if the AV mode is compatible and if they are allowed to broadcast.
@@ -119,7 +135,7 @@ declare class AVMaster {
    * @param mode - The currently selected voice broadcasting mode
    * @internal
    */
-  protected _initializeUserVoiceDetection(mode: AVSettings.VOICE_MODES): void;
+  _initializeUserVoiceDetection(mode: AVSettings.VOICE_MODES): void;
 
   /**
    * Activate voice detection tracking for a userId on a provided MediaStream.
@@ -150,15 +166,17 @@ declare class AVMaster {
    *
    * @param dbLevel - The audio level in decibels of the user within the last 50ms
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _onAudioLevel(dbLevel: number): void;
+  protected _onAudioLevel(dbLevel: never): never;
 
   /**
    * Resets the speaking history of a user
    * If the user was considered speaking, then mark them as not speaking
    * @internal
+   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
    */
-  protected _resetSpeakingHistory(): void;
+  protected _resetSpeakingHistory(): never;
 
   /**
    * Handle activation of a push-to-talk key or button.
@@ -177,10 +195,9 @@ declare class AVMaster {
   render(): void;
 
   /**
-   * Render the audio/video streams to the CameraViews UI.
-   * Assign each connected user to the correct video frame element.
+   * @deprecated Foundry removed this method in v13. This warning will be removed in v14.
    */
-  onRender(): void;
+  onRender(): never;
 
   /**
    * Respond to changes which occur to AV Settings.
@@ -190,6 +207,13 @@ declare class AVMaster {
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 
   debug(message: string): void;
+}
+
+declare namespace AVMaster {
+  interface SpeakingData {
+    speaking: boolean;
+    volumeHistories: number[];
+  }
 }
 
 export default AVMaster;

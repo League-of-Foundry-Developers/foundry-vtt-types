@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
@@ -56,14 +56,14 @@ declare abstract class BaseChatMessage<
    * - `user` to `author` (since v12, no specified end)
    * - existing numeric `type`s to `style`, setting `type` to `"base"` (since v12, no specified end)
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
    * - `user` to `author` (since v12, until v14)
    */
-  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
+  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -84,8 +84,6 @@ declare abstract class BaseChatMessage<
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
 
   static override get implementation(): ChatMessage.ImplementationClass;
 
@@ -277,7 +275,7 @@ declare abstract class BaseChatMessage<
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseChatMessage.Schema>;
+  static override _schema: SchemaField<BaseChatMessage.Schema>;
 
   static override get schema(): SchemaField<BaseChatMessage.Schema>;
 

@@ -1,25 +1,511 @@
+import type { AnyArray, Coalesce, Identity, InexactPartial, PrettifyType, SimpleMerge } from "#utils";
+import type { DataModel } from "#common/abstract/_module.d.mts";
 import type {
-  GetKey,
-  AnyObject,
-  InexactPartial,
-  AnyMutableObject,
-  Identity,
-  AnyArray,
-  NullishProps,
-  PrettifyType,
-} from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type { ReleaseData } from "../config.d.mts";
-import type * as fields from "../data/fields.d.mts";
-import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
-import type { BaseFolder } from "../documents/_module.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+  ArrayField,
+  BooleanField,
+  ColorField,
+  DataField,
+  DataSchema,
+  HTMLField,
+  ObjectField,
+  SchemaField,
+  SetField,
+  StringField,
+} from "#client/data/fields.mjs";
+import type { ReleaseData } from "#common/config.d.mts";
+import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
+import type { BaseFolder } from "#common/documents/_module.d.mts";
+import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
-type DataSchema = foundry.data.fields.DataSchema;
+/**
+ * A custom SchemaField for defining package compatibility versions.
+ */
+declare class PackageCompatibility<
+  Options extends SchemaField.Options<PackageCompatibility.Schema> = SchemaField.DefaultOptions,
+> extends SchemaField<PackageCompatibility.Schema, Options> {
+  constructor(options?: Options);
+}
 
-declare const __BasePackageBrand: unique symbol;
+declare namespace PackageCompatibility {
+  interface Schema extends DataSchema {
+    /**
+     * The Package will not function before this version
+     */
+    minimum: StringField<{
+      required: false;
+      blank: false;
+      initial: undefined;
+      validate: typeof BasePackage.validateVersion;
+    }>;
 
-declare const __PackageSchema: unique symbol;
+    /**
+     * Verified compatible up to this version
+     */
+    verified: StringField<{
+      required: false;
+      blank: false;
+      initial: undefined;
+      validate: typeof BasePackage.validateVersion;
+    }>;
+
+    /**
+     * The Package will not function after this version
+     */
+    maximum: StringField<{
+      required: false;
+      blank: false;
+      initial: undefined;
+      validate: typeof BasePackage.validateVersion;
+    }>;
+  }
+
+  interface Data extends SchemaField.InitializedData<Schema> {}
+}
+
+export { PackageCompatibility };
+
+/**
+ * A custom SchemaField for defining package relationships.
+ */
+declare class PackageRelationships<
+  Options extends SchemaField.Options<PackageRelationships.Schema> = SchemaField.DefaultOptions,
+> extends SchemaField<PackageRelationships.Schema, Options> {
+  constructor(options?: Options);
+}
+
+declare namespace PackageRelationships {
+  interface Schema extends DataSchema {
+    /**
+     * Systems that this Package supports
+     */
+    systems: PackageRelationshipField<RelatedPackage<"system">>;
+
+    /**
+     * Packages that are required for base functionality
+     */
+    requires: PackageRelationshipField<RelatedPackage>;
+
+    /**
+     * Packages that are recommended for optimal functionality
+     */
+    recommends: PackageRelationshipField<RelatedPackage>;
+
+    conflicts: PackageRelationshipField<RelatedPackage>;
+
+    flags: ObjectField;
+  }
+
+  interface Data extends SchemaField.InitializedData<Schema> {}
+}
+
+export { PackageRelationships };
+
+/**
+ * A SetField with custom casting behavior.
+ * @privateRemarks This class is a bunch of words for only the benefit of {@linkcode PackageRelationships.Schema} having accurate
+ * field class names.
+ */
+declare class PackageRelationshipField<
+  const ElementFieldType extends DataField.Any,
+  const Options extends SetField.AnyOptions = SetField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = SetField.InitializedType<InitializedElementType, Options>,
+  const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  const PersistedType extends PersistedElementType[] | null | undefined = SetField.PersistedType<
+    PersistedElementType,
+    Options
+  >,
+> extends SetField<
+  ElementFieldType,
+  Options,
+  AssignmentElementType,
+  InitializedElementType,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
+  // Actually wraps non-array `value`s as `[value]`, but typing it as such makes `super` yell.
+  protected override _cast(value: unknown): AssignmentType;
+}
+
+/**
+ * A custom SchemaField for defining a related Package.
+ * It may be required to be a specific type of package, by passing the `packageType` option to the constructor.
+ */
+declare class RelatedPackage<
+  PackageType extends CONST.PACKAGE_TYPES | undefined = undefined,
+  Options extends SchemaField.Options<RelatedPackage.Schema<PackageType>> = SchemaField.DefaultOptions,
+> extends SchemaField<RelatedPackage.Schema<PackageType>, Options> {
+  constructor(options?: RelatedPackage.ConstructorOptions<PackageType, Options>);
+}
+
+declare namespace RelatedPackage {
+  type ConstructorOptions<
+    PackageType extends CONST.PACKAGE_TYPES | undefined = undefined,
+    Options extends SchemaField.Options<RelatedPackage.Schema<PackageType>> = SchemaField.DefaultOptions,
+  > = {
+    /** @defaultValue `"module"` */
+    packageType?: PackageType;
+  } & Options;
+
+  interface Schema<PackageType extends CONST.PACKAGE_TYPES | undefined = undefined> extends DataSchema {
+    /**
+     * The id of the related package
+     */
+    id: StringField<{ required: true; blank: false; validate: typeof BasePackage.validateId }>;
+
+    /**
+     * The type of the related package
+     */
+    type: StringField<{
+      choices: Coalesce<PackageType, CONST.PACKAGE_TYPES>[];
+      initial: Coalesce<PackageType, "module">;
+    }>;
+
+    /**
+     * An explicit manifest URL, otherwise learned from the Foundry web server
+     */
+    manifest: StringField<{ required: false; blank: false; initial: undefined }>;
+
+    /**
+     * The compatibility data with this related Package
+     */
+    compatibility: PackageCompatibility;
+
+    /**
+     * The reason for this relationship
+     */
+    reason: StringField<{ required: false; blank: false; initial: undefined }>;
+  }
+
+  interface Data extends SchemaField.InitializedData<Schema> {}
+}
+
+export { RelatedPackage };
+
+/**
+ * A custom SchemaField for defining the folder structure of the included compendium packs.
+ */
+declare class PackageCompendiumFolder<
+  Depth extends number | undefined = undefined,
+  Options extends SchemaField.Options<PackageCompendiumFolder.Schema<Depth>> = SchemaField.DefaultOptions,
+> extends SchemaField<PackageCompendiumFolder.Schema<Depth>> {
+  constructor(options?: PackageCompendiumFolder.ConstructorOptions<Depth, Options>);
+}
+
+declare namespace PackageCompendiumFolder {
+  type ConstructorOptions<
+    Depth extends number | undefined = undefined,
+    Options extends SchemaField.Options<PackageCompendiumFolder.Schema<Depth>> = SchemaField.DefaultOptions,
+  > = {
+    /** @defaultValue `1` */
+    depth?: Depth;
+  } & Options;
+
+  /** @internal */
+  interface _Schema extends DataSchema {
+    /** Name for the folder. Multiple packages with identical folder names will merge by name. */
+    name: StringField<{ required: true; blank: false }>;
+
+    /** Alphabetical or manual sorting. */
+    sorting: StringField<{
+      required: false;
+      blank: false;
+      initial: undefined;
+      choices: typeof BaseFolder.SORTING_MODES;
+    }>;
+
+    /** A hex string for the pack's color. */
+    color: ColorField;
+
+    /** A list of the pack names to include in this folder. */
+    packs: SetField<StringField<{ required: true; blank: false }>>;
+  }
+
+  // Foundry starts Depth at 1 and increments from there
+  type FolderRecursion = [1, 2, 3, 4];
+
+  type Schema<Depth extends number | undefined> = Depth extends undefined | 0 | 1 | 2 | 3
+    ? _Schema & {
+        folders: SetField<PackageCompendiumFolder<FolderRecursion[Coalesce<Depth, 1>]>>;
+      }
+    : _Schema;
+
+  interface Data extends SchemaField.InitializedData<Schema<1>> {}
+}
+
+export { PackageCompendiumFolder };
+
+/**
+ * A special `ObjectField` which captures a mapping of {@linkcode CONST.USER_ROLES} to {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
+ */
+declare class CompendiumOwnershipField<
+  Options extends DataField.Options<BasePackage.OwnershipRecord> = CompendiumOwnershipField.DefaultOptions,
+> extends ObjectField<Options, BasePackage.OwnershipRecord, BasePackage.OwnershipRecord, BasePackage.OwnershipRecord> {
+  static override get _defaults(): DataField.Options<BasePackage.OwnershipRecord>;
+
+  protected override _validateType(
+    value: Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | void;
+}
+
+declare namespace CompendiumOwnershipField {
+  type DefaultOptions = SimpleMerge<
+    ObjectField.DefaultOptions,
+    {
+      initial: { PLAYER: "OBSERVER"; ASSISTANT: "OWNER" };
+      validationError: "is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS";
+    }
+  >;
+}
+
+export { CompendiumOwnershipField };
+
+/**
+ * A special SetField which provides additional validation and initialization behavior specific to compendium packs.
+ */
+export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> extends SetField<ElementFieldType> {
+  protected override _cleanType(
+    value: Set<ArrayField.InitializedElementType<ElementFieldType>>,
+    options?: DataField.CleanOptions,
+  ): Set<ArrayField.InitializedElementType<ElementFieldType>>;
+
+  override initialize(
+    value: ArrayField.PersistedElementType<ElementFieldType>[],
+    // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
+    // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ):
+    | Set<ArrayField.InitializedElementType<ElementFieldType>>
+    | (() => Set<ArrayField.InitializedElementType<ElementFieldType>> | null);
+
+  protected override _validateElements(
+    value: AnyArray,
+    options?: DataField.ValidateOptions<DataField.Any>,
+  ): void | DataModelValidationFailure;
+
+  protected override _validateElement(
+    value: unknown,
+    options: DataField.ValidateOptions<DataField.Any>,
+  ): void | DataModelValidationFailure;
+}
+
+/**
+ * The data schema used to define a Package manifest.
+ * Specific types of packages extend this schema with additional fields.
+ * @privateRemarks The following methods/properties need to be overridden in direct subclasses:
+ * - {@linkcode BasePackage.type} (both static property and instance getter, its impossible to link to the latter)
+ * - {@linkcode BasePackage.collection} to match `type` + `"s"`.
+ * - {@linkcode BasePackage.version | BasePackage#version}, due to unsound subclassing on Foundry's part.
+ * - {@linkcode BasePackage.testAvailability} to narrow the first parameter.
+ * - Standard {@linkcode DataModel} overrides.
+ */
+declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
+  PackageSchema,
+  null
+> {
+  constructor(
+    data: BasePackage.ManifestData<PackageSchema> | BasePackage.Any,
+    options?: DataModel.ConstructionContext<null>,
+  );
+
+  static [__BasePackageBrand]: never;
+
+  [__PackageSchema]: PackageSchema;
+
+  /**
+   * @privateRemarks `version` is omitted from {@linkcode BasePackage.Schema} due to {@linkcode foundry.packages.BaseWorld.Schema} changing
+   * the `nullable` and `initial` options of the field. `BaseModule` and `BaseSystem` have fake declarations for this field in their schema
+   * instead, while `BaseWorld` has its real one. A fake class property has been added to `BasePackage`, as well as ones in `BaseModule`,
+   * and `BaseSystem` to narrow them, since the schema is otherwise overridden by this type. That, along with adding `version` to
+   * {@linkcode BasePackage.ManifestData} manually, ensures correctness with only some light lying.
+   */
+  version: string | null;
+
+  /**
+   * An availability code in {@linkcode CONST.PACKAGE_AVAILABILITY_CODES} which defines whether this package can be used.
+   * @defaultValue {@linkcode BasePackage.testAvailability | this.constructor.testAvailability(this)}
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  availability: CONST.PACKAGE_AVAILABILITY_CODES;
+
+  /**
+   * A flag which tracks whether this package is currently locked.
+   * @defaultValue `false`
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  locked: boolean;
+
+  /**
+   * A flag which tracks whether this package is a free Exclusive pack
+   * @defaultValue `false`
+   * @remarks The constructor only sets the top level instance property, the `_source` is unchanged.
+   * @privateRemarks Unlike the other properties assigned at construction, this also {@link BasePackage.Schema.exclusive | exists} in
+   * the schema.
+   */
+  exclusive: boolean;
+
+  /**
+   * A flag which tracks whether this package is owned, if it is protected.
+   * @defaultValue `false`
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  owned: boolean;
+
+  /**
+   * A set of Tags that indicate what kind of Package this is, provided by the Website
+   * @defaultValue `[]`
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  tags: string[];
+
+  /**
+   * A flag which tracks if this package has files stored in the persistent storage folder
+   * @defaultValue `false`
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  hasStorage: boolean;
+
+  /**
+   * Define the package type in {@linkcode CONST.PACKAGE_TYPES} that this class represents.
+   * Each BasePackage subclass must define this attribute.
+   * @abstract
+   * @remarks This is actually `"package"` in `BasePackage`, a disallowed value, but the three real package types all override.
+   */
+  static type: CONST.PACKAGE_TYPES;
+
+  /**
+   * The type of this package instance. A value in {@linkcode CONST.PACKAGE_TYPES}.
+   */
+  get type(): CONST.PACKAGE_TYPES;
+
+  /**
+   * A flag which defines whether this package is unavailable to be used.
+   */
+  get unavailable(): boolean;
+
+  /**
+   * Test if a given availability is incompatible with the core version.
+   * @param availability - The availability value to test.
+   */
+  static isIncompatibleWithCoreVersion(availability: CONST.PACKAGE_AVAILABILITY_CODES): boolean;
+
+  /**
+   * The named collection to which this package type belongs
+   */
+  static get collection(): `${typeof BasePackage.type}s`;
+
+  static defineSchema(): BasePackage.Schema;
+
+  /** @defaultValue `["PACKAGE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * Check the given compatibility data against the current installation state and determine its availability.
+   * @param data    - The compatibility data to test.
+   * @privateRemarks Foundry types this as `Partial<PackageManifestData>`, which on their side is an incomplete
+   * `InitializedData<BasePackage.Schema>`, but the only client side call is in `BasePackage#constructor`, where
+   * it gets passed `this`, and server-side it's also always called with a constructed package. Both this method
+   * and the one real override in {@linkcode foundry.packages.BaseWorld.testAvailability | BaseWorld} only access
+   * properties of `data`, so it has been typed as either.
+   *
+   * TODO: Also, currently, `BasePackage.Any` is not assignable to `BasePackage.ManifestData` on mismatched
+   * TODO: folder depth grounds. Otherwise this could be typed as just `ManifestData`.
+   */
+  static testAvailability(
+    data: BasePackage.ManifestData | BasePackage.Any,
+    options?: BasePackage.TestAvailabilityOptions,
+  ): CONST.PACKAGE_AVAILABILITY_CODES;
+
+  /**
+   * Test that the dependencies of a package are satisfied as compatible.
+   * This method assumes that all packages in modulesCollection have already had their own availability tested.
+   * @param modulesCollection - A collection which defines the set of available modules
+   * @returns Are all required dependencies satisfied?
+   * @internal
+   */
+  _testRequiredDependencies(modulesCollection: Collection<foundry.packages.Module>): Promise<boolean>;
+
+  /**
+   * Test compatibility of a package's supported systems.
+   * @param systemCollection - A collection which defines the set of available systems.
+   * @returns True if all supported systems which are currently installed are compatible or if the package has no supported systems.
+   * Returns false otherwise, or if no supported systems are installed.
+   * @internal
+   */
+  _testSupportedSystems(systemCollection: Collection<foundry.packages.System>): Promise<boolean>;
+
+  /**
+   * Determine if a dependency is within the given compatibility range.
+   * @param compatibility - The compatibility range declared for the dependency, if any
+   * @param dependency    - The known dependency package
+   * @returns Is the dependency compatible with the required range?
+   */
+  static testDependencyCompatibility(compatibility: PackageCompatibility.Data, dependency: BasePackage.Any): boolean;
+
+  static cleanData(source?: object, options?: BasePackage.CleanDataOptions): object;
+
+  /**
+   * Validate that a Package ID is allowed.
+   * @param id - The candidate ID
+   * @throws An error if the candidate ID is invalid
+   */
+  static validateId(id: string): void;
+
+  /**
+   * Validate that a version is allowed.
+   * @param version - The candidate version
+   * @throws An error if the version is invalid
+   * @remarks Disallows the illegal characters: `'` `"` `<` `>` `&`
+   */
+  static validateVersion(version: string): void;
+
+  /**
+   *  A wrapper around the default compatibility warning logger which handles some package-specific interactions.
+   * @param packageId - The package ID being logged
+   * @param message   - The warning or error being logged
+   * @param options   - Logging options passed to {@linkcode foundry.utils.logCompatibilityWarning}
+   */
+  protected static _logWarning(packageId: string, message: string, options?: BasePackage.LogOptions): void;
+
+  /**
+   * @remarks
+   * Migrations:
+   * - Inside `packs` entries, slugifies the `name` if not already a valid slug (since v12, until v14)
+   * - Old style `string[]` styles entries to new `{src: string; layer?: string}[]` style (since v13, no stated end)
+   */
+  static override migrateData(data: object, options?: BasePackage.MigrateDataOptions): object;
+
+  /**
+   * Migrate to v13-schema styles array from string array
+   * @internal
+   */
+  static _migrateStyles(data: object): void;
+
+  /**
+   * Adjust pack names to conform to a slugified version
+   * @internal
+   */
+  static _migratePackIDs(data: object, logOptions: BasePackage.LogOptions): void;
+
+  /**
+   * Retrieve the latest Package manifest from a provided remote location.
+   * @param manifestUrl - A remote manifest URL to load
+   * @param options     - Additional options which affect package construction
+   * @returns A Promise which resolves to a constructed ServerPackage instance
+   * @throws An error if the retrieved manifest data is invalid
+   * @remarks This is effectively abstract. Real overrides are provided by `ServerPackageMixin` and
+   * {@linkcode foundry.packages.ClientPackageMixin | ClientPackageMixin}.
+   */
+  static fromRemoteManifest(manifestUrl: string, options: BasePackage.FromRemoteManifestOptions): Promise<never>;
+}
 
 declare namespace BasePackage {
   interface Any extends AnyBasePackage {}
@@ -31,77 +517,75 @@ declare namespace BasePackage {
       [__BasePackageBrand]: never;
     };
 
-    interface Instance<PackageSchema extends BasePackage.Internal.Schema> {
+    interface Instance<PackageSchema extends BasePackage.Schema> {
       [__PackageSchema]: PackageSchema;
     }
 
     namespace Instance {
-      interface Any extends Instance<BasePackage.Internal.Schema> {}
+      interface Any extends Instance<BasePackage.Schema> {}
     }
-
-    interface Schema extends Omit<BasePackage.Schema, "version"> {}
   }
 
-  interface OptionalString {
+  /**
+   * Foundry uses this as the common options for many fields in {@linkcode BasePackage.Schema}
+   * @internal
+   */
+  interface _OptionalStringOptions {
     required: false;
     blank: false;
     initial: undefined;
   }
 
-  interface PackageAuthorSchema extends DataSchema {
-    /**
-     * The author name
-     */
-    name: fields.StringField<{ required: true; blank: false }>;
+  interface AuthorSchema extends DataSchema {
+    /** The author name */
+    name: StringField<{ required: true; blank: false }>;
 
-    /**
-     * The author email address
-     */
-    email: fields.StringField<OptionalString>;
+    /** The author email address */
+    email: StringField<_OptionalStringOptions>;
 
-    /**
-     * A website url for the author
-     */
-    url: fields.StringField<OptionalString>;
+    /** A website url for the author */
+    url: StringField<_OptionalStringOptions>;
 
-    /**
-     * A Discord username for the author
-     */
-    discord: fields.StringField<OptionalString>;
+    /** A Discord username for the author */
+    discord: StringField<_OptionalStringOptions>;
 
-    flags: fields.ObjectField;
+    flags: ObjectField;
   }
 
-  interface PackageMediaSchema extends DataSchema {
+  interface AuthorData extends SchemaField.InitializedData<AuthorSchema> {}
+
+  interface MediaSchema extends DataSchema {
     /** Usage type for the media asset. "setup" means it will be used on the setup screen. */
-    type: fields.StringField<OptionalString>;
+    type: StringField<_OptionalStringOptions>;
 
     /** A web url link to the media element. */
-    url: fields.StringField<OptionalString>;
+    url: StringField<_OptionalStringOptions>;
 
     /** A caption for the media element. */
-    caption: fields.StringField<OptionalString>;
+    caption: StringField<_OptionalStringOptions>;
 
     /** Should the media play on loop? */
-    loop: fields.BooleanField<{ required: false; blank: false; initial: false }>;
+    loop: BooleanField<{ required: false; blank: false; initial: false }>;
 
     /** A link to the thumbnail for the media element. */
-    thumbnail: fields.StringField<OptionalString>;
+    thumbnail: StringField<_OptionalStringOptions>;
 
     /** An object of optional key/value flags. */
-    flags: fields.ObjectField;
+    flags: ObjectField;
   }
+
+  interface MediaData extends SchemaField.InitializedData<AuthorSchema> {}
 
   // TODO(esheyw): does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
   type OwnershipRecord = InexactPartial<
     Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
 
-  interface PackageCompendiumSchema extends DataSchema {
+  interface CompendiumSchema extends DataSchema {
     /**
      * The canonical compendium name. This should contain no spaces or special characters
      */
-    name: fields.StringField<{
+    name: StringField<{
       required: true;
       blank: false;
       validate: typeof BasePackage.validateId;
@@ -111,7 +595,7 @@ declare namespace BasePackage {
     /**
      * The human-readable compendium name
      */
-    label: fields.StringField<{ required: true; blank: false }>;
+    label: StringField<{ required: true; blank: false }>;
 
     /**
      * A file path to a banner image that will be used in the Compendium sidebar. This should
@@ -123,17 +607,17 @@ declare namespace BasePackage {
      * @remarks `undefined` is replaced with the default `CONFIG[this.metadata.type]?.compendiumBanner`
      * but `null` passes through unchanged.
      */
-    banner: fields.StringField<OptionalString & { nullable: true }>;
+    banner: StringField<_OptionalStringOptions & { nullable: true }>;
 
     /**
      * The local relative path to the compendium source directory. The filename should match the name attribute
      */
-    path: fields.StringField<{ required: false }>;
+    path: StringField<{ required: false }>;
 
     /**
      * The specific document type that is contained within this compendium pack
      */
-    type: fields.StringField<{
+    type: StringField<{
       required: true;
       blank: false;
       choices: CONST.COMPENDIUM_DOCUMENT_TYPES[];
@@ -145,24 +629,24 @@ declare namespace BasePackage {
      * Required for "Actor" and "Item" packs, but even others should keep in mind that system
      * specific features and subtypes (e.g. JournalEntryPage) may present limitations.
      */
-    system: fields.StringField<OptionalString>;
+    system: StringField<_OptionalStringOptions>;
 
     /** @remarks Be careful when setting this; an empty object will prevent even a GM from seeing it in the directory. */
     ownership: CompendiumOwnershipField;
 
-    flags: fields.ObjectField;
+    flags: ObjectField;
   }
 
-  interface PackageCompendiumData extends fields.SchemaField.InitializedData<PackageCompendiumSchema> {}
+  interface CompendiumData extends SchemaField.InitializedData<CompendiumSchema> {}
 
   /** The {@linkcode UndefinedToOptional} is because in a socket response from the server, properties with `undefined` value are dropped. */
-  interface SocketCompendiumData extends UndefinedToOptional<PackageCompendiumData> {}
+  interface SocketCompendiumData extends UndefinedToOptional<CompendiumData> {}
 
-  interface PackageLanguageSchema extends DataSchema {
+  interface LanguageSchema extends DataSchema {
     /**
      * A string language code which is validated by Intl.getCanonicalLocales
      */
-    lang: fields.StringField<{
+    lang: StringField<{
       required: true;
       blank: false;
       // Foundry is using the truthiness of this function
@@ -173,187 +657,96 @@ declare namespace BasePackage {
     /**
      * The human-readable language name
      */
-    name: fields.StringField<{ required: false }>;
+    name: StringField<{ required: false }>;
 
     /**
      * The relative path to included JSON translation strings
      */
-    path: fields.StringField<{ required: true; blank: false }>;
+    path: StringField<{ required: true; blank: false }>;
 
     /**
      * Only apply this set of translations when a specific system is being used
      */
-    system: fields.StringField<OptionalString>;
+    system: StringField<_OptionalStringOptions>;
 
     /**
      * Only apply this set of translations when a specific module is active
      */
-    module: fields.StringField<OptionalString>;
+    module: StringField<_OptionalStringOptions>;
 
-    flags: fields.ObjectField;
+    flags: ObjectField;
   }
 
-  interface PackageCompatibilitySchema extends DataSchema {
-    /**
-     * The Package will not function before this version
-     */
-    minimum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
+  interface LanguageData extends SchemaField.InitializedData<LanguageSchema> {}
 
-    /**
-     * Verified compatible up to this version
-     */
-    verified: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-
-    /**
-     * The Package will not function after this version
-     */
-    maximum: fields.StringField<{ required: false; blank: false; initial: undefined }>;
+  interface StylesSchema extends DataSchema {
+    layer: StringField<{ required: false; nullable: true; blank: false; initial: undefined }>;
+    src: StringField<{ required: true; blank: false }>;
   }
 
-  interface PackageRelationshipsSchema extends DataSchema {
-    /**
-     * Systems that this Package supports
-     */
-    systems: fields.SetField<RelatedPackage<"system">>;
-
-    /**
-     * Packages that are required for base functionality
-     */
-    requires: fields.SetField<RelatedPackage>;
-
-    /**
-     * Packages that are recommended for optimal functionality
-     */
-    recommends: fields.SetField<RelatedPackage>;
-
-    conflicts: fields.SetField<RelatedPackage>;
-
-    flags: fields.ObjectField;
-  }
-
-  interface RelatedPackageSchema<
-    PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES,
-  > extends DataSchema {
-    /**
-     * The id of the related package
-     */
-    id: fields.StringField<{ required: true; blank: false }>;
-
-    /**
-     * The type of the related package
-     */
-    type: fields.StringField<{ choices: PackageType[]; initial: "module" }>;
-
-    /**
-     * An explicit manifest URL, otherwise learned from the Foundry web server
-     */
-    manifest: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-
-    /**
-     * The compatibility data with this related Package
-     */
-    compatibility: PackageCompatibility;
-
-    /**
-     * The reason for this relationship
-     */
-    reason: fields.StringField<{ required: false; blank: false; initial: undefined }>;
-  }
-
-  /** @internal */
-  interface _PackageCompendiumFolderSchema extends DataSchema {
-    /** Name for the folder. Multiple packages with identical folder names will merge by name. */
-    name: fields.StringField<{ required: true; blank: false }>;
-
-    /** Alphabetical or manual sorting. */
-    sorting: fields.StringField<{
-      required: false;
-      blank: false;
-      initial: undefined;
-      choices: typeof BaseFolder.SORTING_MODES;
-    }>;
-
-    /** A hex string for the pack's color. */
-    color: fields.ColorField;
-
-    /** A list of the pack names to include in this folder. */
-    packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
-  }
-
-  // Foundry starts Depth at 1 and increments from there
-  type FolderRecursion = [never, 2, 3];
-
-  type PackageCompendiumFolderSchema<Depth> = Depth extends number
-    ? _PackageCompendiumFolderSchema & {
-        /** Nested folder data, up to three levels. */
-        folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
-      }
-    : _PackageCompendiumFolderSchema;
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface StylesData extends SchemaField.InitializedData<StylesSchema> {}
 
   interface Schema extends DataSchema {
-    /**
-     * The machine-readable unique package id, should be lower-case with no spaces or special characters
-     */
-    id: fields.StringField<{
+    /** The machine-readable unique package id, should be lower-case with no spaces or special characters */
+    id: StringField<{
       required: true;
       blank: false;
       validate: typeof BasePackage.validateId;
     }>;
 
-    /**
-     * The human-readable package title, containing spaces and special characters
-     */
-    title: fields.StringField<{ required: true; blank: false }>;
+    /** The human-readable package title, containing spaces and special characters */
+    title: StringField<{ required: true; blank: false }>;
 
-    /**
-     * An optional package description, may contain HTML
-     */
-    description: fields.StringField<{ required: true }>;
+    /** An optional package description, may contain HTML */
+    description: HTMLField<{ required: true }>;
 
     /**
      * An array of author objects who are co-authors of this package. Preferred to the singular author field.
      */
-    authors: fields.SetField<fields.SchemaField<PackageAuthorSchema>>;
+    authors: SetField<SchemaField<AuthorSchema>>;
 
     /**
      * A web url where more details about the package may be found
      */
-    url: fields.StringField<OptionalString>;
+    url: StringField<_OptionalStringOptions>;
 
     /**
      * A web url or relative file path where license details may be found
      */
-    license: fields.StringField<OptionalString>;
+    license: StringField<_OptionalStringOptions>;
 
     /**
      * A web url or relative file path where readme instructions may be found
      */
-    readme: fields.StringField<OptionalString>;
+    readme: StringField<_OptionalStringOptions>;
 
     /**
      * A web url where bug reports may be submitted and tracked
      */
-    bugs: fields.StringField<OptionalString>;
+    bugs: StringField<_OptionalStringOptions>;
 
     /**
      * A web url where notes detailing package updates are available
      */
-    changelog: fields.StringField<OptionalString>;
+    changelog: StringField<_OptionalStringOptions>;
 
     /**
      * An object of optional key/value flags. Packages can use this namespace for their own purposes,
      * preferably within a namespace matching their package ID.
      */
-    flags: fields.ObjectField;
+    flags: ObjectField<
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- No options, and `EmptyObject` behaves differently
+      {},
+      BasePackage.Flags | null | undefined,
+      BasePackage.Flags,
+      BasePackage.Flags
+    >;
 
     /** An array of objects containing media info about the package. */
-    media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
+    media: SetField<SchemaField<MediaSchema>>;
 
-    // Moved to base-module and base-system to avoid conflict with base-world
-
-    // version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
+    // The definition of `version` below has been omitted here due to `BaseWorld` doing unsound subclassing. See `BasePackage#version`.
+    // version: StringField<{ required: true; blank: false; initial: "0"; validate: typeof BasePackage.validateVersion }>;
 
     /**
      * The compatibility of this version with the core Foundry software. See https://foundryvtt.com/article/versioning/
@@ -364,32 +757,32 @@ declare namespace BasePackage {
     /**
      * An array of urls or relative file paths for JavaScript files to include
      */
-    scripts: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+    scripts: SetField<StringField<{ required: true; blank: false }>>;
 
     /**
      * An array of urls or relative file paths for ESModule files to include
      */
-    esmodules: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+    esmodules: SetField<StringField<{ required: true; blank: false }>>;
 
     /**
      * An array of urls or relative file paths for CSS stylesheet files to include
      */
-    styles: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
+    styles: ArrayField<SchemaField<StylesSchema>>;
 
     /**
      * An array of language data objects which are included by this package
      */
-    languages: fields.SetField<fields.SchemaField<PackageLanguageSchema>>;
+    languages: SetField<SchemaField<LanguageSchema>>;
 
     /**
      * An array of compendium packs which are included by this package
      */
-    packs: PackageCompendiumPacks<fields.SchemaField<PackageCompendiumSchema>>;
+    packs: PackageCompendiumPacks<SchemaField<CompendiumSchema>>;
 
     /**
      * An array of pack folders that will be initialized once per world.
      */
-    packFolders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<1>>>;
+    packFolders: SetField<PackageCompendiumFolder>;
 
     /**
      * An organized object of relationships to other Packages
@@ -399,33 +792,78 @@ declare namespace BasePackage {
     /**
      * Whether to require a package-specific socket namespace for this package
      */
-    socket: fields.BooleanField;
+    socket: BooleanField;
 
     /**
      * A publicly accessible web URL which provides the latest available package manifest file. Required in order to support module updates.
      */
-    manifest: fields.StringField;
+    manifest: StringField;
 
     /**
      * A publicly accessible web URL where the source files for this package may be downloaded. Required in order to support module installation.
      */
-    download: fields.StringField<{ required: false; blank: false; initial: undefined }>;
+    download: StringField<{ required: false; blank: false; initial: undefined }>;
 
     /**
      * Whether this package uses the protected content access system.
      */
-    protected: fields.BooleanField;
+    protected: BooleanField;
 
     /**
      * Whether this package is a free Exclusive pack.
      */
-    exclusive: fields.BooleanField;
+    exclusive: BooleanField;
 
     /**
      * Whether updates should leave the contents of the package's /storage folder.
      */
-    persistentStorage: fields.BooleanField;
+    persistentStorage: BooleanField;
   }
+
+  /**
+   * These are properties pulled out of construction data by the `BasePackage` constructor that do not exist in its schema (nor any
+   * subclass schema). They are calculated server-side and provided with world data.
+   * @internal
+   */
+  interface _ExtraConstructionProperties {
+    /**
+     * An availability code in {@linkcode CONST.PACKAGE_AVAILABILITY_CODES} which defines whether this package can be used.
+     * @defaultValue {@linkcode BasePackage.testAvailability | this.constructor.testAvailability(this)}
+     */
+    availability: CONST.PACKAGE_AVAILABILITY_CODES;
+
+    /**
+     * A flag which tracks whether this package is currently locked.
+     * @defaultValue `false`
+     */
+    locked: boolean;
+
+    /**
+     * A flag which tracks whether this package is owned, if it is protected.
+     * @defaultValue `false`
+     */
+    owned: boolean;
+
+    /**
+     * A set of Tags that indicate what kind of Package this is, provided by the Website
+     * @defaultValue `[]`
+     */
+    tags: string[];
+
+    /**
+     * A flag which tracks if this package has files stored in the persistent storage folder
+     * @defaultValue `false`
+     */
+    hasStorage: boolean;
+  }
+
+  /**
+   * Package creation takes additional properties, beyond just fields defined in the schema, which get handled by `BasePackage#constructor`.
+   * @privateRemarks the `& { version }` is to account for how we've handled `BaseWorld`'s unsound schema subclassing of `version`. See
+   * {@linkcode BasePackage.version | BasePackage#version} remarks.
+   */
+  type ManifestData<Schema extends BasePackage.Schema = BasePackage.Schema> = SchemaField.CreateData<Schema> &
+    InexactPartial<_ExtraConstructionProperties> & { version?: string | null };
 
   /**
    * @remarks Package flags do not operate under the same rules as Document flags
@@ -435,373 +873,143 @@ declare namespace BasePackage {
    * 4. There are *many* layers that accept flags, rather than just the top level
    */
   namespace Flags {
-    /**
-     * Flags used by the core software.
-     * @remarks Flags for the top level of the schema. Notably *not* namespaced as "core..."
-     */
-    interface Core {
+    /** @internal */
+    interface _Core {
       /** Can you upload to this package's folder using the built-in FilePicker. */
-      canUpload?: boolean | undefined;
+      canUpload: boolean;
 
       /** Configuration information for hot reload logic */
-      hotReload?: HotReloadConfig | undefined;
+      hotReload: HotReloadConfig;
 
       /**
        * Mapping information for CompendiumArt.
        * Each key is a unique system ID, e.g. "dnd5e" or "pf2e".
        */
-      compendiumArtMappings?: Record<string, CompendiumArtFlag> | undefined;
+      compendiumArtMappings: Record<string, CompendiumArtFlag>;
 
       /** A mapping of token subject paths to configured subject images. */
-      tokenRingSubjectMappings?: Record<string, string> | undefined;
+      tokenRingSubjectMappings: Record<string, string>;
     }
 
-    interface HotReloadConfig {
+    /**
+     * Flags used by the core software.
+     * @remarks Flags for the top level of the schema. Notably *not* namespaced as "core..."
+     */
+    interface Core extends InexactPartial<_Core> {}
+
+    /** @internal */
+    interface _HotReloadConfig {
       /** A list of file extensions, e.g. `["css", "hbs", "json"]` */
-      extensions?: string[] | undefined;
+      extensions: string[];
 
       /** File paths to watch, e.g. `["src/styles", "templates", "lang"]` */
-      paths?: string[] | undefined;
+      paths: string[];
     }
 
-    interface CompendiumArtFlag {
+    interface HotReloadConfig extends InexactPartial<_HotReloadConfig> {}
+
+    /** @internal */
+    interface _CompendiumArtFlag {
+      /** An optional credit string for use by the game system to apply in an appropriate place. */
+      credit: string;
+    }
+
+    interface CompendiumArtFlag extends InexactPartial<_CompendiumArtFlag> {
       /** The path to the art mapping file. */
       mapping: string;
-
-      /** An optional credit string for use by the game system to apply in an appropriate place. */
-      credit?: string | undefined;
     }
   }
 
-  interface PackageManifestData {
-    availability: CONST.PACKAGE_AVAILABILITY_CODES;
-    locked: boolean;
-    exclusive: boolean;
-    owned: boolean;
-    tags: string[];
-    hasStorage: boolean;
-  }
+  /** Merge into this interface if you are using non-core package flags. */
+  interface Flags extends BasePackage.Flags.Core {}
 
   /** @internal */
-  type _Installed = NullishProps<{
+  interface _TestAvailabilityOptions {
+    /**
+     * A specific software release for which to test availability. Tests against the current release by default.
+     */
+    release: ReleaseData;
+  }
+
+  interface TestAvailabilityOptions extends InexactPartial<_TestAvailabilityOptions> {}
+
+  /** @internal */
+  interface _Installed {
     /** Is the package installed? */
     installed: boolean;
-  }>;
-
-  interface LogOptions extends _Installed, InexactPartial<LogCompatibilityWarningOptions> {}
-
-  interface MigrateDataOptions extends _Installed {}
-
-  interface CleanDataOptions extends fields.DataField.CleanOptions {
-    /**
-     * Is the package installed?
-     * @remarks Only used to pass on to {@link BasePackage._logWarning | `BasePackage#_logWarning`}
-     */
-    installed?: boolean | null | undefined;
   }
-}
 
-/**
- * A custom SchemaField for defining package compatibility versions.
- */
-export class PackageCompatibility extends fields.SchemaField<BasePackage.PackageCompatibilitySchema> {
-  constructor(options: fields.SchemaField.Options<BasePackage.PackageCompatibilitySchema>);
-}
+  interface LogOptions extends InexactPartial<_Installed>, InexactPartial<LogCompatibilityWarningOptions> {}
 
-/**
- * A custom SchemaField for defining package relationships.
- */
-export class PackageRelationships extends fields.SchemaField<BasePackage.PackageRelationshipsSchema> {
-  constructor(options: fields.SchemaField.Options<BasePackage.PackageRelationshipsSchema>);
-}
+  interface MigrateDataOptions extends InexactPartial<_Installed> {}
 
-// omitted private class PackageRelationshipField
+  interface CleanDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
 
-/**
- * A custom SchemaField for defining a related Package.
- * It may be required to be a specific type of package, by passing the packageType option to the constructor.
- */
-export class RelatedPackage<
-  PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES,
-> extends fields.SchemaField<BasePackage.RelatedPackageSchema<PackageType>> {
-  constructor({
-    packageType,
-    ...options
-  }: InexactPartial<{
-    /** @defaultValue `"module"` */
-    packageType: PackageType;
-    options: fields.SchemaField.Options<BasePackage.RelatedPackageSchema<PackageType>>;
-  }>);
-}
-
-/**
- * A custom SchemaField for defining the folder structure of the included compendium packs.
- */
-export class PackageCompendiumFolder<Depth extends number> extends fields.SchemaField<
-  BasePackage.PackageCompendiumFolderSchema<Depth>
-> {
-  constructor({
-    depth,
-    ...options
-  }: InexactPartial<{
-    /** @defaultValue `1` */
-    depth: Depth;
-    options: fields.SchemaField.Options<BasePackage.PackageCompendiumFolderSchema<Depth>>;
-  }>);
-}
-
-/**
- * A special ObjectField which captures a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS.
- */
-export class CompendiumOwnershipField extends fields.ObjectField<
-  fields.ObjectField.DefaultOptions,
-  BasePackage.OwnershipRecord,
-  BasePackage.OwnershipRecord,
-  BasePackage.OwnershipRecord
-> {
-  static override get _defaults(): {
-    /** @defaultValue `{PLAYER: "OBSERVER", ASSISTANT: "OWNER"}` */
-    initial: BasePackage.OwnershipRecord;
-
+  /** @internal */
+  interface _FromRemoteManifestOptions {
     /**
-     * @defaultValue `"is not a mapping of USER_ROLES to DOCUMENT_OWNERSHIP_LEVELS"`
+     * Whether to construct the remote package strictly
+     * @defaultValue `true`
      */
-    validationError: string;
-  };
+    strict: boolean;
+  }
 
-  /** @remarks `options` is unused in `CompendiumOwnershipField` */
-  protected override _validateType(
-    value: Record<keyof typeof foundry.CONST.USER_ROLES, keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS>,
-    options?: fields.DataField.ValidateOptions<this> | null,
-  ): boolean | void;
-}
-
-/**
- * A special SetField which provides additional validation and initialization behavior specific to compendium packs.
- */
-export class PackageCompendiumPacks<
-  ElementFieldType extends fields.DataField.Any,
-> extends fields.SetField<ElementFieldType> {
-  protected override _cleanType(
-    value: Set<fields.ArrayField.InitializedElementType<ElementFieldType>>,
-    options?: fields.DataField.CleanOptions,
-  ): Set<fields.ArrayField.InitializedElementType<ElementFieldType>>;
-
-  // options: not null (parameter default only)
-  override initialize(
-    value: fields.ArrayField.PersistedElementType<ElementFieldType>[],
-    // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
-    // NOTE(LukeAbby): This also has been seen in a circularity `Type of property 'packs' circularly references itself in mapped type ...`.
-    model: DataModel.Any,
-    options?: fields.DataField.InitializeOptions,
-  ):
-    | Set<fields.ArrayField.InitializedElementType<ElementFieldType>>
-    | (() => Set<fields.ArrayField.InitializedElementType<ElementFieldType>> | null);
-
-  protected override _validateElements(
-    value: AnyArray,
-    options?: fields.DataField.ValidateOptions<fields.DataField.Any>,
-  ): void | DataModelValidationFailure;
-
-  protected override _validateElement(
-    value: unknown,
-    options: fields.DataField.ValidateOptions<fields.DataField.Any>,
-  ): void | DataModelValidationFailure;
-}
-
-/**
- * The data schema used to define a Package manifest.
- * Specific types of packages extend this schema with additional fields.
- */
-declare class BasePackage<
-  // BaseWorld alters the definition of `version`
-  PackageSchema extends BasePackage.Internal.Schema = BasePackage.Schema,
-> extends DataModel<PackageSchema, null> {
-  static [__BasePackageBrand]: never;
-
-  [__PackageSchema]: PackageSchema;
+  interface FromRemoteManifestOptions extends InexactPartial<_FromRemoteManifestOptions> {}
 
   /**
-   * An availability code in PACKAGE_AVAILABILITY_CODES which defines whether this package can be used.
+   * @deprecated Package creation data always includes extra properties not derived from the schema, so this type is not useful.
+   * For generic package creation data, use {@linkcode BasePackage.ManifestData} instead. This warning will be removed in v14.
    */
-  availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
+  type CreateData = ManifestData;
 
   /**
-   * A flag which tracks whether this package is currently locked.
-   * @defaultValue `false`
+   * @deprecated There shouldn't be a need to reference this type directly, these properties are only used in package construction,
+   * alongside the rest of the creation data; See {@linkcode ManifestData}. This warning will be removed in v14.
    */
-  locked: boolean;
+  type PackageManifestData = _ExtraConstructionProperties;
 
   /**
-   * A flag which tracks whether this package is a free Exclusive pack
-   * @defaultValue `false`
+   * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageCompatibility.Schema} instead.
+   * This warning will be removed in v14.
    */
-  exclusive: boolean;
+  type PackageCompatibilitySchema = PackageCompatibility.Schema;
 
   /**
-   * A flag which tracks whether this package is owned, if it is protected.
-   * @defaultValue `false`
+   * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageRelationships.Schema} instead.
+   * This warning will be removed in v14.
    */
-  owned: boolean;
+  type PackageRelationshipsSchema = PackageRelationships.Schema;
 
   /**
-   * A set of Tags that indicate what kind of Package this is, provided by the Website
-   * @defaultValue `[]`
+   * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode RelatedPackage.Schema} instead.
+   * This warning will be removed in v14.
    */
-  tags: string[];
+  type RelatedPackageSchema<PackageType extends CONST.PACKAGE_TYPES | undefined = undefined> =
+    RelatedPackage.Schema<PackageType>;
 
   /**
-   * Define the package type in CONST.PACKAGE_TYPES that this class represents.
-   * Each BasePackage subclass must define this attribute.
-   * @abstract
+   * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageCompendiumFolder.FolderRecursion}
+   * instead. This warning will be removed in v14.
    */
-  static type: foundry.CONST.PACKAGE_TYPES;
+  type FolderRecursion = PackageCompendiumFolder.FolderRecursion;
 
   /**
-   * The type of this package instance. A value in CONST.PACKAGE_TYPES.
+   * @deprecated This interface has been moved out of the `BasePackage` namespace, use {@linkcode PackageCompendiumFolder.Schema}
+   * instead. This warning will be removed in v14.
    */
-  get type(): foundry.CONST.PACKAGE_TYPES;
-
-  /**
-   * The canonical identifier for this package
-   * @deprecated since v10, will be removed in v13
-   * @remarks `"You are accessing BasePackage#name which is now deprecated in favor of id."`
-   */
-  get name(): GetKey<this, "id">;
-
-  /**
-   * A flag which defines whether this package is unavailable to be used.
-   */
-  get unavailable(): boolean;
-
-  /**
-   * Test if a given availability is incompatible with the core version.
-   * @param availability - The availability value to test.
-   */
-  static isIncompatibleWithCoreVersion(availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES): boolean;
-
-  /**
-   * The named collection to which this package type belongs
-   */
-  static get collection(): "worlds" | "systems" | "modules";
-
-  static defineSchema(): BasePackage.Schema;
-
-  static testAvailability(
-    data: InexactPartial<BasePackage.PackageManifestData>,
-    options: InexactPartial<{
-      /**
-       * A specific software release for which to test availability.
-       * Tests against the current release by default.
-       */
-      release: ReleaseData;
-    }>,
-  ): foundry.CONST.PACKAGE_AVAILABILITY_CODES;
-
-  /**
-   * Test that the dependencies of a package are satisfied as compatible.
-   * This method assumes that all packages in modulesCollection have already had their own availability tested.
-   * @param modulesCollection - A collection which defines the set of available modules
-   * @returns Are all required dependencies satisfied?
-   */
-  _testRequiredDependencies(modulesCollection: Collection<foundry.packages.Module>): Promise<boolean>;
-
-  /**
-   * Test compatibility of a package's supported systems.
-   * @param systemCollection - A collection which defines the set of available systems.
-   * @returns True if all supported systems which are currently installed
-   *          are compatible or if the package has no supported systems.
-   *          Returns false otherwise, or if no supported systems are installed.
-   */
-  _testSupportedSystems(systemCollection: Collection<foundry.packages.System>): Promise<boolean>;
-
-  /**
-   * Determine if a dependency is within the given compatibility range.
-   * @param compatibility - The compatibility range declared for the dependency, if any
-   * @param dependency    - The known dependency package
-   * @returns Is the dependency compatible with the required range?
-   */
-  static testDependencyCompatibility(compatibility: PackageCompatibility, dependency: BasePackage): boolean;
-
-  static cleanData(source?: AnyObject, options?: BasePackage.CleanDataOptions): AnyMutableObject;
-
-  /**
-   * Validate that a Package ID is allowed.
-   * @param id - The candidate ID
-   * @throws An error if the candidate ID is invalid
-   */
-  static validateId(id: string): void;
-
-  /**
-   *  A wrapper around the default compatibility warning logger which handles some package-specific interactions.
-   * @param packageId - The package ID being logged
-   * @param message   - The warning or error being logged
-   * @param options   - Logging options passed to foundry.utils.logCompatibilityWarning
-   */
-  protected static _logWarning(packageId: string, message: string, options?: BasePackage.LogOptions): void;
-
-  /**
-   * A set of package manifest keys that are migrated.
-   */
-  static migratedKeys: Set<string>;
-
-  /**
-   * @remarks
-   * Migrations:
-   * - `name` to `id`, both at root and for any `dependencies` (since v10 until v13)
-   * - `dependencies` to `relationships` (structural change) (since v10 until v13)
-   * - `minimumCoreVersion` and `compatibleCoreVersion` to `compatibility.minimum` and `.verified`, respectively (since v10 until v13)
-   * - Inside `media` entries, `link` to `url` (since v11 until v13)
-   * - Inside `packs` entries:
-   *   - `private` to an `ownership` object with `{PLAYER: "LIMITED", ASSISTANT: "OWNER"}` (since v11 until v13)
-   *   - Slugifies the `name` if not already a valid slug (since v12, until v14)
-   *   - `entity` to `type` (since v9, no specified end)
-   */
-  static override migrateData(data: AnyMutableObject, options?: BasePackage.MigrateDataOptions): AnyMutableObject;
-
-  protected static _migrateNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migrateDependenciesNameToId(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migrateToRelationships(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migrateCompatibility(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migrateMediaURL(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migrateOwnership(data: AnyObject, logOptions: BasePackage.LogOptions): void;
-
-  protected static _migratePackIDs(data: AnyObject, logOptions: Parameters<typeof BasePackage._logWarning>[2]): void;
-
-  protected static _migratePackEntityToType(
-    data: AnyObject,
-    logOptions: Parameters<typeof BasePackage._logWarning>[2],
-  ): void;
-
-  /**
-   * Retrieve the latest Package manifest from a provided remote location.
-   * @param manifestUrl - A remote manifest URL to load
-   * @param options     - Additional options which affect package construction
-   * @returns A Promise which resolves to a constructed ServerPackage instance
-   * @throws An error if the retrieved manifest data is invalid
-   */
-  static fromRemoteManifest(
-    manifestUrl: string,
-    options: {
-      /**
-       * Whether to construct the remote package strictly
-       * @defaultValue `true`
-       */
-      strict: boolean;
-    },
-  ): Promise<never>;
+  type PackageCompendiumFolderSchema<Depth extends number | undefined = undefined> =
+    PackageCompendiumFolder.Schema<Depth>;
 }
 
 export default BasePackage;
 
-declare abstract class AnyBasePackage extends foundry.packages.BasePackage<any> {
+declare abstract class AnyBasePackage extends foundry.packages.BasePackage<BasePackage.Schema> {
   constructor(...args: never);
 }
+
+declare const __BasePackageBrand: unique symbol;
+
+declare const __PackageSchema: unique symbol;
 
 /**
  * A helper for converting a type with properties that are required but can be `undefined`

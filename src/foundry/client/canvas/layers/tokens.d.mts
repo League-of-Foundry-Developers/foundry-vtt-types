@@ -133,6 +133,13 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   setTargets(targetIds: Iterable<string>, options?: TokenLayer.SetTargetsOptions): void;
 
   /**
+   * Assign multiple token targets
+   * @param targetIds - The array or set of Token IDs.
+   * @param options   - Additional options to configure targeting behaviour.
+   */
+  setTargets(targetIds: Iterable<string>, options?: TokenLayer.SetTargetsOptions): void;
+
+  /**
    * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
    * Tokens are currently sorted in order of their TokenID
    * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
@@ -166,7 +173,10 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    * @param plannedMovements - The planned movement data
    * @internal
    */
-  _updatePlannedMovements(user: User.Implementation, plannedMovements: TokenDocument.PlannedMovements | null): void;
+  _updatePlannedMovements(
+    user: User.Implementation,
+    plannedMovements: Record<string, Token.PlannedMovement | null> | null,
+  ): void;
 
   /**
    * Provide an array of Tokens which are eligible subjects for overhead tile occlusion.
@@ -248,7 +258,7 @@ declare namespace TokenLayer {
     interface AnyConstructor extends Identity<typeof AnyTokenLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["tokens"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.tokens.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ImplementationClass> {

@@ -231,7 +231,7 @@ declare namespace EnvironmentCanvasGroup {
   }
 
   /** @internal */
-  type _Config = InexactPartial<{
+  interface _Config {
     /** The background canvas color */
     backgroundColor: Color.Source;
 
@@ -265,9 +265,9 @@ declare namespace EnvironmentCanvasGroup {
      * You should pass the darkness level into {@linkcode this.environment | config.environment.darknessLevel}" (since v12 until v14)
      */
     darknessLevel: number;
-  }>;
+  }
 
-  interface Config extends _Config {}
+  interface Config extends InexactPartial<_Config> {}
 
   /** @deprecated Use {@linkcode EnvironmentCanvasGroup.Config} instead */
   interface InitializeOptions extends Config {}

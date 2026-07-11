@@ -51,7 +51,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   override get hookName(): string;
 
   /**
-   * @defaultValue `foundry.utils.mergeObject(supder.layerOptions, { name: "effects" })`
+   * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
    */
   static override get layerOptions(): WeatherEffects.LayerOptions;
 

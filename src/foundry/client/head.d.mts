@@ -88,5 +88,5 @@ declare global {
 }
 
 type UiApplications = {
-  [Key in keyof CONFIG["ui"]]: FixedInstanceType<CONFIG["ui"][Key]>;
+  [Key in keyof typeof CONFIG.ui]: FixedInstanceType<(typeof CONFIG.ui)[Key]>;
 };

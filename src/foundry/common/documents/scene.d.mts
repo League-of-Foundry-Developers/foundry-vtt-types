@@ -66,7 +66,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override updateSource(changes: Scene.UpdateData, options?: DataModel.UpdateOptions): Scene.UpdateData;
+  override updateSource(changes?: Scene.UpdateData, options?: DataModel.UpdateOptions): Scene.UpdateData;
 
   /**
    * @remarks
@@ -81,7 +81,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `darkness` to `environment.darknessLevel` (since v12, until 14 (probably))
    * - Calls {@linkcode DocumentStatsField._migrateData}`(this, source)`
    */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /**
    * @remarks
@@ -181,8 +181,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
 
   /* Document overrides */
-
-  readonly parentCollection: BaseScene.ParentCollectionName | null;
 
   static override get implementation(): Scene.ImplementationClass;
 
@@ -399,7 +397,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseScene.Schema>;
+  static override _schema: SchemaField<BaseScene.Schema>;
 
   static override get schema(): SchemaField<BaseScene.Schema>;
 

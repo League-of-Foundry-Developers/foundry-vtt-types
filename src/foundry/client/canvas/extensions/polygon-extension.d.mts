@@ -126,15 +126,15 @@ declare global {
       }
 
       /** @internal */
-      type _IntersectCommonOptions = InexactPartial<{
+      interface _IntersectCommonOptions {
         /**
          * The clipper clip type
          * @defaultValue {@linkcode ClipperLib.ClipType.ctIntersection}
          */
         clipType: ClipperLib.ClipType;
-      }>;
+      }
 
-      interface IntersectPolygonOptions extends _IntersectCommonOptions {
+      interface IntersectPolygonOptions extends InexactPartial<_IntersectCommonOptions> {
         /**
          * A scaling factor passed to {@linkcode PIXI.Polygon.toClipperPoints | Polygon#toClipperPoints} to preserve precision
          * @defaultValue {@linkcode CONST.CLIPPER_SCALING_FACTOR}
@@ -142,7 +142,7 @@ declare global {
         scalingFactor?: number | undefined;
       }
 
-      interface IntersectClipperOptions extends _IntersectCommonOptions {
+      interface IntersectClipperOptions extends InexactPartial<_IntersectCommonOptions> {
         /**
          * A scaling factor passed to {@linkcode PIXI.Polygon.toClipperPoints | Polygon#toClipperPoints} to preserve precision
          * @defaultValue `1`

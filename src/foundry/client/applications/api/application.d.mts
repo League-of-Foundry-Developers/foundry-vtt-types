@@ -436,10 +436,6 @@ declare namespace ApplicationV2 {
     animate?: boolean | null | undefined;
   }
 
-  /**
-   * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
-   *          and null interferes with the defaults of force/updatePosition
-   */
   interface ChangeTabOptions extends InexactPartial<{
     /**
      * An interaction event which caused the tab change, if any

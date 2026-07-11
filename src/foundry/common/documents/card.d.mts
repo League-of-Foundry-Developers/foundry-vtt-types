@@ -74,8 +74,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseCard.ParentCollectionName | null;
-
   static override get implementation(): Card.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCard;
@@ -263,7 +261,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseCard.Schema>;
+  static override _schema: SchemaField<BaseCard.Schema>;
 
   static override get schema(): SchemaField<BaseCard.Schema>;
 

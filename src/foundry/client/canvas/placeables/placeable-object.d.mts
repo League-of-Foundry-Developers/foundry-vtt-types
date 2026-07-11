@@ -1,4 +1,12 @@
-import type { Identity, InterfaceToObject, HandleEmptyObject, InexactPartial, Titlecase, GetKey } from "#utils";
+import type {
+  Identity,
+  InterfaceToObject,
+  HandleEmptyObject,
+  InexactPartial,
+  Titlecase,
+  GetKey,
+  FixedInstanceType,
+} from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token, Wall } from "./_module.d.mts";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
@@ -490,13 +498,14 @@ declare abstract class PlaceableObject<
    * @param options - Options which customize event handling
    * @remarks {@linkcode Wall._onHoverIn | Wall#_onHoverIn} can return `false`, otherwise this is always `void`.
    */
-  protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): boolean | void;
+  protected _onHoverIn(event: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverInOptions): boolean | void;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
    * @param event - The triggering canvas interaction event
+   * @remarks The event is not used in the method.
    */
-  protected _onHoverOut(event: Canvas.Event.Pointer): void;
+  protected _onHoverOut(event?: Canvas.Event.Pointer): void;
 
   /**
    * Should the placeable propagate left click downstream?
@@ -655,6 +664,32 @@ declare abstract class PlaceableObject<
 declare namespace PlaceableObject {
   interface Any extends AnyPlaceableObject {}
   interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
+
+  type ImplementationClassFor<Name extends Document.PlaceableType> = GetKey<
+    PlaceableObjectClassConfig,
+    Name,
+    DefaultPlaceables[Name]
+  >;
+  type ImplementationFor<Name extends Document.PlaceableType> = FixedInstanceType<ImplementationClassFor<Name>>;
+
+  /**
+   * A mapping of Document name to the placeable class associated with it by core, before any user action.
+   *
+   * Its concrete keys define {@linkcode Document.PlaceableType}, so if you are creating a new placeable out of an existing document,
+   * this is where to merge into.
+   */
+  interface DefaultPlaceables {
+    [documentName: string]: PlaceableObject.AnyConstructor;
+    AmbientLight: typeof foundry.canvas.placeables.AmbientLight;
+    AmbientSound: typeof foundry.canvas.placeables.AmbientSound;
+    Drawing: typeof foundry.canvas.placeables.Drawing;
+    MeasuredTemplate: typeof foundry.canvas.placeables.MeasuredTemplate;
+    Note: typeof foundry.canvas.placeables.Note;
+    Region: typeof foundry.canvas.placeables.Region;
+    Token: typeof foundry.canvas.placeables.Token;
+    Tile: typeof foundry.canvas.placeables.Tile;
+    Wall: typeof foundry.canvas.placeables.Wall;
+  }
 
   /**
    * Since this is the constraint on the `CanvasDocument` generic on {@linkcode PlaceablesLayer}, it can't be {@linkcode Scene.Embedded}/

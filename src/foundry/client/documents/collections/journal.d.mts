@@ -98,7 +98,7 @@ declare namespace Journal {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"JournalEntry"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"JournalEntry"> {}
 
-  type _ShowOptions = InexactPartial<{
+  interface _ShowOptions {
     /**
      * Display the entry to all players regardless of normal permissions.
      * @defaultValue `false`
@@ -110,9 +110,9 @@ declare namespace Journal {
      * @defaultValue `[]`
      */
     users: string[];
-  }>;
+  }
 
-  interface ShowOptions extends _ShowOptions {}
+  interface ShowOptions extends InexactPartial<_ShowOptions> {}
 
   /**
    * Options for {@linkcode Journal.showImage}.

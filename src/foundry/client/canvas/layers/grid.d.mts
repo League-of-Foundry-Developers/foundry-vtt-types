@@ -211,7 +211,7 @@ declare namespace GridLayer {
     interface AnyConstructor extends Identity<typeof AnyGridLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["grid"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.grid.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {

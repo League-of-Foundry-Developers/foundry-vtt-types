@@ -98,7 +98,7 @@ declare namespace NotesLayer {
     interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["notes"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.notes.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {

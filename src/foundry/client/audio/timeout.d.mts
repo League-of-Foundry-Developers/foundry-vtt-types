@@ -90,14 +90,14 @@ declare namespace AudioTimeout {
   interface AnyConstructor extends Identity<typeof AnyAudioTimeout> {}
 
   /** @internal */
-  type _ConstructorOptions<Return = undefined> = InexactPartial<{
+  interface _ConstructorOptions<Return = undefined> {
     /** @defaultValue `game.audio.music` */
     context: AudioContext;
 
     callback: () => Return;
-  }>;
+  }
 
-  interface ConstructorOptions<Return = undefined> extends _ConstructorOptions<Return> {}
+  interface ConstructorOptions<Return = undefined> extends InexactPartial<_ConstructorOptions<Return>> {}
 }
 
 export default AudioTimeout;

@@ -61,7 +61,7 @@ declare namespace SmoothNoise {
   interface AnyConstructor extends Identity<typeof AnySmoothNoise> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The generated noise will be on the range [0, amplitude].
      * @defaultValue `1`
@@ -82,10 +82,10 @@ declare namespace SmoothNoise {
      * @remarks Must be a power of 2 or construction throws.
      */
     maxReferences: number;
-  }>;
+  }
 
   /** Options for the {@link SmoothNoise} constructor */
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 }
 
 export default SmoothNoise;

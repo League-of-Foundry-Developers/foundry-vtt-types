@@ -148,7 +148,7 @@ declare const itemSource: Item.Source;
 const constructionContext = {
   dropInvalidEmbedded: false,
   fallback: true,
-  pack: null,
+  pack: undefined,
   parent: null,
   strict: true,
 };
@@ -280,8 +280,8 @@ expectTypeOf(
   tempItem._createDocumentLink(
     {},
     {
-      label: null,
-      relativeTo: null,
+      label: undefined,
+      relativeTo: undefined,
     },
   ),
 ).toBeString();
@@ -376,17 +376,6 @@ expectTypeOf(
     clearSource: true,
     clearState: false,
     keepId: true,
-  }),
-).toBeVoid();
-expectTypeOf(
-  tempItem.exportToJSON({
-    clearFlags: null,
-    clearFolder: null,
-    clearOwnership: null,
-    clearSort: null,
-    clearSource: null,
-    clearState: null,
-    keepId: null,
   }),
 ).toBeVoid();
 expectTypeOf(

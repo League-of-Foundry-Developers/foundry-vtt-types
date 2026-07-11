@@ -89,7 +89,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<boolean | void>;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -107,8 +107,6 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseActor.ParentCollectionName | null;
 
   static override get implementation(): Actor.ImplementationClass;
 
@@ -315,7 +313,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseActor.Schema>;
+  static override _schema: SchemaField<BaseActor.Schema>;
 
   static override get schema(): SchemaField<BaseActor.Schema>;
 

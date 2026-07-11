@@ -71,7 +71,7 @@ describe("TurnMarkerData Tests", () => {
     expectTypeOf(schema).toEqualTypeOf<SchemaField<TurnMarkerData.Schema>>();
     expect(schema).toBeInstanceOf(SchemaField);
 
-    const _schema = TurnMarkerData["_schema"];
+    const _schema = TurnMarkerData._schema;
     expectTypeOf(_schema).toEqualTypeOf<SchemaField<TurnMarkerData.Schema>>();
     expect(_schema).toBeInstanceOf(SchemaField);
 

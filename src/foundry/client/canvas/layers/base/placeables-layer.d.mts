@@ -25,11 +25,11 @@ import type { DialogV2 } from "#client/applications/api/_module.mjs";
  * @template DocumentName - The key of the configuration which defines the object and document class.
  * @template Options      - The type of the options in this layer.
  */
-declare abstract class PlaceablesLayer<out DocumentName extends Document.PlaceableType> extends InteractionLayer {
+declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> extends InteractionLayer {
   /**
    * Sort order for placeables belonging to this layer
    * @defaultValue `0`
-   * @remarks ~~Unused in v12.331~~ Still unused as of 14.361.
+   * @remarks Unused in 13.351, removed in 14.362
    */
   static SORT_ORDER: number;
 
@@ -509,6 +509,10 @@ declare namespace PlaceablesLayer {
     CONFIG["Canvas"]["layers"][DocumentNameToLayerNameMap[Name]]["layerClass"];
   type ImplementationFor<Name extends Document.PlaceableType> = FixedInstanceType<ImplementationClassFor<Name>>;
 
+  /**
+   * This interface is required because this information isn't actually available at runtime in an accessible way. There is no equivalent
+   * for `collection` in document metadata for layer names.
+   */
   interface DocumentNameToLayerNameMap {
     AmbientLight: "lighting";
     AmbientSound: "sounds";
@@ -821,6 +825,7 @@ declare namespace PlaceablesLayer {
     height: number;
   }
 
+  /** @internal */
   interface _SelectObjectAdditionalOptions {
     /**
      * Whether to release other selected objects.
@@ -832,7 +837,6 @@ declare namespace PlaceablesLayer {
   /**
    * This is functionally identical to {@linkcode PlaceableObject.ControlOptions} as of 13.351, but only the one key gets checked,
    * and it's not passed on anywhere, so it gets its own type to not cause confusion with {@linkcode SelectObjectsOptions.controlOptions}
-   * @internal
    */
   interface SelectObjectsAdditionalOptions extends InexactPartial<_SelectObjectAdditionalOptions> {}
 

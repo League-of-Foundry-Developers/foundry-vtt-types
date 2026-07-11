@@ -205,15 +205,15 @@ declare namespace BaseSamplerShader {
   >;
 
   /** @internal */
-  type _RegisterPluginOptions = InexactPartial<{
+  interface _RegisterPluginOptions {
     /**
      * Override the plugin of the same name that is already registered?
      * @defaultValue `false`
      */
     force: boolean;
-  }>;
+  }
 
-  interface RegisterPluginOptions extends _RegisterPluginOptions {}
+  interface RegisterPluginOptions extends InexactPartial<_RegisterPluginOptions> {}
 }
 
 export default BaseSamplerShader;

@@ -99,7 +99,7 @@ declare namespace LightingLayer {
     interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["lighting"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.lighting.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {

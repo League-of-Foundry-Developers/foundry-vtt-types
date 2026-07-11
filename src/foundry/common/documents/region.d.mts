@@ -52,8 +52,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseRegion.ParentCollectionName | null;
-
   static override get implementation(): RegionDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseRegion;
@@ -267,7 +265,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseRegion.Schema>;
+  static override _schema: SchemaField<BaseRegion.Schema>;
 
   static override get schema(): SchemaField<BaseRegion.Schema>;
 

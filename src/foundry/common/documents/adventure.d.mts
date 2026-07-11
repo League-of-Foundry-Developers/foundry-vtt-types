@@ -67,9 +67,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* Document overrides */
 
-  // `Adventure`s are never embedded.
-  override readonly parentCollection: null;
-
   static override get implementation(): Adventure.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAdventure;
@@ -258,7 +255,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAdventure.Schema>;
+  static override _schema: SchemaField<BaseAdventure.Schema>;
 
   static override get schema(): SchemaField<BaseAdventure.Schema>;
 

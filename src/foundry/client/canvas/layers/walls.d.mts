@@ -180,7 +180,7 @@ declare namespace WallsLayer {
     interface AnyConstructor extends Identity<typeof AnyWallsLayer> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["walls"]["layerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.walls.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ImplementationClass> {

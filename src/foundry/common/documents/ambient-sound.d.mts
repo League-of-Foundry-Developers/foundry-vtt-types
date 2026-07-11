@@ -50,8 +50,6 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  override readonly parentCollection: BaseAmbientSound.ParentCollectionName | null;
-
   static override get implementation(): AmbientSoundDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAmbientSound;
@@ -237,7 +235,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseAmbientSound.Schema>;
+  static override _schema: SchemaField<BaseAmbientSound.Schema>;
 
   static override get schema(): SchemaField<BaseAmbientSound.Schema>;
 

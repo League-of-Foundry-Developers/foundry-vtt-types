@@ -118,12 +118,13 @@ declare global {
     interface Any extends AnyHooks {}
     interface AnyConstructor extends Identity<typeof AnyHooks> {}
 
-    type _OnOptions = InexactPartial<{
+    /** @internal */
+    interface _OnOptions {
       /** Only trigger the hooked function once */
       once: boolean;
-    }>;
+    }
 
-    interface OnOptions extends _OnOptions {}
+    interface OnOptions extends InexactPartial<_OnOptions> {}
 
     type HookName = keyof HookConfig.HookConfig;
     type Function<K extends HookName> = HookConfig.HookConfig[K];

@@ -55,7 +55,7 @@ declare namespace ConvolverEffect {
   interface AnyConstructor extends Identity<typeof AnyConvolverEffect> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The file path to the impulse response buffer to use
      * @defaultValue `"sounds/impulse-responses/ir-full.wav"`
@@ -67,20 +67,20 @@ declare namespace ConvolverEffect {
      * @defaultValue `5`
      */
     intensity: number;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions, ConvolverOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions>, ConvolverOptions {}
 
   /** @internal */
-  type _UpdateOptions = InexactPartial<{
+  interface _UpdateOptions {
     /**
      * A new effect intensity
      * @remarks This is ignored if it fails a `Number.isFinite` check
      */
     intensity: number;
-  }>;
+  }
 
-  interface UpdateOptions extends _UpdateOptions {}
+  interface UpdateOptions extends InexactPartial<_UpdateOptions> {}
 }
 
 export default ConvolverEffect;

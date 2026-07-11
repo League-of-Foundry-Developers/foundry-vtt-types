@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
 import type { Ruler } from "#client/canvas/interaction/_module.d.mts";
 import type { BaseTokenRuler } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
@@ -126,12 +126,12 @@ declare namespace TokenRuler {
      * Movement planned by Users
      * @remarks Keys are User IDs.
      */
-    plannedMovement: Record<string, TokenDocument.PlannedMovement>;
+    plannedMovement: Record<string, foundry.canvas.placeables.Token.PlannedMovement>;
   }
 
   interface WaypointData {
     /** The config of the movement action */
-    actionConfig: CONFIG.Token.MovementActionConfig;
+    actionConfig: CONFIG.Token.Movement.ActionConfig;
 
     /** The ID of movement, or null if planned movement. */
     movementId: string | null;
@@ -181,8 +181,8 @@ declare namespace TokenRuler {
    * Importantly, this is *not* saved to the token's movement data, instead it is merely mutated locally.
    */
   interface State {
-    initialized?: boolean;
-    hasElevation?: boolean;
+    initialized?: boolean | undefined;
+    hasElevation?: boolean | undefined;
     previousElevation?: number;
   }
 
@@ -193,7 +193,7 @@ declare namespace TokenRuler {
     cost: SegmentCost;
   }
 
-  interface SegmentCost extends Ruler._DeltaString {
+  interface SegmentCost extends InexactPartial<Ruler._DeltaString> {
     total: string;
     units: string;
   }

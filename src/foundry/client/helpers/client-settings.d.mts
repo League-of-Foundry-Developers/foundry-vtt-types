@@ -199,7 +199,7 @@ declare namespace ClientSettings {
     T extends ClientSettings.Type,
     N extends ClientSettings.Namespace,
     K extends ClientSettings.KeyFor<N>,
-  > extends _RegisterData<_RegisterType<T, N, K>> {}
+  > extends InexactPartial<_RegisterData<_RegisterType<T, N, K>>> {}
 
   /**
    * @internal
@@ -210,10 +210,8 @@ declare namespace ClientSettings {
     K extends ClientSettings.KeyFor<N>,
   > = ClientSettings.Type extends T ? ConfiguredType<N, K> : NoInfer<T>;
 
-  /**
-   * @internal
-   */
-  type _RegisterData<T extends ClientSettings.Type> = InexactPartial<Omit<SettingConfig<T>, "key" | "namespace">>;
+  /** @internal */
+  interface _RegisterData<T extends ClientSettings.Type> extends Omit<SettingConfig<T>, "key" | "namespace"> {}
 
   /**
    * A TypeScript type is a type for a setting that only exists at compile time.
@@ -397,32 +395,32 @@ declare namespace ClientSettings {
   }
 
   /** @internal */
-  type _GetOptions<Doc extends boolean | undefined> = InexactPartial<{
+  interface _GetOptions<Doc extends boolean | undefined> {
     /**
      * Retrieve the full Setting document instance instead of just its value
      * @defaultValue `false`
      */
     document: Doc;
-  }>;
+  }
 
-  interface GetOptions<Doc extends boolean | undefined = undefined> extends _GetOptions<Doc> {}
+  interface GetOptions<Doc extends boolean | undefined = undefined> extends InexactPartial<_GetOptions<Doc>> {}
 
   /** @internal */
-  type _SetOptions<Doc extends boolean | undefined> = InexactPartial<{
+  interface _SetOptions<Doc extends boolean | undefined> {
     /**
      * Return the updated Setting document instead of just its value
      * @defaultValue `false`
      */
     document: Doc;
-  }>;
+  }
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.CreateDocumentsOperation {}
+    extends InexactPartial<_SetOptions<Doc>>, Setting.Database.CreateDocumentsOperation {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.UpdateOneDocumentOperation {}
+    extends InexactPartial<_SetOptions<Doc>>, Setting.Database.UpdateOneDocumentOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
 

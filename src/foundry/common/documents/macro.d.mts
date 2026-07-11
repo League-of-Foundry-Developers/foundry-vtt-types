@@ -66,7 +66,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: object): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -101,8 +101,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   type: SubType;
 
   /* Document overrides */
-
-  override readonly parentCollection: BaseMacro.ParentCollectionName | null;
 
   static override get implementation(): Macro.ImplementationClass;
 
@@ -285,7 +283,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<BaseMacro.Schema>;
+  static override _schema: SchemaField<BaseMacro.Schema>;
 
   static override get schema(): SchemaField<BaseMacro.Schema>;
 

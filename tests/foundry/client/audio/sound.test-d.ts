@@ -42,7 +42,7 @@ const filledInPlayAtPositionOptions = {
   baseEffect: { type: "reverb", intensity: 3 },
   easing: true,
   gmAlways: false,
-  muffledEffect: { type: "lowPass", intensity: 7 },
+  muffledEffect: { type: "lowpass", intensity: 7 },
   playbackOptions,
   sourceData: { angle: 90, rotation: 270 },
   walls: true,

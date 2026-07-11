@@ -132,7 +132,7 @@ declare namespace DoorMesh {
   type ConfiguredAnimationType = ConcreteKeys<typeof CONFIG.Wall.animationTypes>;
 
   /** @internal */
-  type _AnimationConfiguration = InexactPartial<{
+  interface _AnimationConfiguration {
     /**
      * @defaultValue `1`
      * @remarks
@@ -186,7 +186,7 @@ declare namespace DoorMesh {
 
     /** @remarks Default depends on the value of `double`; `"doubleL"` if truthy, `"single"` otherwise */
     style: DoorStyle;
-  }>;
+  }
 
   /**
    * @remarks The Foundry typedef has `config` and `style` as required properties, but that is for the type of `DoorMesh##animation`,
@@ -198,7 +198,7 @@ declare namespace DoorMesh {
    *
    * See {@linkcode WallDocument.AnimationData}
    */
-  interface AnimationConfiguration extends _AnimationConfiguration {}
+  interface AnimationConfiguration extends InexactPartial<_AnimationConfiguration> {}
 
   interface DoorStyles {
     SINGLE: "single";

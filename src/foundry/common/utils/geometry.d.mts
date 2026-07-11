@@ -51,15 +51,15 @@ export interface LineIntersection {
 }
 
 /** @internal */
-type _LineIntersectionOptions = InexactPartial<{
+interface _LineIntersectionOptions {
   /**
    * Return the optional vector distance from C to D on CD
    * @defaultValue `false`
    */
   t1: boolean;
-}>;
+}
 
-interface LineIntersectionOptions extends _LineIntersectionOptions {}
+interface LineIntersectionOptions extends InexactPartial<_LineIntersectionOptions> {}
 
 /**
  * An internal helper method for computing the intersection between two infinite-length lines.

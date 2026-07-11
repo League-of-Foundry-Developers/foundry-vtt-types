@@ -548,6 +548,8 @@ declare namespace Roll {
 
   type Mode = keyof CONFIG.Dice.RollModes;
 
+  type CoreDenominations = "d4" | "d6" | "d8" | "d10" | "d12" | "d20" | "d100";
+
   // TODO: Make this actually configurable
   interface ImplementationClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -604,7 +606,8 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type _ClassifyStringTermOptions = InexactPartial<{
+  /** @internal */
+  interface _ClassifyStringTermOptions {
     /**
      * Allow intermediate terms
      * @defaultValue `true`
@@ -616,9 +619,9 @@ declare namespace Roll {
 
     /** The next term to classify */
     next: RollTerm | string | null;
-  }>;
+  }
 
-  interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
+  interface ClassifyStringTermOptions extends InexactPartial<_ClassifyStringTermOptions> {}
 
   /** @internal */
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
