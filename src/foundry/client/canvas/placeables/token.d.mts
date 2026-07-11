@@ -7,7 +7,6 @@ import type {
   IntentionalPartial,
   RequiredProps,
 } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject, Region } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { Canvas, sources } from "#client/canvas/_module.d.mts";
@@ -1061,8 +1060,7 @@ declare namespace Token {
    * Not to be confused with {@linkcode TokenDocument.ImplementationClass}
    * which refers to the implementation for the Token document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Token">;
 
   type Schema = TokenDocument.Schema;
   type Parent = TokenDocument.Parent;

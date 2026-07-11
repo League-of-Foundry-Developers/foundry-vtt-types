@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
@@ -352,8 +351,7 @@ declare namespace Wall {
    * Not to be confused with {@linkcode WallDocument.ImplementationClass}
    * which refers to the implementation for the Wall document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Wall>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Wall">;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

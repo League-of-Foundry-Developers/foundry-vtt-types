@@ -15,12 +15,8 @@ import type {
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
-import type * as layers from "#client/canvas/layers/_module.d.mts";
-import type * as groups from "#client/canvas/groups/_module.d.mts";
-import type * as perception from "#client/canvas/perception/_module.d.mts";
-import type * as placeables from "#client/canvas/placeables/_module.d.mts";
+import type { geometry, perception, layers, groups } from "#client/canvas/_module.d.mts";
 import type { DoorMesh } from "#client/canvas/containers/_module.d.mts";
-import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
@@ -36,824 +32,556 @@ import type Localization from "#client/helpers/localization.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type * as configuration from "#configuration";
 
+/** Configure debugging flags to display additional information */
+export declare const debug: CONFIG.Debug;
+
+/**
+ * Configure the verbosity of compatibility warnings generated throughout the software.
+ * The compatibility mode defines the logging level of any displayed warnings.
+ * The includePatterns and excludePatterns arrays provide a set of regular expressions which can either only
+ * include or specifically exclude certain file paths or warning messages.
+ * Exclusion rules take precedence over inclusion rules.
+ *
+ * @see {@linkcode CONST.COMPATIBILITY_MODES}
+ *
+ * @example
+ * Include Specific Errors
+ * ```js
+ * const includeRgx = new RegExp("/systems/dnd5e/module/documents/active-effect.mjs");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * ```
+ *
+ * @example
+ * Exclude Specific Errors
+ * ```js
+ * const excludeRgx = new RegExp("/systems/dnd5e/");
+ * CONFIG.compatibility.excludePatterns.push(excludeRgx);
+ * ```
+ *
+ * @example
+ * Both Include and Exclude
+ * ```js
+ * const includeRgx = new RegExp("/systems/dnd5e/module/actor/");
+ * const excludeRgx = new RegExp("/systems/dnd5e/module/actor/sheets/base.js");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * CONFIG.compatibility.excludePatterns.push(excludeRgx);
+ * ```
+ *
+ * @example
+ * Targeting more than filenames
+ * ```js
+ * const includeRgx = new RegExp("applyActiveEffects");
+ * CONFIG.compatibility.includePatterns.push(includeRgx);
+ * ```
+ */
+export declare const compatibility: CONFIG.Compatibility;
+
+export declare const compendium: CONFIG.Compendium;
+
+/**
+ * Configure the DatabaseBackend used to perform Document operations
+ * @defaultValue `new `{@linkcode foundry.data.ClientDatabaseBackend}`()`
+ */
+export declare let DatabaseBackend: foundry.data.ClientDatabaseBackend;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Actor | Actor} document
+ */
+export declare const Actor: CONFIG.Actor;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Adventure | Adventure} document
+ */
+export declare const Adventure: CONFIG.Adventure;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Cards | Cards} document
+ */
+export declare const Cards: CONFIG.Cards;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ChatMessage | ChatMessage} document
+ */
+export declare const ChatMessage: CONFIG.ChatMessage;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Combat | Combat} document
+ */
+export declare const Combat: CONFIG.Combat;
+
+/**
+ * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
+ */
+export declare const Dice: CONFIG.Dice;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
+ */
+export declare const FogExploration: CONFIG.FogExploration;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
+ */
+export declare const Folder: CONFIG.Folder;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Item | Item} document
+ */
+export declare const Item: CONFIG.Item;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntry | JournalEntry} document
+ */
+export declare const JournalEntry: CONFIG.JournalEntry;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Macro | Macro} document
+ */
+export declare const Macro: CONFIG.Macro;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Playlist | Playlist} document
+ */
+export declare const Playlist: CONFIG.Playlist;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.RollTable | RollTable} document
+ */
+export declare const RollTable: CONFIG.RollTable;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Scene | Scene} document
+ */
+export declare const Scene: CONFIG.Scene;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Setting | Setting} document
+ */
+export declare const Setting: CONFIG.Setting;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.User | User} document
+ */
+export declare const User: CONFIG.User;
+
+/**
+ * Configuration settings for the Canvas and its contained layers and objects
+ */
+export declare const Canvas: CONFIG.Canvas;
+
+/**
+ * Configure the default Token text style so that it may be reused and overridden by modules
+ * @defaultValue
+ * ```ts
+ * new PIXI.TextStyle({
+ *   fontFamily: "Signika",
+ *   fontSize: 36,
+ *   fill: "#FFFFFF",
+ *   stroke: "#111111",
+ *   strokeThickness: 1,
+ *   dropShadow: true,
+ *   dropShadowColor: "#000000",
+ *   dropShadowBlur: 2,
+ *   dropShadowAngle: 0,
+ *   dropShadowDistance: 0,
+ *   align: "center",
+ *   wordWrap: false,
+ *   padding: 1
+ * })
+ * ```
+ */
+export declare let canvasTextStyle: PIXI.TextStyle;
+
+/**
+ * Available Weather Effects implementations
+ */
+export declare const weatherEffects: RemoveIndexSignatures<CONFIG.WeatherEffects>;
+
+/**
+ * The control icons used for rendering common HUD operations
+ */
+export declare const controlIcons: RemoveIndexSignatures<CONFIG.ControlIcons>;
+
+/**
+ * A collection of fonts to load either from the user's local system, or remotely.
+ */
+export declare const fontDefinitions: RemoveIndexSignatures<CONFIG.FontDefinitions>;
+
+/**
+ * The default font family used for text labels on the PIXI Canvas
+ * @defaultValue `"Signika"`
+ */
+export declare let defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
+
+/**
+ * The array of status effects which can be applied to an Actor.
+ * @defaultValue
+ * ```js
+ * [
+ *   {
+ *     id: "dead",
+ *     name: "EFFECT.StatusDead",
+ *     img: "icons/svg/skull.svg"
+ *   },
+ *   {
+ *     id: "unconscious",
+ *     name: "EFFECT.StatusUnconscious",
+ *     img: "icons/svg/unconscious.svg"
+ *   },
+ *   {
+ *     id: "sleep",
+ *     name: "EFFECT.StatusAsleep",
+ *     img: "icons/svg/sleep.svg"
+ *   },
+ *   {
+ *     id: "stun",
+ *     name: "EFFECT.StatusStunned",
+ *     img: "icons/svg/daze.svg"
+ *   },
+ *   {
+ *     id: "prone",
+ *     name: "EFFECT.StatusProne",
+ *     img: "icons/svg/falling.svg"
+ *   },
+ *   {
+ *     id: "restrain",
+ *     name: "EFFECT.StatusRestrained",
+ *     img: "icons/svg/net.svg"
+ *   },
+ *   {
+ *     id: "paralysis",
+ *     name: "EFFECT.StatusParalysis",
+ *     img: "icons/svg/paralysis.svg"
+ *   },
+ *   {
+ *     id: "fly",
+ *     name: "EFFECT.StatusFlying",
+ *     img: "icons/svg/wing.svg"
+ *   },
+ *   {
+ *     id: "blind",
+ *     name: "EFFECT.StatusBlind",
+ *     img: "icons/svg/blind.svg"
+ *   },
+ *   {
+ *     id: "deaf",
+ *     name: "EFFECT.StatusDeaf",
+ *     img: "icons/svg/deaf.svg"
+ *   },
+ *   {
+ *     id: "silence",
+ *     name: "EFFECT.StatusSilenced",
+ *     img: "icons/svg/silenced.svg"
+ *   },
+ *   {
+ *     id: "fear",
+ *     name: "EFFECT.StatusFear",
+ *     img: "icons/svg/terror.svg"
+ *   },
+ *   {
+ *     id: "burning",
+ *     name: "EFFECT.StatusBurning",
+ *     img: "icons/svg/fire.svg"
+ *   },
+ *   {
+ *     id: "frozen",
+ *     name: "EFFECT.StatusFrozen",
+ *     img: "icons/svg/frozen.svg"
+ *   },
+ *   {
+ *     id: "shock",
+ *     name: "EFFECT.StatusShocked",
+ *     img: "icons/svg/lightning.svg"
+ *   },
+ *   {
+ *     id: "corrode",
+ *     name: "EFFECT.StatusCorrode",
+ *     img: "icons/svg/acid.svg"
+ *   },
+ *   {
+ *     id: "bleeding",
+ *     name: "EFFECT.StatusBleeding",
+ *     img: "icons/svg/blood.svg"
+ *   },
+ *   {
+ *     id: "disease",
+ *     name: "EFFECT.StatusDisease",
+ *     img: "icons/svg/biohazard.svg"
+ *   },
+ *   {
+ *     id: "poison",
+ *     name: "EFFECT.StatusPoison",
+ *     img: "icons/svg/poison.svg"
+ *   },
+ *   {
+ *     id: "curse",
+ *     name: "EFFECT.StatusCursed",
+ *     img: "icons/svg/sun.svg"
+ *   },
+ *   {
+ *     id: "regen",
+ *     name: "EFFECT.StatusRegen",
+ *     img: "icons/svg/regen.svg"
+ *   },
+ *   {
+ *     id: "degen",
+ *     name: "EFFECT.StatusDegen",
+ *     img: "icons/svg/degen.svg"
+ *   },
+ *   {
+ *     id: "hover",
+ *     name: "EFFECT.StatusHover",
+ *     img: "icons/svg/wingfoot.svg"
+ *   },
+ *   {
+ *     id: "burrow",
+ *     name: "EFFECT.StatusBurrow",
+ *     img: "icons/svg/mole.svg"
+ *   },
+ *   {
+ *     id: "upgrade",
+ *     name: "EFFECT.StatusUpgrade",
+ *     img: "icons/svg/upgrade.svg"
+ *   },
+ *   {
+ *     id: "downgrade",
+ *     name: "EFFECT.StatusDowngrade",
+ *     img: "icons/svg/downgrade.svg"
+ *   },
+ *   {
+ *     id: "invisible",
+ *     name: "EFFECT.StatusInvisible",
+ *     img: "icons/svg/invisible.svg"
+ *   },
+ *   {
+ *     id: "target",
+ *     name: "EFFECT.StatusTarget",
+ *     img: "icons/svg/target.svg"
+ *   },
+ *   {
+ *     id: "eye",
+ *     name: "EFFECT.StatusMarked",
+ *     img: "icons/svg/eye.svg"
+ *   },
+ *   {
+ *     id: "bless",
+ *     name: "EFFECT.StatusBlessed",
+ *     img: "icons/svg/angel.svg"
+ *   },
+ *   {
+ *     id: "fireShield",
+ *     name: "EFFECT.StatusFireShield",
+ *     img: "icons/svg/fire-shield.svg"
+ *   },
+ *   {
+ *     id: "coldShield",
+ *     name: "EFFECT.StatusIceShield",
+ *     img: "icons/svg/ice-shield.svg"
+ *   },
+ *   {
+ *     id: "magicShield",
+ *     name: "EFFECT.StatusMagicShield",
+ *     img: "icons/svg/mage-shield.svg"
+ *   },
+ *   {
+ *     id: "holyShield",
+ *     name: "EFFECT.StatusHolyShield",
+ *     img: "icons/svg/holy-shield.svg"
+ *   }
+ * ]
+ * ```
+ */
+export declare const statusEffects: CONFIG.StatusEffect[];
+
+/**
+ * A mapping of status effect IDs which provide some additional mechanical integration.
+ * @remarks See {@linkcode CONFIG.DefaultSpecialStatusEffects} for defaults.
+ */
+export declare const specialStatusEffects: HandleEmptyObject<
+  RemoveIndexSignatures<CONFIG.SpecialStatusEffects>,
+  RemoveIndexSignatures<CONFIG.DefaultSpecialStatusEffects>
+>;
+
+/**
+ * A mapping of core audio effects used which can be replaced by systems or mods
+ */
+export declare const sounds: RemoveIndexSignatures<CONFIG.Sounds>;
+
+/**
+ * Define the set of supported languages for localization
+ */
+export declare const supportedLanguages: RemoveIndexSignatures<CONFIG.SupportedLanguages>;
+
+/**
+ * Localization constants.
+ */
+export declare const i18n: CONFIG.Internationalization;
+
+/**
+ * Configuration for time tracking
+ */
+export declare const time: CONFIG.Time;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ActiveEffect | ActiveEffect} embedded document type
+ */
+export declare const ActiveEffect: CONFIG.ActiveEffect;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.ActorDelta | ActorDelta} embedded document type.
+ */
+export declare const ActorDelta: CONFIG.ActorDelta;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Card | Card} embedded document type
+ */
+export declare const Card: CONFIG.Card;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.TableResult | TableResult} embedded document type
+ */
+export declare const TableResult: CONFIG.TableResult;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
+ */
+export declare const JournalEntryPage: CONFIG.JournalEntryPage;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.PlaylistSound | PlaylistSound} embedded document type
+ */
+export declare const PlaylistSound: CONFIG.PlaylistSound;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.AmbientLight | AmbientLight} embedded document
+ * type and its representation on the game Canvas
+ */
+export declare const AmbientLight: CONFIG.AmbientLight;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.AmbientSound | AmbientSound} embedded document
+ * type and its representation on the game Canvas
+ */
+export declare const AmbientSound: CONFIG.AmbientSound;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Combatant | Combatant} embedded document type
+ * within a {@linkcode foundry.documents.Combat | Combat} document
+ */
+export declare const Combatant: CONFIG.Combatant;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.CombatantGroup | CombatantGroup}
+ * embedded document type within a {@linkcode foundry.documents.Combat | Combat} document.
+ */
+export declare const CombatantGroup: CONFIG.CombatantGroup;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
+ */
+export declare const Drawing: CONFIG.Drawing;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
+ */
+export declare const JournalEntryCategory: CONFIG.JournalEntryCategory;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
+ * on the game Canvas
+ */
+export declare const MeasuredTemplate: CONFIG.MeasuredTemplate;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Note | Note} embedded document type and its representation on the game Canvas
+ */
+export declare const Note: CONFIG.Note;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Region | Region} embedded document type and its representation on the game Canvas
+ */
+export declare const Region: CONFIG.Region;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
+ */
+export declare const RegionBehavior: CONFIG.RegionBehavior;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
+ */
+export declare const Tile: CONFIG.Tile;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Token | Token} embedded document type and its representation on the game Canvas
+ */
+export declare const Token: CONFIG.Token;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Wall | Wall} embedded document type and its representation on the game Canvas
+ */
+export declare const Wall: CONFIG.Wall;
+
+/**
+ * An enumeration of sound effects which can be applied to Sound instances.
+ */
+export declare const soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
+
+/**
+ * Default configuration options for TinyMCE editors
+ */
+export declare const TinyMCE: tinyMCE.RawEditorOptions;
+
+/**
+ * Rich text editing configuration.
+ */
+export declare const TextEditor: CONFIG.TextEditor;
+
+/**
+ * Configuration for the WebRTC implementation class
+ */
+export declare const WebRTC: CONFIG.WebRTC;
+
+/**
+ * Configure the Application classes used to render various core UI elements in the application
+ */
+export declare const ui: RemoveIndexSignatures<CONFIG.UI>;
+
+/**
+ * Overrides for various core UI/UX helpers.
+ */
+export declare const ux: CONFIG.UX;
+
+/**
+ * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
+ * Non-prefixed query names are reserved by core.
+ */
+export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
+
+/**
+ * Configure custom cursor images to use when interacting with the application.
+ *
+ * @example
+ * Configuring a cursor with a hotspot in the default top-left.
+ * ```js
+ * Object.assign(CONFIG.cursors, {
+ *   default: "icons/cursors/default.avif",
+ *   "default-down": "icons/cursors/default-down.avif"
+ * });
+ * ```
+ *
+ * @example
+ * Configuring a cursor with a hotspot in the center.
+ * ```js
+ * Object.assign(CONFIG.cursors, {
+ *   default: { url: "icons/cursors/target.avif", x: 16, y: 16 },
+ *   "default-down": { url: "icons/cursors/target-down.avif", x: 16, y: 16 }
+ * });
+ * ```
+ */
+export declare const cursors: CONFIG.Cursors;
+
 declare global {
-  namespace CONFIG {
-    type SheetClasses<Name extends Document.Type> = InitializedOn<
-      _SheetClasses<Name>,
-      "ready",
-      IntentionalPartial<_SheetClasses<Name>>
-    >;
-
-    /** @internal */
-    type _SheetClasses<Name extends Document.Type> = Record<
-      Document.SubTypesOf<Name>,
-      Record<string, DocumentSheetConfig.SheetRegistrationDescriptor<Document.ImplementationClassFor<Name>>>
-    >;
-
-    namespace Dice {
-      interface Fulfillment {
-        /** The die denominations available for configuration. */
-        dice: RemoveIndexSignatures<Fulfillment.Dice>;
-
-        /** The methods available for fulfillment. */
-        methods: RemoveIndexSignatures<Fulfillment.Methods>;
-
-        /**
-         * Designate one of the methods to be used by default for dice fulfillment, if the user hasn't specified otherwise.
-         * Leave this blank to use the configured {@linkcode CONFIG.Dice.randomUniform} to generate die rolls.
-         * @defaultValue `""`
-         */
-        defaultMethod: string;
-      }
-
-      namespace Fulfillment {
-        interface Dice {
-          [denomination: string]: DiceDenomination;
-
-          /** @defaultValue `{ label: "d4", icon: '<i class="fa-solid fa-dice-d4"></i>' }` */
-          d4: DiceDenomination;
-
-          /** @defaultValue `{ label: "d6", icon: '<i class="fa-solid fa-dice-d6"></i>' }` */
-          d6: DiceDenomination;
-
-          /** @defaultValue `{ label: "d8", icon: '<i class="fa-solid fa-dice-d8"></i>' }` */
-          d8: DiceDenomination;
-
-          /** @defaultValue `{ label: "d10", icon: '<i class="fa-solid fa-dice-d10"></i>' }` */
-          d10: DiceDenomination;
-
-          /** @defaultValue `{ label: "d12", icon: '<i class="fa-solid fa-dice-d12"></i>' }` */
-          d12: DiceDenomination;
-
-          /** @defaultValue `{ label: "d20", icon: '<i class="fa-solid fa-dice-d20"></i>' }` */
-          d20: DiceDenomination;
-
-          /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
-          d100: DiceDenomination;
-        }
-
-        interface DiceDenomination {
-          /** The human-readable label for the die. */
-          label: string;
-
-          /**
-           * An icon to display on the configuration sheet.
-           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
-           */
-          icon: string;
-        }
-
-        interface Methods {
-          [methodName: string]: Method;
-
-          /**
-           * @defaultValue
-           * ```ts
-           * {
-           *   label: "DICE.FULFILLMENT.Mersenne",
-           *   interactive: false,
-           *   handler: term => term.mapRandomFace(dice.MersenneTwister.random())
-           * }
-           * ```
-           */
-          mersenne: Method;
-
-          /**
-           * @defaultValue
-           * ```ts
-           * {
-           *   label: "DICE.FULFILLMENT.Manual",
-           *   icon: '<i class="fa-solid fa-keyboard"></i>',
-           *   interactive: true
-           * }
-           * ```
-           */
-          manual: Method;
-        }
-
-        /** @internal */
-        interface _Method {
-          /**
-           * An icon to represent the fulfillment method.
-           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
-           */
-          icon: string;
-
-          /**
-           * Whether this method requires input from the user or if it is fulfilled entirely programmatically.
-           * @defaultValue `false`
-           */
-          interactive: boolean;
-
-          /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
-          handler: Handler;
-
-          /**
-           * A custom RollResolver implementation. If the only interactive methods the user has configured are this method and manual,
-           * this resolver will be used to resolve interactive rolls, instead of the default resolver. This resolver must therefore be
-           * capable of handling manual rolls.
-           * @privateRemarks Instantiated by `new` in {@linkcode foundry.dice.Roll._evaluate | Roll#_evaluate}.
-           */
-          resolver: typeof foundry.applications.dice.RollResolver;
-        }
-
-        interface Method extends InexactPartial<_Method> {
-          /** The human-readable label for the fulfillment method. */
-          label: string;
-        }
-
-        /**
-         * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
-         * this handler is called and awaited in order to produce the die roll result.
-         * @param term    - The term being fulfilled.
-         * @param options - Additional options to configure fulfillment.
-         * @returns The fulfilled value, or undefined if it could not be fulfilled.
-         * @remarks As of 13.351, the only place this gets called is in `DiceTerm##invokeFulfillmentHandler`, which gets called by
-         * {@linkcode foundry.dice.terms.DiceTerm._roll | DiceTerm#_roll}, which will pass on the options from `DiceTerm#roll`, minus `maximize`
-         * and `minimize`.
-         */
-        type Handler = (
-          term: foundry.dice.terms.DiceTerm,
-          // TODO: remove InexactPartial once DiceTerm is cleaned up in v14.
-          options?: InexactPartial<foundry.dice.terms.DiceTerm.EvaluationOptions>,
-        ) => MaybePromise<number | void>;
-      }
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment} instead. This warning will be removed in v14. */
-      type FulfillmentConfiguration = Fulfillment;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.DiceDenomination} instead. This warning will be removed in v14. */
-      type FulfillmentDenomination = Fulfillment.DiceDenomination;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Method} instead. This warning will be removed in v14. */
-      type FulfillmentMethod = Fulfillment.Method;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Handler} instead. This warning will be removed in v14. */
-      type FulfillmentHandler = Fulfillment.Handler;
-
-      /** @deprecated Use {@linkcode foundry.dice.Roll.CoreDenominations} instead. This warning will be removed in v14. */
-      type DTermDiceStrings = foundry.dice.Roll.CoreDenominations;
-
-      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
-
-      interface Terms {
-        [term: string]: typeof foundry.dice.terms.DiceTerm;
-        c: typeof foundry.dice.terms.Coin;
-        d: typeof foundry.dice.terms.Die;
-        f: typeof foundry.dice.terms.FateDie;
-      }
-
-      interface TermTypes {
-        [termType: string]: foundry.dice.terms.RollTerm.AnyConstructor;
-        DiceTerm: typeof foundry.dice.terms.DiceTerm;
-        FunctionTerm: typeof foundry.dice.terms.FunctionTerm;
-        NumericTerm: typeof foundry.dice.terms.NumericTerm;
-        OperatorTerm: typeof foundry.dice.terms.OperatorTerm;
-        ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm;
-        PoolTerm: typeof foundry.dice.terms.PoolTerm;
-        StringTerm: typeof foundry.dice.terms.StringTerm;
-      }
-
-      interface Functions {
-        [functionName: string]: RollFunction;
-      }
-    }
-
-    interface Dice {
-      /** The Dice types which are supported. */
-      types: (typeof foundry.dice.terms.DiceTerm)[];
-
-      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
-      rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
-
-      /**
-       * Configured Roll class definitions
-       * @defaultValue `[`{@linkcode dice.Roll}`]`
-       * @privateRemarks Instantiated via `new` in {@linkcode foundry.dice.Roll.create | Roll.create}.
-       */
-      rolls: (typeof foundry.dice.Roll)[];
-
-      /**
-       * Configured DiceTerm class definitions
-       */
-      termTypes: RemoveIndexSignatures<Dice.TermTypes>;
-
-      /** Configured roll terms and the classes they map to. */
-      terms: Dice.Terms;
-
-      /**
-       * A function used to provide random uniform values.
-       */
-      randomUniform: () => number;
-
-      /**
-       * A parser implementation for parsing Roll expressions.
-       * @defaultValue {@linkcode foundry.dice.RollParser}
-       */
-      parser: foundry.dice.RollParser.AnyConstructor;
-
-      /** A collection of custom functions that can be included in roll expressions.*/
-      functions: HandleEmptyObject<RemoveIndexSignatures<Dice.Functions>>;
-
-      /**
-       * Dice roll fulfillment configuration
-       */
-      fulfillment: Dice.Fulfillment;
-    }
-
-    /** @internal */
-    interface _StatusEffect {
-      /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
-       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of
-       * {@linkcode StatusEffectConfig.name | StatusEffectConfig#name}"  (since v12, until v14)
-       */
-      label: string;
-
-      /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
-       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of
-       * {@linkcode StatusEffectConfig.img | StatusEffectConfig#img}"  (since v12, until v14)
-       */
-      icon: string;
-
-      /**
-       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
-       * if the Token's Actor sub-type is one of the configured ones.
-       * @defaultValue `true`
-       */
-      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
-    }
-
-    /**
-     * Configured status effects which are recognized by the game system
-     */
-    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
-      /**
-       * A string identifier for the effect
-       */
-      id: string;
-    }
-  }
-
-  /**
-   * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
-   * aspects of the software behaves.
-   *
-   * Unlike the CONST analog which is frozen and immutable, the CONFIG object may be updated during the course of a
-   * session or modified by system and module developers to adjust how the application behaves.
-   */
-  interface CONFIG {
-    /** Configure debugging flags to display additional information */
-    debug: CONFIG.Debug;
-
-    /**
-     * Configure the verbosity of compatibility warnings generated throughout the software.
-     * The compatibility mode defines the logging level of any displayed warnings.
-     * The includePatterns and excludePatterns arrays provide a set of regular expressions which can either only
-     * include or specifically exclude certain file paths or warning messages.
-     * Exclusion rules take precedence over inclusion rules.
-     *
-     * @see {@linkcode CONST.COMPATIBILITY_MODES}
-     *
-     * @example
-     * Include Specific Errors
-     * ```js
-     * const includeRgx = new RegExp("/systems/dnd5e/module/documents/active-effect.mjs");
-     * CONFIG.compatibility.includePatterns.push(includeRgx);
-     * ```
-     *
-     * @example
-     * Exclude Specific Errors
-     * ```js
-     * const excludeRgx = new RegExp("/systems/dnd5e/");
-     * CONFIG.compatibility.excludePatterns.push(excludeRgx);
-     * ```
-     *
-     * @example
-     * Both Include and Exclude
-     * ```js
-     * const includeRgx = new RegExp("/systems/dnd5e/module/actor/");
-     * const excludeRgx = new RegExp("/systems/dnd5e/module/actor/sheets/base.js");
-     * CONFIG.compatibility.includePatterns.push(includeRgx);
-     * CONFIG.compatibility.excludePatterns.push(excludeRgx);
-     * ```
-     *
-     * @example
-     * Targeting more than filenames
-     * ```js
-     * const includeRgx = new RegExp("applyActiveEffects");
-     * CONFIG.compatibility.includePatterns.push(includeRgx);
-     * ```
-     */
-    compatibility: CONFIG.Compatibility;
-
-    compendium: CONFIG.Compendium;
-
-    /**
-     * Configure the DatabaseBackend used to perform Document operations
-     * @defaultValue `new `{@linkcode foundry.data.ClientDatabaseBackend}`()`
-     */
-    DatabaseBackend: foundry.data.ClientDatabaseBackend;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Actor | Actor} document
-     */
-    Actor: CONFIG.Actor;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Adventure | Adventure} document
-     */
-    Adventure: CONFIG.Adventure;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Cards | Cards} document
-     */
-    Cards: CONFIG.Cards;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.ChatMessage | ChatMessage} document
-     */
-    ChatMessage: CONFIG.ChatMessage;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Combat | Combat} document
-     */
-    Combat: CONFIG.Combat;
-
-    /**
-     * Configuration for dice rolling behaviors in the Foundry Virtual Tabletop client
-     */
-    Dice: CONFIG.Dice;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
-     */
-    FogExploration: CONFIG.FogExploration;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.FogExploration | FogExploration} document
-     */
-    Folder: CONFIG.Folder;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Item | Item} document
-     */
-    Item: CONFIG.Item;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.JournalEntry | JournalEntry} document
-     */
-    JournalEntry: CONFIG.JournalEntry;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Macro | Macro} document
-     */
-    Macro: CONFIG.Macro;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Playlist | Playlist} document
-     */
-    Playlist: CONFIG.Playlist;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.RollTable | RollTable} document
-     */
-    RollTable: CONFIG.RollTable;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Scene | Scene} document
-     */
-    Scene: CONFIG.Scene;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Setting | Setting} document
-     */
-    Setting: CONFIG.Setting;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.User | User} document
-     */
-    User: CONFIG.User;
-
-    /**
-     * Configuration settings for the Canvas and its contained layers and objects
-     */
-    Canvas: CONFIG.Canvas;
-
-    /**
-     * Configure the default Token text style so that it may be reused and overridden by modules
-     * @defaultValue
-     * ```ts
-     * new PIXI.TextStyle({
-     *   fontFamily: "Signika",
-     *   fontSize: 36,
-     *   fill: "#FFFFFF",
-     *   stroke: "#111111",
-     *   strokeThickness: 1,
-     *   dropShadow: true,
-     *   dropShadowColor: "#000000",
-     *   dropShadowBlur: 2,
-     *   dropShadowAngle: 0,
-     *   dropShadowDistance: 0,
-     *   align: "center",
-     *   wordWrap: false,
-     *   padding: 1
-     * })
-     * ```
-     */
-    canvasTextStyle: PIXI.TextStyle;
-
-    /**
-     * Available Weather Effects implementations
-     */
-    weatherEffects: RemoveIndexSignatures<CONFIG.WeatherEffects>;
-
-    /**
-     * The control icons used for rendering common HUD operations
-     */
-    controlIcons: RemoveIndexSignatures<CONFIG.ControlIcons>;
-
-    /**
-     * A collection of fonts to load either from the user's local system, or remotely.
-     */
-    fontDefinitions: RemoveIndexSignatures<CONFIG.FontDefinitions>;
-
-    /**
-     * The default font family used for text labels on the PIXI Canvas
-     * @defaultValue `"Signika"`
-     */
-    defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions>;
-
-    /**
-     * The array of status effects which can be applied to an Actor.
-     * @defaultValue
-     * ```js
-     * [
-     *   {
-     *     id: "dead",
-     *     name: "EFFECT.StatusDead",
-     *     img: "icons/svg/skull.svg"
-     *   },
-     *   {
-     *     id: "unconscious",
-     *     name: "EFFECT.StatusUnconscious",
-     *     img: "icons/svg/unconscious.svg"
-     *   },
-     *   {
-     *     id: "sleep",
-     *     name: "EFFECT.StatusAsleep",
-     *     img: "icons/svg/sleep.svg"
-     *   },
-     *   {
-     *     id: "stun",
-     *     name: "EFFECT.StatusStunned",
-     *     img: "icons/svg/daze.svg"
-     *   },
-     *   {
-     *     id: "prone",
-     *     name: "EFFECT.StatusProne",
-     *     img: "icons/svg/falling.svg"
-     *   },
-     *   {
-     *     id: "restrain",
-     *     name: "EFFECT.StatusRestrained",
-     *     img: "icons/svg/net.svg"
-     *   },
-     *   {
-     *     id: "paralysis",
-     *     name: "EFFECT.StatusParalysis",
-     *     img: "icons/svg/paralysis.svg"
-     *   },
-     *   {
-     *     id: "fly",
-     *     name: "EFFECT.StatusFlying",
-     *     img: "icons/svg/wing.svg"
-     *   },
-     *   {
-     *     id: "blind",
-     *     name: "EFFECT.StatusBlind",
-     *     img: "icons/svg/blind.svg"
-     *   },
-     *   {
-     *     id: "deaf",
-     *     name: "EFFECT.StatusDeaf",
-     *     img: "icons/svg/deaf.svg"
-     *   },
-     *   {
-     *     id: "silence",
-     *     name: "EFFECT.StatusSilenced",
-     *     img: "icons/svg/silenced.svg"
-     *   },
-     *   {
-     *     id: "fear",
-     *     name: "EFFECT.StatusFear",
-     *     img: "icons/svg/terror.svg"
-     *   },
-     *   {
-     *     id: "burning",
-     *     name: "EFFECT.StatusBurning",
-     *     img: "icons/svg/fire.svg"
-     *   },
-     *   {
-     *     id: "frozen",
-     *     name: "EFFECT.StatusFrozen",
-     *     img: "icons/svg/frozen.svg"
-     *   },
-     *   {
-     *     id: "shock",
-     *     name: "EFFECT.StatusShocked",
-     *     img: "icons/svg/lightning.svg"
-     *   },
-     *   {
-     *     id: "corrode",
-     *     name: "EFFECT.StatusCorrode",
-     *     img: "icons/svg/acid.svg"
-     *   },
-     *   {
-     *     id: "bleeding",
-     *     name: "EFFECT.StatusBleeding",
-     *     img: "icons/svg/blood.svg"
-     *   },
-     *   {
-     *     id: "disease",
-     *     name: "EFFECT.StatusDisease",
-     *     img: "icons/svg/biohazard.svg"
-     *   },
-     *   {
-     *     id: "poison",
-     *     name: "EFFECT.StatusPoison",
-     *     img: "icons/svg/poison.svg"
-     *   },
-     *   {
-     *     id: "curse",
-     *     name: "EFFECT.StatusCursed",
-     *     img: "icons/svg/sun.svg"
-     *   },
-     *   {
-     *     id: "regen",
-     *     name: "EFFECT.StatusRegen",
-     *     img: "icons/svg/regen.svg"
-     *   },
-     *   {
-     *     id: "degen",
-     *     name: "EFFECT.StatusDegen",
-     *     img: "icons/svg/degen.svg"
-     *   },
-     *   {
-     *     id: "hover",
-     *     name: "EFFECT.StatusHover",
-     *     img: "icons/svg/wingfoot.svg"
-     *   },
-     *   {
-     *     id: "burrow",
-     *     name: "EFFECT.StatusBurrow",
-     *     img: "icons/svg/mole.svg"
-     *   },
-     *   {
-     *     id: "upgrade",
-     *     name: "EFFECT.StatusUpgrade",
-     *     img: "icons/svg/upgrade.svg"
-     *   },
-     *   {
-     *     id: "downgrade",
-     *     name: "EFFECT.StatusDowngrade",
-     *     img: "icons/svg/downgrade.svg"
-     *   },
-     *   {
-     *     id: "invisible",
-     *     name: "EFFECT.StatusInvisible",
-     *     img: "icons/svg/invisible.svg"
-     *   },
-     *   {
-     *     id: "target",
-     *     name: "EFFECT.StatusTarget",
-     *     img: "icons/svg/target.svg"
-     *   },
-     *   {
-     *     id: "eye",
-     *     name: "EFFECT.StatusMarked",
-     *     img: "icons/svg/eye.svg"
-     *   },
-     *   {
-     *     id: "bless",
-     *     name: "EFFECT.StatusBlessed",
-     *     img: "icons/svg/angel.svg"
-     *   },
-     *   {
-     *     id: "fireShield",
-     *     name: "EFFECT.StatusFireShield",
-     *     img: "icons/svg/fire-shield.svg"
-     *   },
-     *   {
-     *     id: "coldShield",
-     *     name: "EFFECT.StatusIceShield",
-     *     img: "icons/svg/ice-shield.svg"
-     *   },
-     *   {
-     *     id: "magicShield",
-     *     name: "EFFECT.StatusMagicShield",
-     *     img: "icons/svg/mage-shield.svg"
-     *   },
-     *   {
-     *     id: "holyShield",
-     *     name: "EFFECT.StatusHolyShield",
-     *     img: "icons/svg/holy-shield.svg"
-     *   }
-     * ]
-     * ```
-     */
-    statusEffects: CONFIG.StatusEffect[];
-
-    /**
-     * A mapping of status effect IDs which provide some additional mechanical integration.
-     * @remarks See {@linkcode CONFIG.DefaultSpecialStatusEffects} for defaults.
-     */
-    specialStatusEffects: HandleEmptyObject<
-      RemoveIndexSignatures<CONFIG.SpecialStatusEffects>,
-      RemoveIndexSignatures<CONFIG.DefaultSpecialStatusEffects>
-    >;
-
-    /**
-     * A mapping of core audio effects used which can be replaced by systems or mods
-     */
-    sounds: RemoveIndexSignatures<CONFIG.Sounds>;
-
-    /**
-     * Define the set of supported languages for localization
-     */
-    supportedLanguages: RemoveIndexSignatures<CONFIG.SupportedLanguages>;
-
-    /**
-     * Localization constants.
-     */
-    i18n: CONFIG.Internationalization;
-
-    /**
-     * Configuration for time tracking
-     */
-    time: CONFIG.Time;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.ActiveEffect | ActiveEffect} embedded document type
-     */
-    ActiveEffect: CONFIG.ActiveEffect;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.ActorDelta | ActorDelta} embedded document type.
-     */
-    ActorDelta: CONFIG.ActorDelta;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Card | Card} embedded document type
-     */
-    Card: CONFIG.Card;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.TableResult | TableResult} embedded document type
-     */
-    TableResult: CONFIG.TableResult;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
-     */
-    JournalEntryPage: CONFIG.JournalEntryPage;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.PlaylistSound | PlaylistSound} embedded document type
-     */
-    PlaylistSound: CONFIG.PlaylistSound;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.AmbientLight | AmbientLight} embedded document
-     * type and its representation on the game Canvas
-     */
-    AmbientLight: CONFIG.AmbientLight;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.AmbientSound | AmbientSound} embedded document
-     * type and its representation on the game Canvas
-     */
-    AmbientSound: CONFIG.AmbientSound;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Combatant | Combatant} embedded document type
-     * within a {@linkcode foundry.documents.Combat | Combat} document
-     */
-    Combatant: CONFIG.Combatant;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.CombatantGroup | CombatantGroup}
-     * embedded document type within a {@linkcode foundry.documents.Combat | Combat} document.
-     */
-    CombatantGroup: CONFIG.CombatantGroup;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Drawing | Drawing} embedded document type and its representation on the game Canvas
-     */
-    Drawing: CONFIG.Drawing;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
-     */
-    JournalEntryCategory: CONFIG.JournalEntryCategory;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
-     * on the game Canvas
-     */
-    MeasuredTemplate: CONFIG.MeasuredTemplate;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Note | Note} embedded document type and its representation on the game Canvas
-     */
-    Note: CONFIG.Note;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Region | Region} embedded document type and its representation on the game Canvas
-     */
-    Region: CONFIG.Region;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
-     */
-    RegionBehavior: CONFIG.RegionBehavior;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
-     */
-    Tile: CONFIG.Tile;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Token | Token} embedded document type and its representation on the game Canvas
-     */
-    Token: CONFIG.Token;
-
-    /**
-     * Configuration for the {@linkcode foundry.documents.Wall | Wall} embedded document type and its representation on the game Canvas
-     */
-    Wall: CONFIG.Wall;
-
-    /**
-     * An enumeration of sound effects which can be applied to Sound instances.
-     */
-    soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
-
-    /**
-     * Default configuration options for TinyMCE editors
-     */
-    TinyMCE: tinyMCE.RawEditorOptions;
-
-    /**
-     * Rich text editing configuration.
-     */
-    TextEditor: CONFIG.TextEditor;
-
-    /**
-     * Configuration for the WebRTC implementation class
-     */
-    WebRTC: CONFIG.WebRTC;
-
-    /**
-     * Configure the Application classes used to render various core UI elements in the application
-     */
-    ui: RemoveIndexSignatures<CONFIG.UI>;
-
-    /**
-     * Overrides for various core UI/UX helpers.
-     */
-    ux: CONFIG.UX;
-
-    /**
-     * System and modules must prefix the names of the queries they register (e.g. "my-module.aCustomQuery").
-     * Non-prefixed query names are reserved by core.
-     */
-    queries: RemoveIndexSignatures<CONFIG.Queries>;
-
-    /**
-     * Configure custom cursor images to use when interacting with the application.
-     *
-     * @example
-     * Configuring a cursor with a hotspot in the default top-left.
-     * ```js
-     * Object.assign(CONFIG.cursors, {
-     *   default: "icons/cursors/default.avif",
-     *   "default-down": "icons/cursors/default-down.avif"
-     * });
-     * ```
-     *
-     * @example
-     * Configuring a cursor with a hotspot in the center.
-     * ```js
-     * Object.assign(CONFIG.cursors, {
-     *   default: { url: "icons/cursors/target.avif", x: 16, y: 16 },
-     *   "default-down": { url: "icons/cursors/target-down.avif", x: 16, y: 16 }
-     * });
-     * ```
-     */
-    cursors: CONFIG.Cursors;
-  }
-
   namespace CONFIG {
     interface Debug {
       /** @defaultValue `false` */
@@ -977,6 +705,18 @@ declare global {
       uuidRedirects: Record<string, string>;
     }
 
+    type SheetClasses<Name extends Document.Type> = InitializedOn<
+      _SheetClasses<Name>,
+      "ready",
+      IntentionalPartial<_SheetClasses<Name>>
+    >;
+
+    /** @internal */
+    type _SheetClasses<Name extends Document.Type> = Record<
+      Document.SubTypesOf<Name>,
+      Record<string, DocumentSheetConfig.SheetRegistrationDescriptor<Document.ImplementationClassFor<Name>>>
+    >;
+
     /**
      * Common properties of all document interfaces in `CONFIG`. Doesn't include `typeLabels`, because while all docs will have it defined,
      * the (TS) types are different for docs that don't really have (foundry) types, which requires different JSDoc.
@@ -1048,7 +788,8 @@ declare global {
        * "`CONFIG.${documentName}.layerClass` has been deprecated. Use `CONFIG.Canvas.layers.${layerName}.layerClass` instead."
        * (since v14, until v16)
        *
-       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type.
+       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type
+       * without having to read the source for {@linkcode foundry.canvas.Canvas.getLayerByEmbeddedName | Canvas#getLayerByEmbeddedName}.
        */
       layerClass: foundry.canvas.layers.PlaceablesLayer.ImplementationClassFor<Name>;
     }
@@ -1250,6 +991,302 @@ declare global {
         epic: SoundPreset;
         mc: SoundPreset;
       }
+    }
+
+    interface Dice {
+      /** The Dice types which are supported. */
+      types: (typeof foundry.dice.terms.DiceTerm)[];
+
+      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
+      rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
+
+      /**
+       * Configured Roll class definitions
+       * @defaultValue `[`{@linkcode dice.Roll}`]`
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.dice.Roll.create | Roll.create}.
+       */
+      rolls: (typeof foundry.dice.Roll)[];
+
+      /**
+       * Configured DiceTerm class definitions
+       */
+      termTypes: RemoveIndexSignatures<Dice.TermTypes>;
+
+      /** Configured roll terms and the classes they map to. */
+      terms: Dice.Terms;
+
+      /**
+       * A function used to provide random uniform values.
+       */
+      randomUniform: () => number;
+
+      /**
+       * A parser implementation for parsing Roll expressions.
+       * @defaultValue {@linkcode foundry.dice.RollParser}
+       */
+      parser: foundry.dice.RollParser.AnyConstructor;
+
+      /** A collection of custom functions that can be included in roll expressions.*/
+      functions: HandleEmptyObject<RemoveIndexSignatures<Dice.Functions>>;
+
+      /**
+       * Dice roll fulfillment configuration
+       */
+      fulfillment: Dice.Fulfillment;
+    }
+
+    namespace Dice {
+      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead. This warning will be removed in v14. */
+      type RollMode = foundry.dice.Roll.Mode;
+
+      interface RollModes {
+        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPublic",
+         *   icon: "fa-solid fa-globe"
+         * }
+         * ```
+         */
+        publicroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPrivate",
+         *   icon: "fa-solid fa-user-secret"
+         * }
+         * ```
+         */
+        gmroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollBlind",
+         *   icon: "fa-solid fa-eye-slash"
+         * }
+         * ```
+         */
+        blindroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollSelf",
+         *   icon: "fa-solid fa-user"
+         * }
+         * ```
+         */
+        selfroll: RollModeConfig;
+      }
+
+      interface RollModeConfig {
+        /** @remarks A localization key */
+        label: string;
+
+        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
+        icon: string;
+      }
+
+      namespace RollModes {
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type PublicRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type GMRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type BlindRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type SelfRoll = never;
+      }
+
+      interface TermTypes {
+        [termType: string]: foundry.dice.terms.RollTerm.AnyConstructor;
+        DiceTerm: typeof foundry.dice.terms.DiceTerm;
+        FunctionTerm: typeof foundry.dice.terms.FunctionTerm;
+        NumericTerm: typeof foundry.dice.terms.NumericTerm;
+        OperatorTerm: typeof foundry.dice.terms.OperatorTerm;
+        ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm;
+        PoolTerm: typeof foundry.dice.terms.PoolTerm;
+        StringTerm: typeof foundry.dice.terms.StringTerm;
+      }
+
+      interface Terms {
+        [term: string]: typeof foundry.dice.terms.DiceTerm;
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      }
+
+      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
+
+      interface Functions {
+        [functionName: string]: RollFunction;
+      }
+
+      interface Fulfillment {
+        /** The die denominations available for configuration. */
+        dice: RemoveIndexSignatures<Fulfillment.Dice>;
+
+        /** The methods available for fulfillment. */
+        methods: RemoveIndexSignatures<Fulfillment.Methods>;
+
+        /**
+         * Designate one of the methods to be used by default for dice fulfillment, if the user hasn't specified otherwise.
+         * Leave this blank to use the configured {@linkcode CONFIG.Dice.randomUniform} to generate die rolls.
+         * @defaultValue `""`
+         */
+        defaultMethod: string;
+      }
+
+      namespace Fulfillment {
+        interface Dice {
+          [denomination: string]: DiceDenomination;
+
+          /** @defaultValue `{ label: "d4", icon: '<i class="fa-solid fa-dice-d4"></i>' }` */
+          d4: DiceDenomination;
+
+          /** @defaultValue `{ label: "d6", icon: '<i class="fa-solid fa-dice-d6"></i>' }` */
+          d6: DiceDenomination;
+
+          /** @defaultValue `{ label: "d8", icon: '<i class="fa-solid fa-dice-d8"></i>' }` */
+          d8: DiceDenomination;
+
+          /** @defaultValue `{ label: "d10", icon: '<i class="fa-solid fa-dice-d10"></i>' }` */
+          d10: DiceDenomination;
+
+          /** @defaultValue `{ label: "d12", icon: '<i class="fa-solid fa-dice-d12"></i>' }` */
+          d12: DiceDenomination;
+
+          /** @defaultValue `{ label: "d20", icon: '<i class="fa-solid fa-dice-d20"></i>' }` */
+          d20: DiceDenomination;
+
+          /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
+          d100: DiceDenomination;
+        }
+
+        interface DiceDenomination {
+          /** The human-readable label for the die. */
+          label: string;
+
+          /**
+           * An icon to display on the configuration sheet.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+        }
+
+        interface Methods {
+          [methodName: string]: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Mersenne",
+           *   interactive: false,
+           *   handler: term => term.mapRandomFace(dice.MersenneTwister.random())
+           * }
+           * ```
+           */
+          mersenne: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Manual",
+           *   icon: '<i class="fa-solid fa-keyboard"></i>',
+           *   interactive: true
+           * }
+           * ```
+           */
+          manual: Method;
+        }
+
+        /** @internal */
+        interface _Method {
+          /**
+           * An icon to represent the fulfillment method.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+
+          /**
+           * Whether this method requires input from the user or if it is fulfilled entirely programmatically.
+           * @defaultValue `false`
+           */
+          interactive: boolean;
+
+          /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
+          handler: Handler;
+
+          /**
+           * A custom RollResolver implementation. If the only interactive methods the user has configured are this method and manual,
+           * this resolver will be used to resolve interactive rolls, instead of the default resolver. This resolver must therefore be
+           * capable of handling manual rolls.
+           * @privateRemarks Instantiated by `new` in {@linkcode foundry.dice.Roll._evaluate | Roll#_evaluate}.
+           */
+          resolver: typeof foundry.applications.dice.RollResolver;
+        }
+
+        interface Method extends InexactPartial<_Method> {
+          /** The human-readable label for the fulfillment method. */
+          label: string;
+        }
+
+        /**
+         * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
+         * this handler is called and awaited in order to produce the die roll result.
+         * @param term    - The term being fulfilled.
+         * @param options - Additional options to configure fulfillment.
+         * @returns The fulfilled value, or undefined if it could not be fulfilled.
+         * @remarks As of 13.351, the only place this gets called is in `DiceTerm##invokeFulfillmentHandler`, which gets called by
+         * {@linkcode foundry.dice.terms.DiceTerm._roll | DiceTerm#_roll}, which will pass on the options from `DiceTerm#roll`, minus `maximize`
+         * and `minimize`.
+         */
+        type Handler = (
+          term: foundry.dice.terms.DiceTerm,
+          // TODO: remove InexactPartial once DiceTerm is cleaned up in v14.
+          options?: InexactPartial<foundry.dice.terms.DiceTerm.EvaluationOptions>,
+        ) => MaybePromise<number | void>;
+      }
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment} instead. This warning will be removed in v14. */
+      type FulfillmentConfiguration = Fulfillment;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.DiceDenomination} instead. This warning will be removed in v14. */
+      type FulfillmentDenomination = Fulfillment.DiceDenomination;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Method} instead. This warning will be removed in v14. */
+      type FulfillmentMethod = Fulfillment.Method;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Handler} instead. This warning will be removed in v14. */
+      type FulfillmentHandler = Fulfillment.Handler;
+
+      /** @deprecated Use {@linkcode foundry.dice.Roll.CoreDenominations} instead. This warning will be removed in v14. */
+      type DTermDiceStrings = foundry.dice.Roll.CoreDenominations;
     }
 
     interface FogExploration extends _Document<"FogExploration">, _HasNoTypes<"FogExploration"> {
@@ -2911,6 +2948,40 @@ declare global {
       }
     }
 
+    /** @internal */
+    interface _StatusEffect {
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
+       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of {@linkcode StatusEffect.name | StatusEffect#name}"
+       * (since v12, until v14)
+       */
+      label: string;
+
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
+       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of {@linkcode StatusEffect.img | StatusEffect#img}"
+       * (since v12, until v14)
+       */
+      icon: string;
+
+      /**
+       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
+       * if the Token's Actor sub-type is one of the configured ones.
+       * @defaultValue `true`
+       */
+      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
+    }
+
+    /**
+     * Configured status effects which are recognized by the game system
+     */
+    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
+      /**
+       * A string identifier for the effect
+       */
+      id: string;
+    }
+
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing
     // keys. It's never used when empty.
     interface SpecialStatusEffects {
@@ -3338,93 +3409,6 @@ declare global {
          * the font family may only be loaded from the client's OS-installed fonts.
          */
         fonts: Font.Definition[];
-      }
-    }
-
-    namespace Dice {
-      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead. This warning will be removed in v14. */
-      type RollMode = foundry.dice.Roll.Mode;
-
-      interface RollModes {
-        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollPublic",
-         *   icon: "fa-solid fa-globe"
-         * }
-         * ```
-         */
-        publicroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollPrivate",
-         *   icon: "fa-solid fa-user-secret"
-         * }
-         * ```
-         */
-        gmroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollBlind",
-         *   icon: "fa-solid fa-eye-slash"
-         * }
-         * ```
-         */
-        blindroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollSelf",
-         *   icon: "fa-solid fa-user"
-         * }
-         * ```
-         */
-        selfroll: RollModeConfig;
-      }
-
-      interface RollModeConfig {
-        /** @remarks A localization key */
-        label: string;
-
-        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
-        icon: string;
-      }
-
-      namespace RollModes {
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type PublicRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type GMRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type BlindRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type SelfRoll = never;
       }
     }
 
@@ -4444,15 +4428,7 @@ declare global {
       url: string;
     }
   }
-
-  const CONFIG: CONFIG;
 }
-
-type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.AnyConstructor> = GetKey<
-  PlaceableObjectClassConfig,
-  Fallback["embeddedName"],
-  Fallback
->;
 
 declare const _MixedCanvasGroup: groups.CanvasGroupMixin.AnyMixedConstructor;
 

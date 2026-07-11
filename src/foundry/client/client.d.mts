@@ -1,3 +1,5 @@
+import type { Mutable } from "#utils";
+
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
@@ -25,6 +27,8 @@ import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
 import * as _nue from "./nue/_module.mjs";
 import * as _utils from "./utils/_module.mjs"; // moved here to match other client exports
+
+import * as globalConfig from "./config.mjs";
 
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
@@ -106,6 +110,17 @@ export * as nue from "./nue/_module.mjs";
 // export * as types from "./types.mjs";
 
 declare global {
+  /**
+   * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
+   * aspects of the software behaves.
+   *
+   * Unlike the {@linkcode CONST} analog which is frozen and immutable, the `CONFIG` object may be updated during the course of a
+   * session or modified by system and module developers to adjust how the application behaves.
+   */
+  interface CONFIG extends Mutable<typeof globalConfig> {}
+
+  const CONFIG: CONFIG;
+
   namespace foundry {
     export import Game = _Game;
 

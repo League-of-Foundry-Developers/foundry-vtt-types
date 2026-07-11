@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial, IntentionalPartial, RequiredProps } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
@@ -191,8 +190,7 @@ declare namespace AmbientSound {
    * Not to be confused with {@linkcode AmbientSoundDocument.ImplementationClass}
    * which refers to the implementation for the ambientSound document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientSound>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"AmbientSound">;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
