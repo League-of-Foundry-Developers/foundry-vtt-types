@@ -1,4 +1,3 @@
-// eslint-disable-next-line import-x/extensions
 import { defineConfig } from "vitest/config";
 import dotenv from "dotenv";
 import { customPool } from "./tests/pool.ts";

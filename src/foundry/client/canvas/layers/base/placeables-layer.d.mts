@@ -717,9 +717,7 @@ declare namespace PlaceablesLayer {
    * involving movement, specifically.
    */
   type HistoryEntry<DocumentName extends Document.PlaceableType> =
-    | CreationHistoryEntry<DocumentName>
-    | UpdateHistoryEntry<DocumentName>
-    | DeletionHistoryEntry<DocumentName>;
+    CreationHistoryEntry<DocumentName> | UpdateHistoryEntry<DocumentName> | DeletionHistoryEntry<DocumentName>;
 
   interface CreationHistoryEntry<DocumentName extends Document.PlaceableType> {
     type: "create";

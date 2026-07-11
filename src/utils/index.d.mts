@@ -16,11 +16,10 @@ export type FixedInstanceType<T extends abstract new (...args: never) => any> = 
 /** @deprecated Replaced with {@linkcode foundry.packages.Module.ForName | Module.ForName}, will be removed in v14 */
 export type ConfiguredModule<Name extends string> = Name extends keyof RequiredModules
   ? ConfiguredModuleData<Name>
-  :
-      | ({ active: true } & ConfiguredModuleData<Name>)
-      // flawed, can't use `key in module` this way, but omitting the Partial Record type kills nullish
-      // collocating, which is probably the better DX.
-      | ({ active: false } & Record<keyof ConfiguredModuleData<Name>, undefined>);
+  : | ({ active: true } & ConfiguredModuleData<Name>)
+    // flawed, can't use `key in module` this way, but omitting the Partial Record type kills nullish
+    // collocating, which is probably the better DX.
+    | ({ active: false } & Record<keyof ConfiguredModuleData<Name>, undefined>);
 
 /** Keys of functions of console.log / globalThis.logger */
 export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
