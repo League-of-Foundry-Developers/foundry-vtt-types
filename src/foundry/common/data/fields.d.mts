@@ -651,12 +651,12 @@ declare namespace DataField {
     | Exclude<BaseAssignmentType, null | undefined> // Always include the base type
     | (Options["nullable"] extends true // determine whether null is in the union
         ? // when nullable, both `null` and `undefined` can safely be passed
-            null | undefined
+          null | undefined
         : never)
     | (Options["required"] extends true // determine whether undefined is in the union
         ? never
         : // when not required, both `null` and `undefined` can safely be passed
-            null | undefined)
+          null | undefined)
     | ("initial" extends keyof Options
         ? // TODO(LukeAbby): This should possibly actually be distributive.
           Options["initial"] extends undefined
@@ -1143,10 +1143,12 @@ declare namespace SchemaField {
    * You should instead use those types as appropriate.
    */
   type AssignmentData<Fields extends DataSchema> = PrettifyType<
-    RemoveIndexSignatures<{
-      // Note(LukeAbby): Simply stripping off `readonly` may eventually need to be revisited.
-      -readonly [Key in keyof Fields]?: Fields[Key][" __fvtt_types_internal_assignment_data"];
-    }>
+    RemoveIndexSignatures<
+      {
+        // Note(LukeAbby): Simply stripping off `readonly` may eventually need to be revisited.
+        -readonly [Key in keyof Fields]?: Fields[Key][" __fvtt_types_internal_assignment_data"];
+      }
+    >
   >;
 
   /**
@@ -1322,12 +1324,11 @@ declare namespace SchemaField {
     DataField extends DataField.Internal.NestedFieldImplementation<infer Schema>
       ? PrefixString | PrefixArray | _FieldName<Schema, `${PrefixString}.`, PrefixArray, [...Depth, 1]>
       : DataField extends DataField.Internal.ElementFieldImplementation<infer Element>
-        ?
-            | PrefixString
-            | `${PrefixString}.element`
-            | PrefixArray
-            | [...PrefixArray, "element"]
-            | _DataFieldFieldName<Element, `${PrefixString}.element`, [...PrefixArray, "element"], [...Depth, 1]>
+        ? | PrefixString
+          | `${PrefixString}.element`
+          | PrefixArray
+          | [...PrefixArray, "element"]
+          | _DataFieldFieldName<Element, `${PrefixString}.element`, [...PrefixArray, "element"], [...Depth, 1]>
         : PrefixString | PrefixArray;
 
   type GetField<
@@ -2218,9 +2219,7 @@ declare namespace TypedObjectField {
   >;
 
   type ValidateKey<Key extends string> =
-    | ((key: string) => key is Key)
-    | ((key: string) => asserts key is Key)
-    | ((key: string) => boolean | void);
+    ((key: string) => key is Key) | ((key: string) => asserts key is Key) | ((key: string) => boolean | void);
 
   interface Options<BaseAssignmentType> extends DataField.Options<BaseAssignmentType> {
     /**
@@ -2765,7 +2764,7 @@ declare namespace SetField {
     ? // If the field has `choices` then you _must_ provide options for `createMultiSelectInput`.
       DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig
     : // Otherwise it's optional to provide.
-        DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
+      DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
 }
 
 /**
@@ -5474,10 +5473,12 @@ declare namespace TypedSchemaField {
   /**
    * @internal
    */
-  type _AssignmentType<Types extends ConfiguredTypes> = ValueOf<{
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    [K in ConcreteKeys<Types>]: _AddType<DataField.AssignmentTypeFor<Types[K]>, K>;
-  }>;
+  type _AssignmentType<Types extends ConfiguredTypes> = ValueOf<
+    {
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      [K in ConcreteKeys<Types>]: _AddType<DataField.AssignmentTypeFor<Types[K]>, K>;
+    }
+  >;
 
   /**
    * @internal

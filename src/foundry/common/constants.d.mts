@@ -1907,8 +1907,7 @@ export type MEDIA_FILE_CATEGORIES = ValueOf<typeof MEDIA_FILE_CATEGORIES>;
  */
 export declare const MEDIA_MIME_TYPES: MEDIA_MIME_TYPES[];
 export type MEDIA_MIME_TYPES =
-  | ValueOf<_UPLOADABLE_FILE_EXTENSIONS>
-  | ValueOf<Pick<typeof AUDIO_FILE_EXTENSIONS, "ogg" | "webm">>;
+  ValueOf<_UPLOADABLE_FILE_EXTENSIONS> | ValueOf<Pick<typeof AUDIO_FILE_EXTENSIONS, "ogg" | "webm">>;
 
 /**
  * A font weight to name mapping.

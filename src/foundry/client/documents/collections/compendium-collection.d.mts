@@ -369,8 +369,7 @@ declare namespace CompendiumCollection {
   type DocumentName = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   type DocOrFolder<DocumentName extends CompendiumCollection.DocumentName> =
-    | Document.ImplementationFor<DocumentName>
-    | Folder.OfType<DocumentName>;
+    Document.ImplementationFor<DocumentName> | Folder.OfType<DocumentName>;
 
   /** @internal */
   type _OwnershipChoices = (keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS)[];
@@ -699,11 +698,9 @@ declare namespace CompendiumCollection {
     {
       [K in keyof T]?: _Queryify<T[K]>;
     } & {
-      [K in keyof T as K extends string
-        ? IsComparable<T[K]> extends true
-          ? `${K}__in`
-          : never
-        : never]?: ReadonlyArray<T[K]>;
+      [
+        K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__in` : never) : never
+      ]?: ReadonlyArray<T[K]>;
     } & {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }

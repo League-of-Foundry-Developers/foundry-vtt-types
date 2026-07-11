@@ -4,7 +4,7 @@ import type { EditorView } from "prosemirror-view";
 import type SchemaDefinition from "../../../../../src/foundry/common/prosemirror/schema/schema-definition.d.mts";
 
 // Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line import-x/extensions
+
 import ImageLinkNode from "../../../../../src/foundry/common/prosemirror/schema/image-link-node.mjs";
 
 new ImageLinkNode();

@@ -2,14 +2,7 @@ import { type Browser, type BrowserContext, type Page, chromium } from "playwrig
 import { type ViteDevServer, createServer } from "vite";
 import type { SerializedConfig } from "vitest";
 import type { File } from "@vitest/runner";
-import {
-  type PoolOptions,
-  type PoolWorker,
-  type WorkerRequest,
-  type WorkerResponse,
-  type Vitest,
-  // eslint-disable-next-line import-x/extensions
-} from "vitest/node";
+import { type PoolOptions, type PoolWorker, type WorkerRequest, type WorkerResponse, type Vitest } from "vitest/node";
 import getPort from "get-port";
 import pathe from "pathe";
 import urlJoin from "url-join";
