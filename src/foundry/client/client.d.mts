@@ -26,6 +26,9 @@ import * as _dice from "./dice/_module.mjs";
 import * as _nue from "./nue/_module.mjs";
 import * as _utils from "./utils/_module.mjs"; // moved here to match other client exports
 
+import * as globalConfig from "./config.mjs";
+import type { Mutable } from "#utils";
+
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
  */
@@ -106,6 +109,10 @@ export * as nue from "./nue/_module.mjs";
 // export * as types from "./types.mjs";
 
 declare global {
+  interface CONFIG2 extends Mutable<typeof globalConfig> {}
+
+  const CONFIG2: CONFIG2;
+
   namespace foundry {
     export import Game = _Game;
 
