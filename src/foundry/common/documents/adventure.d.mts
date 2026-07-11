@@ -312,9 +312,9 @@ declare namespace BaseAdventure {
    * A helper type to extract the return value for {@linkcode BaseAdventure.contentFields}
    */
   type ContentFields = {
-    [
-      Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any ? Key : never
-    ]: BaseAdventure.Schema[Key] extends fields.SetField<
+    [Key in keyof BaseAdventure.Schema as BaseAdventure.Schema[Key] extends fields.SetField.Any
+      ? Key
+      : never]: BaseAdventure.Schema[Key] extends fields.SetField<
       infer ElementType,
       infer _1,
       infer _2,

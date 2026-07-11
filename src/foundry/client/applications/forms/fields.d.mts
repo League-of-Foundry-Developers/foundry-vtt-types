@@ -416,7 +416,15 @@ export interface PreparedSelectOptionGroup {
 
 /** The attributes that {@linkcode setInputAttributes} cares about */
 export type InputAttribute =
-  "aria" | "autofocus" | "classes" | "dataset" | "disabled" | "id" | "placeholder" | "readonly" | "required";
+  | "aria"
+  | "autofocus"
+  | "classes"
+  | "dataset"
+  | "disabled"
+  | "id"
+  | "placeholder"
+  | "readonly"
+  | "required";
 
 export interface SetInputAttributeConfig extends Pick<FormInputConfig<unknown>, InputAttribute> {}
 

@@ -242,9 +242,9 @@ type PlaceableLayerName = {
 }[keyof PlaceablesLayerConfig];
 
 type PastePlaceableLayerHooks = {
-  [
-    K in PlaceableLayerName as `paste${layers.PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`
-  ]: Hooks.PastePlaceableObject<layers.PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>>;
+  [K in PlaceableLayerName as `paste${layers.PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`]: Hooks.PastePlaceableObject<
+    layers.PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>
+  >;
 };
 
 interface PlaceableLayerHooks extends PastePlaceableLayerHooks {}
@@ -814,7 +814,8 @@ export interface AllHooks extends DynamicHooks {
   activateNote: (
     note: Note.Implementation,
     options:
-      foundry.appv1.sheets.JournalSheet.Options | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
+      | foundry.appv1.sheets.JournalSheet.Options
+      | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
   ) => true | false;
 
   /* Cards */

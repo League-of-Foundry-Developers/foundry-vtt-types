@@ -556,7 +556,8 @@ declare global {
       PreserveCollinear: boolean;
 
       ZFillFunction?:
-        ((e1bot: IntPoint, e1top: IntPoint, e2bot: IntPoint, e2top: IntPoint, pt: IntPoint) => void) | null;
+        | ((e1bot: IntPoint, e1top: IntPoint, e2bot: IntPoint, e2top: IntPoint, pt: IntPoint) => void)
+        | null;
 
       static ioReverseSolution: 1;
       static ioStrictlySimple: 2;

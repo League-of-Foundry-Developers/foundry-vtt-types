@@ -285,7 +285,8 @@ declare namespace Collection {
    * @internal
    */
   type _GetReturn<V, Options extends Readonly<GetOptions> | undefined, StrictDefault extends boolean = false> =
-    V | _ApplyStrict<Options, StrictDefault>;
+    | V
+    | _ApplyStrict<Options, StrictDefault>;
 
   /** The return type for {@linkcode Collection.get | Collection#get}. */
   type GetReturn<V, Options extends GetOptions | undefined> = _GetReturn<V, Options>;
@@ -325,7 +326,10 @@ declare namespace Collection {
    * Type for the 4th param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} and
    * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
    */
-  type OnModifyContentsOperation<DocumentName extends Document.Type, Action extends Document.Database.OperationAction> =
+  type OnModifyContentsOperation<
+    DocumentName extends Document.Type,
+    Action extends Document.Database.OperationAction,
+  > =
     | (Action extends "create" ? Document.Database.OnCreateOperationForName<DocumentName> : never)
     | (Action extends "update" ? Document.Database.OnUpdateOperationForName<DocumentName> : never)
     | (Action extends "delete" ? Document.Database.OnDeleteOperationForName<DocumentName> : never);

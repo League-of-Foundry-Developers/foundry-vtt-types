@@ -1905,7 +1905,12 @@ declare namespace TokenDocument {
   interface DeleteCombatantsOptions extends InexactPartial<_CreateOrDeleteCombatantsOptions> {}
 
   type TrackedAttributesSubject =
-    DataModel.Any | DataModel.AnyConstructor | fields.SchemaField.Any | Actor.SubType | AnyObject | AnyArray;
+    | DataModel.Any
+    | DataModel.AnyConstructor
+    | fields.SchemaField.Any
+    | Actor.SubType
+    | AnyObject
+    | AnyArray;
 
   interface TrackedAttributesDescription {
     /** A list of property path arrays to attributes with both a value and a max property. */
@@ -2245,7 +2250,8 @@ declare namespace TokenDocument {
   interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
 
   type PauseMovementReturn<Key extends string | undefined> =
-    (Key extends string ? Promise<boolean> : () => Promise<boolean>) | null;
+    | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
+    | null;
 
   /**
    * The hexagonal offsets of a Token.

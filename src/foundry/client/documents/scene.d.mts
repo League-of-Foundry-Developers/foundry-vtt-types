@@ -105,7 +105,15 @@ declare namespace Scene {
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
   type DirectDescendantName =
-    "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Region" | "Tile" | "Token" | "Wall";
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Region"
+    | "Tile"
+    | "Token"
+    | "Wall";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.

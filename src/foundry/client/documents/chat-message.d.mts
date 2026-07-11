@@ -1179,7 +1179,15 @@ declare namespace ChatMessage {
    * @internal
    */
   type _SetMessageKey =
-    "canDelete" | "message" | "user" | "author" | "speakerActor" | "alias" | "cssClass" | "isWhisper" | "whisperTo";
+    | "canDelete"
+    | "message"
+    | "user"
+    | "author"
+    | "speakerActor"
+    | "alias"
+    | "cssClass"
+    | "isWhisper"
+    | "whisperTo";
 
   interface RenderHTMLOptions extends Omit<MessageData, _SetMessageKey> {
     canDelete?: boolean | undefined;

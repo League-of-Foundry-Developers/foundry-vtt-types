@@ -1086,10 +1086,11 @@ declare namespace Folder {
    */
   type Contents<SubType extends Folder.SubType> = SubType extends "Compendium"
     ? []
-    : | (SubType extends Document.NeverCompendiumType
-          ? never
-          : CompendiumCollection.IndexEntry<Extract<SubType, Document.Type>>)
-      | Document.StoredForName<Extract<SubType, Document.Type>>[];
+    :
+        | (SubType extends Document.NeverCompendiumType
+            ? never
+            : CompendiumCollection.IndexEntry<Extract<SubType, Document.Type>>)
+        | Document.StoredForName<Extract<SubType, Document.Type>>[];
 
   /** This will return `never` for type `"Compendium"`, because `#contents` throws for those folders. */
   type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<Extract<SubType, Document.Type>>;

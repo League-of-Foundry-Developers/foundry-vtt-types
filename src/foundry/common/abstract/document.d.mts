@@ -1305,7 +1305,9 @@ declare namespace Document {
    * compendia (e.g `Adventure`) here, because they could be temporary.
    */
   type InCompendium<Name extends Document.Type> = Name extends
-    CONST.COMPENDIUM_DOCUMENT_TYPES | CONST.EMBEDDED_DOCUMENT_TYPES | "Folder"
+    | CONST.COMPENDIUM_DOCUMENT_TYPES
+    | CONST.EMBEDDED_DOCUMENT_TYPES
+    | "Folder"
     ? boolean
     : false;
 
@@ -1404,7 +1406,8 @@ declare namespace Document {
         SimpleMerge<
           {
             [SubType in keyof DataModel]: DataModel[SubType] extends
-              (abstract new (...args: never) => infer Model extends DataModel.Any) | undefined
+              | (abstract new (...args: never) => infer Model extends DataModel.Any)
+              | undefined
               ? Model
               : never;
           },
@@ -1422,12 +1425,13 @@ declare namespace Document {
       ConfiguredSubType extends string,
     > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
       ? _DiscriminateUndefined<SystemMap[SubType]>
-      : | ([Extract<SubType, ConfiguredSubType>] extends [never]
-            ? never
-            : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubType>]>)
-        | ([Exclude<SubType, ConfiguredSubType>] extends [never]
-            ? never
-            : SystemMap[Exclude<SubType, ConfiguredSubType>]);
+      :
+          | ([Extract<SubType, ConfiguredSubType>] extends [never]
+              ? never
+              : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubType>]>)
+          | ([Exclude<SubType, ConfiguredSubType>] extends [never]
+              ? never
+              : SystemMap[Exclude<SubType, ConfiguredSubType>]);
 
     /** @internal */
     type _DiscriminateUndefined<T extends object | undefined> = _DiscriminatedUnion<
@@ -1541,10 +1545,11 @@ declare namespace Document {
       ConfiguredSubType extends string,
     > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
       ? DiscriminateSubType<SubType, TypeMap>
-      : | DiscriminateSubType<Extract<SubType, ConfiguredSubType>, TypeMap>
-        | ([Exclude<SubType, ConfiguredSubType>] extends [never]
-            ? never
-            : TypeMap[Exclude<SubType, ConfiguredSubType>]);
+      :
+          | DiscriminateSubType<Extract<SubType, ConfiguredSubType>, TypeMap>
+          | ([Exclude<SubType, ConfiguredSubType>] extends [never]
+              ? never
+              : TypeMap[Exclude<SubType, ConfiguredSubType>]);
 
     type DiscriminateSubType<
       SubType extends AllSubType,
@@ -2076,7 +2081,8 @@ declare namespace Document {
    * because temporary documents exist.
    */
   type Pack<Name extends Document.Type> =
-    null | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
+    | null
+    | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
 
   type ParentCollection<Name extends Document.Type> =
     | (Name extends "Adventure" ? never : Document.MetadataFor<Name>["collection"])

@@ -316,7 +316,9 @@ declare namespace WeatherEffects {
   }
 
   type EffectConfiguration =
-    SpecificallyAutumnLeavesConfiguration | ParticleEffectConfiguration | WeatherShaderEffectConfiguration;
+    | SpecificallyAutumnLeavesConfiguration
+    | ParticleEffectConfiguration
+    | WeatherShaderEffectConfiguration;
 }
 
 export default WeatherEffects;

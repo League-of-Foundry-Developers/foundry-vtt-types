@@ -217,7 +217,9 @@ declare global {
          * equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and {@linkcode WeilerAthertonClipper.CLIP_TYPES.UNION | UNION} respectively at runtime
          */
         clipType?:
-          WeilerAthertonClipper.CLIP_TYPES | (typeof ClipperLib.ClipType)["ctIntersection" | "ctUnion"] | undefined;
+          | WeilerAthertonClipper.CLIP_TYPES
+          | (typeof ClipperLib.ClipType)["ctIntersection" | "ctUnion"]
+          | undefined;
 
         /**
          * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.

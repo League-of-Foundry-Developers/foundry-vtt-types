@@ -137,7 +137,10 @@ declare namespace ActorSheetV2 {
   interface RenderOptions extends DocumentSheetV2.RenderOptions {}
 
   type DroppableDocument =
-    ActiveEffect.Implementation | Actor.Implementation | Item.Implementation | Folder.Implementation;
+    | ActiveEffect.Implementation
+    | Actor.Implementation
+    | Item.Implementation
+    | Folder.Implementation;
 }
 
 declare abstract class AnyActorSheetV2 extends ActorSheetV2<
