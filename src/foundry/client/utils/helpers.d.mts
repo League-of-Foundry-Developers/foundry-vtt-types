@@ -198,7 +198,7 @@ type _FetchResourceOptions = InexactPartial<{
   bustCache: boolean;
 }>;
 
-interface FetchResourceOptions extends _FetchResourceOptions {}
+export interface FetchResourceOptions extends _FetchResourceOptions {}
 
 /**
  * Use the Fetch API to retrieve a resource and return a Blob instance for it.

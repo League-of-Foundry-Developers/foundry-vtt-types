@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type {
   BufferOperationReturn,
   CopyBufferResult,
@@ -77,7 +77,7 @@ declare namespace TextureCompressor {
   interface AnyConstructor extends Identity<typeof AnyTextureCompressor> {}
 
   /** @internal */
-  type _ConstructorOptions = NullishProps<{
+  interface _ConstructorOptions {
     /**
      * Should the worker run in debug mode?
      * @defaultValue `false`
@@ -101,10 +101,10 @@ declare namespace TextureCompressor {
      * @defaultValue `false`
      */
     controlHash: boolean;
-  }>;
+  }
 
   /** Options for the {@linkcode TextureCompressor} constructor */
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   /** @internal */
   type _CommonOptions = InexactPartial<{

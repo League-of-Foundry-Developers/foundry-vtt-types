@@ -14,9 +14,10 @@ export { Module, System, World };
 
 /**
  * A mapping of allowed package types and the classes which implement them.
+ * @remarks Frozen.
  */
-export const PACKAGE_TYPES: {
+export const PACKAGE_TYPES: Readonly<{
   world: typeof World;
   system: typeof System;
   module: typeof Module;
-};
+}>;
