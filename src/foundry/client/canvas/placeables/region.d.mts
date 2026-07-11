@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
@@ -205,8 +204,7 @@ declare namespace Region {
    * Not to be confused with {@linkcode RegionDocument.ImplementationClass}
    * which refers to the implementation for the region document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Region>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Region">;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial, RequiredProps, ValueOf } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { PrimaryGraphics } from "#client/canvas/primary/_module.d.mts";
@@ -335,8 +334,7 @@ declare namespace Drawing {
    * Not to be confused with {@linkcode DrawingDocument.ImplementationClass}
    * which refers to the implementation for the drawing document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Drawing>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Drawing">;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

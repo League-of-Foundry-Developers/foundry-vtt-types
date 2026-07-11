@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { ControlIcon, PreciseText } from "#client/canvas/containers/_module.mjs";
@@ -159,8 +158,7 @@ declare namespace Note {
    * Not to be confused with {@linkcode NoteDocument.ImplementationClass}
    * which refers to the implementation for the note document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Note>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Note">;
 
   interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

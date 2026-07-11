@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial, IntentionalPartial, RequiredProps } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { PointLightSource, PointDarknessSource } from "#client/canvas/sources/_module.d.mts";
@@ -221,8 +220,7 @@ declare namespace AmbientLight {
    * Not to be confused with {@linkcode AmbientLightDocument.ImplementationClass}
    * which refers to the implementation for the AmbientLight document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof AmbientLight>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"AmbientLight">;
 
   interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

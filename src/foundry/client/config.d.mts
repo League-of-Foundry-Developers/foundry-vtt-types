@@ -15,12 +15,8 @@ import type {
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
-import type * as layers from "#client/canvas/layers/_module.d.mts";
-import type * as groups from "#client/canvas/groups/_module.d.mts";
-import type * as perception from "#client/canvas/perception/_module.d.mts";
-import type * as placeables from "#client/canvas/placeables/_module.d.mts";
+import type { geometry, perception, layers, groups } from "#client/canvas/_module.d.mts";
 import type { DoorMesh } from "#client/canvas/containers/_module.d.mts";
-import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
@@ -4992,12 +4988,6 @@ declare global {
 
   const CONFIG: CONFIG;
 }
-
-type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.AnyConstructor> = GetKey<
-  PlaceableObjectClassConfig,
-  Fallback["embeddedName"],
-  Fallback
->;
 
 declare const _MixedCanvasGroup: groups.CanvasGroupMixin.AnyMixedConstructor;
 
