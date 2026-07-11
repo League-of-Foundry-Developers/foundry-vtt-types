@@ -175,9 +175,8 @@ export function createCheckboxInput(config: FormInputConfig<boolean>): HTMLInput
 interface _EditorInputConfig {
   /**
    * @defaultValue `"prosemirror"`
-   * @deprecated TinyMCE is being removed in v14, at which time presumably this property will be removed (since v13, until v14)
    */
-  engine: "prosemirror" | "tinymce";
+  engine: (string & {}) | "prosemirror";
 
   /** @remarks In `px`, applied to the returned outer `<div>` */
   height: number;

@@ -1,15 +1,20 @@
 import { expectTypeOf } from "vitest";
-import type { Schema, DOMParser, DOMSerializer } from "prosemirror-model";
+import type { Schema, DOMParser, DOMSerializer, NodeSpec, MarkSpec } from "prosemirror-model";
 import type { Step } from "prosemirror-transform";
 import type { EditorView } from "prosemirror-view";
 import { keymap } from "prosemirror-keymap";
+import { dropCursor } from "prosemirror-dropcursor";
+import { gapCursor } from "prosemirror-gapcursor";
+import { history } from "prosemirror-history";
 import * as collab from "prosemirror-collab";
 import * as commands from "prosemirror-commands";
 import * as input from "prosemirror-inputrules";
-import * as tables from "prosemirror-tables";
+import * as tables from "@massifrg/prosemirror-tables-sections";
 import * as state from "prosemirror-state";
 import * as transform from "prosemirror-transform";
 import * as list from "prosemirror-schema-list";
+import * as chat from "../../../../src/foundry/common/prosemirror/chat/_module.mts";
+import DisclosureWidget from "../../../../src/foundry/common/prosemirror/schema/disclosure.mts";
 import type { nodes, marks } from "../../../../src/foundry/common/prosemirror/schema.d.mts";
 
 // Import necessary as this is otherwise inaccessible.
@@ -33,23 +38,25 @@ expectTypeOf(foundry.prosemirror.Step).toEqualTypeOf<typeof Step>();
 expectTypeOf(foundry.prosemirror.Plugin).toEqualTypeOf<typeof state.Plugin>();
 expectTypeOf(foundry.prosemirror.PluginKey).toEqualTypeOf<typeof state.PluginKey>();
 expectTypeOf(foundry.prosemirror.collab).toEqualTypeOf<typeof collab>();
-expectTypeOf(foundry.prosemirror.defaultPlugins).toEqualTypeOf<
-  Record<
-    | "inputRules"
-    | "keyMaps"
-    | "menu"
-    | "isDirty"
-    | "clickHandler"
-    | "pasteTransformer"
-    | "baseKeyMap"
-    | "dropCursor"
-    | "gapCursor"
-    | "history"
-    | "columnResizing"
-    | "tables",
-    state.Plugin
-  >
->();
+expectTypeOf(foundry.prosemirror.plugins).toEqualTypeOf<{
+  ProseMirrorPlugin: typeof foundry.prosemirror.ProseMirrorPlugin;
+  ProseMirrorContentLinkPlugin: typeof foundry.prosemirror.ProseMirrorContentLinkPlugin;
+  ProseMirrorHighlightMatchesPlugin: typeof foundry.prosemirror.ProseMirrorHighlightMatchesPlugin;
+  ProseMirrorDirtyPlugin: typeof foundry.prosemirror.ProseMirrorDirtyPlugin;
+  ProseMirrorImagePlugin: typeof foundry.prosemirror.ProseMirrorImagePlugin;
+  ProseMirrorClickHandler: typeof foundry.prosemirror.ProseMirrorClickHandler;
+  ProseMirrorPasteTransformer: typeof foundry.prosemirror.ProseMirrorPasteTransformer;
+  ProseMirrorInputRules: typeof foundry.prosemirror.ProseMirrorInputRules;
+  ProseMirrorKeyMaps: typeof foundry.prosemirror.ProseMirrorKeyMaps;
+  ProseMirrorMenu: typeof foundry.prosemirror.ProseMirrorMenu;
+  ProseMirrorDropDown: typeof foundry.prosemirror.ProseMirrorDropDown;
+  chat: typeof chat;
+  dropCursor: typeof dropCursor;
+  gapCursor: typeof gapCursor;
+  history: typeof history;
+  keymap: typeof keymap;
+}>();
+expectTypeOf(foundry.prosemirror.nodeViews.details).toEqualTypeOf<typeof DisclosureWidget.view>();
 
 expectTypeOf(foundry.prosemirror.defaultSchema).toEqualTypeOf<Schema<keyof typeof nodes, keyof typeof marks>>();
 expectTypeOf(foundry.prosemirror.dom).toEqualTypeOf<{
@@ -59,3 +66,14 @@ expectTypeOf(foundry.prosemirror.dom).toEqualTypeOf<{
   serializeString: typeof serializeHTMLString;
 }>();
 expectTypeOf(foundry.prosemirror.keymap).toEqualTypeOf<typeof keymap>();
+
+expectTypeOf<(typeof nodes)["header"]>().toEqualTypeOf<NodeSpec>();
+expectTypeOf<(typeof nodes)["main"]>().toEqualTypeOf<NodeSpec>();
+expectTypeOf<(typeof nodes)["section"]>().toEqualTypeOf<NodeSpec>();
+expectTypeOf<(typeof nodes)["div"]>().toEqualTypeOf<NodeSpec>();
+expectTypeOf<(typeof nodes)["address"]>().toEqualTypeOf<NodeSpec>();
+expectTypeOf<(typeof marks)["abbr"]>().toEqualTypeOf<MarkSpec>();
+expectTypeOf<(typeof marks)["mark"]>().toEqualTypeOf<MarkSpec>();
+expectTypeOf<(typeof marks)["q"]>().toEqualTypeOf<MarkSpec>();
+expectTypeOf<(typeof marks)["time"]>().toEqualTypeOf<MarkSpec>();
+expectTypeOf<(typeof marks)["ins"]>().toEqualTypeOf<MarkSpec>();

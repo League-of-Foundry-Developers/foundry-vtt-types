@@ -863,12 +863,6 @@ declare global {
   export import JournalTextPageSheet = foundry.appv1.sheets.JournalTextPageSheet;
 
   /**
-   * @deprecated "You are accessing the global {@linkcode JournalTextTinyMCESheet} which is now namespaced under {@linkcode foundry.appv1.sheets.JournalTextTinyMCESheet}"
-   * (since v13 will be removed in v15)
-   */
-  export import JournalTextTinyMCESheet = foundry.appv1.sheets.JournalTextTinyMCESheet;
-
-  /**
    * @deprecated "You are accessing the global {@linkcode Canvas} which is now namespaced under {@linkcode foundry.canvas.Canvas}"
    * (since v13 will be removed in v15)
    */

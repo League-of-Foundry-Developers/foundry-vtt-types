@@ -7,25 +7,13 @@ import type ProseMirrorEditor from "./prosemirror-editor.mjs";
  */
 declare class TextEditor {
   /**
-   * Create a Rich Text Editor. The current implementation uses TinyMCE
+   * Create a Rich Text Editor. The current built-in implementation uses ProseMirror.
    * @param options - Configuration options provided to the Editor init
    * @param content - Initial HTML or text content to populate the editor with (default: `""`)
    * @returns The editor instance.
    */
   static create(options: TextEditor.ProseMirrorOptions, content?: string): Promise<ProseMirrorEditor>;
-
-  /**
-   * @deprecated "The editor engine option of "tinymce" is deprecated and will be removed in V14. Please use "prosemirror" instead."
-   */
-  static create(options: TextEditor.TinyMCEOptions, content?: string): Promise<tinyMCE.Editor>;
-
-  /**
-   * Create a TinyMCE editor instance.
-   * @param options - Configuration options passed to the editor.
-   * @param content - Initial HTML or text content to populate the editor with.
-   * @returns The TinyMCE editor instance.
-   */
-  protected static _createTinyMCE(options: TextEditor.TinyMCEOptions, content?: string): Promise<tinyMCE.Editor>;
+  static create(options: TextEditor.CustomEngineOptions, content?: string): Promise<TextEditor.CustomEngine>;
 
   /**
    * Safely decode an HTML string, removing invalid tags and converting entities back to unicode characters.
@@ -223,7 +211,7 @@ declare class TextEditor {
   /**
    * Activate listeners for the interior content of the editor frame.
    */
-  static activateListeners(): void;
+  static activateListeners(document?: Document): void;
 
   /**
    * Handle left-mouse clicks on an inline roll, dispatching the formula or displaying the tooltip
@@ -284,27 +272,30 @@ declare namespace TextEditor {
 
   type TEXT_MIME_TYPES = ValueOf<typeof CONST.TEXT_FILE_EXTENSIONS>;
 
-  type Options = ProseMirrorOptions | TinyMCEOptions;
+  type Options = ProseMirrorOptions | CustomEngineOptions;
 
   interface ProseMirrorOptions extends ProseMirrorEditor._CreateOptions {
     /**
-     * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
-     * is deprecated and will be removed in a later version.
-     * @defaultValue `"tinymce"`
+     * Which rich text editor engine to use.
+     * @defaultValue `"prosemirror"`
      */
-    engine: "prosemirror";
+    engine?: "prosemirror" | undefined;
 
     target: HTMLElement;
   }
 
-  interface TinyMCEOptions extends tinyMCE.RawEditorOptions {
-    /**
-     * Which rich text editor engine to use, "tinymce" or "prosemirror". TinyMCE
-     * is deprecated and will be removed in a later version.
-     * @defaultValue `"tinymce"`
-     */
-    engine: "tinymce";
+  interface CustomEngine {
+    destroy(): unknown;
   }
+
+  interface CustomEngineOptions extends Record<string, unknown> {
+    /**
+     * Which rich text editor engine to use.
+     */
+    engine: string;
+  }
+
+  type EditorInstance = ProseMirrorEditor | CustomEngine;
 
   interface EnrichmentOptions {
     /**

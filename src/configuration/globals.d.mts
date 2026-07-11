@@ -514,7 +514,6 @@ export import WorldSettings = globalThis.WorldSettings;
 export import loadTexture = globalThis.loadTexture;
 export import foundry = globalThis.foundry;
 export import io = globalThis.io;
-export import tinyMCE = globalThis.tinyMCE;
 
 export import I18nInitGame = globalThis.I18nInitGame;
 export import InitGame = globalThis.InitGame;

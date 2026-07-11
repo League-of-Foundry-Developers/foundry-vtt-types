@@ -6,6 +6,7 @@ import {
   heading,
   pre,
   br,
+  icon,
 } from "../../../../../src/foundry/common/prosemirror/schema/core.mts";
 import type { NodeSpec } from "prosemirror-model";
 
@@ -20,3 +21,5 @@ expectTypeOf(heading).toEqualTypeOf<NodeSpec>();
 expectTypeOf(pre).toEqualTypeOf<NodeSpec>();
 
 expectTypeOf(br).toEqualTypeOf<NodeSpec>();
+
+expectTypeOf(icon).toEqualTypeOf<NodeSpec>();

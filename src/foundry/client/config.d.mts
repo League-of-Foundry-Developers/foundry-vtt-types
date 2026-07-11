@@ -528,11 +528,6 @@ export declare const Wall: CONFIG.Wall;
 export declare const soundEffects: RemoveIndexSignatures<CONFIG.SoundEffects>;
 
 /**
- * Default configuration options for TinyMCE editors
- */
-export declare const TinyMCE: tinyMCE.RawEditorOptions;
-
-/**
  * Rich text editing configuration.
  */
 export declare const TextEditor: CONFIG.TextEditor;
@@ -4384,10 +4379,20 @@ declare global {
 
     interface TextEditor {
       /**
+       * Configuration for custom text editor engines.
+       */
+      engines: Record<string, CONFIG.TextEditorEngineConfig>;
+
+      /**
        * A collection of custom enrichers that can be applied to text content, allowing for the matching and handling of
        * custom patterns.
        */
       enrichers: foundry.applications.ux.TextEditor.EnricherConfig[];
+
+      /**
+       * A collection of custom ProseMirror inserts.
+       */
+      inserts: CONFIG.ProseMirrorInsert[];
     }
 
     interface WebRTC {
@@ -4426,6 +4431,50 @@ declare global {
     interface CursorDescriptor extends InexactPartial<_CursorDescriptor> {
       /** The URL of the cursor image. Must be no larger than 128x128. 32x32 is recommended. */
       url: string;
+    }
+
+    interface TextEditorEngineRenderOptions extends foundry.applications.fields.EditorInputConfig {}
+
+    /**
+     * A callback used to instantiate the editor instance.
+     * @param options        - Construction options.
+     * @param initialContent - The editor's initial content.
+     */
+    type TextEditorEngineFactory = (
+      options: Record<string, unknown>,
+      initialContent: string,
+    ) => Promise<foundry.applications.ux.TextEditor.CustomEngine>;
+
+    /**
+     * A callback used to generate markup used for the createEditorInput method and `{{ editor }}` handlebars helper.
+     */
+    type TextEditorEngineRenderer = (options: TextEditorEngineRenderOptions) => HTMLElement;
+
+    interface TextEditorEngineConfig {
+      /** A callback used to instantiate the editor instance. */
+      create: TextEditorEngineFactory;
+
+      /**
+       * A callback used to generate markup used for the createEditorInput method and `{{ editor }}` handlebars helper.
+       */
+      render: TextEditorEngineRenderer;
+    }
+
+    interface ProseMirrorInsert {
+      /** A unique identifier. */
+      action: string;
+
+      /** The description of the menu item or insert. */
+      title: string;
+
+      /** Whether the insert is inline content, otherwise it is assumed to be block content. */
+      inline?: boolean | undefined;
+
+      /** The insert's markup. */
+      html?: string | undefined;
+
+      /** Any child entries. */
+      children?: ProseMirrorInsert[] | undefined;
     }
   }
 }

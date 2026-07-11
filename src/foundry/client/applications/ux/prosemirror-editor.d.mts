@@ -25,6 +25,14 @@ declare class ProseMirrorEditor {
   options: ProseMirrorEditor.Options;
 
   /**
+   * @param uuid    - A string that uniquely identifies this ProseMirror instance.
+   * @param view    - The ProseMirror EditorView.
+   * @param options - Additional options.
+   */
+  constructor(uuid: string, view: EditorView, options?: ProseMirrorEditor.Options);
+
+  /**
+   * @deprecated The ProseMirrorEditor constructor signature changed in v14 and this legacy form will be removed in v16.
    * @param uuid          - A string that uniquely identifies this ProseMirror instance.
    * @param view          - The ProseMirror EditorView.
    * @param isDirtyPlugin - The plugin to track the dirty state of the editor.
@@ -45,12 +53,6 @@ declare class ProseMirrorEditor {
   destroy(): void;
 
   /**
-   * Reset and destroy the editor so that it can be activated again.
-   * @param fieldName - The field name that this editor is responsible for.
-   */
-  reset(fieldName?: string): void;
-
-  /**
    * Have the contents of the editor been edited by the user?
    */
   isDirty(): boolean;
@@ -60,7 +62,7 @@ declare class ProseMirrorEditor {
    * @param offset  - The offset into the history, representing the point at which it was last truncated.
    * @param history - The entire edit history.
    */
-  protected _onNewSteps(offset: string, history: ProseMirrorEditor.History[]): void;
+  protected _onNewSteps(offset: number, history: ProseMirrorEditor.History[]): void;
 
   /**
    * Disable source code editing if the user was editing it when new steps arrived.
@@ -79,10 +81,16 @@ declare class ProseMirrorEditor {
   protected _updateUserDisplay(users: string[]): void;
 
   /**
+   * Handle an autosave update for an already-open editor.
+   * @param html - The updated editor contents.
+   */
+  protected _handleAutosave(html: string): void;
+
+  /**
    * Create a ProseMirror editor instance.
-   * @param target                  - An HTML element to mount the editor to.
-   * @param content                 - Content to populate the editor with. (default: `""`)
-   * @param options                    - Additional options to configure the ProseMirror instance.
+   * @param target  - An HTML element to mount the editor to.
+   * @param content - Content to populate the editor with. (default: `""`)
+   * @param options - Additional options to configure the ProseMirror instance.
    */
   static create(
     target: HTMLElement,
@@ -96,12 +104,14 @@ declare class ProseMirrorEditor {
    * @param target  - An HTML element to mount the editor view to.
    * @param state   - The ProseMirror editor state.
    * @param plugins - The editor plugins to load.
+   * @param props   - Additional ProseMirror editor properties.
    */
   protected static _createCollaborativeEditorView(
     uuid: string,
     target: HTMLElement,
     state: EditorState,
     plugins: Plugin[],
+    props: ProseMirrorEditor.Props,
   ): Promise<EditorView>;
 
   /**
@@ -119,12 +129,17 @@ declare class ProseMirrorEditor {
   ): EditorView;
 
   /**
+   * Instantiate a list of default editor plugins.
+   */
+  static buildDefaultPlugins(): Record<string, Plugin>;
+
+  /**
    * Handle new editing steps supplied by the server.
    * @param uuid    - The UUID that uniquely identifies the ProseMirror instance.
    * @param offset  - The offset into the history, representing the point at which it was last truncated.
    * @param history - The entire edit history.
    */
-  protected static _onNewSteps(uuid: string, offset: number, history: ProseMirrorEditor[]): void;
+  protected static _onNewSteps(uuid: string, offset: number, history: ProseMirrorEditor.History[]): void;
 
   /**
    * Our client is too far behind the central authority's state and must be re-synced.
@@ -138,6 +153,13 @@ declare class ProseMirrorEditor {
    * @param users - The IDs of the users currently editing (including ourselves).
    */
   protected static _onUsersEditing(uuid: string, users: string[]): void;
+
+  /**
+   * Update client state when the editor contents are autosaved server-side.
+   * @param uuid - The UUID that uniquely identifies the ProseMirror instance.
+   * @param html - The updated editor contents.
+   */
+  protected static _onAutosave(uuid: string, html: string): Promise<void>;
 
   /**
    * Listen for ProseMirror collaboration events.
@@ -185,6 +207,7 @@ declare namespace ProseMirrorEditor {
 
   interface Options {
     document?: ClientDocument | undefined;
+    collaborate?: boolean | undefined;
   }
 
   interface History {
