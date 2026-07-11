@@ -3,6 +3,7 @@ import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { FramebufferSnapshot, SceneManager } from "#client/canvas/_module.d.mts";
 import type {
+  CanvasGroupMixin,
   CanvasVisibility,
   EffectsCanvasGroup,
   EnvironmentCanvasGroup,
@@ -44,15 +45,15 @@ import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
 type InternalCanvas = new (...args: never) => {
   // white lie: these properties don't exist prior to group creation, but once created they are never removed,
   // and are typed as `| undefined` prior to `ready`.
-  readonly [K in keyof CONFIG.Canvas.Groups]: InitializedOn<
-    FixedInstanceType<CONFIG.Canvas.Groups[K]["groupClass"]>,
+  readonly [K in CanvasGroupMixin.Group]: InitializedOn<
+    FixedInstanceType<(typeof CONFIG.Canvas.groups)[K]["groupClass"]>,
     "ready"
   >;
 } & {
   // white lie: these properties don't exist prior to group creation (each group creates its layers and adds properties for them
   // to the global `canvas`), but once created they are never removed, and are typed as `| undefined` prior to `ready`.
-  readonly [K in Exclude<keyof CONFIG.Canvas.Layers, "grid">]: InitializedOn<
-    FixedInstanceType<CONFIG.Canvas.Layers[K]["layerClass"]>,
+  readonly [K in Exclude<CanvasLayer.Layer, "grid">]: InitializedOn<
+    FixedInstanceType<(typeof CONFIG.Canvas.layers)[K]["layerClass"]>,
     "ready"
   >;
 };
@@ -800,11 +801,11 @@ declare namespace Canvas {
     uiScale: number;
   }
 
-  type AllLayers = _AllLayers<keyof CONFIG.Canvas.Layers>;
+  type AllLayers = _AllLayers<CanvasLayer.Layer>;
 
   /** @internal */
-  type _AllLayers<K extends keyof CONFIG.Canvas.Layers> = K extends unknown
-    ? FixedInstanceType<CONFIG.Canvas.Layers[K]["layerClass"]>
+  type _AllLayers<K extends CanvasLayer.Layer> = K extends unknown
+    ? FixedInstanceType<(typeof CONFIG.Canvas.layers)[K]["layerClass"]>
     : never;
 
   /**

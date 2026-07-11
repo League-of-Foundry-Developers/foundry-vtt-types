@@ -1,5 +1,4 @@
 import type {
-  AnyObject,
   Brand,
   ConcreteKeys,
   GetKey,
@@ -16,16 +15,20 @@ import type {
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
-import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 import type * as layers from "#client/canvas/layers/_module.d.mts";
 import type * as groups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
-import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
+import type { DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
+import type {
+  AdaptiveColorationShader,
+  AdaptiveDarknessShader,
+  AdaptiveIlluminationShader,
+} from "#client/canvas/rendering/shaders/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type Localization from "#client/helpers/localization.d.mts";
@@ -48,128 +51,214 @@ declare global {
     >;
 
     namespace Dice {
-      interface FulfillmentConfiguration {
+      interface Fulfillment {
         /** The die denominations available for configuration. */
-        dice: Record<string, FulfillmentDenomination>;
+        dice: RemoveIndexSignatures<Fulfillment.Dice>;
 
         /** The methods available for fulfillment. */
-        methods: Record<string, FulfillmentMethod>;
+        methods: RemoveIndexSignatures<Fulfillment.Methods>;
 
         /**
-         * Designate one of the methods to be used by default
-         * for dice fulfillment, if the user hasn't specified
-         * otherwise. Leave this blank to use the configured
-         * randomUniform to generate die rolls.
+         * Designate one of the methods to be used by default for dice fulfillment, if the user hasn't specified otherwise.
+         * Leave this blank to use the configured {@linkcode CONFIG.Dice.randomUniform} to generate die rolls.
          * @defaultValue `""`
          */
         defaultMethod: string;
       }
 
-      interface FulfillmentDenomination {
-        /** The human-readable label for the die. */
-        label: string;
+      namespace Fulfillment {
+        interface Dice {
+          [denomination: string]: DiceDenomination;
 
-        /** An icon to display on the configuration sheet. */
-        icon: string;
-      }
+          /** @defaultValue `{ label: "d4", icon: '<i class="fa-solid fa-dice-d4"></i>' }` */
+          d4: DiceDenomination;
 
-      interface FulfillmentMethod {
-        /** The human-readable label for the fulfillment method. */
-        label: string;
+          /** @defaultValue `{ label: "d6", icon: '<i class="fa-solid fa-dice-d6"></i>' }` */
+          d6: DiceDenomination;
 
-        /** An icon to represent the fulfillment method. */
-        icon?: string | undefined | null;
+          /** @defaultValue `{ label: "d8", icon: '<i class="fa-solid fa-dice-d8"></i>' }` */
+          d8: DiceDenomination;
 
-        /** Whether this method requires input from the user or if it is fulfilled entirely programmatically. */
-        interactive?: boolean | undefined | null;
+          /** @defaultValue `{ label: "d10", icon: '<i class="fa-solid fa-dice-d10"></i>' }` */
+          d10: DiceDenomination;
 
-        /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
-        handler?: FulfillmentHandler | undefined | null;
+          /** @defaultValue `{ label: "d12", icon: '<i class="fa-solid fa-dice-d12"></i>' }` */
+          d12: DiceDenomination;
+
+          /** @defaultValue `{ label: "d20", icon: '<i class="fa-solid fa-dice-d20"></i>' }` */
+          d20: DiceDenomination;
+
+          /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
+          d100: DiceDenomination;
+        }
+
+        interface DiceDenomination {
+          /** The human-readable label for the die. */
+          label: string;
+
+          /**
+           * An icon to display on the configuration sheet.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+        }
+
+        interface Methods {
+          [methodName: string]: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Mersenne",
+           *   interactive: false,
+           *   handler: term => term.mapRandomFace(dice.MersenneTwister.random())
+           * }
+           * ```
+           */
+          mersenne: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Manual",
+           *   icon: '<i class="fa-solid fa-keyboard"></i>',
+           *   interactive: true
+           * }
+           * ```
+           */
+          manual: Method;
+        }
+
+        /** @internal */
+        interface _Method {
+          /**
+           * An icon to represent the fulfillment method.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+
+          /**
+           * Whether this method requires input from the user or if it is fulfilled entirely programmatically.
+           * @defaultValue `false`
+           */
+          interactive: boolean;
+
+          /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
+          handler: Handler;
+
+          /**
+           * A custom RollResolver implementation. If the only interactive methods the user has configured are this method and manual,
+           * this resolver will be used to resolve interactive rolls, instead of the default resolver. This resolver must therefore be
+           * capable of handling manual rolls.
+           * @privateRemarks Instantiated by `new` in {@linkcode foundry.dice.Roll._evaluate | Roll#_evaluate}.
+           */
+          resolver: typeof foundry.applications.dice.RollResolver;
+        }
+
+        interface Method extends InexactPartial<_Method> {
+          /** The human-readable label for the fulfillment method. */
+          label: string;
+        }
 
         /**
-         * A custom RollResolver implementation. If the only interactive methods
-         * the user has configured are this method and manual, this resolver
-         * will be used to resolve interactive rolls, instead of the default
-         * resolver. This resolver must therefore be capable of handling manual
-         * rolls.
+         * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
+         * this handler is called and awaited in order to produce the die roll result.
+         * @param term    - The term being fulfilled.
+         * @param options - Additional options to configure fulfillment.
+         * @returns The fulfilled value, or undefined if it could not be fulfilled.
+         * @remarks As of 13.351, the only place this gets called is in `DiceTerm##invokeFulfillmentHandler`, which gets called by
+         * {@linkcode foundry.dice.terms.DiceTerm._roll | DiceTerm#_roll}, which will pass on the options from `DiceTerm#roll`, minus `maximize`
+         * and `minimize`.
          */
-        resolver: foundry.applications.dice.RollResolver.AnyConstructor;
+        type Handler = (
+          term: foundry.dice.terms.DiceTerm,
+          // TODO: remove InexactPartial once DiceTerm is cleaned up in v14.
+          options?: InexactPartial<foundry.dice.terms.DiceTerm.EvaluationOptions>,
+        ) => MaybePromise<number | void>;
       }
 
-      /**
-       * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
-       * this handler is called and awaited in order to produce the die roll result.
-       * @returns The fulfilled value, or undefined if it could not be fulfilled.
-       */
-      type FulfillmentHandler = (
-        /** The term being fulfilled. */
-        term: foundry.dice.terms.DiceTerm,
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment} instead. This warning will be removed in v14. */
+      type FulfillmentConfiguration = Fulfillment;
 
-        /** Additional options to configure fulfillment. */
-        options?: AnyObject,
-      ) => Promise<number | void>;
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.DiceDenomination} instead. This warning will be removed in v14. */
+      type FulfillmentDenomination = Fulfillment.DiceDenomination;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Method} instead. This warning will be removed in v14. */
+      type FulfillmentMethod = Fulfillment.Method;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Handler} instead. This warning will be removed in v14. */
+      type FulfillmentHandler = Fulfillment.Handler;
+
+      /** @deprecated Use {@linkcode foundry.dice.Roll.CoreDenominations} instead. This warning will be removed in v14. */
+      type DTermDiceStrings = foundry.dice.Roll.CoreDenominations;
 
       type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
 
-      interface Terms extends Record<string, foundry.dice.terms.DiceTerm.AnyConstructor> {
-        c: foundry.dice.terms.Coin.AnyConstructor;
-        d: foundry.dice.terms.Die.AnyConstructor;
-        f: foundry.dice.terms.FateDie.AnyConstructor;
+      interface Terms {
+        [term: string]: typeof foundry.dice.terms.DiceTerm;
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      }
+
+      interface TermTypes {
+        [termType: string]: foundry.dice.terms.RollTerm.AnyConstructor;
+        DiceTerm: typeof foundry.dice.terms.DiceTerm;
+        FunctionTerm: typeof foundry.dice.terms.FunctionTerm;
+        NumericTerm: typeof foundry.dice.terms.NumericTerm;
+        OperatorTerm: typeof foundry.dice.terms.OperatorTerm;
+        ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm;
+        PoolTerm: typeof foundry.dice.terms.PoolTerm;
+        StringTerm: typeof foundry.dice.terms.StringTerm;
+      }
+
+      interface Functions {
+        [functionName: string]: RollFunction;
       }
     }
 
     interface Dice {
-      /**
-       * The Dice types which are supported.
-       * @defaultValue `[foundry.dice.terms.Die, foundry.dice.terms.FateDie]`
-       */
-      types: Array<foundry.dice.terms.DiceTerm.AnyConstructor>;
+      /** The Dice types which are supported. */
+      types: (typeof foundry.dice.terms.DiceTerm)[];
 
       // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
-      rollModes: InterfaceToObject<CONFIG.Dice.RollModes>;
+      rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
 
       /**
        * Configured Roll class definitions
-       * @defaultValue `[`{@linkcode foundry.dice.Roll}`]`
+       * @defaultValue `[`{@linkcode dice.Roll}`]`
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.dice.Roll.create | Roll.create}.
        */
-      rolls: Array<foundry.dice.Roll.Internal.AnyConstructor>;
+      rolls: (typeof foundry.dice.Roll)[];
 
       /**
        * Configured DiceTerm class definitions
-       * @defaultValue
-       * ```typescript
-       * {
-       *   DiceTerm: typeof foundry.dice.terms.DiceTerm,
-       *   MathTerm: typeof foundry.dice.terms.MathTerm,
-       *   NumericTerm: typeof foundry.dice.terms.NumericTerm,
-       *   OperatorTerm: typeof foundry.dice.terms.OperatorTerm,
-       *   ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm,
-       *   PoolTerm: typeof foundry.dice.terms.PoolTerm,
-       *   StringTerm: typeof foundry.dice.terms.StringTerm
-       * }
-       * ```
        */
-      termTypes: Record<string, foundry.dice.terms.RollTerm.AnyConstructor>;
+      termTypes: RemoveIndexSignatures<Dice.TermTypes>;
 
       /** Configured roll terms and the classes they map to. */
       terms: Dice.Terms;
 
       /**
        * A function used to provide random uniform values.
-       * @defaultValue `foundry.dice.MersenneTwister.random`
        */
       randomUniform: () => number;
 
-      /** A parser implementation for parsing Roll expressions. */
+      /**
+       * A parser implementation for parsing Roll expressions.
+       * @defaultValue {@linkcode foundry.dice.RollParser}
+       */
       parser: foundry.dice.RollParser.AnyConstructor;
 
       /** A collection of custom functions that can be included in roll expressions.*/
-      functions: Record<string, CONFIG.Dice.RollFunction>;
+      functions: HandleEmptyObject<RemoveIndexSignatures<Dice.Functions>>;
 
       /**
        * Dice roll fulfillment configuration
        */
-      fulfillment: CONFIG.Dice.FulfillmentConfiguration;
+      fulfillment: Dice.Fulfillment;
     }
 
     /** @internal */
@@ -728,7 +817,7 @@ declare global {
     /**
      * Configure the Application classes used to render various core UI elements in the application
      */
-    ui: CONFIG.UI;
+    ui: RemoveIndexSignatures<CONFIG.UI>;
 
     /**
      * Overrides for various core UI/UX helpers.
@@ -1398,69 +1487,78 @@ declare global {
       collection: typeof collections.Users;
     }
 
+    /**
+     * Everything in this interface gets instantiated into {@linkcode globalThis.ui} via `new` in
+     * {@linkcode foundry.Game.setupGame | Game#setupGame} between `setup` and `ready`.
+     *
+     * Most things provided here by core are AppV2 classes, with the exception of `notifications`,
+     * but anything that can be `new`ed with no arguments can be put here.
+     */
     interface UI {
-      /** @defaultValue `MainMenu` */
-      menu: foundry.applications.ui.MainMenu.AnyConstructor;
+      [appName: string]: new () => unknown;
 
-      /** @defaultValue `Sidebar` */
-      sidebar: foundry.applications.sidebar.Sidebar.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.MainMenu} */
+      menu: typeof foundry.applications.ui.MainMenu<foundry.applications.ui.MainMenu.RenderContext>;
 
-      /** @defaultValue `Pause` */
-      pause: foundry.applications.ui.GamePause.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.Sidebar} */
+      sidebar: typeof foundry.applications.sidebar.Sidebar;
 
-      /** @defaultValue `SceneNavigation` */
-      nav: foundry.applications.ui.SceneNavigation.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.GamePause} */
+      pause: typeof foundry.applications.ui.GamePause;
 
-      /** @defaultValue `Notifications` */
-      notifications: foundry.applications.ui.Notifications.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.SceneNavigation} */
+      nav: typeof foundry.applications.ui.SceneNavigation;
 
-      /** @defaultValue `ActorDirectory` */
-      actors: foundry.applications.sidebar.tabs.ActorDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Notifications} */
+      notifications: typeof foundry.applications.ui.Notifications;
 
-      /** @defaultValue `CardsDirectory` */
-      cards: foundry.applications.sidebar.tabs.CardsDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ActorDirectory} */
+      actors: typeof foundry.applications.sidebar.tabs.ActorDirectory;
 
-      /** @defaultValue `ChatLog` */
-      chat: foundry.applications.sidebar.tabs.ChatLog.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CardsDirectory} */
+      cards: typeof foundry.applications.sidebar.tabs.CardsDirectory;
 
-      /** @defaultValue `CombatTracker` */
-      combat: foundry.applications.sidebar.tabs.CombatTracker.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ChatLog} */
+      chat: typeof foundry.applications.sidebar.tabs.ChatLog;
 
-      /** @defaultValue `CompendiumDirectory` */
-      compendium: foundry.applications.sidebar.tabs.CompendiumDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CombatTracker} */
+      combat: typeof foundry.applications.sidebar.tabs.CombatTracker;
 
-      /** @defaultValue `SceneControls` */
-      controls: foundry.applications.ui.SceneControls.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory} */
+      compendium: typeof foundry.applications.sidebar.tabs.CompendiumDirectory;
 
-      /** @defaultValue `Hotbar` */
-      hotbar: foundry.applications.ui.Hotbar.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.SceneControls} */
+      controls: typeof foundry.applications.ui.SceneControls;
 
-      /** @defaultValue `ItemDirectory` */
-      items: foundry.applications.sidebar.tabs.ItemDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Hotbar} */
+      hotbar: typeof foundry.applications.ui.Hotbar<foundry.applications.ui.Hotbar.RenderContext>;
 
-      /** @defaultValue `JournalDirectory` */
-      journal: foundry.applications.sidebar.tabs.JournalDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.ItemDirectory} */
+      items: typeof foundry.applications.sidebar.tabs.ItemDirectory;
 
-      /** @defaultValue `MacroDirectory` */
-      macros: foundry.applications.sidebar.tabs.MacroDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.JournalDirectory} */
+      journal: typeof foundry.applications.sidebar.tabs.JournalDirectory;
 
-      /** @defaultValue `PlayerList` */
-      players: foundry.applications.ui.Players.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.MacroDirectory} */
+      macros: typeof foundry.applications.sidebar.tabs.MacroDirectory;
 
-      /** @defaultValue `PlaylistDirectory` */
-      playlists: foundry.applications.sidebar.tabs.PlaylistDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.ui.Players} */
+      players: typeof foundry.applications.ui.Players;
 
-      /** @defaultValue `SceneDirectory` */
-      scenes: foundry.applications.sidebar.tabs.SceneDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory} */
+      playlists: typeof foundry.applications.sidebar.tabs.PlaylistDirectory;
 
-      /** @defaultValue `Settings` */
-      settings: foundry.applications.sidebar.tabs.Settings.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.SceneDirectory} */
+      scenes: typeof foundry.applications.sidebar.tabs.SceneDirectory;
 
-      /** @defaultValue `RollTableDirectory` */
-      tables: foundry.applications.sidebar.tabs.RollTableDirectory.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.Settings} */
+      settings: typeof foundry.applications.sidebar.tabs.Settings;
 
-      /** @defaultValue `CameraViews` */
-      webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory} */
+      tables: typeof foundry.applications.sidebar.tabs.RollTableDirectory;
+
+      /** @defaultValue {@linkcode foundry.applications.apps.av.CameraView} */
+      webrtc: typeof foundry.applications.apps.av.CameraViews;
     }
 
     interface UX {
@@ -1531,18 +1629,21 @@ declare global {
       /** @defaultValue `0xffffff` */
       brightestColor: number;
 
-      chatBubblesClass: foundry.canvas.animation.ChatBubbles;
+      /**
+       * @privateRemarks Instantiated via `new` during {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} construction.
+       */
+      chatBubblesClass: typeof foundry.canvas.animation.ChatBubbles;
 
       /** @defaultValue `0.25` */
       darknessLightPenalty: number;
 
-      dispositionColors: Canvas.DispositionColors;
+      dispositionColors: RemoveIndexSignatures<Canvas.DispositionColors>;
 
       /**
        * The class used to render door control icons
-       * @remarks Not `AnyConstructor` because it's instantiated with a `Wall.Implementation` as its first argument
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.placeables.Wall.createDoorControl | Wall#createDoorControl}.
        */
-      doorControlClass: typeof DoorControl;
+      doorControlClass: typeof foundry.canvas.containers.DoorControl;
 
       /** @defaultValue `0x000000` */
       exploredColor: number;
@@ -1557,50 +1658,51 @@ declare global {
       daylightToDarknessAnimationMS: number;
 
       /**
-       * @defaultValue `foundry.canvas.sources.PointDarknessSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       * @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource}
+       * @privateRemarks Instantiated via `new` in `AmbientLight##createLightSource` and `Token##createLightSource`
        */
       darknessSourceClass: typeof foundry.canvas.sources.PointDarknessSource;
 
       /**
-       * @defaultValue `foundry.canvas.sources.PointLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       * @defaultValue {@linkcode foundry.canvas.sources.PointLightSource}
+       * @privateRemarks Instantiated via `new` in `AmbientLight##createLightSource` and `Token##createLightSource`
        */
       lightSourceClass: typeof foundry.canvas.sources.PointLightSource;
 
       /**
-       * @defaultValue `foundry.canvas.sources.GlobalLightSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       * @defaultValue {@linkcode foundry.canvas.sources.GlobalLightSource}
+       * @privateRemarks Instantiated via `new` during {@linkcode groups.EnvironmentCanvasGroup} construction.
        */
       globalLightSourceClass: typeof foundry.canvas.sources.GlobalLightSource;
 
       /**
-       * @defaultValue `foundry.canvas.sources.PointVisionSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       * @defaultValue {@linkcode foundry.canvas.sources.PointVisionSource}
+       * @privateRemarks Instantiated via `new` in `Token##createVisionSource`
        */
       visionSourceClass: typeof foundry.canvas.sources.PointVisionSource;
 
       /**
-       * @defaultValue `foundry.canvas.sources.PointSoundSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
+       * @defaultValue {@linkcode foundry.canvas.sources.PointSoundSource}
+       * @privateRemarks Instantiated via `new` in `AmbientSound##createSoundSource` and
+       * {@linkcode foundry.audio.Sound.playAtPosition | Sound#PlayAtPosition}.
        */
       soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
-      groups: CONFIG.Canvas.Groups;
+      groups: RemoveIndexSignatures<Canvas.Groups>;
 
-      layers: CONFIG.Canvas.Layers;
+      layers: RemoveIndexSignatures<Canvas.Layers>;
 
       lightLevels: Canvas.LightLevels;
 
       /**
        * @defaultValue `FogManager`
-       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in `Canvas##initializeFogManager`
+       * @privateRemarks  Instantiated via `new` in `Canvas##initializeFogManager`.
        */
       fogManager: typeof perception.FogManager;
 
       polygonBackends: Canvas.PolygonBackends;
 
-      /** @defaultValue `number` */
+      /** @defaultValue `0.5` */
       darknessSourcePaddingMultiplier: number;
 
       visibilityFilter: foundry.canvas.rendering.filters.VisibilityFilter.Internal.AnyConstructor;
@@ -1608,21 +1710,36 @@ declare global {
       visualEffectsMaskingFilter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.Internal.AnyConstructor;
 
       /**
-       * @defaultValue `Ruler`
-       * @remarks Not `AnyConstructor` because it's instantiated with a `User.Implementation` as its first argument
+       * @defaultValue {@linkcode foundry.canvas.interaction.Ruler}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.drawRuler | Canvas#drawRuler}
        */
       rulerClass: typeof foundry.canvas.interaction.Ruler;
 
       /** @defaultValue `0.8` */
       dragSpeedModifier: number;
 
-      /** @defaultValue `3.0` */
-      maxZoom: number;
+      /**
+       * @defaultValue `undefined`
+       * @remarks This comes `undefined` by default, and nothing in core ever sets it. This is only used in two places:
+       * - In `foundry.canvas.containers.Cursor##animate`), the `NaN` created by doing math on this gets swallowed by a conditional,
+       * so no errors result.
+       * - In `Canvas##getDimensions`, it's checked for `=== undefined`, and if so runs an algorithm based on the current Scene's grid and
+       * the current window's `innerWidth` and `innerHeight`.
+       */
+      maxZoom: number | undefined;
+
+      /**
+       * @defaultValue `undefined`
+       * @remarks This comes `undefined` by default, and nothing in core ever sets it. This is only used in `Canvas##getDimensions`, where
+       * it's checked for `=== undefined`, and if so runs an algorithm based on the current Scene's grid and  the current window's
+       * `innerWidth` and `innerHeight`.
+       */
+      minZoom: number | undefined;
 
       /** @defaultValue `4` */
       objectBorderThickness: number;
 
-      gridStyles: Canvas.GridStyles;
+      gridStyles: RemoveIndexSignatures<Canvas.GridStyles>;
 
       lightAnimations: RemoveIndexSignatures<Canvas.LightAnimations>;
 
@@ -1631,7 +1748,7 @@ declare global {
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
        * @remarks Keys are Scene IDs
-       * @privateRemarks `typeof` over `AnyConstructor` because it's instantiated via `new` in {@linkcode Canvas.getSceneManager}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.getSceneManager}
        */
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 
@@ -1647,50 +1764,117 @@ declare global {
       /**
        * The set of VisionMode definitions which are available to be used for Token vision.
        */
-      visionModes: Canvas.VisionModes;
+      visionModes: RemoveIndexSignatures<Canvas.VisionModes>;
 
       /**
        * The set of DetectionMode definitions which are available to be used for visibility detection.
        */
-      detectionModes: Canvas.DetectionModes;
+      detectionModes: RemoveIndexSignatures<Canvas.DetectionModes>;
 
       /**
-       * @deprecated "`CONFIG.Canvas.transcoders` has been deprecated without replacement. KTX2/Basis support is always enabled and this property has no effect anymore." (since v13, until v15)
+       * @deprecated "`CONFIG.Canvas.transcoders` has been deprecated without replacement. KTX2/Basis support is always enabled
+       * and this property has no effect anymore." (since v13, until v15)
        */
       get transcoders(): { basis: true };
     }
 
     namespace Canvas {
       interface Groups {
-        // TODO: Index signature?
+        [groupName: string]: GroupDefinition;
 
-        /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
-        hidden: CONFIG.Canvas.GroupDefinition<typeof groups.HiddenCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.HiddenCanvasGroup,
+         *   parent: "stage"
+         * }
+         * ```
+         */
+        hidden: GroupDefinition<typeof groups.HiddenCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: RenderedCanvasGroup, parent: "stage" }` */
-        rendered: CONFIG.Canvas.GroupDefinition<typeof groups.RenderedCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.RenderedCanvasGroup,
+         *   parent: "stage"
+         * }
+         * ```
+         */
+        rendered: GroupDefinition<typeof groups.RenderedCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: EnvironmentCanvasGroup, parent: "rendered" }` */
-        environment: CONFIG.Canvas.GroupDefinition<typeof groups.EnvironmentCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.EnvironmentCanvasGroup,
+         *   parent: "rendered"
+         * }
+         * ```
+         */
+        environment: GroupDefinition<typeof groups.EnvironmentCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: PrimaryCanvasGroup, parent: "environment" }` */
-        primary: CONFIG.Canvas.GroupDefinition<typeof groups.PrimaryCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.PrimaryCanvasGroup,
+         *   parent: "environment"
+         * }
+         * ```
+         */
+        primary: GroupDefinition<typeof groups.PrimaryCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: EffectsCanvasGroup, parent: "environment" }` */
-        effects: CONFIG.Canvas.GroupDefinition<typeof groups.EffectsCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.EffectsCanvasGroup,
+         *   parent: "environment"
+         * }
+         * ```
+         */
+        effects: GroupDefinition<typeof groups.EffectsCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: CanvasVisibility, parent: "rendered" }` */
-        visibility: CONFIG.Canvas.GroupDefinition<typeof groups.CanvasVisibility>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.CanvasVisibility,
+         *   parent: "rendered"
+         * }
+         * ```
+         */
+        visibility: GroupDefinition<typeof groups.CanvasVisibility>;
 
-        /** @defaultValue `{ groupClass: InterfaceCanvasGroup, parent: "rendered", zIndexDrawings: 500, zIndexScrollingText: 1100 }` */
-        interface: CONFIG.Canvas.GroupDefinition<typeof groups.InterfaceCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.InterfaceCanvasGroup,
+         *   parent: "rendered",
+         *   zIndexDrawings: 500,
+         *   zIndexScrollingText: 1100
+         * }
+         * ```
+         */
+        interface: GroupDefinition<typeof groups.InterfaceCanvasGroup>;
 
-        /** @defaultValue `{ groupClass: OverlayCanvasGroup, parent: "stage" }` */
-        overlay: CONFIG.Canvas.GroupDefinition<typeof groups.OverlayCanvasGroup>;
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   groupClass: foundry.canvas.groups.OverlayCanvasGroup,
+         *   parent: "stage"
+         * }
+         * ```
+         */
+        overlay: GroupDefinition<typeof groups.OverlayCanvasGroup>;
       }
 
       /**
-       * @remarks `typeof MixedCanvasGroup` is used instead of {@linkcode CanvasGroupMixin.AnyMixedConstructor} because groups are
+       * @privateRemarks `typeof MixedCanvasGroup` is used instead of {@linkcode CanvasGroupMixin.AnyMixedConstructor} because groups are
        * instantiated via `new` in `Canvas##createGroups`
        */
       interface GroupDefinition<GroupClass extends typeof MixedCanvasGroup = typeof MixedCanvasGroup> {
@@ -1720,47 +1904,145 @@ declare global {
       }
 
       interface Layers {
-        /** @defaultValue `{ layerClass: WeatherLayer, group: "primary" }` */
+        [layerName: string]: LayerDefinition<typeof layers.CanvasLayer, groups.CanvasGroupMixin.Group>;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: WeatherLayer,
+         *   group: "primary"
+         * }
+         * ```
+         */
         weather: LayerDefinition<typeof layers.WeatherEffects, "primary">;
 
-        /** @defaultValue `{ layerClass: GridLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: GridLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         grid: LayerDefinition<typeof layers.GridLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: RegionLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         regions: LayerDefinition<typeof layers.RegionLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: DrawingsLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         drawings: LayerDefinition<typeof layers.DrawingsLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: TemplateLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: TemplateLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         templates: LayerDefinition<typeof layers.TemplateLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: TokenLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         tiles: LayerDefinition<typeof layers.TilesLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: WallsLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: WallsLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         walls: LayerDefinition<typeof layers.WallsLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: TokenLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: TokenLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         tokens: LayerDefinition<typeof layers.TokenLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: SoundsLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: SoundsLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         sounds: LayerDefinition<typeof layers.SoundsLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: LightingLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: LightingLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         lighting: LayerDefinition<typeof layers.LightingLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: NotesLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: NotesLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         notes: LayerDefinition<typeof layers.NotesLayer, "interface">;
 
-        /** @defaultValue `{ layerClass: ControlsLayer, group: "interface" }` */
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   layerClass: ControlsLayer,
+         *   group: "interface"
+         * }
+         * ```
+         */
         controls: LayerDefinition<typeof layers.ControlsLayer, "interface">;
       }
 
       // This requires `typeof CanvasLayer` because `CanvasGroupMixin#_createLayers` assumes there's no parameters.
       interface LayerDefinition<
         LayerClass extends typeof layers.CanvasLayer,
-        Group extends keyof CONFIG["Canvas"]["groups"],
+        Group extends groups.CanvasGroupMixin.Group,
       > {
         layerClass: LayerClass;
         group: Group;
@@ -1781,14 +2063,15 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | \@enum PointSourcePolygon}, but all the runtime defaults are
-       * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
-       * have been constrained to it instead of `PointSourcePolygon`.
+       * @privateRemarks Foundry types this as `@enum `{@linkcode geometry.PointSourcePolygon | PointSourcePolygon}, but all the runtime
+       * defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other
+       * canvas classes, so entries have been constrained to it instead of `PointSourcePolygon`.
        *
-       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to come up in real world code.
+       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to come up in real
+       * world code.
        *
-       * `AnyConstructor` is used here because the expectation is that polygons are instantiated via {@linkcode geometry.ClockwiseSweepPolygon.create | .create},
-       * and the constructor has been made protected to enforce this.
+       * `AnyConstructor` is used here because the expectation is that polygons are instantiated via
+       * {@linkcode geometry.ClockwiseSweepPolygon.create | .create}, and the constructor has been made protected to enforce this.
        */
       interface PolygonBackends {
         [polygonType: Brand<string, "CONFIG.Canvas.polygonBackends">]: geometry.ClockwiseSweepPolygon.AnyConstructor;
@@ -1807,7 +2090,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.SolidLines",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 0
          *   }
@@ -1821,7 +2104,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.DashedLines",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 1
          *   }
@@ -1835,7 +2118,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.DottedLines",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 0
          *   }
@@ -1849,7 +2132,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.SquarePoints",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 0
          *   }
@@ -1863,7 +2146,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.DiamondPoints",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 0
          *   }
@@ -1877,7 +2160,7 @@ declare global {
          * ```js
          * {
          *   label: "GRID.STYLES.RoundPoints",
-         *   shaderClass: GridShader,
+         *   shaderClass: foundry.canvas.rendering.shaders.GridShader,
          *   shaderOptions: {
          *     style: 0
          *   }
@@ -1916,244 +2199,245 @@ declare global {
         radialrainbow: LightAnimations.RadialRainbow;
         fairy: LightAnimations.Fairy;
       }
+
       namespace LightAnimations {
         interface Flame extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateFlickering` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateFlickering} */
           animation: BaseLightSource.LightAnimationFunction;
 
-          /** @defaultValue `FlameIlluminationShader` */
-          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FlameIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `FlameColorationShader` */
-          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FlameColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Torch extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationTorch"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTorch} */
           animation: BaseLightSource.LightAnimationFunction;
 
-          /** @defaultValue `TorchIlluminationShader` */
-          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.TorchIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `TorchColorationShader` */
-          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.TorchColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Revolving extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRevolving"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: BaseLightSource.LightAnimationFunction;
 
-          /** @defaultValue `RevolvingColorationShader` */
-          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.RevolvingColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Siren extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSiren"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTorch` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTorch} */
           animation: BaseLightSource.LightAnimationFunction;
 
-          /** @defaultValue `SirenIlluminationShader` */
-          illuminationShader: foundry.canvas.rendering.shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SirenIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `SirenIlluminationShader` */
-          colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SirenIlluminationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Pulse extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationPulse"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animatePulse` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animatePulse} */
           animation: BaseLightSource.LightAnimationFunction;
 
-          /** @defaultValue `PulseIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.PulseIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `PulseColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.PulseColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Chroma extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationChroma"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
           /** @defaultValue `ChromaColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Wave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationWave"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `WaveIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.WaveIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `WaveColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.WaveColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Fog extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFog"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `FogColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FogColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Sunburst extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSunburst"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `SunburstIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SunburstIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `SunburstColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SunburstColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Dome extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationLightDome"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `LightDomeColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.LightDomeColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Emanation extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEmanation"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `EmanationColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.EmanationColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Hexa extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationHexaDome";` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `HexaDomeColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.HexaDomeColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Ghost extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationGhostLight"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `GhostLightIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.GhostLightIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `GhostLightColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.GhostLightColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Energy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEnergyField"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `EnergyFieldColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.EnergyFieldColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Vortex extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationVortex"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `VortexIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.VortexIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `VortexColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.VortexColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface WitchWave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `BewitchingWaveIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.BewitchingWaveIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `BewitchingWaveColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.BewitchingWaveColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface RainbowSwirl extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `SwirlingRainbowColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SwirlingRainbowColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface RadialRainbow extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `RadialRainbowColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.RadialRainbowColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
         interface Fairy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFairyLight"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.LightSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.LightSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `FairyLightIlluminationShader` */
-          illuminationShader: shaders.AdaptiveIlluminationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FairyLightIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
-          /** @defaultValue `FairyLightColorationShader` */
-          colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FairyLightColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
       }
 
@@ -2175,40 +2459,40 @@ declare global {
           /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `MagicalGloomDarknessShader` */
-          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.MagicalGloomDarknessShader} */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
         }
 
         interface Roiling extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `RoilingDarknessShader` */
-          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.RoilingDarknessShader} */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
         }
 
         interface Hole extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBlackHole"` */
           label: string;
 
-          /** @defaultValue `foundry.canvas.sources.PointDarknessSource.prototype.animateTime` */
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
           animation: RenderedEffectSource.AnimationFunction;
 
-          /** @defaultValue `BlackHoleDarknessShader` */
-          darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.BlackHoleDarknessShader} */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
         }
       }
 
       interface Pings {
-        types: Pings.Types;
+        types: RemoveIndexSignatures<Pings.Types>;
 
-        styles: Pings.Styles;
+        styles: RemoveIndexSignatures<Pings.Styles>;
 
         /** @defaultValue `700` */
         pullSpeed: number;
@@ -2216,6 +2500,8 @@ declare global {
 
       namespace Pings {
         interface Types {
+          [pingType: string]: string;
+
           /** @defaultValue `"pulse"` */
           PULSE: string;
 
@@ -2230,46 +2516,103 @@ declare global {
         }
 
         interface Styles {
-          [pingStyle: Brand<string, "CONFIG.Canvas.pings.styles">]: CONFIG.Canvas.Pings.Style;
+          [pingStyle: Brand<string, "CONFIG.Canvas.pings.styles">]: Style;
 
-          /** @defaultValue `{ class: AlertPing, color: "#ff0000", size: 1.5, duration: 900 }` */
-          alert: CONFIG.Canvas.Pings.Style;
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   class: foundry.canvas.interaction.AlertPing,
+           *   color: "#ff0000",
+           *   size: 1.5,
+           *   duration: 900
+           * }
+           * ```
+           */
+          alert: Style;
 
-          /** @defaultValue `{ class: ArrowPing, size: 1, duration: 900 }` */
-          arrow: CONFIG.Canvas.Pings.Style;
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   class: foundry.canvas.interaction.ArrowPing,
+           *   size: 1,
+           *   duration: 900
+           * }
+           * ```
+           */
+          arrow: Style;
 
-          /** @defaultValue `{ class: ChevronPing, size: 1, duration: 2000 }` */
-          chevron: CONFIG.Canvas.Pings.Style;
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   class: foundry.canvas.interaction.ChevronPing,
+           *   size: 1,
+           *   duration: 2000
+           * }
+           * ```
+           */
+          chevron: Style;
 
-          /** @defaultValue `{ class: PulsePing, size: 1.5, duration: 900 }` */
-          pulse: CONFIG.Canvas.Pings.Style;
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   class: foundry.canvas.interaction.PulsePing,
+           *   size: 1.5,
+           *   duration: 900
+           * }
+           * ```
+           */
+          pulse: Style;
         }
 
         interface Style {
-          class: unknown;
-          color?: string;
-          size: number;
+          /**
+           * @privateRemarks Instantiated via `new` in {@linkcode layers.ControlsLayer.drawPing | ControlsLayer#drawPing}
+           */
+          class: typeof foundry.canvas.interaction.Ping;
+
+          /**
+           * @remarks If not defined, will use the pinging user's {@linkcode User.color | color}, or, if that's also nullish,
+           * the ping default of `"#FF6400"`.
+           */
+          color?: Color.Source;
+
+          /**
+           * @defaultValue `1`
+           * @remarks A scaling factor, gets multiplied by `100 * `{@linkcode canvas.dimensions.scale}
+           * before being passed to the `Ping` constructor (see {@linkcode foundry.canvas.interaction.Ping.ConstructorOptions.size}).
+           */
+          size?: number;
+
+          /**
+           * @remarks See {@linkcode foundry.canvas.interaction.Ping.ConstructorOptions.duration}
+           */
           duration: number;
         }
       }
 
       interface DispositionColors {
-        /** @defaultValue `0xe72124` */
+        [disposition: string]: number;
+
+        /** @defaultValue `0xE72124` */
         HOSTILE: number;
 
-        /** @defaultValue `0xf1d836` */
+        /** @defaultValue `0xF1D836` */
         NEUTRAL: number;
 
-        /** @defaultValue `0x43dfdf` */
+        /** @defaultValue `0x43DFDF` */
         FRIENDLY: number;
 
         /** @defaultValue `0x555555` */
         INACTIVE: number;
 
-        /** @defaultValue `0x33bc4e` */
+        /** @defaultValue `0x33BC4E` */
         PARTY: number;
 
-        /** @defaultValue `0xff9829` */
+        /** @defaultValue `0xFF9829` */
         CONTROLLED: number;
 
         /** @defaultValue `0xA612D4` */
@@ -2277,7 +2620,11 @@ declare global {
       }
 
       interface Targeting {
-        /** @defaultValue `.15` */
+        /**
+         * TODO: Fix the following link once Token is updated
+         * @remarks The default for `linkcode foundry.canvas.placeables.Token.ReticuleOptions.size`
+         * @defaultValue `.15`
+         */
         size: number;
       }
 
@@ -2301,8 +2648,8 @@ declare global {
         /**
          * Default (Basic) Vision
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "basic",
          *   label: "VISION.ModeBasicVision",
          *   vision: {
@@ -2317,19 +2664,19 @@ declare global {
         /**
          * Darkvision
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "darkvision",
          *   label: "VISION.ModeDarkvision",
          *     canvas: {
-         *       shader: ColorAdjustmentsSamplerShader,
+         *       shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
          *       uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
          *     levels: {
-         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT
+         *       [foundry.canvas.perception.VisionMode.LIGHTING_LEVELS.DIM]: foundry.canvas.perception.VisionMode.LIGHTING_LEVELS.BRIGHT
          *     },
-         *   background: { visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED }
+         *   background: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.REQUIRED }
          *   },
          *   vision: {
          *     darkness: { adaptive: false },
@@ -2343,12 +2690,12 @@ declare global {
         /**
          * Darkvision
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "monochromatic",
          *   label: "VISION.ModeMonochromatic",
          *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
+         *     shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
          *     uniforms: { contrast: 0, saturation: -1.0, brightness: 0 }
          *   },
          *   lighting: {
@@ -2377,19 +2724,19 @@ declare global {
         /**
          * Blindness
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "blindness",
          *   label: "VISION.ModeBlindness",
          *   tokenConfig: false,
          *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
+         *     shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
          *     uniforms: { contrast: -0.75, saturation: -1, exposure: -0.3 }
          *   },
          *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
+         *     background: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     illumination: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     coloration: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED }
          *   },
          *   vision: {
          *     darkness: { adaptive: false },
@@ -2403,19 +2750,19 @@ declare global {
         /**
          * Tremorsense
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "tremorsense",
          *   label: "VISION.ModeTremorsense",
          *   canvas: {
-         *     shader: ColorAdjustmentsSamplerShader,
+         *     shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
          *     uniforms: { contrast: 0, saturation: -0.8, exposure: -0.65 }
          *   },
          *   lighting: {
-         *     background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-         *     darkness: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED }
+         *     background: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     illumination: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     coloration: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+         *     darkness: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED }
          *   },
          *   vision: {
          *     darkness: { adaptive: false },
@@ -2431,17 +2778,17 @@ declare global {
         /**
          * Light Amplification
          * @defaultValue
-         * ```typescript
-         * new VisionMode({
+         * ```ts
+         * new foundry.canvas.perception.VisionMode({
          *   id: "lightAmplification",
          *   label: "VISION.ModeLightAmplification",
          *   canvas: {
-         *     shader: AmplificationSamplerShader,
+         *     shader: foundry.canvas.rendering.shaders.AmplificationSamplerShader,
          *     uniforms: { saturation: -0.5, tint: [0.38, 0.8, 0.38] }
          *   },
          *   lighting: {
          *     background: {
-         *       visibility: VisionMode.LIGHTING_VISIBILITY.REQUIRED,
+         *       visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.REQUIRED,
          *       postProcessingModes: ["SATURATION", "EXPOSURE"],
          *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
          *     },
@@ -2454,14 +2801,14 @@ declare global {
          *       uniforms: { saturation: -0.5, exposure: 1.5, tint: [0.38, 0.8, 0.38] }
          *     },
          *     levels: {
-         *       [VisionMode.LIGHTING_LEVELS.DIM]: VisionMode.LIGHTING_LEVELS.BRIGHT,
-         *       [VisionMode.LIGHTING_LEVELS.BRIGHT]: VisionMode.LIGHTING_LEVELS.BRIGHTEST
+         *       [VisionMode.LIGHTING_LEVELS.DIM]: foundry.canvas.perception.VisionMode.LIGHTING_LEVELS.BRIGHT,
+         *       [VisionMode.LIGHTING_LEVELS.BRIGHT]: foundry.canvas.perception.VisionMode.LIGHTING_LEVELS.BRIGHTEST
          *     }
          *   },
          *   vision: {
          *     darkness: { adaptive: false },
          *     defaults: { attenuation: 0, contrast: 0, saturation: -0.5, brightness: 1 },
-         *     background: { shader: AmplificationBackgroundVisionShader }
+         *     background: { shader: foundry.canvas.rendering.shaders.AmplificationBackgroundVisionShader }
          *   }
          * })
          * ```
@@ -2472,18 +2819,94 @@ declare global {
       interface DetectionModes {
         [detectionMode: Brand<string, "CONFIG.Canvas.detectionModes">]: perception.DetectionMode;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeLightPerception({
+         *   id: "lightPerception",
+         *   label: "DETECTION.LightPerception",
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
         lightPerception: perception.DetectionModeLightPerception;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeDarkvision({
+         *   id: "basicSight",
+         *   label: "DETECTION.BasicSight",
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
         basicSight: perception.DetectionModeDarkvision;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeInvisibility({
+         *   id: "seeInvisibility",
+         *   label: "DETECTION.SeeInvisibility",
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
         seeInvisibility: perception.DetectionModeInvisibility;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeInvisibility({
+         *   id: "senseInvisibility",
+         *   label: "DETECTION.SenseInvisibility",
+         *   walls: false,
+         *   angle: false,
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER
+         * })
+         * ```
+         */
         senseInvisibility: perception.DetectionModeInvisibility;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeTremor({
+         *   id: "feelTremor",
+         *   label: "DETECTION.FeelTremor",
+         *   walls: false,
+         *   angle: false,
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.MOVE
+         * })
+         * ```
+         */
         feelTremor: perception.DetectionModeTremor;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeAll({
+         *   id: "seeAll",
+         *   label: "DETECTION.SeeAll",
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.SIGHT
+         * })
+         * ```
+         */
         seeAll: perception.DetectionModeAll;
 
+        /**
+         * @defaultValue
+         * ```ts
+         * new foundry.canvas.perception.DetectionModeAll({
+         *   id: "senseAll",
+         *   label: "DETECTION.SenseAll",
+         *   walls: false,
+         *   angle: false,
+         *   type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER
+         * })
+         * ```
+         */
         senseAll: perception.DetectionModeAll;
       }
     }
@@ -2919,57 +3342,89 @@ declare global {
     }
 
     namespace Dice {
-      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead */
+      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead. This warning will be removed in v14. */
       type RollMode = foundry.dice.Roll.Mode;
 
       interface RollModes {
         [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
-        publicroll: RollModes.PublicRoll;
-        gmroll: RollModes.GMRoll;
-        blindroll: RollModes.BlindRoll;
-        selfroll: RollModes.SelfRoll;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPublic",
+         *   icon: "fa-solid fa-globe"
+         * }
+         * ```
+         */
+        publicroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPrivate",
+         *   icon: "fa-solid fa-user-secret"
+         * }
+         * ```
+         */
+        gmroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollBlind",
+         *   icon: "fa-solid fa-eye-slash"
+         * }
+         * ```
+         */
+        blindroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollSelf",
+         *   icon: "fa-solid fa-user"
+         * }
+         * ```
+         */
+        selfroll: RollModeConfig;
       }
 
       interface RollModeConfig {
         /** @remarks A localization key */
         label: string;
 
-        /** @remarks Just the class string, e.g "fa-solid fa-globe" */
+        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
         icon: string;
       }
 
       namespace RollModes {
-        interface PublicRoll extends RollModeConfig {
-          /** @defaultValue `"CHAT.RollPublic"` */
-          label: string;
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type PublicRoll = never;
 
-          /** @defaultValue `"fa-solid fa-globe"` */
-          icon: string;
-        }
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type GMRoll = never;
 
-        interface GMRoll extends RollModeConfig {
-          /** @defaultValue `"CHAT.RollPrivate"` */
-          label: string;
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type BlindRoll = never;
 
-          /** @defaultValue `"fa-solid fa-user-secret"` */
-          icon: string;
-        }
-
-        interface BlindRoll extends RollModeConfig {
-          /** @defaultValue `"CHAT.RollBlind"` */
-          label: string;
-
-          /** @defaultValue `"fa-solid fa-eye-slash"` */
-          icon: string;
-        }
-
-        interface SelfRoll extends RollModeConfig {
-          /** @defaultValue `"CHAT.RollSelf"` */
-          label: string;
-
-          /** @defaultValue `"fa-solid fa-user"` */
-          icon: string;
-        }
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type SelfRoll = never;
       }
     }
 
