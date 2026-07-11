@@ -109,6 +109,13 @@ export * as nue from "./nue/_module.mjs";
 // export * as types from "./types.mjs";
 
 declare global {
+  /**
+   * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
+   * aspects of the software behaves.
+   *
+   * Unlike the {@linkcode CONST} analog which is frozen and immutable, the `CONFIG` object may be updated during the course of a
+   * session or modified by system and module developers to adjust how the application behaves.
+   */
   interface CONFIG2 extends Mutable<typeof globalConfig> {}
 
   const CONFIG2: CONFIG2;

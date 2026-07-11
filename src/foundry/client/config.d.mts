@@ -1346,7 +1346,8 @@ declare global {
        * "`CONFIG.${documentName}.layerClass` has been deprecated. Use `CONFIG.Canvas.layers.${layerName}.layerClass` instead."
        * (since v14, until v16)
        *
-       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type.
+       * @remarks Yes, that lookup above is the simplest way to find the correct `CONFIG.Canvas.layers` property for a given document type
+       * without having to read the source for {@linkcode foundry.canvas.Canvas.getLayerByEmbeddedName | Canvas#getLayerByEmbeddedName}.
        */
       layerClass: foundry.canvas.layers.PlaceablesLayer.ImplementationClassFor<Name>;
     }

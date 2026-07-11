@@ -98,7 +98,7 @@ declare namespace CanvasLayer {
      *
      * Defaults to `""` in {@linkcode CanvasLayer}
      *
-     * See {@linkcode LayerLayer.instance} remarks.
+     * See {@linkcode CanvasLayer.instance} remarks.
      */
     name: CanvasLayer.Layer | "effects" | "";
 
