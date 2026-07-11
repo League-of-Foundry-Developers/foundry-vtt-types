@@ -587,48 +587,6 @@ export declare const cursors: CONFIG.Cursors;
 
 declare global {
   namespace CONFIG {
-    interface Dice {
-      /** The Dice types which are supported. */
-      types: (typeof foundry.dice.terms.DiceTerm)[];
-
-      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
-      rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
-
-      /**
-       * Configured Roll class definitions
-       * @defaultValue `[`{@linkcode dice.Roll}`]`
-       * @privateRemarks Instantiated via `new` in {@linkcode foundry.dice.Roll.create | Roll.create}.
-       */
-      rolls: (typeof foundry.dice.Roll)[];
-
-      /**
-       * Configured DiceTerm class definitions
-       */
-      termTypes: RemoveIndexSignatures<Dice.TermTypes>;
-
-      /** Configured roll terms and the classes they map to. */
-      terms: Dice.Terms;
-
-      /**
-       * A function used to provide random uniform values.
-       */
-      randomUniform: () => number;
-
-      /**
-       * A parser implementation for parsing Roll expressions.
-       * @defaultValue {@linkcode foundry.dice.RollParser}
-       */
-      parser: foundry.dice.RollParser.AnyConstructor;
-
-      /** A collection of custom functions that can be included in roll expressions.*/
-      functions: HandleEmptyObject<RemoveIndexSignatures<Dice.Functions>>;
-
-      /**
-       * Dice roll fulfillment configuration
-       */
-      fulfillment: Dice.Fulfillment;
-    }
-
     /** @internal */
     interface _StatusEffect {
       /**
@@ -1630,6 +1588,302 @@ declare global {
         epic: SoundPreset;
         mc: SoundPreset;
       }
+    }
+
+    interface Dice {
+      /** The Dice types which are supported. */
+      types: (typeof foundry.dice.terms.DiceTerm)[];
+
+      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
+      rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
+
+      /**
+       * Configured Roll class definitions
+       * @defaultValue `[`{@linkcode dice.Roll}`]`
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.dice.Roll.create | Roll.create}.
+       */
+      rolls: (typeof foundry.dice.Roll)[];
+
+      /**
+       * Configured DiceTerm class definitions
+       */
+      termTypes: RemoveIndexSignatures<Dice.TermTypes>;
+
+      /** Configured roll terms and the classes they map to. */
+      terms: Dice.Terms;
+
+      /**
+       * A function used to provide random uniform values.
+       */
+      randomUniform: () => number;
+
+      /**
+       * A parser implementation for parsing Roll expressions.
+       * @defaultValue {@linkcode foundry.dice.RollParser}
+       */
+      parser: foundry.dice.RollParser.AnyConstructor;
+
+      /** A collection of custom functions that can be included in roll expressions.*/
+      functions: HandleEmptyObject<RemoveIndexSignatures<Dice.Functions>>;
+
+      /**
+       * Dice roll fulfillment configuration
+       */
+      fulfillment: Dice.Fulfillment;
+    }
+
+    namespace Dice {
+      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead. This warning will be removed in v14. */
+      type RollMode = foundry.dice.Roll.Mode;
+
+      interface RollModes {
+        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPublic",
+         *   icon: "fa-solid fa-globe"
+         * }
+         * ```
+         */
+        publicroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollPrivate",
+         *   icon: "fa-solid fa-user-secret"
+         * }
+         * ```
+         */
+        gmroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollBlind",
+         *   icon: "fa-solid fa-eye-slash"
+         * }
+         * ```
+         */
+        blindroll: RollModeConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.RollSelf",
+         *   icon: "fa-solid fa-user"
+         * }
+         * ```
+         */
+        selfroll: RollModeConfig;
+      }
+
+      interface RollModeConfig {
+        /** @remarks A localization key */
+        label: string;
+
+        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
+        icon: string;
+      }
+
+      namespace RollModes {
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type PublicRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type GMRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type BlindRoll = never;
+
+        /**
+         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
+         * This warning will be removed in v14.
+         */
+        type SelfRoll = never;
+      }
+
+      interface TermTypes {
+        [termType: string]: foundry.dice.terms.RollTerm.AnyConstructor;
+        DiceTerm: typeof foundry.dice.terms.DiceTerm;
+        FunctionTerm: typeof foundry.dice.terms.FunctionTerm;
+        NumericTerm: typeof foundry.dice.terms.NumericTerm;
+        OperatorTerm: typeof foundry.dice.terms.OperatorTerm;
+        ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm;
+        PoolTerm: typeof foundry.dice.terms.PoolTerm;
+        StringTerm: typeof foundry.dice.terms.StringTerm;
+      }
+
+      interface Terms {
+        [term: string]: typeof foundry.dice.terms.DiceTerm;
+        c: typeof foundry.dice.terms.Coin;
+        d: typeof foundry.dice.terms.Die;
+        f: typeof foundry.dice.terms.FateDie;
+      }
+
+      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
+
+      interface Functions {
+        [functionName: string]: RollFunction;
+      }
+
+      interface Fulfillment {
+        /** The die denominations available for configuration. */
+        dice: RemoveIndexSignatures<Fulfillment.Dice>;
+
+        /** The methods available for fulfillment. */
+        methods: RemoveIndexSignatures<Fulfillment.Methods>;
+
+        /**
+         * Designate one of the methods to be used by default for dice fulfillment, if the user hasn't specified otherwise.
+         * Leave this blank to use the configured {@linkcode CONFIG.Dice.randomUniform} to generate die rolls.
+         * @defaultValue `""`
+         */
+        defaultMethod: string;
+      }
+
+      namespace Fulfillment {
+        interface Dice {
+          [denomination: string]: DiceDenomination;
+
+          /** @defaultValue `{ label: "d4", icon: '<i class="fa-solid fa-dice-d4"></i>' }` */
+          d4: DiceDenomination;
+
+          /** @defaultValue `{ label: "d6", icon: '<i class="fa-solid fa-dice-d6"></i>' }` */
+          d6: DiceDenomination;
+
+          /** @defaultValue `{ label: "d8", icon: '<i class="fa-solid fa-dice-d8"></i>' }` */
+          d8: DiceDenomination;
+
+          /** @defaultValue `{ label: "d10", icon: '<i class="fa-solid fa-dice-d10"></i>' }` */
+          d10: DiceDenomination;
+
+          /** @defaultValue `{ label: "d12", icon: '<i class="fa-solid fa-dice-d12"></i>' }` */
+          d12: DiceDenomination;
+
+          /** @defaultValue `{ label: "d20", icon: '<i class="fa-solid fa-dice-d20"></i>' }` */
+          d20: DiceDenomination;
+
+          /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
+          d100: DiceDenomination;
+        }
+
+        interface DiceDenomination {
+          /** The human-readable label for the die. */
+          label: string;
+
+          /**
+           * An icon to display on the configuration sheet.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+        }
+
+        interface Methods {
+          [methodName: string]: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Mersenne",
+           *   interactive: false,
+           *   handler: term => term.mapRandomFace(dice.MersenneTwister.random())
+           * }
+           * ```
+           */
+          mersenne: Method;
+
+          /**
+           * @defaultValue
+           * ```ts
+           * {
+           *   label: "DICE.FULFILLMENT.Manual",
+           *   icon: '<i class="fa-solid fa-keyboard"></i>',
+           *   interactive: true
+           * }
+           * ```
+           */
+          manual: Method;
+        }
+
+        /** @internal */
+        interface _Method {
+          /**
+           * An icon to represent the fulfillment method.
+           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
+           */
+          icon: string;
+
+          /**
+           * Whether this method requires input from the user or if it is fulfilled entirely programmatically.
+           * @defaultValue `false`
+           */
+          interactive: boolean;
+
+          /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
+          handler: Handler;
+
+          /**
+           * A custom RollResolver implementation. If the only interactive methods the user has configured are this method and manual,
+           * this resolver will be used to resolve interactive rolls, instead of the default resolver. This resolver must therefore be
+           * capable of handling manual rolls.
+           * @privateRemarks Instantiated by `new` in {@linkcode foundry.dice.Roll._evaluate | Roll#_evaluate}.
+           */
+          resolver: typeof foundry.applications.dice.RollResolver;
+        }
+
+        interface Method extends InexactPartial<_Method> {
+          /** The human-readable label for the fulfillment method. */
+          label: string;
+        }
+
+        /**
+         * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
+         * this handler is called and awaited in order to produce the die roll result.
+         * @param term    - The term being fulfilled.
+         * @param options - Additional options to configure fulfillment.
+         * @returns The fulfilled value, or undefined if it could not be fulfilled.
+         * @remarks As of 13.351, the only place this gets called is in `DiceTerm##invokeFulfillmentHandler`, which gets called by
+         * {@linkcode foundry.dice.terms.DiceTerm._roll | DiceTerm#_roll}, which will pass on the options from `DiceTerm#roll`, minus `maximize`
+         * and `minimize`.
+         */
+        type Handler = (
+          term: foundry.dice.terms.DiceTerm,
+          // TODO: remove InexactPartial once DiceTerm is cleaned up in v14.
+          options?: InexactPartial<foundry.dice.terms.DiceTerm.EvaluationOptions>,
+        ) => MaybePromise<number | void>;
+      }
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment} instead. This warning will be removed in v14. */
+      type FulfillmentConfiguration = Fulfillment;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.DiceDenomination} instead. This warning will be removed in v14. */
+      type FulfillmentDenomination = Fulfillment.DiceDenomination;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Method} instead. This warning will be removed in v14. */
+      type FulfillmentMethod = Fulfillment.Method;
+
+      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Handler} instead. This warning will be removed in v14. */
+      type FulfillmentHandler = Fulfillment.Handler;
+
+      /** @deprecated Use {@linkcode foundry.dice.Roll.CoreDenominations} instead. This warning will be removed in v14. */
+      type DTermDiceStrings = foundry.dice.Roll.CoreDenominations;
     }
 
     interface FogExploration extends _Document<"FogExploration">, _HasNoTypes<"FogExploration"> {
@@ -3719,260 +3973,6 @@ declare global {
          */
         fonts: Font.Definition[];
       }
-    }
-
-    namespace Dice {
-      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead. This warning will be removed in v14. */
-      type RollMode = foundry.dice.Roll.Mode;
-
-      interface RollModes {
-        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollPublic",
-         *   icon: "fa-solid fa-globe"
-         * }
-         * ```
-         */
-        publicroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollPrivate",
-         *   icon: "fa-solid fa-user-secret"
-         * }
-         * ```
-         */
-        gmroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollBlind",
-         *   icon: "fa-solid fa-eye-slash"
-         * }
-         * ```
-         */
-        blindroll: RollModeConfig;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "CHAT.RollSelf",
-         *   icon: "fa-solid fa-user"
-         * }
-         * ```
-         */
-        selfroll: RollModeConfig;
-      }
-
-      interface RollModeConfig {
-        /** @remarks A localization key */
-        label: string;
-
-        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
-        icon: string;
-      }
-
-      namespace RollModes {
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type PublicRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type GMRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type BlindRoll = never;
-
-        /**
-         * @deprecated Roll mode descriptors no longer get their own interfaces, as all their keys only have primitive values.
-         * This warning will be removed in v14.
-         */
-        type SelfRoll = never;
-      }
-
-      interface TermTypes {
-        [termType: string]: foundry.dice.terms.RollTerm.AnyConstructor;
-        DiceTerm: typeof foundry.dice.terms.DiceTerm;
-        FunctionTerm: typeof foundry.dice.terms.FunctionTerm;
-        NumericTerm: typeof foundry.dice.terms.NumericTerm;
-        OperatorTerm: typeof foundry.dice.terms.OperatorTerm;
-        ParentheticalTerm: typeof foundry.dice.terms.ParentheticalTerm;
-        PoolTerm: typeof foundry.dice.terms.PoolTerm;
-        StringTerm: typeof foundry.dice.terms.StringTerm;
-      }
-
-      interface Terms {
-        [term: string]: typeof foundry.dice.terms.DiceTerm;
-        c: typeof foundry.dice.terms.Coin;
-        d: typeof foundry.dice.terms.Die;
-        f: typeof foundry.dice.terms.FateDie;
-      }
-
-      type RollFunction = (...args: Array<string | number>) => MaybePromise<number | `${number}`>;
-
-      interface Functions {
-        [functionName: string]: RollFunction;
-      }
-
-      interface Fulfillment {
-        /** The die denominations available for configuration. */
-        dice: RemoveIndexSignatures<Fulfillment.Dice>;
-
-        /** The methods available for fulfillment. */
-        methods: RemoveIndexSignatures<Fulfillment.Methods>;
-
-        /**
-         * Designate one of the methods to be used by default for dice fulfillment, if the user hasn't specified otherwise.
-         * Leave this blank to use the configured {@linkcode CONFIG.Dice.randomUniform} to generate die rolls.
-         * @defaultValue `""`
-         */
-        defaultMethod: string;
-      }
-
-      namespace Fulfillment {
-        interface Dice {
-          [denomination: string]: DiceDenomination;
-
-          /** @defaultValue `{ label: "d4", icon: '<i class="fa-solid fa-dice-d4"></i>' }` */
-          d4: DiceDenomination;
-
-          /** @defaultValue `{ label: "d6", icon: '<i class="fa-solid fa-dice-d6"></i>' }` */
-          d6: DiceDenomination;
-
-          /** @defaultValue `{ label: "d8", icon: '<i class="fa-solid fa-dice-d8"></i>' }` */
-          d8: DiceDenomination;
-
-          /** @defaultValue `{ label: "d10", icon: '<i class="fa-solid fa-dice-d10"></i>' }` */
-          d10: DiceDenomination;
-
-          /** @defaultValue `{ label: "d12", icon: '<i class="fa-solid fa-dice-d12"></i>' }` */
-          d12: DiceDenomination;
-
-          /** @defaultValue `{ label: "d20", icon: '<i class="fa-solid fa-dice-d20"></i>' }` */
-          d20: DiceDenomination;
-
-          /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
-          d100: DiceDenomination;
-        }
-
-        interface DiceDenomination {
-          /** The human-readable label for the die. */
-          label: string;
-
-          /**
-           * An icon to display on the configuration sheet.
-           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
-           */
-          icon: string;
-        }
-
-        interface Methods {
-          [methodName: string]: Method;
-
-          /**
-           * @defaultValue
-           * ```ts
-           * {
-           *   label: "DICE.FULFILLMENT.Mersenne",
-           *   interactive: false,
-           *   handler: term => term.mapRandomFace(dice.MersenneTwister.random())
-           * }
-           * ```
-           */
-          mersenne: Method;
-
-          /**
-           * @defaultValue
-           * ```ts
-           * {
-           *   label: "DICE.FULFILLMENT.Manual",
-           *   icon: '<i class="fa-solid fa-keyboard"></i>',
-           *   interactive: true
-           * }
-           * ```
-           */
-          manual: Method;
-        }
-
-        /** @internal */
-        interface _Method {
-          /**
-           * An icon to represent the fulfillment method.
-           * @remarks Should be a full html string, e.g `'<i class="fa-solid fa-dice-d4"></i>'`.
-           */
-          icon: string;
-
-          /**
-           * Whether this method requires input from the user or if it is fulfilled entirely programmatically.
-           * @defaultValue `false`
-           */
-          interactive: boolean;
-
-          /** A function to invoke to programmatically fulfil a given term for non-interactive fulfillment methods. */
-          handler: Handler;
-
-          /**
-           * A custom RollResolver implementation. If the only interactive methods the user has configured are this method and manual,
-           * this resolver will be used to resolve interactive rolls, instead of the default resolver. This resolver must therefore be
-           * capable of handling manual rolls.
-           * @privateRemarks Instantiated by `new` in {@linkcode foundry.dice.Roll._evaluate | Roll#_evaluate}.
-           */
-          resolver: typeof foundry.applications.dice.RollResolver;
-        }
-
-        interface Method extends InexactPartial<_Method> {
-          /** The human-readable label for the fulfillment method. */
-          label: string;
-        }
-
-        /**
-         * Only used for non-interactive fulfillment methods. If a die configured to use this fulfillment method is rolled,
-         * this handler is called and awaited in order to produce the die roll result.
-         * @param term    - The term being fulfilled.
-         * @param options - Additional options to configure fulfillment.
-         * @returns The fulfilled value, or undefined if it could not be fulfilled.
-         * @remarks As of 13.351, the only place this gets called is in `DiceTerm##invokeFulfillmentHandler`, which gets called by
-         * {@linkcode foundry.dice.terms.DiceTerm._roll | DiceTerm#_roll}, which will pass on the options from `DiceTerm#roll`, minus `maximize`
-         * and `minimize`.
-         */
-        type Handler = (
-          term: foundry.dice.terms.DiceTerm,
-          // TODO: remove InexactPartial once DiceTerm is cleaned up in v14.
-          options?: InexactPartial<foundry.dice.terms.DiceTerm.EvaluationOptions>,
-        ) => MaybePromise<number | void>;
-      }
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment} instead. This warning will be removed in v14. */
-      type FulfillmentConfiguration = Fulfillment;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.DiceDenomination} instead. This warning will be removed in v14. */
-      type FulfillmentDenomination = Fulfillment.DiceDenomination;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Method} instead. This warning will be removed in v14. */
-      type FulfillmentMethod = Fulfillment.Method;
-
-      /** @deprecated Use {@linkcode CONFIG.Dice.Fulfillment.Handler} instead. This warning will be removed in v14. */
-      type FulfillmentHandler = Fulfillment.Handler;
-
-      /** @deprecated Use {@linkcode foundry.dice.Roll.CoreDenominations} instead. This warning will be removed in v14. */
-      type DTermDiceStrings = foundry.dice.Roll.CoreDenominations;
     }
 
     namespace Token {
