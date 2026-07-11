@@ -1,17 +1,48 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
+import * as hexGridHelpers from "./hexagonal.test-d.ts";
+
+import GridHex = foundry.grid.GridHex;
+import HexagonalGrid = foundry.grid.HexagonalGrid;
+import BaseGrid = foundry.grid.BaseGrid;
 import Canvas = foundry.canvas.Canvas;
 
-declare const coordinates: foundry.grid.HexagonalGrid.Coordinates;
-declare const grid: foundry.grid.HexagonalGrid;
+describe("GridHex Tests", () => {
+  const grid = new HexagonalGrid(hexGridHelpers.minimalConfig);
 
-const gridHex = new foundry.grid.GridHex(coordinates, grid);
+  const point2D = { x: 500, y: 500 } satisfies Canvas.Point;
+  const offset2D = { i: 5, j: 5 } satisfies BaseGrid.Offset2D;
+  const cube2D = { q: 2, r: 5, s: -7 } satisfies HexagonalGrid.Cube2D;
 
-expectTypeOf(gridHex.grid).toEqualTypeOf<foundry.grid.HexagonalGrid>();
-expectTypeOf(gridHex.cube).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-expectTypeOf(gridHex.offset).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset>();
-expectTypeOf(gridHex.center).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(gridHex.topLeft).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(gridHex.getNeighbors()).toEqualTypeOf<foundry.grid.GridHex[]>();
-expectTypeOf(gridHex.shiftCube(1, 2, 3)).toEqualTypeOf<foundry.grid.GridHex>();
-expectTypeOf(gridHex.equals(gridHex)).toEqualTypeOf<boolean>();
+  test("Construction", () => {
+    // @ts-expect-error Passing coordinates and a grid is required
+    new GridHex();
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- deprecated construction signature
+    new GridHex({ row: 5, col: 6 }, grid);
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- deprecated construction signature
+    new GridHex(cube2D, hexGridHelpers.fullConfig);
+
+    // valid constructions
+    new GridHex(point2D, grid);
+    new GridHex(offset2D, grid);
+    new GridHex(cube2D, grid);
+  });
+
+  const gridHex = new GridHex(cube2D, grid);
+
+  test("Properties and getters", () => {
+    expectTypeOf(gridHex.grid).toEqualTypeOf<HexagonalGrid>();
+    expectTypeOf(gridHex.cube).toEqualTypeOf<HexagonalGrid.Cube2D>();
+    expectTypeOf(gridHex.offset).toEqualTypeOf<BaseGrid.Offset2D>();
+    expectTypeOf(gridHex.center).toEqualTypeOf<Canvas.Point>();
+    expectTypeOf(gridHex.topLeft).toEqualTypeOf<Canvas.Point>();
+  });
+
+  test("Methods", () => {
+    expectTypeOf(gridHex.getNeighbors()).toEqualTypeOf<GridHex[]>();
+    expectTypeOf(gridHex.shiftCube(1, 2, 3)).toEqualTypeOf<GridHex>();
+    expectTypeOf(gridHex.equals(gridHex)).toEqualTypeOf<boolean>();
+  });
+});

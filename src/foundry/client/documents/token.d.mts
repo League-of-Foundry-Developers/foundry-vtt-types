@@ -18,7 +18,7 @@ import type { TerrainData } from "#client/data/terrain-data.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-import type { BaseGrid } from "#common/grid/_module.d.mts";
+import type { BaseGrid, HexagonalGrid } from "#common/grid/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -2199,9 +2199,14 @@ declare namespace TokenDocument {
       Omit<Database.UpdateOneDocumentOperation, "movement" | "_movementArguments">,
       InexactPartial<_MoveOptions> {}
 
-  interface MovementCostFunction extends Omit<BaseGrid.MeasurePathCostFunction3D, "segment"> {
-    segment: MovementSegmentData;
-  }
+  /**
+   * We have no information from the `TokenDocument` about whether the grid is hex or not, or whether the path provided is 2D or 3D.
+   */
+  type MovementCostFunction =
+    | BaseGrid.CostFunction<BaseGrid.Coordinates2D, MovementSegmentData>
+    | BaseGrid.CostFunction<HexagonalGrid.Coordinates2D, MovementSegmentData>
+    | BaseGrid.CostFunction<BaseGrid.Coordinates3D, MovementSegmentData>
+    | BaseGrid.CostFunction<HexagonalGrid.Coordinates3D, MovementSegmentData>;
 
   interface MovementCostAggregatorResult {
     from: BaseGrid.Offset3D;
@@ -2592,6 +2597,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @param options   - Additional measurement options
    */
+  // TODO: Split into 2D/3D overloads?
   measureMovementPath(
     waypoints: TokenDocument.MeasureMovementPathWaypoint[],
     options?: TokenDocument.MeasureMovementPathOptions,
