@@ -586,42 +586,6 @@ export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
 export declare const cursors: CONFIG.Cursors;
 
 declare global {
-  namespace CONFIG {
-    /** @internal */
-    interface _StatusEffect {
-      /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
-       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of
-       * {@linkcode StatusEffectConfig.name | StatusEffectConfig#name}"  (since v12, until v14)
-       */
-      label: string;
-
-      /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
-       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of
-       * {@linkcode StatusEffectConfig.img | StatusEffectConfig#img}"  (since v12, until v14)
-       */
-      icon: string;
-
-      /**
-       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
-       * if the Token's Actor sub-type is one of the configured ones.
-       * @defaultValue `true`
-       */
-      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
-    }
-
-    /**
-     * Configured status effects which are recognized by the game system
-     */
-    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
-      /**
-       * A string identifier for the effect
-       */
-      id: string;
-    }
-  }
-
   /**
    * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
    * aspects of the software behaves.
@@ -3543,6 +3507,40 @@ declare global {
          */
         senseAll: perception.DetectionModeAll;
       }
+    }
+
+    /** @internal */
+    interface _StatusEffect {
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
+       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of {@linkcode StatusEffect.name | StatusEffect#name}"
+       * (since v12, until v14)
+       */
+      label: string;
+
+      /**
+       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
+       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of {@linkcode StatusEffect.img | StatusEffect#img}"
+       * (since v12, until v14)
+       */
+      icon: string;
+
+      /**
+       * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
+       * if the Token's Actor sub-type is one of the configured ones.
+       * @defaultValue `true`
+       */
+      hud: boolean | { actorTypes?: foundry.documents.Actor.SubType[] };
+    }
+
+    /**
+     * Configured status effects which are recognized by the game system
+     */
+    interface StatusEffect extends InexactPartial<_StatusEffect>, foundry.documents.ActiveEffect.CreateData {
+      /**
+       * A string identifier for the effect
+       */
+      id: string;
     }
 
     // The point of this interface is to be declaration merged into so you can override `DefaultSpecialStatusEffects` and remove existing
