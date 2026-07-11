@@ -220,7 +220,7 @@ declare namespace BaseRuler {
   interface ChangeDragElevationOptions extends InexactPartial<_ChangeDragElevationOptions> {}
 
   /** @internal */
-  type _UpdateData = IntentionalPartial<{
+  interface _UpdateData {
     /**
      * @defaultValue `[]`
      * @remarks Can't be `undefined` because of an `in` check.
@@ -232,9 +232,10 @@ declare namespace BaseRuler {
      * @remarks Can't be `undefined` because of an `in` check.
      */
     hidden: boolean;
-  }>;
+  }
 
-  interface UpdateData extends _UpdateData {}
+  /** @privateRemarks Some properties can't be `undefined`, so `IntentionalPartial`. */
+  interface UpdateData extends IntentionalPartial<_UpdateData> {}
 }
 
 export default BaseRuler;

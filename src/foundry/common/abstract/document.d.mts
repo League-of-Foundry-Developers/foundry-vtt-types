@@ -2344,7 +2344,7 @@ declare namespace Document {
      * most required properties, any specific documents' {@linkcode GetDocumentsOperation}s are not
      * assignable to it, since they have been partialed.
      */
-    type AnyGetOperation = IntentionalPartial<DatabaseBackend.GetOperation>;
+    interface AnyGetOperation extends IntentionalPartial<DatabaseBackend.GetOperation> {}
 
     /** @see {@linkcode DatabaseBackend.GetOperation} */
     type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<"GetOperation", DocName>;
@@ -2532,7 +2532,7 @@ declare namespace Document {
      * required properties, any specific documents' {@linkcode CreateDocumentsOperation}s are not assignable to it, since they have been
      * partialed.
      */
-    type AnyCreateOperation = IntentionalPartial<DatabaseBackend.CreateOperation>;
+    interface AnyCreateOperation extends IntentionalPartial<DatabaseBackend.CreateOperation> {}
 
     /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.create}.
@@ -2755,7 +2755,7 @@ declare namespace Document {
      * the most required properties, any specific documents' {@linkcode UpdateManyDocumentsOperation}s or
      * {@linkcode UpdateOneDocumentOperation}s are not assignable to it, since they have  been partialed.
      */
-    type AnyUpdateOperation = IntentionalPartial<DatabaseBackend.UpdateOperation>;
+    interface AnyUpdateOperation extends IntentionalPartial<DatabaseBackend.UpdateOperation> {}
 
     /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.update | Document#update}.
@@ -2967,7 +2967,7 @@ declare namespace Document {
      * the most required properties, any specific documents' {@linkcode DeleteManyDocumentsOperation}s or
      * {@linkcode DeleteOneDocumentOperation}s are not assignable to it, since they have  been partialed.
      */
-    type AnyDeleteOperation = IntentionalPartial<DatabaseBackend.UpdateOperation>;
+    interface AnyDeleteOperation extends IntentionalPartial<DatabaseBackend.UpdateOperation> {}
 
     /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.delete | Document#delete}.
@@ -3365,14 +3365,15 @@ declare namespace Document {
    * This is `IntentionalPartial` because `.createDialog` checks for keys with `in`.
    * @internal
    */
-  type _PartialDialogV1OptionsForCreateDialog = IntentionalPartial<
-    Pick<DialogV2.PromptConfig, "id" | "classes"> & {
-      /** @deprecated As of v13 these options are being passed to a {@linkcode DialogV2} so this property has no effect */
-      jQuery: boolean;
+  interface _PartialDialogV1OptionsForCreateDialog
+    extends
+      IntentionalPartial<Pick<DialogV2.PromptConfig, "id" | "classes">>,
+      IntentionalPartial<ApplicationV2.Position> {
+    /** @deprecated As of v13 these options are being passed to a {@linkcode DialogV2} so this property has no effect */
+    jQuery?: boolean;
 
-      title: string;
-    } & ApplicationV2.Position
-  >;
+    title?: string;
+  }
 
   /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
   interface DialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {

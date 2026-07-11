@@ -567,31 +567,30 @@ declare namespace CompendiumCollection {
     result: ManageCompendiumResult<Action, Type>;
   }
 
-  /**
-   * `IntentionalPartial` because this goes over the socket, where `undefined`-value keys get dropped. This type can't be folded into
-   * {@linkcode ManageCompendiumSocketOptions}; doing so causes errors about lack of index signature where
-   * {@linkcode ManageCompendiumRequest} extends {@linkcode SocketInterface.Request}.
-   * @internal
-   */
-  type _ManageCompendiumSocketOptions = IntentionalPartial<{
+  /** @internal*/
+  interface _ManageCompendiumSocketOptions {
     /**
      * @remarks {@linkcode CompendiumCollection.duplicateCompendium | CompendiumCollection#duplicateCompendium} passes
      * {@linkcode CompendiumCollection.collection | this.collection} when calling {@linkcode CompendiumCollection.createCompendium}.
      */
     source: string;
-  }>;
+  }
 
   /**
    * The interface for {@linkcode ManageCompendiumRequest.options}.
    *
-   * @remarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
+   * @privateRemarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
    * `MigrateOptions` (one for each {@linkcode ManageCompendiumAction}), but as of 13.351 the only valid `options` key for any operation is
    * {@linkcode ManageCompendiumSocketOptions.source | source} for `create`, with `delete` using no options and `migrate` only taking an
    * `onProgress` function that wouldn't survive the socket and {@linkcode MigrateOptions.notify | notify} which, since `migrate` operations
    * don't return a response (inferred by reading the {@linkcode CompendiumCollection._activateSocketListeners} body), and it has no effect
    * server-side, is pointless to allow.
+   *
+   * `IntentionalPartial` because this goes over the socket, where `undefined`-value keys get dropped. This type can't be folded into
+   * {@linkcode ManageCompendiumSocketOptions}; doing so causes errors about lack of index signature where
+   * {@linkcode ManageCompendiumRequest} extends {@linkcode SocketInterface.Request}.
    */
-  interface ManageCompendiumSocketOptions extends _ManageCompendiumSocketOptions {}
+  interface ManageCompendiumSocketOptions extends IntentionalPartial<_ManageCompendiumSocketOptions> {}
 
   interface TestUserPermissionOptions extends InexactPartial<Document._TestUserPermissionsOptions> {}
 
