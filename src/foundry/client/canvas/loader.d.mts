@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { TranscoderWorker } from "@pixi/basis";
 
 /**
@@ -243,16 +243,7 @@ declare namespace TextureLoader {
   /** Options for {@link TextureLoader.load | `TextureLoader#load`} */
   interface LoadOptions extends _LoadOptions {}
 
-  /** @internal */
-  type _FetchResourceOptions = NullishProps<{
-    /**
-     * Append a cache-busting query parameter to the request.
-     * @defaultValue `false`
-     */
-    bustCache: boolean;
-  }>;
-
-  interface FetchResourceOptions extends _FetchResourceOptions {}
+  interface FetchResourceOptions extends foundry.utils.FetchResourceOptions {}
 
   /** @internal */
   type _ExpireCacheOptions = InexactPartial<{

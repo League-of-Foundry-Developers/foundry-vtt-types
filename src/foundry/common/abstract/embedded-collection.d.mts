@@ -231,7 +231,6 @@ declare namespace EmbeddedCollection {
      * Whether to throw an error or only log a warning.
      * @defaultValue `true`
      */
-    // TODO: strip null when cleaning up DataModel types, this is only required because of a NullishProps somewhere
     strict?: boolean | undefined;
   }
 

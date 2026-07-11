@@ -3,7 +3,6 @@ import type {
   SimpleMerge,
   AnyObject,
   EmptyObject,
-  NullishProps,
   InexactPartial,
   FixedInstanceType,
   Identity,
@@ -1726,7 +1725,7 @@ declare namespace NumberField {
 
   /** @internal */
   type _ToInputConfig<InitializedType> = DataField.ToInputConfig<InitializedType> &
-    NullishProps<{
+    InexactPartial<{
       min: number;
       max: number;
       step: number;

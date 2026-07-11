@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type AbstractBaseShader from "../base-shader.mjs";
 
 /**
@@ -107,12 +107,12 @@ declare namespace GridShader {
   interface AnyConstructor extends Identity<typeof AnyGridShader> {}
 
   /** @internal */
-  type _ConfigureOptions = NullishProps<{
+  interface _ConfigureOptions {
     /** @defaultValue `0` */
     style: AbstractBaseShader.UniformValue;
-  }>;
+  }
 
-  interface ConfigureOptions extends _ConfigureOptions {}
+  interface ConfigureOptions extends InexactPartial<_ConfigureOptions> {}
 }
 
 export default GridShader;
