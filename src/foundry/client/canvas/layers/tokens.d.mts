@@ -133,6 +133,13 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   setTargets(targetIds: Iterable<string>, options?: TokenLayer.SetTargetsOptions): void;
 
   /**
+   * Assign multiple token targets
+   * @param targetIds - The array or set of Token IDs.
+   * @param options   - Additional options to configure targeting behaviour.
+   */
+  setTargets(targetIds: Iterable<string>, options?: TokenLayer.SetTargetsOptions): void;
+
+  /**
    * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
    * Tokens are currently sorted in order of their TokenID
    * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.

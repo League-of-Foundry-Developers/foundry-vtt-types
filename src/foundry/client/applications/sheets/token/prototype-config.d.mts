@@ -22,6 +22,8 @@ declare class PrototypeTokenConfig<
 > extends TokenApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // Fake override.
   static override DEFAULT_OPTIONS: PrototypeTokenConfig.DefaultOptions;
+
+  override get token(): TokenDocument.Implementation | PrototypeToken;
 }
 
 declare namespace PrototypeTokenConfig {
