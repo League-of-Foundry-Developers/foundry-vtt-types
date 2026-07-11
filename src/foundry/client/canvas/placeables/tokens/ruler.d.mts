@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
 import type { Ruler } from "#client/canvas/interaction/_module.d.mts";
 import type { BaseTokenRuler } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
@@ -193,7 +193,7 @@ declare namespace TokenRuler {
     cost: SegmentCost;
   }
 
-  interface SegmentCost extends Ruler._DeltaString {
+  interface SegmentCost extends InexactPartial<Ruler._DeltaString> {
     total: string;
     units: string;
   }

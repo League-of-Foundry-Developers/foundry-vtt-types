@@ -606,7 +606,8 @@ declare namespace Roll {
     total: number | null;
   }
 
-  type _ClassifyStringTermOptions = InexactPartial<{
+  /** @internal */
+  interface _ClassifyStringTermOptions {
     /**
      * Allow intermediate terms
      * @defaultValue `true`
@@ -618,9 +619,9 @@ declare namespace Roll {
 
     /** The next term to classify */
     next: RollTerm | string | null;
-  }>;
+  }
 
-  interface ClassifyStringTermOptions extends _ClassifyStringTermOptions {}
+  interface ClassifyStringTermOptions extends InexactPartial<_ClassifyStringTermOptions> {}
 
   /** @internal */
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.

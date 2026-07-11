@@ -5,10 +5,8 @@ import type {
   HandleEmptyObject,
   InexactPartial,
   IntentionalPartial,
-  NullishProps,
   RequiredProps,
 } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "#client/config.d.mts";
 import type { PlaceableObject, Region } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { Canvas, sources } from "#client/canvas/_module.d.mts";
@@ -917,9 +915,9 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onHoverOut(event: Canvas.Event.Pointer): void;
+  protected override _onHoverOut(event?: Canvas.Event.Pointer): void;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
@@ -1062,8 +1060,7 @@ declare namespace Token {
    * Not to be confused with {@linkcode TokenDocument.ImplementationClass}
    * which refers to the implementation for the Token document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof Token>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"Token">;
 
   type Schema = TokenDocument.Schema;
   type Parent = TokenDocument.Parent;
@@ -1351,33 +1348,32 @@ declare namespace Token {
   interface PrepareAnimationOptions extends InexactPartial<_PrepareAnimationOptions> {}
 
   /** @internal */
-  type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> &
-    InexactPartial<{
-      /**
-       * The name of the animation, or `null` if nameless.
-       */
-      name: string | symbol | null;
+  interface _AnimateOptions extends Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> {
+    /**
+     * The name of the animation, or `null` if nameless.
+     */
+    name: string | symbol | null;
 
-      /**
-       * Chain the animation to the existing one of the same name?
-       * @defaultValue `false`
-       */
-      chain: boolean;
+    /**
+     * Chain the animation to the existing one of the same name?
+     * @defaultValue `false`
+     */
+    chain: boolean;
 
-      /**
-       * The movement action.
-       */
-      action: string;
-    }> &
-    NullishProps<{
-      /**
-       * The terrain data.
-       * @defaultValue `null`
-       */
-      terrain: foundry.abstract.DataModel.Any | null;
-    }>;
+    /**
+     * The movement action.
+     */
+    action: string;
 
-  interface AnimateOptions extends _AnimateOptions, GetAnimationDurationOptions, PrepareAnimationOptions {
+    /**
+     * The terrain data.
+     * @defaultValue `null`
+     */
+    terrain: foundry.abstract.DataModel.Any | null;
+  }
+
+  interface AnimateOptions
+    extends InexactPartial<_AnimateOptions>, GetAnimationDurationOptions, PrepareAnimationOptions {
     /**
      * @remarks If `true`, the `duration` of the animation will be overridden by the calculated total movement animation duration in
      * `Token##onUpdateAnimation` (via {@linkcode Token._onUpdate | Token#_onUpdate}). Unused as of 13.351.

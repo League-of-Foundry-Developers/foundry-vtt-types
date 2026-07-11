@@ -222,7 +222,7 @@ declare namespace BaseEffectSource {
   interface AnyConstructor extends Identity<typeof AnyBaseEffectSource> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * An optional PlaceableObject which is responsible for this source
      * @remarks The {@linkcode EnvironmentCanvasGroup} passes itself when creating the global light source during its construction,
@@ -240,9 +240,9 @@ declare namespace BaseEffectSource {
      * {@linkcode BaseEffectSource.effectsCollection | #effectsCollection}
      */
     sourceId: string;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   interface SourceData {
     /**
@@ -271,15 +271,15 @@ declare namespace BaseEffectSource {
   }
 
   /** @internal */
-  type _InitializeOptions = InexactPartial<{
+  interface _InitializeOptions {
     /**
      * Should source data be reset to default values before applying changes?
      * @defaultValue `false`
      */
     reset: boolean;
-  }>;
+  }
 
-  interface InitializeOptions extends _InitializeOptions {}
+  interface InitializeOptions extends InexactPartial<_InitializeOptions> {}
 
   /** @privateRemarks The `| number` is from Foundry's typing, but core only uses boolean flags in v12.331 */
   interface Flags extends Record<string, boolean | number | undefined> {

@@ -186,7 +186,7 @@ declare namespace WorldCollection {
     : DocumentDirectory<Document.ImplementationClassFor<DocumentName>> | undefined;
 
   /** @internal */
-  type _FromCompendiumOptions = InexactPartial<{
+  interface _FromCompendiumOptions {
     /**
      * Clear the currently assigned folder.
      * @defaultValue `false`
@@ -218,9 +218,9 @@ declare namespace WorldCollection {
      * @defaultValue `true`
      */
     clearState: boolean;
-  }>;
+  }
 
-  interface FromCompendiumOptions extends _FromCompendiumOptions {
+  interface FromCompendiumOptions extends InexactPartial<_FromCompendiumOptions> {
     /**
      * @deprecated "The `addFlags` option for {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}
      * has been removed." (since v12, until v14)

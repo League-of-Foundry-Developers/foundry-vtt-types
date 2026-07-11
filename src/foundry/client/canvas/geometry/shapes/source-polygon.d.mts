@@ -228,8 +228,9 @@ declare namespace PointSourcePolygon {
 
   /**
    * Properties not guaranteed to exist by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}, without restrictions on nullishness
+   * @internal
    */
-  type _InexactConfig = InexactPartial<{
+  interface _InexactConfig {
     /**
      * The object (if any) that spawned this polygon.
      * @remarks Not guaranteed by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize} but will exist in all configs created by {@linkcode PointEffectSourceMixin} subclasses.
@@ -242,7 +243,7 @@ declare namespace PointSourcePolygon {
      * @remarks Overridden `true` if `CONFIG.debug.polygons` is truthy
      */
     debug: boolean;
-  }>;
+  }
 
   /**
    * Properties of the config that have defaults for nullish values in {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}, and thus are guaranteed in the stored config
@@ -305,12 +306,14 @@ declare namespace PointSourcePolygon {
   /**
    * @remarks The interface stored in {@link PointSourcePolygon.config | PointSourcePolygon#config}, with defaults applied
    */
-  interface StoredConfig extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, _InexactConfig, _ComputedConfig {}
+  interface StoredConfig
+    extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, InexactPartial<_InexactConfig>, _ComputedConfig {}
 
   /**
    * @remarks The interface passed to {@linkcode PointSourcePolygon.create}, etc. All properties are optional other than `type`
    */
-  interface Config extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig, _InexactConfig {}
+  interface Config
+    extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig, InexactPartial<_InexactConfig> {}
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
 
@@ -336,16 +339,16 @@ declare namespace PointSourcePolygon {
   interface TestCollisionConfig extends _TestCollisionConfig, Omit<Config, "type"> {}
 
   /** @internal */
-  type _TestCollisionOptions<Mode extends CollisionModes | undefined> = InexactPartial<{
+  interface _TestCollisionOptions<Mode extends CollisionModes | undefined> {
     /**
      * The collision mode to test: "any", "all", or "closest"
      * @defaultValue `"all"`
      */
     mode: Mode;
-  }>;
+  }
 
   interface TestCollisionOptions<Mode extends CollisionModes | undefined = undefined>
-    extends _TestCollisionOptions<Mode>, TestCollisionConfig {}
+    extends InexactPartial<_TestCollisionOptions<Mode>>, TestCollisionConfig {}
 
   /** @internal */
   interface _CollisionTypesReturnMap {

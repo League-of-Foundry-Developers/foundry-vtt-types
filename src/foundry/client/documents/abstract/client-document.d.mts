@@ -7,7 +7,6 @@ import type {
   MaybePromise,
   Mixin,
   NullishCoalesce,
-  NullishProps,
 } from "#utils";
 import type { Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
 import type { Application } from "#client/appv1/api/_module.d.mts";
@@ -706,7 +705,7 @@ declare global {
     > = Omit extends true | (Default extends true ? undefined : never) ? ToOmit : never;
 
     /** @internal */
-    type _ToCompendiumOptions = NullishProps<{
+    interface _ToCompendiumOptions {
       /**
        * Clear the flags object
        * @defaultValue `false`
@@ -749,12 +748,12 @@ declare global {
        * @defaultValue `false`
        */
       keepId: boolean;
-    }>;
+    }
 
-    interface ToCompendiumOptions extends _ToCompendiumOptions {}
+    interface ToCompendiumOptions extends InexactPartial<_ToCompendiumOptions> {}
 
     /** @internal */
-    type _CreateDocumentLinkOptions = NullishProps<{
+    interface _CreateDocumentLinkOptions {
       /**
        * A document to generate a link relative to.
        * @remarks Ignored if falsey
@@ -766,9 +765,9 @@ declare global {
        * @defaultValue `this.name`
        */
       label: string;
-    }>;
+    }
 
-    interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
+    interface CreateDocumentLinkOptions extends InexactPartial<_CreateDocumentLinkOptions> {}
 
     /** The return type of {@linkcode ClientDocument._onClickDocumentLink | ClientDocument#_onClickDocumentLink} if not overridden */
     type OnClickDocumentLinkReturn = Application.Any | Promise<DocumentSheetV2.Any>;

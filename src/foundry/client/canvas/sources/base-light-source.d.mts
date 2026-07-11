@@ -263,18 +263,19 @@ declare namespace BaseLightSource {
   }
 
   /** @internal */
-  type _AnimateFlickeringOptions = InexactPartial<{
+  interface _AnimateFlickeringOptions {
     /**
      * Noise amplification (\>1) or dampening (\<1)
      * @defaultValue `1`
      */
     amplification: number;
-  }>;
+  }
 
-  interface AnimateFlickeringOptions extends RenderedEffectSource.AnimationFunctionOptions, _AnimateFlickeringOptions {}
+  interface AnimateFlickeringOptions
+    extends RenderedEffectSource.AnimationFunctionOptions, InexactPartial<_AnimateFlickeringOptions> {}
 
   /** @internal */
-  type _AnimateSoundPulseOptionsOptions = InexactPartial<{
+  interface _AnimateSoundPulseOptionsOptions {
     /**
      * A smoothing factor in `[0..10]`, effectively updates/second.
      * @defaultValue `5`
@@ -293,10 +294,10 @@ declare namespace BaseLightSource {
      * @defaultValue `false`
      */
     reverse: boolean;
-  }>;
+  }
 
   /** @privateRemarks Different property descriptions, otherwise identical to {@linkcode RenderedEffectSource.AnimationFunctionOptions} */
-  interface AnimateSoundPulseOptions extends _AnimateSoundPulseOptionsOptions {}
+  interface AnimateSoundPulseOptions extends InexactPartial<_AnimateSoundPulseOptionsOptions> {}
 }
 
 declare abstract class AnyBaseLightSource extends BaseLightSource<

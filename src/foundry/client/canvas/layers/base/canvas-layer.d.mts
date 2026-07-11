@@ -86,7 +86,10 @@ declare namespace CanvasLayer {
   interface Any extends AnyCanvasLayer {}
   interface AnyConstructor extends Identity<typeof AnyCanvasLayer> {}
 
-  type Layers = keyof CONFIG.Canvas.Layers;
+  type Layer = keyof typeof CONFIG.Canvas.layers;
+
+  /** @deprecated Use {@linkcode CanvasLayer.Layer} instead. This warning will be removed in v14. */
+  type Layers = Layer;
 
   interface LayerOptions {
     /**
@@ -97,7 +100,7 @@ declare namespace CanvasLayer {
      *
      * See {@linkcode CanvasLayer.instance} remarks.
      */
-    name: CanvasLayer.Layers | "effects" | "";
+    name: CanvasLayer.Layer | "effects" | "";
 
     /**
      * @remarks As of 14.361, this is used solely to get a `name` to compare against, so no specific constructor is required.

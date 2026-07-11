@@ -75,15 +75,15 @@ declare namespace StringTree {
   type EntryFilter<Leaf extends object> = (entry: Leaf) => boolean;
 
   /** @internal */
-  type _SearchOptions<Leaf extends object> = InexactPartial<{
+  interface _SearchOptions<Leaf extends object> {
     /** The maximum number of items to retrieve. */
     limit: number;
 
     /** A filter function to apply to each candidate entry. */
     filterEntries: StringTree.EntryFilter<Leaf>;
-  }>;
+  }
 
-  interface LookupOptions<Leaf extends object> extends _SearchOptions<Leaf> {}
+  interface LookupOptions<Leaf extends object> extends InexactPartial<_SearchOptions<Leaf>> {}
 
   interface NodeAtPrefixOptions {
     /**
@@ -94,7 +94,7 @@ declare namespace StringTree {
     hasLeaves?: boolean | undefined;
   }
 
-  interface BreadthFirstSearchOptions<Leaf extends object> extends _SearchOptions<Leaf> {}
+  interface BreadthFirstSearchOptions<Leaf extends object> extends InexactPartial<_SearchOptions<Leaf>> {}
 }
 
 export default StringTree;

@@ -148,15 +148,15 @@ declare namespace Ruler {
    * all will include the {@linkcode Number.signedString | .signedString()} of the difference in the property they're describing
    * @internal
    */
-  type _DeltaString = InexactPartial<{
+  interface _DeltaString {
     delta: string;
-  }>;
+  }
 
-  interface SegmentDistance extends _DeltaString {
+  interface SegmentDistance extends InexactPartial<_DeltaString> {
     total: string;
   }
 
-  interface ElevationContext extends _DeltaString {
+  interface ElevationContext extends InexactPartial<_DeltaString> {
     total: number;
     icon: string;
     hidden: boolean;
@@ -173,7 +173,7 @@ declare namespace Ruler {
    * ```
    * @internal
    */
-  type _StylePropsWithDefaults = InexactPartial<{
+  interface _StylePropsWithDefaults {
     /**
      * @defaultValue `0xFFFFFF`
      * @remarks The above default is the value if the implementation of {@linkcode Ruler._getWaypointStyle | Ruler#_getWaypointStyle}
@@ -190,13 +190,13 @@ declare namespace Ruler {
      * no value/`undefined` for this property. It is *also* the default value core's implementations provide in both cases.
      */
     alpha: number;
-  }>;
+  }
 
-  interface WaypointStyle extends _StylePropsWithDefaults {
+  interface WaypointStyle extends InexactPartial<_StylePropsWithDefaults> {
     radius: number;
   }
 
-  interface SegmentStyle extends _StylePropsWithDefaults {
+  interface SegmentStyle extends InexactPartial<_StylePropsWithDefaults> {
     width: number;
   }
 

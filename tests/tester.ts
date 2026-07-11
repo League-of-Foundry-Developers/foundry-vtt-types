@@ -1,5 +1,4 @@
 import type { SerializedConfig, WorkerGlobalState } from "vitest";
-// eslint-disable-next-line import-x/extensions
 import { VitestTestRunner } from "vitest/runners";
 import { collectTests, startTests } from "@vitest/runner";
 

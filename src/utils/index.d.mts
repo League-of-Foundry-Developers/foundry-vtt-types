@@ -1412,7 +1412,7 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
  * Actual document types that go in folders
  * @deprecated No replacement as this was deemed too niche.
  */
-export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+export type FolderDocumentTypes = Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
 
 /**
  * Handles cases where an empty object is defined somewhere and then filled in some time before the given hook.
@@ -1423,3 +1423,8 @@ export type PartialUntilInitialized<T extends object, HookName extends Initializ
   HookName,
   IntentionalPartial<T>
 >;
+
+/** An inverse of {@linkcode Readonly} */
+export type Mutable<T> = {
+  -readonly [K in keyof T]: T[K];
+};

@@ -1,7 +1,6 @@
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
-/* eslint-disable import-x/extensions */
 
 export { default as ClientKeybindings } from "./client-keybindings.mjs";
 export { default as ClipboardHelper } from "./clipboard-helper.mjs";

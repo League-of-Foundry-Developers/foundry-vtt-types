@@ -165,12 +165,12 @@ declare namespace WeilerAthertonClipper {
   }
 
   /** @internal */
-  type _CombineOptions = InexactPartial<{
+  interface _CombineOptions {
     /**
      * If the WeilerAtherton constructor could mutate or not the subject polygon points
      */
     canMutate: boolean;
-  }>;
+  }
 
   /**
    * @remarks See {@linkcode WeilerAthertonClipper.combine}'s `options` parameter description
@@ -179,7 +179,7 @@ declare namespace WeilerAthertonClipper {
    * - a `density` property, despite one being passed in {@linkcode PIXI.Circle.intersectPolygon | PIXI.Circle#intersectPolygon} as of 13.346
    * as those are not used by {@linkcode WeilerAthertonClipper.combine}
    */
-  interface CombineOptions extends _CombineOptions, ClipOpts {
+  interface CombineOptions extends InexactPartial<_CombineOptions>, ClipOpts {
     /**
      * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
      * @privateRemarks This *could* have been optional, as it gets passed to `new WAC()`, where it has a default, but Foundry has a pair of `!==` checks in

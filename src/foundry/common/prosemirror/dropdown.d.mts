@@ -58,7 +58,7 @@ declare class ProseMirrorDropDown {
 
 declare namespace ProseMirrorDropDown {
   /** @internal */
-  type _ConstructionOptions = InexactPartial<{
+  interface _ConstructionOptions {
     /** The menu CSS class name. Required if providing an action. */
     cssClass: string;
 
@@ -67,9 +67,9 @@ declare namespace ProseMirrorDropDown {
 
     /** A callback to fire when a menu item is clicked. */
     onAction: (event: MouseEvent) => void;
-  }>;
+  }
 
-  interface ConstructionOptions extends _ConstructionOptions {}
+  interface ConstructionOptions extends InexactPartial<_ConstructionOptions> {}
 
   interface Entry extends ProseMirrorMenu.Item {
     /** Any child entries. */

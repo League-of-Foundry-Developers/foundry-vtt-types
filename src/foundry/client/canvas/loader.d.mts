@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { TranscoderWorker } from "@pixi/basis";
 
 /**
@@ -171,7 +171,7 @@ declare namespace TextureLoader {
   }
 
   /** @internal */
-  type _LoadSceneTexturesOptions = InexactPartial<{
+  interface _LoadSceneTexturesOptions {
     /**
      * Destroy other expired textures
      * @defaultValue `true`
@@ -188,13 +188,16 @@ declare namespace TextureLoader {
      * The maximum number of textures that can be loaded concurrently
      */
     maxConcurrent: number;
-  }>;
+  }
 
   /** Options for {@linkcode TextureLoader.loadSceneTextures}*/
-  interface LoadSceneTexturesOptions extends _LoadSceneTexturesOptions {}
+  interface LoadSceneTexturesOptions extends InexactPartial<_LoadSceneTexturesOptions> {}
 
-  /** @internal */
-  type _LoadOptions = InexactPartial<{
+  /**
+   * Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here
+   * @internal
+   */
+  interface _LoadOptions extends Pick<LoadSceneTexturesOptions, "maxConcurrent"> {
     /**
      * The status message to display in the load bar
      * @defaultValue `""`
@@ -236,33 +239,22 @@ declare namespace TextureLoader {
      * @defaultValue `true`
      */
     displayProgress: boolean;
-  }> &
-    // Can't Pick `expireCache`, despite it existing on `LoadSceneTexturesOptions`, as it has a different default here
-    Pick<LoadSceneTexturesOptions, "maxConcurrent">;
+  }
 
   /** Options for {@link TextureLoader.load | `TextureLoader#load`} */
-  interface LoadOptions extends _LoadOptions {}
+  interface LoadOptions extends InexactPartial<_LoadOptions> {}
+
+  interface FetchResourceOptions extends foundry.utils.FetchResourceOptions {}
 
   /** @internal */
-  type _FetchResourceOptions = NullishProps<{
-    /**
-     * Append a cache-busting query parameter to the request.
-     * @defaultValue `false`
-     */
-    bustCache: boolean;
-  }>;
-
-  interface FetchResourceOptions extends _FetchResourceOptions {}
-
-  /** @internal */
-  type _ExpireCacheOptions = InexactPartial<{
+  interface _ExpireCacheOptions {
     /**
      * A set of source URLs to *skip* from eviction checks.
      */
     exclude: Set<string>;
-  }>;
+  }
 
-  interface ExpireCacheOptions extends _ExpireCacheOptions {}
+  interface ExpireCacheOptions extends InexactPartial<_ExpireCacheOptions> {}
 }
 
 /**
@@ -293,12 +285,12 @@ declare namespace loadTexture {
   type Return = PIXI.Texture | PIXI.Spritesheet | null;
 
   /** @internal */
-  type _Options = InexactPartial<{
+  interface _Options {
     /** A fallback texture URL to use if the requested source is unavailable */
     fallback: string;
-  }>;
+  }
 
-  interface Options extends _Options {}
+  interface Options extends InexactPartial<_Options> {}
 }
 
 declare global {

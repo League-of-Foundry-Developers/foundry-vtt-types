@@ -280,8 +280,8 @@ expectTypeOf(
   tempItem._createDocumentLink(
     {},
     {
-      label: null,
-      relativeTo: null,
+      label: undefined,
+      relativeTo: undefined,
     },
   ),
 ).toBeString();
@@ -376,17 +376,6 @@ expectTypeOf(
     clearSource: true,
     clearState: false,
     keepId: true,
-  }),
-).toBeVoid();
-expectTypeOf(
-  tempItem.exportToJSON({
-    clearFlags: null,
-    clearFolder: null,
-    clearOwnership: null,
-    clearSort: null,
-    clearSource: null,
-    clearState: null,
-    keepId: null,
   }),
 ).toBeVoid();
 expectTypeOf(

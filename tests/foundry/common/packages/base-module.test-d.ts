@@ -1,7 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-// Import necessary as this is otherwise inaccessible.
-import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
+import AdditionalTypesField = foundry.packages.AdditionalTypesField;
 
 const baseModule = new foundry.packages.BaseModule({
   id: "123",

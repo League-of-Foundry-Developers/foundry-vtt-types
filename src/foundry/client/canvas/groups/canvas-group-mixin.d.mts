@@ -9,14 +9,14 @@ declare const DynamicClass: new <_Computed extends object>(...args: never) => _C
 
 // @ts-expect-error This is a workaround to allow for dynamic top level properties in a class.
 declare class LayersClass<
-  Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup,
+  Group extends CanvasGroupMixin.Group | NoLayerGroup,
   Instance extends object = RemoveIndexSignatures<CanvasGroupMixin.LayersFor<Group>>,
   // TODO: include child groups https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
 > extends DynamicClass<Instance> {}
 
 // Note(LukeAbby): This interface has been separated out to simplify the constructor edge cases.
 // By avoiding having the instance side it makes the class more malleable and allows generics.
-interface CanvasGroupStatic<Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup> {
+interface CanvasGroupStatic<Group extends CanvasGroupMixin.Group | NoLayerGroup> {
   /**
    * The name of this canvas group
    * @privateRemarks Foundry marked as abstract
@@ -31,7 +31,7 @@ interface CanvasGroupStatic<Group extends CanvasGroupMixin.ConfiguredGroupNames 
 }
 
 declare class CanvasGroup<
-  Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup,
+  Group extends CanvasGroupMixin.Group | NoLayerGroup,
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
   TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
 > extends LayersClass<Group> {
@@ -101,7 +101,7 @@ type NoLayerGroup = typeof _NoLayerGroup;
 
 type ApplyGroup<
   BaseClass extends CanvasGroupMixin.BaseClass,
-  Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup,
+  Group extends CanvasGroupMixin.Group | NoLayerGroup,
 > = CanvasGroupStatic<Group> &
   (new <DrawOptions extends CanvasGroupMixin.DrawOptions, TearDownOptions extends CanvasGroupMixin.TearDownOptions>(
     ...args: ConstructorParameters<BaseClass>
@@ -115,7 +115,7 @@ declare function CanvasGroupMixin<
   BaseClass extends CanvasGroupMixin.BaseClass,
   // In `_createLayers` the code assigns top level properties to the class.
   // This is why the Group type param exists.
-  Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup = NoLayerGroup,
+  Group extends CanvasGroupMixin.Group | NoLayerGroup = NoLayerGroup,
 >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
 
 declare global {
@@ -135,7 +135,7 @@ declare namespace CanvasGroupMixin {
 
   type Mix<
     BaseClass extends CanvasGroupMixin.BaseClass,
-    Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup,
+    Group extends CanvasGroupMixin.Group | NoLayerGroup,
   > = BaseClass & ApplyGroup<BaseClass, Group>;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -144,9 +144,12 @@ declare namespace CanvasGroupMixin {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface TearDownOptions {}
 
-  type ConfiguredGroupNames = keyof CONFIG["Canvas"]["groups"];
+  type Group = keyof typeof CONFIG.Canvas.groups;
 
-  type LayersFor<T extends ConfiguredGroupNames | NoLayerGroup> = PrettifyType<
+  /** @deprecated Use {@linkcode CanvasGroupMixin.Group} instead. This warning will be removed in v14. */
+  type ConfiguredGroupNames = Group;
+
+  type LayersFor<T extends Group | NoLayerGroup> = PrettifyType<
     _FilterOutNever<{
       readonly [K in keyof typeof Canvas.layers]: (typeof Canvas.layers)[K] extends {
         readonly layerClass?: abstract new (...args: infer _1) => infer LayerInstance extends CanvasLayer;

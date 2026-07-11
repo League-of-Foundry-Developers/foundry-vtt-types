@@ -521,4 +521,3 @@ export import SetupGame = globalThis.SetupGame;
 export import ReadyGame = globalThis.ReadyGame;
 
 export import EarcutEdges = globalThis.EarcutEdges;
-export import PackageManifestData = globalThis.PackageManifestData;

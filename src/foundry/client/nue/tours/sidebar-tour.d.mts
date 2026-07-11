@@ -24,15 +24,15 @@ declare namespace SidebarTour {
   interface AnyConstructor extends Identity<typeof AnySidebarTour> {}
 
   /** @internal */
-  type _Step = InexactPartial<{
+  interface _Step {
     /**
      * Activates a particular sidebar tab. Usable in {@linkcode SidebarTour} instances.
      * @remarks {@linkcode SidebarTour._preStep | SidebarTour#_preStep} does `await ui[this.currentStep.sidebarTab]?.activate();`
      */
     sidebarTab: keyof typeof ui;
-  }>;
+  }
 
-  interface Step extends Tour.Step, _Step {}
+  interface Step extends Tour.Step, InexactPartial<_Step> {}
 
   interface Config extends Tour.Config {
     steps: SidebarTour.Step[];

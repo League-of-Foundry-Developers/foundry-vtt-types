@@ -296,6 +296,7 @@ const rules = [
   ...tsESLint.configs.stylisticTypeChecked,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
+  // Necessary for oxfmt, despite the name.
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.

@@ -1,5 +1,4 @@
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
-import type { ConfiguredObjectClassOrDefault } from "../../config.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
@@ -257,8 +256,7 @@ declare namespace MeasuredTemplate {
    * Not to be confused with {@linkcode MeasuredTemplateDocument.ImplementationClass}
    * which refers to the implementation for the measured template document.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  type ImplementationClass = ConfiguredObjectClassOrDefault<typeof MeasuredTemplate>;
+  type ImplementationClass = PlaceableObject.ImplementationClassFor<"MeasuredTemplate">;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */

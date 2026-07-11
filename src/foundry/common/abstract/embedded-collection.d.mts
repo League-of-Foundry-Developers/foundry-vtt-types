@@ -231,7 +231,6 @@ declare namespace EmbeddedCollection {
      * Whether to throw an error or only log a warning.
      * @defaultValue `true`
      */
-    // TODO: strip null when cleaning up DataModel types, this is only required because of a NullishProps somewhere
     strict?: boolean | undefined;
   }
 
@@ -240,7 +239,7 @@ declare namespace EmbeddedCollection {
    * @privateRemarks Despite extending interfaces containing only the keys `strict` and `invalid`,
    * both are redefined here for the more specific property description.
    */
-  interface GetOptions extends Collection._GetOptions, Collection._InvalidOption {
+  interface GetOptions extends Collection.GetOptions, InexactPartial<Collection._InvalidOption> {
     /**
      * Throw an Error if the requested Embedded Document does not exist.
      * @defaultValue `false`
@@ -263,13 +262,13 @@ declare namespace EmbeddedCollection {
    * Re-used with the same property description and default in both {@linkcode SetOptions} and {@linkcode DeleteOptions}
    * @internal
    */
-  type _ModifySource = InexactPartial<{
+  interface _ModifySource {
     /**
      * Whether to modify the collection's source as part of the operation.
      * @defaultValue `true`
      */
     modifySource: boolean;
-  }>;
+  }
 
   /**
    * Options for {@linkcode EmbeddedCollection.set | EmbeddedCollection#set}
@@ -280,7 +279,7 @@ declare namespace EmbeddedCollection {
    *
    * @see {@linkcode EmbeddedCollectionDelta.SetOptions}.
    */
-  interface SetOptions extends _ModifySource {}
+  interface SetOptions extends InexactPartial<_ModifySource> {}
 
   /**
    * Options for {@linkcode EmbeddedCollection.delete | EmbeddedCollection#_delete}
@@ -292,10 +291,10 @@ declare namespace EmbeddedCollection {
    *
    * @see {@linkcode EmbeddedCollectionDelta.DeleteOptions}.
    */
-  interface DeleteOptions extends _ModifySource {}
+  interface DeleteOptions extends InexactPartial<_ModifySource> {}
 
   /** Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}. */
-  interface GetInvalidOptions extends Collection._GetInvalidOptions {}
+  interface GetInvalidOptions extends InexactPartial<Collection._GetInvalidOptions> {}
 
   /**
    * The return type for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}.

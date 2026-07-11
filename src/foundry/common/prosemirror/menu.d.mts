@@ -212,7 +212,7 @@ declare namespace ProseMirrorMenu {
   }
 
   /** @internal */
-  type _ConstructionOptions = InexactPartial<{
+  interface _ConstructionOptions {
     /** A function to call when the save button is pressed. */
     onSave: () => void;
 
@@ -221,33 +221,33 @@ declare namespace ProseMirrorMenu {
 
     /** Whether to display a more compact version of the menu. */
     compact: boolean;
-  }>;
+  }
 
-  interface ConstructionOptions extends _ConstructionOptions {}
+  interface ConstructionOptions extends InexactPartial<_ConstructionOptions> {}
 
   /** @internal */
-  type _ShowDialogOptions = InexactPartial<{
+  interface _ShowDialogOptions {
     /**
      * Data to pass to the template.
      * @defaultValue `{}`
      */
     data: AnyObject;
-  }>;
+  }
 
-  interface ShowDialogOptions extends _ShowDialogOptions {}
+  interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
 
   /** @internal */
-  type _Attrs = InexactPartial<{
+  interface _Attrs {
     /** Attributes for the node. */
     attrs: Attrs;
-  }>;
+  }
 
-  interface ToggleBlockOptions extends _Attrs {}
+  interface ToggleBlockOptions extends InexactPartial<_Attrs> {}
 
-  interface ToggleTextBlockOptions extends _Attrs {}
+  interface ToggleTextBlockOptions extends InexactPartial<_Attrs> {}
 
   /** @internal */
-  type _Item = InexactPartial<{
+  interface _Item {
     /** An optional class to apply to the menu item. */
     class: string;
 
@@ -274,9 +274,9 @@ declare namespace ProseMirrorMenu {
 
     /** Whether the current item is active under the given selection or cursor. (default: `false`) */
     active: boolean;
-  }>;
+  }
 
-  interface Item extends _Item {
+  interface Item extends InexactPartial<_Item> {
     /** A string identifier for this menu item. */
     action: string;
 

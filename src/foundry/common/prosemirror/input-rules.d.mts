@@ -25,15 +25,16 @@ declare class ProseMirrorInputRules extends ProseMirrorPlugin {
 
 declare namespace ProseMirrorInputRules {
   /** @internal */
-  type _BuildOptions = InexactPartial<{
+  interface _BuildOptions {
     /**
      * The minimum heading level to start from when generating heading input rules.
      * The resulting heading level for a heading rule is equal to the number of leading hashes minus this number.
      * @defaultValue `0`
      */
     minHeadingLevel?: number;
-  }>;
-  interface BuildOptions extends _BuildOptions {}
+  }
+
+  interface BuildOptions extends InexactPartial<_BuildOptions> {}
 }
 
 export default ProseMirrorInputRules;

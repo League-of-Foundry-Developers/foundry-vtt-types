@@ -1279,7 +1279,12 @@ declare global {
       /** The relative file path which was modified */
       path: string;
 
-      /** The file extension which was modified, e.g. "js", "css", "html" */
+      /**
+       * The file extension which was modified, e.g. "js", "css", "html"
+       * @remarks `Game##handleHotReload` only does anything for the enumerated extensions below, but will call the hook
+       * for files with any extension specified in the relevant manifest. Packages can specify extensions with or without
+       * leading `.`s; either way they are stripped before being sent over the socket.
+       */
       extension: "js" | "css" | "html" | "hbs" | (string & {});
     }
 

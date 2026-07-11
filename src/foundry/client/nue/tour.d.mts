@@ -222,7 +222,7 @@ declare namespace Tour {
   interface AnyConstructor extends Identity<typeof AnyTour> {}
 
   /** @internal */
-  type _Config = InexactPartial<{
+  interface _Config {
     /** A human-readable description of this Tour. Localized. */
     description: string;
 
@@ -243,10 +243,10 @@ declare namespace Tour {
      * @remarks e.g. `["core.welcome"]`
      */
     suggestedNextTours: string[];
-  }>;
+  }
 
   /** Tour configuration data */
-  interface Config extends _Config {
+  interface Config extends InexactPartial<_Config> {
     /**
      * The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used
      * @remarks Technically not required as long as the Tour is only constructed to be immediately passed
@@ -276,7 +276,7 @@ declare namespace Tour {
   }
 
   /** @internal */
-  type _Step = InexactPartial<{
+  interface _Step {
     /** A DOM selector which denotes an element to highlight during this step. If omitted, the step is displayed in the center of the screen. */
     selector: string;
 
@@ -285,10 +285,10 @@ declare namespace Tour {
 
     /** Whether the Step is restricted to the GM only. Defaults to false. */
     restricted: boolean;
-  }>;
+  }
 
   /** A step in a Tour */
-  interface Step extends _Step {
+  interface Step extends InexactPartial<_Step> {
     /** A machine-friendly id of the Tour Step */
     id: string;
 
@@ -302,15 +302,15 @@ declare namespace Tour {
   type STATUS = ValueOf<Status>;
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /** A tour ID that supersedes `TourConfig#id` */
     id: string;
 
     /** A tour namespace that supersedes `TourConfig#namespace` */
     namespace: string;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
   interface Status {
     readonly UNSTARTED: "unstarted";

@@ -401,7 +401,7 @@ declare namespace AudioHelper {
   type BandName = keyof AnalysisDataValueBands;
 
   /** @internal */
-  type _SoundCreationOptions = InexactPartial<{
+  interface _SoundCreationOptions {
     /**
      * Additional options passed to the play method if autoplay is true
      * @defaultValue `{}`
@@ -432,9 +432,9 @@ declare namespace AudioHelper {
      * @defaultValue `false`
      */
     autoplay: boolean;
-  }>;
+  }
 
-  interface SoundCreationOptions extends _SoundCreationOptions {
+  interface SoundCreationOptions extends InexactPartial<_SoundCreationOptions> {
     /** The source URL for the audio file */
     src: string;
   }
@@ -445,7 +445,7 @@ declare namespace AudioHelper {
   interface PlayOptions extends Pick<SoundCreationOptions, "context">, Sound.PlaybackOptions {}
 
   /** @internal */
-  type _PlayData = InexactPartial<{
+  interface _PlayData {
     /**
      * The volume level at which to play the audio, between 0 and 1.
      * @defaultValue `1.0`
@@ -459,9 +459,9 @@ declare namespace AudioHelper {
      * @privateRemarks Despite the default being via `mergeObject`, {@linkcode Sound.PlaybackOptions.loop | Sound.PlaybackOptions["loop"]} can be nullish, therefor so can this
      */
     loop: boolean;
-  }>;
+  }
 
-  interface PlayData extends _PlayData {
+  interface PlayData extends InexactPartial<_PlayData> {
     /**
      * The audio source file path, either a public URL or a local path relative to the public directory
      */
@@ -497,7 +497,7 @@ declare namespace AudioHelper {
   }
 
   /** @internal */
-  type _VolumeToPercentageOptions = InexactPartial<{
+  interface _VolumeToPercentageOptions {
     /**
      * Prefix the returned tooltip with a localized 'Volume: ' label. This should be used if the returned string is intended for assistive
      * technologies, such as the `aria-value` text attribute.
@@ -510,33 +510,33 @@ declare namespace AudioHelper {
      * @defaultValue `0`
      */
     decimalPlaces: number;
-  }>;
+  }
 
-  interface VolumeToPercentageOptions extends _VolumeToPercentageOptions {}
+  interface VolumeToPercentageOptions extends InexactPartial<_VolumeToPercentageOptions> {}
 
   /** @internal */
-  type _EnableAnalyzerOptions = InexactPartial<{
+  interface _EnableAnalyzerOptions {
     /**
      * If true, this analyzer will not auto-disable after inactivity.
      * @defaultValue `false`
      */
     keepAlive: boolean;
-  }>;
+  }
 
-  interface EnableAnalyzerOptions extends _EnableAnalyzerOptions {}
+  interface EnableAnalyzerOptions extends InexactPartial<_EnableAnalyzerOptions> {}
 
   /** @internal */
-  type _GetBandLevelOptions = InexactPartial<{
+  interface _GetBandLevelOptions {
     /**
      * If true, remove the real-time channel volume from the measurement.
      * @defaultValue `false`
      */
     ignoreVolume: boolean;
-  }>;
+  }
 
-  interface GetBandLevelOptions extends _GetBandLevelOptions {}
+  interface GetBandLevelOptions extends InexactPartial<_GetBandLevelOptions> {}
 
-  interface GetMaxBandLevelOptions extends _GetBandLevelOptions {}
+  interface GetMaxBandLevelOptions extends InexactPartial<_GetBandLevelOptions> {}
 
   type LevelReportCallback = (maxDecibel: number, fftArray: Float32Array) => void;
 }

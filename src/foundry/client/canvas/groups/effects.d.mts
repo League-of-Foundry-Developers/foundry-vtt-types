@@ -288,33 +288,33 @@ declare namespace EffectsCanvasGroup {
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /** @internal */
-  type _TestInsideLightOptions = InexactPartial<{
+  interface _TestInsideLightOptions {
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
     condition: (source: sources.PointLightSource.Internal.Any | sources.GlobalLightSource.Any) => boolean;
-  }>;
+  }
 
-  interface TestInsideLightOptions extends _TestInsideLightOptions {}
+  interface TestInsideLightOptions extends InexactPartial<_TestInsideLightOptions> {}
 
   /** @internal */
-  type _TestInsideDarknessOptions = InexactPartial<{
+  interface _TestInsideDarknessOptions {
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
     condition: (source: sources.PointDarknessSource.Internal.Any) => boolean;
-  }>;
+  }
 
-  interface TestInsideDarknessOptions extends _TestInsideLightOptions {}
+  interface TestInsideDarknessOptions extends InexactPartial<_TestInsideDarknessOptions> {}
 
   /** @internal */
-  type _AnimateDarknessOptions = InexactPartial<{
+  interface _AnimateDarknessOptions {
     /**
      * The desired animation time in milliseconds. Default is 10 seconds
      * @defaultValue `10000`
      */
     duration: number;
-  }>;
+  }
 
-  interface AnimateDarknessOptions extends _AnimateDarknessOptions {}
+  interface AnimateDarknessOptions extends InexactPartial<_AnimateDarknessOptions> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

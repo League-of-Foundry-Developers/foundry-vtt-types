@@ -36,15 +36,15 @@ declare namespace SetupTour {
   interface AnyConstructor extends Identity<typeof AnySetupTour> {}
 
   /** @internal */
-  type _Config = InexactPartial<{
+  interface _Config {
     /**
      * Whether to close all open windows before beginning the tour.
      * @remarks Checked for `!== false`, so effectively defaults `true`
      */
     closeWindows: boolean;
-  }>;
+  }
 
-  interface Config extends Tour.Config, _Config {}
+  interface Config extends Tour.Config, InexactPartial<_Config> {}
 }
 
 export default SetupTour;
