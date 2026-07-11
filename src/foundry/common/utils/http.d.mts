@@ -23,7 +23,7 @@ export declare function fetchJsonWithTimeout(
 ): Promise<unknown>;
 
 /** @internal */
-type _TimeoutOptions = InexactPartial<{
+interface _TimeoutOptions {
   /**
    * How long to wait for a Response before cleanly aborting. If null, no timeout is applied
    * @defaultValue `30000`
@@ -35,9 +35,9 @@ type _TimeoutOptions = InexactPartial<{
    * @defaultValue `() => {}`
    */
   onTimeout: () => void;
-}>;
+}
 
-interface TimeoutOptions extends _TimeoutOptions {}
+interface TimeoutOptions extends InexactPartial<_TimeoutOptions> {}
 
 /**
  * Test whether a file source exists by performing a HEAD request against it

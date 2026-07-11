@@ -73,12 +73,12 @@ declare namespace ResizeHandle {
   type Offsets = [widthOffset: number, heightOffset: number];
 
   /** @internal */
-  type _Handlers = InexactPartial<{
+  interface _Handlers {
     /** A function determining if this handle can initiate a drag. */
     canDrag: () => boolean;
-  }>;
+  }
 
-  interface Handlers extends _Handlers {}
+  interface Handlers extends InexactPartial<_Handlers> {}
 
   /** @privateRemarks {@linkcode ResizeHandle.updateDimensions | #updateDimensions} is too cool to just use a Point */
   interface Destination {
@@ -90,16 +90,16 @@ declare namespace ResizeHandle {
   }
 
   /** @internal */
-  type _UpdateDimensionsOptions = InexactPartial<{
+  interface _UpdateDimensionsOptions {
     /**
      * If provided, a numeric aspect ratio to maintain (width/height).
      * @defaultValue `null`
      * @remarks If truthy, will enforce the passed ratio, landscape if `width >= height`, portrait otherwise
      */
     aspectRatio: number | null;
-  }>;
+  }
 
-  interface UpdateDimensionsOptions extends _UpdateDimensionsOptions {}
+  interface UpdateDimensionsOptions extends InexactPartial<_UpdateDimensionsOptions> {}
 }
 
 export default ResizeHandle;

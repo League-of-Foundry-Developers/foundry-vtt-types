@@ -69,15 +69,15 @@ declare namespace EventEmitterMixin {
   type BaseClass = AnyConstructor;
 
   /** @internal */
-  type _AddListenerOptions = InexactPartial<{
+  interface _AddListenerOptions {
     /**
      * Should the event only be responded to once and then removed
      * @defaultValue `false`
      */
     once: boolean;
-  }>;
+  }
 
-  interface AddListenerOptions extends _AddListenerOptions {}
+  interface AddListenerOptions extends InexactPartial<_AddListenerOptions> {}
 
   type EventListener = (event: Event) => void;
 }

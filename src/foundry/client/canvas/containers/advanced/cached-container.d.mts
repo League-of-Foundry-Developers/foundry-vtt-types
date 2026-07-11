@@ -110,25 +110,25 @@ declare namespace CachedContainer {
   interface AnyConstructor extends Identity<typeof AnyCachedContainer> {}
 
   /** @internal */
-  type _TextureConfiguration = InexactPartial<{
+  interface _TextureConfiguration {
     multisample: PIXI.MSAA_QUALITY;
     scaleMode: PIXI.SCALE_MODES;
     format: PIXI.FORMATS;
     mipmap: PIXI.MIPMAP_MODES;
-  }>;
+  }
 
-  interface TextureConfiguration extends _TextureConfiguration {}
+  interface TextureConfiguration extends InexactPartial<_TextureConfiguration> {}
 
   /** @internal */
-  type _RenderOptions = InexactPartial<{
+  interface _RenderOptions {
     /** Render function that will be called to render into the RT. */
     renderFunction: (renderer: PIXI.Renderer) => void;
 
     /** An optional clear color to clear the RT before rendering into it. */
     clearColor: Color.RGBAColorVector;
-  }>;
+  }
 
-  interface RenderOptions extends _RenderOptions {}
+  interface RenderOptions extends InexactPartial<_RenderOptions> {}
 }
 
 export default CachedContainer;

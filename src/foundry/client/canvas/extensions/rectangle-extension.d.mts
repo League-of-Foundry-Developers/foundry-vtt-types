@@ -193,23 +193,23 @@ declare global {
       }
 
       /** @internal */
-      type _LineSegmentIntersectsOptions = InexactPartial<{
+      interface _LineSegmentIntersectsOptions {
         /**
          * If true, a line contained within the rectangle will return true
          * @defaultValue `false`
          */
         inside: boolean;
-      }>;
+      }
 
       /** Options affecting the intersect test. */
-      interface LineSegmentIntersectsOptions extends _LineSegmentIntersectsOptions {}
+      interface LineSegmentIntersectsOptions extends InexactPartial<_LineSegmentIntersectsOptions> {}
 
       /**
        * @remarks The options for {@linkcode PIXI.Rectangle.intersectPolygon | #intersectPolygon} when `weilerAtherton` is true (or not provided)
        *
        * This path does not use the `scalingFactor` property, and borrows `canMutate` from the WAC type
        */
-      interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
+      interface WACIntersectPolygonOptions extends InexactPartial<WeilerAthertonClipper._CombineOptions> {
         /**
          * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
          * @defaultValue {@linkcode WeilerAthertonClipper.CLIP_TYPES.INTERSECT}

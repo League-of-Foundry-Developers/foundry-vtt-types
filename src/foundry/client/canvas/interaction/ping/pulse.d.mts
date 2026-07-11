@@ -51,7 +51,7 @@ declare namespace PulsePing {
   interface AnyConstructor extends Identity<typeof AnyPulsePing> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The number of rings used in the animation.
      * @defaultValue `3`
@@ -63,9 +63,9 @@ declare namespace PulsePing {
      * @defaultValue `#ffffff`
      */
     color2: Color.Source;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions, Ping.ConstructorOptions {}
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions>, Ping.ConstructorOptions {}
 }
 
 export default PulsePing;

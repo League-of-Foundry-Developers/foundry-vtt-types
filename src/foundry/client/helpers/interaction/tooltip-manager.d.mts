@@ -185,7 +185,7 @@ declare namespace TooltipManager {
   }
 
   /** @internal */
-  type _ActivateOptions = InexactPartial<{
+  interface _ActivateOptions {
     /**
      * Explicit tooltip text to display. If this is not provided the tooltip text is acquired from
      * the element's `data-tooltip-text` attribute if present and otherwise from its `data-tooltip`
@@ -229,9 +229,9 @@ declare namespace TooltipManager {
      * @remarks Ignored if `html` is passed
      */
     content: HTMLElement;
-  }>;
+  }
 
-  interface ActivateOptions extends _ActivateOptions {}
+  interface ActivateOptions extends InexactPartial<_ActivateOptions> {}
 
   /** @internal */
   interface _BasePosition {
@@ -251,14 +251,14 @@ declare namespace TooltipManager {
   interface Position extends InexactPartial<_BasePosition> {}
 
   /** @internal */
-  type _CreateLockedTooltipOptions = InexactPartial<{
+  interface _CreateLockedTooltipOptions {
     /**
      * An optional, space-separated list of CSS classes to apply to the activated tooltip.
      */
     cssClass: string;
-  }>;
+  }
 
-  interface CreateLockedTooltipOptions extends _CreateLockedTooltipOptions {}
+  interface CreateLockedTooltipOptions extends InexactPartial<_CreateLockedTooltipOptions> {}
 
   /**
    * @privateRemarks This is spread into an object with existing defaults (all `null`s for the `_BasePosition` properties).

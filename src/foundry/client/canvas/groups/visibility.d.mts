@@ -249,7 +249,7 @@ declare namespace CanvasVisibility {
   interface TestVisibilityOptions extends CreateTestConfigOptions {}
 
   /** @internal */
-  type _CreateTestConfigOptions = InexactPartial<{
+  interface _CreateTestConfigOptions {
     /**
      * A numeric radial offset which allows for a non-exact match.
      * For example, if tolerance is 2 then the test will pass if the point is within 2px of a vision polygon
@@ -262,12 +262,12 @@ declare namespace CanvasVisibility {
      * @defaultValue `null`
      */
     object: TestObject;
-  }>;
+  }
 
-  interface CreateTestConfigOptions extends _CreateTestConfigOptions {}
+  interface CreateTestConfigOptions extends InexactPartial<_CreateTestConfigOptions> {}
 
   /** @internal */
-  type _TestConfigOptional = InexactPartial<{
+  interface _TestConfigOptional {
     /**
      * The target object
      * @defaultValue `null`
@@ -279,9 +279,9 @@ declare namespace CanvasVisibility {
      * gets a `null` parameter default applied
      */
     object: TestObject;
-  }>;
+  }
 
-  interface TestConfig extends _TestConfigOptional {
+  interface TestConfig extends InexactPartial<_TestConfigOptional> {
     /** An array of visibility tests */
     tests: CanvasVisibility.Test[];
   }

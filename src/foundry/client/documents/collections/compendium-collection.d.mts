@@ -599,17 +599,17 @@ declare namespace CompendiumCollection {
    * Used in {@linkcode ImportFolderOptions} and {@linkcode ImportFoldersOptions}.
    * @internal
    */
-  type _ImportParents = InexactPartial<{
+  interface _ImportParents {
     /**
      * Import any parent folders which are not already present in the Compendium
      * @defaultValue `true`
      */
     importParents: boolean;
-  }>;
+  }
 
-  interface ImportFolderOptions extends _ImportParents {}
+  interface ImportFolderOptions extends InexactPartial<_ImportParents> {}
 
-  interface ImportFoldersOptions extends _ImportParents {}
+  interface ImportFoldersOptions extends InexactPartial<_ImportParents> {}
 
   /** @internal */
   interface _ImportAllOptions {
@@ -640,15 +640,15 @@ declare namespace CompendiumCollection {
     InexactPartial<_ImportAllOptions>;
 
   /** @internal */
-  type _ImportDialogOptions = InexactPartial<{
+  interface _ImportDialogOptions {
     /**
      * @remarks Should the `Keep ID` checkbox start checked or not ?
      * @defaultValue `false`
      */
     keepId: boolean;
-  }>;
+  }
 
-  interface ImportDialogOptions extends DialogV2.ConfirmConfig, _ImportDialogOptions {}
+  interface ImportDialogOptions extends DialogV2.ConfirmConfig, InexactPartial<_ImportDialogOptions> {}
 
   type ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,
@@ -678,15 +678,15 @@ declare namespace CompendiumCollection {
   }
 
   /** @internal */
-  type _MigrateOptions = InexactPartial<{
+  interface _MigrateOptions {
     /**
      * Display notifications
      * @defaultValue `true`
      */
     notify: boolean;
-  }>;
+  }
 
-  interface MigrateOptions extends _MigrateOptions {}
+  interface MigrateOptions extends InexactPartial<_MigrateOptions> {}
 
   // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
   // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.

@@ -211,7 +211,8 @@ declare namespace DatabaseBackend {
   interface Any extends AnyDatabaseBackend {}
   interface AnyConstructor extends Identity<typeof AnyDatabaseBackend> {}
 
-  type _LogOperationContext = InexactPartial<{
+  /** @internal */
+  interface _LogOperationContext {
     /** A parent document */
     parent: Document.Any;
 
@@ -223,11 +224,11 @@ declare namespace DatabaseBackend {
      * @defaultValue `"info"`
      */
     level: LoggingLevels;
-  }>;
+  }
 
-  interface LogOperationContext extends _LogOperationContext {}
+  interface LogOperationContext extends InexactPartial<_LogOperationContext> {}
 
-  interface LogErrorContext extends Omit<_LogOperationContext, "level"> {}
+  interface LogErrorContext extends Omit<LogOperationContext, "level"> {}
 
   interface DatabaseOperationMap {
     get: GetOperation;

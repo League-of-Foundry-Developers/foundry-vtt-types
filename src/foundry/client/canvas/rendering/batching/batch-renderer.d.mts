@@ -102,7 +102,7 @@ declare namespace BatchRenderer {
   type ReservedTextureUnits = 0 | 1 | 2 | 3 | 4;
 
   /** @internal */
-  type _ShaderGeneratorOptions = InexactPartial<{
+  interface _ShaderGeneratorOptions {
     /**
      * The vertex shader source
      * @remarks Can't be null as only a signature default is provided
@@ -120,13 +120,13 @@ declare namespace BatchRenderer {
      * @remarks Can't be null as only a signature default is provided
      */
     uniforms: typeof BatchRenderer.defaultUniforms;
-  }>;
+  }
 
   /**
    * Options for {@link BatchRenderer#setShaderGenerator} (and ultimately the
    * constructor of whatever's set as {@link BatchRenderer.shaderGeneratorClass})
    */
-  interface ShaderGeneratorOptions extends _ShaderGeneratorOptions {}
+  interface ShaderGeneratorOptions extends InexactPartial<_ShaderGeneratorOptions> {}
 }
 
 export default BatchRenderer;

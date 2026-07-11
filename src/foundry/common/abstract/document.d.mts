@@ -2192,7 +2192,7 @@ declare namespace Document {
 
   // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | undefined> = InexactPartial<{
+  interface _CloneContext<Save extends boolean | undefined> {
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
@@ -2210,13 +2210,13 @@ declare namespace Document {
      * @defaultValue `false`
      */
     addSource: boolean;
-  }>;
+  }
 
   /**
    * The context for {@linkcode Document.clone | Document#close}. Since we've lost the `ExtraConstructorOptions` type param from
    * {@linkcode DataModel}, we have to extend the construction context.
    *
-   * If {@linkcode _CloneContext.save | save} is `true`, this gets passed to {@linkcode Document.create} as the operation.
+   * If {@linkcode CloneContext.save | save} is `true`, this gets passed to {@linkcode Document.create} as the operation.
    *
    * `parent`, `pack`, and `strict` are all overwritten with no respect to passed values, so they've been omitted from the extended types.
    * This allows the use of a generic {@linkcode DatabaseBackend.CreateOperation}, since any document-specific properties are irrelevant
@@ -2228,7 +2228,7 @@ declare namespace Document {
   // TODO: remove temporary from the omit in v14
   interface CloneContext<Save extends boolean | undefined = undefined>
     extends
-      _CloneContext<Save>,
+      InexactPartial<_CloneContext<Save>>,
       Omit<Document.ConstructionContext, "parent" | "strict">,
       Omit<
         Document.Database.CreateDocumentsOperation<DatabaseBackend.CreateOperation>,

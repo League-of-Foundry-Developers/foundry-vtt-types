@@ -358,51 +358,51 @@ declare namespace DiceTerm {
     rolls: { result: string; classes: string }[];
   }
 
-  type _KeepOrDropOptions = InexactPartial<{
+  interface _KeepOrDropOptions {
     /**
      * Keep results?
      * @defaultValue true
      */
-    keep?: boolean | undefined; // not: null (function checks keep===highest)
+    keep?: boolean | undefined;
 
     /**
      * Keep the highest?
      * @defaultValue true
      */
-    highest?: boolean | undefined; // not: null (function checks keep===highest)
-  }>;
+    highest?: boolean | undefined;
+  }
 
-  interface KeepOrDropOptions extends _KeepOrDropOptions {}
+  interface KeepOrDropOptions extends InexactPartial<_KeepOrDropOptions> {}
 
-  type _ApplyCountOptions = InexactPartial<{
+  interface _ApplyCountOptions {
     /** @defaultValue false */
     flagSuccess: boolean | null;
 
     /** @defaultValue false */
     flagFailure: boolean | null;
-  }>;
+  }
 
-  interface ApplyCountOptions extends _ApplyCountOptions {}
+  interface ApplyCountOptions extends InexactPartial<_ApplyCountOptions> {}
 
-  type _ApplyDeductOptions = InexactPartial<{
+  interface _ApplyDeductOptions {
     /** @defaultValue false */
     deductFailure: boolean | null;
 
     /** @defaultValue false */
     invertFailure: boolean | null;
-  }>;
+  }
 
-  interface ApplyDeductOptions extends _ApplyDeductOptions {}
+  interface ApplyDeductOptions extends InexactPartial<_ApplyDeductOptions> {}
 
-  type _MatchTermOptions = InexactPartial<{
+  interface _MatchTermOptions {
     /**
      * Allow the number of dice to be optional, i.e. "d6"
      * @defaultValue true
      */
     imputeNumber: boolean | null;
-  }>;
+  }
 
-  interface MatchTermOptions extends _MatchTermOptions {}
+  interface MatchTermOptions extends InexactPartial<_MatchTermOptions> {}
 
   interface EvaluationOptions extends RollTerm.EvaluationOptions {
     /**

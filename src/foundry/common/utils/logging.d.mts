@@ -10,7 +10,7 @@ import type { COMPATIBILITY_MODES } from "../constants.d.mts";
 export declare function logCompatibilityWarning(message: string, options?: LogCompatibilityWarningOptions): void;
 
 /** @internal */
-type _LogCompatibilityWarningOptions = InexactPartial<{
+interface _LogCompatibilityWarningOptions {
   /**
    * A logging level in COMPATIBILITY_MODES which overrides the configured default
    * @remarks Defaults to {@linkcode CONFIG.compatibility.mode} if `CONFIG.compatibility` exists,
@@ -44,6 +44,6 @@ type _LogCompatibilityWarningOptions = InexactPartial<{
    * @defaultValue `false`
    */
   once: boolean;
-}>;
+}
 
-export interface LogCompatibilityWarningOptions extends _LogCompatibilityWarningOptions {}
+export interface LogCompatibilityWarningOptions extends InexactPartial<_LogCompatibilityWarningOptions> {}

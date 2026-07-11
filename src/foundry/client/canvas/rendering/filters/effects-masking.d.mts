@@ -111,15 +111,16 @@ declare namespace VisualEffectsMaskingFilter {
   type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 
   /** @internal */
-  type _ConcreteCreateOptions = InexactPartial<{
+  interface _ConcreteCreateOptions {
     /**
      * @defaultValue `[]`
      * @privateRemarks Default not in construction signature, but provided by {@linkcode VisualEffectsMaskingFilter.fragmentShader}
      */
     postProcessModes: PostProcessModes;
-  }>;
+  }
 
-  interface ConcreteCreateOptions extends _ConcreteCreateOptions {}
+  interface ConcreteCreateOptions extends InexactPartial<_ConcreteCreateOptions> {}
+
   type CreateOptions<T extends AnyObject> = ShapeWithIndexSignature<
     T,
     VisualEffectsMaskingFilter.ConcreteCreateOptions,

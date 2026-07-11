@@ -100,7 +100,7 @@ declare namespace LimitedAnglePolygon {
   interface AnyConstructor extends Identity<typeof AnyLimitedAnglePolygon> {}
 
   /** @internal */
-  type _ConstructorOptions = InexactPartial<{
+  interface _ConstructorOptions {
     /**
      * The angle of the Polygon in degrees.
      * @defaultValue `360`
@@ -125,9 +125,9 @@ declare namespace LimitedAnglePolygon {
      * @remarks Only used if truthy
      */
     externalRadius: number;
-  }>;
+  }
 
-  interface ConstructorOptions extends _ConstructorOptions {
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {
     /**
      * The radius of the emitted cone.
      * @privateRemarks This is given no default, and is directly used in multiplication and division, resulting in `NaN` if allowed to be `undefined`

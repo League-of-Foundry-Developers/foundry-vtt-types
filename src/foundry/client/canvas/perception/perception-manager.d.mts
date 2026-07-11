@@ -1,4 +1,4 @@
-import type { InexactPartial, InterfaceToObject } from "#utils";
+import type { Identity, InexactPartial, InterfaceToObject } from "#utils";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 
 /**
@@ -39,9 +39,9 @@ declare class PerceptionManager extends RenderFlagsMixin() {
 
 declare namespace PerceptionManager {
   interface Any extends AnyPerceptionManager {}
-  type AnyConstructor = typeof AnyPerceptionManager;
+  interface AnyConstructor extends Identity<typeof AnyPerceptionManager> {}
 
-  type PassableFlags = InexactPartial<RenderFlags>;
+  interface PassableFlags extends InexactPartial<RenderFlags> {}
 
   type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 
