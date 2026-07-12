@@ -1,5 +1,4 @@
 import type { Identity } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -26,7 +25,9 @@ import fields = foundry.data.fields;
  * };
  * ```
  */
-declare class VFXScrollingTextComponent extends VFXComponent<VFXScrollingTextComponent.Schema> {
+declare class VFXScrollingTextComponent<
+  Schema extends VFXComponent.Schema.Any = VFXScrollingTextComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "scrollingText";
 
   static override defineSchema(): VFXScrollingTextComponent.Schema;
@@ -40,8 +41,7 @@ declare namespace VFXScrollingTextComponent {
   interface Any extends AnyVFXScrollingTextComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXScrollingTextComponent> {}
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"scrollingText"> {
     /** The text string to display. May be a reference. */
     content: foundry.canvas.vfx.fields.VFXReferenceField<fields.StringField<{ required: true; blank: false }>>;
     /** Distance in pixels the text travels. May be a reference. */

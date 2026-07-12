@@ -1,5 +1,4 @@
 import type { Identity } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -27,7 +26,9 @@ import fields = foundry.data.fields;
  * effect.play();
  * ```
  */
-declare class VFXShakeComponent extends VFXComponent<VFXShakeComponent.Schema> {
+declare class VFXShakeComponent<
+  Schema extends VFXComponent.Schema.Any = VFXShakeComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "shake";
 
   static override defineSchema(): VFXShakeComponent.Schema;
@@ -43,8 +44,7 @@ declare namespace VFXShakeComponent {
   interface Any extends AnyVFXShakeComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXShakeComponent> {}
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"shake"> {
     /** The active shake duration in milliseconds (default 5000). */
     duration: fields.NumberField<{ required: true; nullable: false; initial: 5000; positive: true }>;
     /** The maximum displacement in pixels at the start of the shake (default 35). */

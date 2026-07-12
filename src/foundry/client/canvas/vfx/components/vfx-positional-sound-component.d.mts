@@ -1,5 +1,4 @@
 import type { Identity } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -27,7 +26,9 @@ import fields = foundry.data.fields;
  * };
  * ```
  */
-declare class VFXPositionalSoundComponent extends VFXComponent<VFXPositionalSoundComponent.Schema> {
+declare class VFXPositionalSoundComponent<
+  Schema extends VFXComponent.Schema.Any = VFXPositionalSoundComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "positionalSound";
 
   static override defineSchema(): VFXPositionalSoundComponent.Schema;
@@ -63,8 +64,7 @@ declare namespace VFXPositionalSoundComponent {
     walls: boolean;
   }
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"positionalSound"> {
     /** Audio channel for playback (default "environment"). */
     channel: fields.StringField<{ required: true; blank: false; initial: "environment" }>;
     /** Component duration in ms; defaults to the sound's natural duration. */

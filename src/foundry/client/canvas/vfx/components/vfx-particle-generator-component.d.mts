@@ -1,5 +1,4 @@
 import type { Identity, AnyMutableObject } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -31,7 +30,9 @@ import fields = foundry.data.fields;
  * };
  * ```
  */
-declare class VFXParticleGeneratorComponent extends VFXComponent<VFXParticleGeneratorComponent.Schema> {
+declare class VFXParticleGeneratorComponent<
+  Schema extends VFXComponent.Schema.Any = VFXParticleGeneratorComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "particleGenerator";
 
   static override defineSchema(): VFXParticleGeneratorComponent.Schema;
@@ -53,8 +54,7 @@ declare namespace VFXParticleGeneratorComponent {
   interface Any extends AnyVFXParticleGeneratorComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXParticleGeneratorComponent> {}
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"particleGenerator"> {
     alpha: fields.SchemaField<{
       max: fields.AlphaField;
       min: fields.AlphaField;

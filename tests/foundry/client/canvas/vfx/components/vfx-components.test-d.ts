@@ -48,6 +48,11 @@ describe("VFXPositionalSoundComponent", () => {
     expectTypeOf(VFXPositionalSoundComponent.TYPE).toEqualTypeOf<"positionalSound">();
   });
 
+  test("initialized `type` narrows to the literal", () => {
+    const comp = new VFXPositionalSoundComponent({ type: "positionalSound", src: "boom.ogg", x: 0, y: 0 });
+    expectTypeOf(comp.type).toEqualTypeOf<"positionalSound">();
+  });
+
   test("PositionalSoundData interface shape", () => {
     const data: VFXPositionalSoundComponent.PositionalSoundData = {
       src: "sounds/boom.ogg",

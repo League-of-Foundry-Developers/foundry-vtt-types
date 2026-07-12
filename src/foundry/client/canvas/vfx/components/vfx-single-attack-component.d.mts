@@ -33,7 +33,9 @@ import fields = foundry.data.fields;
  * };
  * ```
  */
-declare class VFXSingleAttackComponent extends VFXComponent<VFXSingleAttackComponent.Schema> {
+declare class VFXSingleAttackComponent<
+  Schema extends VFXComponent.Schema.Any = VFXSingleAttackComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "singleAttack";
 
   /**
@@ -53,6 +55,12 @@ declare class VFXSingleAttackComponent extends VFXComponent<VFXSingleAttackCompo
    */
   destination: VFXPath.BasePathPoint;
 
+  static override defineSchema(): VFXSingleAttackComponent.Schema;
+
+  protected override _load(): Promise<void>;
+
+  protected override _draw(): Promise<void>;
+
   /**
    * Basic charge animation.
    * Subclasses may override this to refine the effect.
@@ -71,20 +79,14 @@ declare class VFXSingleAttackComponent extends VFXComponent<VFXSingleAttackCompo
    */
   protected _animateImpact(timings: VFXSingleAttackComponent.ImpactTimings): void;
 
+  protected override _stop(): Promise<void>;
+
+  protected override _destroy(): void;
+
   /**
    * Compute timings for each step start, end, and sound.
    */
   protected _getTimings(): VFXSingleAttackComponent.Timings;
-
-  static override defineSchema(): VFXSingleAttackComponent.Schema;
-
-  protected override _load(): Promise<void>;
-
-  protected override _draw(): Promise<void>;
-
-  protected override _stop(): Promise<void>;
-
-  protected override _destroy(): void;
 
   #VFXSingleAttackComponent: true;
 }
@@ -145,8 +147,7 @@ declare namespace VFXSingleAttackComponent {
     >;
   }
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"singleAttack"> {
     /** Array of at least 2 path points. Points may be reference objects with deltas. */
     path: fields.ArrayField<
       foundry.canvas.vfx.fields.VFXReferenceObjectField<

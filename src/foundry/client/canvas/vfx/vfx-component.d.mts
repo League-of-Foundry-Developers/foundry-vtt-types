@@ -9,7 +9,7 @@ import fields = foundry.data.fields;
  * A base DataModel class for VFX animation components that can be serialized and played back.
  * @template Schema - The schema type for this component's data
  */
-declare class VFXComponent<Schema extends DataSchema = VFXComponent.Schema> extends DataModel<Schema> {
+declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent.Schema> extends DataModel<Schema> {
   /**
    * The type of this component. Must be overridden in the subclass.
    */
@@ -109,8 +109,20 @@ declare namespace VFXComponent {
   interface Any extends AnyVFXComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXComponent> {}
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  /**
+   * The shape of a VFX component schema, generic over the component's `type` discriminant literal.
+   * Subclasses extend `_Schema<"theirType">` so the initialized `type` narrows to that literal while
+   * assignment/persisted stay `string` (keeping the field's method params variance-compatible with the base).
+   */
+  interface _Schema<Type extends string> extends DataSchema {
+    type: fields.StringField<{ required: true; blank: false }, string, Type, string>;
+  }
+
+  interface Schema extends _Schema<string> {}
+
+  namespace Schema {
+    /** Any component schema — the base constraint used by `VFXComponent` and its subclasses. */
+    type Any = _Schema<string>;
   }
 
   /**

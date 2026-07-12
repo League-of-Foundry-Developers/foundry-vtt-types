@@ -1,5 +1,4 @@
 import type { Identity } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -26,7 +25,9 @@ import fields = foundry.data.fields;
  * };
  * ```
  */
-declare class VFXSingleImpactComponent extends VFXComponent<VFXSingleImpactComponent.Schema> {
+declare class VFXSingleImpactComponent<
+  Schema extends VFXComponent.Schema.Any = VFXSingleImpactComponent.Schema,
+> extends VFXComponent<Schema> {
   static override TYPE: "singleImpact";
 
   static override defineSchema(): VFXSingleImpactComponent.Schema;
@@ -44,8 +45,7 @@ declare namespace VFXSingleImpactComponent {
   interface Any extends AnyVFXSingleImpactComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXSingleImpactComponent> {}
 
-  interface Schema extends DataSchema {
-    type: fields.StringField<{ required: true; blank: false }>;
+  interface Schema extends VFXComponent._Schema<"singleImpact"> {
     /** Position of the impact. May be a reference with deltas. */
     position: foundry.canvas.vfx.fields.VFXReferenceObjectField<
       fields.SchemaField<{
