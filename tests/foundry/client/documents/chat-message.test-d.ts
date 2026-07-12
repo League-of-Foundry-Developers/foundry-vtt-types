@@ -7,15 +7,19 @@ expectTypeOf(new ChatMessage.implementation()).toEqualTypeOf<ChatMessage.Impleme
 expectTypeOf(new ChatMessage.implementation({})).toEqualTypeOf<ChatMessage.Implementation>();
 
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.BLIND),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PRIVATE),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.PUBLIC),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 
@@ -75,9 +79,13 @@ expectTypeOf(chat.rolls).toEqualTypeOf<Roll[]>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.author).toEqualTypeOf<User.Stored | null>();
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<void>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<void>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC)).toEqualTypeOf<void>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode("roll")).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();

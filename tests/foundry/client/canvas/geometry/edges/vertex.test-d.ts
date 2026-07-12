@@ -26,6 +26,7 @@ expectTypeOf(vertex.isLimitingCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isBlockingCCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isBlockingCW).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(vertex.isInternal).toEqualTypeOf<boolean>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(vertex.restriction).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
 expectTypeOf(vertex["_visited"]).toEqualTypeOf<boolean>();
 expectTypeOf(vertex["_distance"]).toEqualTypeOf<number | undefined>();

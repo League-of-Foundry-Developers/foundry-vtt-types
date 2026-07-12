@@ -296,6 +296,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @deprecated "`Wall#orientPoint` has been moved to {@linkcode Edge.orientPoint | foundry.canvas.geometry.edges.Edge#orientPoint}"
    * (since v12, until v14)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
   /**

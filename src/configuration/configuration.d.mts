@@ -372,6 +372,7 @@ export interface SettingConfig {
     {
       required: true;
       blank: false;
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
       choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
     },
