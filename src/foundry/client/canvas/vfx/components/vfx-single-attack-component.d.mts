@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { Identity, ValueOf } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 import type VFXPath from "../vfx-path.d.mts";
@@ -126,7 +126,7 @@ declare namespace VFXSingleAttackComponent {
   interface AttackStepSchema extends DataSchema {
     texture: fields.StringField<{ required: true }>;
     duration: fields.NumberField<{ required: true; nullable: false; initial: 1000 }>;
-    scale: foundry.canvas.vfx.fields.VFXReferencePointField;
+    scale: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: false }>;
     size: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ required: false }>>;
     animations: fields.ArrayField<
       fields.SchemaField<{
@@ -137,7 +137,12 @@ declare namespace VFXSingleAttackComponent {
     sound: fields.SchemaField<
       {
         src: fields.StringField<{ required: true; blank: false }>;
-        align: fields.NumberField<{ required: true; nullable: false; initial: 3 }>;
+        align: fields.NumberField<{
+          required: true;
+          nullable: false;
+          choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
+          initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
+        }>;
         volume: fields.AlphaField;
         radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
         easing: fields.BooleanField<{ initial: true }>;
@@ -156,7 +161,10 @@ declare namespace VFXSingleAttackComponent {
           y: fields.NumberField<{ required: true; nullable: false }>;
           elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
           sort: fields.NumberField<{ nullable: false; initial: 0 }>;
-          sortLayer: fields.NumberField<{ nullable: false; initial: 700 }>;
+          sortLayer: fields.NumberField<{
+            nullable: false;
+            initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+          }>;
         }>
       >,
       { required: true; min: 2 }

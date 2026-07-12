@@ -58,16 +58,24 @@ declare namespace VFXPointSourcePolygonField {
   interface AnyConstructor extends Identity<typeof AnyVFXPointSourcePolygonField> {}
 
   /** The schema field used to validate the serializable polygon config. */
-  type PolygonConfigField = foundry.data.fields.SchemaField<{
-    type: foundry.data.fields.StringField<{ required: true; blank: false }>;
-    x: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
-    y: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
-    elevation: foundry.data.fields.NumberField<{ required: false; nullable: true }>;
-    level: foundry.data.fields.DocumentIdField<{ readonly: false; initial: null }>;
-    radius: foundry.data.fields.NumberField<{ required: false; nullable: true; positive: true }>;
-    angle: foundry.data.fields.AngleField<{ required: false }>;
-    rotation: foundry.data.fields.AngleField<{ required: false }>;
-  }>;
+  type PolygonConfigField = foundry.data.fields.SchemaField<
+    {
+      type: foundry.data.fields.StringField<{
+        required: true;
+        blank: false;
+        initial: "move";
+        choices: typeof CONST.EDGE_RESTRICTION_TYPES;
+      }>;
+      x: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+      y: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+      elevation: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: undefined }>;
+      level: foundry.data.fields.DocumentIdField<{ readonly: false; initial: null }>;
+      radius: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: null; positive: true }>;
+      angle: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
+      rotation: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
+    },
+    { required: false; nullable: true; initial: null }
+  >;
 
   interface Options extends VFXReferenceField.Options {}
 

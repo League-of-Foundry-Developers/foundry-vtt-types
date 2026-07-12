@@ -55,7 +55,7 @@ declare namespace VFXScrollingTextComponent {
       fields.NumberField<{ required: true; nullable: false; initial: 0 }>
     >;
     /** The canvas point where text originates. May be a reference. */
-    origin: foundry.canvas.vfx.fields.VFXReferencePointField;
+    origin: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: true }>;
     /** Direction the text scrolls; value from CONST.TEXT_ANCHOR_POINTS. May be a reference. */
     scrollDirection: foundry.canvas.vfx.fields.VFXReferenceField<
       fields.NumberField<{ required: true; nullable: false; initial: typeof CONST.TEXT_ANCHOR_POINTS.TOP }>

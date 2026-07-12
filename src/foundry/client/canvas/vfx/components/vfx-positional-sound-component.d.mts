@@ -78,7 +78,7 @@ declare namespace VFXPositionalSoundComponent {
     /** Whether the GM always hears the sound regardless of position (default true). */
     gmAlways: fields.BooleanField<{ required: false; initial: true }>;
     /** The angle of the sound cone in degrees. */
-    angle: fields.AngleField;
+    angle: fields.AngleField<{ required: false }>;
     /** Audio effect applied when the sound is not muffled. */
     baseEffect: fields.SchemaField<
       {
@@ -98,7 +98,7 @@ declare namespace VFXPositionalSoundComponent {
     /** Local sound radius in distance units (default 60). */
     radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
     /** The direction of sound emission in degrees. */
-    rotation: fields.AngleField;
+    rotation: fields.AngleField<{ required: false }>;
     /** Sound source path. */
     src: fields.StringField<{ required: true; blank: false }>;
     /** Playback volume (default 1.0). */

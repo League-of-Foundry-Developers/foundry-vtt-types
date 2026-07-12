@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { Identity, ValueOf } from "#utils";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -53,19 +53,27 @@ declare namespace VFXSingleImpactComponent {
         y: fields.NumberField<{ required: true; nullable: false }>;
         elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
         sort: fields.NumberField<{ nullable: false; initial: 0 }>;
-        sortLayer: fields.NumberField<{ nullable: false; initial: 700 }>;
+        sortLayer: fields.NumberField<{
+          nullable: false;
+          initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+        }>;
       }>
     >;
     texture: fields.StringField<{ required: true }>;
     duration: fields.NumberField<{ required: true; nullable: false; initial: 1000 }>;
     /** Scale override for the impact sprite. May be a reference. */
-    scale: foundry.canvas.vfx.fields.VFXReferencePointField;
+    scale: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: false }>;
     /** Uniform size in grid units. May be a reference. */
     size: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ required: false }>>;
     sound: fields.SchemaField<
       {
         src: fields.StringField<{ required: true; blank: false }>;
-        align: fields.NumberField<{ required: true; nullable: false; initial: 3 }>;
+        align: fields.NumberField<{
+          required: true;
+          nullable: false;
+          choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
+          initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
+        }>;
         volume: fields.AlphaField;
         radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
         easing: fields.BooleanField<{ initial: true }>;
