@@ -79,7 +79,6 @@ declare namespace VFXEffect {
 
   interface Schema extends DataSchema {
     name: fields.StringField<{ required: true; nullable: false; blank: false }>;
-    // TODO: FIX THIS
     // `components` is built at runtime from CONFIG.Canvas.vfx.components (open/dynamic set), so
     // there are no static type keys for TypedSchemaField to discriminate on. Override record types.
     components: fields.TypedObjectField<
