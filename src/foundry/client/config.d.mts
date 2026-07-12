@@ -3857,6 +3857,8 @@ declare global {
       hudClass: typeof foundry.applications.hud.TileHUD;
     }
 
+    interface Level extends _Document<"Level">, _HasNoTypes<"Level"> {}
+
     interface Token extends _Document<"Token">, _HasNoTypes<"Token">, _CanvasDoc<"Token"> {
       /**
        * @defaultValue {@linkcode foundry.applications.sheets.PrototypeTokenConfig}
