@@ -223,9 +223,6 @@ declare abstract class Document<
    */
   static metadata: Document.Metadata.Any;
 
-  /**
-   * @defaultValue `["DOCUMENT"]`
-   */
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
@@ -1778,6 +1775,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.CreateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
+    | (DocumentType extends "Level" ? Level.CreateData : never)
     | (DocumentType extends "Macro" ? Macro.CreateData : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.CreateData : never)
     | (DocumentType extends "Playlist" ? Playlist.CreateData : never)
@@ -1814,6 +1812,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.UpdateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
+    | (DocumentType extends "Level" ? Level.UpdateData : never)
     | (DocumentType extends "Macro" ? Macro.UpdateData : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.UpdateData : never)
     | (DocumentType extends "Playlist" ? Playlist.UpdateData : never)
@@ -1850,6 +1849,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Source : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Source : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Source : never)
+    | (DocumentType extends "Level" ? Level.Source : never)
     | (DocumentType extends "Macro" ? Macro.Source : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Source : never)
     | (DocumentType extends "Playlist" ? Playlist.Source : never)
@@ -1886,6 +1886,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Parent : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Parent : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Parent : never)
+    | (DocumentType extends "Level" ? Level.Parent : never)
     | (DocumentType extends "Macro" ? Macro.Parent : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Parent : never)
     | (DocumentType extends "Playlist" ? Playlist.Parent : never)
@@ -1926,6 +1927,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
+    | (DocumentType extends "Level" ? Level.Stored : never)
     | (DocumentType extends "Macro" ? Macro.Stored : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Stored : never)
     | (DocumentType extends "Playlist" ? Playlist.Stored : never)
@@ -1962,6 +1964,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Invalid : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Invalid : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Invalid : never)
+    | (DocumentType extends "Level" ? Level.Invalid : never)
     | (DocumentType extends "Macro" ? Macro.Invalid : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Invalid : never)
     | (DocumentType extends "Playlist" ? Playlist.Invalid : never)
@@ -3094,6 +3097,7 @@ declare namespace Document {
             ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary>[Operation]
             : never)
         | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Level" ? Level.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
         | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
         | (Name extends "MeasuredTemplate"
             ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
@@ -3518,6 +3522,7 @@ declare namespace Document {
     JournalEntryCategory: JournalEntryCategory.DropData;
     JournalEntryPage: JournalEntryPage.DropData;
     JournalEntry: JournalEntry.DropData;
+    Level: Level.DropData;
     Macro: Macro.DropData;
     PlaylistSound: PlaylistSound.DropData;
     Playlist: Playlist.DropData;
