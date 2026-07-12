@@ -1,6 +1,6 @@
-import type VFXPath from "./vfx-path.mjs";
-import type VFXComponent from "./vfx-component.mjs";
-import type { VFXPositionalSoundComponent } from "./components/_module.mjs";
+import type VFXPath from "./vfx-path.d.mts";
+import type VFXComponent from "./vfx-component.d.mts";
+import type { VFXPositionalSoundComponent } from "./components/_module.d.mts";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 

@@ -17,10 +17,10 @@ describe("VFXEffect", () => {
     expectTypeOf(entryWithPos.position).toEqualTypeOf<number | string | undefined>();
   });
 
-  test("play returns Promise<boolean>", () => {
+  test("play returns Promise<boolean | undefined>", () => {
     const effect = new VFXEffect(data);
-    expectTypeOf(effect.play()).toEqualTypeOf<Promise<boolean>>();
-    expectTypeOf(effect.play({ target: { x: 0, y: 0 } })).toEqualTypeOf<Promise<boolean>>();
+    expectTypeOf(effect.play()).toEqualTypeOf<Promise<boolean | undefined>>();
+    expectTypeOf(effect.play({ target: { x: 0, y: 0 } })).toEqualTypeOf<Promise<boolean | undefined>>();
   });
 
   test("playing and started are booleans", () => {

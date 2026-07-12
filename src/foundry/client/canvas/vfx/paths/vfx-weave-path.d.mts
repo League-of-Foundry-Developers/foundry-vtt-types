@@ -21,7 +21,7 @@ export function generateWeavePoints(
   options?: WeavePathOptions,
 ): VFXPath.BasePathPoint[];
 
-interface WeavePathOptions {
+export interface WeavePathOptions {
   /** Number of Hermite arcs (1 = single arc, 2 = up/down pair, etc., default 1). */
   arcCount?: number | undefined;
   /** Ratio of the path length that determines the peak displacement (default 0.15). */

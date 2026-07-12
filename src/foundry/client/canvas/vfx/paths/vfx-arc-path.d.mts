@@ -21,7 +21,7 @@ export function generateArcPoints(
   options?: ArcPathOptions,
 ): VFXPath.BasePathPoint[];
 
-interface ArcPathOptions {
+export interface ArcPathOptions {
   /** Position along path where arc peaks (0-1, default 0.5). */
   peakRatio?: number | undefined;
   /** Height of arc as ratio of path length (default 0.3). */
