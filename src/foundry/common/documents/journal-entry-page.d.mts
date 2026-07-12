@@ -96,28 +96,25 @@ declare abstract class BaseJournalEntryPage<
     data?: Document.CanUserModifyData<"JournalEntryPage", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseJournalEntryPage.CreateInput[],
-    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseJournalEntryPage.TemporaryIf<Temporary>>>;
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation,
+  ): Promise<JournalEntryPage.Stored[]>;
 
   static override updateDocuments(
     updates: BaseJournalEntryPage.UpdateInput[],
     operation?: BaseJournalEntryPage.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntryPage.Stored>>;
+  ): Promise<JournalEntryPage.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseJournalEntryPage.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntryPage.Stored>>;
+  ): Promise<JournalEntryPage.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseJournalEntryPage.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseJournalEntryPage.CreateInput>>(
     data: Data,
-    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseJournalEntryPage.CreateReturn<Data, Temporary>>;
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation,
+  ): Promise<BaseJournalEntryPage.CreateReturn<Data>>;
 
   override update(
     data: BaseJournalEntryPage.UpdateInput,
@@ -215,36 +212,6 @@ declare abstract class BaseJournalEntryPage<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `JournalEntryPage._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryPage._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: JournalEntryPage.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryPage._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryPage._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: JournalEntryPage.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryPage._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryPage._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: JournalEntryPage.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseJournalEntryPage.Schema>;
@@ -293,6 +260,7 @@ declare namespace BaseJournalEntryPage {
   export import UpdateInput = JournalEntryPage.UpdateInput;
   export import Schema = JournalEntryPage.Schema;
   export import Database = JournalEntryPage.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = JournalEntryPage.TemporaryIf;
   export import Flags = JournalEntryPage.Flags;
 

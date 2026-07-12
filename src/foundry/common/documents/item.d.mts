@@ -130,28 +130,25 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     data?: Document.CanUserModifyData<"Item", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseItem.CreateInput[],
-    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseItem.TemporaryIf<Temporary>>>;
+    operation?: BaseItem.Database.CreateDocumentsOperation,
+  ): Promise<Item.Stored[]>;
 
   static override updateDocuments(
     updates: BaseItem.UpdateInput[],
     operation?: BaseItem.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Item.Stored>>;
+  ): Promise<Item.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseItem.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Item.Stored>>;
+  ): Promise<Item.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseItem.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseItem.CreateInput>>(
     data: Data,
-    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseItem.CreateReturn<Data, Temporary>>;
+    operation?: BaseItem.Database.CreateDocumentsOperation,
+  ): Promise<BaseItem.CreateReturn<Data>>;
 
   override update(
     data: BaseItem.UpdateInput,
@@ -279,36 +276,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Item._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Item.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Item._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Item.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Item._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Item.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseItem.Schema>;
@@ -354,6 +321,7 @@ declare namespace BaseItem {
   export import UpdateInput = Item.UpdateInput;
   export import Schema = Item.Schema;
   export import Database = Item.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Item.TemporaryIf;
   export import Flags = Item.Flags;
   export import GetDefaultArtworkReturn = Item.GetDefaultArtworkReturn;

@@ -322,8 +322,7 @@ export const EMBEDDED_DOCUMENT_TYPES: readonly [
   "PlaylistSound",
   "Region",
   "RegionBehavior",
-  // TODO: enable when implemented.
-  // "Level",
+  "Level",
   "TableResult",
   "Tile",
   "Token",

@@ -91,28 +91,25 @@ declare abstract class BaseJournalEntryCategory extends Document<
     data?: Document.CanUserModifyData<"JournalEntryCategory", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseJournalEntryCategory.CreateInput[],
-    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseJournalEntryCategory.TemporaryIf<Temporary>>>;
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation,
+  ): Promise<JournalEntryCategory.Stored[]>;
 
   static override updateDocuments(
     updates: BaseJournalEntryCategory.UpdateInput[],
     operation?: BaseJournalEntryCategory.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntryCategory.Stored>>;
+  ): Promise<JournalEntryCategory.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseJournalEntryCategory.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntryCategory.Stored>>;
+  ): Promise<JournalEntryCategory.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseJournalEntryCategory.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseJournalEntryCategory.CreateInput>>(
     data: Data,
-    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseJournalEntryCategory.CreateReturn<Data, Temporary>>;
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation,
+  ): Promise<BaseJournalEntryCategory.CreateReturn<Data>>;
 
   override update(
     data: BaseJournalEntryCategory.UpdateInput,
@@ -210,36 +207,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `JournalEntryCategory._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryCategory._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: JournalEntryCategory.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryCategory._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: JournalEntryCategory.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
@@ -281,6 +248,7 @@ declare namespace BaseJournalEntryCategory {
   export import UpdateInput = JournalEntryCategory.UpdateInput;
   export import Schema = JournalEntryCategory.Schema;
   export import Database = JournalEntryCategory.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = JournalEntryCategory.TemporaryIf;
   export import Flags = JournalEntryCategory.Flags;
 

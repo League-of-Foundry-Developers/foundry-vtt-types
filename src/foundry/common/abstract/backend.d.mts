@@ -428,7 +428,6 @@ declare namespace DatabaseBackend {
   interface CreateOperation<
     CreateData extends object = object,
     Parent extends Document.Any | null = Document.Any | null,
-    Temporary extends boolean | undefined = boolean | undefined,
   > extends _CommonOperationKeys<Parent> {
     /**
      * The action of this database operation
@@ -441,10 +440,8 @@ declare namespace DatabaseBackend {
      *
      * @remarks For the passable interfaces ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
      * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}), and this base type, this can be a mixed array of
-     * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one,
-     * except {@linkcode Document.Database.OnCreateDocumentsOperation | OnCreateDocumentsOperation}
+     * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one.
      */
-    // TODO: remove the except clause above in v14
     data: CreateData[];
 
     /**
@@ -469,13 +466,6 @@ declare namespace DatabaseBackend {
      * @remarks Behaves like the default is `false`
      */
     keepEmbeddedIds?: boolean;
-
-    /**
-     * @deprecated "It is no longer supported to create temporary documents using the {@linkcode Document.createDocuments}
-     * API. Use the `new Document()` constructor instead." (since v12, until v14)
-     * @remarks Behaves like the default is `false`
-     */
-    temporary?: Temporary;
   }
 
   /**

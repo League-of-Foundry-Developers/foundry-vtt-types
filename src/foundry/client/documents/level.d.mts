@@ -1,79 +1,179 @@
 import type { MaybeArray, Merge } from "#utils";
-import type { fields } from "#common/data/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
-import type { Sound } from "#client/audio/_module.d.mts";
-import type { BasePlaylistSound } from "#common/documents/_module.d.mts";
+import type { BaseLevel } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
-import type { TextEditor } from "#client/applications/ux/_module.d.mts";
+import type { CanvasEdges } from "#client/canvas/geometry/edges/_module.mjs";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
-import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
+declare class Level extends BaseLevel.Internal.ClientDocument {
+  /**
+   * The integer index of the Level, assigned during Scene data preparation.
+   * @remarks This is `undefined` until {@linkcode Scene.prepareEmbeddedDocuments | Scene#prepareEmbeddedDocuments}, which uses
+   * `Object.defineProperty` to make it readonly at the same time it's set to a number.
+   * @privateRemarks The `readonly` is technically incorrect for temporary `Level`s.
+   */
+  readonly index: number | undefined;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
-import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
+  /**
+   * Is this level currently viewed?
+   */
+  get isView(): boolean;
 
-declare namespace PlaylistSound {
+  /**
+   * Is this level currently visible?
+   */
+  get isVisible(): boolean;
+
+  /**
+   * The edges of this Level.
+   */
+  get edges(): CanvasEdges;
+
+  override prepareBaseData(): void;
+
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Level.CreateData,
+  //   options: Level.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onCreateOperation(
+  //   documents: Level.Stored[],
+  //   operation: Level.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onUpdateOperation(
+  //   documents: Level.Stored[],
+  //   operation: Level.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  /**
+   * Clamp the given elevation (of a token with a depth) to the elevation range of this Level.
+   *
+   * The elevation is clamped such that the head of the token is in the range if possible, but
+   * the feet are never outside of the range.
+   * @param elevation - The elevation (of the token)
+   * @param depth     - The depth of the token (default: `0`)
+   * @returns The clamped elevation
+   */
+  clampElevation(elevation: number, depth?: number): number;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  // ClientDocument overrides
+
+  // Descendant Document operations have been left out because Level does not have any descendant documents.
+
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: Level.DefaultNameContext): string;
+
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<Options extends Level.CreateDialogOptions | undefined = undefined>(
+    data: Level.CreateDialogData | undefined,
+    createOptions: Level.Database.CreateDocumentsOperation,
+    options?: Options,
+  ): Promise<Level.CreateDialogReturn<Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Level.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<Options extends Level.CreateDialogOptions | undefined = undefined>(
+    data: Level.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Level.CreateDialogDeprecatedOptions,
+    options?: Options,
+  ): Promise<Level.CreateDialogReturn<Options>>;
+
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Level.Database.DeleteOneDocumentOperation,
+  ): Promise<Level.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Level.Database.DeleteOneDocumentOperation,
+  ): Promise<Level.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Level.DropData): Promise<Level.Implementation | undefined>;
+
+  static override fromImport(
+    source: Level.Source,
+    context?: Document.FromImportContext<Level.Parent>,
+  ): Promise<Level.Implementation>;
+
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #Level: true;
+}
+
+declare namespace Level {
   /**
    * The document's name.
    */
-  type Name = "PlaylistSound";
+  type Name = "Level";
 
   /**
-   * The context used to create a `PlaylistSound`.
+   * The context used to create a `Level`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
-   * The documents embedded within `PlaylistSound`.
+   * The documents embedded within `Level`.
    */
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `PlaylistSound` document instance configured through
-   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Level` document instance configured through
+   * {@linkcode CONFIG.Level.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `PlaylistSound` document configured through
-   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Level` document configured through
+   * {@linkcode CONFIG.Level.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
-  /**
-   * A document's metadata is special information about the document ranging anywhere from its name,
-   * whether it's indexed, or to the permissions a user has over it.
-   */
   interface Metadata extends Merge<
     Document.Metadata.Default,
     Readonly<{
-      name: "PlaylistSound";
-      collection: "sounds";
-      indexed: true;
-      label: "DOCUMENT.PlaylistSound";
-      labelPlural: "DOCUMENT.PlaylistSounds";
-      compendiumIndexFields: ["name", "sort"];
-      schemaVersion: "13.341";
-      permissions: Metadata.Permissions;
+      name: "Level";
+      collection: "levels";
+      label: "DOCUMENT.Level";
+      labelPlural: "DOCUMENT.Levels";
+      isEmbedded: true;
+      schemaVersion: "14.364";
     }>
   > {}
-
-  namespace Metadata {
-    /**
-     * The permissions for whether a certain user can create, update, or delete this document.
-     */
-    interface Permissions {
-      create: "OWNER";
-      update: "OWNER";
-      delete: "OWNER";
-    }
-  }
 
   /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
-  type Parent = Playlist.Implementation | null;
+  type Parent = Scene.Implementation | null;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
@@ -114,18 +214,18 @@ declare namespace PlaylistSound {
   type Collection = never;
 
   /**
-   * An instance of `PlaylistSound` that comes from the database but failed validation meaning that
+   * An instance of `Level` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  type Invalid = Document.Internal.Invalid<Implementation>;
+  type Invalid = Document.Internal.Invalid<Level.Implementation>;
 
   /**
-   * An instance of `PlaylistSound` that comes from the database.
+   * An instance of `Level` that comes from the database.
    */
-  type Stored = Document.Internal.Stored<PlaylistSound.Implementation>;
+  type Stored = Document.Internal.Stored<Level.Implementation>;
 
   /**
-   * The data put in {@linkcode PlaylistSound._source | PlaylistSound#_source}. This data is what was
+   * The data put in {@linkcode Level._source | Level#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -134,8 +234,8 @@ declare namespace PlaylistSound {
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
-   * The data necessary to create a document. Used in places like {@linkcode PlaylistSound.create}
-   * and {@linkcode PlaylistSound | new PlaylistSound(...)}.
+   * The data necessary to create a document. Used in places like {@linkcode Level.create}
+   * and {@linkcode Level | new Level(...)}.
    *
    * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
@@ -144,126 +244,122 @@ declare namespace PlaylistSound {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * Used in the {@linkcode PlaylistSound.create} and {@linkcode PlaylistSound.createDocuments} signatures, and
-   * {@linkcode PlaylistSound.Database.CreateOperation} and its derivative interfaces.
+   * Used in the {@linkcode Level.create} and {@linkcode Level.createDocuments} signatures, and
+   * {@linkcode Level.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
   /**
-   * The helper type for the return of {@linkcode PlaylistSound.create}, returning (a single | an array of) (temporary | stored)
-   * `PlaylistSound`s.
+   * The helper type for the return of {@linkcode Level.create}, returning (a single | an array of) `Level`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
   type CreateReturn<Data extends MaybeArray<CreateInput>> =
-    Data extends Array<CreateInput> ? PlaylistSound.Stored[] : PlaylistSound.Stored | undefined;
+    Data extends Array<CreateInput> ? Level.Stored[] : Level.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
-   * {@linkcode PlaylistSound.name | PlaylistSound#name}.
+   * {@linkcode Level.name | Level#name}.
    *
-   * This is data transformed from {@linkcode PlaylistSound.Source} and turned into more
+   * This is data transformed from {@linkcode Level.Source} and turned into more
    * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@linkcode PlaylistSound.update | PlaylistSound#update}.
-   * It is a distinct type from {@linkcode PlaylistSound.CreateData | DeepPartial<PlaylistSound.CreateData>} because
+   * The data used to update a document, for example {@linkcode Level.update | Level#update}.
+   * It is a distinct type from {@linkcode Level.CreateData | DeepPartial<Level.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
-   * Used in the {@linkcode PlaylistSound.update | PlaylistSound#update} and
-   * {@linkcode PlaylistSound.updateDocuments} signatures, and {@linkcode PlaylistSound.Database.UpdateOperation}
+   * Used in the {@linkcode Level.update | Level#update} and
+   * {@linkcode Level.updateDocuments} signatures, and {@linkcode Level.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode PlaylistSound}. This is the source of truth for how a `PlaylistSound` document
+   * The schema for {@linkcode Level}. This is the source of truth for how a `Level` document
    * must be structured.
    *
-   * Foundry uses this schema to validate the structure of the {@linkcode PlaylistSound}. For example
+   * Foundry uses this schema to validate the structure of the {@linkcode Level}. For example
    * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
    * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
   interface Schema extends fields.DataSchema {
-    /**
-     * The _id which uniquely identifies this PlaylistSound document
-     * @defaultValue `null`
-     */
     _id: fields.DocumentIdField;
 
-    /**
-     * The name of this sound
-     */
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
-    /**
-     * The description of this sound
-     * @defaultValue `undefined`
-     */
-    description: fields.StringField;
+    elevation: fields.SchemaField<
+      ElevationSchema,
+      {
+        validate: (d: unknown) => boolean;
+        /** @defaultValue `"elevation.top may not be less than elevation.bottom"` */
+        validationError: string;
+      }
+    >;
 
-    /**
-     * The audio file path that is played by this sound
-     * @defaultValue `null`
-     */
-    path: fields.FilePathField<{ categories: ["AUDIO"] }>;
+    background: fields.SchemaField<BackgroundSchema>;
 
-    /**
-     * A channel in CONST.AUDIO_CHANNELS where this sound is are played
-     * @defaultValue `""`
-     */
-    channel: fields.StringField<{ required: true; choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
+    foreground: fields.SchemaField<ForegroundSchema>;
 
-    /**
-     * Is this sound currently playing?
-     * @defaultValue `false`
-     */
-    playing: fields.BooleanField;
+    fog: fields.SchemaField<FogSchema>;
 
-    /**
-     * The time in seconds at which playback was paused
-     * @defaultValue `null`
-     */
-    pausedTime: fields.NumberField<{ min: 0 }>;
+    textures: fields.SchemaField<TexturesSchema>;
 
-    /**
-     * Does this sound loop?
-     * @defaultValue `false`
-     */
-    repeat: fields.BooleanField;
+    visibility: fields.SchemaField<VisibilitySchema>;
 
-    /**
-     * The audio volume of the sound, from 0 to 1
-     * @defaultValue `1`
-     */
-    volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
-
-    /**
-     * A duration in milliseconds to fade volume transition
-     * @defaultValue `null`
-     */
-    fade: fields.NumberField<{ integer: true; min: 0 }>;
-
-    /**
-     * The sort order of the PlaylistSound relative to others in the same collection
-     * @defaultValue `0`
-     */
     sort: fields.IntegerSortField;
 
-    /**
-     * An object of optional key/value flags
-     * @defaultValue `{}`
-     */
     flags: fields.DocumentFlagsField<Name>;
+  }
+
+  interface ElevationSchema extends fields.DataSchema {
+    /** @remarks Foundry comments "Treat `null` as `-Infinity`" */
+    bottom: fields.NumberField<{ required: true; nullable: true; initial: 0 }>;
+
+    /** @remarks Foundry comments "Treat `null` as `+Infinity`" */
+    top: fields.NumberField<{ required: true; nullable: true; initial: 20 }>;
+  }
+
+  /**
+   * This set of fields is reused in the main schema and matches the `LevelTexture` core typedef
+   * @internal
+   */
+  interface _LevelTexture extends fields.DataSchema {
+    src: fields.FilePathField<{ required: true; categories: ["TEXTURE"]; initial: null; virtual: true }>;
+    tint: fields.ColorField<{ required: true; nullable: false; initial: "#ffffff" }>;
+    alphaThreshold: fields.AlphaField<{ nullable: false; initial: 0.75 }>;
+  }
+
+  interface BackgroundSchema extends _LevelTexture, fields.DataSchema {
+    color: fields.ColorField<{ nullable: false; initial: "#999999" }>;
+  }
+
+  interface ForegroundSchema extends _LevelTexture, fields.DataSchema {}
+
+  interface FogSchema extends Pick<_LevelTexture, "src">, fields.DataSchema {}
+
+  interface TexturesSchema extends fields.DataSchema {
+    anchorX: fields.NumberField<{ required: true; nullable: false; initial: 0.5 }>;
+    anchorY: fields.NumberField<{ required: true; nullable: false; initial: 0.5 }>;
+    offsetX: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
+    offsetY: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
+    fit: fields.StringField<{ required: true; initial: "fill"; choices: typeof CONST.TEXTURE_DATA_FIT_MODES }>;
+    scaleX: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
+    scaleY: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
+    rotation: fields.AngleField<{ initial: 0 }>;
+  }
+
+  interface VisibilitySchema extends fields.DataSchema {
+    levels: fields.SceneLevelsSetField;
   }
 
   namespace Database {
@@ -273,21 +369,21 @@ declare namespace PlaylistSound {
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
-     * `PlaylistSound` documents. Valid for passing to
+     * `Level` documents. Valid for passing to
      * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
      *
      * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface GetOperation extends DatabaseBackend.GetOperation<PlaylistSound.Parent> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<Level.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.get}.
+     * The interface for passing to {@linkcode Level.get}.
      * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
     interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `PlaylistSound` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Level` documents.
      * @see {@linkcode Document.Database.BackendGetOperation}
      */
     interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
@@ -298,20 +394,17 @@ declare namespace PlaylistSound {
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
-     * interface for `PlaylistSound` documents.
+     * interface for `Level` documents.
      *
      * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode PlaylistSound.create}. The new name for that
+     * @remarks This interface was previously typed for passing to {@linkcode Level.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation extends DatabaseBackend.CreateOperation<
-      PlaylistSound.CreateInput,
-      PlaylistSound.Parent
-    > {}
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Level.CreateInput, Level.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.create} or {@linkcode PlaylistSound.createDocuments}.
+     * The interface for passing to {@linkcode Level.create} or {@linkcode Level.createDocuments}.
      * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
@@ -326,7 +419,7 @@ declare namespace PlaylistSound {
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
-     * can contain `PlaylistSound` documents. (see {@linkcode PlaylistSound.Parent})
+     * can contain `Level` documents. (see {@linkcode Level.Parent})
      * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
@@ -340,7 +433,7 @@ declare namespace PlaylistSound {
     interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `PlaylistSound` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Level` documents.
      * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
@@ -354,8 +447,8 @@ declare namespace PlaylistSound {
     interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preCreate | PlaylistSound#_preCreate} and
-     * {@link Hooks.PreCreateDocument | the `preCreatePlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._preCreate | Level#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateLevel` hook}.
      * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
@@ -369,7 +462,7 @@ declare namespace PlaylistSound {
     interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preCreateOperation}.
+     * The interface passed to {@linkcode Level._preCreateOperation}.
      * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
@@ -383,8 +476,8 @@ declare namespace PlaylistSound {
     interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onCreate | PlaylistSound#_onCreate} and
-     * {@link Hooks.CreateDocument | the `createPlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._onCreate | Level#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createLevel` hook}.
      * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
@@ -398,7 +491,7 @@ declare namespace PlaylistSound {
     interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onCreateOperation} and `PlaylistSound`-related collections'
+     * The interface passed to {@linkcode Level._onCreateOperation} and `Level`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnCreateOperation}
      *
@@ -418,20 +511,17 @@ declare namespace PlaylistSound {
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
-     * interface for `PlaylistSound` documents.
+     * interface for `Level` documents.
      *
      * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode PlaylistSound.update | PlaylistSound#update}.
+     * @remarks This interface was previously typed for passing to {@linkcode Level.update | Level#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      PlaylistSound.UpdateInput,
-      PlaylistSound.Parent
-    > {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Level.UpdateInput, Level.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.update | PlaylistSound#update}.
+     * The interface for passing to {@linkcode Level.update | Level#update}.
      * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
@@ -446,7 +536,7 @@ declare namespace PlaylistSound {
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
-     * can contain `PlaylistSound` documents (see {@linkcode PlaylistSound.Parent}). This interface is just an alias
+     * can contain `Level` documents (see {@linkcode Level.Parent}). This interface is just an alias
      * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
      *
      * ---
@@ -460,7 +550,7 @@ declare namespace PlaylistSound {
     interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.updateDocuments}.
+     * The interface for passing to {@linkcode Level.updateDocuments}.
      * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
@@ -474,7 +564,7 @@ declare namespace PlaylistSound {
     interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `PlaylistSound` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Level` documents.
      * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
@@ -488,8 +578,8 @@ declare namespace PlaylistSound {
     interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preUpdate | PlaylistSound#_preUpdate} and
-     * {@link Hooks.PreUpdateDocument | the `preUpdatePlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._preUpdate | Level#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateLevel` hook}.
      * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
@@ -503,7 +593,7 @@ declare namespace PlaylistSound {
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preUpdateOperation}.
+     * The interface passed to {@linkcode Level._preUpdateOperation}.
      * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
@@ -517,8 +607,8 @@ declare namespace PlaylistSound {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onUpdate | PlaylistSound#_onUpdate} and
-     * {@link Hooks.UpdateDocument | the `updatePlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._onUpdate | Level#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateLevel` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
@@ -532,7 +622,7 @@ declare namespace PlaylistSound {
     interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onUpdateOperation} and `PlaylistSound`-related collections'
+     * The interface passed to {@linkcode Level._onUpdateOperation} and `Level`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnUpdateOperation}
      *
@@ -552,17 +642,17 @@ declare namespace PlaylistSound {
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
-     * interface for `PlaylistSound` documents.
+     * interface for `Level` documents.
      *
      * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode PlaylistSound.delete | PlaylistSound#delete}.
+     * @remarks This interface was previously typed for passing to {@linkcode Level.delete | Level#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<PlaylistSound.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Level.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.delete | PlaylistSound#delete}.
+     * The interface for passing to {@linkcode Level.delete | Level#delete}.
      * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
@@ -577,7 +667,7 @@ declare namespace PlaylistSound {
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
-     * can contain `PlaylistSound` documents (see {@linkcode PlaylistSound.Parent}). This interface is just an alias
+     * can contain `Level` documents (see {@linkcode Level.Parent}). This interface is just an alias
      * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
      *
      * ---
@@ -591,7 +681,7 @@ declare namespace PlaylistSound {
     interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
 
     /**
-     * The interface for passing to {@linkcode PlaylistSound.deleteDocuments}.
+     * The interface for passing to {@linkcode Level.deleteDocuments}.
      * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
@@ -605,7 +695,7 @@ declare namespace PlaylistSound {
     interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `PlaylistSound` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Level` documents.
      * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
@@ -619,8 +709,8 @@ declare namespace PlaylistSound {
     interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preDelete | PlaylistSound#_preDelete} and
-     * {@link Hooks.PreDeleteDocument | the `preDeletePlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._preDelete | Level#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteLevel` hook}.
      * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
@@ -634,7 +724,7 @@ declare namespace PlaylistSound {
     interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._preDeleteOperation}.
+     * The interface passed to {@linkcode Level._preDeleteOperation}.
      * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
@@ -648,8 +738,8 @@ declare namespace PlaylistSound {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onDelete | PlaylistSound#_onDelete} and
-     * {@link Hooks.DeleteDocument | the `deletePlaylistSound` hook}.
+     * The interface passed to {@linkcode Level._onDelete | Level#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteLevel` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
@@ -663,7 +753,7 @@ declare namespace PlaylistSound {
     interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode PlaylistSound._onDeleteOperation} and `PlaylistSound`-related collections'
+     * The interface passed to {@linkcode Level._onDeleteOperation} and `Level`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnDeleteOperation}
      *
@@ -679,48 +769,41 @@ declare namespace PlaylistSound {
 
     namespace Internal {
       interface OperationNameMap {
-        GetDocumentsOperation: PlaylistSound.Database.GetDocumentsOperation;
-        BackendGetOperation: PlaylistSound.Database.BackendGetOperation;
-        GetOperation: PlaylistSound.Database.GetOperation;
+        GetDocumentsOperation: Level.Database.GetDocumentsOperation;
+        BackendGetOperation: Level.Database.BackendGetOperation;
+        GetOperation: Level.Database.GetOperation;
 
-        CreateDocumentsOperation: PlaylistSound.Database.CreateDocumentsOperation;
-        CreateEmbeddedOperation: PlaylistSound.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: PlaylistSound.Database.BackendCreateOperation;
-        CreateOperation: PlaylistSound.Database.CreateOperation;
-        PreCreateOptions: PlaylistSound.Database.PreCreateOptions;
-        PreCreateOperation: PlaylistSound.Database.PreCreateOperation;
-        OnCreateOptions: PlaylistSound.Database.OnCreateOptions;
-        OnCreateOperation: PlaylistSound.Database.OnCreateOperation;
+        CreateDocumentsOperation: Level.Database.CreateDocumentsOperation;
+        CreateEmbeddedOperation: Level.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Level.Database.BackendCreateOperation;
+        CreateOperation: Level.Database.CreateOperation;
+        PreCreateOptions: Level.Database.PreCreateOptions;
+        PreCreateOperation: Level.Database.PreCreateOperation;
+        OnCreateOptions: Level.Database.OnCreateOptions;
+        OnCreateOperation: Level.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: PlaylistSound.Database.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: PlaylistSound.Database.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: PlaylistSound.Database.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: PlaylistSound.Database.BackendUpdateOperation;
-        UpdateOperation: PlaylistSound.Database.UpdateOperation;
-        PreUpdateOptions: PlaylistSound.Database.PreUpdateOptions;
-        PreUpdateOperation: PlaylistSound.Database.PreUpdateOperation;
-        OnUpdateOptions: PlaylistSound.Database.OnUpdateOptions;
-        OnUpdateOperation: PlaylistSound.Database.OnUpdateOperation;
+        UpdateOneDocumentOperation: Level.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: Level.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Level.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Level.Database.BackendUpdateOperation;
+        UpdateOperation: Level.Database.UpdateOperation;
+        PreUpdateOptions: Level.Database.PreUpdateOptions;
+        PreUpdateOperation: Level.Database.PreUpdateOperation;
+        OnUpdateOptions: Level.Database.OnUpdateOptions;
+        OnUpdateOperation: Level.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: PlaylistSound.Database.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: PlaylistSound.Database.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: PlaylistSound.Database.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: PlaylistSound.Database.BackendDeleteOperation;
-        DeleteOperation: PlaylistSound.Database.DeleteOperation;
-        PreDeleteOptions: PlaylistSound.Database.PreDeleteOptions;
-        PreDeleteOperation: PlaylistSound.Database.PreDeleteOperation;
-        OnDeleteOptions: PlaylistSound.Database.OnDeleteOptions;
-        OnDeleteOperation: PlaylistSound.Database.OnDeleteOperation;
+        DeleteOneDocumentOperation: Level.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: Level.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Level.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Level.Database.BackendDeleteOperation;
+        DeleteOperation: Level.Database.DeleteOperation;
+        PreDeleteOptions: Level.Database.PreDeleteOptions;
+        PreDeleteOperation: Level.Database.PreDeleteOperation;
+        OnDeleteOptions: Level.Database.OnDeleteOptions;
+        OnDeleteOperation: Level.Database.OnDeleteOperation;
       }
     }
   }
-
-  /**
-   * If `Temporary` is true then {@linkcode PlaylistSound.Implementation}, otherwise {@linkcode PlaylistSound.Stored}.
-   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
-   */
-  type TemporaryIf<Temporary extends boolean | undefined> =
-    true extends Extract<Temporary, true> ? PlaylistSound.Implementation : PlaylistSound.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -748,255 +831,52 @@ declare namespace PlaylistSound {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
-  /** The interface {@linkcode PlaylistSound.fromDropData} receives */
+  /** The interface {@linkcode Level.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
 
   /**
-   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode PlaylistSound.fromDropData}
-   * signature that has since been removed. This type will be removed in v14.
-   */
-  type DropDataOptions = never;
-
-  /**
-   * The interface for passing to {@linkcode PlaylistSound.defaultName}
+   * The interface for passing to {@linkcode Level.defaultName}
    * @see {@linkcode Document.DefaultNameContext}
    */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
   /**
-   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s first parameter
+   * The interface for passing to {@linkcode Level.createDialog}'s first parameter
    * @see {@linkcode Document.CreateDialogData}
    */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
 
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
-   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s second parameter that still includes partial Dialog
+   * The interface for passing to {@linkcode Level.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions
     extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
-   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s third parameter
+   * The interface for passing to {@linkcode Level.createDialog}'s third parameter
    * @see {@linkcode Document.CreateDialogOptions}
    */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
-   * The return type for {@linkcode PlaylistSound.createDialog}.
+   * The return type for {@linkcode Level.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  type CreateDialogReturn<Config extends PlaylistSound.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
-    PlaylistSound.Stored,
+  type CreateDialogReturn<Config extends Level.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    Level.Stored,
     Config
   >;
 
   /**
-   * The return type for {@linkcode PlaylistSound.deleteDialog | PlaylistSound#deleteDialog}.
+   * The return type for {@linkcode Level.deleteDialog | Level#deleteDialog}.
    * @see {@linkcode Document.DeleteDialogReturn}
    */
   type DeleteDialogReturn<Config extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
-    PlaylistSound.Stored,
+    Level.Stored,
     Config
   >;
-
-  /**
-   * The arguments to construct the document.
-   *
-   * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended. This type will be removed in v14.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
-/**
- * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
- * Each PlaylistSound belongs to the sounds collection of a Playlist document.
- *
- * @see {@linkcode Playlist}                       The Playlist document which contains PlaylistSound embedded documents
- * @see {@linkcode PlaylistSoundConfig}   The PlaylistSound configuration application
- * @see {@linkcode Sound}                          The Sound API which manages web audio playback
- *
- */
-declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
-  /**
-   * @param data    - Initial data from which to construct the `PlaylistSound`
-   * @param context - Construction context options
-   */
-  constructor(data: PlaylistSound.CreateData, context?: PlaylistSound.ConstructionContext);
-
-  /**
-   * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
-   * @defaultValue `100`
-   */
-  static VOLUME_DEBOUNCE_MS: number;
-
-  /**
-   * The Sound which manages playback for this playlist sound
-   * @remarks Only `undefined` prior to first {@linkcode PlaylistSound._createSound | PlaylistSound#_createSound} call
-   */
-  sound: Sound | null | undefined;
-
-  /**
-   * A debounced function, accepting a single volume parameter to adjust the volume of this sound
-   * @param volume - The desired volume level
-   */
-  debounceVolume: (volume: number) => void;
-
-  /**
-   * Create a Sound used to play this PlaylistSound document
-   * @remarks
-   * @throws If called before `game.audio.locked` is falsey.
-   */
-  protected _createSound(): Sound | null;
-
-  /**
-   * Determine the fade-in length:
-   * - If the track is not decoded yet, just honor the configured value.
-   * - Once we know the real duration, cap the fade to half duration of the track.
-   */
-  get fadeDuration(): number;
-
-  /**
-   * The audio context within which this sound is played.
-   * This will be undefined if the audio context is not yet active.
-   */
-  get context(): AudioContext | undefined;
-
-  /**
-   * schedule the fade-out that should occur when repeat is off.
-   * Does nothing if the sound is set to repeat or has no finite duration
-   */
-  protected _scheduleFadeOut(): void;
-
-  /**
-   * Cancel any pending fade-out on the current sound.
-   */
-  protected _cancelFadeOut(): void;
-
-  /**
-   * Synchronize playback for this particular PlaylistSound instance
-   */
-  sync(): void;
-
-  /**
-   * Load the audio for this sound for the current client.
-   */
-  load(): Promise<void>;
-
-  toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
-
-  /**
-   * @remarks Returns {@linkcode Playlist.stopSound | this.parent.stopSound()} or {@linkcode Playlist.playSound | this.parent.playSound()}.
-   */
-  override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Stored | undefined>;
-
-  // For type simplicity the following real override(s) are commented out.
-  // These methods historically have been the source of a large amount of computation from tsc.
-
-  // protected override _preUpdate(
-  //   changed: PlaylistSound.UpdateData,
-  //   options: PlaylistSound.Database.PreUpdateOptions,
-  //   user: User.Stored,
-  // ): Promise<boolean | void>;
-
-  // protected override _onUpdate(
-  //   changed: PlaylistSound.UpdateData,
-  //   options: PlaylistSound.Database.OnUpdateOptions,
-  //   userId: string,
-  // ): void;
-
-  // protected override _onDelete(options: PlaylistSound.Database.OnDeleteOptions, userId: string): void;
-
-  /**
-   * Special handling that occurs when playback of a PlaylistSound is started.
-   */
-  protected _onStart(): Promise<Sound | void>;
-
-  /**
-   * Special handling that occurs when a PlaylistSound reaches the natural conclusion of its playback.
-   */
-  protected _onEnd(): Promise<void | Playlist.Implementation | null | undefined>;
-
-  /**
-   * Special handling that occurs when a PlaylistSound is manually stopped before its natural conclusion.
-   * @remarks Core's implementation is a no-op, this is soft abstract
-   */
-  protected _onStop(): Promise<void>;
-
-  /**
-   * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
-   * @deprecated "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume}
-   * directly" (since v12 until v14)
-   */
-  get effectiveVolume(): number;
-
-  /*
-   * After this point these are not really overridden methods.
-   * They are here because Foundry's documents are complex and have lots of edge cases.
-   * There are DRY ways of representing this but this ends up being harder to understand
-   * for end users extending these functions, especially for static methods. There are also a
-   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
-   * as there is no data that can safely construct every possible document. Finally keeping definitions
-   * separate like this helps against circularities.
-   */
-
-  // ClientDocument overrides
-
-  // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
-
-  // `context` must contain a `parent`, so is required.
-  static override defaultName(context?: PlaylistSound.DefaultNameContext): string;
-
-  // `createOptions` must contain a  `parent`, so is required.
-  static override createDialog<Options extends PlaylistSound.CreateDialogOptions | undefined = undefined>(
-    data: PlaylistSound.CreateDialogData | undefined,
-    createOptions: PlaylistSound.Database.CreateDocumentsOperation,
-    options?: Options,
-  ): Promise<PlaylistSound.CreateDialogReturn<Options>>;
-
-  /**
-   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
-   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
-   *
-   * @see {@linkcode PlaylistSound.CreateDialogDeprecatedOptions}
-   */
-  static override createDialog<Options extends PlaylistSound.CreateDialogOptions | undefined = undefined>(
-    data: PlaylistSound.CreateDialogData | undefined,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: PlaylistSound.CreateDialogDeprecatedOptions,
-    options?: Options,
-  ): Promise<PlaylistSound.CreateDialogReturn<Options>>;
-
-  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
-    options?: Options,
-    operation?: PlaylistSound.Database.DeleteOneDocumentOperation,
-  ): Promise<PlaylistSound.DeleteDialogReturn<Options>>;
-
-  /**
-   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
-   * (since v13, until v15)
-   *
-   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
-   */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
-    options?: Options,
-    operation?: PlaylistSound.Database.DeleteOneDocumentOperation,
-  ): Promise<PlaylistSound.DeleteDialogReturn<Options>>;
-
-  static override fromDropData(data: PlaylistSound.DropData): Promise<PlaylistSound.Implementation | undefined>;
-
-  static override fromImport(
-    source: PlaylistSound.Source,
-    context?: Document.FromImportContext<PlaylistSound.Parent>,
-  ): Promise<PlaylistSound.Implementation>;
-
-  // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.
-
-  #PlaylistSound: true;
-}
-
-export default PlaylistSound;
+export default Level;

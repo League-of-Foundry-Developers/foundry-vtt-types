@@ -93,28 +93,25 @@ declare abstract class BaseCombatantGroup<
     data?: Document.CanUserModifyData<"CombatantGroup", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseCombatantGroup.CreateInput[],
-    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
+    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation,
+  ): Promise<CombatantGroup.Stored[]>;
 
   static override updateDocuments(
     updates: BaseCombatantGroup.UpdateInput[],
     operation?: BaseCombatantGroup.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<CombatantGroup.Stored>>;
+  ): Promise<CombatantGroup.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseCombatantGroup.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<CombatantGroup.Stored>>;
+  ): Promise<CombatantGroup.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseCombatantGroup.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseCombatantGroup.CreateInput>>(
     data: Data,
-    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseCombatantGroup.CreateReturn<Data, Temporary>>;
+    operation?: BaseCombatantGroup.Database.CreateDocumentsOperation,
+  ): Promise<BaseCombatantGroup.CreateReturn<Data>>;
 
   override update(
     data: BaseCombatantGroup.UpdateInput,
@@ -212,36 +209,6 @@ declare abstract class BaseCombatantGroup<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `CombatantGroup._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode CombatantGroup._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: CombatantGroup.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatantGroup.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `CombatantGroup._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode CombatantGroup._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: CombatantGroup.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatantGroup.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `CombatantGroup._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode CombatantGroup._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: CombatantGroup.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatantGroup.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseCombatantGroup.Schema>;
@@ -288,6 +255,7 @@ declare namespace BaseCombatantGroup {
   export import UpdateInput = CombatantGroup.UpdateInput;
   export import Schema = CombatantGroup.Schema;
   export import Database = CombatantGroup.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = CombatantGroup.TemporaryIf;
   export import Flags = CombatantGroup.Flags;
 

@@ -86,28 +86,25 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     data?: Document.CanUserModifyData<"Region", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseRegion.CreateInput[],
-    operation?: BaseRegion.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseRegion.TemporaryIf<Temporary>>>;
+    operation?: BaseRegion.Database.CreateDocumentsOperation,
+  ): Promise<RegionDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseRegion.UpdateInput[],
     operation?: BaseRegion.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<RegionDocument.Stored>>;
+  ): Promise<RegionDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseRegion.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<RegionDocument.Stored>>;
+  ): Promise<RegionDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseRegion.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseRegion.CreateInput>>(
     data: Data,
-    operation?: BaseRegion.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseRegion.CreateReturn<Data, Temporary>>;
+    operation?: BaseRegion.Database.CreateDocumentsOperation,
+  ): Promise<BaseRegion.CreateReturn<Data>>;
 
   override update(
     data: BaseRegion.UpdateInput,
@@ -233,36 +230,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `RegionDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: RegionDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: RegionDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: RegionDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseRegion.Schema>;
@@ -306,6 +273,7 @@ declare namespace BaseRegion {
   export import UpdateInput = RegionDocument.UpdateInput;
   export import Schema = RegionDocument.Schema;
   export import Database = RegionDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;
 

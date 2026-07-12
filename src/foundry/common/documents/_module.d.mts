@@ -21,6 +21,7 @@ export { default as BaseItem } from "./item.mjs";
 export { default as BaseJournalEntry } from "./journal-entry.mjs";
 export { default as BaseJournalEntryCategory } from "./journal-entry-category.mjs";
 export { default as BaseJournalEntryPage } from "./journal-entry-page.mjs";
+export { default as BaseLevel } from "./level.mjs";
 export { default as BaseMacro } from "./macro.mjs";
 export { default as BaseMeasuredTemplate } from "./measured-template.mjs";
 export { default as BaseNote } from "./note.mjs";

@@ -106,28 +106,25 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     data?: Document.CanUserModifyData<"Playlist", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BasePlaylist.CreateInput[],
-    operation?: BasePlaylist.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BasePlaylist.TemporaryIf<Temporary>>>;
+    operation?: BasePlaylist.Database.CreateDocumentsOperation,
+  ): Promise<Playlist.Stored[]>;
 
   static override updateDocuments(
     updates: BasePlaylist.UpdateInput[],
     operation?: BasePlaylist.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Playlist.Stored>>;
+  ): Promise<Playlist.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BasePlaylist.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Playlist.Stored>>;
+  ): Promise<Playlist.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BasePlaylist.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BasePlaylist.CreateInput>>(
     data: Data,
-    operation?: BasePlaylist.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BasePlaylist.CreateReturn<Data, Temporary>>;
+    operation?: BasePlaylist.Database.CreateDocumentsOperation,
+  ): Promise<BasePlaylist.CreateReturn<Data>>;
 
   override update(
     data: BasePlaylist.UpdateInput,
@@ -255,36 +252,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Playlist._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Playlist.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Playlist._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Playlist.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Playlist._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Playlist.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BasePlaylist.Schema>;
@@ -328,6 +295,7 @@ declare namespace BasePlaylist {
   export import UpdateInput = Playlist.UpdateInput;
   export import Schema = Playlist.Schema;
   export import Database = Playlist.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Playlist.TemporaryIf;
   export import Flags = Playlist.Flags;
 

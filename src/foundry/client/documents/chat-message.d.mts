@@ -219,10 +219,8 @@ declare namespace ChatMessage {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput>
-      ? Array<ChatMessage.TemporaryIf<Temporary>>
-      : ChatMessage.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? ChatMessage.Stored[] : ChatMessage.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -433,9 +431,7 @@ declare namespace ChatMessage {
      * @remarks This interface was previously typed for passing to {@linkcode ChatMessage.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {
+    interface CreateOperation extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent> {
       /**
        * @remarks Only affects messages whose {@link ChatMessage.isRoll | `#isRoll` getter} returns true. If this is passed,
        * {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} will call {@linkcode ChatMessage.applyRollMode} with it, affecting the
@@ -464,8 +460,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
@@ -496,8 +491,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} and
@@ -512,8 +506,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreateOperation}.
@@ -527,24 +520,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
-
-    /**
-     * @deprecated The interface passed to {@linkcode ChatMessage._onCreateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} and
@@ -680,21 +656,6 @@ declare namespace ChatMessage {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode ChatMessage._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode ChatMessage._onUpdate | ChatMessage#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateChatMessage` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -828,21 +789,6 @@ declare namespace ChatMessage {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode ChatMessage._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode ChatMessage._onDelete | ChatMessage#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteChatMessage` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -873,20 +819,18 @@ declare namespace ChatMessage {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: ChatMessage.Database.GetDocumentsOperation;
         BackendGetOperation: ChatMessage.Database.BackendGetOperation;
         GetOperation: ChatMessage.Database.GetOperation;
 
-        CreateDocumentsOperation: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: ChatMessage.Database.CreateDocumentsOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: ChatMessage.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: ChatMessage.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: ChatMessage.Database.CreateOperation<Temporary>;
-        PreCreateOptions: ChatMessage.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: ChatMessage.Database.PreCreateOperation<Temporary>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: ChatMessage.Database.OnCreateDocumentsOperation<Temporary>;
+        BackendCreateOperation: ChatMessage.Database.BackendCreateOperation;
+        CreateOperation: ChatMessage.Database.CreateOperation;
+        PreCreateOptions: ChatMessage.Database.PreCreateOptions;
+        PreCreateOperation: ChatMessage.Database.PreCreateOperation;
         OnCreateOptions: ChatMessage.Database.OnCreateOptions;
         OnCreateOperation: ChatMessage.Database.OnCreateOperation;
 
@@ -898,8 +842,6 @@ declare namespace ChatMessage {
         UpdateOperation: ChatMessage.Database.UpdateOperation;
         PreUpdateOptions: ChatMessage.Database.PreUpdateOptions;
         PreUpdateOperation: ChatMessage.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ChatMessage.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: ChatMessage.Database.OnUpdateOptions;
         OnUpdateOperation: ChatMessage.Database.OnUpdateOperation;
 
@@ -911,95 +853,15 @@ declare namespace ChatMessage {
         DeleteOperation: ChatMessage.Database.DeleteOperation;
         PreDeleteOptions: ChatMessage.Database.PreDeleteOptions;
         PreDeleteOperation: ChatMessage.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: ChatMessage.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: ChatMessage.Database.OnDeleteOptions;
         OnDeleteOperation: ChatMessage.Database.OnDeleteOperation;
       }
     }
-
-    /* ***********************************************
-     *             DocsV2 DEPRECATIONS               *
-     *************************************************/
-
-    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
-    type Get = GetOperation;
-
-    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
-    type GetOptions = GetDocumentsOperation;
-
-    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
-
-    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
-    type Update = UpdateOperation;
-
-    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
-    type Delete = DeleteOperation;
-
-    // CreateDocumentsOperation didn't change purpose or name
-
-    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
-    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
-
-    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
-    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
-
-    // PreCreateOptions didn't change purpose or name
-
-    // OnCreateOptions didn't change purpose or name
-
-    // PreCreateOperation didn't change purpose or name
-
-    // OnCreateOperation didn't change purpose or name
-
-    // PreUpdateOptions didn't change purpose or name
-
-    // OnUpdateOptions didn't change purpose or name
-
-    // PreUpdateOperation didn't change purpose or name
-
-    // OnUpdateOperation didn't change purpose or name
-
-    // PreDeleteOptions didn't change purpose or name
-
-    // OnDeleteOptions didn't change purpose or name
-
-    // PreDeleteOperation didn't change purpose or name
-
-    // OnDeleteOperation didn't change purpose or name
-
-    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
-    type DeleteOptions = OnDeleteOptions;
-
-    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
-    type CreateOptions = OnCreateOptions;
-
-    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
-    type UpdateOptions = OnUpdateOptions;
-
-    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
-
-    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
-    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
    * If `Temporary` is true then {@linkcode ChatMessage.Implementation}, otherwise {@linkcode ChatMessage.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? ChatMessage.Implementation : ChatMessage.Stored;
@@ -1065,8 +927,8 @@ declare namespace ChatMessage {
    * The interface for passing to {@linkcode ChatMessage.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode ChatMessage.createDialog}'s third parameter
@@ -1078,11 +940,10 @@ declare namespace ChatMessage {
    * The return type for {@linkcode ChatMessage.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends ChatMessage.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<ChatMessage.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends ChatMessage.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    ChatMessage.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode ChatMessage.deleteDialog | ChatMessage#deleteDialog}.
@@ -1398,14 +1259,11 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   static override defaultName(context?: ChatMessage.DefaultNameContext): string;
 
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends ChatMessage.CreateDialogOptions | undefined = undefined>(
     data?: ChatMessage.CreateDialogData,
-    createOptions?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
+    createOptions?: ChatMessage.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<ChatMessage.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<ChatMessage.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1413,15 +1271,12 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    *
    * @see {@linkcode ChatMessage.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends ChatMessage.CreateDialogOptions | undefined = undefined>(
     data: ChatMessage.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: ChatMessage.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: ChatMessage.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<ChatMessage.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<ChatMessage.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

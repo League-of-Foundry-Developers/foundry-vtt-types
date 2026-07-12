@@ -110,28 +110,25 @@ declare abstract class BaseRegionBehavior<
     data?: Document.CanUserModifyData<"RegionBehavior", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseRegionBehavior.CreateInput[],
-    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseRegionBehavior.TemporaryIf<Temporary>>>;
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation,
+  ): Promise<RegionBehavior.Stored[]>;
 
   static override updateDocuments(
     updates: BaseRegionBehavior.UpdateInput[],
     operation?: BaseRegionBehavior.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<RegionBehavior.Stored>>;
+  ): Promise<RegionBehavior.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseRegionBehavior.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<RegionBehavior.Stored>>;
+  ): Promise<RegionBehavior.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseRegionBehavior.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseRegionBehavior.CreateInput>>(
     data: Data,
-    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseRegionBehavior.CreateReturn<Data, Temporary>>;
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation,
+  ): Promise<BaseRegionBehavior.CreateReturn<Data>>;
 
   override update(
     data: BaseRegionBehavior.UpdateInput,
@@ -229,36 +226,6 @@ declare abstract class BaseRegionBehavior<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `RegionBehavior._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: RegionBehavior.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionBehavior._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: RegionBehavior.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionBehavior._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: RegionBehavior.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseRegionBehavior.Schema>;
@@ -309,6 +276,7 @@ declare namespace BaseRegionBehavior {
   export import UpdateInput = RegionBehavior.UpdateInput;
   export import Schema = RegionBehavior.Schema;
   export import Database = RegionBehavior.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = RegionBehavior.TemporaryIf;
   export import Flags = RegionBehavior.Flags;
 

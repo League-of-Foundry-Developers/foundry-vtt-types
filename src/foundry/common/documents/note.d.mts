@@ -103,28 +103,25 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     data?: Document.CanUserModifyData<"Note", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseNote.CreateInput[],
-    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
+    operation?: BaseNote.Database.CreateDocumentsOperation,
+  ): Promise<NoteDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseNote.UpdateInput[],
     operation?: BaseNote.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<NoteDocument.Stored>>;
+  ): Promise<NoteDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseNote.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<NoteDocument.Stored>>;
+  ): Promise<NoteDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseNote.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseNote.CreateInput>>(
     data: Data,
-    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseNote.CreateReturn<Data, Temporary>>;
+    operation?: BaseNote.Database.CreateDocumentsOperation,
+  ): Promise<BaseNote.CreateReturn<Data>>;
 
   override update(
     data: BaseNote.UpdateInput,
@@ -222,36 +219,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `NoteDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode NoteDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: NoteDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseNote.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `NoteDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode NoteDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: NoteDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseNote.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `NoteDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode NoteDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: NoteDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseNote.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseNote.Schema>;
@@ -295,6 +262,7 @@ declare namespace BaseNote {
   export import UpdateInput = NoteDocument.UpdateInput;
   export import Schema = NoteDocument.Schema;
   export import Database = NoteDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = NoteDocument.TemporaryIf;
   export import Flags = NoteDocument.Flags;
 

@@ -25,6 +25,7 @@ interface DefaultDocumentClasses {
   JournalEntryCategory: typeof JournalEntryCategory;
   JournalEntryPage: typeof JournalEntryPage;
   JournalEntry: typeof JournalEntry;
+  Level: typeof Level;
   Macro: typeof Macro;
   PlaylistSound: typeof PlaylistSound;
   Playlist: typeof Playlist;
@@ -62,6 +63,7 @@ interface DefaultDocumentInstance {
   JournalEntryCategory: JournalEntryCategory;
   JournalEntryPage: JournalEntryPage;
   JournalEntry: JournalEntry;
+  Level: Level;
   Macro: Macro;
   PlaylistSound: PlaylistSound;
   Playlist: Playlist;
@@ -122,6 +124,7 @@ export interface ConfiguredDocumentClass {
   JournalEntryCategory: GetDocumentClass<"JournalEntryCategory">;
   JournalEntryPage: GetDocumentClass<"JournalEntryPage">;
   JournalEntry: GetDocumentClass<"JournalEntry">;
+  Level: GetDocumentClass<"Level">;
   Macro: GetDocumentClass<"Macro">;
   PlaylistSound: GetDocumentClass<"PlaylistSound">;
   Playlist: GetDocumentClass<"Playlist">;
@@ -160,6 +163,7 @@ export interface ConfiguredDocumentInstance {
   JournalEntryCategory: GetDocumentInstance<"JournalEntryCategory">;
   JournalEntryPage: GetDocumentInstance<"JournalEntryPage">;
   JournalEntry: GetDocumentInstance<"JournalEntry">;
+  Level: GetDocumentInstance<"Level">;
   Macro: GetDocumentInstance<"Macro">;
   PlaylistSound: GetDocumentInstance<"PlaylistSound">;
   Playlist: GetDocumentInstance<"Playlist">;
@@ -211,6 +215,7 @@ export interface ConfiguredMetadata {
   JournalEntryCategory: JournalEntryCategory.Metadata;
   JournalEntryPage: JournalEntryPage.Metadata;
   JournalEntry: JournalEntry.Metadata;
+  Level: Level.Metadata;
   Macro: Macro.Metadata;
   MeasuredTemplate: MeasuredTemplateDocument.Metadata;
   Note: NoteDocument.Metadata;

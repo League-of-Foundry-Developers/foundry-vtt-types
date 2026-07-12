@@ -166,28 +166,25 @@ declare abstract class BaseActorDelta<
     data?: Document.CanUserModifyData<"ActorDelta", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseActorDelta.CreateInput[],
-    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation,
+  ): Promise<ActorDelta.Stored[]>;
 
   static override updateDocuments(
     updates: BaseActorDelta.UpdateInput[],
     operation?: BaseActorDelta.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Stored>>;
+  ): Promise<ActorDelta.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseActorDelta.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Stored>>;
+  ): Promise<ActorDelta.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseActorDelta.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseActorDelta.CreateInput>>(
     data: Data,
-    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation,
+  ): Promise<BaseActorDelta.CreateReturn<Data>>;
 
   override update(
     data: BaseActorDelta.UpdateInput,
@@ -317,36 +314,6 @@ declare abstract class BaseActorDelta<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `ActorDelta._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: ActorDelta.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActorDelta._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: ActorDelta.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActorDelta._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: ActorDelta.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseActorDelta.Schema>;
@@ -401,6 +368,7 @@ declare namespace BaseActorDelta {
   export import UpdateInput = ActorDelta.UpdateInput;
   export import Schema = ActorDelta.Schema;
   export import Database = ActorDelta.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;
   export import ApplyDeltaContext = ActorDelta.ApplyDeltaContext;

@@ -110,28 +110,25 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     data?: Document.CanUserModifyData<"Card", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseCard.CreateInput[],
-    operation?: BaseCard.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseCard.TemporaryIf<Temporary>>>;
+    operation?: BaseCard.Database.CreateDocumentsOperation,
+  ): Promise<Card.Stored[]>;
 
   static override updateDocuments(
     updates: BaseCard.UpdateInput[],
     operation?: BaseCard.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Card.Stored>>;
+  ): Promise<Card.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseCard.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Card.Stored>>;
+  ): Promise<Card.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseCard.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseCard.CreateInput>>(
     data: Data,
-    operation?: BaseCard.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseCard.CreateReturn<Data, Temporary>>;
+    operation?: BaseCard.Database.CreateDocumentsOperation,
+  ): Promise<BaseCard.CreateReturn<Data>>;
 
   override update(
     data: BaseCard.UpdateInput,
@@ -229,36 +226,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Card._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Card.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Card._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Card.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Card._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Card.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseCard.Schema>;
@@ -306,6 +273,7 @@ declare namespace BaseCard {
   export import UpdateInput = Card.UpdateInput;
   export import Schema = Card.Schema;
   export import Database = Card.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Card.TemporaryIf;
   export import Flags = Card.Flags;
 

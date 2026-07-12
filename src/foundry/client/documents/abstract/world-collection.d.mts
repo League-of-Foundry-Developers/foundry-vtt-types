@@ -55,15 +55,14 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * the relevant interfaces.
    *
    * The returned document might not be stored if `temporary: true` is passed in `options`
-   * TODO: Change return type to Document.Stored in v14
    * TODO: Infer Document subtype from `updateData` if possible
    */
-  importFromCompendium<Temporary extends boolean | undefined = undefined>(
+  importFromCompendium(
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
-    options?: WorldCollection.ImportFromCompendiumOptions<DocumentName, Temporary>,
-  ): Promise<Document.TemporaryIfForName<DocumentName, Temporary>>;
+    options?: WorldCollection.ImportFromCompendiumOptions<DocumentName>,
+  ): Promise<Document.StoredForName<DocumentName> | undefined>;
 
   /**
    * Apply data transformations when importing a Document from a Compendium pack
@@ -252,11 +251,9 @@ declare namespace WorldCollection {
    * @remarks {@linkcode WorldCollection.importFromCompendium | WorldCollection#importFromCompendium} passes the same options object
    * to both {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and {@linkcode Document.create}.
    */
-  type ImportFromCompendiumOptions<
-    DocumentName extends Document.WorldType,
-    Temporary extends boolean | undefined = boolean | undefined,
-  > = Document.Database.CreateDocumentsOperation<Document.Database.CreateOperationForName<DocumentName, Temporary>> &
-    FromCompendiumOptions;
+  type ImportFromCompendiumOptions<DocumentName extends Document.WorldType> =
+    Document.Database.CreateDocumentsOperation<Document.Database.CreateOperationForName<DocumentName>> &
+      FromCompendiumOptions;
 
   type Pack<DocumentName extends Document.WorldType> = DocumentName extends CompendiumCollection.DocumentName
     ? CompendiumCollection<DocumentName>

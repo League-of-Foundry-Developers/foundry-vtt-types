@@ -129,28 +129,25 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     data?: Document.CanUserModifyData<"Combat", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseCombat.CreateInput[],
-    operation?: BaseCombat.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseCombat.TemporaryIf<Temporary>>>;
+    operation?: BaseCombat.Database.CreateDocumentsOperation,
+  ): Promise<Combat.Stored[]>;
 
   static override updateDocuments(
     updates: BaseCombat.UpdateInput[],
     operation?: BaseCombat.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Combat.Stored>>;
+  ): Promise<Combat.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseCombat.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Combat.Stored>>;
+  ): Promise<Combat.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseCombat.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseCombat.CreateInput>>(
     data: Data,
-    operation?: BaseCombat.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseCombat.CreateReturn<Data, Temporary>>;
+    operation?: BaseCombat.Database.CreateDocumentsOperation,
+  ): Promise<BaseCombat.CreateReturn<Data>>;
 
   override update(
     data: BaseCombat.UpdateInput,
@@ -270,36 +267,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Combat._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Combat._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Combat.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Combat._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Combat._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Combat.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Combat._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Combat._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Combat.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseCombat.Schema>;
@@ -350,6 +317,7 @@ declare namespace BaseCombat {
   export import UpdateInput = Combat.UpdateInput;
   export import Schema = Combat.Schema;
   export import Database = Combat.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;
 

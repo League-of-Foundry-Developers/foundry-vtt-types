@@ -96,28 +96,25 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     data?: Document.CanUserModifyData<"PlaylistSound", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BasePlaylistSound.CreateInput[],
-    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BasePlaylistSound.TemporaryIf<Temporary>>>;
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation,
+  ): Promise<PlaylistSound.Stored[]>;
 
   static override updateDocuments(
     updates: BasePlaylistSound.UpdateInput[],
     operation?: BasePlaylistSound.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<PlaylistSound.Stored>>;
+  ): Promise<PlaylistSound.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BasePlaylistSound.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<PlaylistSound.Stored>>;
+  ): Promise<PlaylistSound.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BasePlaylistSound.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BasePlaylistSound.CreateInput>>(
     data: Data,
-    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BasePlaylistSound.CreateReturn<Data, Temporary>>;
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation,
+  ): Promise<BasePlaylistSound.CreateReturn<Data>>;
 
   override update(
     data: BasePlaylistSound.UpdateInput,
@@ -215,36 +212,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `PlaylistSound._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: PlaylistSound.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `PlaylistSound._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: PlaylistSound.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `PlaylistSound._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: PlaylistSound.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BasePlaylistSound.Schema>;
@@ -288,6 +255,7 @@ declare namespace BasePlaylistSound {
   export import UpdateInput = PlaylistSound.UpdateInput;
   export import Schema = PlaylistSound.Schema;
   export import Database = PlaylistSound.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = PlaylistSound.TemporaryIf;
   export import Flags = PlaylistSound.Flags;
 

@@ -5602,6 +5602,90 @@ declare namespace JavaScriptField {
   > {}
 }
 
+declare class SceneLevelsSetField<
+  const Options extends SceneLevelsSetField.AnyOptions = SceneLevelsSetField.DefaultOptions,
+> extends SetField<
+  SceneLevelsSetField.Element,
+  Options,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  ArrayField.AssignmentElementType<SceneLevelsSetField.Element>,
+  ArrayField.InitializedElementType<SceneLevelsSetField.Element>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  SceneLevelsSetField.AssignmentType<ArrayField.AssignmentElementType<SceneLevelsSetField.Element>, Options>,
+  SceneLevelsSetField.InitializedType<ArrayField.InitializedElementType<SceneLevelsSetField.Element>, Options>,
+  ArrayField.PersistedElementType<SceneLevelsSetField.Element>,
+  SceneLevelsSetField.PersistedType<ArrayField.PersistedElementType<SceneLevelsSetField.Element>, Options>
+> {
+  constructor(options?: Options, context?: DataField.ConstructionContext);
+
+  static override get _defaults(): SceneLevelsSetField.AnyOptions;
+}
+
+declare namespace SceneLevelsSetField {
+  type Element = DocumentIdField<{ nullable: false; readonly: false }>;
+
+  type Options = SetField.Options<string>;
+
+  type AnyOptions = Options;
+
+  /**
+   * The base assignment type for the {@linkcode SetField} class.
+   * @template AssignmentElementType - the assignment type of the elements in the array
+   *
+   * @deprecated Assignment type is being deprecated.
+   */
+  type BaseAssignmentType<AssignmentElementType> = ArrayField.BaseAssignmentType<AssignmentElementType>;
+
+  /**
+   * The type of the default options for the {@linkcode SetField} class.
+   */
+  type DefaultOptions = SimpleMerge<SetField.DefaultOptions, { required: true; initial: [] }>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the SetField class.
+   * @template AssignmentElementType - the assignment type of the elements of the SetField
+   * @template Opts                  - the options that override the default options
+   */
+  type MergedOptions<Opts extends AnyOptions> = SimpleMerge<DefaultOptions, Opts>;
+
+  /**
+   * A shorthand for the assignment type of a SetField class.
+   * @template AssignmentElementType - the assignment type of the elements of the SetField
+   * @template Opts                  - the options that override the default options
+   *
+   * @deprecated AssignmentData is being phased out. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<AssignmentElementType, Opts extends AnyOptions> = DataField.DerivedAssignmentType<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    BaseAssignmentType<AssignmentElementType>,
+    ArrayField._EffectiveOptions<MergedOptions<Opts>>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a SetField class.
+   * @template AssignmentElementType - the assignment type of the elements of the SetField
+   * @template InitializedElementType - the initialized type of the elements of the SetField
+   * @template Opts                  - the options that override the default options
+   */
+  type InitializedType<InitializedElementType, Opts extends AnyOptions> = DataField.DerivedInitializedType<
+    Set<InitializedElementType>,
+    ArrayField._EffectiveOptions<MergedOptions<Opts>>
+  >;
+
+  /**
+   * A shorthand for the persisted type of a SetField class.
+   * @template AssignmentElementType - the assignment type of the elements of the SetField
+   * @template PersistedElementType  - the persisted type of the elements of the SetField
+   * @template Opts                  - the options that override the default options
+   */
+  type PersistedType<PersistedElementType, Opts extends AnyOptions> = DataField.DerivedInitializedType<
+    PersistedElementType[],
+    ArrayField._EffectiveOptions<MergedOptions<Opts>>
+  >;
+}
+
 export {
   AlphaField,
   AngleField,
@@ -5632,6 +5716,7 @@ export {
   ObjectField,
   TypedObjectField,
   TypedSchemaField,
+  SceneLevelsSetField,
   SchemaField,
   SetField,
   StringField,

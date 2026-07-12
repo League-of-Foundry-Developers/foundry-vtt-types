@@ -101,28 +101,25 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     data?: Document.CanUserModifyData<"Adventure", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseAdventure.CreateInput[],
-    operation?: BaseAdventure.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseAdventure.TemporaryIf<Temporary>>>;
+    operation?: BaseAdventure.Database.CreateDocumentsOperation,
+  ): Promise<Adventure.Stored[]>;
 
   static override updateDocuments(
     updates: BaseAdventure.UpdateInput[],
     operation?: BaseAdventure.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Adventure.Stored>>;
+  ): Promise<Adventure.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseAdventure.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Adventure.Stored>>;
+  ): Promise<Adventure.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseAdventure.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseAdventure.CreateInput>>(
     data: Data,
-    operation?: BaseAdventure.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseAdventure.CreateReturn<Data, Temporary>>;
+    operation?: BaseAdventure.Database.CreateDocumentsOperation,
+  ): Promise<BaseAdventure.CreateReturn<Data>>;
 
   override update(
     data: BaseAdventure.UpdateInput,
@@ -223,36 +220,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Adventure._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Adventure.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Adventure._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Adventure.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Adventure._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Adventure.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseAdventure.Schema>;
@@ -296,6 +263,7 @@ declare namespace BaseAdventure {
   export import UpdateInput = Adventure.UpdateInput;
   export import Schema = Adventure.Schema;
   export import Database = Adventure.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Adventure.TemporaryIf;
   export import Flags = Adventure.Flags;
 

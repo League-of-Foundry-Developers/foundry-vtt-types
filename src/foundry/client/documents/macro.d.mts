@@ -210,8 +210,8 @@ declare namespace Macro {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput> ? Array<Macro.TemporaryIf<Temporary>> : Macro.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? Macro.Stored[] : Macro.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -373,9 +373,7 @@ declare namespace Macro {
      * @remarks This interface was previously typed for passing to {@linkcode Macro.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Macro.CreateInput, Macro.Parent, Temporary> {
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Macro.CreateInput, Macro.Parent> {
       /**
        * @remarks If provided, {@linkcode Macro._onCreate | Macro#_onCreate} calls
        * {@linkcode User.assignHotbarMacro | User#assignHotbarMacro} with this value. It's limited by private method validation to the range
@@ -396,8 +394,7 @@ declare namespace Macro {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * @deprecated `Macro` documents are never embedded. This interface exists for consistency with other documents.
@@ -428,8 +425,7 @@ declare namespace Macro {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Macro._preCreate | Macro#_preCreate} and
@@ -444,8 +440,7 @@ declare namespace Macro {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Macro._preCreateOperation}.
@@ -459,24 +454,7 @@ declare namespace Macro {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
-
-    /**
-     * @deprecated The interface passed to {@linkcode Macro._onCreateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Macro._onCreate | Macro#_onCreate} and
@@ -612,21 +590,6 @@ declare namespace Macro {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Macro._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode Macro._onUpdate | Macro#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateMacro` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -760,21 +723,6 @@ declare namespace Macro {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Macro._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode Macro._onDelete | Macro#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteMacro` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -805,20 +753,18 @@ declare namespace Macro {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: Macro.Database.GetDocumentsOperation;
         BackendGetOperation: Macro.Database.BackendGetOperation;
         GetOperation: Macro.Database.GetOperation;
 
-        CreateDocumentsOperation: Macro.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Macro.Database.CreateDocumentsOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: Macro.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Macro.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Macro.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Macro.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Macro.Database.PreCreateOperation<Temporary>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Macro.Database.OnCreateDocumentsOperation<Temporary>;
+        BackendCreateOperation: Macro.Database.BackendCreateOperation;
+        CreateOperation: Macro.Database.CreateOperation;
+        PreCreateOptions: Macro.Database.PreCreateOptions;
+        PreCreateOperation: Macro.Database.PreCreateOperation;
         OnCreateOptions: Macro.Database.OnCreateOptions;
         OnCreateOperation: Macro.Database.OnCreateOperation;
 
@@ -830,8 +776,6 @@ declare namespace Macro {
         UpdateOperation: Macro.Database.UpdateOperation;
         PreUpdateOptions: Macro.Database.PreUpdateOptions;
         PreUpdateOperation: Macro.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Macro.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: Macro.Database.OnUpdateOptions;
         OnUpdateOperation: Macro.Database.OnUpdateOperation;
 
@@ -843,95 +787,15 @@ declare namespace Macro {
         DeleteOperation: Macro.Database.DeleteOperation;
         PreDeleteOptions: Macro.Database.PreDeleteOptions;
         PreDeleteOperation: Macro.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Macro.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: Macro.Database.OnDeleteOptions;
         OnDeleteOperation: Macro.Database.OnDeleteOperation;
       }
     }
-
-    /* ***********************************************
-     *             DocsV2 DEPRECATIONS               *
-     *************************************************/
-
-    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
-    type Get = GetOperation;
-
-    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
-    type GetOptions = GetDocumentsOperation;
-
-    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
-
-    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
-    type Update = UpdateOperation;
-
-    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
-    type Delete = DeleteOperation;
-
-    // CreateDocumentsOperation didn't change purpose or name
-
-    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
-    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
-
-    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
-    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
-
-    // PreCreateOptions didn't change purpose or name
-
-    // OnCreateOptions didn't change purpose or name
-
-    // PreCreateOperation didn't change purpose or name
-
-    // OnCreateOperation didn't change purpose or name
-
-    // PreUpdateOptions didn't change purpose or name
-
-    // OnUpdateOptions didn't change purpose or name
-
-    // PreUpdateOperation didn't change purpose or name
-
-    // OnUpdateOperation didn't change purpose or name
-
-    // PreDeleteOptions didn't change purpose or name
-
-    // OnDeleteOptions didn't change purpose or name
-
-    // PreDeleteOperation didn't change purpose or name
-
-    // OnDeleteOperation didn't change purpose or name
-
-    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
-
-    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
-    type DeleteOptions = OnDeleteOptions;
-
-    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
-    type CreateOptions = OnCreateOptions;
-
-    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
-    type UpdateOptions = OnUpdateOptions;
-
-    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
-
-    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
-    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
    * If `Temporary` is true then {@linkcode Macro.Implementation}, otherwise {@linkcode Macro.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Macro.Implementation : Macro.Stored;
@@ -988,8 +852,8 @@ declare namespace Macro {
    * The interface for passing to {@linkcode Macro.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Macro.createDialog}'s third parameter
@@ -1001,11 +865,10 @@ declare namespace Macro {
    * The return type for {@linkcode Macro.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends Macro.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Macro.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends Macro.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    Macro.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode Macro.deleteDialog | Macro#deleteDialog}.
@@ -1180,14 +1043,11 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   static override defaultName(context?: Macro.DefaultNameContext): string;
 
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Macro.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Macro.CreateDialogOptions | undefined = undefined>(
     data?: Macro.CreateDialogData,
-    createOptions?: Macro.Database.CreateDocumentsOperation<Temporary>,
+    createOptions?: Macro.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<Macro.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Macro.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1195,15 +1055,12 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    *
    * @remarks @see {@linkcode Macro.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Macro.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Macro.CreateDialogOptions | undefined = undefined>(
     data: Macro.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Macro.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: Macro.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<Macro.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Macro.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

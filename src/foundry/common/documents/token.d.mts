@@ -240,28 +240,25 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     data?: Document.CanUserModifyData<"Token", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseToken.CreateInput[],
-    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
+    operation?: BaseToken.Database.CreateDocumentsOperation,
+  ): Promise<TokenDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseToken.UpdateInput[],
     operation?: BaseToken.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<TokenDocument.Stored>>;
+  ): Promise<TokenDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseToken.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<TokenDocument.Stored>>;
+  ): Promise<TokenDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseToken.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseToken.CreateInput>>(
     data: Data,
-    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseToken.CreateReturn<Data, Temporary>>;
+    operation?: BaseToken.Database.CreateDocumentsOperation,
+  ): Promise<BaseToken.CreateReturn<Data>>;
 
   override update(
     data: BaseToken.UpdateInput,
@@ -392,36 +389,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `TokenDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode TokenDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: TokenDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TokenDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode TokenDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: TokenDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TokenDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode TokenDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: TokenDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseToken.Schema>;
@@ -483,6 +450,7 @@ declare namespace BaseToken {
   export import UpdateInput = TokenDocument.UpdateInput;
   export import Schema = TokenDocument.Schema;
   export import Database = TokenDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = TokenDocument.TemporaryIf;
   export import Flags = TokenDocument.Flags;
   export import CoreFlags = TokenDocument.CoreFlags;

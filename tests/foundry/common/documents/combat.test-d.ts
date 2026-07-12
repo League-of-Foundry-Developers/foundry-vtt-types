@@ -16,9 +16,9 @@ expectTypeOf(TestBaseCombat.createDocuments([])).toEqualTypeOf<Promise<Combat.St
 expectTypeOf(TestBaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
 expectTypeOf(TestBaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
 
-const combat = await TestBaseCombat.create({ scene: "foo", active: true }, { temporary: true });
+const combat = await TestBaseCombat.create({ scene: "foo", active: true });
 if (combat) {
-  expectTypeOf(combat).toEqualTypeOf<Combat.Implementation>();
+  expectTypeOf(combat).toEqualTypeOf<Combat.Stored>();
   expectTypeOf(combat.collections.combatants).toEqualTypeOf<
     foundry.abstract.EmbeddedCollection<Combatant.Stored, Combat.Implementation>
   >();

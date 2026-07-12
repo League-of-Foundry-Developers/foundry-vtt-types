@@ -12,11 +12,3 @@ expectTypeOf(foundry.documents.BaseCombatantGroup.updateDocuments([])).toEqualTy
 expectTypeOf(foundry.documents.BaseCombatantGroup.deleteDocuments([])).toEqualTypeOf<
   Promise<CombatantGroup.Stored[]>
 >();
-
-const combatantGroup = await foundry.documents.BaseCombatantGroup.create(
-  { name: "Another Combatant Group", type: "base" },
-  { temporary: true },
-);
-if (combatantGroup) {
-  expectTypeOf(combatantGroup).toEqualTypeOf<CombatantGroup.Implementation>();
-}

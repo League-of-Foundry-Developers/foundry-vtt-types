@@ -223,9 +223,6 @@ declare abstract class Document<
    */
   static metadata: Document.Metadata.Any;
 
-  /**
-   * @defaultValue `["DOCUMENT"]`
-   */
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
@@ -1043,27 +1040,6 @@ declare abstract class Document<
     options?: Document.ClearFieldsRecursivelyOptions,
   ): void;
 
-  /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
-  protected static _onCreateDocuments(documents: never, context: never): Promise<void>;
-
-  /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
-  protected static _onUpdateDocuments(documents: never, context: never): Promise<unknown>;
-
-  /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
-  protected static _onDeleteDocuments(documents: never, context: never): Promise<unknown>;
-
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
   " fvtt_types_internal_document_parent": Parent;
@@ -1778,6 +1754,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.CreateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
+    | (DocumentType extends "Level" ? Level.CreateData : never)
     | (DocumentType extends "Macro" ? Macro.CreateData : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.CreateData : never)
     | (DocumentType extends "Playlist" ? Playlist.CreateData : never)
@@ -1814,6 +1791,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.UpdateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
+    | (DocumentType extends "Level" ? Level.UpdateData : never)
     | (DocumentType extends "Macro" ? Macro.UpdateData : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.UpdateData : never)
     | (DocumentType extends "Playlist" ? Playlist.UpdateData : never)
@@ -1850,6 +1828,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Source : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Source : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Source : never)
+    | (DocumentType extends "Level" ? Level.Source : never)
     | (DocumentType extends "Macro" ? Macro.Source : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Source : never)
     | (DocumentType extends "Playlist" ? Playlist.Source : never)
@@ -1886,6 +1865,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Parent : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Parent : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Parent : never)
+    | (DocumentType extends "Level" ? Level.Parent : never)
     | (DocumentType extends "Macro" ? Macro.Parent : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Parent : never)
     | (DocumentType extends "Playlist" ? Playlist.Parent : never)
@@ -1926,6 +1906,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
+    | (DocumentType extends "Level" ? Level.Stored : never)
     | (DocumentType extends "Macro" ? Macro.Stored : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Stored : never)
     | (DocumentType extends "Playlist" ? Playlist.Stored : never)
@@ -1962,6 +1943,7 @@ declare namespace Document {
     | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Invalid : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Invalid : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Invalid : never)
+    | (DocumentType extends "Level" ? Level.Invalid : never)
     | (DocumentType extends "Macro" ? Macro.Invalid : never)
     | (DocumentType extends "PlaylistSound" ? PlaylistSound.Invalid : never)
     | (DocumentType extends "Playlist" ? Playlist.Invalid : never)
@@ -2295,17 +2277,12 @@ declare namespace Document {
     type OperationAction = Exclude<DatabaseBackend.DatabaseAction, "get">;
 
     /**
-     * The `(Pre|On)(Create|Update)Operation` interfaces all receive `data` or `update` params that have been `#toObject`ed. The `Extract`
-     * branch only exists to handle the deprecated {@linkcode Document._onCreateDocuments} method, which receives the final client-side
-     * mutated `operation` object, where `ClientDatabaseBackend##preCreateDocumentArray` has set `operation.data = documents`.
+     * The `(Pre|On)(Create|Update)Operation` interfaces all receive `data` or `update` params that have been `#toObject`ed.
      * @internal
      */
-    // TODO: remove Extract branch in v14 when `_onCreateDocuments` goes away
-    type _RestrictToDataObjects<Operation extends object, Key extends keyof Operation, Excl extends boolean = true> =
+    type _RestrictToDataObjects<Operation extends object, Key extends keyof Operation> =
       Operation[Key] extends Array<infer Data>
-        ? Excl extends true
-          ? Omit<Operation, Key> & { [_ in Key]: Array<Exclude<Data, Document.Any>> }
-          : Omit<Operation, Key> & { [_ in Key]: Array<Extract<Data, Document.Any>> }
+        ? Omit<Operation, Key> & { [_ in Key]: Array<Exclude<Data, Document.Any>> }
         : never;
 
     /* ***********************************************
@@ -2458,26 +2435,6 @@ declare namespace Document {
     >;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onCreateDocuments} method. This will
-     * be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database.CreateOperation}.
-     *
-     * @remarks Since this method is called inside {@linkcode Document.createDocuments}, but *after* the call to
-     * {@linkcode DatabaseBackend.create | DatabaseBackend#create}, it receives the final mutated version of the client-side `operation`
-     * object, and the last thing `ClientDatabaseBackend##preCreateDocumentArray` does is set `operation.data = documents`, this is the one
-     * use for the `false`/`Extract` branch in {@linkcode _RestrictToDataObjects}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnCreateDocumentsOperation<BaseOperation extends DatabaseBackend.CreateOperation> = _RestrictToDataObjects<
-      BaseOperation,
-      "data",
-      false
-    >;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onCreate | Document#_onCreate},
      * {@link Hooks.CreateDocument | the `create[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}.
@@ -2539,16 +2496,13 @@ declare namespace Document {
      * {@linkcode CreateDocumentsOperationForName} performs that duty now, while this returns types valid
      * for {@linkcode DatabaseBackend._createDocuments | DatabaseBackend#_createDocuments}.
      */
-    type CreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"CreateOperation", DocName, Temporary>;
+    type CreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"CreateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.CreateDocumentsOperation} */
-    type CreateDocumentsOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"CreateDocumentsOperation", DocName, Temporary>;
+    type CreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "CreateDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.CreateEmbeddedOperation} */
     type CreateEmbeddedOperationForName<DocName extends Document.Type> = Internal.Lookup<
@@ -2557,28 +2511,16 @@ declare namespace Document {
     >;
 
     /** @see {@linkcode Document.Database.BackendCreateOperation} */
-    type BackendCreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"BackendCreateOperation", DocName, Temporary>;
-
-    /** @see {@linkcode Document.Database.PreCreateOptions} */
-    type PreCreateOptionsForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"PreCreateOptions", DocName, Temporary>;
-
-    /** @see {@linkcode Document.Database.PreCreateOperation} */
-    type PreCreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"PreCreateOperation", DocName, Temporary>;
-
-    /** @see {@linkcode Document.Database.OnCreateDocumentsOperation} */
-    type OnCreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnCreateDocumentsOperation",
+    type BackendCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "BackendCreateOperation",
       DocName
     >;
+
+    /** @see {@linkcode Document.Database.PreCreateOptions} */
+    type PreCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"PreCreateOptions", DocName>;
+
+    /** @see {@linkcode Document.Database.PreCreateOperation} */
+    type PreCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreCreateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.OnCreateOptions} */
     type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnCreateOptions", DocName>;
@@ -2692,21 +2634,6 @@ declare namespace Document {
     >;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onUpdateDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database.UpdateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
-     * modifies the object after {@linkcode Document._preUpdateOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnUpdateDocumentsOperation<BaseOperation extends DatabaseBackend.UpdateOperation> =
-      PreUpdateOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdate | Document#_onUpdate},
      * {@link Hooks.UpdateDocument | the `update[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}.
@@ -2793,12 +2720,6 @@ declare namespace Document {
 
     /** @see {@linkcode Document.Database.PreUpdateOperation} */
     type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreUpdateOperation", DocName>;
-
-    /** @see {@linkcode Document.Database.OnUpdateDocumentsOperation} */
-    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnUpdateDocumentsOperation",
-      DocName
-    >;
 
     /** @see {@linkcode Document.Database.OnUpdateOptions} */
     type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnUpdateOptions", DocName>;
@@ -2907,21 +2828,6 @@ declare namespace Document {
     type PreDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = BaseOperation;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onDeleteDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database.CreateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
-     * modifies the object after {@linkcode Document._preDeleteOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnDeleteDocumentsOperation<BaseOperation extends DatabaseBackend.DeleteOperation> =
-      PreDeleteOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onDelete | Document#_onDelete},
      * {@link Hooks.DeleteDocument | the `delete[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}.
@@ -3006,12 +2912,6 @@ declare namespace Document {
     /** @see {@linkcode Document.Database.PreDeleteOperation} */
     type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreDeleteOperation", DocName>;
 
-    /** @see {@linkcode Document.Database.OnDeleteDocumentsOperation} */
-    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnDeleteDocumentsOperation",
-      DocName
-    >;
-
     /** @see {@linkcode Document.Database.OnDeleteOptions} */
     type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOptions", DocName>;
 
@@ -3028,7 +2928,6 @@ declare namespace Document {
         | "CreateOperation"
         | "PreCreateOptions"
         | "PreCreateOperation"
-        | "OnCreateDocumentsOperation"
         | "OnCreateOptions"
         | "OnCreateOperation";
 
@@ -3040,7 +2939,6 @@ declare namespace Document {
         | "UpdateOperation"
         | "PreUpdateOptions"
         | "PreUpdateOperation"
-        | "OnUpdateDocumentsOperation"
         | "OnUpdateOptions"
         | "OnUpdateOperation";
 
@@ -3052,69 +2950,51 @@ declare namespace Document {
         | "DeleteOperation"
         | "PreDeleteOptions"
         | "PreDeleteOperation"
-        | "OnDeleteDocumentsOperation"
         | "OnDeleteOptions"
         | "OnDeleteOperation";
 
       type Operation = GetOperation | CreateOperation | UpdateOperation | DeleteOperation;
 
-      type Lookup<
-        Operation extends Document.Database.Internal.Operation,
-        Name extends Document.Type,
-        Temporary extends boolean | undefined = boolean | undefined,
-      > =
-        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "AmbientLight"
-            ? AmbientLightDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "AmbientSound"
-            ? AmbientSoundDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "CombatantGroup"
-            ? CombatantGroup.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "FogExploration"
-            ? FogExploration.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+      type Lookup<Operation extends Document.Database.Internal.Operation, Name extends Document.Type> =
+        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "AmbientLight" ? AmbientLightDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "AmbientSound" ? AmbientSoundDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "CombatantGroup" ? CombatantGroup.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "FogExploration" ? FogExploration.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap[Operation] : never)
         | (Name extends "JournalEntryCategory"
-            ? JournalEntryCategory.Database.Internal.OperationNameMap<Temporary>[Operation]
+            ? JournalEntryCategory.Database.Internal.OperationNameMap[Operation]
             : never)
-        | (Name extends "JournalEntryPage"
-            ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "JournalEntryPage" ? JournalEntryPage.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Level" ? Level.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap[Operation] : never)
         | (Name extends "MeasuredTemplate"
-            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
+            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap[Operation]
             : never)
-        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "PlaylistSound"
-            ? PlaylistSound.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "RegionBehavior"
-            ? RegionBehavior.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "User" ? User.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never);
+        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "PlaylistSound" ? PlaylistSound.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "RegionBehavior" ? RegionBehavior.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "User" ? User.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap[Operation] : never);
     }
 
     /* ***********************************************
@@ -3518,6 +3398,7 @@ declare namespace Document {
     JournalEntryCategory: JournalEntryCategory.DropData;
     JournalEntryPage: JournalEntryPage.DropData;
     JournalEntry: JournalEntry.DropData;
+    Level: Level.DropData;
     Macro: Macro.DropData;
     PlaylistSound: PlaylistSound.DropData;
     Playlist: Playlist.DropData;
@@ -3661,40 +3542,76 @@ declare namespace Document {
     K
   >;
 
+  /** @deprecated `TemporaryIf` has been deprecated since v14. This lookup will be removed in v15. */
   type TemporaryIfForName<Name extends Document.Type, Temporary extends boolean | undefined> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ActiveEffect" ? ActiveEffect.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ActorDelta" ? ActorDelta.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Actor" ? Actor.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Adventure" ? Adventure.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "AmbientLight" ? AmbientLightDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "AmbientSound" ? AmbientSoundDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Card" ? Card.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Cards" ? Cards.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ChatMessage" ? ChatMessage.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Combat" ? Combat.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Combatant" ? Combatant.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "CombatantGroup" ? CombatantGroup.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Drawing" ? DrawingDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "FogExploration" ? FogExploration.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Folder" ? Folder.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Item" ? Item.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntryCategory" ? JournalEntryCategory.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntryPage" ? JournalEntryPage.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntry" ? JournalEntry.TemporaryIf<Temporary> : never)
+    | (Name extends "Level" ? never : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Macro" ? Macro.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Note" ? NoteDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "PlaylistSound" ? PlaylistSound.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Playlist" ? Playlist.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "RegionBehavior" ? RegionBehavior.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Region" ? RegionDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "RollTable" ? RollTable.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Scene" ? Scene.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Setting" ? Setting.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "TableResult" ? TableResult.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Tile" ? TileDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Token" ? TokenDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "User" ? User.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Wall" ? WallDocument.TemporaryIf<Temporary> : never);
 
   /**
