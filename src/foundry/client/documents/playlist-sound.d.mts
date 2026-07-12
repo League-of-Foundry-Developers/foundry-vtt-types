@@ -648,21 +648,6 @@ declare namespace PlaylistSound {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode PlaylistSound._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode PlaylistSound._onDelete | PlaylistSound#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deletePlaylistSound` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -724,8 +709,6 @@ declare namespace PlaylistSound {
         DeleteOperation: PlaylistSound.Database.DeleteOperation;
         PreDeleteOptions: PlaylistSound.Database.PreDeleteOptions;
         PreDeleteOperation: PlaylistSound.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: PlaylistSound.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: PlaylistSound.Database.OnDeleteOptions;
         OnDeleteOperation: PlaylistSound.Database.OnDeleteOperation;
       }

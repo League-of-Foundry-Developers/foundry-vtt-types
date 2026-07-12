@@ -1494,21 +1494,6 @@ declare namespace TokenDocument {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode TokenDocument._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode TokenDocument._onDelete | TokenDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteTokenDocument` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -1570,8 +1555,6 @@ declare namespace TokenDocument {
         DeleteOperation: TokenDocument.Database.DeleteOperation;
         PreDeleteOptions: TokenDocument.Database.PreDeleteOptions;
         PreDeleteOperation: TokenDocument.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: TokenDocument.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: TokenDocument.Database.OnDeleteOptions;
         OnDeleteOperation: TokenDocument.Database.OnDeleteOperation;
       }

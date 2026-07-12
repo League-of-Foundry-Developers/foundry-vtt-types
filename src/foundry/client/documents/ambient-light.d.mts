@@ -626,21 +626,6 @@ declare namespace AmbientLightDocument {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode AmbientLightDocument._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode AmbientLightDocument._onDelete | AmbientLightDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -702,8 +687,6 @@ declare namespace AmbientLightDocument {
         DeleteOperation: AmbientLightDocument.Database.DeleteOperation;
         PreDeleteOptions: AmbientLightDocument.Database.PreDeleteOptions;
         PreDeleteOperation: AmbientLightDocument.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: AmbientLightDocument.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: AmbientLightDocument.Database.OnDeleteOptions;
         OnDeleteOperation: AmbientLightDocument.Database.OnDeleteOperation;
       }

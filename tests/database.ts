@@ -28,7 +28,6 @@ export const deleteOperationName = [
   "BackendDeleteOperation",
   "PreDeleteOptions",
   "PreDeleteOperation",
-  "OnDeleteDocumentsOperation",
   "OnDeleteOptions",
   "OnDeleteOperation",
 ] as const;

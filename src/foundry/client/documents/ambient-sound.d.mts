@@ -684,21 +684,6 @@ declare namespace AmbientSoundDocument {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode AmbientSoundDocument._onDelete | AmbientSoundDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteAmbientSoundDocument` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -760,8 +745,6 @@ declare namespace AmbientSoundDocument {
         DeleteOperation: AmbientSoundDocument.Database.DeleteOperation;
         PreDeleteOptions: AmbientSoundDocument.Database.PreDeleteOptions;
         PreDeleteOperation: AmbientSoundDocument.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: AmbientSoundDocument.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: AmbientSoundDocument.Database.OnDeleteOptions;
         OnDeleteOperation: AmbientSoundDocument.Database.OnDeleteOperation;
       }

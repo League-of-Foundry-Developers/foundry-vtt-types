@@ -402,16 +402,6 @@ export const operations = {
       parent,
     }) satisfies ActiveEffect.Database.PreDeleteOperation,
 
-  // TODO: remove in v14
-  onDeleteDocumentsOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
-    ({
-      ...database.preDeleteOperationBase,
-      ...docDeleteOpProps,
-      ids,
-      parent,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    }) satisfies ActiveEffect.Database.OnDeleteDocumentsOperation,
-
   minimalOnDeleteOptions: ({ parent = null }: { parent?: Parent }) =>
     ({
       ...database.minimalOnDeleteOptionsBase,

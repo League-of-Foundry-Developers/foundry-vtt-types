@@ -2828,20 +2828,6 @@ declare namespace Document {
     type PreDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = BaseOperation;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onDeleteDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database.CreateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnDeleteDocumentsOperation<BaseOperation extends DatabaseBackend.DeleteOperation> =
-      PreDeleteOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onDelete | Document#_onDelete},
      * {@link Hooks.DeleteDocument | the `delete[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}.
@@ -2926,12 +2912,6 @@ declare namespace Document {
     /** @see {@linkcode Document.Database.PreDeleteOperation} */
     type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreDeleteOperation", DocName>;
 
-    /** @see {@linkcode Document.Database.OnDeleteDocumentsOperation} */
-    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnDeleteDocumentsOperation",
-      DocName
-    >;
-
     /** @see {@linkcode Document.Database.OnDeleteOptions} */
     type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOptions", DocName>;
 
@@ -2970,7 +2950,6 @@ declare namespace Document {
         | "DeleteOperation"
         | "PreDeleteOptions"
         | "PreDeleteOperation"
-        | "OnDeleteDocumentsOperation"
         | "OnDeleteOptions"
         | "OnDeleteOperation";
 

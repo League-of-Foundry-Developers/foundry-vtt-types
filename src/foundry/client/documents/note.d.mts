@@ -700,21 +700,6 @@ declare namespace NoteDocument {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode NoteDocument._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode NoteDocument._onDelete | NoteDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteNoteDocument` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -776,8 +761,6 @@ declare namespace NoteDocument {
         DeleteOperation: NoteDocument.Database.DeleteOperation;
         PreDeleteOptions: NoteDocument.Database.PreDeleteOptions;
         PreDeleteOperation: NoteDocument.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: NoteDocument.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: NoteDocument.Database.OnDeleteOptions;
         OnDeleteOperation: NoteDocument.Database.OnDeleteOperation;
       }

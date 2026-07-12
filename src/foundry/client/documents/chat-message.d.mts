@@ -789,21 +789,6 @@ declare namespace ChatMessage {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode ChatMessage._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode ChatMessage._onDelete | ChatMessage#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteChatMessage` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -868,8 +853,6 @@ declare namespace ChatMessage {
         DeleteOperation: ChatMessage.Database.DeleteOperation;
         PreDeleteOptions: ChatMessage.Database.PreDeleteOptions;
         PreDeleteOperation: ChatMessage.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: ChatMessage.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: ChatMessage.Database.OnDeleteOptions;
         OnDeleteOperation: ChatMessage.Database.OnDeleteOperation;
       }

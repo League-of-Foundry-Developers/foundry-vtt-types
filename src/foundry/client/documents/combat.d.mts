@@ -814,21 +814,6 @@ declare namespace Combat {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Combat._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode Combat._onDelete | Combat#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteCombat` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -893,8 +878,6 @@ declare namespace Combat {
         DeleteOperation: Combat.Database.DeleteOperation;
         PreDeleteOptions: Combat.Database.PreDeleteOptions;
         PreDeleteOperation: Combat.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Combat.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: Combat.Database.OnDeleteOptions;
         OnDeleteOperation: Combat.Database.OnDeleteOperation;
       }
