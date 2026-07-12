@@ -32,6 +32,7 @@ const fullSource = {
   changes: [
     {
       key: "system.stuff.value",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
       priority: 60,
       value: "1",
@@ -169,6 +170,7 @@ const firstChange = fullTestAE.changes[0]!;
 
 expectTypeOf(firstChange.key).toBeString();
 expectTypeOf(firstChange.value).toBeString();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES>();
 expectTypeOf(firstChange.priority).toEqualTypeOf<number | null | undefined>();
 
@@ -335,6 +337,7 @@ expectTypeOf(
     changes: [
       {
         key: "system.foo.bar",
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         mode: CONST.ACTIVE_EFFECT_MODES.ADD,
         priority: 2,
         value: "i don't know what AEs look like",
@@ -454,6 +457,7 @@ const fullUpdateData = {
   changes: fullTestAE.changes.concat([
     {
       key: "name",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
       priority: 1,
       value: " the Second",

@@ -86,6 +86,7 @@ declare class PolygonVertex {
    * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    * @remarks Actually initialized to `0` literal, but is meant as a `WALL_SENSE_TYPES`
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   restriction: CONST.WALL_SENSE_TYPES;
 
   /**

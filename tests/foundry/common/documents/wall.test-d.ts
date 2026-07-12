@@ -69,11 +69,11 @@ new TestBaseWall({
 new TestBaseWall({
   _id: "XXXXXSomeIDXXXXX",
   c: [20, 30, 240, 340],
-  light: CONST.WALL_SENSE_TYPES.DISTANCE,
+  light: CONST.EDGE_SENSE_TYPES.DISTANCE,
   move: CONST.WALL_MOVEMENT_TYPES.NORMAL,
-  sight: CONST.WALL_SENSE_TYPES.LIMITED,
-  sound: CONST.WALL_SENSE_TYPES.PROXIMITY,
-  dir: CONST.WALL_DIRECTIONS.LEFT,
+  sight: CONST.EDGE_SENSE_TYPES.LIMITED,
+  sound: CONST.EDGE_SENSE_TYPES.PROXIMITY,
+  dir: CONST.EDGE_DIRECTIONS.LEFT,
   door: CONST.WALL_DOOR_TYPES.SECRET,
   ds: CONST.WALL_DOOR_STATES.LOCKED,
   doorSound: "futuristicForcefield",
@@ -138,11 +138,11 @@ expectTypeOf(myWall).toEqualTypeOf<TestBaseWall>();
 
 expectTypeOf(myWall._id).toEqualTypeOf<string | null>();
 expectTypeOf(myWall.c).toEqualTypeOf<[number, number, number, number]>();
-expectTypeOf(myWall.light).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
+expectTypeOf(myWall.light).toEqualTypeOf<CONST.EDGE_SENSE_TYPES | null>();
 expectTypeOf(myWall.move).toEqualTypeOf<CONST.WALL_MOVEMENT_TYPES | null>();
-expectTypeOf(myWall.sight).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
-expectTypeOf(myWall.sound).toEqualTypeOf<CONST.WALL_SENSE_TYPES | null>();
-expectTypeOf(myWall.dir).toEqualTypeOf<CONST.WALL_DIRECTIONS | null>();
+expectTypeOf(myWall.sight).toEqualTypeOf<CONST.EDGE_SENSE_TYPES | null>();
+expectTypeOf(myWall.sound).toEqualTypeOf<CONST.EDGE_SENSE_TYPES | null>();
+expectTypeOf(myWall.dir).toEqualTypeOf<CONST.EDGE_DIRECTIONS | null>();
 expectTypeOf(myWall.door).toEqualTypeOf<CONST.WALL_DOOR_TYPES | null>();
 expectTypeOf(myWall.ds).toEqualTypeOf<CONST.WALL_DOOR_STATES | null>();
 expectTypeOf(myWall.doorSound).toEqualTypeOf<string | undefined>();

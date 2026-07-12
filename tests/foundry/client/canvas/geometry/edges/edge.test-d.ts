@@ -24,12 +24,17 @@ new Edge(p, p, {
 });
 const edge = new Edge(p, p, {
   type: "darkness",
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   sight: CONST.WALL_SENSE_TYPES.DISTANCE,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   move: CONST.WALL_SENSE_TYPES.LIMITED,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   sound: CONST.WALL_SENSE_TYPES.PROXIMITY,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   light: CONST.WALL_SENSE_TYPES.NONE,
   id: foundry.utils.randomID(),
   object: someWall,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   direction: CONST.WALL_DIRECTIONS.LEFT,
   threshold: {
     attenuation: true,
@@ -46,10 +51,15 @@ expectTypeOf(edge.b).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(edge.id).toEqualTypeOf<string | undefined>();
 if (edge.object) expectTypeOf(edge.object).toEqualTypeOf<PlaceableObject.Any>();
 expectTypeOf(edge.type).toEqualTypeOf<Edge.EdgeTypes>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.direction).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.light).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.move).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.sight).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.sound).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
 expectTypeOf(edge.threshold).toEqualTypeOf<WallDocument.ThresholdData | undefined>();
 expectTypeOf(edge.nw).toEqualTypeOf<Canvas.Point>();
@@ -66,6 +76,7 @@ expectTypeOf(edge.clone()).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
 declare const edge2: Edge;
 expectTypeOf(edge.getIntersection(edge2)).toEqualTypeOf<foundry.utils.LineIntersection | void>();
 expectTypeOf(edge.applyThreshold("sound", p)).toEqualTypeOf<boolean>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(edge.orientPoint(p)).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
 expectTypeOf(edge.recordIntersections(edge2)).toEqualTypeOf<void>();
 expectTypeOf(edge.removeIntersections()).toEqualTypeOf<void>();
