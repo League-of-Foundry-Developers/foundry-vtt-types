@@ -254,36 +254,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `RollTable._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode RollTable._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: RollTable.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RollTable._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode RollTable._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: RollTable.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RollTable._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode RollTable._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: RollTable.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseRollTable.Schema>;

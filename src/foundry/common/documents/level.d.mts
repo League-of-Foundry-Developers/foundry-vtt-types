@@ -237,36 +237,6 @@ declare abstract class BaseLevel extends Document<"Level", BaseLevel.Schema, any
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Level._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Level._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Level.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseLevel.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Level._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Level._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Level.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseLevel.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Level._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Level._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Level.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseLevel.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseLevel.Schema>;

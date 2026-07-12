@@ -314,36 +314,6 @@ declare abstract class BaseActorDelta<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `ActorDelta._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: ActorDelta.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActorDelta._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: ActorDelta.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActorDelta._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode ActorDelta._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: ActorDelta.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseActorDelta.Schema>;

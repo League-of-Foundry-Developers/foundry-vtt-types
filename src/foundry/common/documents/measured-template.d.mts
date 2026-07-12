@@ -230,36 +230,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `MeasuredTemplateDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode MeasuredTemplateDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: MeasuredTemplateDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `MeasuredTemplateDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode MeasuredTemplateDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: MeasuredTemplateDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `MeasuredTemplateDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode MeasuredTemplateDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: MeasuredTemplateDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;

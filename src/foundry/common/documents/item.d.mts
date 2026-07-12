@@ -276,36 +276,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Item._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Item.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Item._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Item.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Item._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Item._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Item.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseItem.Schema>;

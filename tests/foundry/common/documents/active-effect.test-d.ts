@@ -314,14 +314,6 @@ expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull(
 expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
-// core's implementation for these three are actual no-ops, no point testing the modification context
-// // eslint-disable-next-line @typescript-eslint/no-deprecated
-// expectTypeOf(TestActiveEffect["_onCreateDocuments"]([effect, nonBaseAE], {}));
-// // eslint-disable-next-line @typescript-eslint/no-deprecated
-// expectTypeOf(TestActiveEffect["_onUpdateDocuments"]([effect], {}));
-// // eslint-disable-next-line @typescript-eslint/no-deprecated
-// expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect], {}));
-
 expectTypeOf(TestActiveEffect._schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 

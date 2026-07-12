@@ -207,36 +207,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `JournalEntryCategory._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryCategory._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: JournalEntryCategory.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntryCategory._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntryCategory._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: JournalEntryCategory.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;

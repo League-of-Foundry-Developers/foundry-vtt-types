@@ -224,36 +224,6 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Folder._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Folder._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Folder.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Folder._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Folder._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Folder.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Folder._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Folder._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Folder.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseFolder.Schema>;

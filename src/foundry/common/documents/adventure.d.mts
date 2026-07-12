@@ -220,36 +220,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Adventure._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Adventure.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Adventure._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Adventure.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Adventure._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Adventure._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Adventure.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAdventure.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseAdventure.Schema>;

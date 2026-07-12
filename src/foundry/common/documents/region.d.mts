@@ -230,36 +230,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `RegionDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: RegionDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: RegionDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode RegionDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: RegionDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegion.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseRegion.Schema>;

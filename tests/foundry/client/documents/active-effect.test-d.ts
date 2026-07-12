@@ -229,16 +229,6 @@ export const operations = {
       parent,
     }) satisfies ActiveEffect.Database.PreCreateOperation,
 
-  // TODO: remove in v14
-  onCreateDocumentsOperation: ({ data, parent = null }: { data: Implementation[]; parent?: Parent }) =>
-    ({
-      ...database.onCreateDocumentsOperationBase,
-      ...docCreateOpProps,
-      data,
-      parent,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    }) satisfies ActiveEffect.Database.OnCreateDocumentsOperation,
-
   minimalOnCreateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
     ({
       ...database.minimalOnCreateOptionsBase,

@@ -236,36 +236,6 @@ declare abstract class BaseActiveEffect<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `ActiveEffect._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode ActiveEffect._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: ActiveEffect.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActiveEffect._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode ActiveEffect._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: ActiveEffect.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ActiveEffect._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode ActiveEffect._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: ActiveEffect.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseActiveEffect.Schema>;

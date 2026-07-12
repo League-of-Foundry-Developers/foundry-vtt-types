@@ -239,36 +239,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `DrawingDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode DrawingDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: DrawingDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `DrawingDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode DrawingDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: DrawingDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `DrawingDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode DrawingDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: DrawingDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseDrawing.Schema>;

@@ -199,36 +199,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `AmbientLightDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientLightDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: AmbientLightDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientLight.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `AmbientLightDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientLightDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: AmbientLightDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientLight.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `AmbientLightDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientLightDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: AmbientLightDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientLight.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseAmbientLight.Schema>;

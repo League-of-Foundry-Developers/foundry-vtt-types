@@ -6,7 +6,6 @@ export const createOperationName = [
   "BackendCreateOperation",
   "PreCreateOptions",
   "PreCreateOperation",
-  "OnCreateDocumentsOperation",
   "OnCreateOptions",
   "OnCreateOperation",
 ] as const;

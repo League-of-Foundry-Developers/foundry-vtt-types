@@ -476,21 +476,6 @@ declare namespace Level {
     interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Level._onCreateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
-
-    /**
      * The interface passed to {@linkcode Level._onCreate | Level#_onCreate} and
      * {@link Hooks.CreateDocument | the `createLevel` hook}.
      * @see {@linkcode Document.Database.OnCreateOptions}
@@ -824,8 +809,6 @@ declare namespace Level {
         CreateOperation: Level.Database.CreateOperation;
         PreCreateOptions: Level.Database.PreCreateOptions;
         PreCreateOperation: Level.Database.PreCreateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Level.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Level.Database.OnCreateOptions;
         OnCreateOperation: Level.Database.OnCreateOperation;
 

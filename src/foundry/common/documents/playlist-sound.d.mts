@@ -212,36 +212,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `PlaylistSound._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: PlaylistSound.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `PlaylistSound._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: PlaylistSound.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `PlaylistSound._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode PlaylistSound._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: PlaylistSound.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylistSound.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BasePlaylistSound.Schema>;

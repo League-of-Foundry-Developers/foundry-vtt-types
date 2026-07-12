@@ -200,36 +200,6 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `AmbientSoundDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientSoundDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: AmbientSoundDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `AmbientSoundDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientSoundDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: AmbientSoundDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `AmbientSoundDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode AmbientSoundDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: AmbientSoundDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseAmbientSound.Schema>;

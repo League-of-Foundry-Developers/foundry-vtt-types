@@ -256,36 +256,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `JournalEntry._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntry._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: JournalEntry.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntry._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntry._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: JournalEntry.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `JournalEntry._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode JournalEntry._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: JournalEntry.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseJournalEntry.Schema>;

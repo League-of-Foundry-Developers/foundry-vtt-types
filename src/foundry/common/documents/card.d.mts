@@ -226,36 +226,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Card._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Card.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Card._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Card.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Card._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Card._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Card.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCard.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseCard.Schema>;

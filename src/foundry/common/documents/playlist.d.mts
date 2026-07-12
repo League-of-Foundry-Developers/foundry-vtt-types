@@ -252,36 +252,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Playlist._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Playlist.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Playlist._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Playlist.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Playlist._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Playlist._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Playlist.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BasePlaylist.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BasePlaylist.Schema>;

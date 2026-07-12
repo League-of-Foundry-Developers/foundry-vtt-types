@@ -278,36 +278,6 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Actor._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Actor._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Actor.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActor.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Actor._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Actor._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Actor.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActor.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Actor._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Actor._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Actor.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActor.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseActor.Schema>;

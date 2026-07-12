@@ -240,36 +240,6 @@ declare abstract class BaseChatMessage<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `ChatMessage._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode ChatMessage._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: ChatMessage.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseChatMessage.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ChatMessage._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode ChatMessage._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: ChatMessage.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseChatMessage.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `ChatMessage._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode ChatMessage._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: ChatMessage.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseChatMessage.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseChatMessage.Schema>;
