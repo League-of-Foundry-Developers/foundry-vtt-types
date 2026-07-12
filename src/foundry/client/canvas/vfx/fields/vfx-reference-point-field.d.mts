@@ -29,8 +29,6 @@ declare class VFXReferencePointField<
    */
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
-  protected override _cast(value: unknown): AssignmentType;
-
   #VFXReferencePointField: true;
 }
 

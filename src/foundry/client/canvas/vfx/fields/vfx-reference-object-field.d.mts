@@ -40,8 +40,6 @@ declare class VFXReferenceObjectField<
    */
   static override referenceField: foundry.data.fields.SchemaField.Any;
 
-  protected override _cast(value: unknown): AssignmentType;
-
   override resolve(value: AssignmentType, references: Record<string, unknown>): InitializedType;
 
   static override isReference(value: unknown): value is VFXReferenceObjectField.ReferenceData;

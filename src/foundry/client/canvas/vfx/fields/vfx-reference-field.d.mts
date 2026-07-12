@@ -35,8 +35,6 @@ declare class VFXReferenceField<
    */
   valueField: ValueField;
 
-  protected override _cast(value: unknown): AssignmentType;
-
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   protected override _validateType(
