@@ -313,16 +313,6 @@ export const operations = {
       updates,
     }) satisfies ActiveEffect.Database.PreUpdateOperation,
 
-  // TODO: remove in v14
-  onUpdateDocumentsOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
-    ({
-      ...database.onUpdateDocumentsOperationBase,
-      ...docCreateOpProps,
-      parent,
-      updates,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-    }) satisfies ActiveEffect.Database.OnUpdateDocumentsOperation,
-
   minimalOnUpdateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
     ({
       ...database.minimalOnUpdateOptionsBase,

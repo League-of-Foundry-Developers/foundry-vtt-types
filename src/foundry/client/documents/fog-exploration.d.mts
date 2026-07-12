@@ -501,21 +501,6 @@ declare namespace FogExploration {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode FogExploration._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode FogExploration._onUpdate | FogExploration#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateFogExploration` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -722,8 +707,6 @@ declare namespace FogExploration {
         UpdateOperation: FogExploration.Database.UpdateOperation;
         PreUpdateOptions: FogExploration.Database.PreUpdateOptions;
         PreUpdateOperation: FogExploration.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: FogExploration.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: FogExploration.Database.OnUpdateOptions;
         OnUpdateOperation: FogExploration.Database.OnUpdateOperation;
 

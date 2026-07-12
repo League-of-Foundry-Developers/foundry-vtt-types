@@ -1354,24 +1354,6 @@ declare namespace TokenDocument {
       extends Document.Database.PreUpdateOperation<UpdateOperation>, TokenDocument.Database._PreServerUpdateOperation {}
 
     /**
-     * @deprecated The interface passed to {@linkcode TokenDocument._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation
-      extends
-        Omit<Document.Database.OnUpdateDocumentsOperation<UpdateOperation>, "_movementArguments">,
-        TokenDocument.Database._PostServerUpdateOperation {}
-
-    /**
      * The interface passed to {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateTokenDocument` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -1578,8 +1560,6 @@ declare namespace TokenDocument {
         UpdateOperation: TokenDocument.Database.UpdateOperation;
         PreUpdateOptions: TokenDocument.Database.PreUpdateOptions;
         PreUpdateOperation: TokenDocument.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: TokenDocument.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: TokenDocument.Database.OnUpdateOptions;
         OnUpdateOperation: TokenDocument.Database.OnUpdateOperation;
 

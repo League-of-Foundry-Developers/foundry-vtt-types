@@ -17,7 +17,6 @@ export const updateOperationName = [
   "BackendUpdateOperation",
   "PreUpdateOptions",
   "PreUpdateOperation",
-  "OnUpdateDocumentsOperation",
   "OnUpdateOptions",
   "OnUpdateOperation",
 ] as const;

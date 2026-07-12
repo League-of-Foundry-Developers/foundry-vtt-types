@@ -586,21 +586,6 @@ declare namespace TileDocument {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode TileDocument._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode TileDocument._onUpdate | TileDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateTileDocument` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -798,8 +783,6 @@ declare namespace TileDocument {
         UpdateOperation: TileDocument.Database.UpdateOperation;
         PreUpdateOptions: TileDocument.Database.PreUpdateOptions;
         PreUpdateOperation: TileDocument.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: TileDocument.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: TileDocument.Database.OnUpdateOptions;
         OnUpdateOperation: TileDocument.Database.OnUpdateOperation;
 

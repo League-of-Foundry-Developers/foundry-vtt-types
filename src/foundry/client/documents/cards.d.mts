@@ -688,21 +688,6 @@ declare namespace Cards {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Cards._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode Cards._onUpdate | Cards#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateCards` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -904,8 +889,6 @@ declare namespace Cards {
         UpdateOperation: Cards.Database.UpdateOperation;
         PreUpdateOptions: Cards.Database.PreUpdateOptions;
         PreUpdateOperation: Cards.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Cards.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: Cards.Database.OnUpdateOptions;
         OnUpdateOperation: Cards.Database.OnUpdateOperation;
 

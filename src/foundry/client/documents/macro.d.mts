@@ -590,21 +590,6 @@ declare namespace Macro {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Macro._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode Macro._onUpdate | Macro#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateMacro` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -806,8 +791,6 @@ declare namespace Macro {
         UpdateOperation: Macro.Database.UpdateOperation;
         PreUpdateOptions: Macro.Database.PreUpdateOptions;
         PreUpdateOperation: Macro.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Macro.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: Macro.Database.OnUpdateOptions;
         OnUpdateOperation: Macro.Database.OnUpdateOperation;
 

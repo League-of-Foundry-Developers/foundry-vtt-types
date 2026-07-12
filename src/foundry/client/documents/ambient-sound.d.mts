@@ -553,21 +553,6 @@ declare namespace AmbientSoundDocument {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode AmbientSoundDocument._onUpdate | AmbientSoundDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateAmbientSoundDocument` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -765,8 +750,6 @@ declare namespace AmbientSoundDocument {
         UpdateOperation: AmbientSoundDocument.Database.UpdateOperation;
         PreUpdateOptions: AmbientSoundDocument.Database.PreUpdateOptions;
         PreUpdateOperation: AmbientSoundDocument.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: AmbientSoundDocument.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: AmbientSoundDocument.Database.OnUpdateOptions;
         OnUpdateOperation: AmbientSoundDocument.Database.OnUpdateOperation;
 

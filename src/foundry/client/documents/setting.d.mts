@@ -491,21 +491,6 @@ declare namespace Setting {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Setting._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * This is the "real" {@linkcode OnUpdateOptionsW} for `Setting`, see that linked interface's privateRemarks.
      * @internal
      */
@@ -736,8 +721,6 @@ declare namespace Setting {
         UpdateOperation: Setting.Database.UpdateOperation;
         PreUpdateOptions: Setting.Database.PreUpdateOptions;
         PreUpdateOperation: Setting.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Setting.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: Setting.Database.OnUpdateOptions;
         OnUpdateOperation: Setting.Database.OnUpdateOperation;
 

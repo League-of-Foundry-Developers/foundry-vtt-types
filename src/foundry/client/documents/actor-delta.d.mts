@@ -657,21 +657,6 @@ declare namespace ActorDelta {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode ActorDelta._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateActorDelta` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -888,8 +873,6 @@ declare namespace ActorDelta {
         UpdateOperation: ActorDelta.Database.UpdateOperation;
         PreUpdateOptions: ActorDelta.Database.PreUpdateOptions;
         PreUpdateOperation: ActorDelta.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ActorDelta.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: ActorDelta.Database.OnUpdateOptions;
         OnUpdateOperation: ActorDelta.Database.OnUpdateOperation;
 

@@ -565,21 +565,6 @@ declare namespace TableResult {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode TableResult._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode TableResult._onUpdate | TableResult#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateTableResult` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -777,8 +762,6 @@ declare namespace TableResult {
         UpdateOperation: TableResult.Database.UpdateOperation;
         PreUpdateOptions: TableResult.Database.PreUpdateOptions;
         PreUpdateOperation: TableResult.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: TableResult.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: TableResult.Database.OnUpdateOptions;
         OnUpdateOperation: TableResult.Database.OnUpdateOperation;
 

@@ -656,21 +656,6 @@ declare namespace ChatMessage {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode ChatMessage._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode ChatMessage._onUpdate | ChatMessage#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateChatMessage` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -872,8 +857,6 @@ declare namespace ChatMessage {
         UpdateOperation: ChatMessage.Database.UpdateOperation;
         PreUpdateOptions: ChatMessage.Database.PreUpdateOptions;
         PreUpdateOperation: ChatMessage.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ChatMessage.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: ChatMessage.Database.OnUpdateOptions;
         OnUpdateOperation: ChatMessage.Database.OnUpdateOperation;
 

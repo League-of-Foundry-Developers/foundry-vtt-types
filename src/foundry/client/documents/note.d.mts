@@ -569,21 +569,6 @@ declare namespace NoteDocument {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode NoteDocument._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
-
-    /**
      * The interface passed to {@linkcode NoteDocument._onUpdate | NoteDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateNoteDocument` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -781,8 +766,6 @@ declare namespace NoteDocument {
         UpdateOperation: NoteDocument.Database.UpdateOperation;
         PreUpdateOptions: NoteDocument.Database.PreUpdateOptions;
         PreUpdateOperation: NoteDocument.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: NoteDocument.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: NoteDocument.Database.OnUpdateOptions;
         OnUpdateOperation: NoteDocument.Database.OnUpdateOperation;
 

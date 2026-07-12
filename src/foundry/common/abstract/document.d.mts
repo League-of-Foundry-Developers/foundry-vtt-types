@@ -2634,20 +2634,6 @@ declare namespace Document {
     >;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onUpdateDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database.UpdateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnUpdateDocumentsOperation<BaseOperation extends DatabaseBackend.UpdateOperation> =
-      PreUpdateOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdate | Document#_onUpdate},
      * {@link Hooks.UpdateDocument | the `update[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}.
@@ -2734,12 +2720,6 @@ declare namespace Document {
 
     /** @see {@linkcode Document.Database.PreUpdateOperation} */
     type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreUpdateOperation", DocName>;
-
-    /** @see {@linkcode Document.Database.OnUpdateDocumentsOperation} */
-    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnUpdateDocumentsOperation",
-      DocName
-    >;
 
     /** @see {@linkcode Document.Database.OnUpdateOptions} */
     type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnUpdateOptions", DocName>;
@@ -2979,7 +2959,6 @@ declare namespace Document {
         | "UpdateOperation"
         | "PreUpdateOptions"
         | "PreUpdateOperation"
-        | "OnUpdateDocumentsOperation"
         | "OnUpdateOptions"
         | "OnUpdateOperation";
 
