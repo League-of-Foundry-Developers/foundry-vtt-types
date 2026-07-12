@@ -49,30 +49,35 @@ declare class Edge {
    * The direction of effect for the edge.
    * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   direction: CONST.WALL_DIRECTIONS;
 
   /**
    * How this edge restricts light.
    * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   light: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts movement.
    * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   move: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sight.
    * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   sight: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sound.
    * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   sound: CONST.WALL_SENSE_TYPES;
 
   /**
@@ -152,6 +157,7 @@ declare class Edge {
    * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left,
    * right, or collinear (both) with the Edge
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
   /**
@@ -200,30 +206,35 @@ declare namespace Edge {
      * How this edge restricts light
      * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     light: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts movement
      * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     move: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts sight
      * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sight: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts sound
      * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sound: CONST.WALL_SENSE_TYPES;
 
     /**
      * A direction of effect for the edge
      * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     direction: CONST.WALL_DIRECTIONS;
 
     /**

@@ -49,6 +49,7 @@ export const source = {
   changes: [
     {
       key: "name",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
       priority: 60,
       value: " the Suffix",
@@ -465,6 +466,7 @@ export const realSource = {
   changes: [
     {
       key: "system.attributes.ac.calc",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
       value: "unarmoredMonk",
       priority: null,
@@ -509,6 +511,7 @@ export const maximumSource = {
   changes: [
     {
       key: "system.attributes.ac.calc",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
       value: "unarmoredMonk",
       priority: 70,
@@ -570,6 +573,7 @@ expectTypeOf(ActiveEffect.fromStatusEffect("flying", aeContext)).toEqualTypeOf<P
 
 const createData = {
   name: "foo",
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   changes: [{ key: "system.foo.bar", mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE, value: "7", priority: 42 }],
 };
 

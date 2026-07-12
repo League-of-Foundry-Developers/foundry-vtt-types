@@ -368,11 +368,15 @@ declare namespace ActiveEffect {
         required: true;
         nullable: false;
         integer: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
       },
       // Note(LukeAbby): This will always need an override since there's no validation.
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.ACTIVE_EFFECT_MODES | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.ACTIVE_EFFECT_MODES,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.ACTIVE_EFFECT_MODES
     >;
 
@@ -1207,6 +1211,7 @@ declare namespace ActiveEffect {
      * The modification mode with which the change is applied
      * @defaultValue {@linkcode CONST.ACTIVE_EFFECT_MODES.ADD}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     mode: CONST.ACTIVE_EFFECT_MODES;
 
     /**

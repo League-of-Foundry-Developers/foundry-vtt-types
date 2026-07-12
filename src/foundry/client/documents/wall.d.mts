@@ -274,13 +274,18 @@ declare namespace WallDocument {
     light: fields.NumberField<
       {
         required: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         choices: Record<CONST.WALL_SENSE_TYPES, string>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null
     >;
 
@@ -308,13 +313,18 @@ declare namespace WallDocument {
     sight: fields.NumberField<
       {
         required: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         choices: Record<CONST.WALL_SENSE_TYPES, string>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null
     >;
 
@@ -325,13 +335,18 @@ declare namespace WallDocument {
     sound: fields.NumberField<
       {
         required: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         choices: Record<CONST.WALL_SENSE_TYPES, string>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_SENSE_TYPES | null
     >;
 
@@ -342,13 +357,18 @@ declare namespace WallDocument {
     dir: fields.NumberField<
       {
         required: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         choices: Record<CONST.WALL_DIRECTIONS, string>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.WALL_DIRECTIONS.BOTH;
         validationError: "must be a value in CONST.WALL_DIRECTIONS";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_DIRECTIONS | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_DIRECTIONS | null,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.WALL_DIRECTIONS | null
     >;
 

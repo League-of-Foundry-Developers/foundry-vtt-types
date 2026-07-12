@@ -211,13 +211,18 @@ declare namespace MeasuredTemplateDocument {
     t: fields.StringField<
       {
         required: true;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         choices: CONST.MEASURED_TEMPLATE_TYPES[];
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
         validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.MEASURED_TEMPLATE_TYPES | null | undefined,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.MEASURED_TEMPLATE_TYPES,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.MEASURED_TEMPLATE_TYPES
     >;
 
