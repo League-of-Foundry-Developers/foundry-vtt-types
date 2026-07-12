@@ -45,10 +45,15 @@ declare namespace VFXShakeComponent {
 
   interface Schema extends DataSchema {
     type: fields.StringField<{ required: true; blank: false }>;
+    /** The active shake duration in milliseconds (default 5000). */
     duration: fields.NumberField<{ required: true; nullable: false; initial: 5000; positive: true }>;
+    /** The maximum displacement in pixels at the start of the shake (default 35). */
     maxDisplacement: fields.NumberField<{ required: true; nullable: false; initial: 35; positive: true }>;
+    /** The return-to-origin interpolation factor per tick in [0, 1] (default 0.1). */
     returnSpeed: fields.NumberField<{ required: true; nullable: false; initial: 0.1; min: 0; max: 1 }>;
+    /** An optional seed for a deterministic, reproducible shake pattern (default null). */
     seed: fields.NumberField<{ initial: null }>;
+    /** Shake smoothness in [0, 1]; higher values produce lower-frequency motion (default 0.5). */
     smoothness: fields.NumberField<{ required: true; nullable: false; initial: 0.5; min: 0; max: 1 }>;
     /** Canvas property key of the display object to shake (default "stage"). May be a reference. */
     target: foundry.canvas.vfx.fields.VFXReferenceField<
