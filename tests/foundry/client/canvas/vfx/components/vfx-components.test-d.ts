@@ -88,19 +88,19 @@ describe("VFXSingleAttackComponent", () => {
 
   test("protected animation hooks are overridable", () => {
     class CustomAttackComponent extends VFXSingleAttackComponent {
-      protected override _animateCharge(timings: Record<string, number>): void {
-        timings["chargeStart"];
+      protected override _animateCharge(timings: VFXSingleAttackComponent.ChargeTimings): void {
+        timings.chargeStart;
       }
 
-      protected override _animateProjectile(timings: Record<string, number>): void {
-        timings["projectileStart"];
+      protected override _animateProjectile(timings: VFXSingleAttackComponent.ProjectileTimings): void {
+        timings.projectileStart;
       }
 
-      protected override _animateImpact(timings: Record<string, number>): void {
-        timings["impactStart"];
+      protected override _animateImpact(timings: VFXSingleAttackComponent.ImpactTimings): void {
+        timings.impactStart;
       }
 
-      protected override _getTimings(): Record<string, number> {
+      protected override _getTimings(): VFXSingleAttackComponent.Timings {
         return super._getTimings();
       }
 

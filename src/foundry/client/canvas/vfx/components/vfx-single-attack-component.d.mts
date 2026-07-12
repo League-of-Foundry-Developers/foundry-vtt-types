@@ -57,24 +57,24 @@ declare class VFXSingleAttackComponent extends VFXComponent<VFXSingleAttackCompo
    * Basic charge animation.
    * Subclasses may override this to refine the effect.
    */
-  protected _animateCharge(timings: Record<string, number>): void;
+  protected _animateCharge(timings: VFXSingleAttackComponent.ChargeTimings): void;
 
   /**
    * Basic projectile animation.
    * Subclasses may override this to refine the effect.
    */
-  protected _animateProjectile(timings: Record<string, number>): void;
+  protected _animateProjectile(timings: VFXSingleAttackComponent.ProjectileTimings): void;
 
   /**
    * Basic impact animation.
    * Subclasses may override this to refine the effect.
    */
-  protected _animateImpact(timings: Record<string, number>): void;
+  protected _animateImpact(timings: VFXSingleAttackComponent.ImpactTimings): void;
 
   /**
    * Compute timings for each step start, end, and sound.
    */
-  protected _getTimings(): Record<string, number>;
+  protected _getTimings(): VFXSingleAttackComponent.Timings;
 
   static override defineSchema(): VFXSingleAttackComponent.Schema;
 
@@ -95,6 +95,30 @@ declare namespace VFXSingleAttackComponent {
 
   /** A step name in the single attack sequence. */
   type StepName = "charge" | "projectile" | "impact";
+
+  /** Timeline offsets (ms) for the charge step: start, end, and an optional sound cue. */
+  interface ChargeTimings {
+    chargeStart: number;
+    chargeEnd: number;
+    chargeSound?: number | undefined;
+  }
+
+  /** Timeline offsets (ms) for the projectile step: start, end, and an optional sound cue. */
+  interface ProjectileTimings {
+    projectileStart: number;
+    projectileEnd: number;
+    projectileSound?: number | undefined;
+  }
+
+  /** Timeline offsets (ms) for the impact step: start, end, and an optional sound cue. */
+  interface ImpactTimings {
+    impactStart: number;
+    impactEnd: number;
+    impactSound?: number | undefined;
+  }
+
+  /** The full set of timeline offsets (ms) computed by `_getTimings`, covering every step. */
+  interface Timings extends ChargeTimings, ProjectileTimings, ImpactTimings {}
 
   /** Shared sub-schema for a charge, projectile, or impact step. */
   interface AttackStepSchema extends DataSchema {
