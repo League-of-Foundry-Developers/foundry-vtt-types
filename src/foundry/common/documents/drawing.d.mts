@@ -123,28 +123,25 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     data?: Document.CanUserModifyData<"Drawing", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseDrawing.CreateInput[],
-    operation?: BaseDrawing.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseDrawing.TemporaryIf<Temporary>>>;
+    operation?: BaseDrawing.Database.CreateDocumentsOperation,
+  ): Promise<DrawingDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseDrawing.UpdateInput[],
     operation?: BaseDrawing.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<DrawingDocument.Stored>>;
+  ): Promise<DrawingDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseDrawing.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<DrawingDocument.Stored>>;
+  ): Promise<DrawingDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseDrawing.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseDrawing.CreateInput>>(
     data: Data,
-    operation?: BaseDrawing.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseDrawing.CreateReturn<Data, Temporary>>;
+    operation?: BaseDrawing.Database.CreateDocumentsOperation,
+  ): Promise<BaseDrawing.CreateReturn<Data>>;
 
   override update(
     data: BaseDrawing.UpdateInput,
@@ -315,6 +312,7 @@ declare namespace BaseDrawing {
   export import UpdateInput = DrawingDocument.UpdateInput;
   export import Schema = DrawingDocument.Schema;
   export import Database = DrawingDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = DrawingDocument.TemporaryIf;
   export import Flags = DrawingDocument.Flags;
 

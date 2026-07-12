@@ -114,28 +114,25 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     data?: Document.CanUserModifyData<"MeasuredTemplate", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseMeasuredTemplate.CreateInput[],
-    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseMeasuredTemplate.TemporaryIf<Temporary>>>;
+    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation,
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseMeasuredTemplate.UpdateInput[],
     operation?: BaseMeasuredTemplate.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseMeasuredTemplate.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseMeasuredTemplate.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseMeasuredTemplate.CreateInput>>(
     data: Data,
-    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseMeasuredTemplate.CreateReturn<Data, Temporary>>;
+    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation,
+  ): Promise<BaseMeasuredTemplate.CreateReturn<Data>>;
 
   override update(
     data: BaseMeasuredTemplate.UpdateInput,
@@ -308,6 +305,7 @@ declare namespace BaseMeasuredTemplate {
   export import UpdateInput = MeasuredTemplateDocument.UpdateInput;
   export import Schema = MeasuredTemplateDocument.Schema;
   export import Database = MeasuredTemplateDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = MeasuredTemplateDocument.TemporaryIf;
   export import Flags = MeasuredTemplateDocument.Flags;
 

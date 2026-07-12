@@ -126,28 +126,25 @@ declare abstract class BaseActiveEffect<
     data?: Document.CanUserModifyData<"ActiveEffect", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseActiveEffect.CreateInput[],
-    operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseActiveEffect.TemporaryIf<Temporary>>>;
+    operation?: BaseActiveEffect.Database.CreateDocumentsOperation,
+  ): Promise<ActiveEffect.Stored[]>;
 
   static override updateDocuments(
     updates: BaseActiveEffect.UpdateInput[],
     operation?: BaseActiveEffect.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<ActiveEffect.Stored>>;
+  ): Promise<ActiveEffect.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseActiveEffect.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<ActiveEffect.Stored>>;
+  ): Promise<ActiveEffect.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseActiveEffect.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseActiveEffect.CreateInput>>(
     data: Data,
-    operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseActiveEffect.CreateReturn<Data, Temporary>>;
+    operation?: BaseActiveEffect.Database.CreateDocumentsOperation,
+  ): Promise<BaseActiveEffect.CreateReturn<Data>>;
 
   override update(
     data: BaseActiveEffect.UpdateInput,
@@ -317,6 +314,7 @@ declare namespace BaseActiveEffect {
   export import UpdateInput = ActiveEffect.UpdateInput;
   export import Schema = ActiveEffect.Schema;
   export import Database = ActiveEffect.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;
   export import CoreFlags = ActiveEffect.CoreFlags;

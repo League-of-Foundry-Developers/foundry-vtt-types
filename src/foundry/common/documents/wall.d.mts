@@ -88,28 +88,25 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     data?: Document.CanUserModifyData<"Wall", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseWall.CreateInput[],
-    operation?: BaseWall.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseWall.TemporaryIf<Temporary>>>;
+    operation?: BaseWall.Database.CreateDocumentsOperation,
+  ): Promise<WallDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseWall.UpdateInput[],
     operation?: BaseWall.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<WallDocument.Stored>>;
+  ): Promise<WallDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseWall.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<WallDocument.Stored>>;
+  ): Promise<WallDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseWall.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseWall.CreateInput>>(
     data: Data,
-    operation?: BaseWall.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseWall.CreateReturn<Data, Temporary>>;
+    operation?: BaseWall.Database.CreateDocumentsOperation,
+  ): Promise<BaseWall.CreateReturn<Data>>;
 
   override update(
     data: BaseWall.UpdateInput,
@@ -278,6 +275,7 @@ declare namespace BaseWall {
   export import UpdateInput = WallDocument.UpdateInput;
   export import Schema = WallDocument.Schema;
   export import Database = WallDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = WallDocument.TemporaryIf;
   export import Flags = WallDocument.Flags;
 

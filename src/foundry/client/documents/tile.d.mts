@@ -143,10 +143,8 @@ declare namespace TileDocument {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput>
-      ? Array<TileDocument.TemporaryIf<Temporary>>
-      : TileDocument.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? TileDocument.Stored[] : TileDocument.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -365,9 +363,9 @@ declare namespace TileDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TileDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+    interface CreateOperation
       extends
-        DatabaseBackend.CreateOperation<TileDocument.CreateInput, TileDocument.Parent, Temporary>,
+        DatabaseBackend.CreateOperation<TileDocument.CreateInput, TileDocument.Parent>,
         DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
@@ -382,8 +380,7 @@ declare namespace TileDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -412,8 +409,7 @@ declare namespace TileDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode TileDocument._preCreate | TileDocument#_preCreate} and
@@ -428,8 +424,7 @@ declare namespace TileDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode TileDocument._preCreateOperation}.
@@ -443,8 +438,7 @@ declare namespace TileDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode TileDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -459,8 +453,7 @@ declare namespace TileDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode TileDocument._onCreate | TileDocument#_onCreate} and
@@ -799,19 +792,19 @@ declare namespace TileDocument {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: TileDocument.Database.GetDocumentsOperation;
         BackendGetOperation: TileDocument.Database.BackendGetOperation;
         GetOperation: TileDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: TileDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: TileDocument.Database.CreateDocumentsOperation;
         CreateEmbeddedOperation: TileDocument.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: TileDocument.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: TileDocument.Database.CreateOperation<Temporary>;
-        PreCreateOptions: TileDocument.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: TileDocument.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: TileDocument.Database.BackendCreateOperation;
+        CreateOperation: TileDocument.Database.CreateOperation;
+        PreCreateOptions: TileDocument.Database.PreCreateOptions;
+        PreCreateOperation: TileDocument.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: TileDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: TileDocument.Database.OnCreateDocumentsOperation;
         OnCreateOptions: TileDocument.Database.OnCreateOptions;
         OnCreateOperation: TileDocument.Database.OnCreateOperation;
 
@@ -852,7 +845,7 @@ declare namespace TileDocument {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -923,6 +916,7 @@ declare namespace TileDocument {
 
   /**
    * If `Temporary` is true then {@linkcode TileDocument.Implementation}, otherwise {@linkcode TileDocument.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? TileDocument.Implementation : TileDocument.Stored;
@@ -991,8 +985,8 @@ declare namespace TileDocument {
    * The interface for passing to {@linkcode TileDocument.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode TileDocument.createDialog}'s third parameter
@@ -1004,11 +998,10 @@ declare namespace TileDocument {
    * The return type for {@linkcode TileDocument.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends TileDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<TileDocument.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends TileDocument.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    TileDocument.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode TileDocument.deleteDialog | TileDocument#deleteDialog}.
@@ -1066,14 +1059,11 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
   static override defaultName(context: TileDocument.DefaultNameContext): string;
 
   // `createOptions` must contain a  `parent`, so is required.
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends TileDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends TileDocument.CreateDialogOptions | undefined = undefined>(
     data: TileDocument.CreateDialogData | undefined,
-    createOptions: TileDocument.Database.CreateDocumentsOperation<Temporary>,
+    createOptions: TileDocument.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<TileDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<TileDocument.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1081,15 +1071,12 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
    *
    * @see {@linkcode TileDocument.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends TileDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends TileDocument.CreateDialogOptions | undefined = undefined>(
     data: TileDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: TileDocument.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: TileDocument.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<TileDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<TileDocument.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

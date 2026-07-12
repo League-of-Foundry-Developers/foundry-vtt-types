@@ -103,28 +103,25 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     data?: Document.CanUserModifyData<"Note", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseNote.CreateInput[],
-    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
+    operation?: BaseNote.Database.CreateDocumentsOperation,
+  ): Promise<NoteDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseNote.UpdateInput[],
     operation?: BaseNote.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<NoteDocument.Stored>>;
+  ): Promise<NoteDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseNote.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<NoteDocument.Stored>>;
+  ): Promise<NoteDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseNote.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseNote.CreateInput>>(
     data: Data,
-    operation?: BaseNote.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseNote.CreateReturn<Data, Temporary>>;
+    operation?: BaseNote.Database.CreateDocumentsOperation,
+  ): Promise<BaseNote.CreateReturn<Data>>;
 
   override update(
     data: BaseNote.UpdateInput,
@@ -295,6 +292,7 @@ declare namespace BaseNote {
   export import UpdateInput = NoteDocument.UpdateInput;
   export import Schema = NoteDocument.Schema;
   export import Database = NoteDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = NoteDocument.TemporaryIf;
   export import Flags = NoteDocument.Flags;
 

@@ -288,8 +288,8 @@ declare namespace Scene {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput> ? Array<Scene.TemporaryIf<Temporary>> : Scene.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? Scene.Stored[] : Scene.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -980,9 +980,7 @@ declare namespace Scene {
      * @remarks This interface was previously typed for passing to {@linkcode Scene.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Scene.CreateInput, Scene.Parent, Temporary> {
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Scene.CreateInput, Scene.Parent> {
       /**
        * @remarks If there is an active scene, {@linkcode Scene._preCreateOperation} will set this to its `id`, and
        * {@linkcode Scene._onCreate | Scene#_onCreate} will call {@linkcode game.playlists._onChangeScene} with the scene retrieved with
@@ -1003,8 +1001,7 @@ declare namespace Scene {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * @deprecated `Scene` documents are never embedded. This interface exists for consistency with other documents.
@@ -1035,8 +1032,7 @@ declare namespace Scene {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Scene._preCreate | Scene#_preCreate} and
@@ -1051,8 +1047,7 @@ declare namespace Scene {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Scene._preCreateOperation}.
@@ -1066,8 +1061,7 @@ declare namespace Scene {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Scene._onCreateDocuments}. It will be removed in v14 along with the
@@ -1082,8 +1076,7 @@ declare namespace Scene {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Scene._onCreate | Scene#_onCreate} and
@@ -1438,20 +1431,20 @@ declare namespace Scene {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: Scene.Database.GetDocumentsOperation;
         BackendGetOperation: Scene.Database.BackendGetOperation;
         GetOperation: Scene.Database.GetOperation;
 
-        CreateDocumentsOperation: Scene.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Scene.Database.CreateDocumentsOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: Scene.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Scene.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Scene.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Scene.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Scene.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: Scene.Database.BackendCreateOperation;
+        CreateOperation: Scene.Database.CreateOperation;
+        PreCreateOptions: Scene.Database.PreCreateOptions;
+        PreCreateOperation: Scene.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Scene.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: Scene.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Scene.Database.OnCreateOptions;
         OnCreateOperation: Scene.Database.OnCreateOperation;
 
@@ -1494,7 +1487,7 @@ declare namespace Scene {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -1565,6 +1558,7 @@ declare namespace Scene {
 
   /**
    * If `Temporary` is true then {@linkcode Scene.Implementation}, otherwise {@linkcode Scene.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Scene.Implementation : Scene.Stored;
@@ -1621,8 +1615,8 @@ declare namespace Scene {
    * The interface for passing to {@linkcode Scene.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Scene.createDialog}'s third parameter
@@ -1634,11 +1628,10 @@ declare namespace Scene {
    * The return type for {@linkcode Scene.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends Scene.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Scene.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends Scene.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    Scene.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode Scene.deleteDialog | Scene#deleteDialog}.
@@ -2024,14 +2017,11 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   static override defaultName(context?: Scene.DefaultNameContext): string;
 
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Scene.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Scene.CreateDialogOptions | undefined = undefined>(
     data?: Scene.CreateDialogData,
-    createOptions?: Scene.Database.CreateDocumentsOperation<Temporary>,
+    createOptions?: Scene.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Scene.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -2039,15 +2029,12 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    *
    * @see {@linkcode Scene.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Scene.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Scene.CreateDialogOptions | undefined = undefined>(
     data: Scene.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Scene.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: Scene.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Scene.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

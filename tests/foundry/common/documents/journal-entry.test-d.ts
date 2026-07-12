@@ -7,14 +7,6 @@ expectTypeOf(foundry.documents.BaseJournalEntry.createDocuments([])).toEqualType
 expectTypeOf(foundry.documents.BaseJournalEntry.updateDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
 expectTypeOf(foundry.documents.BaseJournalEntry.deleteDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
 
-const journalEntry = await foundry.documents.BaseJournalEntry.create(
-  { name: "Another JournalEntry" },
-  { temporary: true },
-);
-if (journalEntry) {
-  expectTypeOf(journalEntry).toEqualTypeOf<JournalEntry.Implementation>();
-}
-
 // Regression test for issue with circular schemas reported by @Eon
 // https://tsplay.dev/mpYKXW
 

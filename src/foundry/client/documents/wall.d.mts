@@ -151,10 +151,8 @@ declare namespace WallDocument {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput>
-      ? Array<WallDocument.TemporaryIf<Temporary>>
-      : WallDocument.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? WallDocument.Stored[] : WallDocument.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -477,9 +475,9 @@ declare namespace WallDocument {
      * @remarks This interface was previously typed for passing to {@linkcode WallDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+    interface CreateOperation
       extends
-        DatabaseBackend.CreateOperation<WallDocument.CreateInput, WallDocument.Parent, Temporary>,
+        DatabaseBackend.CreateOperation<WallDocument.CreateInput, WallDocument.Parent>,
         DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
@@ -494,8 +492,7 @@ declare namespace WallDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -524,8 +521,7 @@ declare namespace WallDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode WallDocument._preCreate | WallDocument#_preCreate} and
@@ -540,8 +536,7 @@ declare namespace WallDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode WallDocument._preCreateOperation}.
@@ -555,8 +550,7 @@ declare namespace WallDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode WallDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -571,8 +565,7 @@ declare namespace WallDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode WallDocument._onCreate | WallDocument#_onCreate} and
@@ -906,19 +899,19 @@ declare namespace WallDocument {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: WallDocument.Database.GetDocumentsOperation;
         BackendGetOperation: WallDocument.Database.BackendGetOperation;
         GetOperation: WallDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: WallDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: WallDocument.Database.CreateDocumentsOperation;
         CreateEmbeddedOperation: WallDocument.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: WallDocument.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: WallDocument.Database.CreateOperation<Temporary>;
-        PreCreateOptions: WallDocument.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: WallDocument.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: WallDocument.Database.BackendCreateOperation;
+        CreateOperation: WallDocument.Database.CreateOperation;
+        PreCreateOptions: WallDocument.Database.PreCreateOptions;
+        PreCreateOperation: WallDocument.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: WallDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: WallDocument.Database.OnCreateDocumentsOperation;
         OnCreateOptions: WallDocument.Database.OnCreateOptions;
         OnCreateOperation: WallDocument.Database.OnCreateOperation;
 
@@ -959,7 +952,7 @@ declare namespace WallDocument {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -1030,6 +1023,7 @@ declare namespace WallDocument {
 
   /**
    * If `Temporary` is true then {@linkcode WallDocument.Implementation}, otherwise {@linkcode WallDocument.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? WallDocument.Implementation : WallDocument.Stored;
@@ -1086,8 +1080,8 @@ declare namespace WallDocument {
    * The interface for passing to {@linkcode WallDocument.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode WallDocument.createDialog}'s third parameter
@@ -1099,11 +1093,10 @@ declare namespace WallDocument {
    * The return type for {@linkcode WallDocument.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends WallDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<WallDocument.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends WallDocument.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    WallDocument.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode WallDocument.deleteDialog | WallDocument#deleteDialog}.
@@ -1164,14 +1157,11 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   static override defaultName(context: WallDocument.DefaultNameContext): string;
 
   // `createOptions` must contain a  `parent`, so is required.
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends WallDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends WallDocument.CreateDialogOptions | undefined = undefined>(
     data: WallDocument.CreateDialogData | undefined,
-    createOptions: WallDocument.Database.CreateDocumentsOperation<Temporary>,
+    createOptions: WallDocument.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<WallDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<WallDocument.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1179,15 +1169,12 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    *
    * @see {@linkcode WallDocument.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends WallDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends WallDocument.CreateDialogOptions | undefined = undefined>(
     data: WallDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: WallDocument.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: WallDocument.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<WallDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<WallDocument.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

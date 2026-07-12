@@ -101,28 +101,25 @@ declare abstract class BaseCombatant<
     data?: Document.CanUserModifyData<"Combatant", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseCombatant.CreateInput[],
-    operation?: BaseCombatant.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseCombatant.TemporaryIf<Temporary>>>;
+    operation?: BaseCombatant.Database.CreateDocumentsOperation,
+  ): Promise<Combatant.Stored[]>;
 
   static override updateDocuments(
     updates: BaseCombatant.UpdateInput[],
     operation?: BaseCombatant.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Combatant.Stored>>;
+  ): Promise<Combatant.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseCombatant.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Combatant.Stored>>;
+  ): Promise<Combatant.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseCombatant.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseCombatant.CreateInput>>(
     data: Data,
-    operation?: BaseCombatant.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseCombatant.CreateReturn<Data, Temporary>>;
+    operation?: BaseCombatant.Database.CreateDocumentsOperation,
+  ): Promise<BaseCombatant.CreateReturn<Data>>;
 
   override update(
     data: BaseCombatant.UpdateInput,
@@ -300,6 +297,7 @@ declare namespace BaseCombatant {
   export import UpdateInput = Combatant.UpdateInput;
   export import Schema = Combatant.Schema;
   export import Database = Combatant.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Combatant.TemporaryIf;
   export import Flags = Combatant.Flags;
 

@@ -219,8 +219,8 @@ declare namespace Card {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput> ? Array<Card.TemporaryIf<Temporary>> : Card.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? Card.Stored[] : Card.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -444,9 +444,7 @@ declare namespace Card {
      * @remarks This interface was previously typed for passing to {@linkcode Card.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Card.CreateInput, Card.Parent, Temporary> {}
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Card.CreateInput, Card.Parent> {}
 
     /**
      * The interface for passing to {@linkcode Card.create} or {@linkcode Card.createDocuments}.
@@ -460,8 +458,7 @@ declare namespace Card {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -490,8 +487,7 @@ declare namespace Card {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Card._preCreate | Card#_preCreate} and
@@ -506,8 +502,7 @@ declare namespace Card {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Card._preCreateOperation}.
@@ -521,8 +516,7 @@ declare namespace Card {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Card._onCreateDocuments}. It will be removed in v14 along with the
@@ -537,8 +531,7 @@ declare namespace Card {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Card._onCreate | Card#_onCreate} and
@@ -863,19 +856,19 @@ declare namespace Card {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: Card.Database.GetDocumentsOperation;
         BackendGetOperation: Card.Database.BackendGetOperation;
         GetOperation: Card.Database.GetOperation;
 
-        CreateDocumentsOperation: Card.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Card.Database.CreateDocumentsOperation;
         CreateEmbeddedOperation: Card.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Card.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Card.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Card.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Card.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: Card.Database.BackendCreateOperation;
+        CreateOperation: Card.Database.CreateOperation;
+        PreCreateOptions: Card.Database.PreCreateOptions;
+        PreCreateOperation: Card.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Card.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: Card.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Card.Database.OnCreateOptions;
         OnCreateOperation: Card.Database.OnCreateOperation;
 
@@ -916,7 +909,7 @@ declare namespace Card {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -987,6 +980,7 @@ declare namespace Card {
 
   /**
    * If `Temporary` is true then {@linkcode Card.Implementation}, otherwise {@linkcode Card.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Card.Implementation : Card.Stored;
@@ -1043,8 +1037,8 @@ declare namespace Card {
    * The interface for passing to {@linkcode Card.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Card.createDialog}'s third parameter
@@ -1056,11 +1050,10 @@ declare namespace Card {
    * The return type for {@linkcode Card.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends Card.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Card.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends Card.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    Card.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode Card.deleteDialog | Card#deleteDialog}.
@@ -1222,10 +1215,10 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @returns The created chat message
    * @privateRemarks {@linkcode ChatMessage.CreateData} has no required properties, so no need for extra `Partial`ing of the `messageData`
    */
-  toMessage<Temporary extends boolean | undefined = undefined>(
+  toMessage(
     messageData?: ChatMessage.CreateData,
-    options?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
+    options?: ChatMessage.Database.CreateDocumentsOperation,
+  ): Promise<ChatMessage.Stored | undefined>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1245,14 +1238,11 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   static override defaultName(context: Card.DefaultNameContext): string;
 
   // `createOptions` must contain a  `parent`, so is required.
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Card.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Card.CreateDialogOptions | undefined = undefined>(
     data: Card.CreateDialogData | undefined,
-    createOptions: Card.Database.CreateDocumentsOperation<Temporary>,
+    createOptions: Card.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<Card.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Card.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1260,15 +1250,12 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    *
    * @see {@linkcode Card.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Card.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Card.CreateDialogOptions | undefined = undefined>(
     data: Card.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Card.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: Card.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<Card.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Card.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
