@@ -250,36 +250,6 @@ declare abstract class BaseTableResult<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `TableResult._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode TableResult._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: TableResult.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTableResult.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TableResult._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode TableResult._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: TableResult.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTableResult.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TableResult._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode TableResult._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: TableResult.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTableResult.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseTableResult.Schema>;

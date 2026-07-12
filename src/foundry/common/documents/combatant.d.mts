@@ -217,36 +217,6 @@ declare abstract class BaseCombatant<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Combatant._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Combatant._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Combatant.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatant.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Combatant._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Combatant._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Combatant.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatant.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Combatant._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Combatant._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Combatant.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombatant.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseCombatant.Schema>;

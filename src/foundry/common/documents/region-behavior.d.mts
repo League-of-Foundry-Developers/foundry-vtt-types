@@ -226,36 +226,6 @@ declare abstract class BaseRegionBehavior<
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `RegionBehavior._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: RegionBehavior.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionBehavior._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: RegionBehavior.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `RegionBehavior._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode RegionBehavior._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: RegionBehavior.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRegionBehavior.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseRegionBehavior.Schema>;

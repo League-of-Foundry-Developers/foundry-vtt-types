@@ -240,36 +240,6 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `TileDocument._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode TileDocument._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: TileDocument.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TileDocument._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode TileDocument._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: TileDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `TileDocument._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode TileDocument._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: TileDocument.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseTile.Schema>;

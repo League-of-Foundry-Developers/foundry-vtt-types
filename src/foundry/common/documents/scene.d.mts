@@ -362,36 +362,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Scene._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Scene._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Scene.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseScene.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Scene._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Scene._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Scene.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseScene.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Scene._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Scene._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Scene.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseScene.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseScene.Schema>;

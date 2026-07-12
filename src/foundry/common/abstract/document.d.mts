@@ -1040,27 +1040,6 @@ declare abstract class Document<
     options?: Document.ClearFieldsRecursivelyOptions,
   ): void;
 
-  /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
-  protected static _onCreateDocuments(documents: never, context: never): Promise<void>;
-
-  /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
-  protected static _onUpdateDocuments(documents: never, context: never): Promise<unknown>;
-
-  /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
-   */
-  // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
-  protected static _onDeleteDocuments(documents: never, context: never): Promise<unknown>;
-
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
   " fvtt_types_internal_document_parent": Parent;
@@ -2298,17 +2277,12 @@ declare namespace Document {
     type OperationAction = Exclude<DatabaseBackend.DatabaseAction, "get">;
 
     /**
-     * The `(Pre|On)(Create|Update)Operation` interfaces all receive `data` or `update` params that have been `#toObject`ed. The `Extract`
-     * branch only exists to handle the deprecated {@linkcode Document._onCreateDocuments} method, which receives the final client-side
-     * mutated `operation` object, where `ClientDatabaseBackend##preCreateDocumentArray` has set `operation.data = documents`.
+     * The `(Pre|On)(Create|Update)Operation` interfaces all receive `data` or `update` params that have been `#toObject`ed.
      * @internal
      */
-    // TODO: remove Extract branch in v14 when `_onCreateDocuments` goes away
-    type _RestrictToDataObjects<Operation extends object, Key extends keyof Operation, Excl extends boolean = true> =
+    type _RestrictToDataObjects<Operation extends object, Key extends keyof Operation> =
       Operation[Key] extends Array<infer Data>
-        ? Excl extends true
-          ? Omit<Operation, Key> & { [_ in Key]: Array<Exclude<Data, Document.Any>> }
-          : Omit<Operation, Key> & { [_ in Key]: Array<Extract<Data, Document.Any>> }
+        ? Omit<Operation, Key> & { [_ in Key]: Array<Exclude<Data, Document.Any>> }
         : never;
 
     /* ***********************************************
@@ -2461,26 +2435,6 @@ declare namespace Document {
     >;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onCreateDocuments} method. This will
-     * be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database.CreateOperation}.
-     *
-     * @remarks Since this method is called inside {@linkcode Document.createDocuments}, but *after* the call to
-     * {@linkcode DatabaseBackend.create | DatabaseBackend#create}, it receives the final mutated version of the client-side `operation`
-     * object, and the last thing `ClientDatabaseBackend##preCreateDocumentArray` does is set `operation.data = documents`, this is the one
-     * use for the `false`/`Extract` branch in {@linkcode _RestrictToDataObjects}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnCreateDocumentsOperation<BaseOperation extends DatabaseBackend.CreateOperation> = _RestrictToDataObjects<
-      BaseOperation,
-      "data",
-      false
-    >;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onCreate | Document#_onCreate},
      * {@link Hooks.CreateDocument | the `create[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}.
@@ -2567,12 +2521,6 @@ declare namespace Document {
 
     /** @see {@linkcode Document.Database.PreCreateOperation} */
     type PreCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreCreateOperation", DocName>;
-
-    /** @see {@linkcode Document.Database.OnCreateDocumentsOperation} */
-    type OnCreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnCreateDocumentsOperation",
-      DocName
-    >;
 
     /** @see {@linkcode Document.Database.OnCreateOptions} */
     type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnCreateOptions", DocName>;
@@ -2686,21 +2634,6 @@ declare namespace Document {
     >;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onUpdateDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database.UpdateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
-     * modifies the object after {@linkcode Document._preUpdateOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnUpdateDocumentsOperation<BaseOperation extends DatabaseBackend.UpdateOperation> =
-      PreUpdateOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdate | Document#_onUpdate},
      * {@link Hooks.UpdateDocument | the `update[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}.
@@ -2787,12 +2720,6 @@ declare namespace Document {
 
     /** @see {@linkcode Document.Database.PreUpdateOperation} */
     type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreUpdateOperation", DocName>;
-
-    /** @see {@linkcode Document.Database.OnUpdateDocumentsOperation} */
-    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnUpdateDocumentsOperation",
-      DocName
-    >;
 
     /** @see {@linkcode Document.Database.OnUpdateOptions} */
     type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnUpdateOptions", DocName>;
@@ -2901,21 +2828,6 @@ declare namespace Document {
     type PreDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = BaseOperation;
 
     /**
-     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onDeleteDocuments} method. This
-     * interface will be removed in v14 along with that method.
-     *
-     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database.CreateOperation}.
-     *
-     * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
-     * modifies the object after {@linkcode Document._preDeleteOperation}.
-     *
-     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
-     */
-    type OnDeleteDocumentsOperation<BaseOperation extends DatabaseBackend.DeleteOperation> =
-      PreDeleteOperation<BaseOperation>;
-
-    /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._onDelete | Document#_onDelete},
      * {@link Hooks.DeleteDocument | the `delete[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}.
@@ -3000,12 +2912,6 @@ declare namespace Document {
     /** @see {@linkcode Document.Database.PreDeleteOperation} */
     type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreDeleteOperation", DocName>;
 
-    /** @see {@linkcode Document.Database.OnDeleteDocumentsOperation} */
-    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
-      "OnDeleteDocumentsOperation",
-      DocName
-    >;
-
     /** @see {@linkcode Document.Database.OnDeleteOptions} */
     type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOptions", DocName>;
 
@@ -3022,7 +2928,6 @@ declare namespace Document {
         | "CreateOperation"
         | "PreCreateOptions"
         | "PreCreateOperation"
-        | "OnCreateDocumentsOperation"
         | "OnCreateOptions"
         | "OnCreateOperation";
 
@@ -3034,7 +2939,6 @@ declare namespace Document {
         | "UpdateOperation"
         | "PreUpdateOptions"
         | "PreUpdateOperation"
-        | "OnUpdateDocumentsOperation"
         | "OnUpdateOptions"
         | "OnUpdateOperation";
 
@@ -3046,7 +2950,6 @@ declare namespace Document {
         | "DeleteOperation"
         | "PreDeleteOptions"
         | "PreDeleteOperation"
-        | "OnDeleteDocumentsOperation"
         | "OnDeleteOptions"
         | "OnDeleteOperation";
 

@@ -440,10 +440,8 @@ declare namespace DatabaseBackend {
      *
      * @remarks For the passable interfaces ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
      * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}), and this base type, this can be a mixed array of
-     * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one,
-     * except {@linkcode Document.Database.OnCreateDocumentsOperation | OnCreateDocumentsOperation}
+     * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one.
      */
-    // TODO: remove the except clause above in v14
     data: CreateData[];
 
     /**

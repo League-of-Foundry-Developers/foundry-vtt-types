@@ -6,7 +6,6 @@ export const createOperationName = [
   "BackendCreateOperation",
   "PreCreateOptions",
   "PreCreateOperation",
-  "OnCreateDocumentsOperation",
   "OnCreateOptions",
   "OnCreateOperation",
 ] as const;
@@ -18,7 +17,6 @@ export const updateOperationName = [
   "BackendUpdateOperation",
   "PreUpdateOptions",
   "PreUpdateOperation",
-  "OnUpdateDocumentsOperation",
   "OnUpdateOptions",
   "OnUpdateOperation",
 ] as const;
@@ -30,7 +28,6 @@ export const deleteOperationName = [
   "BackendDeleteOperation",
   "PreDeleteOptions",
   "PreDeleteOperation",
-  "OnDeleteDocumentsOperation",
   "OnDeleteOptions",
   "OnDeleteOperation",
 ] as const;

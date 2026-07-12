@@ -197,36 +197,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `Setting._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode Setting._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: Setting.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseSetting.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Setting._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode Setting._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: Setting.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseSetting.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `Setting._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode Setting._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: Setting.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseSetting.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseSetting.Schema>;

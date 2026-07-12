@@ -476,21 +476,6 @@ declare namespace Level {
     interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Level._onCreateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
-
-    /**
      * The interface passed to {@linkcode Level._onCreate | Level#_onCreate} and
      * {@link Hooks.CreateDocument | the `createLevel` hook}.
      * @see {@linkcode Document.Database.OnCreateOptions}
@@ -620,21 +605,6 @@ declare namespace Level {
      * use case for doing so, please let us know.
      */
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
-
-    /**
-     * @deprecated The interface passed to {@linkcode Level._onUpdateDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Level._onUpdate | Level#_onUpdate} and
@@ -768,21 +738,6 @@ declare namespace Level {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Level._onDeleteDocuments}. It will be removed in v14 along with the
-     * method it is for.
-     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
-     *
-     * ---
-     *
-     * **Declaration Merging Warning**
-     *
-     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
-     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
-     * use case for doing so, please let us know.
-     */
-    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
-
-    /**
      * The interface passed to {@linkcode Level._onDelete | Level#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteLevel` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
@@ -824,8 +779,6 @@ declare namespace Level {
         CreateOperation: Level.Database.CreateOperation;
         PreCreateOptions: Level.Database.PreCreateOptions;
         PreCreateOperation: Level.Database.PreCreateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Level.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Level.Database.OnCreateOptions;
         OnCreateOperation: Level.Database.OnCreateOperation;
 
@@ -836,8 +789,6 @@ declare namespace Level {
         UpdateOperation: Level.Database.UpdateOperation;
         PreUpdateOptions: Level.Database.PreUpdateOptions;
         PreUpdateOperation: Level.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Level.Database.OnUpdateDocumentsOperation;
         OnUpdateOptions: Level.Database.OnUpdateOptions;
         OnUpdateOperation: Level.Database.OnUpdateOperation;
 
@@ -848,8 +799,6 @@ declare namespace Level {
         DeleteOperation: Level.Database.DeleteOperation;
         PreDeleteOptions: Level.Database.PreDeleteOptions;
         PreDeleteOperation: Level.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Level.Database.OnDeleteDocumentsOperation;
         OnDeleteOptions: Level.Database.OnDeleteOptions;
         OnDeleteOperation: Level.Database.OnDeleteOperation;
       }

@@ -211,36 +211,6 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     user: User.Stored,
   ): Promise<void>;
 
-  /**
-   * @deprecated "The `FogExploration._onCreateDocuments` static method is deprecated in favor of
-   * {@linkcode FogExploration._onCreateOperation}" (since v12, until v14)
-   */
-  protected static override _onCreateDocuments(
-    documents: FogExploration.Implementation[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFogExploration.Database.OnCreateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `FogExploration._onUpdateDocuments` static method is deprecated in favor of
-   * {@linkcode FogExploration._onUpdateOperation}" (since v12, until v14)
-   */
-  protected static override _onUpdateDocuments(
-    documents: FogExploration.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFogExploration.Database.OnUpdateDocumentsOperation,
-  ): Promise<void>;
-
-  /**
-   * @deprecated "The `FogExploration._onDeleteDocuments` static method is deprecated in favor of
-   * {@linkcode FogExploration._onDeleteOperation}" (since v12, until v14)
-   */
-  protected static override _onDeleteDocuments(
-    documents: FogExploration.Stored[],
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFogExploration.Database.OnDeleteDocumentsOperation,
-  ): Promise<void>;
-
   /* DataModel overrides */
 
   static override _schema: SchemaField<BaseFogExploration.Schema>;
