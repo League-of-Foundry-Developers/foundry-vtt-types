@@ -15,7 +15,7 @@ import type {
 } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
-import type { geometry, perception, layers, groups } from "#client/canvas/_module.d.mts";
+import type { geometry, perception, layers, groups, vfx } from "#client/canvas/_module.d.mts";
 import type { DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
@@ -1804,6 +1804,11 @@ declare global {
       detectionModes: RemoveIndexSignatures<Canvas.DetectionModes>;
 
       /**
+       * Configuration for the experimental canvas VFX framework.
+       */
+      vfx: Canvas.VFX;
+
+      /**
        * @deprecated "`CONFIG.Canvas.transcoders` has been deprecated without replacement. KTX2/Basis support is always enabled
        * and this property has no effect anymore." (since v13, until v15)
        */
@@ -2940,6 +2945,13 @@ declare global {
          * ```
          */
         senseAll: perception.DetectionModeAll;
+      }
+
+      interface VFX {
+        enabled: boolean;
+        components: Record<string, typeof vfx.VFXComponent>;
+        animations: Record<string, vfx.VFXComponent.Animation>;
+        paths: Record<string, vfx.VFXPath.Generator>;
       }
     }
 
