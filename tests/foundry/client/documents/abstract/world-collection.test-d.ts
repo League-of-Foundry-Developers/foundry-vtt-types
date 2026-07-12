@@ -82,8 +82,8 @@ describe("WorldCollection Tests", async () => {
   });
 
   test("importFromCompendium", async () => {
-    expectTypeOf(wac.importFromCompendium(actorPack, "id")).toEqualTypeOf<Promise<Actor.Stored>>();
-    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, {})).toEqualTypeOf<Promise<Actor.Stored>>();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id")).toEqualTypeOf<Promise<Actor.Stored | undefined>>();
+    expectTypeOf(wac.importFromCompendium(actorPack, "id", {}, {})).toEqualTypeOf<Promise<Actor.Stored | undefined>>();
   });
 
   test("fromCompendium", () => {

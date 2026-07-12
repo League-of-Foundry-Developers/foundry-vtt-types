@@ -62,7 +62,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
     id: string,
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
     options?: WorldCollection.ImportFromCompendiumOptions<DocumentName>,
-  ): Promise<Document.StoredForName<DocumentName>>;
+  ): Promise<Document.StoredForName<DocumentName> | undefined>;
 
   /**
    * Apply data transformations when importing a Document from a Compendium pack
