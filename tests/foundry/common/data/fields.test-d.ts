@@ -91,13 +91,105 @@ expectTypeOf(embeddedInitialized?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(embeddedPersisted?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(lightModel.schema.fields.color).toEqualTypeOf<foundry.data.fields.ColorField>();
 
+declare const lightSchemaField: foundry.data.fields.DataModelSchemaField<typeof foundry.data.LightData>;
+expectTypeOf(lightSchemaField.model).toEqualTypeOf<typeof foundry.data.LightData>();
+expectTypeOf(lightSchemaField.clean({})).toEqualTypeOf<
+  foundry.data.fields.DataModelSchemaField.InitializedType<
+    typeof foundry.data.LightData,
+    foundry.data.fields.DataModelSchemaField.DefaultOptions
+  >
+>();
+expectTypeOf(lightSchemaField.initialize).returns.toEqualTypeOf<
+  | foundry.data.fields.DataModelSchemaField.InitializedType<
+      typeof foundry.data.LightData,
+      foundry.data.fields.DataModelSchemaField.DefaultOptions
+    >
+  | (() => foundry.data.fields.DataModelSchemaField.InitializedType<
+      typeof foundry.data.LightData,
+      foundry.data.fields.DataModelSchemaField.DefaultOptions
+    > | null)
+>();
+
 declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
+expectTypeOf(embeddedLightField).toExtend<foundry.data.fields.DataModelSchemaField<typeof foundry.data.LightData>>();
 
 declare const schemaWithLight: foundry.data.fields.SchemaField.InitializedData<{
   light: typeof embeddedLightField;
 }>;
 expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
+
+const shapesField = new foundry.data.fields.ShapesField();
+expectTypeOf(shapesField).toExtend<foundry.data.fields.ArrayField<foundry.data.fields.DataField.Any>>();
+expectTypeOf(shapesField.initialize).toEqualTypeOf<foundry.data.fields.ShapesField["initialize"]>();
+
+const gridOffsetField = new foundry.data.fields.GridOffsetField();
+expectTypeOf(gridOffsetField.dimensions).toEqualTypeOf<2 | 3>();
+
+const gridOffsetsField = new foundry.data.fields.GridOffsetsField({ dimensions: 3 });
+expectTypeOf(gridOffsetsField.dimensions).toEqualTypeOf<2 | 3>();
+expectTypeOf(gridOffsetsField.element).toEqualTypeOf<foundry.data.fields.GridOffsetField>();
+
+class GridOffsetsFieldHookCoverage extends foundry.data.fields.GridOffsetsField {
+  protected override _toInput(config: foundry.data.fields.GridOffsetsField.ToInputConfig) {
+    return super._toInput(config);
+  }
+}
+
+expectTypeOf(new GridOffsetsFieldHookCoverage()).toExtend<foundry.data.fields.GridOffsetsField>();
+
+class HookCoverageField extends foundry.data.fields.AnyField {
+  protected override _migrate(
+    value: unknown,
+    options?: foundry.data.fields.DataField.CleanOptions,
+    _state?: foundry.data.fields.DataField.UpdateState,
+  ) {
+    return super._migrate(value, options, _state);
+  }
+
+  protected override _sanitize(
+    value: unknown,
+    options: foundry.data.fields.DataField.SanitizationOptions,
+    state: foundry.data.fields.DataField.UpdateState,
+  ) {
+    return super._sanitize(value, options, state);
+  }
+
+  protected override _validateRecursive(value: unknown, options?: foundry.data.fields.DataField.ValidateOptions<this>) {
+    return super._validateRecursive(value, options);
+  }
+
+  protected override _applyChangeSubtract(
+    value: unknown,
+    delta: unknown,
+    model: foundry.abstract.DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ) {
+    return super._applyChangeSubtract(value, delta, model, change);
+  }
+
+  protected override _replaceDataRefs(
+    raw: string,
+    data: Record<string, unknown>,
+    options?: foundry.data.fields.DataField.ReplaceDataRefsOptions,
+  ) {
+    return super._replaceDataRefs(raw, data, options);
+  }
+
+  protected override _toInput(config: foundry.data.fields.DataField.ToInputConfig<unknown>) {
+    return super._toInput(config);
+  }
+}
+
+expectTypeOf(new HookCoverageField()).toExtend<foundry.data.fields.AnyField>();
+
+const anyField = new foundry.data.fields.AnyField({ serializable: true });
+expectTypeOf(anyField.serializable).toEqualTypeOf<boolean>();
+
+const typedObjectField = new foundry.data.fields.TypedObjectField(new foundry.data.fields.BooleanField(), {
+  expandKeys: false,
+});
+expectTypeOf(typedObjectField.expandKeys).toEqualTypeOf<boolean>();
 
 /** EmbeddedCollectionField */
 
@@ -129,6 +221,59 @@ expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
 expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Stored>();
+
+class EmbeddedCollectionHookCoverage extends foundry.data.fields.EmbeddedCollectionField<
+  typeof foundry.documents.BaseActiveEffect,
+  Actor.Implementation
+> {
+  protected override _updateElement(
+    value: Record<string, unknown>,
+    existingSource: Record<string, unknown> | undefined,
+    context: foundry.data.fields.EmbeddedCollectionField.UpdateContext,
+  ) {
+    return super._updateElement(value, existingSource, context);
+  }
+
+  protected override _commitElement(
+    object: Record<string, unknown>,
+    source: Record<string, unknown>[],
+    existing: Record<string, Record<string, unknown>>,
+    changed: Record<string, Record<string, unknown>>,
+    options: foundry.abstract.DataModel.UpdateOptions,
+  ) {
+    return super._commitElement(object, source, existing, changed, options);
+  }
+}
+
+class EmbeddedCollectionDeltaHookCoverage extends foundry.data.fields.EmbeddedCollectionDeltaField<
+  typeof foundry.documents.BaseActiveEffect,
+  Actor.Implementation
+> {
+  protected override _updateElement(
+    value: Record<string, unknown>,
+    existingSource: Record<string, unknown> | undefined,
+    context: foundry.data.fields.EmbeddedCollectionField.UpdateContext,
+  ) {
+    return super._updateElement(value, existingSource, context);
+  }
+
+  protected override _commitElement(
+    object: Record<string, unknown>,
+    source: Record<string, unknown>[],
+    existing: Record<string, Record<string, unknown>>,
+    changed: Record<string, Record<string, unknown>>,
+    options: foundry.abstract.DataModel.UpdateOptions,
+  ) {
+    return super._commitElement(object, source, existing, changed, options);
+  }
+}
+
+expectTypeOf(new EmbeddedCollectionHookCoverage(foundry.documents.BaseActiveEffect)).toExtend<
+  foundry.data.fields.EmbeddedCollectionField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+>();
+expectTypeOf(new EmbeddedCollectionDeltaHookCoverage(foundry.documents.BaseActiveEffect)).toExtend<
+  foundry.data.fields.EmbeddedCollectionDeltaField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+>();
 
 const stringField = new foundry.data.fields.StringField();
 
