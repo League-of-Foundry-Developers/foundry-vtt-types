@@ -109,28 +109,25 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     data?: Document.CanUserModifyData<"RollTable", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseRollTable.CreateInput[],
-    operation?: BaseRollTable.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseRollTable.TemporaryIf<Temporary>>>;
+    operation?: BaseRollTable.Database.CreateDocumentsOperation,
+  ): Promise<RollTable.Stored[]>;
 
   static override updateDocuments(
     updates: BaseRollTable.UpdateInput[],
     operation?: BaseRollTable.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<RollTable.Stored>>;
+  ): Promise<RollTable.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseRollTable.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<RollTable.Stored>>;
+  ): Promise<RollTable.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseRollTable.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseRollTable.CreateInput>>(
     data: Data,
-    operation?: BaseRollTable.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseRollTable.CreateReturn<Data, Temporary>>;
+    operation?: BaseRollTable.Database.CreateDocumentsOperation,
+  ): Promise<BaseRollTable.CreateReturn<Data>>;
 
   override update(
     data: BaseRollTable.UpdateInput,
@@ -331,6 +328,7 @@ declare namespace BaseRollTable {
   export import UpdateInput = RollTable.UpdateInput;
   export import Schema = RollTable.Schema;
   export import Database = RollTable.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = RollTable.TemporaryIf;
   export import Flags = RollTable.Flags;
 

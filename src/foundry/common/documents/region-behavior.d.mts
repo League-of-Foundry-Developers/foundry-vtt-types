@@ -110,28 +110,25 @@ declare abstract class BaseRegionBehavior<
     data?: Document.CanUserModifyData<"RegionBehavior", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseRegionBehavior.CreateInput[],
-    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseRegionBehavior.TemporaryIf<Temporary>>>;
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation,
+  ): Promise<RegionBehavior.Stored[]>;
 
   static override updateDocuments(
     updates: BaseRegionBehavior.UpdateInput[],
     operation?: BaseRegionBehavior.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<RegionBehavior.Stored>>;
+  ): Promise<RegionBehavior.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseRegionBehavior.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<RegionBehavior.Stored>>;
+  ): Promise<RegionBehavior.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseRegionBehavior.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseRegionBehavior.CreateInput>>(
     data: Data,
-    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseRegionBehavior.CreateReturn<Data, Temporary>>;
+    operation?: BaseRegionBehavior.Database.CreateDocumentsOperation,
+  ): Promise<BaseRegionBehavior.CreateReturn<Data>>;
 
   override update(
     data: BaseRegionBehavior.UpdateInput,
@@ -309,6 +306,7 @@ declare namespace BaseRegionBehavior {
   export import UpdateInput = RegionBehavior.UpdateInput;
   export import Schema = RegionBehavior.Schema;
   export import Database = RegionBehavior.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = RegionBehavior.TemporaryIf;
   export import Flags = RegionBehavior.Flags;
 

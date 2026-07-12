@@ -5,12 +5,6 @@ expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promi
 expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
 expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
 
-const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
-if (user) {
-  // Note(LukeAbby): At one point there was a regression in `ForeignDocumentField` that would have caused this to fail.
-  expectTypeOf(user.character).toEqualTypeOf<Actor.Stored | null>();
-}
-
 class TestBaseUser extends foundry.documents.BaseUser {
   // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get compendium() {

@@ -21,22 +21,10 @@ if (item) {
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).branded.toEqualTypeOf<
   Promise<Macro.Stored | undefined>
 >();
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: false })).branded.toEqualTypeOf<
-  Promise<Macro.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" }, { temporary: true })).toEqualTypeOf<
-  Promise<Macro.Implementation | undefined>
->();
 
 const _foo = await foundry.documents.BaseMacro.createDocuments([]);
 
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: true })).toEqualTypeOf<
-  Promise<Macro.Implementation[]>
->();
 expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).branded.toEqualTypeOf<
-  Promise<Macro.Stored<Macro.SubType>[]>
->();
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false })).branded.toEqualTypeOf<
   Promise<Macro.Stored<Macro.SubType>[]>
 >();
 
@@ -136,12 +124,11 @@ declare module "fvtt-types/configuration" {
 // expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.AnyConstructor>();
 
 // Note(LukeAbby): This test prevents us from accidentally making `Lookup` no longer covariant.
-// At one point the various lookups, when inlined, essentially looked like `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary> : never | ...)[Operation]`.
-// For whatever reason this defeated the variance calculation but inlining the property access as so `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary>[Operation] : never | ...)` calculates the variance fine.
+// At one point the various lookups, when inlined, essentially looked like `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap : never | ...)[Operation]`.
+// For whatever reason this defeated the variance calculation but inlining the property access as so `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap[Operation] : never | ...)` calculates the variance fine.
 interface _TestLookupVariance<
   out Operation extends Document.Database.Internal.Operation,
   out Name extends Document.Type,
-  out Temporary extends boolean | undefined = boolean | undefined,
 > {
-  _: Document.Database.Internal.Lookup<Operation, Name, Temporary>;
+  _: Document.Database.Internal.Lookup<Operation, Name>;
 }

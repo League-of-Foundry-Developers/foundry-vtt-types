@@ -9,8 +9,7 @@ export type DatabaseGetOperation<Parent extends Document.Any | null = Document.A
 export type DatabaseCreateOperation<
   CreateData extends object = object,
   Parent extends Document.Any | null = Document.Any | null,
-  Temporary extends boolean | undefined = boolean | undefined,
-> = DatabaseBackend.CreateOperation<CreateData, Parent, Temporary>;
+> = DatabaseBackend.CreateOperation<CreateData, Parent>;
 
 /** @deprecated Use {@linkcode DatabaseBackend.UpdateOperation} instead. This type will cease being exported in v15. */
 export type DatabaseUpdateOperation<

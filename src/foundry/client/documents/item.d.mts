@@ -306,8 +306,8 @@ declare namespace Item {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput> ? Array<Item.TemporaryIf<Temporary>> : Item.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? Item.Stored[] : Item.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -447,9 +447,7 @@ declare namespace Item {
      * @remarks This interface was previously typed for passing to {@linkcode Item.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Item.CreateInput, Item.Parent, Temporary> {
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Item.CreateInput, Item.Parent> {
       /**
        * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
        * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
@@ -474,8 +472,7 @@ declare namespace Item {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * @deprecated `Item` documents are never embedded. This interface exists for consistency with other documents.
@@ -506,8 +503,7 @@ declare namespace Item {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Item._preCreate | Item#_preCreate} and
@@ -522,8 +518,7 @@ declare namespace Item {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Item._preCreateOperation}.
@@ -537,8 +532,7 @@ declare namespace Item {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Item._onCreateDocuments}. It will be removed in v14 along with the
@@ -553,8 +547,7 @@ declare namespace Item {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Item._onCreate | Item#_onCreate} and
@@ -894,20 +887,20 @@ declare namespace Item {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: Item.Database.GetDocumentsOperation;
         BackendGetOperation: Item.Database.BackendGetOperation;
         GetOperation: Item.Database.GetOperation;
 
-        CreateDocumentsOperation: Item.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Item.Database.CreateDocumentsOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: Item.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Item.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Item.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Item.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Item.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: Item.Database.BackendCreateOperation;
+        CreateOperation: Item.Database.CreateOperation;
+        PreCreateOptions: Item.Database.PreCreateOptions;
+        PreCreateOperation: Item.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Item.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: Item.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Item.Database.OnCreateOptions;
         OnCreateOperation: Item.Database.OnCreateOperation;
 
@@ -950,7 +943,7 @@ declare namespace Item {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -1021,6 +1014,7 @@ declare namespace Item {
 
   /**
    * If `Temporary` is true then {@linkcode Item.Implementation}, otherwise {@linkcode Item.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Item.Implementation : Item.Stored;
@@ -1077,8 +1071,8 @@ declare namespace Item {
    * The interface for passing to {@linkcode Item.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Item.createDialog}'s third parameter
@@ -1090,11 +1084,10 @@ declare namespace Item {
    * The return type for {@linkcode Item.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends Item.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<Item.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends Item.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    Item.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode Item.deleteDialog | Item#deleteDialog}.
@@ -1257,14 +1250,11 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   static override defaultName(context?: Item.DefaultNameContext): string;
 
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Item.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Item.CreateDialogOptions | undefined = undefined>(
     data?: Item.CreateDialogData,
-    createOptions?: Item.Database.CreateDocumentsOperation<Temporary>,
+    createOptions?: Item.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<Item.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Item.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1272,15 +1262,12 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    *
    * @see {@linkcode Item.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends Item.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends Item.CreateDialogOptions | undefined = undefined>(
     data: Item.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Item.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: Item.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<Item.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<Item.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

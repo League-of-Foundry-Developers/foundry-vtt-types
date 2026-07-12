@@ -144,28 +144,25 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     data?: Document.CanUserModifyData<"Actor", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseActor.CreateInput[],
-    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseActor.TemporaryIf<Temporary>>>;
+    operation?: BaseActor.Database.CreateDocumentsOperation,
+  ): Promise<Actor.Stored[]>;
 
   static override updateDocuments(
     updates: BaseActor.UpdateInput[],
     operation?: BaseActor.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Actor.Stored>>;
+  ): Promise<Actor.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseActor.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Actor.Stored>>;
+  ): Promise<Actor.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseActor.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseActor.CreateInput>>(
     data: Data,
-    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseActor.CreateReturn<Data, Temporary>>;
+    operation?: BaseActor.Database.CreateDocumentsOperation,
+  ): Promise<BaseActor.CreateReturn<Data>>;
 
   override update(
     data: BaseActor.UpdateInput,
@@ -356,6 +353,7 @@ declare namespace BaseActor {
   export import UpdateInput = Actor.UpdateInput;
   export import Schema = Actor.Schema;
   export import Database = Actor.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Actor.TemporaryIf;
   export import Flags = Actor.Flags;
   export import GetDefaultArtworkReturn = Actor.GetDefaultArtworkReturn;

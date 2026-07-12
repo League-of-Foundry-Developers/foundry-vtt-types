@@ -84,28 +84,25 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     data?: Document.CanUserModifyData<"AmbientSound", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseAmbientSound.CreateInput[],
-    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation,
+  ): Promise<AmbientSoundDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseAmbientSound.UpdateInput[],
     operation?: BaseAmbientSound.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<AmbientSoundDocument.Stored>>;
+  ): Promise<AmbientSoundDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseAmbientSound.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<AmbientSoundDocument.Stored>>;
+  ): Promise<AmbientSoundDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseAmbientSound.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseAmbientSound.CreateInput>>(
     data: Data,
-    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseAmbientSound.CreateReturn<Data, Temporary>>;
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation,
+  ): Promise<BaseAmbientSound.CreateReturn<Data>>;
 
   override update(
     data: BaseAmbientSound.UpdateInput,
@@ -276,6 +273,7 @@ declare namespace BaseAmbientSound {
   export import UpdateInput = AmbientSoundDocument.UpdateInput;
   export import Schema = AmbientSoundDocument.Schema;
   export import Database = AmbientSoundDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = AmbientSoundDocument.TemporaryIf;
   export import Flags = AmbientSoundDocument.Flags;
 

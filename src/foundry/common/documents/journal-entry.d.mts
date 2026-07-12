@@ -106,28 +106,25 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     data?: Document.CanUserModifyData<"JournalEntry", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseJournalEntry.CreateInput[],
-    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation,
+  ): Promise<JournalEntry.Stored[]>;
 
   static override updateDocuments(
     updates: BaseJournalEntry.UpdateInput[],
     operation?: BaseJournalEntry.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntry.Stored>>;
+  ): Promise<JournalEntry.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseJournalEntry.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntry.Stored>>;
+  ): Promise<JournalEntry.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseJournalEntry.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseJournalEntry.CreateInput>>(
     data: Data,
-    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseJournalEntry.CreateReturn<Data, Temporary>>;
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation,
+  ): Promise<BaseJournalEntry.CreateReturn<Data>>;
 
   override update(
     data: BaseJournalEntry.UpdateInput,
@@ -332,6 +329,7 @@ declare namespace BaseJournalEntry {
   export import UpdateInput = JournalEntry.UpdateInput;
   export import Schema = JournalEntry.Schema;
   export import Database = JournalEntry.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = JournalEntry.TemporaryIf;
   export import Flags = JournalEntry.Flags;
   export import CoreFlags = JournalEntry.CoreFlags;

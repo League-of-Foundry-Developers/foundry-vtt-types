@@ -136,28 +136,25 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     data?: Document.CanUserModifyData<"Macro", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseMacro.CreateInput[],
-    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
+    operation?: BaseMacro.Database.CreateDocumentsOperation,
+  ): Promise<Macro.Stored[]>;
 
   static override updateDocuments(
     updates: BaseMacro.UpdateInput[],
     operation?: BaseMacro.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Macro.Stored>>;
+  ): Promise<Macro.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseMacro.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Macro.Stored>>;
+  ): Promise<Macro.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseMacro.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseMacro.CreateInput>>(
     data: Data,
-    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseMacro.CreateReturn<Data, Temporary>>;
+    operation?: BaseMacro.Database.CreateDocumentsOperation,
+  ): Promise<BaseMacro.CreateReturn<Data>>;
 
   override update(
     data: BaseMacro.UpdateInput,
@@ -327,6 +324,7 @@ declare namespace BaseMacro {
   export import UpdateInput = Macro.UpdateInput;
   export import Schema = Macro.Schema;
   export import Database = Macro.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Macro.TemporaryIf;
   export import Flags = Macro.Flags;
 

@@ -216,28 +216,25 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     data?: Document.CanUserModifyData<"Scene", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseScene.CreateInput[],
-    operation?: BaseScene.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseScene.TemporaryIf<Temporary>>>;
+    operation?: BaseScene.Database.CreateDocumentsOperation,
+  ): Promise<Scene.Stored[]>;
 
   static override updateDocuments(
     updates: BaseScene.UpdateInput[],
     operation?: BaseScene.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<Scene.Stored>>;
+  ): Promise<Scene.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseScene.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<Scene.Stored>>;
+  ): Promise<Scene.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseScene.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseScene.CreateInput>>(
     data: Data,
-    operation?: BaseScene.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseScene.CreateReturn<Data, Temporary>>;
+    operation?: BaseScene.Database.CreateDocumentsOperation,
+  ): Promise<BaseScene.CreateReturn<Data>>;
 
   override update(
     data: BaseScene.UpdateInput,
@@ -437,6 +434,7 @@ declare namespace BaseScene {
   export import UpdateInput = Scene.UpdateInput;
   export import Schema = Scene.Schema;
   export import Database = Scene.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = Scene.TemporaryIf;
   export import Flags = Scene.Flags;
 

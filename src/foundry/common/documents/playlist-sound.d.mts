@@ -96,28 +96,25 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     data?: Document.CanUserModifyData<"PlaylistSound", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BasePlaylistSound.CreateInput[],
-    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BasePlaylistSound.TemporaryIf<Temporary>>>;
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation,
+  ): Promise<PlaylistSound.Stored[]>;
 
   static override updateDocuments(
     updates: BasePlaylistSound.UpdateInput[],
     operation?: BasePlaylistSound.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<PlaylistSound.Stored>>;
+  ): Promise<PlaylistSound.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BasePlaylistSound.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<PlaylistSound.Stored>>;
+  ): Promise<PlaylistSound.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BasePlaylistSound.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BasePlaylistSound.CreateInput>>(
     data: Data,
-    operation?: BasePlaylistSound.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BasePlaylistSound.CreateReturn<Data, Temporary>>;
+    operation?: BasePlaylistSound.Database.CreateDocumentsOperation,
+  ): Promise<BasePlaylistSound.CreateReturn<Data>>;
 
   override update(
     data: BasePlaylistSound.UpdateInput,
@@ -288,6 +285,7 @@ declare namespace BasePlaylistSound {
   export import UpdateInput = PlaylistSound.UpdateInput;
   export import Schema = PlaylistSound.Schema;
   export import Database = PlaylistSound.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = PlaylistSound.TemporaryIf;
   export import Flags = PlaylistSound.Flags;
 

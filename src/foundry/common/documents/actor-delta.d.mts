@@ -166,28 +166,25 @@ declare abstract class BaseActorDelta<
     data?: Document.CanUserModifyData<"ActorDelta", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseActorDelta.CreateInput[],
-    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation,
+  ): Promise<ActorDelta.Stored[]>;
 
   static override updateDocuments(
     updates: BaseActorDelta.UpdateInput[],
     operation?: BaseActorDelta.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Stored>>;
+  ): Promise<ActorDelta.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseActorDelta.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Stored>>;
+  ): Promise<ActorDelta.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseActorDelta.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseActorDelta.CreateInput>>(
     data: Data,
-    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation,
+  ): Promise<BaseActorDelta.CreateReturn<Data>>;
 
   override update(
     data: BaseActorDelta.UpdateInput,
@@ -401,6 +398,7 @@ declare namespace BaseActorDelta {
   export import UpdateInput = ActorDelta.UpdateInput;
   export import Schema = ActorDelta.Schema;
   export import Database = ActorDelta.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;
   export import ApplyDeltaContext = ActorDelta.ApplyDeltaContext;

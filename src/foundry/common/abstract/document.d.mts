@@ -2542,16 +2542,13 @@ declare namespace Document {
      * {@linkcode CreateDocumentsOperationForName} performs that duty now, while this returns types valid
      * for {@linkcode DatabaseBackend._createDocuments | DatabaseBackend#_createDocuments}.
      */
-    type CreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"CreateOperation", DocName, Temporary>;
+    type CreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"CreateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.CreateDocumentsOperation} */
-    type CreateDocumentsOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"CreateDocumentsOperation", DocName, Temporary>;
+    type CreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "CreateDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.CreateEmbeddedOperation} */
     type CreateEmbeddedOperationForName<DocName extends Document.Type> = Internal.Lookup<
@@ -2560,22 +2557,16 @@ declare namespace Document {
     >;
 
     /** @see {@linkcode Document.Database.BackendCreateOperation} */
-    type BackendCreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"BackendCreateOperation", DocName, Temporary>;
+    type BackendCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "BackendCreateOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.PreCreateOptions} */
-    type PreCreateOptionsForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"PreCreateOptions", DocName, Temporary>;
+    type PreCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"PreCreateOptions", DocName>;
 
     /** @see {@linkcode Document.Database.PreCreateOperation} */
-    type PreCreateOperationForName<
-      DocName extends Document.Type,
-      Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<"PreCreateOperation", DocName, Temporary>;
+    type PreCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreCreateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.OnCreateDocumentsOperation} */
     type OnCreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
@@ -3061,64 +3052,46 @@ declare namespace Document {
 
       type Operation = GetOperation | CreateOperation | UpdateOperation | DeleteOperation;
 
-      type Lookup<
-        Operation extends Document.Database.Internal.Operation,
-        Name extends Document.Type,
-        Temporary extends boolean | undefined = boolean | undefined,
-      > =
-        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "AmbientLight"
-            ? AmbientLightDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "AmbientSound"
-            ? AmbientSoundDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "CombatantGroup"
-            ? CombatantGroup.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "FogExploration"
-            ? FogExploration.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+      type Lookup<Operation extends Document.Database.Internal.Operation, Name extends Document.Type> =
+        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "AmbientLight" ? AmbientLightDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "AmbientSound" ? AmbientSoundDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "CombatantGroup" ? CombatantGroup.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "FogExploration" ? FogExploration.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap[Operation] : never)
         | (Name extends "JournalEntryCategory"
-            ? JournalEntryCategory.Database.Internal.OperationNameMap<Temporary>[Operation]
+            ? JournalEntryCategory.Database.Internal.OperationNameMap[Operation]
             : never)
-        | (Name extends "JournalEntryPage"
-            ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Level" ? Level.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "JournalEntryPage" ? JournalEntryPage.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Level" ? Level.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap[Operation] : never)
         | (Name extends "MeasuredTemplate"
-            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
+            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap[Operation]
             : never)
-        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "PlaylistSound"
-            ? PlaylistSound.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "RegionBehavior"
-            ? RegionBehavior.Database.Internal.OperationNameMap<Temporary>[Operation]
-            : never)
-        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "User" ? User.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
-        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never);
+        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "PlaylistSound" ? PlaylistSound.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "RegionBehavior" ? RegionBehavior.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "User" ? User.Database.Internal.OperationNameMap[Operation] : never)
+        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap[Operation] : never);
     }
 
     /* ***********************************************
@@ -3666,40 +3639,76 @@ declare namespace Document {
     K
   >;
 
+  /** @deprecated `TemporaryIf` has been deprecated since v14. This lookup will be removed in v15. */
   type TemporaryIfForName<Name extends Document.Type, Temporary extends boolean | undefined> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ActiveEffect" ? ActiveEffect.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ActorDelta" ? ActorDelta.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Actor" ? Actor.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Adventure" ? Adventure.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "AmbientLight" ? AmbientLightDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "AmbientSound" ? AmbientSoundDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Card" ? Card.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Cards" ? Cards.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "ChatMessage" ? ChatMessage.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Combat" ? Combat.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Combatant" ? Combatant.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "CombatantGroup" ? CombatantGroup.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Drawing" ? DrawingDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "FogExploration" ? FogExploration.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Folder" ? Folder.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Item" ? Item.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntryCategory" ? JournalEntryCategory.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntryPage" ? JournalEntryPage.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "JournalEntry" ? JournalEntry.TemporaryIf<Temporary> : never)
+    | (Name extends "Level" ? never : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Macro" ? Macro.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Note" ? NoteDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "PlaylistSound" ? PlaylistSound.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Playlist" ? Playlist.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "RegionBehavior" ? RegionBehavior.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Region" ? RegionDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "RollTable" ? RollTable.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Scene" ? Scene.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Setting" ? Setting.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "TableResult" ? TableResult.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Tile" ? TileDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Token" ? TokenDocument.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "User" ? User.TemporaryIf<Temporary> : never)
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     | (Name extends "Wall" ? WallDocument.TemporaryIf<Temporary> : never);
 
   /**

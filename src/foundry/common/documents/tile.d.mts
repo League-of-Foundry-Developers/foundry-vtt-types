@@ -124,28 +124,25 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     data?: Document.CanUserModifyData<"Tile", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseTile.CreateInput[],
-    operation?: BaseTile.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseTile.TemporaryIf<Temporary>>>;
+    operation?: BaseTile.Database.CreateDocumentsOperation,
+  ): Promise<TileDocument.Stored[]>;
 
   static override updateDocuments(
     updates: BaseTile.UpdateInput[],
     operation?: BaseTile.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<TileDocument.Stored>>;
+  ): Promise<TileDocument.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseTile.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<TileDocument.Stored>>;
+  ): Promise<TileDocument.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseTile.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseTile.CreateInput>>(
     data: Data,
-    operation?: BaseTile.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseTile.CreateReturn<Data, Temporary>>;
+    operation?: BaseTile.Database.CreateDocumentsOperation,
+  ): Promise<BaseTile.CreateReturn<Data>>;
 
   override update(
     data: BaseTile.UpdateInput,
@@ -316,6 +313,7 @@ declare namespace BaseTile {
   export import UpdateInput = TileDocument.UpdateInput;
   export import Schema = TileDocument.Schema;
   export import Database = TileDocument.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = TileDocument.TemporaryIf;
   export import Flags = TileDocument.Flags;
   export import CoreFlags = TileDocument.CoreFlags;

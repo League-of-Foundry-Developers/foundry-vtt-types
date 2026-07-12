@@ -97,28 +97,25 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     data?: Document.CanUserModifyData<"FogExploration", Action>,
   ): boolean;
 
-  static override createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments(
     data: BaseFogExploration.CreateInput[],
-    operation?: BaseFogExploration.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<BaseFogExploration.TemporaryIf<Temporary>>>;
+    operation?: BaseFogExploration.Database.CreateDocumentsOperation,
+  ): Promise<FogExploration.Stored[]>;
 
   static override updateDocuments(
     updates: BaseFogExploration.UpdateInput[],
     operation?: BaseFogExploration.Database.UpdateManyDocumentsOperation,
-  ): Promise<Array<FogExploration.Stored>>;
+  ): Promise<FogExploration.Stored[]>;
 
   static override deleteDocuments(
     ids: readonly string[],
     operation?: BaseFogExploration.Database.DeleteManyDocumentsOperation,
-  ): Promise<Array<FogExploration.Stored>>;
+  ): Promise<FogExploration.Stored[]>;
 
-  static override create<
-    Data extends MaybeArray<BaseFogExploration.CreateInput>,
-    Temporary extends boolean | undefined = undefined,
-  >(
+  static override create<Data extends MaybeArray<BaseFogExploration.CreateInput>>(
     data: Data,
-    operation?: BaseFogExploration.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<BaseFogExploration.CreateReturn<Data, Temporary>>;
+    operation?: BaseFogExploration.Database.CreateDocumentsOperation,
+  ): Promise<BaseFogExploration.CreateReturn<Data>>;
 
   override update(
     data: BaseFogExploration.UpdateInput,
@@ -289,6 +286,7 @@ declare namespace BaseFogExploration {
   export import UpdateInput = FogExploration.UpdateInput;
   export import Schema = FogExploration.Schema;
   export import Database = FogExploration.Database;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = FogExploration.TemporaryIf;
   export import Flags = FogExploration.Flags;
 

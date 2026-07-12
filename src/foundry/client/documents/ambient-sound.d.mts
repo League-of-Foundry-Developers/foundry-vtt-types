@@ -143,10 +143,8 @@ declare namespace AmbientSoundDocument {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput>
-      ? Array<AmbientSoundDocument.TemporaryIf<Temporary>>
-      : AmbientSoundDocument.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? AmbientSoundDocument.Stored[] : AmbientSoundDocument.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -343,9 +341,9 @@ declare namespace AmbientSoundDocument {
      * @remarks This interface was previously typed for passing to {@linkcode AmbientSoundDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+    interface CreateOperation
       extends
-        DatabaseBackend.CreateOperation<AmbientSoundDocument.CreateInput, AmbientSoundDocument.Parent, Temporary>,
+        DatabaseBackend.CreateOperation<AmbientSoundDocument.CreateInput, AmbientSoundDocument.Parent>,
         DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
@@ -360,8 +358,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -390,8 +387,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preCreate | AmbientSoundDocument#_preCreate} and
@@ -406,8 +402,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preCreateOperation}.
@@ -421,8 +416,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -437,8 +431,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onCreate | AmbientSoundDocument#_onCreate} and
@@ -766,19 +759,19 @@ declare namespace AmbientSoundDocument {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: AmbientSoundDocument.Database.GetDocumentsOperation;
         BackendGetOperation: AmbientSoundDocument.Database.BackendGetOperation;
         GetOperation: AmbientSoundDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: AmbientSoundDocument.Database.CreateDocumentsOperation;
         CreateEmbeddedOperation: AmbientSoundDocument.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: AmbientSoundDocument.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: AmbientSoundDocument.Database.CreateOperation<Temporary>;
-        PreCreateOptions: AmbientSoundDocument.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: AmbientSoundDocument.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: AmbientSoundDocument.Database.BackendCreateOperation;
+        CreateOperation: AmbientSoundDocument.Database.CreateOperation;
+        PreCreateOptions: AmbientSoundDocument.Database.PreCreateOptions;
+        PreCreateOperation: AmbientSoundDocument.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: AmbientSoundDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: AmbientSoundDocument.Database.OnCreateDocumentsOperation;
         OnCreateOptions: AmbientSoundDocument.Database.OnCreateOptions;
         OnCreateOperation: AmbientSoundDocument.Database.OnCreateOperation;
 
@@ -819,7 +812,7 @@ declare namespace AmbientSoundDocument {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -890,6 +883,7 @@ declare namespace AmbientSoundDocument {
 
   /**
    * If `Temporary` is true then {@linkcode AmbientSoundDocument.Implementation}, otherwise {@linkcode AmbientSoundDocument.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? AmbientSoundDocument.Implementation : AmbientSoundDocument.Stored;
@@ -946,8 +940,8 @@ declare namespace AmbientSoundDocument {
    * The interface for passing to {@linkcode AmbientSoundDocument.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode AmbientSoundDocument.createDialog}'s third parameter
@@ -959,11 +953,8 @@ declare namespace AmbientSoundDocument {
    * The return type for {@linkcode AmbientSoundDocument.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends AmbientSoundDocument.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<AmbientSoundDocument.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends AmbientSoundDocument.CreateDialogOptions | undefined> =
+    Document.CreateDialogReturn<AmbientSoundDocument.Stored, Config>;
 
   /**
    * The return type for {@linkcode AmbientSoundDocument.deleteDialog | AmbientSoundDocument#deleteDialog}.
@@ -1033,14 +1024,11 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   static override defaultName(context: AmbientSoundDocument.DefaultNameContext): string;
 
   // `createOptions` must contain a  `parent`, so is required.
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined>(
     data: AmbientSoundDocument.CreateDialogData | undefined,
-    createOptions: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>,
+    createOptions: AmbientSoundDocument.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<AmbientSoundDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<AmbientSoundDocument.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1048,15 +1036,12 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
    *
    * @see {@linkcode AmbientSoundDocument.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined>(
     data: AmbientSoundDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: AmbientSoundDocument.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: AmbientSoundDocument.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<AmbientSoundDocument.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<AmbientSoundDocument.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

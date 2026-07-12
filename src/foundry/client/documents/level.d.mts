@@ -401,9 +401,7 @@ declare namespace Level {
      * @remarks This interface was previously typed for passing to {@linkcode Level.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Level.CreateInput, Level.Parent, Temporary> {}
+    interface CreateOperation extends DatabaseBackend.CreateOperation<Level.CreateInput, Level.Parent> {}
 
     /**
      * The interface for passing to {@linkcode Level.create} or {@linkcode Level.createDocuments}.
@@ -417,8 +415,7 @@ declare namespace Level {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -447,8 +444,7 @@ declare namespace Level {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Level._preCreate | Level#_preCreate} and
@@ -463,8 +459,7 @@ declare namespace Level {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Level._preCreateOperation}.
@@ -478,8 +473,7 @@ declare namespace Level {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Level._onCreateDocuments}. It will be removed in v14 along with the
@@ -494,8 +488,7 @@ declare namespace Level {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Level._onCreate | Level#_onCreate} and
@@ -820,19 +813,19 @@ declare namespace Level {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: Level.Database.GetDocumentsOperation;
         BackendGetOperation: Level.Database.BackendGetOperation;
         GetOperation: Level.Database.GetOperation;
 
-        CreateDocumentsOperation: Level.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Level.Database.CreateDocumentsOperation;
         CreateEmbeddedOperation: Level.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Level.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Level.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Level.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Level.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: Level.Database.BackendCreateOperation;
+        CreateOperation: Level.Database.CreateOperation;
+        PreCreateOptions: Level.Database.PreCreateOptions;
+        PreCreateOperation: Level.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Level.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: Level.Database.OnCreateDocumentsOperation;
         OnCreateOptions: Level.Database.OnCreateOptions;
         OnCreateOperation: Level.Database.OnCreateOperation;
 

@@ -234,10 +234,8 @@ declare namespace RollTable {
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
    */
-  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
-    Data extends Array<CreateInput>
-      ? Array<RollTable.TemporaryIf<Temporary>>
-      : RollTable.TemporaryIf<Temporary> | undefined;
+  type CreateReturn<Data extends MaybeArray<CreateInput>> =
+    Data extends Array<CreateInput> ? RollTable.Stored[] : RollTable.Stored | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
@@ -395,9 +393,7 @@ declare namespace RollTable {
      * @remarks This interface was previously typed for passing to {@linkcode RollTable.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<RollTable.CreateInput, RollTable.Parent, Temporary> {}
+    interface CreateOperation extends DatabaseBackend.CreateOperation<RollTable.CreateInput, RollTable.Parent> {}
 
     /**
      * The interface for passing to {@linkcode RollTable.create} or {@linkcode RollTable.createDocuments}.
@@ -411,8 +407,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
@@ -443,8 +438,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation extends Document.Database.BackendCreateOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreate | RollTable#_preCreate} and
@@ -459,8 +453,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions extends Document.Database.PreCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreateOperation}.
@@ -474,8 +467,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
-      .PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation extends Document.Database.PreCreateOperation<CreateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RollTable._onCreateDocuments}. It will be removed in v14 along with the
@@ -490,8 +482,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation extends Document.Database.OnCreateDocumentsOperation<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onCreate | RollTable#_onCreate} and
@@ -820,20 +811,20 @@ declare namespace RollTable {
     interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
-      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+      interface OperationNameMap {
         GetDocumentsOperation: RollTable.Database.GetDocumentsOperation;
         BackendGetOperation: RollTable.Database.BackendGetOperation;
         GetOperation: RollTable.Database.GetOperation;
 
-        CreateDocumentsOperation: RollTable.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: RollTable.Database.CreateDocumentsOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: RollTable.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: RollTable.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: RollTable.Database.CreateOperation<Temporary>;
-        PreCreateOptions: RollTable.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: RollTable.Database.PreCreateOperation<Temporary>;
+        BackendCreateOperation: RollTable.Database.BackendCreateOperation;
+        CreateOperation: RollTable.Database.CreateOperation;
+        PreCreateOptions: RollTable.Database.PreCreateOptions;
+        PreCreateOperation: RollTable.Database.PreCreateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: RollTable.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateDocumentsOperation: RollTable.Database.OnCreateDocumentsOperation;
         OnCreateOptions: RollTable.Database.OnCreateOptions;
         OnCreateOperation: RollTable.Database.OnCreateOperation;
 
@@ -876,7 +867,7 @@ declare namespace RollTable {
     type GetOptions = GetDocumentsOperation;
 
     /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
-    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+    type Create = CreateOperation;
 
     /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
     type Update = UpdateOperation;
@@ -947,6 +938,7 @@ declare namespace RollTable {
 
   /**
    * If `Temporary` is true then {@linkcode RollTable.Implementation}, otherwise {@linkcode RollTable.Stored}.
+   * @deprecated `Document.create`/`Documents` can no longer return temporary documents as of v14. This type will be removed in v15.
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? RollTable.Implementation : RollTable.Stored;
@@ -1003,8 +995,8 @@ declare namespace RollTable {
    * The interface for passing to {@linkcode RollTable.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+  interface CreateDialogDeprecatedOptions
+    extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode RollTable.createDialog}'s third parameter
@@ -1016,11 +1008,10 @@ declare namespace RollTable {
    * The return type for {@linkcode RollTable.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
-  // TODO: inline .Stored in v14 instead of taking Temporary
-  type CreateDialogReturn<
-    Temporary extends boolean | undefined,
-    Config extends RollTable.CreateDialogOptions | undefined,
-  > = Document.CreateDialogReturn<RollTable.TemporaryIf<Temporary>, Config>;
+  type CreateDialogReturn<Config extends RollTable.CreateDialogOptions | undefined> = Document.CreateDialogReturn<
+    RollTable.Stored,
+    Config
+  >;
 
   /**
    * The return type for {@linkcode RollTable.deleteDialog | RollTable#deleteDialog}.
@@ -1074,7 +1065,7 @@ declare namespace RollTable {
   /**
    * Additional options which modify message creation
    */
-  interface _ToMessageOptions<Temporary extends boolean | undefined> {
+  interface _ToMessageOptions {
     /**
      * An optional Roll instance which produced the drawn results
      */
@@ -1092,12 +1083,10 @@ declare namespace RollTable {
      * Additional options which customize the created messages
      * @defaultValue `{}`
      */
-    messageOptions: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
+    messageOptions: ChatMessage.Database.CreateDocumentsOperation;
   }
 
-  interface ToMessageOptions<Temporary extends boolean | undefined = undefined> extends InexactPartial<
-    _ToMessageOptions<Temporary>
-  > {}
+  interface ToMessageOptions extends InexactPartial<_ToMessageOptions> {}
 
   /**
    * An object containing the executed Roll and the produced results
@@ -1373,10 +1362,10 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param folder  - The Folder document from which to create a roll table
    * @param options - Additional options passed to the RollTable.create method
    */
-  static fromFolder<Temporary extends boolean | undefined = undefined>(
+  static fromFolder(
     folder: Folder.Stored,
-    options?: RollTable.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
+    options?: RollTable.Database.CreateDocumentsOperation,
+  ): Promise<RollTable.Stored | undefined>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1404,14 +1393,11 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends RollTable.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends RollTable.CreateDialogOptions | undefined = undefined>(
     data?: RollTable.CreateDialogData,
-    createOptions?: RollTable.Database.CreateDocumentsOperation<Temporary>,
+    createOptions?: RollTable.Database.CreateDocumentsOperation,
     options?: Options,
-  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<RollTable.CreateDialogReturn<Options>>;
 
   /**
    * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
@@ -1419,15 +1405,12 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    *
    * @see {@linkcode RollTable.CreateDialogDeprecatedOptions}
    */
-  static override createDialog<
-    Temporary extends boolean | undefined = undefined,
-    Options extends RollTable.CreateDialogOptions | undefined = undefined,
-  >(
+  static override createDialog<Options extends RollTable.CreateDialogOptions | undefined = undefined>(
     data: RollTable.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: RollTable.CreateDialogDeprecatedOptions<Temporary>,
+    createOptions: RollTable.CreateDialogDeprecatedOptions,
     options?: Options,
-  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
+  ): Promise<RollTable.CreateDialogReturn<Options>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
