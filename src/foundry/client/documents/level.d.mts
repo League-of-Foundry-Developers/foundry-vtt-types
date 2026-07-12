@@ -3,8 +3,131 @@ import type { fields } from "#client/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseLevel } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { CanvasEdges } from "#client/canvas/geometry/edges/_module.mjs";
 
-declare class Level extends BaseLevel.Internal.ClientDocument {}
+declare class Level extends BaseLevel.Internal.ClientDocument {
+  /**
+   * The integer index of the Level, assigned during Scene data preparation.
+   * @remarks This is `undefined` until {@linkcode Scene.prepareEmbeddedDocuments | Scene#prepareEmbeddedDocuments}, which uses
+   * `Object.defineProperty` to make it readonly at the same time it's set to a number.
+   * @privateRemarks The `readonly` is technically incorrect for temporary `Level`s.
+   */
+  readonly index: number | undefined;
+
+  /**
+   * Is this level currently viewed?
+   */
+  get isView(): boolean;
+
+  /**
+   * Is this level currently visible?
+   */
+  get isVisible(): boolean;
+
+  /**
+   * The edges of this Level.
+   */
+  get edges(): CanvasEdges;
+
+  override prepareBaseData(): void;
+
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Level.CreateData,
+  //   options: Level.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onCreateOperation(
+  //   documents: Level.Stored[],
+  //   operation: Level.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onUpdateOperation(
+  //   documents: Level.Stored[],
+  //   operation: Level.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  /**
+   * Clamp the given elevation (of a token with a depth) to the elevation range of this Level.
+   *
+   * The elevation is clamped such that the head of the token is in the range if possible, but
+   * the feet are never outside of the range.
+   * @param elevation - The elevation (of the token)
+   * @param depth     - The depth of the token (default: `0`)
+   * @returns The clamped elevation
+   */
+  clampElevation(elevation: number, depth?: number): number;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  // ClientDocument overrides
+
+  // Descendant Document operations have been left out because Level does not have any descendant documents.
+
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: Level.DefaultNameContext): string;
+
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<Options extends Level.CreateDialogOptions | undefined = undefined>(
+    data: Level.CreateDialogData | undefined,
+    createOptions: Level.Database.CreateDocumentsOperation,
+    options?: Options,
+  ): Promise<Level.CreateDialogReturn<Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Level.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<Options extends Level.CreateDialogOptions | undefined = undefined>(
+    data: Level.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Level.CreateDialogDeprecatedOptions,
+    options?: Options,
+  ): Promise<Level.CreateDialogReturn<Options>>;
+
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Level.Database.DeleteOneDocumentOperation,
+  ): Promise<Level.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Level.Database.DeleteOneDocumentOperation,
+  ): Promise<Level.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Level.DropData): Promise<Level.Implementation | undefined>;
+
+  static override fromImport(
+    source: Level.Source,
+    context?: Document.FromImportContext<Level.Parent>,
+  ): Promise<Level.Implementation>;
+
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #Level: true;
+}
 
 declare namespace Level {
   /**
@@ -230,8 +353,8 @@ declare namespace Level {
     offsetX: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
     offsetY: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
     fit: fields.StringField<{ required: true; initial: "fill"; choices: typeof CONST.TEXTURE_DATA_FIT_MODES }>;
-    fitX: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
-    fitY: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
+    scaleX: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
+    scaleY: fields.NumberField<{ required: true; nullable: false; initial: 1 }>;
     rotation: fields.AngleField<{ initial: 0 }>;
   }
 
@@ -786,7 +909,7 @@ declare namespace Level {
    * The interface for passing to {@linkcode Level.createDialog}'s second parameter that still includes partial Dialog
    * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
-  interface CreateDialogDeprecatedOption
+  interface CreateDialogDeprecatedOptions
     extends Database.CreateDocumentsOperation, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**

@@ -5611,8 +5611,8 @@ declare class SceneLevelsSetField<
   ArrayField.AssignmentElementType<SceneLevelsSetField.Element>,
   ArrayField.InitializedElementType<SceneLevelsSetField.Element>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  SceneLevelsSetField.AssignmentType<SceneLevelsSetField.Element, Options>,
-  SceneLevelsSetField.InitializedType<SceneLevelsSetField.Element, Options>,
+  SceneLevelsSetField.AssignmentType<ArrayField.AssignmentElementType<SceneLevelsSetField.Element>, Options>,
+  SceneLevelsSetField.InitializedType<ArrayField.InitializedElementType<SceneLevelsSetField.Element>, Options>,
   ArrayField.PersistedElementType<SceneLevelsSetField.Element>,
   SceneLevelsSetField.PersistedType<ArrayField.PersistedElementType<SceneLevelsSetField.Element>, Options>
 > {
