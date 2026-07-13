@@ -15,7 +15,7 @@ expectTypeOf(myIWS.add(element)).toEqualTypeOf<IterableWeakSet<ElementType>>();
 expectTypeOf(myIWS.delete({ x: 1 })).toEqualTypeOf<boolean>();
 expectTypeOf(myIWS.has({ x: 1 })).toEqualTypeOf<boolean>();
 
-expectTypeOf(myIWS.values()).toEqualTypeOf<Generator<ElementType, void, undefined>>();
+expectTypeOf(myIWS.values()).toEqualTypeOf<Generator<ElementType, void, unknown>>();
 
 expectTypeOf(myIWS.clear()).toBeVoid();
 
