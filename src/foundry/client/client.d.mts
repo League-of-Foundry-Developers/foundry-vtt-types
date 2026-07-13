@@ -209,6 +209,20 @@ declare global {
    */
   export import CONST = _CONST;
 
+  /**
+   * A singleton ForcedDeletion operator instance that can be reused.
+   * @privateRemarks `let` because it is created by `defineProperties` without `writable: false`
+   */
+  let _del: foundry.data.operators.ForcedDeletion;
+
+  // TODO: _loc
+
+  /**
+   * A reference for ForcedReplacement.create that can be easily referenced.
+   * @privateRemarks `let` because it is created by `defineProperties` without `writable: false`
+   */
+  let _replace: typeof foundry.data.operators.ForcedReplacement.create;
+
   // Blessed globals - will remain global without deprecation
 
   // Color is currently handled in src/foundry/client/head.d.mts
