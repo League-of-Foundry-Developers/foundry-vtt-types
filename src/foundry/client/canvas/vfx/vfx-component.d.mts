@@ -102,6 +102,18 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
    */
   protected _destroy(): void;
 
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXComponent.Schema>;
+
+  static override validateJoint(data: VFXComponent.SourceData): void;
+
+  static override fromSource(source: VFXComponent.CreateData, context?: DataModel.FromSourceOptions): VFXComponent;
+
+  static override fromJSON(json: string): VFXComponent;
+
   #VFXComponent: true;
 }
 

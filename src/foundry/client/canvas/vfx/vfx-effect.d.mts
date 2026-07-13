@@ -71,6 +71,18 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    */
   resolveReferences(references?: Record<string, unknown>): void;
 
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXEffect.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXEffect.Schema>;
+
+  static override validateJoint(data: VFXEffect.SourceData): void;
+
+  static override fromSource(source: VFXEffect.CreateData, context?: DataModel.FromSourceOptions): VFXEffect;
+
+  static override fromJSON(json: string): VFXEffect;
+
   #VFXEffect: true;
 }
 

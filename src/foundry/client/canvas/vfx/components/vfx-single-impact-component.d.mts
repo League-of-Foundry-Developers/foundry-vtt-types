@@ -1,4 +1,5 @@
 import type { Identity, ValueOf } from "#utils";
+import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -37,6 +38,21 @@ declare class VFXSingleImpactComponent<
   protected override _draw(): Promise<void>;
 
   protected override _stop(): Promise<void>;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXSingleImpactComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXSingleImpactComponent.Schema>;
+
+  static override validateJoint(data: VFXSingleImpactComponent.SourceData): void;
+
+  static override fromSource(
+    source: VFXSingleImpactComponent.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): VFXSingleImpactComponent;
+
+  static override fromJSON(json: string): VFXSingleImpactComponent;
 
   #VFXSingleImpactComponent: true;
 }

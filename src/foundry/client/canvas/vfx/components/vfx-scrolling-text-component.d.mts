@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -33,6 +34,21 @@ declare class VFXScrollingTextComponent<
   static override defineSchema(): VFXScrollingTextComponent.Schema;
 
   protected override _draw(): Promise<void>;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXScrollingTextComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXScrollingTextComponent.Schema>;
+
+  static override validateJoint(data: VFXScrollingTextComponent.SourceData): void;
+
+  static override fromSource(
+    source: VFXScrollingTextComponent.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): VFXScrollingTextComponent;
+
+  static override fromJSON(json: string): VFXScrollingTextComponent;
 
   #VFXScrollingTextComponent: true;
 }

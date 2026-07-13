@@ -1,4 +1,5 @@
 import type { Identity, AnyMutableObject } from "#utils";
+import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -46,6 +47,21 @@ declare class VFXParticleGeneratorComponent<
   override stop(): Promise<void>;
 
   protected override _stop(): Promise<void>;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXParticleGeneratorComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXParticleGeneratorComponent.Schema>;
+
+  static override validateJoint(data: VFXParticleGeneratorComponent.SourceData): void;
+
+  static override fromSource(
+    source: VFXParticleGeneratorComponent.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): VFXParticleGeneratorComponent;
+
+  static override fromJSON(json: string): VFXParticleGeneratorComponent;
 
   #VFXParticleGeneratorComponent: true;
 }

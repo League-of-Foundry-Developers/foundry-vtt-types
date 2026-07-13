@@ -1,5 +1,6 @@
 import type { Identity, ValueOf } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
+import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 import type VFXPath from "../vfx-path.d.mts";
 
@@ -87,6 +88,21 @@ declare class VFXSingleAttackComponent<
    * Compute timings for each step start, end, and sound.
    */
   protected _getTimings(): VFXSingleAttackComponent.Timings;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXSingleAttackComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXSingleAttackComponent.Schema>;
+
+  static override validateJoint(data: VFXSingleAttackComponent.SourceData): void;
+
+  static override fromSource(
+    source: VFXSingleAttackComponent.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): VFXSingleAttackComponent;
+
+  static override fromJSON(json: string): VFXSingleAttackComponent;
 
   #VFXSingleAttackComponent: true;
 }

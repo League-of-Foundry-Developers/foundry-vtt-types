@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
 import fields = foundry.data.fields;
@@ -38,6 +39,21 @@ declare class VFXPositionalSoundComponent<
   protected override _draw(): Promise<void>;
 
   protected override _stop(): Promise<void>;
+
+  /* DataModel overrides */
+
+  static override _schema: fields.SchemaField<VFXPositionalSoundComponent.Schema>;
+
+  static override get schema(): fields.SchemaField<VFXPositionalSoundComponent.Schema>;
+
+  static override validateJoint(data: VFXPositionalSoundComponent.SourceData): void;
+
+  static override fromSource(
+    source: VFXPositionalSoundComponent.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): VFXPositionalSoundComponent;
+
+  static override fromJSON(json: string): VFXPositionalSoundComponent;
 
   #VFXPositionalSoundComponent: true;
 }
