@@ -219,12 +219,8 @@ describe("reconstructOperator Tests", () => {
   } satisfies ForcedReplacement.ReconstructionObject<typeof obj2>;
 
   test("reconstructOperator", () => {
-    try {
-      // @ts-expect-error The passed object must include an `[OPERATOR_IDENTIFIER]` key
-      reconstructOperator({});
-    } catch {
-      /* empty */
-    }
+    // @ts-expect-error The passed object must include an `[OPERATOR_IDENTIFIER]` key
+    expect(() => reconstructOperator({})).toThrow();
 
     const reconstructedDeletion = reconstructOperator(del);
     expect(reconstructedDeletion).toBeInstanceOf(ForcedDeletion);
