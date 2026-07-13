@@ -50,7 +50,7 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    * Begin playback of a VFXEffect using provided reference data.
    * @param references - A record of references used to resolve model data
    * @returns A Promise which resolves to whether playback fully completed,
-   *          or `undefined` when the VFX framework is disabled via `CONFIG.Canvas.vfx.enabled`
+   * or `undefined` when the VFX framework is disabled via `CONFIG.Canvas.vfx.enabled`
    */
   play(references?: Record<string, unknown>): Promise<boolean | undefined>;
 

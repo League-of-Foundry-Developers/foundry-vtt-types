@@ -2,6 +2,7 @@ import type { PIXI } from "#configuration";
 import type { Identity } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
+import type { Timeline as AnimeTimeline } from "animejs/timeline";
 
 import fields = foundry.data.fields;
 
@@ -126,6 +127,7 @@ declare namespace VFXComponent {
    * Subclasses extend `_Schema<"theirType">` so the initialized `type` narrows to that literal while
    * assignment/persisted stay `string` (keeping the field's method params variance-compatible with the base).
    */
+  /** @internal */
   interface _Schema<Type extends string> extends DataSchema {
     type: fields.StringField<{ required: true; blank: false }, string, Type, string>;
   }
@@ -137,25 +139,8 @@ declare namespace VFXComponent {
     type Any = _Schema<string>;
   }
 
-  /**
-   * The subset of the animejs Timeline surface used by the VFX framework.
-   */
-  interface Timeline {
-    labels: Record<string, number>;
-    began: boolean;
-    completed: boolean;
-    paused: boolean;
-    label(name: string, position?: number | string): this;
-    sync(timeline: Timeline, position?: number | string): this;
-    add(target: object, params: object, position?: number | string): this;
-    call(fn: () => void, position?: number | string): this;
-    play(): this;
-    pause(): this;
-    complete(): this;
-    cancel(): this;
-    init(): this;
-    then(onfulfilled?: () => void): Promise<unknown>;
-  }
+  /** A component-specific animejs timeline. */
+  type Timeline = AnimeTimeline;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
   interface SourceData extends fields.SchemaField.SourceData<Schema> {}

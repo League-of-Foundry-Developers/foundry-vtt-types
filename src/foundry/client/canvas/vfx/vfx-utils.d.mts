@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type VFXPath from "./vfx-path.mjs";
 import type VFXComponent from "./vfx-component.mjs";
 
@@ -28,10 +29,14 @@ export function resolveAnimation(functionName: string): VFXComponent.Animation;
 
 /**
  * Resolves an anime.js easing function by name and initializes it with parameters.
- * @param functionName - Name of the easing function
- * @param easingParams - Optional positional parameters to initialize the easing function
+ * @param functionName  - Name of the easing function
+ * @param easingParams  - Optional positional parameters to initialize the easing function
+ * @returns The resolved easing function
  */
-export function resolveEasing(functionName: string, easingParams?: unknown[]): (time: number) => number;
+export function resolveEasing(
+  functionName: string,
+  easingParams?: MaybeArray<number | string>,
+): (time: number) => number;
 
 /**
  * Generates points along a cubic Hermite spline segment.

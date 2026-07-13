@@ -44,7 +44,7 @@ declare class VFXPath {
    * @param points     - Path points to construct
    * @param parameters - Additional parameters used to construct the path
    */
-  static create(pathName: string, points: VFXPath.BasePathPoint[], parameters?: object): VFXPath;
+  static create(pathName: string, points: VFXPath.BasePathPoint[], parameters?: Record<string, unknown>): VFXPath;
 
   #VFXPath: true;
 }
@@ -76,7 +76,7 @@ declare namespace VFXPath {
   }
 
   /** A function that generates a VFXPath from a set of base points and parameters. */
-  type Generator = (points: VFXPath.BasePathPoint[], params: object) => VFXPath;
+  type Generator = (points: VFXPath.BasePathPoint[], params: Record<string, unknown>) => VFXPath;
 }
 
 export default VFXPath;
