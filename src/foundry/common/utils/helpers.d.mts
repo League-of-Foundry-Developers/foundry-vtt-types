@@ -11,6 +11,14 @@ import type {
 import type Document from "../abstract/document.d.mts";
 
 /**
+ * Recurse through an object, applying all special DataFieldOperator values.
+ * ForcedDeletion values (or deprecated "-=" keys) are removed from the object
+ * ForcedReplacement values (or deprecated "==" keys) are updated in the object
+ */
+// TODO: bespoke return type accounting for deletion keys recursively
+export function applyDataOperators<T>(obj: T): T;
+
+/**
  * Benchmark the performance of a function, calling it a requested number of iterations.
  * @param func       - The function to benchmark
  * @param iterations - The number of iterations to test
@@ -154,10 +162,8 @@ interface _DiffObjectOptions {
 export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
 
 /**
- * Recurse through an object, applying all special keys.
- * Deletion keys ("-=") are removed.
- * Forced replacement keys ("==") are assigned.
- * @remarks Returns the passed `obj` for anything but plain objects and arrays.
+ * @deprecated since v14
+ * @ignore
  */
 // TODO: bespoke return type accounting for deletion keys recursively
 export function applySpecialKeys<T>(obj: T): T;
@@ -190,7 +196,11 @@ export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated
 
 /**
  * Is a string key of an object used for certain deletion or forced replacement operations.
- * @remarks Foundry seems to refer to both `-=...` and `==...` as "deletion keys" in this context
+ *
+ * This function has become internal and undocumented. It can be deprecated and removed once support for
+ * legacy deletion keys is fully removed.
+ * @ignore
+ * @internal
  */
 export function isDeletionKey(key: string): key is DeletionKey;
 
@@ -440,12 +450,12 @@ export function isEmpty(
  *
  * @example Deleting an existing object key
  * ```typescript
- * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
+ * mergeObject({k1: "v1", k2: "v2"}, {"k1": new ForcedDeletion()}, {applyOperators: true});   // {k2: "v2"}
  * ```
  *
  * @example Explicitly replacing an inner object key
- * ```js
- * mergeObject({k1: {i1: "v1"}}, {"==k1": {i2: "v2"}}, {performDeletions: true}); // {k1: {i2: "v2"}}
+ * ```typescript
+ * mergeObject({k1: {i1: "v1"}}, {"k1": ForcedReplacement.create({i2: "v2"})}, {applyOperators: true}); // {k1: {i2: "v2"}}
  * ```
  */
 export function mergeObject<const T extends object, const U extends object, const M extends MergeObjectOptions>(
@@ -502,8 +512,17 @@ interface _MergeObjectOptions {
   /**
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
+   * @deprecated You have passed the performDeletions option to foundry.utils.mergeObject which is
+   * deprecated and renamed to applyOperators. (since v14, until v16)
    */
-  performDeletions: boolean; // TODO: implement this in the mergeObject return type
+  performDeletions: boolean;
+
+  /**
+   * Control whether to apply the effects of DataFieldOperator values (if true) or retain those
+   * operators (if false) in the resulting merged object.
+   * @defaultValue `false`
+   */
+  applyOperators: boolean; // TODO: implement this in the mergeObject return type
 }
 
 export interface MergeObjectOptions extends InexactPartial<_MergeObjectOptions> {}
