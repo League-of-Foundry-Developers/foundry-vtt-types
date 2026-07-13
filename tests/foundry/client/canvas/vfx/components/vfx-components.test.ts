@@ -118,8 +118,6 @@ describe("VFXSingleAttackComponent", () => {
   });
 
   test("flightPath is not public", () => {
-    const component = null as unknown as VFXSingleAttackComponent;
-    // @ts-expect-error flightPath is a runtime private field with no public accessor.
-    component.flightPath;
+    expectTypeOf<VFXSingleAttackComponent>().not.toHaveProperty("flightPath");
   });
 });

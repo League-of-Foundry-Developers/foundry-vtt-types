@@ -2,7 +2,7 @@ import { describe, expectTypeOf, test } from "vitest";
 
 import VFXComponent = foundry.canvas.vfx.VFXComponent;
 
-declare const sprite: PIXI.Sprite;
+const sprite = new PIXI.Sprite();
 
 describe("VFXComponent", () => {
   const myComponentData = { type: "test" } satisfies VFXComponent.CreateData;

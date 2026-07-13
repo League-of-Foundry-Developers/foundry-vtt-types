@@ -39,7 +39,7 @@ describe("VFXReferenceObjectField", () => {
     const field = new VFXReferenceObjectField(
       new fields.SchemaField({ x: new fields.NumberField(), y: new fields.NumberField() }),
     );
-    field.resolve({ reference: "target", deltas: { x: 1, y: -1 } }, {});
+    field.resolve({ reference: "target", deltas: { x: 1, y: -1 } }, { target: { x: 0, y: 0 } });
   });
 });
 
@@ -51,7 +51,7 @@ describe("VFXReferencePointField", () => {
 
   test("accepts point references with per-axis deltas", () => {
     const field = new VFXReferencePointField();
-    field.resolve({ reference: "target", deltas: { x: 1, y: -1 } }, {});
+    field.resolve({ reference: "target", deltas: { x: 1, y: -1 } }, { target: { x: 0, y: 0 } });
   });
 });
 
