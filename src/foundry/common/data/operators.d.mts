@@ -16,7 +16,7 @@ declare class DataFieldOperator<Value = undefined> {
 
   [OPERATOR_VALUE]: Value;
 
-  toJSON(): string;
+  toJSON(): DataFieldOperator.ReconstructionObject<Value>;
 
   /**
    * Create a `DataFieldOperator` using a provided value.
@@ -27,7 +27,7 @@ declare class DataFieldOperator<Value = undefined> {
   /**
    * Retrieve the inner value of the `DataFieldOperator`, or return the value passed if not a `DataFieldOperator`.
    */
-  static get<Target>(value: Target): DataFieldOperator.UnwrapIfDFO<Target>;
+  static get<Target>(value: Target): DataFieldOperator.Unwrap<Target>;
 
   /**
    * Assign the inner value of the DataFieldOperator.
@@ -46,7 +46,12 @@ declare namespace DataFieldOperator {
   interface Any extends AnyDataFieldOperator {}
   interface AnyConstructor extends Identity<typeof AnyDataFieldOperator> {}
 
-  type UnwrapIfDFO<Target> = Target extends DataFieldOperator<infer Value> ? Value : Target;
+  type Unwrap<Target> = Target extends DataFieldOperator<infer Value> ? Value : Target;
+
+  interface ReconstructionObject<Value = unknown> {
+    [OPERATOR_IDENTIFIER]: string;
+    value: Value;
+  }
 }
 
 /**
@@ -57,20 +62,33 @@ declare class ForcedDeletion extends DataFieldOperator<undefined> {
   constructor(_value?: undefined);
 
   // fake type override
+  toJSON(): ForcedDeletion.ReconstructionObject;
+
+  // fake type override
   static override create(): ForcedDeletion;
 }
 
-declare class ForcedReplacement<Value = undefined> extends DataFieldOperator<DataFieldOperator.UnwrapIfDFO<Value>> {
+declare namespace ForcedDeletion {
+  interface ReconstructionObject extends DataFieldOperator.ReconstructionObject<undefined> {
+    [OPERATOR_IDENTIFIER]: "ForcedDeletion";
+  }
+}
+
+declare class ForcedReplacement<Value = undefined> extends DataFieldOperator<DataFieldOperator.Unwrap<Value>> {
   constructor(value?: Value);
 
-  override [OPERATOR_VALUE]: DataFieldOperator.UnwrapIfDFO<Value>;
+  // fake type override
+  override [OPERATOR_VALUE]: DataFieldOperator.Unwrap<Value>;
+
+  // fake type override
+  override toJSON(): ForcedReplacement.ReconstructionObject<DataFieldOperator.Unwrap<Value>>;
 
   /**
    * Create a `ForcedReplacement` instance that is wrapped in a `Proxy` so that it can be inspected.
    */
   static override create<Value = undefined>(
     value?: Value,
-  ): ForcedReplacement.CreateReturn<DataFieldOperator.UnwrapIfDFO<Value>>;
+  ): ForcedReplacement.CreateReturn<DataFieldOperator.Unwrap<Value>>;
 }
 
 declare namespace ForcedReplacement {
@@ -79,21 +97,20 @@ declare namespace ForcedReplacement {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- we want it to collapse on intersection
   type CreateReturn<Value> = ForcedReplacement<Value> & (Value extends object ? Value : {});
+
+  interface ReconstructionObject<Value> extends DataFieldOperator.ReconstructionObject<Value> {
+    [OPERATOR_IDENTIFIER]: "ForcedReplacement";
+  }
 }
 
 /**
- * Reconstruct a DataFieldOperator instance from a serialized object.
+ * Reconstruct a {@linkcode DataFieldOperator} instance from a serialized object.
  */
-declare function reconstructOperator<Object extends reconstructOperator.ReconstructionObject>(
+declare function reconstructOperator<Object extends DataFieldOperator.ReconstructionObject>(
   obj: Object,
 ): reconstructOperator.Return<Object>;
 
 declare namespace reconstructOperator {
-  interface ReconstructionObject {
-    [OPERATOR_IDENTIFIER]: string;
-    value?: unknown;
-  }
-
   type Return<Object> = Object extends { [OPERATOR_IDENTIFIER]: "ForcedDeletion" }
     ? ForcedDeletion
     : Object extends { [OPERATOR_IDENTIFIER]: "ForcedReplacement"; value: infer Value }
