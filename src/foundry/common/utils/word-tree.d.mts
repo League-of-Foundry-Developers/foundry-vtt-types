@@ -7,17 +7,11 @@ import type { Document } from "#common/abstract/_module.d.mts";
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree<DocumentName extends Document.Type, Key = string> extends StringTree<
+declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<string> = string> extends StringTree<
   WordTree.Entry<DocumentName>,
   Key
 > {
-  /**
-   * Insert an entry into the tree.
-   * @param string - The string key for the entry.
-   * @param entry - The entry to store.
-   * @returns The node the entry was added to.
-   */
-  addLeaf(key: Key, entry: WordTree.Entry<DocumentName>): WordTree.EntryNode<DocumentName>;
+  override addLeaf(key: Key, entry: WordTree.Entry<DocumentName>): WordTree.EntryNode<DocumentName>;
 
   /**
    * Return entries that match the given string prefix.
@@ -25,7 +19,7 @@ declare class WordTree<DocumentName extends Document.Type, Key = string> extends
    * @param options - Additional options to configure behaviour.
    * @returns A number of entries that have the given prefix.
    */
-  lookup(prefix: Key, options?: WordTree.LookupOptions<DocumentName>): WordTree.Entry<DocumentName>[];
+  override lookup(prefix: Key, options?: WordTree.LookupOptions<DocumentName>): WordTree.Entry<DocumentName>[];
 
   /**
    * Returns the node at the given prefix.
@@ -33,7 +27,7 @@ declare class WordTree<DocumentName extends Document.Type, Key = string> extends
    * @returns The node
    * @remarks Calls super with no way to provide options, meaning `undefined` is never allow
    */
-  nodeAtPrefix(prefix: Key): WordTree.EntryNode<DocumentName> | undefined;
+  override nodeAtPrefix(prefix: Key): WordTree.EntryNode<DocumentName> | undefined;
 }
 
 declare namespace WordTree {
