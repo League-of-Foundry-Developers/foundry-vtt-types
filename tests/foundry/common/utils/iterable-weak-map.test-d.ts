@@ -27,6 +27,6 @@ for (const [k, v] of myIWM) {
 
 // Note(LukeAbby): This is broken without the usage of `branded` because in fvtt-types the addition of `Array#partition` and `Array#equals` cause
 // tuples to not be considered equal under Vitest.
-expectTypeOf(myIWM.entries()).branded.toEqualTypeOf<Generator<[{ x: number }, { y: string }], void, undefined>>();
-expectTypeOf(myIWM.keys()).toEqualTypeOf<Generator<{ x: number }, void, undefined>>();
-expectTypeOf(myIWM.values()).toEqualTypeOf<Generator<{ y: string }, void, undefined>>();
+expectTypeOf(myIWM.entries()).branded.toEqualTypeOf<Generator<[{ x: number }, { y: string }], void, unknown>>();
+expectTypeOf(myIWM.keys()).toEqualTypeOf<Generator<{ x: number }, void, unknown>>();
+expectTypeOf(myIWM.values()).toEqualTypeOf<Generator<{ y: string }, void, unknown>>();
