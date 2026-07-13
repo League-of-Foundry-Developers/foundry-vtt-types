@@ -2432,7 +2432,7 @@ declare class TypedObjectField<
   element: Element;
 
   /**
-   * Whether to expand dot-delimited keys during cleaning.
+   * Whether to expand dot-delimited keys.
    * @defaultValue `true`
    */
   expandKeys: boolean;
@@ -2518,7 +2518,7 @@ declare namespace TypedObjectField {
     validateKey?: ValidateKey<string> | undefined;
 
     /**
-     * Whether to expand dot-delimited keys during cleaning.
+     * Whether to expand dot-delimited keys.
      * @defaultValue `true`
      */
     expandKeys?: boolean | undefined;
@@ -4961,8 +4961,9 @@ declare namespace JSONField {
 
 /**
  * A special subclass of {@linkcode DataField} which can contain any value of any type.
- * Any input is accepted and is treated as valid.
- * It is not recommended to use this class except for very specific circumstances.
+ * Any input is accepted and is treated as valid. Setting the serializable option to `true` will apply some light
+ * cleaning and validation, ensuring that a candidate value will not be appreciably changed when serialized for
+ * writing to disk. It is not recommended to use this class except in very specific circumstances.
  */
 // TODO(LukeAbby): This field effectively removes all options because there's no point asking for an options when none of them do anything.
 declare class AnyField extends DataField<AnyField.Options, unknown, unknown, unknown> {

@@ -18,13 +18,19 @@ declare class DataModelValidationFailure {
   /** Whether the value was dropped from some parent collection. */
   dropped: boolean;
 
-  /** Validation failures for contained fields. */
+  /**
+   * If this field contains other fields that are validated as part of its validation, their results are recorded here.
+   */
   fields: Record<string, DataModelValidationFailure>;
 
-  /** Validation failures for contained elements. */
+  /**
+   * If this field contains a list of elements that are validated as part of its validation, their results are recorded here.
+   */
   elements: DataModelValidationFailure.ElementValidationFailure[];
 
-  /** The joint validation failure message for multiple contained fields. */
+  /**
+   * If this field has a joint validation failure across multiple sub-fields, the failure message is recorded here.
+   */
   joint: string | undefined;
 
   /** The error message. */
@@ -33,40 +39,80 @@ declare class DataModelValidationFailure {
   /** Options forwarded to the Error constructor. */
   options: ErrorOptions;
 
-  /** Whether this failure or one of its contained failures is unresolved. */
+  /**
+   * Record whether a validation failure is unresolved.
+   * This reports as true if validation for this field or any hierarchically contained field is unresolved.
+   * A failure is unresolved if the value was invalid and there was no valid fallback value available.
+   */
   unresolved: boolean;
 
-  /** Whether this failure contains no sub-failures. */
+  /** Whether this failure contains other sub-failures. */
   get empty(): boolean;
 
   /** Return this validation failure as an Error instance. */
   asError(): DataModelValidationError;
 
-  /** Copy this failure's data to another failure. */
+  /** Copy the data of this DataModelValidationFailure to another one. */
   copyTo(failure: DataModelValidationFailure): void;
 
-  /** Retrieve the leaf node failure, or a sub-failure at a property path. */
+  /**
+   * Retrieve the leaf node failure that caused this, or a specific sub-failure via a path.
+   * @param key - The property key to the failure.
+   *
+   * @example Retrieving a failure.
+   * ```js
+   * const changes = {
+   *   "foo.bar": "validValue",
+   *   "foo.baz": "invalidValue"
+   * };
+   * try {
+   *   doc.validate(expandObject(changes));
+   * } catch ( err ) {
+   *   const failure = err.getFailure("foo.baz");
+   *   console.log(failure.invalidValue); // "invalidValue"
+   * }
+   * ```
+   */
   getFailure(key?: string): DataModelValidationFailure | null;
 
-  /** Retrieve a flattened object of all leaf validation failures. */
+  /**
+   * Retrieve a flattened object of all the properties that failed validation as part of this error.
+   *
+   * @example Removing invalid changes from an update delta.
+   * ```js
+   * const changes = {
+   *   "foo.bar": "validValue",
+   *   "foo.baz": "invalidValue"
+   * };
+   * try {
+   *   doc.validate(expandObject(changes));
+   * } catch ( err ) {
+   *   const failures = err.getAllFailures();
+   *   if ( failures ) {
+   *     for ( const prop in failures ) delete changes[prop];
+   *     doc.validate(expandObject(changes));
+   *   }
+   * }
+   * ```
+   */
   getAllFailures(): Record<string, DataModelValidationFailure>;
 
-  /** Return the base properties of this failure, omitting nested failures. */
+  /** Return the base properties of this failure, omitting any nested failures. */
   toObject(): DataModelValidationFailure.ToObjectReturn;
 
-  /** Represent this validation failure as a string. */
+  /** Represent the DataModelValidationFailure as a string. */
   toString(): string;
 
-  /** Log the nested failures as a table. */
+  /** Log the validation error as a table. */
   logAsTable(): void;
 
-  /** Generate a nested tree view of this failure as HTML. */
+  /** Generate a nested tree view of the error as an HTML string. */
   asHTML(): string;
 
-  /** @deprecated since v14 Use {@linkcode empty} instead. */
+  /** @deprecated since v14 in favor of the {@linkcode empty} property */
   isEmpty(): boolean;
 
-  /** @deprecated since v14 Use {@linkcode fallbackValue} instead. */
+  /** @deprecated since v14, renamed to {@linkcode fallbackValue} */
   get fallback(): unknown;
 
   static #DataModelValidationFailure: true;
@@ -76,18 +122,22 @@ declare class DataModelValidationFailure {
  * A specialized Error to indicate a model validation failure.
  */
 declare class DataModelValidationError extends Error {
+  /**
+   * @param failure - The failure that triggered this error or an error message
+   * @param params  - Additional Error constructor parameters
+   */
   constructor(failure: DataModelValidationFailure | string, ...params: unknown[]);
 
-  /** Retrieve the root failure, or a sub-failure at a property path. */
+  /** @see {@link DataModelValidationFailure.getFailure | `DataModelValidationFailure#getFailure`} */
   getFailure(key?: string): DataModelValidationFailure | null;
 
-  /** Retrieve a flattened object of all leaf validation failures. */
+  /** @see {@link DataModelValidationFailure.getAllFailures | `DataModelValidationFailure#getAllFailures`} */
   getAllFailures(): Record<string, DataModelValidationFailure>;
 
-  /** Log the nested failures as a table. */
+  /** Log the validation error as a table. */
   logAsTable(): void;
 
-  /** Generate a nested tree view of this failure as HTML. */
+  /** Generate a nested tree view of the error as an HTML string. */
   asHTML(): string;
 
   override toString(): string;
