@@ -6,7 +6,7 @@ declare const _leavesSymbol: unique symbol;
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.
  */
-declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
+declare class StringTree<Leaf extends object = AnyObject, Keys extends Iterable<string> = string[]> {
   /**
    * The key symbol that stores the leaves of any given node.
    */
@@ -18,7 +18,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param entry    - The entry to store.
    * @returns   The node the entry was added to.
    */
-  addLeaf(strings: Key, entry: Leaf): StringTree.Node<Leaf>;
+  addLeaf(strings: Keys, entry: Leaf): StringTree.Node<Leaf>;
 
   /**
    * Traverse the tree along the given string path and return any entries reachable from the node.
@@ -26,7 +26,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param options         - Additional options to configure behaviour.
    * @returns    The reachable entries
    */
-  lookup(strings: Key, options?: StringTree.LookupOptions<Leaf>): Leaf[];
+  lookup(strings: Keys, options?: StringTree.LookupOptions<Leaf>): Leaf[];
 
   /**
    * Returns the node at the given path through the tree.
@@ -34,7 +34,7 @@ declare class StringTree<Leaf extends object = AnyObject, Key = string[]> {
    * @param options - Additional options to configure behaviour.
    * @returns The node at the path, if found
    */
-  nodeAtPrefix(strings: Key, options?: StringTree.NodeAtPrefixOptions): StringTree.Node<Leaf> | undefined;
+  nodeAtPrefix(strings: Keys, options?: StringTree.NodeAtPrefixOptions): StringTree.Node<Leaf> | undefined;
 
   /**
    * Perform a breadth-first search starting from the given node and retrieving any entries reachable from that node,
@@ -76,7 +76,10 @@ declare namespace StringTree {
 
   /** @internal */
   interface _SearchOptions<Leaf extends object> {
-    /** The maximum number of items to retrieve. */
+    /**
+     * The maximum number of items to retrieve.
+     * @defaultValue `Infinity`
+     */
     limit: number;
 
     /** A filter function to apply to each candidate entry. */
