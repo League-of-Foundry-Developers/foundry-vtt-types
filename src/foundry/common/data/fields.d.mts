@@ -239,6 +239,12 @@ declare abstract class DataField<
   ): InitializedType;
 
   /**
+   * @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16).
+   * A `migrateSource` method defined on any field subclass is still detected and invoked as a legacy fallback until then.
+   */
+  migrateSource(sourceData: never, fieldData: never): void;
+
+  /**
    * Cast a non-default value to ensure it is the correct type for the field
    * @param value - The provided non-default value
    * @returns The standardized value
@@ -1384,9 +1390,6 @@ declare class SchemaField<
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
   ): InitializedType;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace SchemaField {
@@ -2125,7 +2128,10 @@ declare class StringField<
    */
   choices: StringField.Choices | undefined;
 
-  /** @defaultValue `false` */
+  /**
+   * Is this string field a target for text search?
+   * @defaultValue `false`
+   */
   textSearch: boolean;
 
   protected static override get _defaults(): StringField.Options<unknown>;
@@ -2563,9 +2569,6 @@ declare class TypedObjectField<
     value?: unknown,
     options?: Options,
   ): Return;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace TypedObjectField {
@@ -2841,9 +2844,6 @@ declare class ArrayField<
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
   ): InitializedType;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace ArrayField {
@@ -3281,9 +3281,6 @@ declare class EmbeddedDataField<
 
   /** @remarks Returns `value.toObject(false)`, or `value` unchanged if falsy */
   override toObject(value: InitializedType): PersistedType;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace EmbeddedDataField {
@@ -3534,9 +3531,6 @@ declare class EmbeddedCollectionField<
     value?: unknown,
     options?: Options,
   ): Return;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace EmbeddedCollectionField {
@@ -4793,15 +4787,16 @@ declare class DocumentAuthorField<
   const InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
   const PersistedType extends string | null | undefined = ForeignDocumentField.PersistedType<Options>,
 > extends ForeignDocumentField<DocumentType, Options, AssignmentType, InitializedType, PersistedType> {
-  //TODO: change nullable into `false` later.
+  // TODO: The runtime default is `nullable: false`, but flipping it drops `null` from the initialized
+  // type, which downstream author fields (e.g. `ChatMessage#author`) rely on. Kept `true` until they cope.
   /** @defaultValue `true` */
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override readonly: boolean;
+  override gmOnly: boolean;
 
-  /** @defaultValue `false` */
-  override idOnly: boolean;
+  /** @defaultValue `() => game.user?.id ?? null` */
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   static override get _defaults(): DocumentAuthorField.Options;
 }
@@ -4813,10 +4808,10 @@ declare namespace DocumentAuthorField {
   type DefaultOptions = SimpleMerge<
     ForeignDocumentField.DefaultOptions,
     {
-      //TODO: change nullable into `false` later.
+      //TODO: change nullable into `false` later (matches runtime); see the class body note.
       nullable: true;
-      readonly: false;
-      idOnly: false;
+      gmOnly: false;
+      initial: () => string | null;
     }
   >;
 }
@@ -5838,9 +5833,6 @@ declare class TypeDataField<
   ): void;
 
   override toObject(value: InitializedType): PersistedType;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace TypeDataField {
@@ -6041,9 +6033,6 @@ declare class TypedSchemaField<
     value?: unknown,
     options?: Options,
   ): Return;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
 
   #TypedSchemaField: true;
 }
