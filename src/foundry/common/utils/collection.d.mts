@@ -125,21 +125,18 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
-   * @see {@linkcode Array.map | Array#map}
-   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value,
-   * the index of iteration, and the collection being mapped.
-   * @template M        - The type of the mapped values
+   * @see {@linkcode Array#map}
+   * @param transformer - A transformation function applied to each entry value.
    * @returns An Array of transformed values
    */
   map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@linkcode Array.reduce | Array#reduce}
-   * @param reducer - A reducer function applied to each entry value. Positional arguments are the accumulator,
-   * the value, the index of iteration, and the collection being reduced.
+   * @see {@linkcode Array#reduce}
+   * @template U
+   * @param reducer - A reducer function applied to each entry value.
    * @param initial - An initial value which accumulates with each iteration
-   * @template A    - The type of the accumulator and the return value
    * @returns The accumulated result
    *
    * @example
@@ -158,12 +155,19 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see {@linkcode Array.some | Array#some}
-   * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
-   * and the collection being tested.
+   * @see {@linkcode Array#some}
+   * @param condition - The functional condition to test.
    * @returns Was the test condition passed by at least one entry?
    */
   some(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
+
+  /**
+   * Test whether a condition is met by every entry in the Collection.
+   * @see {@linkcode Array#every}
+   * @param condition - The functional condition to test.
+   * @returns True if the test condition was truthy for every entry.
+   */
+  every(/** @immediate */ condition: (element: V, index: number, collection: Collection<V>) => boolean): boolean;
 
   /**
    * Convert the Collection to a primitive array of its contents.
