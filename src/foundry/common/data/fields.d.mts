@@ -1375,6 +1375,14 @@ declare class SchemaField<
    * @param fieldData  - The value of this field within the source data
    */
   migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
+
+  /** @remarks Returns `value` unchanged. `delta`, `model`, and `change` are unused in `SchemaField` */
+  protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
 }
 
 declare namespace SchemaField {
@@ -1697,6 +1705,14 @@ declare class BooleanField<
     change: ActiveEffect.ChangeData,
   ): InitializedType;
 
+  /** @remarks Returns `value !== delta`. `model` and `change` are unused in `BooleanField` */
+  protected override _applyChangeSubtract(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
+
   /** @remarks Returns `value && delta`. `model` and `change` are unused in `BooleanField` */
   protected override _applyChangeMultiply(
     value: InitializedType,
@@ -1880,6 +1896,14 @@ declare class NumberField<
   protected override _toInput(
     config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
   ): HTMLElement | HTMLCollection;
+
+  /** @remarks Returns `value - delta`. `model` and `change` are unused in `NumberField` */
+  protected override _applyChangeSubtract(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
 
   /** @remarks Returns `value * delta`. `model` and `change` are unused in `NumberField` */
   protected override _applyChangeMultiply(
@@ -2146,6 +2170,14 @@ declare class StringField<
     config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
   ): HTMLElement | HTMLCollection;
 
+  /** @remarks Returns `value.replace(delta, "")`. `model` and `change` are unused in `StringField` */
+  protected override _applyChangeSubtract(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
+
   static #StringField: true;
 }
 
@@ -2362,6 +2394,14 @@ declare class ObjectField<
     value: InitializedType,
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
+
+  /** @remarks Returns `value` unchanged. `delta`, `model`, and `change` are unused in `ObjectField` */
+  protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
 }
 
 declare namespace ObjectField {
@@ -2763,6 +2803,14 @@ declare class ArrayField<
 
   /** @remarks Returns `value` with `delta` `push`ed. `model` and `change` are unused in `ArrayField` */
   protected override _applyChangeAdd(
+    value: InitializedType,
+    delta: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType;
+
+  /** @remarks Returns a copy of `value` with each element found in `delta` spliced out. `model` and `change` are unused in `ArrayField` */
+  protected override _applyChangeSubtract(
     value: InitializedType,
     delta: InitializedType,
     model: DataModel.Any,
