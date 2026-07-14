@@ -1226,6 +1226,18 @@ declare class SchemaField<
   protected _initialize(fields: Fields): Fields;
 
   /**
+   * Extend this schema definition with additional fields.
+   * @param fields - The additional fields
+   */
+  extendFields(fields: Fields): void;
+
+  /**
+   * Remove fields from this schema definition.
+   * @param fields - The fields to remove
+   */
+  removeFields(fields: string[]): void;
+
+  /**
    * Iterate over a SchemaField by iterating over its fields.
    */
   [Symbol.iterator](): Generator<DataField.Unknown, void, undefined>;
@@ -1299,18 +1311,6 @@ declare class SchemaField<
   ): InitializedType;
 
   /**
-   * Extend this schema definition with additional fields.
-   * @param fields - The additional fields
-   */
-  extendFields(fields: Fields): void;
-
-  /**
-   * Remove fields from this schema definition.
-   * @param fields - The fields to remove
-   */
-  removeFields(fields: string[]): void;
-
-  /**
    * Expand a transacted object.
    * @param data    - The object
    * @param options - Cleaning operation options
@@ -1354,8 +1354,6 @@ declare class SchemaField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
-
   /**
    * Attempt fallback for a child validation failure.
    * @internal
@@ -1369,6 +1367,8 @@ declare class SchemaField<
     options: DataField.ValidateOptions<DataField.Any>,
   ): void;
 
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+
   override toObject(value: InitializedType): PersistedType;
 
   override apply<Options, Return>(
@@ -1377,9 +1377,6 @@ declare class SchemaField<
     options?: Options,
   ): Return;
 
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
-
   /** @remarks Returns `value` unchanged. `delta`, `model`, and `change` are unused in `SchemaField` */
   protected override _applyChangeAdd(
     value: InitializedType,
@@ -1387,6 +1384,9 @@ declare class SchemaField<
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
   ): InitializedType;
+
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace SchemaField {
@@ -2742,7 +2742,16 @@ declare class ArrayField<
 
   override getInitialValue(source?: unknown): InitializedType;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  protected override _getField(
+    parts: string[],
+    options?: Pick<DataField.GetFieldOptions, "source">,
+  ): DataField.Any | undefined;
 
   protected override _cast(value: unknown): AssignmentType;
 
@@ -2779,6 +2788,8 @@ declare class ArrayField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+
   /** @internal */
   static _handleValidationFailure(
     field: DataField.Any,
@@ -2788,12 +2799,6 @@ declare class ArrayField<
     fieldFailure: DataModelValidationFailure,
     options: DataField.ValidateOptions<DataField.Any>,
   ): void;
-
-  override initialize(
-    value: PersistedType,
-    model: DataModel.Any,
-    options?: DataField.InitializeOptions,
-  ): InitializedType | (() => InitializedType | null);
 
   override _updateDiff(
     key: string,
@@ -2819,14 +2824,6 @@ declare class ArrayField<
     options?: Options,
   ): Return;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
-
-  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
-  migrateSource(sourceData: never, fieldData: never): void;
-
   protected override _castChangeDelta(delta: string, replacementData?: AnyObject): InitializedType;
 
   /** @remarks Returns `value` with `delta` `push`ed. `model` and `change` are unused in `ArrayField` */
@@ -2844,6 +2841,9 @@ declare class ArrayField<
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
   ): InitializedType;
+
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace ArrayField {
@@ -3035,22 +3035,22 @@ declare class SetField<
   PersistedElementType,
   PersistedType
 > {
-  protected override _validateRecursive(
-    value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
-  ): boolean | void;
-
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  override toObject(value: InitializedType): PersistedType;
+  protected override _validateRecursive(
+    value: InitializedType,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | void;
 
   protected override _toInput(
     config: SetField.ToInputConfig<ElementFieldType, InitializedType>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
+
+  override toObject(value: InitializedType): PersistedType;
 
   protected override _castChangeDelta(delta: string, replacementData?: AnyObject): InitializedType;
 
@@ -3433,6 +3433,18 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  /**
+   * Return the embedded document(s) as a Collection.
+   * @param parent - The parent document.
+   */
+  getCollection<P extends Document.Any>(parent: P): Collection<P>;
+
   protected override _cast(value: unknown): AssignmentType;
 
   /**
@@ -3471,12 +3483,6 @@ declare class EmbeddedCollectionField<
     fieldFailure: DataModelValidationFailure,
     options: DataField.ValidateOptions<DataField.Any>,
   ): void;
-
-  override initialize(
-    value: PersistedType,
-    model: DataModel.Any,
-    options?: DataField.InitializeOptions,
-  ): InitializedType | (() => InitializedType | null);
 
   override _updateDiff(
     key: string,
@@ -3531,12 +3537,6 @@ declare class EmbeddedCollectionField<
 
   /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
   migrateSource(sourceData: never, fieldData: never): void;
-
-  /**
-   * Return the embedded document(s) as a Collection.
-   * @param parent - The parent document.
-   */
-  getCollection<P extends Document.Any>(parent: P): Collection<P>;
 }
 
 declare namespace EmbeddedCollectionField {
