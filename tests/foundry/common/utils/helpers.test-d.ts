@@ -179,6 +179,7 @@ const hasSpecialKeys = {
   fizz: true,
 } as const;
 // @ts-expect-error Return type not written yet, currently just a passthrough
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(utils.applySpecialKeys(hasSpecialKeys)).toEqualTypeOf<{
   type: string;
   system: { baz: number };
