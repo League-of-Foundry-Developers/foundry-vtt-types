@@ -98,6 +98,8 @@ describe("Collection Tests", () => {
     ).toBeVoid();
 
     expectTypeOf(c.some((e) => !!e)).toBeBoolean();
+
+    expectTypeOf(c.every((e) => typeof e === "string")).toBeBoolean();
   });
 
   test("Transforms", () => {
