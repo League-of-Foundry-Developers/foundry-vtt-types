@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from "vitest";
+import type { AnyObject } from "fvtt-types/utils";
 
 import DataField = foundry.data.fields.DataField;
 import fields = foundry.data.fields;
@@ -297,6 +298,16 @@ stringField.apply("notAMethod", "foo");
 
 // The function form is unchanged.
 stringField.apply((value) => value, "foo");
+
+// `migrateSource` was removed from Foundry's field classes in v14 and can no longer be called on them.
+// @ts-expect-error - `migrateSource` was removed in v14 in favor of `_migrate`.
+new foundry.data.fields.SchemaField({}).migrateSource({}, {}); // eslint-disable-line @typescript-eslint/no-deprecated
+
+// A subclass-defined `migrateSource` still works (legacy support until v16), including on classes
+// that previously had their own implementation.
+declare class _MigrateSourceField extends foundry.data.fields.SchemaField<DataSchema> {
+  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+}
 
 type _NullOptions = DataField.Options<null>;
 type _UndefinedOptions = DataField.Options<undefined>;

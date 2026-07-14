@@ -1369,12 +1369,8 @@ declare class SchemaField<
     options?: Options,
   ): Return;
 
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): unknown;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 
   /** @remarks Returns `value` unchanged. `delta`, `model`, and `change` are unused in `SchemaField` */
   protected override _applyChangeAdd(
@@ -1858,7 +1854,11 @@ declare class NumberField<
    *
    * `options` is only passed to super, so effectively unused
    */
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   /** @remarks `options` is unused in `NumberField` */
   protected override _validateType(
@@ -1896,6 +1896,12 @@ declare class NumberField<
   protected override _toInput(
     config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
   ): HTMLElement | HTMLCollection;
+
+  /**
+   * @remarks If `delta` is a string, replaces data references and synchronously evaluates it as a
+   * {@linkcode foundry.dice.Roll} formula before forwarding to super
+   */
+  protected override _castChangeDelta(delta: string, replacementData?: AnyObject): InitializedType;
 
   /** @remarks Returns `value - delta`. `model` and `change` are unused in `NumberField` */
   protected override _applyChangeSubtract(
@@ -2114,9 +2120,13 @@ declare class StringField<
 
   protected static override get _defaults(): StringField.Options<unknown>;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
+  override clean(
+    value: AssignmentType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
-  override getInitialValue(data?: unknown): InitializedType;
+  override getInitialValue(source?: unknown): InitializedType;
 
   protected override _cast(value: unknown): AssignmentType;
 
@@ -2136,9 +2146,6 @@ declare class StringField<
    * @privateRemarks `#_validateType` throws if `value` is not `string` before forwarding here
    */
   protected _isValidChoice(value: string): boolean;
-
-  /** @deprecated Replaced with {@linkcode StringField._prepareChoiceConfig} in v13 (this warning will be removed in v14) */
-  protected static _getChoices(options: never): never;
 
   /**
    * Prepare form input configuration to accept a limited choice set of options.
@@ -2169,6 +2176,12 @@ declare class StringField<
   toInput(
     config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
   ): HTMLElement | HTMLCollection;
+
+  /**
+   * @remarks Calls super with `strict: false`, then throws if `strict` (default `true`) and any
+   * unreplaced data references remain in the resolved string
+   */
+  protected override _replaceDataRefs(raw: string, data: AnyObject, options?: DataField.ReplaceDataRefsOptions): string;
 
   /** @remarks Returns `value.replace(delta, "")`. `model` and `change` are unused in `StringField` */
   protected override _applyChangeSubtract(
@@ -2361,16 +2374,32 @@ declare class ObjectField<
   protected static override get _defaults(): DataField.Options<AnyMutableObject>;
 
   /** @remarks Returns `{}` if {@link DataField.getInitialValue | `super.getInitialValue`} returns `undefined` */
-  override getInitialValue(data?: unknown): InitializedType;
+  override getInitialValue(source?: unknown): InitializedType;
 
-  /** @remarks If `value` has a `#toObject` method, calls it and returns that */
+  /**
+   * @remarks If `value` has a `#toObject` or `#toJSON` method, calls it, then returns the result
+   * if it is a plain object, or `{}` otherwise
+   */
   protected override _cast(value: unknown): AssignmentType;
+
+  /** @remarks Reconstructs differential operator keys (e.g. `==`, `-=`) in the source object */
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
+
+  /** @remarks `options` is unused in `ObjectField` */
+  protected override _validateType(
+    value: InitializedType,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | DataModelValidationFailure | void;
 
   override _updateDiff(
     key: string,
@@ -2388,12 +2417,6 @@ declare class ObjectField<
   ): void;
 
   override toObject(value: InitializedType): PersistedType;
-
-  /** @remarks `options` is unused in `ObjectField` */
-  protected override _validateType(
-    value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
-  ): boolean | DataModelValidationFailure | void;
 
   /** @remarks Returns `value` unchanged. `delta`, `model`, and `change` are unused in `ObjectField` */
   protected override _applyChangeAdd(
@@ -2484,21 +2507,29 @@ declare class TypedObjectField<
 
   protected static override get _defaults(): DataField.Options<AnyObject>;
 
-  protected _cleanType(
-    value: InitializedType,
-    options?: DataField.CleanOptions,
-    _state?: DataField.UpdateState,
-  ): InitializedType;
-
-  protected _validateRecursive(value: InitializedType, options?: DataField.ValidateOptions<this>): boolean | void;
-
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
-
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
+
+  protected override _getField(
+    parts: string[],
+    options?: Pick<DataField.GetFieldOptions, "source">,
+  ): DataField.Any | undefined;
+
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
+
+  protected override _validateRecursive(
+    value: InitializedType,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | void;
+
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   override _updateDiff(
     key: string,
@@ -2523,17 +2554,8 @@ declare class TypedObjectField<
     options?: Options,
   ): Return;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
-
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace TypedObjectField {
@@ -2792,12 +2814,8 @@ declare class ArrayField<
     options?: Pick<DataField.GetFieldOptions, "source">,
   ): DataField.Any | undefined;
 
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 
   protected override _castChangeDelta(delta: string, replacementData?: AnyObject): InitializedType;
 
@@ -3236,26 +3254,13 @@ declare class EmbeddedDataField<
   const InitializedType = EmbeddedDataField.InitializedType<ModelType, Options>,
   const PersistedType extends AnyObject | null | undefined = EmbeddedDataField.PersistedType<ModelType, Options>,
 > extends DataModelSchemaField<ModelType, Options, AssignmentType, InitializedType, PersistedType> {
-  /**
-   * @param model   - The class of DataModel which should be embedded in this field
-   * @param options - Options which configure the behavior of the field
-   * @param context - Additional context which describes the field
-   */
-  constructor(model: ModelType, options?: Options, context?: DataField.ConstructionContext);
-
-  /**
-   * The embedded DataModel definition which is contained in this field.
-   */
-  model: ModelType;
-
-  /** @remarks If `value` has a `#toObject` method, calls it and returns that */
-  protected override _cast(value: unknown): AssignmentType;
-
   override initialize(
     value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
+
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void;
 
   override _updateDiff(
     key: string,
@@ -3264,14 +3269,11 @@ declare class EmbeddedDataField<
     state: DataField.UpdateState,
   ): void;
 
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @remarks Returns `value.toObject(false)`, or `value` unchanged if falsy */
+  override toObject(value: InitializedType): PersistedType;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace EmbeddedDataField {
@@ -3517,12 +3519,8 @@ declare class EmbeddedCollectionField<
     options?: Options,
   ): Return;
 
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 
   /**
    * Return the embedded document(s) as a Collection.
@@ -3701,7 +3699,7 @@ declare class EmbeddedCollectionDeltaField<
 > {
   static override get implementation(): typeof EmbeddedCollectionDelta;
 
-  /** @deprecated Removed and replaced with a {@linkcode _cleanElement} implementation in v13 (this warning will be removed in v14) */
+  /** @remarks If `value._tombstone`, cleans with the {@linkcode foundry.data.TombstoneData} schema instead of super */
   protected override _cleanElement(
     value: AnyObject,
     options?: DataField.CleanOptions,
@@ -4075,7 +4073,20 @@ declare class DocumentUUIDField<
   /** Does this field require (or prohibit) embedded documents? */
   embedded: boolean | undefined;
 
+  /** Does this field allow relative document UUIDs? */
+  relative: boolean;
+
   static get _defaults(): DocumentUUIDField.Options;
+
+  /**
+   * @remarks If the cleaned `value` starts with `"."` and this field is `relative`, builds a
+   * relative UUID against `_state.model`
+   */
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   /** @remarks `options` is unused in `DocumentUUIDField` */
   protected override _validateType(
@@ -4118,6 +4129,9 @@ declare namespace DocumentUUIDField {
 
     /** Does this field require (or prohibit) embedded documents? */
     embedded?: boolean | undefined;
+
+    /** Does this field allow relative document UUIDs? */
+    relative?: boolean | undefined;
   };
 
   type DefaultOptions = SimpleMerge<
@@ -4129,6 +4143,7 @@ declare namespace DocumentUUIDField {
       initial: null;
       type: undefined;
       embedded: undefined;
+      relative: false;
     }
   >;
 
@@ -4213,7 +4228,17 @@ declare class ForeignDocumentField<
 
   override toObject(value: InitializedType): PersistedType;
 
-  //TODO: _toInput
+  /**
+   * @remarks If no `config.options` are provided, builds them from the visible Documents in the
+   * world collection for {@linkcode ForeignDocumentField.model | this.model}, then returns a select input.
+   * Allows blank if this field is not `required` or is `nullable`.
+   */
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
+  ): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
+  ): HTMLElement | HTMLCollection;
 }
 
 declare namespace ForeignDocumentField {
@@ -4313,16 +4338,7 @@ declare class ColorField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  /**
-   * @deprecated Removed in v13, instead inheriting {@linkcode StringField.getInitialValue | StringField#getInitialValue}
-   * (this warning will be removed in v14)
-   */
-  getInitialValue(data: never): never;
-
   protected override _cast(value: unknown): AssignmentType;
-
-  /** @deprecated Removed in v13 (this warning will be removed in v14) */
-  protected override _cleanType(value: never, options: never): never;
 
   /** @remarks `options` is only passed to super, where it is unused in `StringField` */
   protected override _validateType(
@@ -4450,7 +4466,12 @@ declare class FilePathField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  // TODO: _toInput
+  /**
+   * @remarks If `config.type` is not provided, infers it from this field's
+   * {@linkcode FilePathField.categories | categories}, then returns a
+   * {@linkcode foundry.applications.elements.HTMLFilePickerElement | HTMLFilePickerElement}
+   */
+  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 }
 
 declare namespace FilePathField {
@@ -4543,13 +4564,6 @@ declare class AngleField<
   const InitializedType = AngleField.InitializedType<Options>,
   const PersistedType extends number | null | undefined = AngleField.InitializedType<Options>,
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
-  /**
-   * @param options - Options which configure the behavior of the field
-   * @param context - Additional context which describes the field
-   */
-  // options: not null (unchecked `in` operation in super), context: not null (destructured in super)
-  constructor(options?: Options, context?: DataField.ConstructionContext);
-
   /** @defaultValue `true` */
   override required: boolean;
 
@@ -4577,13 +4591,6 @@ declare class AngleField<
   protected static override get _defaults(): NumberField.Options;
 
   protected override _cast(value: unknown): AssignmentType;
-
-  /**
-   * @deprecated "The `AngleField#base` is deprecated in favor of {@link AngleField.normalize | `AngleField#normalize`}." (since v12, until v14)
-   */
-  get base(): number;
-
-  set base(value);
 
   #AngleField: true;
 }
@@ -4736,7 +4743,8 @@ declare class HueField<
 
   protected override _cast(value: unknown): AssignmentType;
 
-  // TODO: _toInput
+  /** @remarks Returns a {@linkcode foundry.applications.elements.HTMLHueSelectorSlider | HTMLHueSelectorSlider} */
+  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
 }
 
 declare namespace HueField {
@@ -4826,6 +4834,13 @@ declare class DocumentOwnershipField<
   override gmOnly: boolean;
 
   protected static override get _defaults(): DocumentOwnershipField.Options;
+
+  /** @remarks Unless `options.partial`, ensures the cleaned data has a `default` ownership level */
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   /** @remarks `options` is unused in `DocumentOwnershipField` */
   protected override _validateType(
@@ -4917,7 +4932,14 @@ declare class JSONField<
 
   protected static override get _defaults(): StringField.Options;
 
-  override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
+  override clean(
+    value: AssignmentType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
+
+  /** @remarks Returns `value` if it is already a valid JSON string, otherwise `JSON.stringify(value)` */
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is unused in `JSONField` */
   protected override _validateType(
@@ -5435,6 +5457,17 @@ declare class DocumentStatsField<
    */
   // TODO: add this shim to DocumentFlagsField.InitializedType?
   protected static _shimDocument(document: Document.Any): void;
+
+  /**
+   * @remarks If `options.deleteStats`, resets each of this field's
+   * {@linkcode DocumentStatsField.managedFields | managedFields} to its clean default. `_state` is
+   * unused in `DocumentStatsField`
+   */
+  protected _sanitizeType(
+    value: InitializedType,
+    options: DataField.SanitizationOptions,
+    _state: DataField.UpdateState,
+  ): InitializedType;
 }
 
 declare namespace DocumentStatsField {
@@ -5712,15 +5745,50 @@ declare class TypeDataField<
    */
   getModelForType(type: string): DataModel.AnyConstructor | null;
 
-  override getInitialValue(data?: unknown): InitializedType;
+  /**
+   * @remarks Returns `this` if `parts` is empty. Otherwise requires `options.type` to look up the
+   * sub-type model's schema, returning `undefined` if it is not provided or has no model
+   */
+  protected override _getField(parts: string[], options?: DataField.GetFieldOptions): DataField.Any | undefined;
+
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  /**
+   * @remarks If `value` is falsy, returns `this.getInitialValue({type: _state.documentType})`
+   *
+   * `_state` is required as it lacks any default handling and has its properties accessed
+   */
+  override clean(
+    value: AssignmentType,
+    options: DataField.CleanOptions,
+    _state: DataField.UpdateState,
+  ): InitializedType;
+
+  /**
+   * @remarks If a DataModel is configured for `_state.documentType`, runs `value` through its
+   * `migrateDataSafe`
+   *
+   * `_state` is required as it lacks any default handling and has its properties accessed
+   */
+  protected override _migrate(
+    value: InitializedType,
+    options: DataField.CleanOptions,
+    _state: DataField.UpdateState,
+  ): InitializedType;
+
+  override getInitialValue(source?: unknown): InitializedType;
 
   /**
    * @remarks Returns:
-   * - If a valid TypeDataModel, the `value` run through its `.cleanData` with `options.source: value`, else
-   * - If `options.partial`, simply `value`, else
-   * - A `mergeObject` of `this.getInitialValue(options.source)` and `value`
+   * - If a DataModel is configured for `_state.documentType`, the `value` run through its `.cleanData`, else
+   * - The `value` cleaned as an `ObjectField`, then, unless `options.partial`, a `mergeObject` of the
+   *   matching `template.json` pseudo-type (deprecated since v14 until v16) and `value`, if one exists
    *
-   * `options` is required as it lacks any default handling and has its properties accessed
+   * `options` and `_state` are required as they lack any default handling and have their properties accessed
    */
   protected override _cleanType(
     value: InitializedType,
@@ -5728,11 +5796,13 @@ declare class TypeDataField<
     _state: DataField.UpdateState,
   ): InitializedType;
 
-  override initialize(
-    value: PersistedType,
-    model: DataModel.Any,
-    options?: DataField.InitializeOptions,
-  ): InitializedType | (() => InitializedType | null);
+  /** @remarks If a DataModel is configured for `options.model?._source.type`, validates with its schema */
+  protected override _validateRecursive(
+    value: InitializedType,
+    options?: DataField.ValidateOptions<this>,
+  ): boolean | void;
+
+  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
   override _updateDiff(
     key: string,
@@ -5749,21 +5819,10 @@ declare class TypeDataField<
     options?: DataModel.UpdateOptions,
   ): void;
 
-  protected override _validateType(
-    value: InitializedType,
-    options?: DataField.ValidateOptions<this>,
-  ): boolean | DataModelValidationFailure | void;
-
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
-
   override toObject(value: InitializedType): PersistedType;
 
-  /**
-   * Migrate this field's candidate source data.
-   * @param sourceData - Candidate source data of the root model
-   * @param fieldData  - The value of this field within the source data
-   */
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 }
 
 declare namespace TypeDataField {
@@ -5914,6 +5973,12 @@ declare class TypedSchemaField<
   ): DataField.Any;
 
   /**
+   * @remarks If `value` has a `#toObject` method, calls it, then returns the result if it is a
+   * plain object, or `{}` otherwise
+   */
+  protected override _cast(value: unknown): AssignmentType;
+
+  /**
    * @remarks Returns `value` if `value?.type` doesn't map to a valid type, otherwise it runs `value`
    * through the matching type's `#clean`
    */
@@ -5922,11 +5987,6 @@ declare class TypedSchemaField<
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
   ): InitializedType;
-
-  /** @remarks If `value` has a `#toObject` method, calls it and returns that */
-  protected override _cast(value: unknown): AssignmentType;
-
-  protected override _validateSpecial(value: AssignmentType): boolean | void;
 
   /** @remarks Forwards to the SchemaField designated by `value.type`'s `#validate` */
   protected override _validateType(
@@ -5964,7 +6024,8 @@ declare class TypedSchemaField<
     options?: Options,
   ): Return;
 
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
+  /** @deprecated Removed in v14 in favor of {@linkcode DataField._migrate | DataField#_migrate} (this warning will be removed in v16) */
+  migrateSource(sourceData: never, fieldData: never): void;
 
   #TypedSchemaField: true;
 }
