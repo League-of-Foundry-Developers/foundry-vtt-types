@@ -189,7 +189,7 @@ declare abstract class DataField<
    */
   // TODO: Determine `value` based upon the field metadata in fields-v2 (while allowing subclasses to narrow allowed values)
   apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;
@@ -1364,7 +1364,7 @@ declare class SchemaField<
   override toObject(value: InitializedType): PersistedType;
 
   override apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;
@@ -2478,7 +2478,7 @@ declare class TypedObjectField<
   override toObject(value: InitializedType): PersistedType;
 
   override apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;
@@ -2742,7 +2742,7 @@ declare class ArrayField<
 
   // TODO: Limit to the keys of `this` that are actually callable.
   override apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;
@@ -3464,7 +3464,7 @@ declare class EmbeddedCollectionField<
   override toObject(value: InitializedType): PersistedType;
 
   override apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;
@@ -5911,7 +5911,7 @@ declare class TypedSchemaField<
 
   // TODO(LukeAbby): Type `TypedSchemaField#apply`.
   override apply<Options, Return>(
-    fn: string | ((this: DataField.Any, value: unknown, options: Options) => Return),
+    fn: keyof this | ((this: this, value: unknown, options: Options) => Return),
     value?: unknown,
     options?: Options,
   ): Return;

@@ -289,6 +289,15 @@ stringField.clean(null);
 
 stringField.initialize("", new Actor.implementation({ type: "base", name: "Test Actor" }));
 
+// `apply`'s string form accepts a key of the field to look up and call as a method.
+stringField.apply("clean", "foo");
+
+// @ts-expect-error - `"notAMethod"` is not a key of the field.
+stringField.apply("notAMethod", "foo");
+
+// The function form is unchanged.
+stringField.apply((value) => value, "foo");
+
 type _NullOptions = DataField.Options<null>;
 type _UndefinedOptions = DataField.Options<undefined>;
 
