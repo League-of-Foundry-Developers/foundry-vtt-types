@@ -10,10 +10,15 @@ import type {
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type { DataFieldOperator, ForcedDeletion, ForcedReplacement } from "#common/data/operators.d.mts";
+
 /**
  * Recurse through an object, applying all special DataFieldOperator values.
- * ForcedDeletion values (or deprecated "-=" keys) are removed from the object
- * ForcedReplacement values (or deprecated "==" keys) are updated in the object
+ *
+ * {@linkcode ForcedDeletion} values (or deprecated "-=" keys) are removed from the object
+ *
+ * {@linkcode ForcedReplacement} values (or deprecated "==" keys) are updated in the object
  */
 // TODO: bespoke return type accounting for deletion keys recursively
 export function applyDataOperators<T>(obj: T): T;
@@ -34,13 +39,33 @@ export function benchmark<F extends AnyFunction>(func: F, iterations: number, ..
 export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
 /**
- * Wrap a callback in a debounced timeout.
- * Delay execution of the callback function until the function has not been called for delay milliseconds
- * @param callback - A function to execute once the debounced threshold has been passed
- * @param delay    - An amount of time in milliseconds to delay
- * @returns A wrapped function which can be called to debounce execution
+ * Wrap a callback in a debounced timeout and expose a cancel method.
+ * Delay execution of the callback function until the function has not been called for delay milliseconds.
+ *
+ * @example
+ * Classic usage
+ * ```ts
+ * const updateSearch = debounce(query => this.#runSearch(query), 250);
+ * updateSearch("goblin");
+ * updateSearch("goblin king");
+ * ```
+ *
+ * @example
+ * Cancel a pending call
+ * ```ts
+ * const savePosition = debounce(() => this.#save(), 1500);
+ * savePosition();
+ *
+ * // Later, if you need to cancel a pending call before the debounced callback fires
+ * savePosition.cancel();
+ * ```
+ * @param callback -      A function to execute once the debounced threshold has been passed
+ * @param delay    -        An amount of time in milliseconds to delay
+ * @returns A wrapped function which can be called to debounce execution with a cancel method
  */
-export function debounce<T extends AnyFunction>(callback: T, delay: number): (...args: Parameters<T>) => void;
+export function debounce<T extends AnyFunction>(callback: T, delay: number): DebounceReturn<T>;
+
+export type DebounceReturn<T extends AnyFunction> = ((...args: Parameters<T>) => void) & { cancel: () => void };
 
 /**
  * Wrap a callback in a throttled timeout.
@@ -113,6 +138,7 @@ export interface DeepSealOptions extends InexactPartial<_DeepSealOptions> {}
  * @remarks
  * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, `Date`, or primitive
  */
+// TODO: bespoke return type to prune keys with undefined values
 export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
 
 /** @internal */
@@ -122,6 +148,12 @@ interface _DeepCloneOptions {
    * @defaultValue `false`
    */
   strict: boolean;
+
+  /**
+   * Delete object entries with undefined values
+   * @defaultValue `false`
+   */
+  prune: boolean;
 }
 
 export interface DeepCloneOptions extends InexactPartial<_DeepCloneOptions> {}
@@ -129,7 +161,7 @@ export interface DeepCloneOptions extends InexactPartial<_DeepCloneOptions> {}
 /**
  * Deeply difference an object against some other, returning the update keys and values.
  * @param original - An object comparing data against which to compare
- * @param other    - An object containing potentially different data
+ * @param other    - An object containing potentially different data. Supports values that are {@linkcode DataFieldOperator} instances.
  * @param options  - Additional options which configure the diff operation
  * @returns An object of the data in other which differs from that in original
  */
@@ -151,6 +183,13 @@ interface _DiffObjectOptions {
   deletionKeys: boolean;
 
   /**
+   * Create a bidirectional diff (or "patch" in Unix parlance), setting a forced-deletion
+   * value where an entry is defined in the original object but not the other.
+   * @defaultValue `false`
+   */
+  bidirectional: boolean;
+
+  /**
    * An internal depth tracker
    * @defaultValue `0`
    * @remarks Not intended to be passed externally. v13 converted the outer signature of `deepClone` to hide this param,
@@ -162,18 +201,20 @@ interface _DiffObjectOptions {
 export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
 
 /**
- * @deprecated since v14
- * @ignore
+ * Test if two values are equivalent.
+ *
+ * This helper supports equality testing for:
+ * 1. Primitive data types (number, string, boolean, undefined)
+ * 2. Simple objects (Object prototype, null)
+ * 3. Complex objects which expose an `equals` method (Array, Set, Color, etc...)
+ *
+ * This method compares object `b` with object `a`, so in cases where an equality testing method is used it is called
+ * as `a.equals(b)`.
+ *
+ * @param a - The first value
+ * @param b - The second value
  */
-// TODO: bespoke return type accounting for deletion keys recursively
-export function applySpecialKeys<T>(obj: T): T;
-
-/**
- * Test if two objects contain the same enumerable keys and values.
- * @param a - The first object.
- * @param b - The second object.
- */
-export function objectsEqual<B extends object>(a: object, b: B): a is B;
+export function equals(a: unknown, b: unknown): b is typeof a;
 
 /**
  * A cheap data duplication trick which is relatively robust.
@@ -193,18 +234,6 @@ export function duplicate<T>(original: T): Duplicated<T>;
  * @internal
  */
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
-
-/**
- * Is a string key of an object used for certain deletion or forced replacement operations.
- *
- * This function has become internal and undocumented. It can be deprecated and removed once support for
- * legacy deletion keys is fully removed.
- * @ignore
- * @internal
- */
-export function isDeletionKey(key: string): key is DeletionKey;
-
-export type DeletionKey = `-=${string}` | `==${string}`;
 
 /**
  * Test whether some class is a subclass of a parent.
@@ -240,9 +269,31 @@ export function encodeURL(path: string): string;
  *
  * @param obj - The object to expand
  * @returns An expanded object
- *
  */
 export function expandObject(obj: object): object;
+
+/**
+ * Expand dot-notation keys within a plain object, mutating it in place.
+ * Use a lazy allocation strategy that only copies keys when some expansion is required.
+ * Performs the dot-key check and expansion in a single forward pass.
+ * Keys without dots are passed through via direct assignment.
+ * Keys containing dots are expanded via setProperty.
+ * @param data    - The object to expand in place.
+ * @param options - Options for how expansion occurs.
+ * @returns Whether any expansion was performed at any level.
+ */
+export function expandObjectInPlace(data: object, options?: ExpandObjectInPlaceOptions): object;
+
+/** @internal */
+interface _ExpandObjectInPlaceOptions {
+  /**
+   * Whether to only expand top-level keys.
+   * @defaultValue `false`
+   */
+  shallow: boolean;
+}
+
+export interface ExpandObjectInPlaceOptions extends InexactPartial<_ExpandObjectInPlaceOptions> {}
 
 /**
  * Filter the contents of some source object using the structure of a template object.
@@ -267,9 +318,9 @@ export function filterObject(source: object, template: object, options?: FilterO
 interface _FilterObjectOptions {
   /**
    * Whether to keep deletion keys
-   * @defaultValue `false`
+   * @deprecated Foundry removed this option in v14. This warning will be removed in v15.
    */
-  deletionKeys: boolean;
+  deletionKeys: never;
 
   /**
    * Instead of keeping values from the source, instead draw values from the template
@@ -290,10 +341,10 @@ export function flattenObject(obj: object, _d?: number): object;
 
 /**
  * Obtain references to the parent classes of a certain class.
- * @param cls - An ES6 Class definition
- * @returns An array of parent Classes which the provided class extends
+ * @param cls - A class definition
+ * @returns An array of parent classes which the provided class extends
  */
-export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
+export function getParentClasses(cls: AnyConstructor): AnyConstructor[];
 
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
@@ -312,6 +363,19 @@ interface _GetRouteOptions {
 }
 
 export interface GetRouteOptions extends InexactPartial<_GetRouteOptions> {}
+
+/**
+ * Test whether the given element is an instance of a given `HTMLElement` class in a cross-window way.
+ * @param element    - The element to test.
+ * @param tagOrClass - The tag name or `HTMLElement` subclass to test.
+ * @privateRemarks The `AnyConstructor` seems like it *should* be `HTMLElement`, but that isn't how Foundry types it.
+ */
+export function isElementInstanceOf(element: HTMLElement, tagOrClass: string | AnyConstructor): boolean;
+
+/**
+ * Determine whether a value is a plain object; that is, one with a constructor of Object of null.
+ */
+export function isPlainObject(value: unknown): value is Record<PropertyKey, unknown>;
 
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
@@ -404,11 +468,23 @@ export type InvertObject<in out T extends InvertableObject> = {
 /**
  * Return whether a target version (v1) is more advanced than some other reference version (v0).
  * Supports either numeric or string version comparison with version parts separated by periods.
- * @param v1 - The target version
- * @param v0 - The reference version
+ * @param v1      - The target version
+ * @param v0      - The reference version
+ * @param options - Additional options which affect the comparison.
  * @returns Is v1 a more advanced version than v0?
  */
-export function isNewerVersion(v1: number | string, v0: number | string): boolean;
+export function isNewerVersion(v1: number | string, v0: number | string, options?: IsNewerVersionOptions): boolean;
+
+/** @internal */
+interface _IsNewerVersionOptions {
+  /**
+   * Compare only the major version numbers.
+   * @defaultValue `false`
+   */
+  majorOnly: boolean;
+}
+
+export interface IsNewerVersionOptions extends InexactPartial<_IsNewerVersionOptions> {}
 
 /**
  * Test whether a value is empty-like; either undefined or a content-less object.
@@ -418,6 +494,36 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
 export function isEmpty(
   value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
 ): boolean;
+
+/**
+ * Object entries generator.
+ */
+export function objectEntries(obj: object): Generator<[string, unknown], void, unknown>;
+
+/**
+ * Stream object entries.
+ */
+export function iterateEntries(obj: object): IteratorObject<[string, unknown], void, unknown>;
+
+/**
+ * Object keys generator.
+ */
+export function objectKeys(obj: object): Generator<string, void, unknown>;
+
+/**
+ * Stream object keys.
+ */
+export function iterateKeys(obj: object): IteratorObject<string, void, unknown>;
+
+/**
+ * Object values generator.
+ */
+export function objectValues(obj: object): Generator<unknown, void, unknown>;
+
+/**
+ * Stream object values.
+ */
+export function iterateValues(obj: object): IteratorObject<unknown, void, unknown>;
 
 /**
  * Update a source object by replacing its keys and values with those from a target object.
@@ -512,8 +618,8 @@ interface _MergeObjectOptions {
   /**
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
-   * @deprecated You have passed the performDeletions option to foundry.utils.mergeObject which is
-   * deprecated and renamed to applyOperators. (since v14, until v16)
+   * @deprecated "You have passed the `performDeletions` option to `foundry.utils.mergeObject` which is
+   * deprecated and renamed to applyOperators." (since v14, until v16)
    */
   performDeletions: boolean;
 
@@ -534,10 +640,10 @@ export interface MergeObjectOptions extends InexactPartial<_MergeObjectOptions> 
 export function parseS3URL(key: string): ParseS3URLReturn;
 
 export interface ParseS3URLReturn {
-  /** @remarks `null` only if the passed URL fails {@linkcode URL.parseSafe} */
+  /** @remarks `null` only if the passed URL fails {@linkcode URL.parse} */
   bucket: string | null;
 
-  /** @remarks `""` if the passed URL fails {@linkcode URL.parseSafe} */
+  /** @remarks `""` if the passed URL fails {@linkcode URL.parse} */
   keyPrefix: string;
 }
 
@@ -638,10 +744,26 @@ interface _ParseUUIDOptions {
   /**
    * A document to resolve relative UUIDs against.
    */
-  relative: Document.Any;
+  relative: Document.AnyStored;
 }
 
 export interface ParseUUIDOptions extends InexactPartial<_ParseUUIDOptions> {}
+
+/**
+ * Build the relative UUID of the target relative to the origin if possible.
+ * @param target - The target UUID or Document
+ * @param origin - The origin UUID or Document
+ * @returns The relative UUID of the target relative to the origin if possible, otherwise the absolute UUID of the target
+ */
+export function buildRelativeUuid(target: string | Document.AnyStored, origin: string | Document.AnyStored): string;
+
+/**
+ * Build a Universally Unique Identifier (uuid) from possibly limited data. An attempt will be made to resolve omitted
+ * components, but an identifier and at least one of documentName, parent, and pack are required.
+ * @param context - Data for building the uuid
+ * @returns A well-formed Document uuid unless one is unable to be created
+ */
+export function buildUuid(context: BuildUUIDContext): string | null;
 
 /**
  * Escape the given unescaped string.
@@ -668,13 +790,37 @@ export function escapeHTML(value: string): string;
  */
 export function unescapeHTML(value: string): string;
 
+/* -------------------------------------------- */
+/*  Deprecations and Compatibility              */
+/* -------------------------------------------- */
+
 /**
- * Build a Universally Unique Identifier (uuid) from possibly limited data. An attempt will be made to resolve omitted
- * components, but an identifier and at least one of documentName, parent, and pack are required.
- * @param context - Data for building the uuid
- * @returns A well-formed Document uuid unless one is unable to be created
+ * @deprecated "`foundry.utils.applySpecialKeys` has been deprecated and renamed to {@linkcode foundry.utils.applyDataOperators}"
+ * @ignore
  */
-export function buildUuid(context?: BuildUUIDContext): string | null;
+// TODO: bespoke return type accounting for deletion keys recursively
+export function applySpecialKeys<T>(obj: T): T;
+
+/**
+ * Is a string key of an object used for certain deletion or forced replacement operations.
+ *
+ * This function has become internal and undocumented. It can be deprecated and removed once support for
+ * legacy deletion keys is fully removed.
+ * @ignore
+ * @internal
+ */
+export function isDeletionKey(key: string): key is DeletionKey;
+
+export type DeletionKey = `-=${string}` | `==${string}`;
+
+/**
+ * Test if two objects contain the same enumerable keys and values.
+ * @param a - The first object.
+ * @param b - The second object.
+ * @deprecated "`foundry.utils.objectsEqual` has been deprecated and renamed to {@linkcode foundry.utils.equals},
+ * which handles equality testing for more than just objects." (since v14, until v16)
+ */
+export function objectsEqual<B extends object>(a: object, b: B): a is B;
 
 /** @internal */
 interface _BuildUUIDContext {
