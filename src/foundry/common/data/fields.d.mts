@@ -1056,8 +1056,16 @@ declare namespace DataField {
   /**
    * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
    * @see {@linkcode DataField.toInput | DataField#toInput}
+   *
+   * @privateRemarks Foundry types this callback as returning `HTMLElement|HTMLCollection`, but
+   * `HTMLElement[]` has been added to match {@linkcode DataField.toInput | DataField#toInput}'s
+   * documented return, which forwards this callback's result and whose consumers (e.g.
+   * {@linkcode foundry.applications.fields.createFormGroup | createFormGroup}) handle arrays
    */
-  type CustomFormInput = (field: DataField.Any, config: FormInputConfig) => HTMLElement | HTMLCollection;
+  type CustomFormInput = (
+    field: DataField.Any,
+    config: FormInputConfig,
+  ) => HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
@@ -1691,7 +1699,9 @@ declare class BooleanField<
     options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /** @remarks Returns `value || delta`. `model` and `change` are unused in `BooleanField` */
   protected override _applyChangeAdd(
@@ -1883,19 +1893,19 @@ declare class NumberField<
     config?:
       | NumberField.ToInputConfig<InitializedType, Options["choices"]>
       | NumberField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   toInput(
     config?: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   protected override _toInput(
     config:
       | NumberField.ToInputConfig<InitializedType, Options["choices"]>
       | NumberField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: NumberField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * @remarks If `delta` is a string, replaces data references and synchronously evaluates it as a
@@ -2155,10 +2165,10 @@ declare class StringField<
 
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
@@ -2172,10 +2182,10 @@ declare class StringField<
 
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   toInput(
     config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * @remarks Calls super with `strict: false`, then throws if `strict` (default `true`) and any
@@ -4097,10 +4107,10 @@ declare class DocumentUUIDField<
     config:
       | DocumentUUIDField.RootToInputConfig<InitializedType>
       | DocumentUUIDField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
@@ -4118,8 +4128,10 @@ declare class DocumentUUIDField<
     config?:
       | DocumentUUIDField.RootToInputConfig<InitializedType>
       | DocumentUUIDField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
-  toInput(config?: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(
+    config?: DocumentUUIDField.ToInputConfigWithChoices<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace DocumentUUIDField {
@@ -4235,10 +4247,10 @@ declare class ForeignDocumentField<
    */
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace ForeignDocumentField {
@@ -4346,7 +4358,9 @@ declare class ColorField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace ColorField {
@@ -4471,7 +4485,9 @@ declare class FilePathField<
    * {@linkcode FilePathField.categories | categories}, then returns a
    * {@linkcode foundry.applications.elements.HTMLFilePickerElement | HTMLFilePickerElement}
    */
-  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace FilePathField {
@@ -4744,7 +4760,9 @@ declare class HueField<
   protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks Returns a {@linkcode foundry.applications.elements.HTMLHueSelectorSlider | HTMLHueSelectorSlider} */
-  protected override _toInput(config: DataField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: DataField.ToInputConfig<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace HueField {
@@ -4967,18 +4985,18 @@ declare class JSONField<
 
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   toInput(
     config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // TODO: these now return and take CodeMirror related types
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace JSONField {
@@ -5139,18 +5157,18 @@ declare class HTMLField<
 
   toInput(
     config?: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   toInput(
     config?: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // TODO: handle config.elementType ??= "prose-mirror"
   protected override _toInput(
     config: DataField.ToInputConfig<InitializedType> | DataField.ToInputConfigWithOptions<InitializedType>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
     config: DataField.ToInputConfigWithChoices<InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLCollection;
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace HTMLField {
@@ -6143,7 +6161,7 @@ declare class _InternalJavaScriptField<
   override toFormGroup(groupConfig?: any, inputConfig?: any): HTMLDivElement;
 
   // TODO: This takes a CodeMirror-related config now
-  protected override _toInput(config: any): HTMLElement | HTMLCollection;
+  protected override _toInput(config: any): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 /**
@@ -6178,7 +6196,9 @@ declare class JavaScriptField<
     inputConfig?: JavaScriptField.ToInputConfig<InitializedType>,
   ): HTMLDivElement;
 
-  protected override _toInput(config: JavaScriptField.ToInputConfig<InitializedType>): HTMLElement | HTMLCollection;
+  protected override _toInput(
+    config: JavaScriptField.ToInputConfig<InitializedType>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace JavaScriptField {
