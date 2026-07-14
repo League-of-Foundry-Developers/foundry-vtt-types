@@ -54,7 +54,13 @@ class MySceneDocumentSubclass extends Scene {
       case "tokens":
         expectTypeOf(options.animate).toEqualTypeOf<boolean | undefined>();
         for (const d of changes) {
-          expectTypeOf(d.name).toEqualTypeOf<string | null | undefined>();
+          expectTypeOf(d.name).toEqualTypeOf<
+            | foundry.data.operators.ForcedDeletion
+            | foundry.data.operators.ForcedReplacement<string | null | undefined>
+            | string
+            | null
+            | undefined
+          >();
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection

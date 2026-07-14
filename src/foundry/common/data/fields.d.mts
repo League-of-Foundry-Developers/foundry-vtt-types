@@ -1443,12 +1443,14 @@ declare namespace SchemaField {
 
   /** @internal */
   type _AddUpdateKeys<T> = PrettifyType<
-    T & {
+    {
       [K in keyof T as K extends string ? (T[K] extends undefined ? `-=${K}` : never) : never]?: null;
     } & {
       // Note(LukeAbby): There's more work to be done here. For example `type` and `==system` must
       // go together. This will be added once a performant validator type is created.
       [K in keyof T as K extends string ? `==${K}` : never]?: T[K];
+    } & {
+      [K in keyof T]: T[K] | foundry.data.operators.ForcedDeletion | foundry.data.operators.ForcedReplacement<T[K]>;
     }
   >;
 
