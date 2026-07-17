@@ -2457,6 +2457,7 @@ declare global {
   export import diffObject = _utils.diffObject;
 
   /** @deprecated since v12 will be removed in v14 */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import objectsEqual = _utils.objectsEqual;
 
   /** @deprecated since v12 will be removed in v14 */

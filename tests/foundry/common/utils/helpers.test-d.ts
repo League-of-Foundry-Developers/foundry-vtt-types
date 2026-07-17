@@ -8,6 +8,10 @@ declare function functionWithoutParameters(): void;
 declare function functionWithParameters(a: number, b: string, c?: boolean): void;
 declare function functionWithReturnTypeOtherThanVoid(): number;
 
+// applyDataOperators
+
+// TODO: applyDataOperators tests once it is more than a passthrough
+
 // benchmark
 
 expectTypeOf(utils.benchmark(functionWithoutParameters, 42)).toEqualTypeOf<Promise<void>>();
@@ -30,10 +34,19 @@ expectTypeOf(utils.benchmark(functionWithReturnTypeOtherThanVoid, 42)).toEqualTy
 expectTypeOf(utils.threadLock(42)).toEqualTypeOf<Promise<void>>();
 
 // debounce
-expectTypeOf(utils.debounce(functionWithoutParameters, 500)).toEqualTypeOf<() => void>();
-expectTypeOf(utils.debounce(functionWithParameters, 500)).toEqualTypeOf<(a: number, b: string, c?: boolean) => void>();
+
+const debounceWithoutParameters = utils.debounce(functionWithoutParameters, 500);
+expectTypeOf(debounceWithoutParameters).toEqualTypeOf<(() => void) & { cancel: () => void }>();
+expectTypeOf(debounceWithoutParameters.cancel).toEqualTypeOf<() => void>();
+
+const debounceWithParameters = utils.debounce(functionWithParameters, 500);
+expectTypeOf(debounceWithParameters).toEqualTypeOf<
+  ((a: number, b: string, c?: boolean) => void) & { cancel: () => void }
+>();
+expectTypeOf(debounceWithParameters.cancel).toEqualTypeOf<() => void>();
 
 // throttle
+
 expectTypeOf(utils.throttle(functionWithoutParameters, 500)).toEqualTypeOf<() => void>();
 expectTypeOf(utils.throttle(functionWithParameters, 500)).toEqualTypeOf<(a: number, b: string, c?: boolean) => void>();
 expectTypeOf(utils.throttle(() => {}, 1)).toBeFunction();
@@ -139,6 +152,10 @@ expectTypeOf(utils.deepClone(str, { strict: false })).toEqualTypeOf<string>();
 expectTypeOf(utils.deepClone(str, { strict: true })).toEqualTypeOf<string>();
 expectTypeOf(utils.deepClone(str, { strict: undefined })).toEqualTypeOf<string>();
 
+expectTypeOf(utils.deepClone(str, { prune: false })).toEqualTypeOf<string>();
+expectTypeOf(utils.deepClone(str, { prune: true })).toEqualTypeOf<string>();
+expectTypeOf(utils.deepClone(str, { prune: undefined })).toEqualTypeOf<string>();
+
 // diffObject
 
 expectTypeOf(utils.diffObject({ a: 1 }, { a: 1 })).toEqualTypeOf<object>();
@@ -151,6 +168,7 @@ expectTypeOf(
     {
       deletionKeys: true,
       inner: true,
+      bidirectional: true,
       _d: 0, // should never really be passed
     },
   ),
@@ -162,33 +180,18 @@ expectTypeOf(
     {
       deletionKeys: undefined,
       inner: undefined,
+      bidirectional: undefined,
       _d: undefined,
     },
   ),
 ).toEqualTypeOf<object>();
 
-// applySpecialKeys
+// equals
 
-const hasSpecialKeys = {
-  foo: 7,
-  "-=foo": null,
-  type: "character",
-  "==type": "npc",
-  system: { bar: 21 },
-  "==system": { baz: 42 },
-  fizz: true,
-} as const;
-// @ts-expect-error Return type not written yet, currently just a passthrough
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(utils.applySpecialKeys(hasSpecialKeys)).toEqualTypeOf<{
-  type: string;
-  system: { baz: number };
-  fizz: boolean;
-}>();
-
-// objectsEqual
-
-expectTypeOf(utils.objectsEqual({ a: 1 }, { a: 1 })).toEqualTypeOf<boolean>();
+expectTypeOf(utils.equals("foo", "foo")).toBeBoolean();
+expectTypeOf(utils.equals("foo", "bar")).toBeBoolean();
+expectTypeOf(utils.equals(7, {})).toBeBoolean();
+expectTypeOf(utils.equals(foundry.documents.Actor, foundry.documents.Card)).toBeBoolean();
 
 // duplicate
 
@@ -337,11 +340,6 @@ expectTypeOf(utils.duplicate(complexObject)).toEqualTypeOf<
   >
 >();
 
-// isDeletionKey
-
-const deletionKey = "-=foo";
-expectTypeOf(utils.isDeletionKey(deletionKey)).toBeBoolean();
-
 // isSubclass
 
 declare class ClassWithNoConstructorParameters {}
@@ -369,11 +367,18 @@ expectTypeOf(utils.encodeURL("")).toEqualTypeOf<string>();
 
 expectTypeOf(utils.expandObject({})).toEqualTypeOf<object>();
 
+// expandObjectInPlace
+
+expectTypeOf(utils.expandObjectInPlace({})).toEqualTypeOf<object>();
+expectTypeOf(utils.expandObjectInPlace({}, {})).toEqualTypeOf<object>();
+expectTypeOf(utils.expandObjectInPlace({}, { shallow: true })).toEqualTypeOf<object>();
+expectTypeOf(utils.expandObjectInPlace({}, { shallow: undefined })).toEqualTypeOf<object>();
+
 // filterObject
 
 expectTypeOf(utils.filterObject({}, {})).toEqualTypeOf<object>();
 expectTypeOf(utils.filterObject({}, {}, {})).toEqualTypeOf<object>();
-expectTypeOf(utils.filterObject({}, {}, { deletionKeys: true, templateValues: true })).toEqualTypeOf<object>();
+expectTypeOf(utils.filterObject({}, {}, { templateValues: true })).toEqualTypeOf<object>();
 expectTypeOf(
   utils.filterObject({}, {}, { deletionKeys: undefined, templateValues: undefined }),
 ).toEqualTypeOf<object>();
@@ -393,6 +398,18 @@ expectTypeOf(utils.getRoute("", {})).toEqualTypeOf<string>();
 expectTypeOf(utils.getRoute("", { prefix: "foo/" })).toEqualTypeOf<string>();
 expectTypeOf(utils.getRoute("", { prefix: undefined })).toEqualTypeOf<string>();
 expectTypeOf(utils.getRoute("", { prefix: null })).toEqualTypeOf<string>();
+
+// isElementInstanceOf
+
+const div = new HTMLDivElement();
+
+expectTypeOf(utils.isElementInstanceOf(div, "div")).toBeBoolean();
+expectTypeOf(utils.isElementInstanceOf(div, HTMLElement)).toBeBoolean();
+
+// isPlainObject
+
+expectTypeOf(utils.isPlainObject({})).toBeBoolean();
+expectTypeOf(utils.isPlainObject(foundry.documents.Actor)).toBeBoolean();
 
 // getType
 
@@ -440,10 +457,45 @@ expectTypeOf(utils.invertObject({ a: 1, b: "foo" } as const)).toEqualTypeOf<{
 }>();
 
 // isNewerVersion
+
 expectTypeOf(utils.isNewerVersion(4, "2.3")).toEqualTypeOf<boolean>();
+expectTypeOf(utils.isNewerVersion(4, "2.3", {})).toEqualTypeOf<boolean>();
+expectTypeOf(utils.isNewerVersion(4, "2.3", { majorOnly: true })).toEqualTypeOf<boolean>();
+expectTypeOf(utils.isNewerVersion(4, "2.3", { majorOnly: undefined })).toEqualTypeOf<boolean>();
 
 // isEmpty
+
 expectTypeOf(utils.isEmpty(4)).toEqualTypeOf<boolean>();
+
+// objectEntries
+
+expectTypeOf(utils.objectEntries({})).toEqualTypeOf<Generator<[string, unknown], void, unknown>>();
+
+// iterateEntries
+
+for (const entry of utils.iterateEntries({ x: 7, y: 9 })) {
+  expectTypeOf(entry).toEqualTypeOf<[string, unknown]>;
+}
+
+// objectKeys
+
+expectTypeOf(utils.objectKeys({})).toEqualTypeOf<Generator<string, void, unknown>>();
+
+// iterateKeys
+
+for (const key of utils.iterateKeys({ x: 1, y: 2, 7: 8 })) {
+  expectTypeOf(key).toBeString();
+}
+
+// objectValues
+
+expectTypeOf(utils.objectValues({})).toEqualTypeOf<Generator<unknown, void, unknown>>();
+
+// iterateValues
+
+for (const value of utils.iterateValues({ foo: "bar", fizz: "buzz" })) {
+  expectTypeOf(value).toBeUnknown();
+}
 
 // mergeObject: assertType is used here because of https://github.com/SamVerschueren/tsd/issues/67
 
@@ -664,13 +716,33 @@ expectTypeOf(utils.formatFileSize(4, { base: 6 })).toEqualTypeOf<string>();
 
 // parseUuid
 
-declare const someActor: Actor.Implementation;
+declare const someActor: Actor.Stored;
 expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA")).toEqualTypeOf<utils.ResolvedUUID>();
 expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA", {})).toEqualTypeOf<utils.ResolvedUUID>();
 expectTypeOf(
   utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA", { relative: undefined }),
 ).toEqualTypeOf<utils.ResolvedUUID>();
 expectTypeOf(utils.parseUuid(".Item.IIIIISomeIDIIIII", { relative: someActor })).toEqualTypeOf<utils.ResolvedUUID>();
+
+// buildRelativeUUID
+
+declare const someItem: Item.Stored;
+expectTypeOf(utils.buildRelativeUuid(someItem, someActor)).toBeString();
+expectTypeOf(utils.buildRelativeUuid("Item.SomeID", someActor)).toBeString();
+expectTypeOf(utils.buildRelativeUuid("Item.PONMLKJIHGFEDCBA", "Actor.ABCDEFGHIJKLMNOP")).toBeString();
+expectTypeOf(utils.buildRelativeUuid(someItem, "Actor.ABCDEFGHIJKLMNOP")).toBeString();
+
+// buildUuid
+
+expectTypeOf(foundry.utils.buildUuid({ id: "foo" })).toEqualTypeOf<string | null>();
+expectTypeOf(foundry.utils.buildUuid({ id: "foo", documentName: "Item" })).toEqualTypeOf<string | null>();
+expectTypeOf(foundry.utils.buildUuid({ id: "foo", documentName: "Item", parent: null })).toEqualTypeOf<string | null>();
+expectTypeOf(foundry.utils.buildUuid({ id: "foo", documentName: "Item", parent: someActor })).toEqualTypeOf<
+  string | null
+>();
+expectTypeOf(foundry.utils.buildUuid({ id: "foo", documentName: "Item", pack: "world.a" })).toEqualTypeOf<
+  string | null
+>();
 
 // escapeHTML
 
@@ -681,3 +753,34 @@ expectTypeOf(utils.escapeHTML(`foo < some string > some 'other string' & some "t
 expectTypeOf(
   utils.unescapeHTML(`foo &lt; some string &gt; some &#x27;other string&#x27; &amp; some &quot;third string&quot;`),
 ).toBeString();
+
+// Deprecated:
+
+// applySpecialKeys
+
+const hasSpecialKeys = {
+  foo: 7,
+  "-=foo": null,
+  type: "character",
+  "==type": "npc",
+  system: { bar: 21 },
+  "==system": { baz: 42 },
+  fizz: true,
+} as const;
+// @ts-expect-error Return type not written yet, currently just a passthrough
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(utils.applySpecialKeys(hasSpecialKeys)).toEqualTypeOf<{
+  type: string;
+  system: { baz: number };
+  fizz: boolean;
+}>();
+
+// isDeletionKey - not formally @deprecated, but presumably will be removed in v16
+
+const deletionKey = "-=foo";
+expectTypeOf(utils.isDeletionKey(deletionKey)).toBeBoolean();
+
+// objectsEqual
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(utils.objectsEqual({ a: 1 }, { a: 1 })).toEqualTypeOf<boolean>();

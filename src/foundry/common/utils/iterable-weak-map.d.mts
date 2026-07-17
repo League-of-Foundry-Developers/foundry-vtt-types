@@ -10,7 +10,7 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   /**
    * @param entries - The initial entries.
    */
-  constructor(entries?: Iterable<[K, V]>);
+  constructor(entries?: Iterable<[K, V], undefined, unknown>);
 
   /**
    * Remove a key from the map.
@@ -41,22 +41,22 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
    * Enumerate the entries.
    * @returns
    */
-  [Symbol.iterator](): Generator<[K, V], void, undefined>;
+  [Symbol.iterator](): Generator<[K, V], void, unknown>;
 
   /**
    * Enumerate the entries.
    */
-  entries(): Generator<[K, V], void, undefined>;
+  entries(): Generator<[K, V], void, unknown>;
 
   /**
    * Enumerate the keys.
    */
-  keys(): Generator<K, void, undefined>;
+  keys(): Generator<K, void, unknown>;
 
   /**
    * Enumerate the values.
    */
-  values(): Generator<V, void, undefined>;
+  values(): Generator<V, void, unknown>;
 
   #IterableWeakMap: true;
 }
