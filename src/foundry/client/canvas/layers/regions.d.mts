@@ -42,9 +42,6 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   override get hookName(): "RegionLayer";
 
-  /** The RegionLegend application of this RegionLayer */
-  get legend(): foundry.applications.ui.RegionLegend;
-
   /**
    * @deprecated Removed in v13, the source of truth for this is now `ui.controls.controls.regions.tools.hole.active`.
    * This warning will be removed in v14.
