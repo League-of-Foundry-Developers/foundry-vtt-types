@@ -9,7 +9,7 @@ describe("CombatEncounters Tests", async () => {
   if (!combat) throw new Error("Failed to create test Combat.");
   docsToCleanUp.add(combat);
 
-  const combatImpl = new Combat.implementation();
+  const combatImpl = new Combat.implementation({ type: "base" });
   const combatSource = combat.toObject();
 
   const actor = await Actor.implementation.create({
@@ -100,6 +100,20 @@ describe("CombatEncounters Tests", async () => {
     expectTypeOf(encounters.getName("name", { strict: trueOrUndefined })).toEqualTypeOf<Combat.Stored | undefined>();
     expectTypeOf(encounters.getName("name", { strict: falseOrUndefined })).toEqualTypeOf<Combat.Stored | undefined>();
     expectTypeOf(encounters.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Combat.Stored | undefined>();
+  });
+
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await encounters.importDocument(combat, {});
+    if (!imported1) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Combat.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await encounters.importDocument(combatImpl, {});
+    if (!imported2) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Combat.Stored<"base">>();
   });
 
   test("Setting and Deleting", () => {
