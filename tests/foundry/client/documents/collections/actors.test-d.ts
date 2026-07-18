@@ -41,43 +41,6 @@ describe("Actors Tests", async () => {
     expectTypeOf(actors.tokens).toEqualTypeOf<Record<string, Actor.Stored>>();
   });
 
-  test("fromCompendium", () => {
-    const actorOrSource: Actor.Stored | Actor.Source = actorSource;
-
-    // no deletions with these options
-    expectTypeOf(
-      actors.fromCompendium(actorOrSource, {
-        clearFolder: false,
-        clearOwnership: false,
-        clearSort: false,
-        clearState: false,
-        keepId: true,
-      }),
-    ).toEqualTypeOf<Actor.Source>();
-
-    // more thorough options testing is in the `WorldCollection` tests
-
-    // default case - all deletions enabled except `folder`
-    expectTypeOf(actors.fromCompendium(actorOrSource)).toEqualTypeOf<
-      Omit<Actor.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(actors.fromCompendium(actorOrSource, {})).toEqualTypeOf<
-      Omit<Actor.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(
-      actors.fromCompendium(actorOrSource, {
-        clearFolder: undefined,
-        clearOwnership: undefined,
-        clearSort: undefined,
-        clearState: undefined,
-        keepId: undefined,
-      }),
-    ).toEqualTypeOf<Omit<Actor.Source, "_id" | "sort" | "ownership">>();
-
-    // @ts-expect-error `Actor.Stored`s aren't `Actor.Stored`s
-    actors.fromCompendium(item);
-  });
-
   test("Getting", () => {
     expectTypeOf(actors.get("ID")).toEqualTypeOf<Actor.Stored | undefined>();
     expectTypeOf(actors.get("ID", {})).toEqualTypeOf<Actor.Stored | undefined>();
