@@ -48,10 +48,8 @@ describe("Playlists Tests", async () => {
     expectTypeOf(playlists.playing).toEqualTypeOf<Playlist.Stored[]>();
     expectTypeOf(playlists.initialize()).toEqualTypeOf<Promise<void>>();
 
-    expectTypeOf(playlists._onChangeScene(scene, scene)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(null, scene)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(scene, null)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(null, null)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(playlists._onChangeScene(scene)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(playlists._onChangeScene(null)).toEqualTypeOf<Promise<void>>();
   });
 
   test("Getting", () => {

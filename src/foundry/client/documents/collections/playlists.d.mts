@@ -33,7 +33,9 @@ declare class Playlists extends WorldCollection<"Playlist"> {
    * @remarks Called by {@linkcode Scene._onCreate | Scene#_onCreate}, {@linkcode Scene._onUpdate | Scene#_onUpdate},
    * and {@linkcode Scene._onDelete | Scene#_onDelete}.
    */
-  _onChangeScene(scene: Scene.Stored | null, priorScene: Scene.Stored | null): Promise<void>;
+  _onChangeScene(scene: Scene.Stored | null): Promise<void>;
+
+  // `Playlist`s do not have type data, so this collection does not require an `importDocument` fake override
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -48,6 +50,8 @@ declare class Playlists extends WorldCollection<"Playlist"> {
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<Playlist.ImplementationClass>,
   ): void;
+
+  #Playlists: true;
 }
 
 declare namespace Playlists {
