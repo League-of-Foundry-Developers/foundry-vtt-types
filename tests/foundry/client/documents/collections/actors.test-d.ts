@@ -91,6 +91,20 @@ describe("Actors Tests", async () => {
     expectTypeOf(actors.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Actor.Stored | undefined>();
   });
 
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await actors.importDocument(actor, {});
+    if (!imported1) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Actor.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await actors.importDocument(actorImpl, {});
+    if (!imported2) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Actor.Stored<"base">>();
+  });
+
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     actors.set("ID", actorImpl);

@@ -31,10 +31,10 @@ declare class Actors extends WorldCollection<"Actor"> {
   static override get instance(): Actors.Implementation;
 
   // fake type override
-  override importDocument<SubType extends Actor.SubType>(
-    document: Actor.OfType<SubType>,
+  override importDocument<Doc extends Actor.Implementation>(
+    document: Doc,
     options: WorldCollection.ImportDocumentOptions<"Actor">,
-  ): Promise<Actor.Stored<SubType> | undefined>;
+  ): Actors.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -72,10 +72,11 @@ declare namespace Actors {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Actor"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Actor"> {}
 
-  interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {
-    /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-    clearPrototypeToken?: never;
-  }
+  interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {}
+
+  type ImportDocumentReturn<Doc extends Actor.Implementation> = Promise<
+    Actor.Stored<Actor.GetSubType<Doc>> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
