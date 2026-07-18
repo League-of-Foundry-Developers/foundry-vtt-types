@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
@@ -36,14 +36,21 @@ declare class Scenes extends WorldCollection<"Scene"> {
   get viewed(): Scene.Stored | undefined;
 
   /**
+   * Handle preloading the art assets for a Scene.
+   * @param sceneId - The Scene ID to begin loading.
+   * @param options - Additional options
+   */
+  preload(sceneId: string, options?: Scenes.PreloadOptions): Promise<Array<Sound | undefined>>;
+
+  /**
    * Handle pre-loading the art assets for a Scene
    *
    * @param sceneId - The Scene id to begin loading
    * @param push    - Trigger other connected clients to also pre-load Scene resources (default: `false`)
-   * @remarks Returns the `game.socket` instance if `push` is true, otherwise returns an array of awaited returns of
-   * {@linkcode foundry.audio.AudioHelper.preloadSound} and {@linkcode foundry.canvas.TextureLoader.loadSceneTextures}.
+   * @deprecated "You are passing the legacy `push` boolean to `Scenes#preload`. This is replaced by the `broadcast` option,
+   * for example `game.scenes.preload(sceneId, {broadcast: true})`." (since v14, until v16)
    */
-  preload<Push extends boolean | undefined = false>(sceneId: string, push?: Push): Promise<Scenes.PreloadReturn<Push>>;
+  preload(sceneId: string, push?: boolean): Promise<Array<Sound | undefined>>;
 
   static _activateSocketListeners(socket: io.Socket): void;
 
@@ -52,8 +59,7 @@ declare class Scenes extends WorldCollection<"Scene"> {
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Scene", Options>;
 
-  /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
-  protected static _pullToScene(sceneId: never): never;
+  // `Scene`s do not have type data, so this collection does not require an `importDocument` fake override
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -93,7 +99,19 @@ declare namespace Scenes {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Scene"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Scene"> {}
 
-  type PreloadReturn<Push extends boolean | undefined> = true extends Push ? io.Socket : Array<Sound | undefined>;
+  /** @internal */
+  interface _PreloadOptions {
+    /** The Level ID to begin loading. Defaults to the initial level. */
+    level: string;
+
+    /**
+     * Trigger other connected clients to also preload Scene/Level resources.
+     * @defaultValue `false`.
+     */
+    broadcast: boolean;
+  }
+
+  interface PreloadOptions extends InexactPartial<_PreloadOptions> {}
 
   /** @deprecated Replaced by {@linkcode Scenes.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
