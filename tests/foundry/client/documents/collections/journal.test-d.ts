@@ -46,6 +46,16 @@ describe("Journal Tests", async () => {
 
   test("Showing", () => {
     expectTypeOf(Journal.showDialog(je)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(Journal.showDialog(je, {})).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(Journal.showDialog(je, { parent: undefined, renderOptions: undefined })).toEqualTypeOf<
+      Promise<void>
+    >();
+    expectTypeOf(
+      Journal.showDialog(je, {
+        parent: new foundry.applications.sheets.journal.JournalEntrySheet({ document: je }),
+        renderOptions: { force: true },
+      }),
+    ).toEqualTypeOf<Promise<void>>();
 
     expectTypeOf(Journal.show(je)).toEqualTypeOf<Promise<JournalEntry.Stored>>();
     expectTypeOf(Journal.show(je, {})).toEqualTypeOf<Promise<JournalEntry.Stored>>();
