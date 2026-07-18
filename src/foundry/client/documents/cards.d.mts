@@ -121,6 +121,12 @@ declare namespace Cards {
   }> {}
 
   /**
+   * `OfType` currently doesn't work for inferring the SubType of a given document, so this utility type is provided.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-restricted-types
+  type GetSubType<Document extends Cards.Implementation> = Document extends Cards<infer SubType> ? SubType : never;
+
+  /**
    * `SystemOfType` returns the system property for a specific `Cards` subtype.
    */
   type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;

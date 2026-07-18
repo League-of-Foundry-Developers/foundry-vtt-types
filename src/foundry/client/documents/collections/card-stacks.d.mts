@@ -17,6 +17,12 @@ declare class CardStacks extends WorldCollection<"Cards"> {
   /** @privateRemarks Fake type override */
   static override get instance(): CardStacks.Implementation;
 
+  // fake type override
+  override importDocument<Doc extends Cards.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Cards">,
+  ): CardStacks.ImportDocumentReturn<Doc>;
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
@@ -52,6 +58,10 @@ declare namespace CardStacks {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Cards"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Cards"> {}
+
+  type ImportDocumentReturn<Doc extends Cards.Implementation> = Promise<
+    Cards.Stored<Cards.GetSubType<Doc>> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode CardStacks.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
