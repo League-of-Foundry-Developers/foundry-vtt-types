@@ -146,7 +146,7 @@ declare class DocumentSheetV2<
    */
   protected _toggleDisabled(disabled: boolean): void;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity } from "#utils";
+import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type AbstractSidebarTab from "../sidebar-tab.d.mts";
@@ -400,7 +400,7 @@ declare namespace ChatLog {
     match: RegExpMatchArray | RegExpMatchArray[] | string[],
     chatData: AnyObject,
     createOptions: AnyObject,
-  ) => Promise<false | void> | false | void;
+  ) => MaybePromise<false | void>;
 
   interface ChatCommandPattern {
     /** The regular expression pattern used to match this command. */

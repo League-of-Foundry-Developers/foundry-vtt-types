@@ -60,7 +60,7 @@ declare class JournalEntryPageProseMirrorSheet<
    */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _prepareContentContext(
     context: ApplicationV2.RenderContextOf<this>,

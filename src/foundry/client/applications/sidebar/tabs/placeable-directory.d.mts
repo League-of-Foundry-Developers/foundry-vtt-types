@@ -62,7 +62,7 @@ declare class PlaceableDirectory extends HandlebarsApplicationMixin(AbstractSide
    */
   get tab(): PlaceableTab.Any | undefined;
 
-  protected override _canRender(options: DeepPartial<PlaceableDirectory.RenderOptions>): boolean;
+  protected override _canRender(options: DeepPartial<PlaceableDirectory.RenderOptions>): false | void;
 
   /**
    * @remarks Foundry's JSDoc types `options` as an `ApplicationClosingOptions`, but at runtime this is also invoked

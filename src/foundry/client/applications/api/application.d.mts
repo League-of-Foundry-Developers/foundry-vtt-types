@@ -892,7 +892,7 @@ declare class ApplicationV2<
    * @returns Return false to prevent rendering
    * @throws An Error to display a warning message
    */
-  protected _canRender(options: DeepPartial<RenderOptions>): boolean | void;
+  protected _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   /**
    * Actions performed before a first render of the Application.

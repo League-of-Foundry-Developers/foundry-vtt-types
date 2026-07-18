@@ -44,7 +44,7 @@ expectTypeOf(cameraViews._onToggleVideo(clickEvent, target)).toEqualTypeOf<
 >();
 
 declare class _TestCameraViewsSubclass extends CameraViews {
-  protected override _canRender(options: DeepPartial<CameraViews.RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<CameraViews.RenderOptions>): false | void;
 
   protected override _configureRenderParts(
     options: HandlebarsApplicationMixin.RenderOptions,

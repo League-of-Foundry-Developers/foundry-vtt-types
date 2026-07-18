@@ -23,7 +23,7 @@ expectTypeOf(FormulaEditor.toFormula(state)).toBeString();
 declare class _TestFormulaEditorSubclass extends FormulaEditor {
   protected override _canAttach(): false;
   protected override _canDetach(): false;
-  protected override _canRender(options: DeepPartial<FormulaEditor.RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<FormulaEditor.RenderOptions>): false | void;
   protected override _onFirstRender(
     context: DeepPartial<FormulaEditor.RenderContext>,
     options: DeepPartial<FormulaEditor.RenderOptions>,

@@ -123,7 +123,7 @@ declare class CameraViews<
    */
   setUserIsSpeaking(userId: string, speaking: boolean): void;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _configureRenderParts(
     options: HandlebarsApplicationMixin.RenderOptions,

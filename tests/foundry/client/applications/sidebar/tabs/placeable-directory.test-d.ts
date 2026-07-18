@@ -23,7 +23,7 @@ expectTypeOf(PlaceableDirectory.TABS).toEqualTypeOf<Record<string, ApplicationV2
 expectTypeOf(PlaceableDirectory.tabName).toBeString();
 
 declare class _TestPlaceableDirectorySubclass extends PlaceableDirectory {
-  protected override _canRender(options: DeepPartial<PlaceableDirectory.RenderOptions>): boolean;
+  protected override _canRender(options: DeepPartial<PlaceableDirectory.RenderOptions>): false | void;
   protected override _onRender(
     context: DeepPartial<PlaceableDirectory.RenderContext>,
     options: DeepPartial<PlaceableDirectory.RenderOptions>,

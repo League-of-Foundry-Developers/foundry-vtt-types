@@ -70,7 +70,7 @@ declare class FormulaEditor<
 
   protected override _canDetach(): false;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

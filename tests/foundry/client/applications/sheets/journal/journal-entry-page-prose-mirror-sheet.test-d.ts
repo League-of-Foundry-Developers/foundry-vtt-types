@@ -18,7 +18,7 @@ declare class _TestJournalEntryPageProseMirrorSheetSubclass
 {
   protected override _canRender(
     options: DeepPartial<foundry.applications.sheets.journal.JournalEntryPageProseMirrorSheet.RenderOptions>,
-  ): boolean | void;
+  ): false | void;
   protected override _isEditorDirty(): boolean | undefined;
   _onAutosave(content: string): void;
   _onNewSteps(): void;
