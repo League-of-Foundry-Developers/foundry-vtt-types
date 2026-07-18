@@ -43,7 +43,7 @@ declare class CompendiumCollection<
   /** @param metadata - The compendium metadata, an object provided by {@linkcode Game.data | game.data} */
   constructor(metadata: CompendiumCollection.ConstructorMetadata<DocumentName>);
 
-  /** The compendium metadata which defines the compendium content and location */
+  /** The compendium metadata, which defines the compendium content and location */
   metadata: CompendiumCollection.Metadata<DocumentName>;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
@@ -216,18 +216,15 @@ declare class CompendiumCollection<
     options?: CompendiumCollection.TestUserPermissionOptions,
   ): boolean;
 
-  /**
-   * Import a Document into this Compendium Collection.
-   * @param document - The existing Document you wish to import
-   * @param options  - Additional options which modify how the data is imported.
-   * See {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} (default: `{}`)
-   * @returns The imported Document instance
-   * @remarks Takes either the primary document type of this compendium or a `Folder` of the appropriate type.
-   */
-  importDocument<Doc extends CompendiumCollection.DocOrFolder<DocumentName>>(
+  override importDocument<Doc extends CompendiumCollection.DocOrFolder<DocumentName>>(
     document: Doc,
-    options?: ClientDocument.ToCompendiumOptions,
+    options?: CompendiumCollection.ImportDocumentOptions<Doc["documentName"]>,
   ): Promise<CompendiumCollection.ImportDocumentReturn<Doc> | undefined>;
+
+  protected override _prepareImportDocument<
+    Doc extends CompendiumCollection.DocOrFolder<DocumentName>,
+    Options extends CompendiumCollection.ImportDocumentOptions<DocumentName>,
+  >(document: Doc, options?: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
 
   /**
    * Import a Folder into this Compendium Collection.
@@ -425,7 +422,8 @@ declare namespace CompendiumCollection {
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
-  type SettingField = fields.TypedObjectField<SettingFieldElement>;
+  // @ts-expect-error this will not error once fields v14 is in
+  type SettingField = fields.TypedObjectField<SettingFieldElement, { expandKeys: false }>;
 
   interface SettingData extends fields.TypedObjectField.InitializedType<
     SettingFieldElement,
@@ -504,6 +502,9 @@ declare namespace CompendiumCollection {
     _id: string;
     uuid: string;
   } & DeepPartial<Omit<Document.SourceForName<Type>, "_id" | "uuid">>;
+
+  type ImportDocumentOptions<Name extends Document.CompendiumType | "Folder"> =
+    DocumentCollection.ImportToCompendiumOptions<Name>;
 
   type ImportDocumentReturn<Doc extends DocOrFolder<CompendiumCollection.DocumentName>> =
     Doc extends Folder.Implementation

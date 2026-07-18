@@ -4,15 +4,13 @@ import type { Document } from "#common/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type { SearchFilter } from "#client/applications/ux/_module.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DatabaseBackend from "#common/abstract/backend.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
-import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
@@ -28,8 +26,9 @@ declare abstract class DocumentCollection<
 
   /**
    * The source data array from which the Documents in the WorldCollection are created
-   * @remarks Created via `Object.defineProperty` during construction with `{ writable: false }`,
+   * @remarks Defined in the class body but set via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
+   * @internal
    */
   readonly _source: Document.SourceForName<DocumentName>[];
 
@@ -110,8 +109,6 @@ declare abstract class DocumentCollection<
    * @param documentName - The document name
    * @param type         - A document subtype
    * @returns A record of searchable DataField definitions
-   *
-   * @remarks Currently functional but bugged on 13.351: {@link https://github.com/foundryvtt/foundryvtt/issues/13568}
    */
   // TODO: infer from schema all `StringField`s and subclasses that are `textSearch: true`
   static getSearchableFields<DocumentName extends Document.Type>(
@@ -132,6 +129,46 @@ declare abstract class DocumentCollection<
    * index entries in {@linkcode CompendiumCollection}. Fake type overrides are there and in {@linkcode WorldCollection}.
    */
   search(search: DocumentCollection.SearchOptions): object[];
+
+  /**
+   * Import a Document into this collection, persisting the result.
+   * If the document ID already exists in the collection, it should be replaced with an optional confirmation dialog.
+   * If the document ID is undefined or does not already exist, a new Document will be created in the collection.
+   * @param document - A source Document to be imported. The document will be safely copied.
+   * @param options  - Options which modify import behavior
+   * @returns The imported Document instance
+   * @privateRemarks The `document` param and the return have been widened to `Document.Any` to support
+   * {@link CompendiumCollection.importDocument | `CompendiumCollection`'s override}, which has conditional handling for `Folder`s.
+   * It is re-narrowed in {@link WorldCollection.importDocument | a fake type override} in `WorldCollection`.
+   */
+  importDocument(
+    document: Document.Any,
+    options:
+      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
+      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
+  ): Promise<Document.AnyStored | undefined>;
+
+  /**
+   * Translate a provided Document into data ready for import into this collection.
+   * @param document - A source Document to be imported. The document should be safely copied.
+   * @param options  - Options which modify import behavior
+   * @returns Data ready for import
+   * @throws An error if the import should be disallowed
+   * @privateRemarks The `document` parameter has been widened
+   *
+   *
+   * The implementation in `DocumentCollection` just directly calls {@linkcode Document.toObject | #toObject}.
+   * The return could be narrowed to `CreateData` or `Source` but neither {@linkcode ClientDocument.ToCompendiumReturnType} nor
+   * {@linkcode WorldCollection.FromCompendiumReturnType} directly extend either.
+   *
+   *
+   */
+  protected _prepareImportDocument(
+    document: Document.Any,
+    options:
+      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
+      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
+  ): object;
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.
@@ -167,7 +204,7 @@ declare abstract class DocumentCollection<
     user: User.Stored,
   ): void;
 
-  static #DocumentCollection: true;
+  #DocumentCollection: true;
 }
 
 declare namespace DocumentCollection {
@@ -202,7 +239,7 @@ declare namespace DocumentCollection {
      *
      * The parameter `id` is ignored, instead `document.id` is used as the key. This guarantees that all values are stored documents.
      */
-    set(id: string, document: Document.StoredForName<DocumentName>): void;
+    set(id: string, document: Document.StoredForName<DocumentName>): this;
 
     /**
      * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
@@ -292,6 +329,22 @@ declare namespace DocumentCollection {
     DocumentType,
     Options
   >;
+
+  /**
+   * {@linkcode DocumentCollection.importDocument | #importDocument} passes this to either/both
+   * {@linkcode DocumentCollection._prepareImportDocument | #_prepareImportDocument} (which, in some subclasses, forwards to
+   * {@linkcode ClientDocument.toCompendium | ClientDocument#toCompendium}) and {@linkcode Document.create}.
+   */
+  type ImportToCompendiumOptions<Name extends Document.Type> = ClientDocument.ToCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Name>;
+
+  /**
+   * {@linkcode DocumentCollection.importDocument | #importDocument} passes this to either/both
+   * {@linkcode DocumentCollection._prepareImportDocument | #_prepareImportDocument} (which, in some subclasses, forwards to
+   * {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}) and {@linkcode Document.create}.
+   */
+  type ImportFromCompendiumOptions<Name extends Document.Type> = WorldCollection.FromCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Name>;
 
   type Transformation<DocumentName extends Document.Type> =
     | Document.UpdateDataForName<DocumentName>

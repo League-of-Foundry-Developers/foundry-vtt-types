@@ -39,6 +39,12 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
 
   protected override _getVisibleTreeContents(): this["contents"];
 
+  // fake type override
+  override importDocument(
+    document: Document.ImplementationFor<DocumentName>,
+    options: ClientDocument.ToCompendiumOptions | WorldCollection.FromCompendiumOptions,
+  ): Promise<Document.StoredForName<DocumentName> | undefined>;
+
   /**
    * Import a Document from a Compendium collection, adding it to the current World.
    * @param pack       - The CompendiumCollection instance from which to import

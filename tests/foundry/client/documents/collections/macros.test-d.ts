@@ -102,8 +102,8 @@ describe("Macros Tests", async () => {
     macros.set("ID", macroImpl);
     // @ts-expect-error `Actor`s are not `Macro`s
     macros.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(macros.set("ID", macro)).toBeVoid();
+
+    expectTypeOf(macros.set("ID", macro)).toEqualTypeOf<typeof macros>();
 
     expectTypeOf(macros.delete("ID")).toBeBoolean();
   });
