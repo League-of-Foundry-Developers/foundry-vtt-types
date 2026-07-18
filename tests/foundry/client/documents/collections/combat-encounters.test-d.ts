@@ -105,13 +105,13 @@ describe("CombatEncounters Tests", async () => {
   test("importDocument fake override", async () => {
     // Passing a doc with no subtype data gets back a `Stored` without any either
     const imported1 = await encounters.importDocument(combat, {});
-    if (!imported1) throw new Error("Failed to create test Actor via `#importDocument`");
+    if (!imported1) throw new Error("Failed to create test `Combat` via `#importDocument`");
     docsToCleanUp.add(imported1);
     expectTypeOf(imported1).toEqualTypeOf<Combat.Stored>();
 
     // Passing a doc with subtype info preserves it
     const imported2 = await encounters.importDocument(combatImpl, {});
-    if (!imported2) throw new Error("Failed to create test Actor via `#importDocument`");
+    if (!imported2) throw new Error("Failed to create test `Combat` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Combat.Stored<"base">>();
   });
