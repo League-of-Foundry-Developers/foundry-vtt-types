@@ -15,6 +15,8 @@ describe("HTMLSecretBlockElement Tests", () => {
 
     expectTypeOf(el.secret).toEqualTypeOf<HTMLElement | null>();
     expectTypeOf(el.revealed).toBeBoolean();
+    expectTypeOf(el.revealable).toBeBoolean();
+    el.revealable = false;
 
     expectTypeOf(el.toggleRevealed('<section id="some-secret-section">SECRET</section>')).toBeString();
   });

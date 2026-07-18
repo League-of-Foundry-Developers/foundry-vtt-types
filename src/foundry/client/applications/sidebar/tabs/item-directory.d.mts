@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type DocumentDirectory from "../document-directory.d.mts";
+import type ContextMenu from "../../ux/context-menu.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -11,13 +12,27 @@ declare module "#configuration" {
 
 /**
  * The World Item directory listing.
- * @remarks TODO: Stub
  */
 declare class ItemDirectory<
   RenderContext extends ItemDirectory.RenderContext = ItemDirectory.RenderContext,
   Configuration extends ItemDirectory.Configuration = ItemDirectory.Configuration,
   RenderOptions extends ItemDirectory.RenderOptions = ItemDirectory.RenderOptions,
-> extends DocumentDirectory<Item.ImplementationClass, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentDirectory<Item.ImplementationClass, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Item"
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: DocumentDirectory.DefaultOptions;
+
+  /** @defaultValue `"items"` */
+  static override tabName: string;
+
+  protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
+}
 
 declare namespace ItemDirectory {
   interface Any extends AnyItemDirectory {}

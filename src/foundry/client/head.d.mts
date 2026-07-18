@@ -58,6 +58,13 @@ declare global {
   interface UI {
     /**
      * @remarks
+     * Initialized whenever a {@link foundry.applications.ux.Autocomplete | `Autocomplete`} menu is activated, deleted
+     * (well, `.dismiss()`ed) when it's closed again; the property itself is never unset.
+     */
+    autocomplete?: foundry.applications.ux.Autocomplete;
+
+    /**
+     * @remarks
      * Initialized whenever a {@link foundry.applications.ux.ContextMenu | `ContextMenu`} is opened, deleted when it's closed again.
      */
     context?: foundry.applications.ux.ContextMenu;

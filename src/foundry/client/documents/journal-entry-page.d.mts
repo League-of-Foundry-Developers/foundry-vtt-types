@@ -1117,7 +1117,7 @@ declare class JournalEntryPage<
    * @param html    - The HTML content to generate a ToC outline for.
    * @param options - Additional options to configure ToC generation.
    */
-  static buildTOC(html: HTMLElement[], options?: JournalEntryPage.BuildTOCOptions): JournalEntryPage.TOC;
+  static buildTOC(html: HTMLElement | HTMLElement[], options?: JournalEntryPage.BuildTOCOptions): JournalEntryPage.TOC;
 
   /**
    * Flatten the tree structure into a single object with each node's slug as the key.

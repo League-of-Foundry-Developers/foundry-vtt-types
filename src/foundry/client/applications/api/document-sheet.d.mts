@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
 
@@ -90,6 +90,12 @@ declare namespace DocumentSheetV2 {
     /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
     updateData: object;
   }
+
+  /** The result of submitting a document form. */
+  interface SubmitResult<ConcreteDocument extends Document.Any = Document.Any> {
+    created?: ConcreteDocument | undefined;
+    updated?: ConcreteDocument | undefined;
+  }
 }
 
 /**
@@ -140,7 +146,7 @@ declare class DocumentSheetV2<
    */
   protected _toggleDisabled(disabled: boolean): void;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,
@@ -151,7 +157,11 @@ declare class DocumentSheetV2<
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
-  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+  /**
+   * @privateRemarks Sync here, but kept as the base's `MaybePromise<void>` (not `void`) so async
+   * subclass overrides like {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} stay lint-clean.
+   */
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
 
   /**
    * Handle toggling the revealed state of a secret embedded in some content.
@@ -188,18 +198,21 @@ declare class DocumentSheetV2<
 
   /**
    * Submit a document update or creation request based on the processed form data.
-   * @param event    - The originating form submission event
-   * @param form     - The form element that was submitted
-   * @param formData - Processed and validated form data to be used for a document update
-   * @param options  - Additional options altering the request
+   * @param event      - The originating form submission event
+   * @param form       - The form element that was submitted
+   * @param submitData - Processed and validated form data to be used for a document update
+   * @param options    - Additional options altering the request
+   * @returns The result of the form submission that communicates whether a Document was created or updated.
+   * It is possible that neither creation nor update occurred.
+   * @throws An Error if Document creation or update was prohibited
    * @privateRemarks TODO: Improve options to capture the Create and/or Update options available to the Document
    */
   protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    formData: FormDataExtended,
+    submitData: object,
     options?: unknown,
-  ): Promise<void>;
+  ): Promise<DocumentSheetV2.SubmitResult<Document>>;
 
   /**
    * Provide a deprecation path for converted V1 document sheets.

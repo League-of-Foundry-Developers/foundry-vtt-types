@@ -33,6 +33,7 @@ declare class FolderConfig<
    * {
    *   classes: ["folder-config"],
    *   canCreate: true,
+   *   canImport: false,
    *   window: {
    *     contentClasses: ["standard-form"],
    *     icon: "fa-solid fa-folder"
@@ -73,9 +74,11 @@ declare class FolderConfig<
   protected override _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    formData: foundry.applications.ux.FormDataExtended,
+    submitData: object,
     options?: unknown,
-  ): Promise<void>;
+  ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult<Folder.Implementation>>;
+
+  protected override _onClose(options: DeepPartial<RenderOptions>): void;
 }
 
 declare namespace FolderConfig {
@@ -101,11 +104,10 @@ declare namespace FolderConfig {
   interface Configuration
     extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Folder.Implementation> {
     /**
-     * @deprecated This property should exist on this interface but due to a core bug
-     * ({@link https://github.com/foundryvtt/foundryvtt/issues/13545}), this is currently
-     * ignored in v13.
+     * @remarks Called with the updated Folder on successful submission, or with `null` on submission
+     * failure or close (see {@linkcode FolderConfig._processSubmitData | #_processSubmitData} and
+     * {@linkcode FolderConfig._onClose | #_onClose})
      */
-    // TODO: un-deprecate in v14, it has been fixed
     resolve: ResolveFunction;
   }
 

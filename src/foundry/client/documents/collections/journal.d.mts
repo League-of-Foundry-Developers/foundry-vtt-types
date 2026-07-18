@@ -1,9 +1,9 @@
-import type { InexactPartial, Identity } from "#utils";
+import type { DeepPartial, InexactPartial, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { DocumentSheetConfig, ImagePopout } from "#client/applications/apps/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
-import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 
 /**
  * The singleton collection of JournalEntry documents which exist within the active World.
@@ -20,9 +20,13 @@ declare class Journal extends WorldCollection<"JournalEntry"> {
 
   /**
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
-   * @param doc - The JournalEntry or JournalEntryPage to show.
+   * @param doc     - The JournalEntry or JournalEntryPage to show.
+   * @param options - (default: `{}`)
    */
-  static showDialog(doc: JournalEntry.Implementation | JournalEntryPage.Implementation): Promise<void>;
+  static showDialog(
+    doc: JournalEntry.Implementation | JournalEntryPage.Implementation,
+    options?: Journal.ShowDialogOptions,
+  ): Promise<void>;
 
   /**
    * Show the JournalEntry or JournalEntryPage to connected players.
@@ -113,6 +117,21 @@ declare namespace Journal {
   }
 
   interface ShowOptions extends InexactPartial<_ShowOptions> {}
+
+  interface _ShowDialogOptions {
+    /**
+     * A parent Application to register the dialog as a child of.
+     */
+    parent: ApplicationV2.Any;
+
+    /**
+     * Options to forward to the dialog render call.
+     * @defaultValue `{}`
+     */
+    renderOptions: DeepPartial<ApplicationV2.RenderOptions>;
+  }
+
+  interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
 
   /**
    * Options for {@linkcode Journal.showImage}.

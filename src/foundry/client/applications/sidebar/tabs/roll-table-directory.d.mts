@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type DocumentDirectory from "../document-directory.d.mts";
+import type ContextMenu from "../../ux/context-menu.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -11,13 +12,27 @@ declare module "#configuration" {
 
 /**
  * The World RollTable directory listing.
- * @remarks TODO: Stub
  */
 declare class RollTableDirectory<
   RenderContext extends RollTableDirectory.RenderContext = RollTableDirectory.RenderContext,
   Configuration extends RollTableDirectory.Configuration = RollTableDirectory.Configuration,
   RenderOptions extends RollTableDirectory.RenderOptions = RollTableDirectory.RenderOptions,
-> extends DocumentDirectory<RollTable.ImplementationClass, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentDirectory<RollTable.ImplementationClass, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "RollTable"
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: DocumentDirectory.DefaultOptions;
+
+  /** @defaultValue `"tables"` */
+  static override tabName: string;
+
+  protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
+}
 
 declare namespace RollTableDirectory {
   interface Any extends AnyRollTableDirectory {}

@@ -493,6 +493,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode MeasuredTemplateConfig} which is now namespaced under {@linkcode foundry.applications.sheets.MeasuredTemplateConfig}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import MeasuredTemplateConfig = foundry.applications.sheets.MeasuredTemplateConfig;
 
   /**

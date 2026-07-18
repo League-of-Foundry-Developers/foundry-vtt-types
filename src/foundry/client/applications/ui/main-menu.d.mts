@@ -31,7 +31,7 @@ declare class MainMenu<
    */
   get items(): Record<string, MainMenu.MainMenuItem>;
 
-  protected override _insertElement(element: HTMLElement): void;
+  protected override _insertElement(element: HTMLElement): Promise<void>;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

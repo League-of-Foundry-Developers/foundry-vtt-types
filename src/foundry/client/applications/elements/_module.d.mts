@@ -3,12 +3,15 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
 export { default as AbstractFormInputElement } from "./form-element.mjs";
+export { default as AdoptableHTMLElement } from "./adoptable-element.mjs";
 export { default as HTMLCodeMirrorElement } from "./codemirror/element.mjs";
 export { default as HTMLColorPickerElement } from "./color-picker.mjs";
 export { default as HTMLDocumentEmbedElement } from "./document-embed.mjs";
 export { default as HTMLDocumentTagsElement } from "./document-tags.mjs";
 export { default as HTMLEnrichedContentElement } from "./enriched-content.mjs";
 export { default as HTMLFilePickerElement } from "./file-picker.mjs";
+export { default as HTMLFormulaInputElement } from "./formula-input.mjs";
+export { HTMLGridOffset2DTagsElement, HTMLGridOffset3DTagsElement } from "./grid-offset-tags.mjs";
 export { default as HTMLHueSelectorSlider } from "./hue-slider.mjs";
 export { default as HTMLRangePickerElement } from "./range-picker.mjs";
 export { default as HTMLSecretBlockElement } from "./secret-block.mjs";

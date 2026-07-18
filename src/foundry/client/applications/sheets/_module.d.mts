@@ -3,6 +3,7 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
 export * as journal from "./journal/_module.mjs";
+export * as palette from "./palette/_module.mjs";
 export { default as ActiveEffectConfig } from "./active-effect-config.mjs";
 export { default as ActorSheetV2, default as ActorSheet } from "./actor-sheet.mjs";
 export { default as AdventureExporter } from "./adventure-exporter.mjs";
@@ -16,13 +17,16 @@ export { default as CombatantConfig } from "./combatant-config.mjs";
 export { default as DrawingConfig } from "./drawing-config.mjs";
 export { default as FolderConfig } from "./folder-config.mjs";
 export { default as ItemSheetV2, default as ItemSheet } from "./item-sheet.mjs";
+export { default as LevelConfig } from "./level-config.mjs";
 export { default as MacroConfig } from "./macro-config.mjs";
 export { default as NoteConfig } from "./note-config.mjs";
+export { default as PlaceableConfig } from "./placeable-config.mjs";
 export { default as PlaylistConfig } from "./playlist-config.mjs";
 export { default as PlaylistSoundConfig } from "./playlist-sound-config.mjs";
 export { default as RegionBehaviorConfig } from "./region-behavior-config.mjs";
 export { default as RegionConfig } from "./region-config.mjs";
 export { default as RollTableSheet } from "./roll-table-sheet.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as MeasuredTemplateConfig } from "./template-config.mjs";
 export { default as SceneConfig } from "./scene-config.mjs";
 export { default as TableResultConfig } from "./table-result-config.mjs";

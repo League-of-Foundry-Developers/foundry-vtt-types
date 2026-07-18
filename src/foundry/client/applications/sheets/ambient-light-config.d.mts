@@ -1,7 +1,7 @@
 import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
-import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type PlaceableConfig from "./placeable-config.d.mts";
 import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 declare module "#configuration" {
@@ -13,56 +13,70 @@ declare module "#configuration" {
 }
 
 /**
- * The AmbientLight configuration application.
+ * The Application responsible for configuring a single AmbientLight document within a parent Scene.
  */
 declare class AmbientLightConfig<
-  RenderContext extends object = AmbientLightConfig.RenderContext,
+  RenderContext extends AmbientLightConfig.RenderContext = AmbientLightConfig.RenderContext,
   Configuration extends AmbientLightConfig.Configuration = AmbientLightConfig.Configuration,
   RenderOptions extends AmbientLightConfig.RenderOptions = AmbientLightConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  AmbientLightDocument.Implementation,
-  RenderContext,
-  Configuration,
-  RenderOptions
-> {
-  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+> extends PlaceableConfig<AmbientLightDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["ambient-light-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: { width: 560 },
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     reset: this.#onReset
+   *   }
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions<AmbientLightDocument.Implementation>;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
-   * Maintain a copy of the original to show a real-time preview of changes.
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       { id: "basic", icon: "fa-solid fa-lightbulb" },
+   *       { id: "animation", icon: "fa-solid fa-play" },
+   *       { id: "advanced", icon: "fa-solid fa-gears" }
+   *     ],
+   *     initial: "basic",
+   *     labelPrefix: "AMBIENT_LIGHT.TABS"
+   *   }
+   * }
+   * ```
    */
-  preview: AmbientLightDocument.Implementation | undefined;
-
-  override tabGroups: {
-    sheet: string;
-  };
-
-  protected override _preRender(
-    context: DeepPartial<RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
-  protected override _onClose(options: DeepPartial<RenderOptions>): void;
-
-  protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
 
   override changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
-  override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  protected override _previewChanges(changes: foundry.documents.BaseAmbientLight.UpdateData): void;
 
   /**
-   * Preview changes to the AmbientLight document as if they were true document updates.
-   * @param change - A change to preview
+   * @deprecated "The AmbientLightConfig#preview has been deprecated in favor of
+   * {@linkcode AmbientLightConfig._preview | AmbientLightConfig#_preview}" (since v14, until v16)
    */
-  protected _previewChanges(change?: foundry.documents.BaseAmbientLight.UpdateData): void;
-
-  /**
-   * Restore the true data for the AmbientLight document when the form is submitted or closed.
-   */
-  protected _resetPreview(): void;
+  get preview(): AmbientLightDocument.Implementation | null;
 
   /**
    * @privateRemarks Prevents duck typing
@@ -74,40 +88,22 @@ declare namespace AmbientLightConfig {
   interface Any extends AnyAmbientLightConfig {}
   interface AnyConstructor extends Identity<typeof AnyAmbientLightConfig> {}
 
-  interface RenderContext
-    extends
-      HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<AmbientLightDocument.Implementation> {
-    document: AmbientLightDocument.Implementation;
+  interface RenderContext extends PlaceableConfig.RenderContext<AmbientLightDocument.Implementation> {
+    tabClasses: string;
     light: AmbientLightDocument.Implementation;
-    source: foundry.documents.BaseAmbientLight.Source;
-
-    /**
-     * @deprecated Foundry deleted this with no deprecation in v13.
-     */
-    fields: foundry.documents.BaseAmbientLight.Schema;
     colorationTechniques: typeof AdaptiveLightingShader.SHADER_TECHNIQUES;
-    gridUnits: string;
     isDarkness: boolean;
-    lightAnimations: unknown; // TODO: Update after CONFIG updated
-
-    /**
-     * @deprecated Foundry deleted this with no deprecation in v13.
-     */
-    tabs: Record<string, ApplicationV2.Tab>;
+    lightAnimations: typeof CONFIG.Canvas.darknessAnimations | typeof CONFIG.Canvas.lightAnimations;
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration
-    extends
-      HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> {}
+  interface Configuration extends PlaceableConfig.Configuration<AmbientLightDocument.Implementation> {}
 
-  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+  interface RenderOptions extends PlaceableConfig.RenderOptions {}
 }
 
 declare abstract class AnyAmbientLightConfig extends AmbientLightConfig<
-  object,
+  AmbientLightConfig.RenderContext,
   AmbientLightConfig.Configuration,
   AmbientLightConfig.RenderOptions
 > {

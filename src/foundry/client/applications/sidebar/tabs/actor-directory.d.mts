@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type DocumentDirectory from "../document-directory.d.mts";
+import type ContextMenu from "../../ux/context-menu.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -11,13 +12,35 @@ declare module "#configuration" {
 
 /**
  * The World Actor directory listing.
- * @remarks TODO: Stub
  */
 declare class ActorDirectory<
   RenderContext extends ActorDirectory.RenderContext = ActorDirectory.RenderContext,
   Configuration extends ActorDirectory.Configuration = ActorDirectory.Configuration,
   RenderOptions extends ActorDirectory.RenderOptions = ActorDirectory.RenderOptions,
-> extends DocumentDirectory<Actor.ImplementationClass, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentDirectory<Actor.ImplementationClass, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Actor"
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: DocumentDirectory.DefaultOptions;
+
+  /** @defaultValue `"actors"` */
+  static override tabName: string;
+
+  protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
+
+  protected override _canDragStart(selector: string): boolean;
+
+  /**
+   * @remarks Foundry's override returns `false` (rather than `undefined`) when the dragged entry
+   * is not visible to the current user; the return value is ignored by callers.
+   */
+  protected override _onDragStart(event: DragEvent): void;
+}
 
 declare namespace ActorDirectory {
   interface Any extends AnyActorDirectory {}

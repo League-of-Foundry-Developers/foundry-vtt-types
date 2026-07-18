@@ -165,7 +165,7 @@ declare namespace Level {
       label: "DOCUMENT.Level";
       labelPlural: "DOCUMENT.Levels";
       isEmbedded: true;
-      schemaVersion: "14.364";
+      schemaVersion: "14.365";
     }>
   > {}
 

@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type DocumentDirectory from "../document-directory.d.mts";
+import type ContextMenu from "../../ux/context-menu.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -11,13 +12,27 @@ declare module "#configuration" {
 
 /**
  * The World Cards directory listing.
- * @remarks TODO: Stub
  */
 declare class CardsDirectory<
   RenderContext extends CardsDirectory.RenderContext = CardsDirectory.RenderContext,
   Configuration extends CardsDirectory.Configuration = CardsDirectory.Configuration,
   RenderOptions extends CardsDirectory.RenderOptions = CardsDirectory.RenderOptions,
-> extends DocumentDirectory<Cards.ImplementationClass, RenderContext, Configuration, RenderOptions> {}
+> extends DocumentDirectory<Cards.ImplementationClass, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Cards"
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: DocumentDirectory.DefaultOptions;
+
+  /** @defaultValue `"cards"` */
+  static override tabName: string;
+
+  protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
+}
 
 declare namespace CardsDirectory {
   interface Any extends AnyCardsDirectory {}

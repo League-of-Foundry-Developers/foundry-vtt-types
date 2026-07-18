@@ -24,8 +24,10 @@ declare module "#configuration" {
   }
 }
 
+// `Node` (e.g. the `HTMLDivElement` used by `Configuration.content`) is excluded from recursion:
+// its circular DOM properties cause "Excessive stack depth comparing types" crashes.
 type DeepInexactPartial<T> = T extends object
-  ? T extends AnyArray | AnyFunction | AnyConstructor
+  ? T extends AnyArray | AnyFunction | AnyConstructor | Node
     ? T
     : {
         [K in keyof T]?: DeepInexactPartial<T[K]> | undefined;

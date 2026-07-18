@@ -89,21 +89,25 @@ expectTypeOf(applicationV2.position).toEqualTypeOf<foundry.applications.api.Appl
 expectTypeOf(applicationV2.rendered).toEqualTypeOf<boolean>();
 expectTypeOf(applicationV2.state).toEqualTypeOf<-3 | -2 | -1 | 0 | 1 | 2>();
 expectTypeOf(applicationV2.render()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
-expectTypeOf(applicationV2.close()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
+expectTypeOf(applicationV2.close()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2 | void>>();
+expectTypeOf(applicationV2.attachWindow()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
+expectTypeOf(applicationV2.detachWindow()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
+applicationV2.render({ window: { windowId: "detached-window", detached: true } });
 
 declare const position: foundry.applications.api.ApplicationV2.Position;
 expectTypeOf(
   applicationV2.setPosition(position),
 ).toEqualTypeOf<foundry.applications.api.ApplicationV2.Position | void>();
-expectTypeOf(applicationV2.toggleControls()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.minimize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.maximize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.bringToFront()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2.changeTab("", "")).toEqualTypeOf<void>();
+expectTypeOf(applicationV2["_refit"]()).toEqualTypeOf<void>();
+expectTypeOf(applicationV2["_refit"]({ width: "auto" })).toEqualTypeOf<void>();
 
 declare const formConfig: foundry.applications.api.ApplicationV2.FormConfiguration;
 declare const event: Event;
-expectTypeOf(applicationV2["_onChangeForm"](formConfig, event)).toEqualTypeOf<void>();
+expectTypeOf(applicationV2["_onChangeForm"](formConfig, event)).toEqualTypeOf<void | Promise<void>>();
 
 expectTypeOf(ApplicationV2.BASE_APPLICATION).toEqualTypeOf<typeof ApplicationV2>();
 expectTypeOf(ApplicationV2.RENDER_STATES).toEqualTypeOf<{

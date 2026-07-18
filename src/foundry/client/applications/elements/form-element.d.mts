@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type AdoptableHTMLElement from "./adoptable-element.d.mts";
 
 /** @privateRemarks `FormInputConfig` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -9,7 +10,7 @@ import type { FormInputConfig } from "../forms/fields.d.mts";
  * @remarks Fires input  - An "input" event when the value of the input changes
  * @remarks Fires change - A "change" event when the value of the element changes
  */
-declare abstract class AbstractFormInputElement<FormInputValueType> extends HTMLElement {
+declare abstract class AbstractFormInputElement<FormInputValueType> extends AdoptableHTMLElement {
   constructor();
 
   /**
@@ -129,7 +130,7 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends HTML
    * @privateRemarks Erroneously marked `@override` in Foundry JSDoc, description taken from
    * {@linkcode foundry.applications.elements.HTMLProseMirrorElement.disconnectedCallback | HTMLProseMirrorElement#disconnectedCallback}.
    */
-  disconnectedCallback(): void;
+  override disconnectedCallback(): void;
 
   /** @privateRemarks Erroneously marked `@override` in Foundry JSDoc */
   formDisabledCallback(disabled: boolean): void;

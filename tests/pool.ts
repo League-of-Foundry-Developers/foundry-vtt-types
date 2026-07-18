@@ -85,6 +85,9 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
   });
 
   const server = await createServer({
+    optimizeDeps: {
+      include: ["@vitest/runner", "vitest"],
+    },
     server: {
       port: await getPort(), // Random port for Hyrum's law (also to be less confusing if someone happens to running Vite).
       cors: {

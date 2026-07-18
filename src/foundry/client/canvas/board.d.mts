@@ -819,9 +819,11 @@ declare namespace Canvas {
   /** @internal */
   type _GetLayerByEmbeddedNameReturn<Layer> = InitializedOn<Layer, "ready", Layer | null>;
 
-  type GetCollectionLayerReturn<Name extends string> = Name extends PlaceableObject.AnyCanvasDocument["collectionName"]
-    ? CollectionNameToLayerMap[Name]
-    : undefined;
+  type GetCollectionLayerReturn<Name extends string> = string extends Name
+    ? PlaceablesLayer.Any | undefined
+    : Name extends PlaceableObject.AnyCanvasDocument["collectionName"]
+      ? CollectionNameToLayerMap[Name]
+      : undefined;
 
   interface ViewPosition {
     /**
