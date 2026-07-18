@@ -39,6 +39,12 @@ declare class ChatMessages extends WorldCollection<"ChatMessage"> {
    */
   flush(): Promise<ChatMessages.FlushDialogReturn>;
 
+  // fake type override
+  override importDocument<Doc extends ChatMessage.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"ChatMessage">,
+  ): ChatMessages.ImportDocumentReturn<Doc>;
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
@@ -76,6 +82,10 @@ declare namespace ChatMessages {
   interface Implementation extends Document.Internal.ConfiguredCollection<"ChatMessage"> {}
 
   type FlushDialogReturn = DialogV2.ConfirmReturn<{ yes: { callback: () => Promise<void> } }>;
+
+  type ImportDocumentReturn<Doc extends ChatMessage.Implementation> = Promise<
+    ChatMessage.Stored<ChatMessage.GetSubType<Doc>> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

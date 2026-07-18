@@ -115,6 +115,13 @@ declare namespace ChatMessage {
   }> {}
 
   /**
+   * `OfType` currently doesn't work for inferring the SubType of a given document, so this utility type is provided.
+   */
+  type GetSubType<Document extends ChatMessage.Implementation> =
+    // eslint-disable-next-line @typescript-eslint/no-restricted-types
+    Document extends ChatMessage<infer SubType> ? SubType : never;
+
+  /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
    */
   type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
