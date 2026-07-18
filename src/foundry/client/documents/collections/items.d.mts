@@ -18,6 +18,12 @@ declare class Items extends WorldCollection<"Item"> {
   /** @privateRemarks Fake type override */
   static override get instance(): Items.Implementation;
 
+  // fake type override
+  override importDocument<Doc extends Item.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Item">,
+  ): Items.ImportDocumentReturn<Doc>;
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
@@ -53,6 +59,8 @@ declare namespace Items {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Item"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Item"> {}
+
+  type ImportDocumentReturn<Doc extends Item.Implementation> = Promise<Item.Stored<Item.GetSubType<Doc>> | undefined>;
 
   /** @deprecated Replaced by {@linkcode Items.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
