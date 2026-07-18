@@ -125,12 +125,8 @@ describe("Macros Tests", async () => {
     // more thorough options testing is in the `WorldCollection` tests
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(macros.fromCompendium(macroOrSource)).toEqualTypeOf<
-      Omit<Macro.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(macros.fromCompendium(macroOrSource, {})).toEqualTypeOf<
-      Omit<Macro.Source, "_id" | "sort" | "ownership">
-    >();
+    expectTypeOf(macros.fromCompendium(macroOrSource)).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
+    expectTypeOf(macros.fromCompendium(macroOrSource, {})).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
     expectTypeOf(
       macros.fromCompendium(macroOrSource, {
         clearFolder: undefined,
@@ -139,7 +135,7 @@ describe("Macros Tests", async () => {
         clearState: undefined,
         keepId: undefined,
       }),
-    ).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort" | "ownership">>();
+    ).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
 
     // @ts-expect-error `Actor.Stored`s aren't `Macro.Stored`s
     macros.fromCompendium(actor);

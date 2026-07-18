@@ -30,14 +30,11 @@ declare class Actors extends WorldCollection<"Actor"> {
   /** @privateRemarks Fake type override */
   static override get instance(): Actors.Implementation;
 
-  /**
-   * @remarks This override doesn't change the type at all, just updates {@link ActiveEffect.origin | `ActiveEffect` origins} if
-   * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
-   */
-  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Actor.Implementation | Actor.Source,
-    options?: Options,
-  ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
+  // fake type override
+  override importDocument<SubType extends Actor.SubType>(
+    document: Actor.OfType<SubType>,
+    options: WorldCollection.ImportDocumentOptions<"Actor">,
+  ): Promise<Actor.Stored<SubType> | undefined>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(

@@ -137,10 +137,10 @@ describe("Scenes Tests", async () => {
 
     // default case - all deletions enabled except `folder`
     expectTypeOf(scenes.fromCompendium(sceneOrSource)).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(scenes.fromCompendium(sceneOrSource, {})).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(
       scenes.fromCompendium(sceneOrSource, {
@@ -150,7 +150,7 @@ describe("Scenes Tests", async () => {
         clearState: undefined,
         keepId: undefined,
       }),
-    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">>();
+    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">>();
 
     // @ts-expect-error `WallDocument.Stored`s aren't `Scene.Stored`s
     scenes.fromCompendium(wallDoc);
