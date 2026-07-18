@@ -35,6 +35,8 @@ declare class WorldSettings extends WorldCollection<"Setting"> {
    */
   getItem(key: string, user?: string | null): string | null;
 
+  // `Setting`s do not have type data, so this collection does not require an `importDocument` fake override
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
