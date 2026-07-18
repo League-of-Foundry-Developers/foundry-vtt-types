@@ -25,6 +25,8 @@ declare class RollTables extends WorldCollection<"RollTable"> {
    */
   static registerSettings(): void;
 
+  // `RollTable`s do not have type data, so this collection does not require an `importDocument` fake override
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
