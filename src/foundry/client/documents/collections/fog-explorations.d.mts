@@ -21,6 +21,8 @@ declare class FogExplorations extends WorldCollection<"FogExploration"> {
    */
   static _activateSocketListeners(socket: io.Socket): void;
 
+  // `FogExploration`s do not have type data, so this collection does not require an `importDocument` fake override
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
