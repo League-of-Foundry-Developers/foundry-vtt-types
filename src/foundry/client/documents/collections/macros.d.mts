@@ -20,11 +20,17 @@ declare class Macros extends WorldCollection<"Macro"> {
 
   override get directory(): typeof ui.macros;
 
-  /** @remarks `Macros` override doesn't change the signature, only sets `data.author` to `game.user.id` if `clearOwnership` is `true` */
+  // `Macros` override doesn't change the signature, only sets `data.author` to `game.user.id` if `clearOwnership` is `true`
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
     document: Macro.Implementation | Macro.Source,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Macro", Options>;
+
+  // fake type override (`Macro`s don't have real type data, but we kind of treat them like they do)
+  override importDocument<Doc extends Macro.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Macro">,
+  ): Macros.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -61,6 +67,10 @@ declare namespace Macros {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Macro"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Macro"> {}
+
+  type ImportDocumentReturn<Doc extends Macro.Implementation> = Promise<
+    Macro.Stored<Macro.GetSubType<Doc>> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode Macros.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
