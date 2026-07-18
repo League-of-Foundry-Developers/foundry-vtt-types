@@ -141,6 +141,20 @@ describe("Macros Tests", async () => {
     macros.fromCompendium(actor);
   });
 
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await macros.importDocument(macro, {});
+    if (!imported1) throw new Error("Failed to create test `Macro` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Macro.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await macros.importDocument(macroImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Macro` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Macro.Stored<"script">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });
