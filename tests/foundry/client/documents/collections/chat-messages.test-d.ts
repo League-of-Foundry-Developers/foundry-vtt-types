@@ -117,8 +117,8 @@ describe("ChatMessages Tests", async () => {
     messages.set("ID", messageImpl);
     // @ts-expect-error `Actor`s are not `ChatMessage`s
     messages.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(messages.set("ID", message)).toBeVoid();
+
+    expectTypeOf(messages.set("ID", message)).toEqualTypeOf<typeof messages>();
 
     expectTypeOf(messages.delete("ID")).toBeBoolean();
   });

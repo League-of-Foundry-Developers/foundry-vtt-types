@@ -109,8 +109,8 @@ describe("Folders Tests", async () => {
     folders.set("ID", folderImpl);
     // @ts-expect-error `Actor`s are not `Folder`s
     folders.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(folders.set("ID", folder)).toBeVoid();
+
+    expectTypeOf(folders.set("ID", folder)).toEqualTypeOf<typeof folders>();
 
     expectTypeOf(folders.delete("ID")).toBeBoolean();
   });

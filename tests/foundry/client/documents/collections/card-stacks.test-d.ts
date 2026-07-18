@@ -94,8 +94,8 @@ describe("CardStacks Tests", async () => {
     stacks.set("ID", cardsImpl);
     // @ts-expect-error `Actor`s are not `Cards`s
     stacks.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(stacks.set("ID", stack)).toBeVoid();
+
+    expectTypeOf(stacks.set("ID", stack)).toEqualTypeOf<typeof stacks>();
 
     expectTypeOf(stacks.delete("ID")).toBeBoolean();
   });

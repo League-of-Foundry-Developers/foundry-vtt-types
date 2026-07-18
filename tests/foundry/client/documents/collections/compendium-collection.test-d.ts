@@ -430,8 +430,7 @@ describe("CompendiumCollection Tests", async () => {
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     actorPack.set("ID", tempActor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(actorPack.set("ID", actor)).toBeVoid();
+    expectTypeOf(actorPack.set("ID", actor)).toEqualTypeOf<typeof actorPack>();
 
     expectTypeOf(actorPack.delete("ID")).toBeBoolean();
   });

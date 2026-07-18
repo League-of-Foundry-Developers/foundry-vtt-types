@@ -119,8 +119,8 @@ describe("Playlists Tests", async () => {
     playlists.set("ID", playlistImpl);
     // @ts-expect-error `Actor`s are not `Playlist`s
     playlists.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(playlists.set("ID", playlist)).toBeVoid();
+
+    expectTypeOf(playlists.set("ID", playlist)).toEqualTypeOf<typeof playlists>();
 
     expectTypeOf(playlists.delete("ID")).toBeBoolean();
   });

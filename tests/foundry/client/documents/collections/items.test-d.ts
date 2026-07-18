@@ -99,8 +99,8 @@ describe("Items Tests", async () => {
     items.set("ID", itemImpl);
     // @ts-expect-error `Actor`s are not `Item`s
     items.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(items.set("ID", item)).toBeVoid();
+
+    expectTypeOf(items.set("ID", item)).toEqualTypeOf<typeof items>();
 
     expectTypeOf(items.delete("ID")).toBeBoolean();
   });

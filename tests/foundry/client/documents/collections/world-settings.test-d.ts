@@ -104,8 +104,8 @@ describe("WorldSettings Tests", async () => {
     settings.set("ID", settingImpl);
     // @ts-expect-error `Actor`s are not `Setting`s
     settings.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(settings.set("ID", setting)).toBeVoid();
+
+    expectTypeOf(settings.set("ID", setting)).toEqualTypeOf<typeof settings>();
 
     expectTypeOf(settings.delete("ID")).toBeBoolean();
   });
