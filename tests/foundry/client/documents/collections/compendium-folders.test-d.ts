@@ -119,6 +119,15 @@ describe("CompendiumFolderCollection Tests", async () => {
     expectTypeOf(apf.delete("ID")).toBeBoolean();
   });
 
+  test("_prepareImportDocument", () => {
+    expectTypeOf(itemPack.folders["_prepareImportDocument"](folderImpl, {})).toEqualTypeOf<
+      ClientDocument.ToCompendiumReturnType<"Folder", undefined>
+    >();
+    expectTypeOf(
+      itemPack.folders["_prepareImportDocument"](folderImpl, { clearSort: false, noHook: true }),
+    ).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Folder", { clearSort: false; noHook: true }>>();
+  });
+
   test("updateAll", () => {
     expectTypeOf(apf.updateAll({ sorting: "m" })).toEqualTypeOf<Promise<Folder.Stored[]>>();
     expectTypeOf(apf.updateAll((folder) => ({ name: folder.name + " 2" }))).toEqualTypeOf<Promise<Folder.Stored[]>>();
