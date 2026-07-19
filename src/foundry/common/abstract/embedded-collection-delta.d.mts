@@ -96,9 +96,6 @@ declare class EmbeddedCollectionDelta<
 
   protected override _delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
 
-  /** @deprecated Removed without replacement in v13. This method will be removed in v14. */
-  protected override _createOrUpdate(...args: never): never;
-
   #EmbeddedCollectionDelta: true;
 }
 

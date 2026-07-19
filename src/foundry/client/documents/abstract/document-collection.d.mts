@@ -324,12 +324,6 @@ declare namespace DocumentCollection {
     Options
   >;
 
-  /** @deprecated Use {@linkcode DocumentCollection.GetReturn} instead. This type will be removed in v14. */
-  type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> = GetReturn<
-    DocumentType,
-    Options
-  >;
-
   /**
    * {@linkcode DocumentCollection.importDocument | #importDocument} passes this to either/both
    * {@linkcode DocumentCollection._prepareImportDocument | #_prepareImportDocument} (which, in some subclasses, forwards to

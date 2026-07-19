@@ -49,9 +49,6 @@ declare class CompendiumCollection<
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: Collection<CompendiumCollection.IndexEntry<DocumentName>>;
 
-  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  _flush: never;
-
   /**
    * The amount of time that Document instances within this CompendiumCollection are held in memory.
    * Accessing the contents of the Compendium pack extends the duration of this lifetime.
@@ -726,12 +723,6 @@ declare namespace CompendiumCollection {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }
   >;
-
-  /** @deprecated Use {@linkcode CompendiumCollection.StoredConfiguration} instead. This type will be removed in v14. */
-  type WorldCompendiumPackConfiguration = CompendiumCollection.StoredConfiguration;
-
-  /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. This type will be removed in v14. */
-  type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
 }
 
 export default CompendiumCollection;

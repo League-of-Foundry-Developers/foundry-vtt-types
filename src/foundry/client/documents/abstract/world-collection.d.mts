@@ -270,9 +270,7 @@ declare namespace WorldCollection {
     ? CompendiumCollection<DocumentName>
     : never;
 
-  /**
-   * @deprecated Use {@linkcode WorldCollection.ImportDocumentOptions} instead. This type will be removed in v15.
-   */
+  /** @deprecated Use {@linkcode WorldCollection.ImportDocumentOptions} instead. This type will be removed in v15. */
   type ImportFromCompendiumOptions<DocumentName extends Document.WorldType> = ImportDocumentOptions<DocumentName>;
 }
 
