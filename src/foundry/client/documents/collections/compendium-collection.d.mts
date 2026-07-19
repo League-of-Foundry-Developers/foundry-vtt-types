@@ -148,6 +148,23 @@ declare class CompendiumCollection<
    */
   get indexed(): boolean;
 
+  // just calls `this.#flush()` before forwarding to `super`
+  override get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
+    id: string,
+    options?: Options,
+  ): DocumentCollection.GetReturn<DocumentName, Options>;
+
+  /**
+   * @remarks In addition to `#flush`ing, this forwards to {@linkcode CompendiumFolderCollection.set | CompendiumFolderCollection#set} if
+   * passed a folder. In that case, in reality, this method will return that class, not the `CompendiumCollection` is belongs to. We are
+   * blatantly lying about this here, because accurately typing that requires ugly hacks. If this inconveniences you, please let us know
+   * on discord.
+   */
+  override set(id: string, document: Document.StoredForName<DocumentName> | Folder.Stored<DocumentName>): this;
+
+  // also deletes the index entry
+  override delete(id: string): boolean;
+
   /**
    * @remarks Since all documents will get flushed at the end of the cache timer anyway, this doesn't clear documents with currently
    * rendered sheets in their {@linkcode ClientDocumentMixin.AnyMixed.apps | #apps}
