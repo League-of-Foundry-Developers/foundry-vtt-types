@@ -91,10 +91,13 @@ describe("EmbeddedCollectionDelta Tests", async () => {
   // No type changes to `get` from `EmbeddedCollection`
 
   test("Setting", () => {
-    // void return because https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(itemCollOnDelta.set("ID", item)).toBeVoid();
-    expectTypeOf(itemCollOnDelta.set("ID", item, { modifySource: true, restoreDelta: true })).toBeVoid();
-    expectTypeOf(itemCollOnDelta.set("ID", item, { modifySource: undefined, restoreDelta: undefined })).toBeVoid();
+    expectTypeOf(itemCollOnDelta.set("ID", item)).toEqualTypeOf<typeof itemCollOnDelta>();
+    expectTypeOf(itemCollOnDelta.set("ID", item, { modifySource: true, restoreDelta: true })).toEqualTypeOf<
+      typeof itemCollOnDelta
+    >();
+    expectTypeOf(itemCollOnDelta.set("ID", item, { modifySource: undefined, restoreDelta: undefined })).toEqualTypeOf<
+      typeof itemCollOnDelta
+    >();
 
     expectTypeOf(itemCollOnDelta["_set"]("ID", item)).toBeVoid();
     expectTypeOf(itemCollOnDelta["_set"]("ID", item, { modifySource: true, restoreDelta: true })).toBeVoid();
@@ -102,10 +105,9 @@ describe("EmbeddedCollectionDelta Tests", async () => {
   });
 
   test("Deleting", () => {
-    // void return because https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(itemCollOnDelta.delete("ID")).toBeVoid();
-    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: true, restoreDelta: true })).toBeVoid();
-    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: undefined, restoreDelta: undefined })).toBeVoid();
+    expectTypeOf(itemCollOnDelta.delete("ID")).toBeBoolean();
+    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: true, restoreDelta: true })).toBeBoolean();
+    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: undefined, restoreDelta: undefined })).toBeBoolean();
 
     expectTypeOf(itemCollOnDelta["_delete"]("ID")).toBeVoid();
     expectTypeOf(itemCollOnDelta["_delete"]("ID", { modifySource: true, restoreDelta: true })).toBeVoid();

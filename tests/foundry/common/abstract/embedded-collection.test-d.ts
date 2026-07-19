@@ -124,10 +124,10 @@ describe("EmbeddedCollection Tests", async () => {
       }),
     ).toEqualTypeOf<Item.Implementation>();
 
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error())).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), {})).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: true })).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: undefined })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error())).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), {})).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), { strict: true })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), { strict: undefined })).toBeVoid();
   });
 
   test("Miscellaneous", () => {
@@ -146,8 +146,10 @@ describe("EmbeddedCollection Tests", async () => {
     expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Stored["_source"][]>();
 
     // Inherited from Collection:
-    // TODO: Waiting on a luke reduction
+    // TODO: Waiting on a luke reduction, or work on StoredSource types
     // expectTypeOf(ec.toJSON()).toEqualTypeOf<Item.Source[]>();
+
+    expectTypeOf(ec.manages("foo")).toBeBoolean();
   });
 
   test("Getting and Searching", () => {

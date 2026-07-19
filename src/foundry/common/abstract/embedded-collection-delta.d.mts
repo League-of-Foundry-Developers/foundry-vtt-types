@@ -28,11 +28,7 @@ declare class EmbeddedCollectionDelta<
    */
   get syntheticCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation>;
 
-  /**
-   * Determine whether a given ID is managed directly by this collection delta or inherited from the base collection.
-   * @param key - The Document ID.
-   */
-  manages(key: string): boolean;
+  override manages(id: string): boolean;
 
   /**
    * Determine whether a given ID exists as a tombstone Document in the collection delta.
@@ -156,14 +152,14 @@ declare namespace EmbeddedCollectionDelta {
      * @param value   - The embedded Document instance
      * @param options - Additional options to the set operation
      */
-    set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
+    set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): this;
 
     /**
      * Remove a document from the collection.
      * @param key     - The embedded Document ID.
      * @param options - Additional options to the delete operation.
      */
-    delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
+    delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): boolean;
   }
 }
 
