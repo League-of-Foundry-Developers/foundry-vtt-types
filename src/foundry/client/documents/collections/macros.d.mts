@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { GetKey, Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -68,9 +68,7 @@ declare namespace Macros {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Macro"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Macro"> {}
 
-  type ImportDocumentReturn<Doc extends Macro.Implementation> = Promise<
-    Macro.Stored<Macro.GetSubType<Doc>> | undefined
-  >;
+  type ImportDocumentReturn<Doc extends Macro.Implementation> = Promise<Macro.Stored<GetKey<Doc, "type">> | undefined>;
 
   /** @deprecated Replaced by {@linkcode Macros.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

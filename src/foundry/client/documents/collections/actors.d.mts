@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { GetKey, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
@@ -74,9 +74,7 @@ declare namespace Actors {
 
   interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {}
 
-  type ImportDocumentReturn<Doc extends Actor.Implementation> = Promise<
-    Actor.Stored<Actor.GetSubType<Doc>> | undefined
-  >;
+  type ImportDocumentReturn<Doc extends Actor.Implementation> = Promise<Actor.Stored<GetKey<Doc, "type">> | undefined>;
 
   /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

@@ -1,5 +1,5 @@
 import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";

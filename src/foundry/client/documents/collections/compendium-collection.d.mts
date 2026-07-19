@@ -10,7 +10,7 @@ import type {
   SimpleMerge,
 } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { Game } from "#client/_module.d.mts";
