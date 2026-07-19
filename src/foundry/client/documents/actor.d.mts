@@ -129,12 +129,6 @@ declare namespace Actor {
   }> {}
 
   /**
-   * `OfType` currently doesn't work for inferring the SubType of a given document, so this utility type is provided.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type GetSubType<Document extends Actor.Implementation> = Document extends Actor<infer SubType> ? SubType : never;
-
-  /**
    * `SystemOfType` returns the system property for a specific `Actor` subtype.
    */
   type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;

@@ -113,12 +113,6 @@ declare namespace Folder {
   }> {}
 
   /**
-   * `OfType` currently doesn't work for inferring the SubType of a given document, so this utility type is provided.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type GetSubType<Document extends Folder.Implementation> = Document extends Folder<infer SubType> ? SubType : never;
-
-  /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
