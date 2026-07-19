@@ -190,12 +190,6 @@ declare class EmbeddedCollection<
    */
   search(search: DocumentCollection.SearchOptions): ContainedDocument[];
 
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  update(...args: never): never;
-
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  protected _createOrUpdate(...args: never): never;
-
   #EmbeddedCollection: true;
 }
 
