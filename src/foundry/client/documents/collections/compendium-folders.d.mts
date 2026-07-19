@@ -19,6 +19,11 @@ declare class CompendiumFolderCollection<
   /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
+  protected override _prepareImportDocument<Options extends DocumentCollection.ImportToCompendiumOptions<"Folder">>(
+    document: Folder.OfType<DocumentName>,
+    options: Options,
+  ): ClientDocument.ToCompendiumReturnType<"Folder", Options>;
+
   override updateAll(
     transformation: DocumentCollection.Transformation<"Folder">,
     condition?: ((doc: Folder.Stored<DocumentName>) => boolean) | null,
