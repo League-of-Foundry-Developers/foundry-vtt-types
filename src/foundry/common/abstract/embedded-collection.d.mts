@@ -111,12 +111,12 @@ declare class EmbeddedCollection<
 
   /**
    * Log warnings or errors when a Document is found to be invalid.
-   * @param id      - The invalid Document's ID.
+   * @param data    - The invalid Document's data.
    * @param err     - The validation error
    * @param options - Options to configure invalid Document handling.
    */
   protected _handleInvalidDocument(
-    id: string,
+    data: object,
     err: Error,
     options?: EmbeddedCollection.HandleInvalidDocumentOptions,
   ): void;
@@ -148,6 +148,15 @@ declare class EmbeddedCollection<
     id: string,
     options?: Options,
   ): EmbeddedCollection.GetInvalidReturn<ContainedDocument, Options>;
+
+  /**
+   * Does this `SingletonEmbeddedCollection` actively manage the Document with a specific ID.
+   * @param id - The Document ID to check
+   * @returns Is the specified document managed by this collection?
+   * @remarks Yes, that's what foundry has for the JSDoc on this method, despite this class not being
+   * {@linkcode foundry.abstract.SingletonEmbeddedCollection}.
+   */
+  manages(id: string): boolean;
 
   /**
    * Convert the EmbeddedCollection to an array of simple objects.
