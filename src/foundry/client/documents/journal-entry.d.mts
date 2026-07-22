@@ -826,6 +826,7 @@ declare namespace JournalEntry {
     core?: {
       viewMode?: foundry.applications.sheets.journal.JournalEntrySheet.VIEW_MODES;
       searchMode?: CONST.DIRECTORY_SEARCH_MODES;
+      locked?: boolean;
     };
   }
 

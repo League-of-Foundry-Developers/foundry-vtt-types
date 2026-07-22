@@ -3,6 +3,7 @@ import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAdventure } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -913,6 +914,13 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param context - Construction context options
    */
   constructor(data: Adventure.CreateData, context?: Adventure.ConstructionContext);
+
+  /**
+   * Create a shallow Adventure document from a compendium index entry.
+   * @param id   - The adventure's document ID.
+   * @param pack - The compendium pack containing the adventure.
+   */
+  static fromIndex(id: string, pack: CompendiumCollection.Any): Adventure.Implementation;
 
   /**
    * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,

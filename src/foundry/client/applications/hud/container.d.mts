@@ -14,7 +14,6 @@ declare module "#configuration" {
 
 /**
  * The Heads-Up Display Container is a canvas-sized Application which renders HTML overtop of the game canvas.
- * @remarks TODO: Stub
  */
 declare class HeadsUpDisplayContainer<
   RenderContext extends HeadsUpDisplayContainer.RenderContext = HeadsUpDisplayContainer.RenderContext,
@@ -22,13 +21,58 @@ declare class HeadsUpDisplayContainer<
   RenderOptions extends HeadsUpDisplayContainer.RenderOptions = HeadsUpDisplayContainer.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   // Fake override.
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "hud",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   position: {
+   *     zIndex: 100
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: HeadsUpDisplayContainer.DefaultOptions;
 
+  /**
+   * Token HUD
+   * @remarks Instantiated from {@linkcode CONFIG.Token.hudClass}
+   */
   token: TokenHUD;
 
+  /**
+   * Tile HUD
+   * @remarks Instantiated from {@linkcode CONFIG.Tile.hudClass}
+   */
   tile: TileHUD;
 
+  /**
+   * Drawing HUD
+   * @remarks Instantiated from {@linkcode CONFIG.Drawing.hudClass}
+   */
   drawing: DrawingHUD;
+
+  /**
+   * Chat Bubbles
+   * @remarks Instantiated from {@linkcode CONFIG.Canvas.chatBubblesClass}
+   */
+  bubbles: foundry.canvas.animation.ChatBubbles;
+
+  protected override _renderHTML(context: RenderContext, options: DeepPartial<RenderOptions>): Promise<string>;
+
+  protected override _replaceHTML(result: string, content: HTMLElement, options: DeepPartial<RenderOptions>): void;
+
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * Align the position of the HUD layer to the current position of the canvas
+   */
+  align(): void;
 }
 
 declare namespace HeadsUpDisplayContainer {

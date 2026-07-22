@@ -1,7 +1,7 @@
 import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type * as documents from "./documents.d.mts";
-import type { DefaultSheetsConfig } from "#client/applications/settings/menus/_module.d.mts";
+import type { DefaultSheetsConfig, UIConfig } from "#client/applications/settings/menus/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Game = foundry.Game;
@@ -218,7 +218,7 @@ export interface DataConfig {}
 export interface GetDataConfig {}
 
 /**
- * Merge into this interface to configure known subtypes for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}:
+ * Merge into this interface to configure known subtypes for the 11 (as of 14.365) Documents with a {@linkcode foundry.data.TypeDataField}:
  * `ActiveEffect`, `Actor`, `Card`, `Cards`, `ChatMessage`, `Combat`, `Combatant`, `CombatantGroup`, `Item`, `JournalEntryPage`,
  * and `RegionBehavior`.
  *
@@ -327,6 +327,7 @@ export interface SettingConfig {
   "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
   "core.diceConfiguration": Record<string, string>;
   "core.disableResolutionScaling": boolean;
+  "core.fonts": Record<string, CONFIG.Font.FamilyDefinition>;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
   "core.globalAmbientVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
@@ -396,6 +397,7 @@ export interface SettingConfig {
 
   "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
   "core.tokenDragPreview": boolean;
+  "core.uiConfig": UIConfig.SettingField;
   "core.visionAnimation": boolean;
 }
 

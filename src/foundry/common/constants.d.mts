@@ -123,6 +123,28 @@ export const ACTIVE_EFFECT_CHANGE_TYPES: Readonly<{
 export type ACTIVE_EFFECT_CHANGE_TYPES = Brand<number, "constants.ACTIVE_EFFECT_CHANGE_TYPES">;
 
 /**
+ * Possible values for ActiveEffectData#showIcon: the default is CONDITIONAL, dependent on whether the ActiveEffect has
+ * a temporary duration.
+ */
+export declare const ACTIVE_EFFECT_SHOW_ICON: Readonly<{
+  /**
+   * The icon is never shown.
+   */
+  NEVER: 0 & ACTIVE_EFFECT_SHOW_ICON;
+
+  /**
+   * The icon is showed if the ActiveEffect has a temporary duration.
+   */
+  CONDITIONAL: 1 & ACTIVE_EFFECT_SHOW_ICON;
+
+  /**
+   * The icon is always shown.
+   */
+  ALWAYS: 2 & ACTIVE_EFFECT_SHOW_ICON;
+}>;
+export type ACTIVE_EFFECT_SHOW_ICON = Brand<number, "constants.ACTIVE_EFFECT_SHOW_ICON">;
+
+/**
  * Define the string name used for the base document type when specific sub-types are not defined by the system
  */
 export declare const BASE_DOCUMENT_TYPE: "base";

@@ -65,7 +65,7 @@ declare abstract class BaseLevel extends Document<"Level", BaseLevel.Schema, any
    *   label: "DOCUMENT.Level",
    *   labelPlural: "DOCUMENT.Levels",
    *   isEmbedded: true,
-   *   schemaVersion: "14.364"
+   *   schemaVersion: "14.365"
    * }
    * ```
    */

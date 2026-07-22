@@ -1,4 +1,5 @@
 import type ContextMenu from "#client/applications/ux/context-menu.mjs";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DeepPartial, Identity } from "../../../../../utils/index.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type AbstractSidebarTab from "../sidebar-tab.d.mts";
@@ -16,16 +17,56 @@ declare module "#configuration" {
 
 /**
  * An Application that manages switching between Combats and tracking the Combatants in those Combats.
- * @remarks TODO: Stub
  */
 declare class CombatTracker<
   RenderContext extends CombatTracker.RenderContext = CombatTracker.RenderContext,
   Configuration extends CombatTracker.Configuration = CombatTracker.Configuration,
   RenderOptions extends CombatTracker.RenderOptions = CombatTracker.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     title: "COMBAT.SidebarTitle"
+   *   },
+   *   actions: {
+   *     activateCombatant: CombatTracker.#onCombatantMouseDown,
+   *     cycleCombat: CombatTracker.#onCombatCycle,
+   *     createCombat: CombatTracker.#onCombatCreate,
+   *     editName: CombatTracker.#onEditName,
+   *     panToCombatant: CombatTracker.#onCombatantControl,
+   *     pingCombatant: CombatTracker.#onCombatantControl,
+   *     rollInitiative: CombatTracker.#onCombatantControl,
+   *     toggleDefeated: CombatTracker.#onCombatantControl,
+   *     toggleHidden: CombatTracker.#onCombatantControl,
+   *     trackerSettings: CombatTracker.#onConfigure
+   *   }
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: CombatTracker.DefaultOptions;
+
   static override tabName: "combat";
 
-  // leaving out DEFAULT_OPTIONS and PARTS
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/sidebar/tabs/combat/header.hbs"
+   *   },
+   *   tracker: {
+   *     template: "templates/sidebar/tabs/combat/tracker.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/sidebar/tabs/combat/footer.hbs"
+   *   }
+   * }
+   * ```
+   */
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * The list combats applicable to the active Scene.
@@ -39,13 +80,18 @@ declare class CombatTracker<
 
   set viewed(combat);
 
+  /**
+   * The Scene linked to the currently viewed Combat, if any
+   */
+  get scene(): Combat.Stored["scene"] | null;
+
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Format a tooltip for displaying overflowing effects
    * @param effects - The effect names and icons.
    */
-  protected _formatEffectsTooltip(effects: CombatTracker.EffectContext[]): void;
+  protected _formatEffectsTooltip(effects: CombatTracker.EffectContext[]): string;
 
   /**
    * Retrieve a source image for a combatant. If it is a video, use the first frame.
@@ -59,24 +105,33 @@ declare class CombatTracker<
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
   protected override _preparePartContext(
     partId: string,
     context: ApplicationV2.RenderContextOf<this>,
-    options: RenderOptions,
+    options: DeepPartial<RenderOptions>,
   ): Promise<ApplicationV2.RenderContextOf<this>>;
 
   /**
    * Prepare render context for the footer part.
+   * @param context - Shared context provided by _prepareContext
+   * @param options - Options which configure application rendering behavior
    */
-  protected _prepareCombatContext(context: RenderContext, options: RenderOptions): Promise<CombatTracker.CombatContext>;
+  protected _prepareCombatContext(
+    context: ApplicationV2.RenderContextOf<this>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
   /**
    * Prepare render context for the tracker part.
+   * @param context - Shared context provided by _prepareContext
+   * @param options - Options which configure application rendering behavior
    */
   protected _prepareTrackerContext(
-    context: RenderContext,
-    options: RenderOptions,
-  ): Promise<CombatTracker.TrackerContext | void>;
+    context: ApplicationV2.RenderContextOf<this>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
 
   /**
    * Prepare render context for a single entry in the combat tracker.
@@ -109,8 +164,12 @@ declare class CombatTracker<
    * Cycle to a different combat encounter in the tracker.
    * @param event  - The triggering event.
    * @param target - The action target element.
+   * @remarks `undefined` when `target.dataset.combatId` is not a known combat.
    */
-  protected _onCombatCycle(event: PointerEvent, target: ApplicationV2.ActionTarget): Promise<Combat.Stored>;
+  protected _onCombatCycle(
+    event: PointerEvent,
+    target: ApplicationV2.ActionTarget,
+  ): Promise<Combat.Implementation[]> | undefined;
 
   /**
    * Create a new combat.
@@ -149,37 +208,43 @@ declare class CombatTracker<
    * Handle panning to a combatant's token.
    * @param combatant - The combatant.
    */
-  protected _onPanToCombatant(combatant: Combatant.Stored): void;
+  protected _onPanToCombatant(combatant: Combatant.Stored): CanvasAnimation.AnimateReturn | void;
 
   /**
    * Handle pinging a combatant's token.
    * @param combatant - The combatant.
    */
-  protected _onPingCombatant(combatant: Combatant.Stored): void;
+  protected _onPingCombatant(combatant: Combatant.Stored): Promise<boolean> | void;
 
   /**
    * Handle rolling initiative for a single combatant.
    * @param combatant - The combatant.
    */
-  protected _onRollInitiative(combatant: Combatant.Stored): void;
+  protected _onRollInitiative(combatant: Combatant.Stored): Promise<Combat.Stored>;
 
   /**
    * Handle toggling the defeated status effect on a combatant token.
    * @param combatant - The combatant.
    */
-  protected _onToggleDefeatedStatus(combatant: Combatant.Stored): void;
+  protected _onToggleDefeatedStatus(combatant: Combatant.Stored): Promise<void>;
 
   /**
    * Toggle a combatant's hidden state in the tracker.
    * @param combatant - The combatant.
    */
-  protected _onToggleHidden(combatant: Combatant.Stored): void;
+  protected _onToggleHidden(combatant: Combatant.Stored): Promise<Combatant.Stored | undefined>;
+
+  /**
+   * The CombatTracker application is not a `<form>` element by default, but it does handle specific input events.
+   * @param event - The triggering change event.
+   */
+  protected _onChangeInput(event: Event): Promise<Combatant.Stored | undefined> | void;
 
   /**
    * Handle updating a combatant's initiative in-sheet.
    * @param event - The triggering change event.
    */
-  protected _onUpdateInitiative(event: Event): void;
+  protected _onUpdateInitiative(event: Event): Promise<Combatant.Stored | undefined> | void;
 
   /**
    * Highlight a hovered combatant in the tracker.
@@ -201,20 +266,42 @@ declare class CombatTracker<
   scrollToTurn(): void;
 
   /**
-   * @deprecated since v13, will be removed in v13
+   * @deprecated since v13, until v15
    * @remarks "CombatTracker#initialize is deprecated.
    * The currently viewed combat can be changed by assigning to ui.combat.viewed directly,
    * passed as an option to ui.combat.render, or by setting a Combat as active.
    */
   initialize(options: unknown): void;
+
+  #CombatTracker: true;
 }
 
 declare namespace CombatTracker {
   interface Any extends AnyCombatTracker {}
   interface AnyConstructor extends Identity<typeof AnyCombatTracker> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {}
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, AbstractSidebarTab.Configuration {}
+  /**
+   * @remarks The `combat`/`hasCombat`/`nextId`/`previousId`/`combats`/`control`/`css`/`currentIndex`/`displayCycle`/
+   * `initiativeIcon`/`linked` fields are added by {@linkcode CombatTracker._prepareCombatContext | #_prepareCombatContext}
+   * (only for the `header` and `footer` parts); the `turns`/`hasDecimals` fields are added by
+   * {@linkcode CombatTracker._prepareTrackerContext | #_prepareTrackerContext} (only for the `tracker` part, and only
+   * when there's a {@linkcode CombatTracker.viewed | viewed} Combat).
+   */
+  type RenderContext = HandlebarsApplicationMixin.RenderContext &
+    AbstractSidebarTab.RenderContext &
+    Partial<CombatContext> &
+    Partial<TrackerContext>;
+
+  interface Configuration<CombatTracker extends CombatTracker.Any = CombatTracker.Any>
+    extends HandlebarsApplicationMixin.Configuration, AbstractSidebarTab.Configuration<CombatTracker> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<CombatTracker extends CombatTracker.Any = CombatTracker.Any> = DeepPartial<
+    Configuration<CombatTracker>
+  > &
+    object;
+
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, AbstractSidebarTab.RenderOptions {}
 
   interface EffectContext {
@@ -225,24 +312,24 @@ declare namespace CombatTracker {
   interface CombatContext {
     combat: Combat.Stored | null;
     hasCombat: boolean;
+    nextId: string | undefined;
+    previousId: string | undefined;
     combats: CombatsRow[];
-    control: boolean;
+    control: boolean | undefined;
     css: string;
     currentIndex: number;
     displayCycle: boolean;
-    initiativeIcon: string;
-    link: boolean;
-    labels: CombatLabels;
+    initiativeIcon: CONFIG.Combat.InitiativeIcon;
+
+    /** @remarks Whether the viewed Combat is linked to a Scene; note that this is `true` when there is no viewed Combat */
+    linked: boolean;
   }
 
   interface CombatsRow {
     id: string;
+    name: string;
     label: number;
     active: boolean;
-  }
-
-  interface CombatLabels {
-    scope: string;
   }
 
   interface TrackerContext {
@@ -255,7 +342,13 @@ declare namespace CombatTracker {
     hidden: boolean;
     id: string;
     isDefeated: boolean;
-    initiative: number | null;
+
+    /**
+     * @remarks A plain number as returned by {@linkcode CombatTracker._prepareTurnContext | #_prepareTurnContext},
+     * but reformatted to a fixed-precision string by {@linkcode CombatTracker._prepareTrackerContext | #_prepareTrackerContext}
+     * before being passed to the `tracker` part's template
+     */
+    initiative: number | string | null;
     isOwner: boolean;
     name: string;
     resource: Combatant.Resource;

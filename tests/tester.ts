@@ -1,5 +1,4 @@
-import type { SerializedConfig, WorkerGlobalState } from "vitest";
-import { VitestTestRunner } from "vitest/runners";
+import { TestRunner as VitestTestRunner, type SerializedConfig, type WorkerGlobalState } from "vitest";
 import { collectTests, startTests } from "@vitest/runner";
 
 let runner: Runner | undefined;

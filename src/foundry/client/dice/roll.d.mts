@@ -38,6 +38,12 @@ declare class Roll<D extends AnyObject = EmptyObject> {
   constructor(formula: string, data?: D, options?: Roll.Options);
 
   /**
+   * Dice Configuration setting name.
+   * @defaultValue `"diceConfiguration"`
+   */
+  static readonly DICE_CONFIGURATION_SETTING: "diceConfiguration";
+
+  /**
    * The original provided data object which substitutes into attributes of the roll formula
    */
   data: D;

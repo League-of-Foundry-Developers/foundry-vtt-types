@@ -576,6 +576,11 @@ export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
  */
 export declare const cursors: CONFIG.Cursors;
 
+/**
+ * Configuration for the {@linkcode foundry.applications.apps.FormulaEditor} application.
+ */
+export declare const formulaEditor: CONFIG.FormulaEditor;
+
 declare global {
   namespace CONFIG {
     interface Debug {
@@ -728,7 +733,7 @@ declare global {
     }
 
     /**
-     * Common properties for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
+     * Common properties for the 11 (as of 14.365) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
      * `dataModels` and `typeIcons` fields, their `typeLabels` are defined in their `CONFIG` entry immediately,
      * rather than being added later.
      * @internal
@@ -907,6 +912,28 @@ declare global {
 
       /** @defaultValue `100` */
       batchSize: number;
+
+      /**
+       * Supported chat message visibility modes.
+       * @defaultValue
+       * ```js
+       * {
+       *   public: { label: "CHAT.MODES.public", icon: "fa-solid fa-globe" },
+       *   gm: { label: "CHAT.MODES.gm", icon: "fa-solid fa-user-secret" },
+       *   blind: { label: "CHAT.MODES.blind", icon: "fa-solid fa-eye-slash" },
+       *   self: { label: "CHAT.MODES.self", icon: "fa-solid fa-user" },
+       *   ic: { label: "CHAT.MODES.ic", icon: "fa-solid fa-hat-wizard" }
+       * }
+       * ```
+       */
+      modes: Record<string, ChatMessage.Mode>;
+    }
+
+    namespace ChatMessage {
+      interface Mode {
+        label: string;
+        icon: string;
+      }
     }
 
     interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {
@@ -1577,6 +1604,9 @@ declare global {
       /** @defaultValue {@linkcode foundry.applications.ui.Players} */
       players: typeof foundry.applications.ui.Players;
 
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.PlaceableDirectory} */
+      placeables: typeof foundry.applications.sidebar.tabs.PlaceableDirectory;
+
       /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory} */
       playlists: typeof foundry.applications.sidebar.tabs.PlaylistDirectory;
 
@@ -1594,6 +1624,12 @@ declare global {
     }
 
     interface UX {
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.Autocomplete}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.apps.FormulaEditor | FormulaEditor}, among other places.
+       */
+      Autocomplete: typeof foundry.applications.ux.Autocomplete;
+
       /**
        * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
        * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
@@ -1615,10 +1651,16 @@ declare global {
       DragDrop: typeof foundry.applications.ux.DragDrop;
 
       /**
-       * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
+       * @defaultValue {@linkcode foundry.applications.apps.FilePicker}
        * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
        */
       FilePicker: typeof foundry.applications.apps.FilePicker;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilterMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.tabs.PlaceableTab._attachFrameListeners | PlaceableTab#_attachFrameListeners}.
+       */
+      FilterMenu: typeof foundry.applications.ux.FilterMenu;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
@@ -1632,6 +1674,25 @@ declare global {
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initialize | Game#initialize}.
        */
       TooltipManager: typeof foundry.helpers.interaction.TooltipManager;
+    }
+
+    interface FormulaEditor {
+      /**
+       * A registry of named formula editing contexts, keyed by the context identifier passed as
+       * {@linkcode foundry.applications.apps.FormulaEditor.Configuration.context | FormulaEditor.Configuration#context}.
+       * @defaultValue `{}`
+       */
+      contexts: Record<string, FormulaEditor.Context>;
+    }
+
+    namespace FormulaEditor {
+      interface Context {
+        /**
+         * A map of data paths to human-readable labels.
+         * @remarks e.g. `{"system.abilities.str.mod": "strength modifier"}`
+         */
+        labels?: Record<string, string> | undefined;
+      }
     }
 
     interface Queries {
@@ -3783,9 +3844,31 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {}
+    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.AmbientLightTab,
+       *   order: 500
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.AmbientLightTab; order: number };
+    }
 
-    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {}
+    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.AmbientSoundTab,
+       *   order: 600
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.AmbientSoundTab; order: number };
+    }
 
     interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
 
@@ -3797,6 +3880,17 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
+
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.DrawingTab,
+       *   order: 300
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.DrawingTab; order: number };
     }
 
     interface MeasuredTemplate
@@ -3820,9 +3914,31 @@ declare global {
       }
     }
 
-    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
+    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.NoteTab,
+       *   order: 800
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.NoteTab; order: number };
+    }
 
-    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {}
+    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.RegionTab,
+       *   order: 700
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.RegionTab; order: number };
+    }
 
     interface RegionBehavior extends _Document<"RegionBehavior">, _HasTypes<"RegionBehavior"> {
       /**
@@ -3850,6 +3966,17 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.TileHUD;
+
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.TileTab,
+       *   order: 200
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.TileTab; order: number };
     }
 
     interface Level extends _Document<"Level">, _HasNoTypes<"Level"> {}
@@ -3873,6 +4000,17 @@ declare global {
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.placeables.Token._initializeRuler | Token#_initializeRuler}.
        */
       rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
+
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.TokenTab,
+       *   order: 100
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.TokenTab; order: number };
 
       movement: Token.Movement;
 
@@ -3901,6 +4039,17 @@ declare global {
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
+
+      /**
+       * @defaultValue
+       * ```js
+       * {
+       *   applicationClass: foundry.applications.sidebar.tabs.WallTab,
+       *   order: 400
+       * }
+       * ```
+       */
+      sidebar: { applicationClass: typeof foundry.applications.sidebar.tabs.WallTab; order: number };
     }
 
     namespace Wall {

@@ -1,6 +1,6 @@
 import type BasePlaceableHUD from "./placeable-hud.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
@@ -14,7 +14,6 @@ declare module "#configuration" {
 /**
  * An implementation of the PlaceableHUD base class which renders a heads-up-display interface for Tile objects.
  * The TileHUD implementation can be configured and replaced via {@link CONFIG.Tile.hudClass}.
- * @remarks TODO: Stub
  */
 declare class TileHUD<
   RenderContext extends TileHUD.RenderContext = TileHUD.RenderContext,
@@ -25,13 +24,47 @@ declare class TileHUD<
   RenderContext,
   Configuration,
   RenderOptions
-> {}
+> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "tile-hud",
+   *   actions: {
+   *     video: TileHUD.#onControlVideo
+   *   }
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: BasePlaceableHUD.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   hud: {
+   *     root: true,
+   *     template: "templates/hud/tile-hud.hbs"
+   *   }
+   * }
+   * ```
+   */
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+
+  static #TileHUD: true;
+}
 
 declare namespace TileHUD {
   interface Any extends AnyTileHUD {}
   interface AnyConstructor extends Identity<typeof AnyTileHUD> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, BasePlaceableHUD.RenderContext {}
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, BasePlaceableHUD.RenderContext {
+    isVideo: boolean;
+    videoIcon: string;
+    videoTitle: string;
+  }
   interface Configuration extends HandlebarsApplicationMixin.Configuration, BasePlaceableHUD.Configuration {}
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, BasePlaceableHUD.RenderOptions {}
 }

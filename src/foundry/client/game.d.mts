@@ -1,5 +1,13 @@
 import type { Socket } from "socket.io-client";
-import type { ValueOf, FixedInstanceType, InitializationHook, InitializedOn, EmptyObject, GetKey } from "#utils";
+import type {
+  ValueOf,
+  FixedInstanceType,
+  InitializationHook,
+  InitializedOn,
+  EmptyObject,
+  GetKey,
+  InexactPartial,
+} from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -501,9 +509,17 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   logOut(): void;
 
   /**
+   * Configure the user interface.
+   * @param config - (default: `{}`)
+   */
+  configureUI(config?: InexactPartial<foundry.applications.settings.menus.UIConfig.GameUIConfiguration>): void;
+
+  /**
    * Scale the base font size according to the user's settings.
    * @param index - Optionally supply a font size index to use, otherwise use the user's setting.
    *                Available font sizes, starting at index 1, are: 8, 10, 12, 14, 16, 18, 20, 24, 28, and 32.
+   * @deprecated "Game#scaleFonts is deprecated in favor of {@linkcode foundry.applications.settings.menus.UIConfig | Game#configureUI}"
+   * (since v13, until v15)
    */
   scaleFonts(index?: number): void;
 
