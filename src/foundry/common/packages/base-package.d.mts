@@ -13,7 +13,6 @@ import type {
   StringField,
 } from "#client/data/fields.mjs";
 import type { ReleaseData } from "#common/config.d.mts";
-import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
 import type { BaseFolder } from "#common/documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
@@ -271,11 +270,6 @@ export { CompendiumOwnershipField };
  * A special SetField which provides additional validation and initialization behavior specific to compendium packs.
  */
 export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> extends SetField<ElementFieldType> {
-  protected override _cleanType(
-    value: Set<ArrayField.InitializedElementType<ElementFieldType>>,
-    options?: DataField.CleanOptions,
-  ): Set<ArrayField.InitializedElementType<ElementFieldType>>;
-
   override initialize(
     value: ArrayField.PersistedElementType<ElementFieldType>[],
     // In Foundry itself, this field is only used in `BasePackage`, however it should be able to accept any model.
@@ -286,15 +280,13 @@ export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> exte
     | Set<ArrayField.InitializedElementType<ElementFieldType>>
     | (() => Set<ArrayField.InitializedElementType<ElementFieldType>> | null);
 
-  protected override _validateElements(
-    value: AnyArray,
-    options?: DataField.ValidateOptions<DataField.Any>,
-  ): void | DataModelValidationFailure;
-
-  protected override _validateElement(
+  protected override _cleanElement(
     value: unknown,
-    options: DataField.ValidateOptions<DataField.Any>,
-  ): void | DataModelValidationFailure;
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): DataField.InitializedTypeFor<ElementFieldType>;
+
+  protected override _validateModel(data: unknown, options?: DataField.ValidateModelOptions): void;
 }
 
 /**

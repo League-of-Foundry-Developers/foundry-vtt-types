@@ -18,7 +18,15 @@ type DataFieldOptions = fields.DataField.Options.Any;
 
 type DataFieldContext = fields.DataField.ConstructionContext;
 
-type DataFieldValidationOptions = unknown;
+type DataFieldValidationOptions = fields.DataField.ValidateOptions<fields.DataField.Any>;
+
+type DataModelCleaningOptions = fields.DataField.CleanOptions;
+
+type DataModelUpdateState = fields.DataField.UpdateState;
+
+type DataModelSanitizationOptions = fields.DataField.SanitizationOptions;
+
+type EmbeddedCollectionUpdateContext = fields.EmbeddedCollectionField.UpdateContext;
 
 type FormGroupConfig = applicationFields.FormGroupConfig;
 
@@ -40,6 +48,10 @@ type ChoiceInputConfig = fields.StringField.PrepareChoiceConfig;
 
 type ArrayFieldOptions = fields.ArrayField.Options<unknown>;
 
+type TypedObjectKeyValidator = fields.TypedObjectField.ValidateKey<string>;
+
+type TypedObjectFieldOptions = fields.TypedObjectField.Options<unknown>;
+
 type DocumentUUIDFieldOptions = fields.DocumentUUIDField.Options;
 
 type FilePathFieldOptions = fields.FilePathField.Options;
@@ -49,5 +61,9 @@ type DocumentFlags = Record<string, Record<string, unknown>>;
 type DocumentStats = fields.DocumentStatsField.Data;
 
 type JavaScriptFieldOptions = fields.JavaScriptField.Options;
+
+type GridOffsetFieldOptions = fields.GridOffsetField.Options;
+
+type GridOffsetsFieldOptions = fields.GridOffsetsField.Options;
 
 type ElementValidationFailure = foundry.data.validation.DataModelValidationFailure.ElementValidationFailure;

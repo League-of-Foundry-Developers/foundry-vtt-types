@@ -4,85 +4,60 @@ import type { InexactPartial } from "#utils";
  * A class responsible for recording information about a validation failure.
  */
 declare class DataModelValidationFailure {
-  constructor(options?: DataModelValidationFailure.ConstructorOptions);
+  constructor(message?: string, options?: DataModelValidationFailure.ConstructorOptions);
 
-  /**
-   * The value that failed validation for this field.
-   */
+  /** The value that failed validation for this field. */
   invalidValue: unknown;
 
-  /**
-   * The value it was replaced by, if any.
-   */
-  fallback: unknown;
+  /** The value it was replaced by, if any. */
+  fallbackValue: unknown;
 
-  /**
-   * Whether the value was dropped from some parent collection.
-   * @defaultValue `false`
-   */
+  /** The path of the field responsible for the failure. */
+  fieldPath: string | undefined;
+
+  /** Whether the value was dropped from some parent collection. */
   dropped: boolean;
 
   /**
-   * The validation error message.
-   */
-  message: string | undefined;
-
-  /**
    * If this field contains other fields that are validated as part of its validation, their results are recorded here.
-   * @defaultValue `{}`
    */
   fields: Record<string, DataModelValidationFailure>;
 
   /**
    * If this field contains a list of elements that are validated as part of its validation, their results are recorded here.
-   * @defaultValue `{}`
    */
   elements: DataModelValidationFailure.ElementValidationFailure[];
+
+  /**
+   * If this field has a joint validation failure across multiple sub-fields, the failure message is recorded here.
+   */
+  joint: string | undefined;
+
+  /** The error message. */
+  message: string;
+
+  /** Options forwarded to the Error constructor. */
+  options: ErrorOptions;
 
   /**
    * Record whether a validation failure is unresolved.
    * This reports as true if validation for this field or any hierarchically contained field is unresolved.
    * A failure is unresolved if the value was invalid and there was no valid fallback value available.
-   * @defaultValue `false`
    */
   unresolved: boolean;
 
-  /**
-   * Return this validation failure as an Error object.
-   */
+  /** Whether this failure contains other sub-failures. */
+  get empty(): boolean;
+
+  /** Return this validation failure as an Error instance. */
   asError(): DataModelValidationError;
 
-  /**
-   * Whether this failure contains other sub-failures.
-   */
-  isEmpty(): boolean;
+  /** Copy the data of this DataModelValidationFailure to another one. */
+  copyTo(failure: DataModelValidationFailure): void;
 
   /**
-   * Return the base properties of this failure, omitting any nested failures.
-   */
-  toObject(): DataModelValidationFailure.ToObjectReturn;
-
-  /**
-   * Represent the DataModelValidationFailure as a string.
-   */
-  toString(): string;
-
-  static #DataModelValidationFailure: true;
-}
-
-/**
- * A specialised Error to indicate a model validation failure.
- */
-declare class DataModelValidationError extends Error {
-  /**
-   * @param failure - The failure that triggered this error or an error message
-   * @param params  - Additional Error constructor parameters
-   */
-  constructor(failure: DataModelValidationFailure | string, options?: ErrorOptions);
-
-  /**
-   * Retrieve the root failure that caused this error, or a specific sub-failure via a path.
-   * @param path - The property path to the failure.
+   * Retrieve the leaf node failure that caused this, or a specific sub-failure via a path.
+   * @param key - The property key to the failure.
    *
    * @example Retrieving a failure.
    * ```js
@@ -98,7 +73,7 @@ declare class DataModelValidationError extends Error {
    * }
    * ```
    */
-  getFailure(path?: string): DataModelValidationFailure | void;
+  getFailure(key?: string): DataModelValidationFailure | null;
 
   /**
    * Retrieve a flattened object of all the properties that failed validation as part of this error.
@@ -120,43 +95,72 @@ declare class DataModelValidationError extends Error {
    * }
    * ```
    */
-  getAllFailures(): Record<string, DataModelValidationFailure> | void;
+  getAllFailures(): Record<string, DataModelValidationFailure>;
 
-  /**
-   * Log the validation error as a table.
-   */
+  /** Return the base properties of this failure, omitting any nested failures. */
+  toObject(): DataModelValidationFailure.ToObjectReturn;
+
+  /** Represent the DataModelValidationFailure as a string. */
+  toString(): string;
+
+  /** Log the validation error as a table. */
   logAsTable(): void;
 
-  /**
-   * Generate a nested tree view of the error as an HTML string.
-   */
+  /** Generate a nested tree view of the error as an HTML string. */
   asHTML(): string;
+
+  /** @deprecated since v14 in favor of the {@linkcode empty} property */
+  isEmpty(): boolean;
+
+  /** @deprecated since v14, renamed to {@linkcode fallbackValue} */
+  get fallback(): unknown;
+
+  static #DataModelValidationFailure: true;
+}
+
+/**
+ * A specialized Error to indicate a model validation failure.
+ */
+declare class DataModelValidationError extends Error {
+  /**
+   * @param failure - The failure that triggered this error or an error message
+   * @param params  - Additional Error constructor parameters
+   */
+  constructor(failure: DataModelValidationFailure | string, ...params: unknown[]);
+
+  /** @see {@link DataModelValidationFailure.getFailure | `DataModelValidationFailure#getFailure`} */
+  getFailure(key?: string): DataModelValidationFailure | null;
+
+  /** @see {@link DataModelValidationFailure.getAllFailures | `DataModelValidationFailure#getAllFailures`} */
+  getAllFailures(): Record<string, DataModelValidationFailure>;
+
+  /** Log the validation error as a table. */
+  logAsTable(): void;
+
+  /** Generate a nested tree view of the error as an HTML string. */
+  asHTML(): string;
+
+  override toString(): string;
 
   #DataModelValidationError: true;
 }
 
 declare namespace DataModelValidationFailure {
   /** @internal */
-  interface _ConstructorOptions {
+  interface _ConstructorOptions extends ErrorOptions {
     /** The value that failed validation for this field. */
     invalidValue: unknown;
 
-    /**  The value it was replaced by, if any. */
-    fallback: unknown;
+    /** The value it was replaced by, if any. */
+    fallbackValue: unknown;
 
-    /**
-     * Whether the value was dropped from some parent collection.
-     * @defaultValue `false`
-     */
+    /** The path of the field responsible for the failure. */
+    fieldPath: string;
+
+    /** Whether the value was dropped from some parent collection. */
     dropped: boolean;
 
-    /** The validation error message. */
-    message: string;
-
-    /**
-     * Whether this failure was unresolved
-     * @defaultValue `false`
-     */
+    /** Whether this failure was unresolved. */
     unresolved: boolean;
   }
 
@@ -176,13 +180,9 @@ declare namespace DataModelValidationFailure {
     failure: DataModelValidationFailure;
   }
 
-  /**
-   * @remarks {@linkcode DataModelValidationFailure.toObject | DataModelValidationFailure#toObject} returns
-   * its instance's properties of the same names
-   */
   interface ToObjectReturn extends Pick<
     DataModelValidationFailure,
-    "invalidValue" | "fallback" | "dropped" | "message"
+    "invalidValue" | "fallbackValue" | "dropped" | "message"
   > {}
 }
 

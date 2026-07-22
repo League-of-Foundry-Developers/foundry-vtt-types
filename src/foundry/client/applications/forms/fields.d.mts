@@ -80,8 +80,13 @@ export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
 
   /**
    * An HTML element or collection of elements which provide the inputs for the group
+   *
+   * @privateRemarks Foundry types this as `HTMLElement|HTMLCollection`, but `HTMLElement[]` has
+   * been added to match {@linkcode foundry.data.fields.DataField.toInput | DataField#toInput}'s
+   * documented return (whose result is the canonical value for this property), and
+   * {@linkcode createFormGroup} explicitly normalizes arrays
    */
-  input: HTMLElement | HTMLCollection;
+  input: HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 interface _FormInputConfig<FormInputValue = unknown> {
