@@ -199,20 +199,18 @@ declare class Tour {
    */
   protected _renderStep(): Promise<void>;
 
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _onButtonClick(event: never, buttons: never): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _saveProgress(): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _loadProgress(): never;
-
   /**
    * Reloads the Tour's current step from the saved progress
    * @internal
    */
   _reloadProgress(): void;
+
+  /**
+   * Create and append a tour-fadeout highlight element positioned over the given target element.
+   * @param element - The element to highlight.
+   * @returns The created fadeout element, already appended to document.body.
+   */
+  static highlightElement(element: HTMLElement, options?: Tour.HighlightElementOptions): HTMLElement;
 
   #Tour: true;
 }
@@ -306,11 +304,28 @@ declare namespace Tour {
     /** A tour ID that supersedes `TourConfig#id` */
     id: string;
 
-    /** A tour namespace that supersedes `TourConfig#namespace` */
+    /** A tour namespace that supersedes {@linkcode Tour.Config.namespace} */
     namespace: string;
   }
 
   interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
+
+  /** @internal */
+  interface _HighlightElementOptions {
+    /**
+     * Padding (px) around the element.
+     * @defaultValue {@linkcode Tour.HIGHLIGHT_PADDING}
+     */
+    padding: number;
+
+    /**
+     * Whether user interaction should be prevented while the highlight is in effect.
+     * @defaultValue `true`
+     */
+    preventInteraction: boolean;
+  }
+
+  interface HighlightElementOptions extends InexactPartial<_HighlightElementOptions> {}
 
   interface Status {
     readonly UNSTARTED: "unstarted";

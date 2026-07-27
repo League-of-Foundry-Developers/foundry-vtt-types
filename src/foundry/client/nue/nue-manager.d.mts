@@ -21,18 +21,6 @@ declare class NewUserExperienceManager {
    */
   createDefaultScene(sceneData?: Scene.UpdateData): Promise<Scene.Implementation>;
 
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _showNewWorldTour(): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _activateListeners(): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _onActionLink(): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _onTabLink(): never;
-
   #NewUserExperienceManager: true;
 }
 
