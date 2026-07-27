@@ -5,7 +5,7 @@ import type { AVConfig } from "#client/applications/settings/menus/_module.d.mts
 
 /**
  * The master Audio/Video controller instance.
- * This is available as the singleton game.webrtc
+ * This is available as the singleton {@linkcode game.webrtc}
  */
 declare class AVMaster {
   constructor();
@@ -92,7 +92,7 @@ declare class AVMaster {
   /**
    * Trigger a change in the audio broadcasting state when using a push-to-talk workflow.
    * @param intent - The user's intent to broadcast. Whether an actual broadcast occurs will depend
-   *                 on whether or not the user has muted their audio feed.
+   * on whether or not the user has muted their audio feed.
    */
   broadcast(intent: boolean): void;
 
@@ -108,7 +108,7 @@ declare class AVMaster {
    * Currently only a MediaStream is supported because MediaStreamTrack processing is not yet supported cross-browser.
    * @param stream - The MediaStream which corresponds to that User
    * @param ms     - A number of milliseconds which represents the voice activation volume interval
-   *                 (default: `CONFIG.WebRTC.detectPeerVolumeInterval`)
+   *                 (default: {@linkcode CONFIG.WebRTC.detectPeerVolumeInterval})
    */
   activateVoiceDetection(stream: MediaStream, ms?: number): void;
 

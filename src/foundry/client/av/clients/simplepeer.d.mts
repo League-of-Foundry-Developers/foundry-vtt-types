@@ -85,8 +85,7 @@ declare class SimplePeerAVClient extends AVClient {
   /**
    * Connect to a peer directly, either as the initiator or as the receiver
    * @param userId      - The Foundry user ID with whom we are connecting
-   * @param isInitiator - Is the current user initiating the connection, or responding to it?
-   *                      (default: `false`)
+   * @param isInitiator - Is the current user initiating the connection, or responding to it? (default: `false`)
    * @returns The constructed and configured SimplePeer instance
    */
   connectPeer(userId: string, isInitiator?: boolean): SimplePeer.Instance;

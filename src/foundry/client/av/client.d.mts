@@ -88,19 +88,18 @@ declare abstract class AVClient {
   abstract getConnectedUsers(): string[];
 
   /**
-   * Provide a MediaStream instance for a given user ID
+   * Provide a {@linkcode MediaStream} instance for a given user ID
    * @param userId - The User id
-   * @returns The MediaStream for the user, or null if the user does not have one
+   * @returns The `MediaStream` for the user, or `null` if the user does not have one
    */
   abstract getMediaStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
-   * Provide a MediaStream for monitoring a given user's voice volume levels.
+   * Provide a {@linkcode MediaStream} for monitoring a given user's voice volume levels.
    * @param userId - The User ID.
-   * @returns The MediaStream for the user, or null if the user does not have one.
-   * @remarks The getLevelsStreamForUser() method must be defined by an AVClient subclass and will be strictly required starting in v10
+   * @returns The `MediaStream` for the user, or `null` if the user does not have one.
    */
-  getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
+  abstract getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
    * Is outbound audio enabled for the current user?
@@ -146,10 +145,7 @@ declare abstract class AVClient {
    */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 
-  /**
-   * Replace the local stream for each connected peer with a re-generated MediaStream.
-   * @remarks The updateLocalStream() method must be defined by an AVClient subclass.
-   */
+  /** Replace the local stream for each connected peer with a re-generated MediaStream. */
   abstract updateLocalStream(): Promise<void>;
 }
 
