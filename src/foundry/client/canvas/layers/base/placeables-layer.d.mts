@@ -106,13 +106,14 @@ declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> e
 
   /**
    * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
-   * @remarks Returns `null` if `canvas.scene` does not have an EmbeddedCollection for the layer's `static documentName`
+   * @remarks Returns `null` if {@linkcode canvas.scene} does not have an {@linkcode EmbeddedCollection} for the layer's
+   * {@linkcode PlaceablesLayer.documentName | documentName}.
    */
   get documentCollection(): EmbeddedCollection<Document.StoredForName<DocumentName>, Scene.Implementation> | null;
 
   /**
    * Define a Container implementation used to render placeable objects contained in this layer
-   * @privateRemarks Would be `Document.ConfiguredObjectInstanceForName<DocumentName>` if statics could see type params
+   * @privateRemarks Would be `Document.ConfiguredObjectInstanceForName<DocumentName>` if statics could see type params.
    */
   static get placeableClass(): PlaceableObject.AnyConstructor;
 
