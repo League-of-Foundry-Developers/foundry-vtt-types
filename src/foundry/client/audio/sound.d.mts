@@ -9,15 +9,15 @@ import type { AudioTimeout } from "./_module.d.mts";
 import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
 
 /**
- * A container around an AudioNode which manages sound playback in Foundry Virtual Tabletop.
- * Each Sound is either an AudioBufferSourceNode (for short sources) or a MediaElementAudioSourceNode (for long ones).
+ * A container around an {@linkcode AudioNode} which manages sound playback in Foundry Virtual Tabletop. Each `Sound` is either an
+ * {@linkcode AudioBufferSourceNode} (for short sources) or a {@linkcode MediaElementAudioSourceNode} (for long ones).
  * This class provides an interface around both types which allows standardized control over playback.
  */
 declare class Sound extends EventEmitterMixin() {
   /**
-   * Construct a Sound by providing the source URL and other options.
+   * Construct a `Sound` by providing the source URL and other options.
    * @param src     - The audio source path, either a relative path or a remote URL
-   * @param options - Additional options which configure the Sound
+   * @param options - Additional options which configure the `Sound`
    */
   constructor(src: string, options?: Sound.ConstructorOptions);
 
@@ -27,8 +27,8 @@ declare class Sound extends EventEmitterMixin() {
   static STATES: Sound.States;
 
   /**
-   * The maximum duration, in seconds, for which an AudioBufferSourceNode will be used.
-   * Otherwise, a MediaElementAudioSourceNode will be used.
+   * The maximum duration, in seconds, for which an {@linkcode AudioBufferSourceNode} will be used.
+   * Otherwise, a {@linkcode MediaElementAudioSourceNode} will be used.
    * @defaultValue `10 * 60;  // 10 Minutes`
    */
   static MAX_BUFFER_DURATION: number;
@@ -52,7 +52,7 @@ declare class Sound extends EventEmitterMixin() {
   readonly src: string;
 
   /**
-   * The audio context within which this Sound is played.
+   * The audio context within which this `Sound` is played.
    * @remarks Can return `undefined` if no context was passed at construction *and* `game.audio.music` hasn't been initialized yet,
    * which doesn't happen until the first sound is played
    */
@@ -60,7 +60,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * The AudioSourceNode used to control sound playback.
-   * @remarks Returns `undefined` if the Sound has either not yet been played or has been stopped
+   * @remarks Returns `undefined` if the `Sound` has either not yet been played or has been stopped
    */
   get sourceNode(): AudioBufferSourceNode | MediaElementAudioSourceNode | undefined;
 
@@ -71,12 +71,12 @@ declare class Sound extends EventEmitterMixin() {
   gainNode: GainNode | undefined;
 
   /**
-   * An AudioBuffer instance, if this Sound uses an AudioBufferSourceNode for playback.
+   * An AudioBuffer instance, if this `Sound` uses an AudioBufferSourceNode for playback.
    */
   buffer: AudioBuffer | null;
 
   /**
-   * An HTMLAudioElement, if this Sound uses a MediaElementAudioSourceNode for playback.
+   * An HTMLAudioElement, if this `Sound` uses a MediaElementAudioSourceNode for playback.
    */
   element: HTMLAudioElement | null;
 
@@ -102,8 +102,8 @@ declare class Sound extends EventEmitterMixin() {
   get playing(): boolean;
 
   /**
-   * Does this Sound use an AudioBufferSourceNode?
-   * Otherwise, the Sound uses a streamed MediaElementAudioSourceNode.
+   * Does this `Sound` use an AudioBufferSourceNode?
+   * Otherwise, the `Sound` uses a streamed MediaElementAudioSourceNode.
    */
   get isBuffer(): boolean;
 
@@ -114,13 +114,13 @@ declare class Sound extends EventEmitterMixin() {
   get gain(): AudioParam | undefined;
 
   /**
-   * The AudioNode destination which is the output target for the Sound.
+   * The AudioNode destination which is the output target for the `Sound`.
    * @remarks Only `undefined` prior to first `play()`
    */
   destination: AudioNode | undefined;
 
   /**
-   * A pipeline of AudioNode instances to be applied to Sound playback.
+   * A pipeline of AudioNode instances to be applied to `Sound` playback.
    */
   effects: AudioNode[];
 
@@ -134,13 +134,13 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * The time in seconds at which playback was started.
-   * @remarks `undefined` if the Sound has either not yet been played or has been stopped
+   * @remarks `undefined` if the `Sound` has either not yet been played or has been stopped
    */
   startTime: number | undefined;
 
   /**
    * The time in seconds at which playback was paused.
-   * @remarks `undefined` until the Sound is paused, and after the Sound is stopped or playback has been resumed
+   * @remarks `undefined` until the `Sound` is paused, and after the `Sound` is stopped or playback has been resumed
    */
   pausedTime: number | undefined;
 
@@ -152,7 +152,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * The current playback time of the sound.
-   * @remarks `undefined` if the Sound has either not yet been played or has been stopped
+   * @remarks `undefined` if the `Sound` has either not yet been played or has been stopped
    */
   get currentTime(): number | undefined;
 
@@ -164,7 +164,7 @@ declare class Sound extends EventEmitterMixin() {
   set loop(value);
 
   /**
-   * An internal reference to some object which is managing this Sound instance.
+   * An internal reference to some object which is managing this `Sound` instance.
    * @defaultValue `null`
    * @internal
    * @remarks Only ever set *or* read externally by core, so not protected.
@@ -174,7 +174,7 @@ declare class Sound extends EventEmitterMixin() {
   /**
    * Load the audio source and prepare it for playback, either using an AudioBuffer or a streamed HTMLAudioElement.
    * @param options - Additional options which affect resource loading
-   * @returns A Promise which resolves to the Sound once it is loaded
+   * @returns A Promise which resolves to the `Sound` once it is loaded
    */
   load(options?: Sound.LoadOptions): Promise<this>;
 
@@ -186,7 +186,7 @@ declare class Sound extends EventEmitterMixin() {
   protected _load(): Promise<void>;
 
   /**
-   * Begin playback for the Sound.
+   * Begin playback for the `Sound`.
    * This method is asynchronous because playback may not start until after an initially provided delay.
    * The Promise resolves *before* the fade-in of any configured volume transition.
    * @param options - Options which configure the beginning of sound playback
@@ -195,10 +195,10 @@ declare class Sound extends EventEmitterMixin() {
   play(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
-   * Play a one-shot Sound originating from a predefined point on the canvas.
+   * Play a one-shot `Sound` originating from a predefined point on the canvas.
    * The sound plays locally for the current client only.
    * To play a sound for all connected clients use {@linkcode foundry.canvas.layers.SoundsLayer.emitAtPosition | SoundsLayer#emitAtPosition}.
-   * A helper which does not depend on a pre-existing Sound instance is available at
+   * A helper which does not depend on a pre-existing `Sound` instance is available at
    * {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}.
    *
    * @param origin  - The canvas coordinates from which the sound originates
@@ -246,28 +246,28 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * Begin playback for the configured pipeline and playback options.
-   * This method is factored out so that subclass implementations of Sound can implement alternative behavior.
+   * This method is factored out so that subclass implementations of `Sound` can implement alternative behavior.
    */
   protected _play(): void;
 
   /**
-   * Pause playback of the Sound. For {@linkcode AudioBufferSourceNode} this stops playback after recording the current time. Calling
+   * Pause playback of the `Sound`. For {@linkcode AudioBufferSourceNode} this stops playback after recording the current time. Calling
    * {@linkcode Sound.play | Sound#play} will resume playback from the {@linkcode Sound.pausedTime | #pausedTime} unless some other offset
    * is passed. For a {@linkcode MediaElementAudioSourceNode} this simply calls the
    * {@linkcode HTMLAudioElement.pause | HTMLAudioElement#pause} method directly.
    * @remarks
-   * @throws If called while the Sound isn't playing.
+   * @throws If called while the `Sound` isn't playing.
    */
   pause(): void;
 
   /**
-   * Pause playback of the Sound.
-   * This method is factored out so that subclass implementations of Sound can implement alternative behavior.
+   * Pause playback of the `Sound`.
+   * This method is factored out so that subclass implementations of `Sound` can implement alternative behavior.
    */
   protected _pause(): void;
 
   /**
-   * Stop playback for the Sound.
+   * Stop playback for the `Sound`.
    * This method is asynchronous because playback may not stop until after an initially provided delay.
    * The Promise resolves *after* the fade-out of any configured volume transition.
    * @param options - Options which configure the stopping of sound playback
@@ -276,8 +276,8 @@ declare class Sound extends EventEmitterMixin() {
   stop(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
-   * Stop playback of the Sound.
-   * This method is factored out so that subclass implementations of Sound can implement alternative behavior.
+   * Stop playback of the `Sound`.
+   * This method is factored out so that subclass implementations of `Sound` can implement alternative behavior.
    */
   protected _stop(): void;
 
@@ -358,7 +358,7 @@ declare namespace Sound {
   /** @internal */
   interface _ConstructorOptions {
     /**
-     * Force use of an AudioBufferSourceNode even if the audio duration is long
+     * Force use of an {@linkcode AudioBufferSourceNode} even if the audio duration is long
      * @defaultValue `false`
      */
     forceBuffer: boolean;
