@@ -165,7 +165,7 @@ declare namespace Sound {
     easing: boolean;
 
     /**
-     * Should the sound be constrained by walls?
+     * Should the sound be constrained by walls and surfaces?
      * @defaultValue `true`
      */
     walls: boolean;
@@ -179,7 +179,7 @@ declare namespace Sound {
     /** A base sound effect to apply to playback */
     baseEffect: AmbientSoundDocument.Effect;
 
-    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls */
+    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls and surfaces */
     muffledEffect: AmbientSoundDocument.Effect;
 
     /**
@@ -408,11 +408,6 @@ declare class Sound extends EventEmitterMixin() {
   play(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
-   * @deprecated "`Sound#play` now takes an object of playback options instead of positional arguments." (since v12, until v14)
-   */
-  play(offset: number, onended?: Sound.ScheduleCallback | null): Promise<this>;
-
-  /**
    * Play a one-shot Sound originating from a predefined point on the canvas.
    * The sound plays locally for the current client only.
    * To play a sound for all connected clients use {@linkcode foundry.canvas.layers.SoundsLayer.emitAtPosition | SoundsLayer#emitAtPosition}.
@@ -441,7 +436,7 @@ declare class Sound extends EventEmitterMixin() {
    * const origin = token.center;         // The origin point for the sound
    * const radius = 60;                   // Audible in a 60-foot radius
    * await sound.playAtPosition(origin, radius, {
-   *   walls: false,                      // Not constrained by walls with a lowpass muffled effect
+   *   walls: false,                      // Not constrained by walls and surfaces with a lowpass muffled effect
    *   muffledEffect: {type: "lowpass", intensity: 6},
    *   sourceData: {
    *     angle: 120,                      // Sound emitted at a limited angle
@@ -565,42 +560,6 @@ declare class Sound extends EventEmitterMixin() {
    * Walk backwards along the Sound##pipeline from the Sound#destination, disconnecting each node.
    */
   protected _disconnectPipeline(): void;
-
-  /**
-   * @deprecated "`AudioContainer.LOAD_STATES` is deprecated in favor of {@linkcode Sound.STATES}" (since v12, until v14)
-   */
-  static get LOAD_STATES(): Sound.States;
-
-  /**
-   * @deprecated "`AudioContainer#loadState` is deprecated in favor of {@linkcode Sound._state | Sound#_state}" (since v12, until v14)
-   */
-  get loadState(): Sound.STATES;
-
-  /**
-   * @deprecated "`Sound#container` is deprecated without replacement because the `Sound` and `AudioContainer` classes are now merged" (since v12, until v14)
-   */
-  get container(): this;
-
-  /**
-   * @deprecated "`Sound#node` is renamed {@linkcode Sound.sourceNode | Sound#sourceNode}" (since v12, until v14)
-   */
-  get node(): this["sourceNode"];
-
-  /**
-   * @deprecated "`Sound#on` is deprecated in favor of {@linkcode Sound.addEventListener | Sound#addEventListener}" (since v12, until v14)
-   */
-  on(eventName: string, fn: EventEmitterMixin.EventListener, options?: EventEmitterMixin.AddListenerOptions): void;
-
-  /**
-   * @deprecated "`Sound#off` is deprecated in favor of {@linkcode Sound.removeEventListener | Sound#removeEventListener}" (since v12, until v14)
-   */
-  off(eventName: string, fn: EventEmitterMixin.EventListener): void;
-
-  /**
-   * @deprecated "`Sound#emit` is deprecated in favor of {@linkcode Sound.dispatchEvent | Sound#dispatchEvent}" (since v12, until v14)
-   * @remarks This method still takes a string, then creates an `Event` with it and passes that along to `dispatchEvent`
-   */
-  emit(eventName: string): void;
 
   #Sound: true;
 }
