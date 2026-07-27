@@ -1,4 +1,4 @@
-import type { DeepPartial, FixedInstanceType } from "#utils";
+import type { DeepPartial, FixedInstanceType, Identity } from "#utils";
 import type { AVMaster, AVSettings } from "#client/av/_module.d.mts";
 
 /**
@@ -154,8 +154,8 @@ declare abstract class AVClient {
 }
 
 declare namespace AVClient {
-  type Implementation = FixedInstanceType<ImplementationClass>;
-  type ImplementationClass = CONFIG["WebRTC"]["clientClass"];
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.WebRTC.clientClass> {}
 }
 
 export default AVClient;
