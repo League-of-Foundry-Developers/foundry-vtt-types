@@ -41,7 +41,7 @@ declare class StringNode<
   /**
    * Serialize the StringNode structure into a single string.
    * @param spaces - The number of spaces to use for indentation (maximum 10). If this value is a string,
-   * that string is used as indentation instead (or the first 10 characters if it is longer).   *
+   * that string is used as indentation instead (or the first 10 characters if it is longer).
    */
   toString(spaces?: string | number, internal?: StringNode.ToStringInternalOptions): string;
 

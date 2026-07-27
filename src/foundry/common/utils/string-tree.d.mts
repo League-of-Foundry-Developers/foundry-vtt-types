@@ -14,16 +14,16 @@ declare class StringTree<Leaf extends object = AnyObject, Keys extends Iterable<
 
   /**
    * Insert an entry into the tree.
-   * @param strings  - The string parents for the entry.
-   * @param entry    - The entry to store.
+   * @param strings - The string parents for the entry.
+   * @param entry   - The entry to store.
    * @returns   The node the entry was added to.
    */
   addLeaf(strings: Keys, entry: Leaf): StringTree.Node<Leaf>;
 
   /**
    * Traverse the tree along the given string path and return any entries reachable from the node.
-   * @param strings         - The string path to the desired node.
-   * @param options         - Additional options to configure behaviour.
+   * @param strings - The string path to the desired node.
+   * @param options - Additional options to configure behaviour.
    * @returns    The reachable entries
    */
   lookup(strings: Keys, options?: StringTree.LookupOptions<Leaf>): Leaf[];

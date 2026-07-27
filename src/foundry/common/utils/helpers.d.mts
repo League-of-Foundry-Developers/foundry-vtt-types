@@ -59,8 +59,8 @@ export function threadLock(ms: number, debug?: boolean): Promise<void>;
  * // Later, if you need to cancel a pending call before the debounced callback fires
  * savePosition.cancel();
  * ```
- * @param callback -      A function to execute once the debounced threshold has been passed
- * @param delay    -        An amount of time in milliseconds to delay
+ * @param callback - A function to execute once the debounced threshold has been passed
+ * @param delay    - An amount of time in milliseconds to delay
  * @returns A wrapped function which can be called to debounce execution with a cancel method
  */
 export function debounce<T extends AnyFunction>(callback: T, delay: number): DebounceReturn<T>;
@@ -96,7 +96,7 @@ export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFree
 /** @internal */
 interface _DeepFreezeOptions {
   /**
-   * Throw an Error if deepFreeze is unable to freeze something instead of returning the original
+   * Throw an Error if `deepFreeze` is unable to freeze something instead of returning the original
    * @defaultValue `false`
    */
   strict: boolean;
@@ -119,7 +119,7 @@ export function deepSeal<T extends AnyObject>(obj: T, options?: DeepSealOptions)
 /** @internal */
 interface _DeepSealOptions {
   /**
-   * Throw an Error if deepSeal is unable to seal something
+   * Throw an Error if `deepSeal` is unable to seal something
    * @defaultValue `false`
    */
   strict: boolean;
@@ -131,7 +131,7 @@ export interface DeepSealOptions extends InexactPartial<_DeepSealOptions> {}
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
  * This method DOES support recursive data structures containing inner objects or arrays.
  * This method DOES NOT support cyclical data structures.
- * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
+ * This method DOES NOT support advanced object types like `Set`, `Map`, or other specialized classes.
  * @param original - Some sort of data
  * @param options  - Options to configure the behaviour of deepClone
  * @returns The clone of that data
@@ -144,7 +144,7 @@ export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
 /** @internal */
 interface _DeepCloneOptions {
   /**
-   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * Throw an Error if `deepClone` is unable to clone something instead of returning the original
    * @defaultValue `false`
    */
   strict: boolean;
@@ -205,11 +205,10 @@ export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
  *
  * This helper supports equality testing for:
  * 1. Primitive data types (number, string, boolean, undefined)
- * 2. Simple objects (Object prototype, null)
- * 3. Complex objects which expose an `equals` method (Array, Set, Color, etc...)
+ * 2. Simple objects (`Object` prototype, null)
+ * 3. Complex objects which expose an `equals` method (`Array`, `Set`, `Color`, etc...)
  *
- * This method compares object `b` with object `a`, so in cases where an equality testing method is used it is called
- * as `a.equals(b)`.
+ * This method compares object `b` with object `a`, so in cases where an equality testing method is used it is called as `a.equals(b)`.
  *
  * @param a - The first value
  * @param b - The second value
@@ -220,7 +219,7 @@ export function equals(a: unknown, b: unknown): b is typeof a;
  * A cheap data duplication trick which is relatively robust.
  * For a subset of cases the deepClone function will offer better performance.
  * @param original - Some sort of data
- * @template T    - Type of the original data.
+ * @template T     - Type of the original data.
  *
  * @remarks This function will actually convert any occurrences of `NaN` and `Infinity` to `null`. For ease of use, this
  * is _not_ reflected in the type. Be careful if your types might contain `NaN` or `Infinity`!
@@ -246,7 +245,7 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
- * @param obj      - A class instance or class definition which contains a property.
+ * @param obj - A class instance or class definition which contains a property.
  *
  * If a class instance is passed the property is treated as an instance attribute.
  *
@@ -586,7 +585,8 @@ interface _MergeObjectOptions {
   insertKeys: boolean;
 
   /**
-   * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the original object.
+   * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the
+   * original object.
    * @defaultValue `true`
    */
   insertValues: boolean;
@@ -604,13 +604,15 @@ interface _MergeObjectOptions {
   recursive: boolean;
 
   /**
-   * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
+   * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the
+   * copy is merged.
    * @defaultValue `true`
    */
   inplace: boolean;
 
   /**
-   * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
+   * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original
+   * data to be merged.
    * @defaultValue `false`
    */
   enforceTypes: boolean;
@@ -735,7 +737,8 @@ export interface ResolvedUUID {
  * World or in a Compendium pack which is a parent of the referenced document.
  * @param uuid     - The UUID to parse.
  * @param options  - Options to configure parsing behavior.
- * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining Embedded Document parts, if any.
+ * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining
+ * Embedded Document parts, if any.
  */
 export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
 
@@ -776,7 +779,8 @@ export function buildUuid(context: BuildUUIDContext): string | null;
  * @see {@linkcode foundry.utils.unescapeHTML}
  * @param value - An unescaped string
  * @returns The escaped string
- * @privateRemarks Foundry types `value` as `string|any`, as the method passes it through `String()`, but accounting for that seems counterproductive
+ * @privateRemarks Foundry types `value` as `string|any`, as the method passes it through `String()`, but accounting for that seems
+ * counterproductive.
  */
 export function escapeHTML(value: string): string;
 

@@ -12,9 +12,9 @@ import type { InexactPartial } from "#utils";
  * @param c - A point that is tested relative to segment AB
  *
  * @returns The relative orientation of points A, B, and C
- *          A positive value if the points are in counter-clockwise order (C lies to the left of AB)
- *          A negative value if the points are in clockwise order (C lies to the right of AB)
- *          Zero if the points A, B, and C are collinear.
+ * - A positive value if the points are in counter-clockwise order (C lies to the left of AB)
+ * - A negative value if the points are in clockwise order (C lies to the right of AB)
+ * - Zero if the points A, B, and C are collinear.
  */
 export declare function orient2dFast(a: Canvas.Point, b: Canvas.Point, c: Canvas.Point): number;
 
@@ -166,7 +166,7 @@ export function closestPointToPath(c: Canvas.Point, points: Points, close?: bool
 /**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
  * There will be zero, one, or two intersections
- * See https://math.stackexchange.com/a/311956
+ * See {@link https://math.stackexchange.com/a/311956}
  *
  * @param p0      - The initial point of the line segment
  * @param p1      - The terminal point of the line segment
