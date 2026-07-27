@@ -8,223 +8,6 @@ import type { AudioTimeout } from "./_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
 
-declare namespace Sound {
-  interface Any extends AnySound {}
-  interface AnyConstructor extends Identity<typeof AnySound> {}
-
-  /** @internal */
-  interface _ConstructorOptions {
-    /**
-     * Force use of an AudioBufferSourceNode even if the audio duration is long
-     * @defaultValue `false`
-     */
-    forceBuffer: boolean;
-
-    /**
-     * A non-default audio context within which the sound should play
-     * @defaultValue {@linkcode game.audio.music}
-     */
-    context: AudioContext;
-  }
-
-  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
-
-  type STATES = Brand<number, "Sound.STATES">;
-
-  interface States {
-    readonly FAILED: -1 & STATES;
-    readonly NONE: 0 & STATES;
-    readonly LOADING: 1 & STATES;
-    readonly LOADED: 2 & STATES;
-    readonly STARTING: 3 & STATES;
-    readonly PLAYING: 4 & STATES;
-    readonly PAUSED: 5 & STATES;
-    readonly STOPPING: 6 & STATES;
-    readonly STOPPED: 7 & STATES;
-  }
-
-  /** @internal */
-  interface _LoadOptions {
-    /**
-     * Automatically begin playback of the sound once loaded
-     * @defaultValue `false`
-     */
-    autoplay: boolean;
-
-    /**
-     * Playback options passed to Sound#play, if autoplay
-     * @defaultValue `{}`
-     */
-    autoplayOptions: Sound.PlaybackOptions;
-  }
-
-  interface LoadOptions extends InexactPartial<_LoadOptions> {}
-
-  /**
-   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
-   * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
-   * by `Sound##configurePlayback`
-   * @internal
-   */
-  interface _PlaybackOptions {
-    /**
-     * A delay in seconds by which to delay playback
-     * @defaultValue `0`
-     * @remarks Unlike other properties of this interface, the above default is static.
-     */
-    delay: number;
-
-    /**
-     * A limited duration in seconds for which to play
-     * @defaultValue `undefined`
-     */
-    duration: number;
-
-    /**
-     * A duration in milliseconds over which to fade in playback
-     * @defaultValue `0`
-     * @remarks Unlike other properties of this interface, the above default is static.
-     */
-    fade: number;
-
-    /**
-     * Should sound playback loop?
-     * @defaultValue `false`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
-     * call, as that method always creates a new sound with no playback history.
-     */
-    loop: boolean;
-
-    /**
-     * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
-     * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
-     * call, as that method always creates a new sound with no playback history.
-     */
-    loopStart: number;
-
-    /**
-     * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
-     * @defaultValue `undefined`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
-     * call, as that method always creates a new sound with no playback history.
-     */
-    loopEnd: number;
-
-    /**
-     * An offset in seconds at which to start playback
-     * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value of `loopStart` in `this##playback` is, unless this is part of a
-     * {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with no playback
-     * history.
-     */
-    offset: number;
-
-    /**
-     * A callback function attached to the source node
-     * @defaultValue `null`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
-     * call, as that method always creates a new sound with no playback history.
-     */
-    onended: ScheduleCallback | null;
-
-    /**
-     * The volume at which to play the sound
-     * @defaultValue `1.0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
-     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
-     * call, as that method always creates a new sound with no playback history.
-     */
-    volume: number;
-  }
-
-  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls. */
-  interface PlaybackOptions extends InexactPartial<_PlaybackOptions> {}
-
-  /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
-  interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
-
-  /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
-  interface PartialSourceData extends IntentionalPartial<
-    Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">
-  > {}
-
-  /** @internal */
-  interface _PlayAtPositionOptions {
-    /**
-     * The maximum volume at which the effect should be played
-     * @defaultValue `1.0`
-     */
-    volume: number;
-
-    /**
-     * Should volume be attenuated by distance?
-     * @defaultValue `true`
-     */
-    easing: boolean;
-
-    /**
-     * Should the sound be constrained by walls and surfaces?
-     * @defaultValue `true`
-     */
-    walls: boolean;
-
-    /**
-     * Should the sound always be played for GM users regardless of actively controlled tokens?
-     * @defaultValue `true`
-     */
-    gmAlways: boolean;
-
-    /** A base sound effect to apply to playback */
-    baseEffect: AmbientSoundDocument.Effect;
-
-    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls and surfaces */
-    muffledEffect: AmbientSoundDocument.Effect;
-
-    /**
-     * Additional data passed to the SoundSource constructor
-     */
-    sourceData: PointSoundSource.PartialSourceData;
-
-    /**
-     * Additional options passed to {@linkcode Sound.play | Sound#play}
-     */
-    playbackOptions: Sound.PlaybackOptionsPositional;
-  }
-
-  interface PlayAtPositionOptions extends InexactPartial<_PlayAtPositionOptions> {}
-
-  /** @internal */
-  interface _FadeOptions {
-    /**
-     * The duration of the fade effect in milliseconds
-     * @defaultValue `1000`
-     */
-    duration: number;
-
-    /**
-     * The type of fade easing, "linear" or "exponential"
-     * @defaultValue `"linear"`
-     */
-    type: "linear" | "exponential";
-
-    /**
-     * A volume level to start from, the current volume by default
-     * @defaultValue `this.gain.value`
-     */
-    from: number;
-  }
-
-  interface FadeOptions extends InexactPartial<_FadeOptions> {}
-
-  type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
-}
-
 /**
  * A container around an AudioNode which manages sound playback in Foundry Virtual Tabletop.
  * Each Sound is either an AudioBufferSourceNode (for short sources) or a MediaElementAudioSourceNode (for long ones).
@@ -566,6 +349,223 @@ declare class Sound extends EventEmitterMixin() {
   protected _disconnectPipeline(): void;
 
   #Sound: true;
+}
+
+declare namespace Sound {
+  interface Any extends AnySound {}
+  interface AnyConstructor extends Identity<typeof AnySound> {}
+
+  /** @internal */
+  interface _ConstructorOptions {
+    /**
+     * Force use of an AudioBufferSourceNode even if the audio duration is long
+     * @defaultValue `false`
+     */
+    forceBuffer: boolean;
+
+    /**
+     * A non-default audio context within which the sound should play
+     * @defaultValue {@linkcode game.audio.music}
+     */
+    context: AudioContext;
+  }
+
+  interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
+
+  type STATES = Brand<number, "Sound.STATES">;
+
+  interface States {
+    readonly FAILED: -1 & STATES;
+    readonly NONE: 0 & STATES;
+    readonly LOADING: 1 & STATES;
+    readonly LOADED: 2 & STATES;
+    readonly STARTING: 3 & STATES;
+    readonly PLAYING: 4 & STATES;
+    readonly PAUSED: 5 & STATES;
+    readonly STOPPING: 6 & STATES;
+    readonly STOPPED: 7 & STATES;
+  }
+
+  /** @internal */
+  interface _LoadOptions {
+    /**
+     * Automatically begin playback of the sound once loaded
+     * @defaultValue `false`
+     */
+    autoplay: boolean;
+
+    /**
+     * Playback options passed to Sound#play, if autoplay
+     * @defaultValue `{}`
+     */
+    autoplayOptions: Sound.PlaybackOptions;
+  }
+
+  interface LoadOptions extends InexactPartial<_LoadOptions> {}
+
+  /**
+   * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
+   * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
+   * by `Sound##configurePlayback`
+   * @internal
+   */
+  interface _PlaybackOptions {
+    /**
+     * A delay in seconds by which to delay playback
+     * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
+     */
+    delay: number;
+
+    /**
+     * A limited duration in seconds for which to play
+     * @defaultValue `undefined`
+     */
+    duration: number;
+
+    /**
+     * A duration in milliseconds over which to fade in playback
+     * @defaultValue `0`
+     * @remarks Unlike other properties of this interface, the above default is static.
+     */
+    fade: number;
+
+    /**
+     * Should sound playback loop?
+     * @defaultValue `false`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
+     */
+    loop: boolean;
+
+    /**
+     * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
+     */
+    loopStart: number;
+
+    /**
+     * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
+     * @defaultValue `undefined`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
+     */
+    loopEnd: number;
+
+    /**
+     * An offset in seconds at which to start playback
+     * @defaultValue `0`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value of `loopStart` in `this##playback` is, unless this is part of a
+     * {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with no playback
+     * history.
+     */
+    offset: number;
+
+    /**
+     * A callback function attached to the source node
+     * @defaultValue `null`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
+     */
+    onended: ScheduleCallback | null;
+
+    /**
+     * The volume at which to play the sound
+     * @defaultValue `1.0`
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
+     */
+    volume: number;
+  }
+
+  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls. */
+  interface PlaybackOptions extends InexactPartial<_PlaybackOptions> {}
+
+  /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
+  interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
+
+  /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
+  interface PartialSourceData extends IntentionalPartial<
+    Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">
+  > {}
+
+  /** @internal */
+  interface _PlayAtPositionOptions {
+    /**
+     * The maximum volume at which the effect should be played
+     * @defaultValue `1.0`
+     */
+    volume: number;
+
+    /**
+     * Should volume be attenuated by distance?
+     * @defaultValue `true`
+     */
+    easing: boolean;
+
+    /**
+     * Should the sound be constrained by walls and surfaces?
+     * @defaultValue `true`
+     */
+    walls: boolean;
+
+    /**
+     * Should the sound always be played for GM users regardless of actively controlled tokens?
+     * @defaultValue `true`
+     */
+    gmAlways: boolean;
+
+    /** A base sound effect to apply to playback */
+    baseEffect: AmbientSoundDocument.Effect;
+
+    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls and surfaces */
+    muffledEffect: AmbientSoundDocument.Effect;
+
+    /**
+     * Additional data passed to the SoundSource constructor
+     */
+    sourceData: PointSoundSource.PartialSourceData;
+
+    /**
+     * Additional options passed to {@linkcode Sound.play | Sound#play}
+     */
+    playbackOptions: Sound.PlaybackOptionsPositional;
+  }
+
+  interface PlayAtPositionOptions extends InexactPartial<_PlayAtPositionOptions> {}
+
+  /** @internal */
+  interface _FadeOptions {
+    /**
+     * The duration of the fade effect in milliseconds
+     * @defaultValue `1000`
+     */
+    duration: number;
+
+    /**
+     * The type of fade easing, "linear" or "exponential"
+     * @defaultValue `"linear"`
+     */
+    type: "linear" | "exponential";
+
+    /**
+     * A volume level to start from, the current volume by default
+     * @defaultValue `this.gain.value`
+     */
+    from: number;
+  }
+
+  interface FadeOptions extends InexactPartial<_FadeOptions> {}
+
+  type ScheduleCallback = (sound: Sound) => MaybePromise<unknown>;
 }
 
 export default Sound;
