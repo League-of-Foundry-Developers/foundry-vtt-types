@@ -30,33 +30,6 @@ declare class AVMaster {
   broadcasting: boolean;
 
   /**
-   * Flag to determine if we are connected to the signalling server or not.
-   * This is required for synchronization between connection and reconnection attempts.
-   * @defaultValue `false`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connected: never;
-
-  /**
-   * The cached connection promise.
-   * This is required to prevent re-triggering a connection while one is already in progress.
-   * @defaultValue `null`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connecting: never;
-
-  /**
-   * A flag to track whether the A/V system is currently in the process of reconnecting.
-   * This occurs if the connection is lost or interrupted.
-   * @defaultValue `false`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _reconnecting: never;
-
-  /**
    * @defaultValue `{ speaking: false, volumeHistories: [] }`
    * @internal
    * @privateRemarks Defined during construction by simple assignment.
@@ -95,13 +68,6 @@ declare class AVMaster {
    * Callback actions to take when the user becomes disconnected from the server.
    */
   reestablish(): Promise<void>;
-
-  /**
-   * Initialize the local broadcast state.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _initialize(): never;
 
   /**
    * A user can broadcast audio if the AV mode is compatible and if they are allowed to broadcast.
@@ -152,33 +118,6 @@ declare class AVMaster {
   deactivateVoiceDetection(): void;
 
   /**
-   * Periodic notification of user audio level
-   *
-   * This function uses the audio level (in dB) of the audio stream to determine if the user is speaking or not and
-   * notifies the UI of such changes.
-   *
-   * The User is considered speaking if they are above the decibel threshold in any of the history values.
-   * This marks them as speaking as soon as they have a high enough volume, and marks them as not speaking only after
-   * they drop below the threshold in all histories (last 4 volumes = for 200 ms).
-   *
-   * There can be more optimal ways to do this and which uses whether the user was already considered speaking before
-   * or not, in order to eliminate short bursts of audio (coughing for example).
-   *
-   * @param dbLevel - The audio level in decibels of the user within the last 50ms
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _onAudioLevel(dbLevel: never): never;
-
-  /**
-   * Resets the speaking history of a user
-   * If the user was considered speaking, then mark them as not speaking
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _resetSpeakingHistory(): never;
-
-  /**
    * Handle activation of a push-to-talk key or button.
    * @param context - The context data of the event
    * @internal
@@ -193,11 +132,6 @@ declare class AVMaster {
   _onPTTEnd(context: KeyboardManager.KeyboardEventContext): void;
 
   render(): void;
-
-  /**
-   * @deprecated Foundry removed this method in v13. This warning will be removed in v14.
-   */
-  onRender(): never;
 
   /**
    * Respond to changes which occur to AV Settings.

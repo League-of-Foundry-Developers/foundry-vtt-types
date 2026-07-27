@@ -81,14 +81,6 @@ declare abstract class AVClient {
   getVideoSources(): Promise<Record<string, string>>;
 
   /**
-   * Obtain a mapping of available device sources for a given type.
-   * @param kind - The type of device source being requested
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _getSourcesOfType(kind: never): never;
-
-  /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
    * The current user should also be included as a connected user in addition to all peers.
    * @returns The connected User IDs
