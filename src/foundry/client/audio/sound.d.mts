@@ -5,6 +5,9 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
 import type { AudioTimeout } from "./_module.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type SoundsLayer from "#client/canvas/layers/sounds.d.mts";
+
 declare namespace Sound {
   interface Any extends AnySound {}
   interface AnyConstructor extends Identity<typeof AnySound> {}
@@ -19,7 +22,7 @@ declare namespace Sound {
 
     /**
      * A non-default audio context within which the sound should play
-     * @defaultValue `game.audio.music`
+     * @defaultValue {@linkcode game.audio.music}
      */
     context: AudioContext;
   }
@@ -87,65 +90,66 @@ declare namespace Sound {
     /**
      * Should sound playback loop?
      * @defaultValue `false`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
-     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
-     * no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
      */
     loop: boolean;
 
     /**
      * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
      * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
-     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
-     * no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
      */
     loopStart: number;
 
     /**
      * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
      * @defaultValue `undefined`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
-     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
-     * no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
      */
     loopEnd: number;
 
     /**
      * An offset in seconds at which to start playback
      * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value of `loopStart` in
-     * `this##playback` is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates
-     * a new sound with no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value of `loopStart` in `this##playback` is, unless this is part of a
+     * {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with no playback
+     * history.
      */
     offset: number;
 
     /**
      * A callback function attached to the source node
      * @defaultValue `null`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
-     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
-     * no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
      */
     onended: ScheduleCallback | null;
 
     /**
      * The volume at which to play the sound
      * @defaultValue `1.0`
-     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
-     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
-     * no playback history
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever
+     * the current value in `this##playback` is, unless this is part of a {@linkcode SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}
+     * call, as that method always creates a new sound with no playback history.
      */
     volume: number;
   }
 
-  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
+  /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls. */
   interface PlaybackOptions extends InexactPartial<_PlaybackOptions> {}
 
-  /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}  */
+  /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
   interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
 
-  /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition} */
+  /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition}. */
   interface PartialSourceData extends IntentionalPartial<
     Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">
   > {}
@@ -380,7 +384,7 @@ declare class Sound extends EventEmitterMixin() {
    * An internal reference to some object which is managing this Sound instance.
    * @defaultValue `null`
    * @internal
-   * @remarks Only ever set *or* read externally by core, so not protected
+   * @remarks Only ever set *or* read externally by core, so not protected.
    */
   _manager: AmbientSound.Implementation | null;
 
@@ -464,12 +468,12 @@ declare class Sound extends EventEmitterMixin() {
   protected _play(): void;
 
   /**
-   * Pause playback of the Sound.
-   * For {@linkcode AudioBufferSourceNode} this stops playback after recording the current time.
-   * Calling {@linkcode Sound.play | Sound#play} will resume playback from the {@linkcode Sound.pauseTime | #pausedTime} unless some other offset is passed.
-   * For a {@linkcode MediaElementAudioSourceNode} this simply calls the {@linkcode HTMLAudioElement.pause | HTMLAudioElement#pause} method directly.
+   * Pause playback of the Sound. For {@linkcode AudioBufferSourceNode} this stops playback after recording the current time. Calling
+   * {@linkcode Sound.play | Sound#play} will resume playback from the {@linkcode Sound.pausedTime | #pausedTime} unless some other offset
+   * is passed. For a {@linkcode MediaElementAudioSourceNode} this simply calls the
+   * {@linkcode HTMLAudioElement.pause | HTMLAudioElement#pause} method directly.
    * @remarks
-   * @throws If called while the Sound isn't playing
+   * @throws If called while the Sound isn't playing.
    */
   pause(): void;
 
@@ -539,7 +543,7 @@ declare class Sound extends EventEmitterMixin() {
   /**
    * Update the array of effects applied to a Sound instance.
    * Optionally a new array of effects can be assigned. If no effects are passed, the current effects are re-applied.
-   * @param effects - An array of AudioNode effects to apply
+   * @param effects - An array of {@linkcode AudioNode} effects to apply
    */
   applyEffects(effects?: AudioNode[]): void;
 
@@ -557,7 +561,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * Disconnect the audio pipeline once playback is stopped.
-   * Walk backwards along the Sound##pipeline from the Sound#destination, disconnecting each node.
+   * Walk backwards along the `Sound##pipeline` from the {@linkcode Sound.destination | Sound#destination}, disconnecting each node.
    */
   protected _disconnectPipeline(): void;
 
