@@ -7,7 +7,7 @@ import type { DocumentCollection } from "#client/documents/abstract/_module.d.mt
 import type EmbeddedCollectionDelta from "#common/abstract/embedded-collection-delta.d.mts";
 
 /**
- * An extension of the Collection.
+ * An extension of the {@linkcode Collection}.
  * Used for the specific task of containing embedded Document instances within a parent Document.
  *
  * @privateRemarks `ParentDocument` would ideally be `NonNullable<Document.ParentForName<ContainedDocument["documentName"]>>`, but this
@@ -50,7 +50,7 @@ declare class EmbeddedCollection<
   readonly name: string;
 
   /**
-   * The parent DataModel to which this EmbeddedCollection instance belongs.
+   * The parent `DataModel` to which this `EmbeddedCollection` instance belongs.
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly model: ParentDocument;
@@ -81,7 +81,7 @@ declare class EmbeddedCollection<
   get documentsByType(): Record<string, ContainedDocument[]>;
 
   /**
-   * Initialize the EmbeddedCollection object by constructing its contained Document instances
+   * Initialize the `EmbeddedCollection` object by constructing its contained Document instances
    * @param options - Initialization options (default: `{}`)
    */
   initialize(options?: EmbeddedCollection.InitializeOptions): void;
@@ -174,14 +174,14 @@ declare class EmbeddedCollection<
   manages(id: string): boolean;
 
   /**
-   * Convert the EmbeddedCollection to an array of simple objects.
+   * Convert the `EmbeddedCollection` to an array of simple objects.
    * @param source - Draw data for contained Documents from the underlying data source? (default: `true`)
    * @returns The extracted array of primitive objects
    */
   toObject(source?: boolean): ContainedDocument["_source"][];
 
   /**
-   * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
+   * Follow-up actions to take when a database operation modifies Documents in this `EmbeddedCollection`.
    * @param action    - The database action performed
    * @param documents - The array of modified Documents
    * @param result    - The result of the database operation

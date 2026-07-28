@@ -13,7 +13,7 @@ import type DatabaseBackend from "#common/abstract/backend.d.mts";
 import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
 
 /**
- * An abstract subclass of the Collection container which defines a collection of Document instances.
+ * An abstract subclass of the `Collection` container which defines a collection of Document instances.
  * @remarks The `data` passed to the constructor is *not* put unconditionally into the `Collection`, it's set as
  * {@linkcode DocumentCollection._source | #_source} and then {@linkcode DocumentCollection._initialize | #initialize}
  * adds valid documents to the `Collection` and invalid `id`s to {@linkcode DocumentCollection.invalidDocumentIds | #invalidDocumentIds}.
@@ -25,9 +25,11 @@ declare abstract class DocumentCollection<
   constructor(data?: Document.SourceForName<DocumentName>[]);
 
   /**
-   * The source data array from which the Documents in the WorldCollection are created
+   * The source data array from which the Documents in the `WorldCollection` are created
    * @remarks Defined in the class body but set via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
+   *
+   * Despite Foundry's description, `CompendiumCollection`s can also use this property, not just `WorldCollection`s.
    * @internal
    */
   readonly _source: Document.SourceForName<DocumentName>[];
@@ -39,24 +41,24 @@ declare abstract class DocumentCollection<
   apps: (Application.Any | ApplicationV2.Any)[];
 
   /**
-   * Initialize the DocumentCollection by constructing any initially provided Document instances
+   * Initialize the `DocumentCollection` by constructing any initially provided Document instances
    */
   protected _initialize(): void;
 
   /**
-   * A reference to the Document class definition which is contained within this DocumentCollection.
+   * A reference to the Document class definition which is contained within this `DocumentCollection`.
    */
   get documentClass(): Document.ImplementationClassFor<DocumentName>;
 
   /**
-   * A reference to the named Document class which is contained within this DocumentCollection.
+   * A reference to the named Document class which is contained within this `DocumentCollection`.
    * @remarks Returns the static {@linkcode DocumentCollection.documentName | this.constructor.documentName}.
    * @throws If the static property is unset or otherwise falsey.
    */
   get documentName(): DocumentName;
 
   /**
-   * The base Document type which is contained within this DocumentCollection
+   * The base Document type which is contained within this `DocumentCollection`
    * @remarks Effectively abstract, this is used as the base value for the instance `documentName` getter, must be set by subclasses.
    * {@linkcode foundry.documents.collections.CompendiumFolderCollection} lacks an override, so this is always `undefined` on that
    * subclass.
@@ -101,13 +103,9 @@ declare abstract class DocumentCollection<
    * @remarks The parameter `id` is ignored in favour of `document.id`. This guarantees that all values are stored documents with keys
    * matching their IDs.
    */
-  set(id: string, document: Document.StoredForName<DocumentName>): this;
+  override set(id: string, document: Document.StoredForName<DocumentName>): this;
 
-  /**
-   * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
-   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-   */
-  delete(id: string): boolean;
+  override delete(id: string): boolean;
 
   /**
    * Render any Applications associated with this DocumentCollection.
@@ -166,14 +164,13 @@ declare abstract class DocumentCollection<
    * @param options  - Options which modify import behavior
    * @returns Data ready for import
    * @throws An error if the import should be disallowed
-   * @privateRemarks The `document` parameter has been widened
-   *
+   * @privateRemarks The `document` parameter has been widened to `Document.Any` to support
+   * {@link CompendiumCollection.importDocument | `CompendiumCollection`'s override}, which has conditional handling for `Folder`s.
+   * It is re-narrowed in {@link WorldCollection.importDocument | a fake type override} in `WorldCollection`.
    *
    * The implementation in `DocumentCollection` just directly calls {@linkcode Document.toObject | #toObject}.
    * The return could be narrowed to `CreateData` or `Source` but neither {@linkcode ClientDocument.ToCompendiumReturnType} nor
    * {@linkcode WorldCollection.FromCompendiumReturnType} directly extend either.
-   *
-   *
    */
   protected _prepareImportDocument(
     document: Document.Any,

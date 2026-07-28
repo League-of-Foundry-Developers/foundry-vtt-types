@@ -28,23 +28,23 @@ declare const Map: { [K in keyof MapConstructor as K extends "prototype" ? never
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
- * @template T - The type of the objects contained in the Collection
+ * @template T - The type of the objects contained in the `Collection`
  */
 declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<V, Methods> {
   /**
    * This is to allow {@linkcode foundry.documents.abstract.DirectoryCollectionMixin | DirectoryCollectionMixin} (or any
-   * theoretical future/user mixins) clean access to the value type for this Collection.
+   * theoretical future/user mixins) clean access to the value type for this `Collection`.
    * @internal
    */
   " __fvtt_types_internal_value": V;
 
   /**
-   * When iterating over a Collection, we should iterate over its values instead of over its entries
+   * When iterating over a `Collection`, we should iterate over its values instead of over its entries
    */
   [Symbol.iterator](): MapIterator<V>;
 
   /**
-   * Return an Array of all the entry values in the Collection
+   * Return an Array of all the entry values in the `Collection`
    */
   get contents(): V[];
 
@@ -57,7 +57,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @returns The value, if found, otherwise undefined
    *
    * @example
-   * Create a new Collection and reference its contents
+   * Create a new `Collection` and reference its contents
    * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a") === c.find(entry => entry === "A"); // true
@@ -67,7 +67,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   find(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V | undefined;
 
   /**
-   * Filter the Collection, returning an Array of entries which match a functional condition.
+   * Filter the `Collection`, returning an Array of entries which match a functional condition.
    * @see {@linkcode Array.filter | Array#filter}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the
@@ -75,7 +75,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @returns An Array of matched values
    *
    * @example
-   * Filter the Collection for specific entries
+   * Filter the `Collection` for specific entries
    * ```ts
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
@@ -99,7 +99,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   forEach(/** @immediate */ fn: (entry: V, index: number) => void): void;
 
   /**
-   * Get an entry from the Collection by name.
+   * Get an entry from the `Collection` by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
    * @param name   - The name of the entry to retrieve
    * @param strict - Throw an Error if the requested name does not exist, otherwise return undefined. (default: `false`)
@@ -122,7 +122,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   ): Collection.GetReturn<V, Options>;
 
   /**
-   * Transform each element of the Collection into a new form, returning an Array of transformed values
+   * Transform each element of the `Collection` into a new form, returning an Array of transformed values
    * @see {@linkcode Array.map | Array#map}
    * @param transformer - A transformation function applied to each entry value.
    * @returns An Array of transformed values
@@ -130,7 +130,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: this) => M): M[];
 
   /**
-   * Reduce the Collection by applying an evaluator function and accumulating entries
+   * Reduce the `Collection` by applying an evaluator function and accumulating entries
    * @see {@linkcode Array.reduce | Array#reduce}
    * @template U
    * @param reducer - A reducer function applied to each entry value.
@@ -152,7 +152,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   ): A;
 
   /**
-   * Test whether a condition is met by some entry in the Collection.
+   * Test whether a condition is met by some entry in the `Collection`.
    * @see {@linkcode Array.some | Array#some}
    * @param condition - The functional condition to test.
    * @returns Was the test condition passed by at least one entry?
@@ -160,7 +160,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   some(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): boolean;
 
   /**
-   * Test whether a condition is met by every entry in the Collection.
+   * Test whether a condition is met by every entry in the `Collection`.
    * @see {@linkcode Array.every | Array#every}
    * @param condition - The functional condition to test.
    * @returns True if the test condition was truthy for every entry.
