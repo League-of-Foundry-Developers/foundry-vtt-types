@@ -215,6 +215,68 @@ describe("EmbeddedCollection Tests", async () => {
     expectTypeOf(ec["_delete"]("ID")).toBeVoid();
   });
 
+  test("Callback methods", () => {
+    expectTypeOf(
+      ec.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      ec.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      ec.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      ec.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Item"[]>;
+
+    expectTypeOf(
+      ec.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      ec.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      ec.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+  });
+
   test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
     ec._onModifyContents("update", [itemStored], [itemUpdateData], onSceneUpdateOperation);

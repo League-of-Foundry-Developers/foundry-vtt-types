@@ -251,6 +251,68 @@ describe("DocumentCollection Tests", async () => {
     expectTypeOf(dc._onModifyContents("delete", [item], ["XXXXXITEMIDXXXXX"], onItemDeleteOperation, user)).toBeVoid();
   });
 
+  test("Callback methods", () => {
+    expectTypeOf(
+      dc.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      dc.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      dc.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      dc.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Item"[]>;
+
+    expectTypeOf(
+      dc.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      dc.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      dc.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });
