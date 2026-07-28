@@ -98,6 +98,18 @@ declare abstract class DocumentCollection<
   ): DocumentCollection.GetInvalidReturn<DocumentName, Options>;
 
   /**
+   * @remarks The parameter `id` is ignored in favour of `document.id`. This guarantees that all values are stored documents with keys
+   * matching their IDs.
+   */
+  set(id: string, document: Document.StoredForName<DocumentName>): this;
+
+  /**
+   * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
+   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   */
+  delete(id: string): boolean;
+
+  /**
    * Render any Applications associated with this DocumentCollection.
    * @param force   - Force rendering  (default: `false`)
    * @param options - Optional options (default: `{}`)
@@ -232,20 +244,6 @@ declare namespace DocumentCollection {
       id: string,
       options?: Options,
     ): DocumentCollection.GetReturn<DocumentName, Options>;
-
-    /**
-     * @remarks Foundry fails to return the super call here, leading to a `void` return rather than `this` as of 13.350
-     * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565}).
-     *
-     * The parameter `id` is ignored, instead `document.id` is used as the key. This guarantees that all values are stored documents.
-     */
-    set(id: string, document: Document.StoredForName<DocumentName>): this;
-
-    /**
-     * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
-     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-     */
-    delete(id: string): boolean;
   }
 
   /**

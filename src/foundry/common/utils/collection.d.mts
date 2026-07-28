@@ -180,11 +180,6 @@ declare namespace Collection {
   interface Any extends AnyCollection {}
   interface AnyConstructor extends Identity<typeof AnyCollection> {}
 
-  /**
-   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return
-   */
-  type Method<This, Methods, Property extends keyof Methods> = ({ self: This } & Methods)[Property];
-
   /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
     /**
@@ -206,27 +201,11 @@ declare namespace Collection {
       key: string,
       options?: Options,
     ): Collection.GetReturn<V, Options>;
-
-    /**
-     * Adds a new element with a specified key and value to the Map. If an element with the same key already exists, the element will be updated.
-     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-     */
-    set(key: string, value: V): this;
-
-    /**
-     * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
-     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-     */
-    delete(key: string): boolean;
   }
 
   namespace Methods {
     interface Any {
       get(key: string, options?: never): unknown;
-
-      set(key: string, value: unknown, options?: never): unknown;
-
-      delete(key: string, options?: never): unknown;
     }
   }
 
