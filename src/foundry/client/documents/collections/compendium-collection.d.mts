@@ -33,7 +33,7 @@ import type ClientDocumentMixin from "#client/documents/abstract/client-document
 
 /**
  * A collection of Document objects contained within a specific compendium pack.
- * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
+ * Each Compendium pack has its own associated instance of the `CompendiumCollection` class which contains its contents.
  *
  * @see {@linkcode Game.packs | Game#packs}
  */
@@ -50,7 +50,7 @@ declare class CompendiumCollection<
   index: Collection<CompendiumCollection.IndexEntry<DocumentName>>;
 
   /**
-   * The amount of time that Document instances within this CompendiumCollection are held in memory.
+   * The amount of time that `Document` instances within this `CompendiumCollection` are held in memory.
    * Accessing the contents of the Compendium pack extends the duration of this lifetime.
    * @defaultValue `300`
    */
@@ -62,7 +62,7 @@ declare class CompendiumCollection<
   static CONFIG_SETTING: "compendiumConfiguration";
 
   /**
-   * The DataField definition for the configuration Setting
+   * The `DataField` definition for the configuration Setting
    */
   static CONFIG_FIELD: CompendiumCollection.SettingField;
 
@@ -71,12 +71,13 @@ declare class CompendiumCollection<
 
   /**
    * The banner image for this Compendium pack, or the default image for the pack type if no image is set.
-   * @remarks `undefined` in the metadata gets converted to `CONFIG[this.metadata.type]?.compendiumBanner`, which might, itself, be `undefined`
+   * @remarks `undefined` in the metadata gets converted to `CONFIG[this.metadata.type]?.compendiumBanner`,
+   * which might, itself, be `undefined`.
    */
   get banner(): string | null | undefined;
 
   /**
-   * A reference to the Application class which provides an interface to interact with this compendium content.
+   * A reference to the `Application` class which provides an interface to interact with this compendium content.
    * @defaultValue {@linkcode foundry.applications.sidebar.apps.Compendium}
    */
   applicationClass: Application.AnyConstructor | ApplicationV2.AnyConstructor;
@@ -101,7 +102,7 @@ declare class CompendiumCollection<
    * Assign this CompendiumCollection to be organized within a specific Folder.
    * @param folder - The desired Folder within the World or `null` to clear the folder
    * @returns A promise which resolves once the transaction is complete
-   * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode foundry.Game.folders | game.folders}
+   * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode game.folders}.
    */
   setFolder(folder: Folder.Stored<"Compendium"> | string | null): Promise<void>;
 
@@ -444,7 +445,7 @@ declare namespace CompendiumCollection {
     fields.TypedObjectField.DefaultOptions
   > {}
 
-  /** @remarks Currently (13.351) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
+  /** @remarks Currently (14.365) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
   type OwnershipData = NonNullable<SettingData["ownership"]>;
 
   /**

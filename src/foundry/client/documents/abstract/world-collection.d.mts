@@ -15,25 +15,25 @@ import type { collections } from "#client/documents/_module.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.
- * Each primary Document type has an associated subclass of WorldCollection which contains them.
+ * Each primary Document type has an associated subclass of `WorldCollection` which contains them.
  * @see {@linkcode foundry.Game.collections | Game#collections}
  */
 declare abstract class WorldCollection<DocumentName extends Document.WorldType> extends DirectoryCollectionMixin(
   DocumentCollection,
 )<DocumentName> {
   /**
-   * Reference the set of Folders which contain documents in this collection
+   * Reference the set of `Folder`s which contain documents in this collection
    */
   get folders(): WorldCollection.Folders<DocumentName>;
 
   /**
-   * Return a reference to the SidebarDirectory application for this WorldCollection.
+   * Return a reference to the `SidebarDirectory` application for this WorldCollection.
    * @remarks This getter has several hardcoded special cases, see {@linkcode WorldCollection.Directory}
    */
   get directory(): WorldCollection.Directory<DocumentName>;
 
   /**
-   * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
+   * Return a reference to the singleton instance of this `WorldCollection`, or `null` if it has not yet been created.
    */
   static get instance(): InitializedOn<WorldCollection.Any, "setup">;
 
@@ -98,7 +98,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * See {@linkcode DocumentSheetConfig.registerSheet} for details.
    *
    * @example
-   * Register a new ActorSheet subclass for use with certain Actor types.
+   * Register a new `ActorSheet` subclass for use with certain Actor types.
    * ```ts
    * foundry.documents.collections.Actors.registerSheet("dnd5e", ActorSheet5eCharacter, {
    *   types: ["character"],
