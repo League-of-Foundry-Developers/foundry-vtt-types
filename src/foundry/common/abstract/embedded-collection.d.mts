@@ -122,11 +122,26 @@ declare class EmbeddedCollection<
   ): void;
 
   /**
+   * Add a document to the collection
+   * @param key     - The embedded Document ID
+   * @param value   - The embedded Document instance
+   * @param options - Additional options to the set operation
+   */
+  set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
+
+  /**
    * Modify the underlying source array to include the Document.
    * @param key   - The Document ID Key
    * @param value - The Document
    */
   protected _set(key: string, value: ContainedDocument): void;
+
+  /**
+   * Remove a document from the collection.
+   * @param key     - The embedded Document ID.
+   * @param options - Additional options to the delete operation.
+   */
+  delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
 
   /**
    * Remove the value from the underlying source array.
@@ -326,21 +341,6 @@ declare namespace EmbeddedCollection {
       id: string,
       options?: Options,
     ): EmbeddedCollection.GetReturn<ContainedDocument, Options>;
-
-    /**
-     * Add a document to the collection
-     * @param key     - The embedded Document ID
-     * @param value   - The embedded Document instance
-     * @param options - Additional options to the set operation
-     */
-    set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
-
-    /**
-     * Remove a document from the collection.
-     * @param key     - The embedded Document ID.
-     * @param options - Additional options to the delete operation.
-     */
-    delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
   }
 }
 
