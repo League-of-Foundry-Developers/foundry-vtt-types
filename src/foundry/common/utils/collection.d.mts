@@ -63,10 +63,8 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
    */
-  find<S extends V>(
-    /** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => e is S,
-  ): S | undefined;
-  find(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): V | undefined;
+  find<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S | undefined;
+  find(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V | undefined;
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
@@ -83,8 +81,8 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
    */
-  filter<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => e is S): S[];
-  filter(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): V[];
+  filter<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S[];
+  filter(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V[];
 
   /**
    * Apply a function to each element of the collection
@@ -98,13 +96,13 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.forEach(e => e.active = true);
    * ```
    */
-  forEach(/** @immediate */ fn: (e: V) => void): void;
+  forEach(/** @immediate */ fn: (entry: V, index: number) => void): void;
 
   /**
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
-   * @param name    - The name of the entry to retrieve
-   * @param strict  - Throw an Error if the requested name does not exist, otherwise return undefined. (default: `false`)
+   * @param name   - The name of the entry to retrieve
+   * @param strict - Throw an Error if the requested name does not exist, otherwise return undefined. (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    *
    * @example
@@ -125,15 +123,15 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
-   * @see {@linkcode Array#map}
+   * @see {@linkcode Array.map | Array#map}
    * @param transformer - A transformation function applied to each entry value.
    * @returns An Array of transformed values
    */
-  map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
+  map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: this) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@linkcode Array#reduce}
+   * @see {@linkcode Array.reduce | Array#reduce}
    * @template U
    * @param reducer - A reducer function applied to each entry value.
    * @param initial - An initial value which accumulates with each iteration
@@ -149,28 +147,28 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * ```
    */
   reduce<A>(
-    /** @immediate */ evaluator: (accumulator: A, entity: V, index: number, collection: Collection<V>) => A,
+    /** @immediate */ evaluator: (accumulator: A, entity: V, index: number, collection: this) => A,
     initial: A,
   ): A;
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see {@linkcode Array#some}
+   * @see {@linkcode Array.some | Array#some}
    * @param condition - The functional condition to test.
    * @returns Was the test condition passed by at least one entry?
    */
-  some(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
+  some(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): boolean;
 
   /**
    * Test whether a condition is met by every entry in the Collection.
-   * @see {@linkcode Array#every}
+   * @see {@linkcode Array.every | Array#every}
    * @param condition - The functional condition to test.
    * @returns True if the test condition was truthy for every entry.
    */
-  every(/** @immediate */ condition: (element: V, index: number, collection: Collection<V>) => boolean): boolean;
+  every(/** @immediate */ condition: (element: V, index: number, collection: this) => boolean): boolean;
 
   /**
-   * Convert the Collection to a primitive array of its contents.
+   * Convert the `Collection` to a primitive array of its contents.
    * @returns An array of contained values
    */
   toJSON(): Array<V extends { toJSON: (...args: infer _1) => infer U } ? U : V>;

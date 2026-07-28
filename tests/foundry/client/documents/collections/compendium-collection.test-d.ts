@@ -435,6 +435,68 @@ describe("CompendiumCollection Tests", async () => {
     expectTypeOf(actorPack.delete("ID")).toBeBoolean();
   });
 
+  test("Callback methods", () => {
+    expectTypeOf(
+      actorPack.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      actorPack.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      actorPack.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      actorPack.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Actor"[]>;
+
+    expectTypeOf(
+      actorPack.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      actorPack.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      actorPack.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
     for (const pack of compendiaToCleanUp) await pack.deleteCompendium();
