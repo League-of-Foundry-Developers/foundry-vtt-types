@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { Identity } from "#utils";
 import type { PrototypeToken } from "#client/data/_module.d.mts";
 
 /**
