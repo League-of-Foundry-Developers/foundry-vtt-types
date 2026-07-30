@@ -218,7 +218,7 @@ export interface DataConfig {}
 export interface GetDataConfig {}
 
 /**
- * Merge into this interface to configure known subtypes for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}:
+ * Merge into this interface to configure known subtypes for the 11 (as of 14.365) Documents with a {@linkcode foundry.data.TypeDataField}:
  * `ActiveEffect`, `Actor`, `Card`, `Cards`, `ChatMessage`, `Combat`, `Combatant`, `CombatantGroup`, `Item`, `JournalEntryPage`,
  * and `RegionBehavior`.
  *

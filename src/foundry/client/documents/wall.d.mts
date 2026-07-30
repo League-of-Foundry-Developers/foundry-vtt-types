@@ -22,6 +22,13 @@ declare namespace WallDocument {
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
+   * A broad classification of a wall based on its properties, as returned by
+   * {@linkcode WallDocument.getWallCategory | #getWallCategory} and used as the keys of
+   * {@linkcode BaseWall.CATEGORY_COLORS}.
+   */
+  type Category = "blank" | "door" | "ethereal" | "invisible" | "normal" | "secret" | "terrain" | "window";
+
+  /**
    * The documents embedded within `WallDocument`.
    */
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
@@ -1073,6 +1080,11 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
   // Embedded document operations have been left out because Wall does not have any embedded documents.
+
+  /**
+   * Broadly classify a wall into one of several categories, based on its properties.
+   */
+  getWallCategory(): WallDocument.Category;
 }
 
 export default WallDocument;

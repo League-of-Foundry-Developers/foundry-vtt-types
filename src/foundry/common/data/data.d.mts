@@ -332,6 +332,14 @@ declare abstract class BaseShapeData<
 
   static override defineSchema(): BaseShapeData.Schema;
 
+  /**
+   * The index of this shape within the array of shapes in its parent.
+   * @remarks Foundry marks this `@internal`, but it is read externally by
+   * {@linkcode foundry.applications.apps.ShapeConfig | ShapeConfig}, which is not a subclass, so it must be public
+   * here.
+   */
+  _index: number | undefined;
+
   static #BaseShapeData: true;
 }
 
