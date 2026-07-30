@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
@@ -68,60 +69,75 @@ declare namespace VFXPositionalSoundComponent {
   interface PositionalSoundData {
     /** Sound source path. */
     src: string;
+
     /** How sound playback aligns with animation, a value in SOUND_ALIGNMENT (default END). */
     align: number;
+
     /** Playback volume (default 1.0). */
     volume: number;
+
     /** Local sound radius in distance units (default 60). */
     radius: number;
+
     /** Whether to apply easing to local sound (default true). */
     easing: boolean;
+
     /** Whether sound should be constrained by walls (default true). */
     walls: boolean;
+  }
+
+  /** Sub-schema shared by the `baseEffect` and `muffledEffect` fields. */
+  interface SoundEffectSchema extends DataSchema {
+    intensity: fields.NumberField<{ required: true; nullable: false; min: 1; max: 10 }>;
+
+    type: fields.StringField<{ required: true; blank: false }>;
   }
 
   interface Schema extends VFXComponent._Schema<"positionalSound"> {
     /** Audio channel for playback (default "environment"). */
     channel: fields.StringField<{ required: true; blank: false; initial: "environment" }>;
+
     /** Component duration in ms; defaults to the sound's natural duration. */
     duration: fields.NumberField<{ nullable: false }>;
+
     /** Whether to apply easing to local sound (default true). */
     easing: fields.BooleanField<{ initial: true }>;
+
     /** The elevation of the sound origin (default 0). */
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
     /** Fade-in duration in ms (default 0). */
     fade: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
     /** Whether the GM always hears the sound regardless of position (default true). */
     gmAlways: fields.BooleanField<{ required: false; initial: true }>;
+
     /** The angle of the sound cone in degrees. */
     angle: fields.AngleField<{ required: false }>;
+
     /** Audio effect applied when the sound is not muffled. */
-    baseEffect: fields.SchemaField<
-      {
-        intensity: fields.NumberField<{ required: true; nullable: false; min: 1; max: 10 }>;
-        type: fields.StringField<{ required: true; blank: false }>;
-      },
-      { required: false; nullable: true; initial: null }
-    >;
+    baseEffect: fields.SchemaField<SoundEffectSchema, { required: false; nullable: true; initial: null }>;
+
     /** Audio effect applied when the sound is muffled. */
-    muffledEffect: fields.SchemaField<
-      {
-        intensity: fields.NumberField<{ required: true; nullable: false; min: 1; max: 10 }>;
-        type: fields.StringField<{ required: true; blank: false }>;
-      },
-      { required: false; nullable: true; initial: null }
-    >;
+    muffledEffect: fields.SchemaField<SoundEffectSchema, { required: false; nullable: true; initial: null }>;
+
     /** Local sound radius in distance units (default 60). */
     radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
+
     /** The direction of sound emission in degrees. */
     rotation: fields.AngleField<{ required: false }>;
+
     /** Sound source path. */
     src: fields.StringField<{ required: true; blank: false }>;
+
     /** Playback volume (default 1.0). */
     volume: fields.AlphaField;
+
     /** Whether sound should be constrained by walls (default true). */
     walls: fields.BooleanField<{ initial: true }>;
+
     x: fields.NumberField<{ required: true; nullable: false }>;
+
     y: fields.NumberField<{ required: true; nullable: false }>;
   }
 

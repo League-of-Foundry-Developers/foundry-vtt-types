@@ -9,18 +9,10 @@ import type { DataField } from "#common/data/fields.d.mts";
  */
 declare class VFXPointField<
   Options extends VFXPointField.Options = VFXPointField.DefaultOptions,
-  AssignmentType = foundry.data.fields.SchemaField.Internal.InitializedType<
-    VFXPointField.PointSchema,
-    VFXPointField.MergedOptions<Options>
-  >,
-  InitializedType = foundry.data.fields.SchemaField.Internal.InitializedType<
-    VFXPointField.PointSchema,
-    VFXPointField.MergedOptions<Options>
-  >,
-  PersistedType extends AnyObject | null | undefined = foundry.data.fields.SchemaField.Internal.PersistedType<
-    VFXPointField.PointSchema,
-    VFXPointField.MergedOptions<Options>
-  >,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  AssignmentType = VFXPointField.AssignmentType<Options>,
+  InitializedType = VFXPointField.InitializedType<Options>,
+  PersistedType extends AnyObject | null | undefined = VFXPointField.PersistedType<Options>,
 > extends foundry.data.fields.SchemaField<
   VFXPointField.PointSchema,
   Options,
@@ -45,6 +37,7 @@ declare namespace VFXPointField {
 
   interface PointSchema extends foundry.data.fields.DataSchema {
     x: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+
     y: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
   }
 
@@ -59,6 +52,20 @@ declare namespace VFXPointField {
   >;
 
   type MergedOptions<Options extends VFXPointField.Options> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}
+   * for more details.
+   */
+  type AssignmentType<Opts extends VFXPointField.Options = VFXPointField.DefaultOptions> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    foundry.data.fields.SchemaField.Internal.AssignmentType<PointSchema, MergedOptions<Opts>>;
+
+  type InitializedType<Opts extends VFXPointField.Options = VFXPointField.DefaultOptions> =
+    foundry.data.fields.SchemaField.Internal.InitializedType<PointSchema, MergedOptions<Opts>>;
+
+  type PersistedType<Opts extends VFXPointField.Options = VFXPointField.DefaultOptions> =
+    foundry.data.fields.SchemaField.Internal.PersistedType<PointSchema, MergedOptions<Opts>>;
 }
 
 export default VFXPointField;

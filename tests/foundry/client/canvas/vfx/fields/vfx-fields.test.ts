@@ -25,6 +25,21 @@ describe("VFXReferenceField", () => {
     // result is string | undefined (inner field initialized type)
     expectTypeOf(resolved).toEqualTypeOf<string | undefined>();
   });
+
+  test("options widen the initialized type", () => {
+    expectTypeOf<VFXReferenceField.InitializedType<fields.NumberField, { required: true }>>().toEqualTypeOf<
+      number | undefined
+    >();
+    expectTypeOf<VFXReferenceField.InitializedType<fields.NumberField, { nullable: true }>>().toEqualTypeOf<
+      number | null | undefined
+    >();
+  });
+
+  test("options widen the persisted type", () => {
+    expectTypeOf<VFXReferenceField.PersistedType<fields.NumberField, { nullable: true }>>().toExtend<
+      VFXReferenceField.ReferenceData | number | null | undefined
+    >();
+  });
 });
 
 describe("VFXReferenceObjectField", () => {
@@ -60,11 +75,25 @@ describe("VFXPointField", () => {
     const field = new VFXPointField();
     expectTypeOf(field).toExtend<VFXPointField>();
   });
+
+  test("initialized type is the point schema, widened by options", () => {
+    expectTypeOf<VFXPointField.InitializedType>().toEqualTypeOf<{ x: number; y: number }>();
+    expectTypeOf<VFXPointField.InitializedType<{ nullable: true }>>().toEqualTypeOf<{
+      x: number;
+      y: number;
+    } | null>();
+  });
 });
 
 describe("VFXPointSourcePolygonField", () => {
   test("can be constructed with no arguments", () => {
     const field = new VFXPointSourcePolygonField();
     expectTypeOf(field).toExtend<VFXPointSourcePolygonField>();
+  });
+
+  test("initialized type is always a PointSourcePolygon", () => {
+    expectTypeOf<VFXPointSourcePolygonField.InitializedType>().toExtend<
+      foundry.canvas.geometry.PointSourcePolygon | null | undefined
+    >();
   });
 });

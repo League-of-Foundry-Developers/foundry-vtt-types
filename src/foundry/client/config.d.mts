@@ -2948,10 +2948,90 @@ declare global {
       }
 
       interface VFX {
+        /**
+         * The Foundry VTT version 14 VFX framework is EXPERIMENTAL. Its classes, functions, and configuration are
+         * likely to change over coming releases. The entire VFX module should be treated as non-stable regardless of
+         * the stability designation of the release build that contains it.
+         * You may use this experimental framework by enabling it via `CONFIG.Canvas.vfx.enabled`.
+         * @defaultValue `false`
+         */
         enabled: boolean;
-        components: Record<string, typeof vfx.VFXComponent>;
-        animations: Record<string, vfx.VFXComponent.Animation>;
-        paths: Record<string, vfx.VFXPath.Generator>;
+
+        /**
+         * Named VFXComponent subclasses which can be used to orchestrate different types of visual effects.
+         */
+        components: VFX.Components;
+
+        /**
+         * Named animations that may be called as part of a component.
+         */
+        animations: VFX.Animations;
+
+        /**
+         * Named path generator functions that may be called as part of a component.
+         */
+        paths: VFX.Paths;
+      }
+
+      namespace VFX {
+        /**
+         * @remarks The default entries are registered by `foundry.canvas.vfx.configure()`, which copies every export
+         * of `foundry.canvas.vfx.components` in under its export name.
+         */
+        interface Components {
+          [componentName: Brand<string, "CONFIG.Canvas.vfx.components">]: typeof vfx.VFXComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXParticleGeneratorComponent` */
+          VFXParticleGeneratorComponent: typeof vfx.components.VFXParticleGeneratorComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXPositionalSoundComponent` */
+          VFXPositionalSoundComponent: typeof vfx.components.VFXPositionalSoundComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXScrollingTextComponent` */
+          VFXScrollingTextComponent: typeof vfx.components.VFXScrollingTextComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXShakeComponent` */
+          VFXShakeComponent: typeof vfx.components.VFXShakeComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXSingleAttackComponent` */
+          VFXSingleAttackComponent: typeof vfx.components.VFXSingleAttackComponent;
+
+          /** @defaultValue `foundry.canvas.vfx.components.VFXSingleImpactComponent` */
+          VFXSingleImpactComponent: typeof vfx.components.VFXSingleImpactComponent;
+        }
+
+        /**
+         * @remarks The default entries are registered by `foundry.canvas.vfx.configure()`, which copies every export
+         * of `foundry.canvas.vfx.animations` in under its export name.
+         */
+        interface Animations {
+          [animationName: Brand<string, "CONFIG.Canvas.vfx.animations">]: vfx.VFXComponent.Animation;
+
+          /** @defaultValue `foundry.canvas.vfx.animations.drawBack` */
+          drawBack: vfx.VFXComponent.Animation;
+
+          /** @defaultValue `foundry.canvas.vfx.animations.followPath` */
+          followPath: vfx.VFXComponent.Animation;
+
+          /** @defaultValue `foundry.canvas.vfx.animations.scale` */
+          scale: vfx.VFXComponent.Animation;
+        }
+
+        /**
+         * @remarks The default entries are registered by `foundry.canvas.vfx.configure()`.
+         */
+        interface Paths {
+          [pathName: Brand<string, "CONFIG.Canvas.vfx.paths">]: vfx.VFXPath.Generator;
+
+          /** @defaultValue `(points, _parameters) => new foundry.canvas.vfx.VFXPath(points)` */
+          linear: vfx.VFXPath.Generator;
+
+          /** @defaultValue the `arcPath` generator from `client/canvas/vfx/paths/vfx-arc-path.mjs` */
+          arc: vfx.VFXPath.Generator;
+
+          /** @defaultValue the `weavePath` generator from `client/canvas/vfx/paths/vfx-weave-path.mjs` */
+          weave: vfx.VFXPath.Generator;
+        }
       }
     }
 

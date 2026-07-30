@@ -19,9 +19,10 @@ import type VFXPointField from "./vfx-point-field.d.mts";
  */
 declare class VFXReferencePointField<
   Options extends VFXReferencePointField.Options = VFXReferencePointField.DefaultOptions,
-  AssignmentType = VFXReferenceObjectField.AssignmentType<VFXPointField, Options>,
-  InitializedType = VFXReferenceObjectField.InitializedType<VFXPointField, Options>,
-  PersistedType = VFXReferenceObjectField.PersistedType<VFXPointField, Options>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  AssignmentType = VFXReferencePointField.AssignmentType<Options>,
+  InitializedType = VFXReferencePointField.InitializedType<Options>,
+  PersistedType = VFXReferencePointField.PersistedType<Options>,
 > extends VFXReferenceObjectField<VFXPointField, Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -39,6 +40,20 @@ declare namespace VFXReferencePointField {
   interface Options extends VFXReferenceObjectField.Options {}
 
   type DefaultOptions = VFXReferenceObjectField.DefaultOptions;
+
+  /**
+   * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}
+   * for more details.
+   */
+  type AssignmentType<Opts extends VFXReferencePointField.Options = VFXReferencePointField.DefaultOptions> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    VFXReferenceObjectField.AssignmentType<VFXPointField, Opts>;
+
+  type InitializedType<Opts extends VFXReferencePointField.Options = VFXReferencePointField.DefaultOptions> =
+    VFXReferenceObjectField.InitializedType<VFXPointField, Opts>;
+
+  type PersistedType<Opts extends VFXReferencePointField.Options = VFXReferencePointField.DefaultOptions> =
+    VFXReferenceObjectField.PersistedType<VFXPointField, Opts>;
 }
 
 export default VFXReferencePointField;

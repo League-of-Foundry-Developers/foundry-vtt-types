@@ -24,14 +24,19 @@ export function generateWeavePoints(
 export interface WeavePathOptions {
   /** Number of Hermite arcs (1 = single arc, 2 = up/down pair, etc., default 1). */
   arcCount?: number | undefined;
+
   /** Ratio of the path length that determines the peak displacement (default 0.15). */
   amplitude?: number | undefined;
+
   /** Multiplier applied to the Hermite tangents (default 1). */
   tangentScale?: number | undefined;
+
   /** Starting direction of the weave (1 = "up", -1 = "down", default 1). */
   direction?: number | undefined;
+
   /** Points generated per Hermite segment (default 8). */
   segmentPoints?: number | undefined;
+
   /** An array of auxiliary parameter names. */
   auxiliary?: string[] | undefined;
 }

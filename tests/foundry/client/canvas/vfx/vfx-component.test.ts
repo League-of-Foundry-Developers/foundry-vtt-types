@@ -1,4 +1,5 @@
 import { describe, expectTypeOf, test } from "vitest";
+import type { AnyMutableObject } from "#utils";
 
 import VFXComponent = foundry.canvas.vfx.VFXComponent;
 
@@ -51,7 +52,7 @@ describe("VFXComponent", () => {
       animate: (_t, _state, _params) => {},
     };
     expectTypeOf(anim.animate).toBeFunction();
-    expectTypeOf(anim.setup).toEqualTypeOf<((state: object, params: object) => void) | undefined>();
+    expectTypeOf(anim.setup).toEqualTypeOf<((state: AnyMutableObject, params: AnyMutableObject) => void) | undefined>();
   });
 
   test("protected hooks are overridable in subclasses", () => {

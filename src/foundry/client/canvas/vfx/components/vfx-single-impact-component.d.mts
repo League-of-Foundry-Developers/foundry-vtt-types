@@ -1,4 +1,5 @@
 import type { Identity, ValueOf } from "#utils";
+import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
@@ -61,48 +62,63 @@ declare namespace VFXSingleImpactComponent {
   interface Any extends AnyVFXSingleImpactComponent {}
   interface AnyConstructor extends Identity<typeof AnyVFXSingleImpactComponent> {}
 
+  interface PositionSchema extends DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false }>;
+
+    y: fields.NumberField<{ required: true; nullable: false }>;
+
+    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    sort: fields.NumberField<{ nullable: false; initial: 0 }>;
+
+    sortLayer: fields.NumberField<{
+      nullable: false;
+      initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+    }>;
+  }
+
+  interface SoundSchema extends DataSchema {
+    src: fields.StringField<{ required: true; blank: false }>;
+
+    align: fields.NumberField<{
+      required: true;
+      nullable: false;
+      choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
+      initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
+    }>;
+
+    volume: fields.AlphaField;
+
+    radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
+
+    easing: fields.BooleanField<{ initial: true }>;
+
+    walls: fields.BooleanField<{ initial: true }>;
+  }
+
+  interface AnimationSchema extends DataSchema {
+    function: fields.StringField<{ required: true }>;
+
+    params: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField<{ required: false }>>;
+  }
+
   interface Schema extends VFXComponent._Schema<"singleImpact"> {
     /** Position of the impact. May be a reference with deltas. */
-    position: foundry.canvas.vfx.fields.VFXReferenceObjectField<
-      fields.SchemaField<{
-        x: fields.NumberField<{ required: true; nullable: false }>;
-        y: fields.NumberField<{ required: true; nullable: false }>;
-        elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-        sort: fields.NumberField<{ nullable: false; initial: 0 }>;
-        sortLayer: fields.NumberField<{
-          nullable: false;
-          initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
-        }>;
-      }>
-    >;
+    position: foundry.canvas.vfx.fields.VFXReferenceObjectField<fields.SchemaField<PositionSchema>>;
+
     texture: fields.StringField<{ required: true }>;
+
     duration: fields.NumberField<{ required: true; nullable: false; initial: 1000 }>;
+
     /** Scale override for the impact sprite. May be a reference. */
     scale: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: false }>;
+
     /** Uniform size in grid units. May be a reference. */
     size: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ required: false }>>;
-    sound: fields.SchemaField<
-      {
-        src: fields.StringField<{ required: true; blank: false }>;
-        align: fields.NumberField<{
-          required: true;
-          nullable: false;
-          choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
-          initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
-        }>;
-        volume: fields.AlphaField;
-        radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
-        easing: fields.BooleanField<{ initial: true }>;
-        walls: fields.BooleanField<{ initial: true }>;
-      },
-      { nullable: true; initial: null }
-    >;
-    animations: fields.ArrayField<
-      fields.SchemaField<{
-        function: fields.StringField<{ required: true }>;
-        params: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField<{ required: false }>>;
-      }>
-    >;
+
+    sound: fields.SchemaField<SoundSchema, { nullable: true; initial: null }>;
+
+    animations: fields.ArrayField<fields.SchemaField<AnimationSchema>>;
   }
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}

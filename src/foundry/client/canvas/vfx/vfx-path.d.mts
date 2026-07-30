@@ -1,4 +1,5 @@
-import type { Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A class responsible for constructing a path of points used for animation.
@@ -35,8 +36,9 @@ declare class VFXPath {
   /**
    * Get a configured path generator from CONFIG.Canvas.vfx.paths.
    * @param pathName - The named path type
+   * @throws If the named path generator has not been registered in `CONFIG.Canvas.vfx.paths`
    */
-  static getPathGenerator(pathName: string): VFXPath.Generator;
+  static getPathGenerator(pathName: VFXPath.ConfiguredPath): VFXPath.Generator;
 
   /**
    * Create a VFXPath instance of a certain named path type defined in CONFIG.Canvas.vfx.paths.
@@ -44,7 +46,7 @@ declare class VFXPath {
    * @param points     - Path points to construct
    * @param parameters - Additional parameters used to construct the path
    */
-  static create(pathName: string, points: VFXPath.BasePathPoint[], parameters?: Record<string, unknown>): VFXPath;
+  static create(pathName: VFXPath.ConfiguredPath, points: VFXPath.BasePathPoint[], parameters?: AnyObject): VFXPath;
 
   #VFXPath: true;
 }
@@ -53,10 +55,11 @@ declare namespace VFXPath {
   interface Any extends AnyVFXPath {}
   interface AnyConstructor extends Identity<typeof AnyVFXPath> {}
 
+  /** The name of a path generator registered in `CONFIG.Canvas.vfx.paths`. */
+  type ConfiguredPath = keyof CONFIG.Canvas.VFX.Paths;
+
   /** Base point data accepted by the VFXPath constructor. */
-  interface BasePathPoint {
-    x: number;
-    y: number;
+  interface BasePathPoint extends Canvas.Point {
     elevation: number;
     rotation?: number | undefined;
     sort?: number | undefined;
@@ -64,9 +67,7 @@ declare namespace VFXPath {
   }
 
   /** A fully-resolved path point with interpolated distance and index. */
-  interface PathPoint {
-    x: number;
-    y: number;
+  interface PathPoint extends Canvas.Point {
     rotation: number;
     distance: number;
     index: number;
@@ -76,7 +77,7 @@ declare namespace VFXPath {
   }
 
   /** A function that generates a VFXPath from a set of base points and parameters. */
-  type Generator = (points: VFXPath.BasePathPoint[], params: Record<string, unknown>) => VFXPath;
+  type Generator = (points: VFXPath.BasePathPoint[], params: AnyObject) => VFXPath;
 }
 
 export default VFXPath;

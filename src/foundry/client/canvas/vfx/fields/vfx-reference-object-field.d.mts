@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { AnyObject, Identity, SimpleMerge } from "#utils";
 import type { DataField } from "#common/data/fields.d.mts";
 import type VFXReferenceField from "./vfx-reference-field.d.mts";
 
@@ -23,6 +23,7 @@ import type VFXReferenceField from "./vfx-reference-field.d.mts";
 declare class VFXReferenceObjectField<
   ValueField extends DataField.Any = DataField.Any,
   Options extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = VFXReferenceObjectField.AssignmentType<ValueField, Options>,
   InitializedType = VFXReferenceObjectField.InitializedType<ValueField, Options>,
   PersistedType = VFXReferenceObjectField.PersistedType<ValueField, Options>,
@@ -40,7 +41,7 @@ declare class VFXReferenceObjectField<
    */
   static override referenceField: foundry.data.fields.SchemaField.Any;
 
-  override resolve(value: AssignmentType, references: Record<string, unknown>): InitializedType;
+  override resolve(value: AssignmentType, references: AnyObject): InitializedType;
 
   static override isReference(value: unknown): value is VFXReferenceObjectField.ReferenceData;
 
@@ -55,29 +56,42 @@ declare namespace VFXReferenceObjectField {
 
   type DefaultOptions = VFXReferenceField.DefaultOptions;
 
+  type MergedOptions<Opts extends VFXReferenceObjectField.Options> = SimpleMerge<DefaultOptions, Opts>;
+
   /**
    * Serialized reference pointing to a named object in the effect's reference map.
    */
   interface ReferenceData {
     reference: string;
+
     property?: string | undefined;
+
     deltas?: Record<string, number> | undefined;
   }
 
+  /**
+   * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}
+   * for more details.
+   */
   type AssignmentType<
     ValueField extends DataField.Any,
-    _Options extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
-  > = ReferenceData | DataField.InitializedTypeFor<ValueField> | null | undefined;
+    Opts extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = DataField.DerivedAssignmentType<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    ReferenceData | DataField.AssignmentTypeFor<ValueField>,
+    MergedOptions<Opts>
+  >;
 
   type InitializedType<
     ValueField extends DataField.Any,
-    Options extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
-  > = VFXReferenceField.InitializedType<ValueField, Options>;
+    Opts extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
+  > = VFXReferenceField.InitializedType<ValueField, Opts>;
 
   type PersistedType<
     ValueField extends DataField.Any,
-    _Options extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
-  > = ReferenceData | DataField.PersistedTypeFor<ValueField> | null | undefined;
+    Opts extends VFXReferenceObjectField.Options = VFXReferenceObjectField.DefaultOptions,
+  > = DataField.DerivedInitializedType<ReferenceData | DataField.PersistedTypeFor<ValueField>, MergedOptions<Opts>>;
 }
 
 export default VFXReferenceObjectField;

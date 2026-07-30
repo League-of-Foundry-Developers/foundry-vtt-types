@@ -24,14 +24,19 @@ export function generateArcPoints(
 export interface ArcPathOptions {
   /** Position along path where arc peaks (0-1, default 0.5). */
   peakRatio?: number | undefined;
+
   /** Height of arc as ratio of path length (default 0.3). */
   peakHeight?: number | undefined;
+
   /** Direction of arc perpendicular to path (1 for "up", -1 for "down", default 1). */
   direction?: number | undefined;
+
   /** Number of points to generate (default: half of distance in pixels). */
   numPoints?: number | undefined;
+
   /** Scaling factor for tangent vectors (default 1). */
   tangentScale?: number | undefined;
+
   /** An array of auxiliary parameter names. */
   auxiliary?: string[] | undefined;
 }

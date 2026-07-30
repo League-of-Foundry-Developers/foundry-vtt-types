@@ -1,4 +1,4 @@
-import type { Identity, SimpleMerge } from "#utils";
+import type { AnyObject, Identity, SimpleMerge } from "#utils";
 import type { DataField } from "#common/data/fields.d.mts";
 import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
@@ -14,6 +14,7 @@ import type { DataModelValidationFailure } from "#common/data/validation-failure
 declare class VFXReferenceField<
   ValueField extends DataField.Any = DataField.Any,
   Options extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = VFXReferenceField.AssignmentType<ValueField, Options>,
   InitializedType = VFXReferenceField.InitializedType<ValueField, Options>,
   PersistedType = VFXReferenceField.PersistedType<ValueField, Options>,
@@ -53,7 +54,7 @@ declare class VFXReferenceField<
    * @param value      - The initial value which may contain a reference
    * @param references - Provided references
    */
-  resolve(value: AssignmentType, references: Record<string, unknown>): InitializedType;
+  resolve(value: AssignmentType, references: AnyObject): InitializedType;
 
   /**
    * Test whether a value is a reference.
@@ -70,31 +71,50 @@ declare namespace VFXReferenceField {
 
   interface Options extends DataField.Options.Any {}
 
-  type DefaultOptions = SimpleMerge<DataField.DefaultOptions, Record<string, never>>;
+  // `VFXReferenceField` adds no defaults of its own: the constructor merges the wrapped
+  // `valueField`'s options with the provided ones, so `DataField`'s defaults carry through.
+  interface DefaultOptions extends DataField.DefaultOptions {}
+
+  type MergedOptions<Opts extends VFXReferenceField.Options> = SimpleMerge<DefaultOptions, Opts>;
 
   /**
    * Serialized reference pointing to a named value in the effect's reference map.
    */
   interface ReferenceData {
     reference: string;
+
     property?: string | undefined;
+
     delta?: number | undefined;
   }
 
+  /**
+   * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}
+   * for more details.
+   */
   type AssignmentType<
     ValueField extends DataField.Any,
-    _Options extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
-  > = ReferenceData | DataField.InitializedTypeFor<ValueField> | null | undefined;
+    Opts extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = DataField.DerivedAssignmentType<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    ReferenceData | DataField.AssignmentTypeFor<ValueField>,
+    MergedOptions<Opts>
+  >;
 
+  /**
+   * @remarks `undefined` is always in the union: {@linkcode VFXReferenceField.initialize} returns
+   * `undefined` for a value which is still an unresolved reference, regardless of the field's options.
+   */
   type InitializedType<
     ValueField extends DataField.Any,
-    _Options extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
-  > = DataField.InitializedTypeFor<ValueField> | undefined;
+    Opts extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
+  > = DataField.DerivedInitializedType<DataField.InitializedTypeFor<ValueField>, MergedOptions<Opts>> | undefined;
 
   type PersistedType<
     ValueField extends DataField.Any,
-    _Options extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
-  > = ReferenceData | DataField.PersistedTypeFor<ValueField> | null | undefined;
+    Opts extends VFXReferenceField.Options = VFXReferenceField.DefaultOptions,
+  > = DataField.DerivedInitializedType<ReferenceData | DataField.PersistedTypeFor<ValueField>, MergedOptions<Opts>>;
 }
 
 export default VFXReferenceField;

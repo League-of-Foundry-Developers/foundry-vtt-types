@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { AnyObject, Identity, SimpleMerge } from "#utils";
 import type { DataField } from "#common/data/fields.d.mts";
 import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
@@ -19,6 +19,7 @@ import type VFXReferenceField from "./vfx-reference-field.d.mts";
  */
 declare class VFXPointSourcePolygonField<
   Options extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   AssignmentType = VFXPointSourcePolygonField.AssignmentType<Options>,
   InitializedType = VFXPointSourcePolygonField.InitializedType<Options>,
   PersistedType = VFXPointSourcePolygonField.PersistedType<Options>,
@@ -48,7 +49,7 @@ declare class VFXPointSourcePolygonField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  override resolve(value: AssignmentType, references: Record<string, unknown>): InitializedType;
+  override resolve(value: AssignmentType, references: AnyObject): InitializedType;
 
   #VFXPointSourcePolygonField: true;
 }
@@ -57,23 +58,32 @@ declare namespace VFXPointSourcePolygonField {
   interface Any extends AnyVFXPointSourcePolygonField {}
   interface AnyConstructor extends Identity<typeof AnyVFXPointSourcePolygonField> {}
 
+  interface PolygonConfigSchema extends foundry.data.fields.DataSchema {
+    type: foundry.data.fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "move";
+      choices: typeof CONST.EDGE_RESTRICTION_TYPES;
+    }>;
+
+    x: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+
+    y: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+
+    elevation: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: undefined }>;
+
+    level: foundry.data.fields.DocumentIdField<{ readonly: false; initial: null }>;
+
+    radius: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: null; positive: true }>;
+
+    angle: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
+
+    rotation: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
+  }
+
   /** The schema field used to validate the serializable polygon config. */
   type PolygonConfigField = foundry.data.fields.SchemaField<
-    {
-      type: foundry.data.fields.StringField<{
-        required: true;
-        blank: false;
-        initial: "move";
-        choices: typeof CONST.EDGE_RESTRICTION_TYPES;
-      }>;
-      x: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
-      y: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
-      elevation: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: undefined }>;
-      level: foundry.data.fields.DocumentIdField<{ readonly: false; initial: null }>;
-      radius: foundry.data.fields.NumberField<{ required: false; nullable: true; initial: null; positive: true }>;
-      angle: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
-      rotation: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
-    },
+    PolygonConfigSchema,
     { required: false; nullable: true; initial: null }
   >;
 
@@ -81,18 +91,24 @@ declare namespace VFXPointSourcePolygonField {
 
   type DefaultOptions = VFXReferenceField.DefaultOptions;
 
-  /** Assignment type: polygon config, reference data, PointSourcePolygon instance, or null/undefined. */
-  type AssignmentType<_Options extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions> =
-    PointSourcePolygon | VFXReferenceField.AssignmentType<PolygonConfigField>;
+  /**
+   * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}
+   * for more details.
+   */
+  type AssignmentType<Opts extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    PointSourcePolygon | VFXReferenceField.AssignmentType<PolygonConfigField, Opts>;
 
-  /** Initialized type: PointSourcePolygon or null/undefined. */
-  type InitializedType<
-    _Options extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions,
-  > = PointSourcePolygon | null | undefined;
+  /**
+   * @remarks Always a `PointSourcePolygon` once initialized — the field computes the polygon from its
+   * serialized config during initialization — or `undefined` while the reference is unresolved.
+   */
+  type InitializedType<Opts extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions> =
+    | DataField.DerivedInitializedType<PointSourcePolygon, SimpleMerge<DefaultOptions, Opts>>
+    | undefined;
 
-  /** Persisted type: serializable config object, reference data, or null/undefined. */
-  type PersistedType<_Options extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions> =
-    VFXReferenceField.PersistedType<PolygonConfigField>;
+  type PersistedType<Opts extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions> =
+    VFXReferenceField.PersistedType<PolygonConfigField, Opts>;
 }
 
 export default VFXPointSourcePolygonField;

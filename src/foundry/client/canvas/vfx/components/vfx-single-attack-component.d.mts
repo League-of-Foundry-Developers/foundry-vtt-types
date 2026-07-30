@@ -117,84 +117,112 @@ declare namespace VFXSingleAttackComponent {
   /** Timeline offsets (ms) for the charge step: start, end, and an optional sound cue. */
   interface ChargeTimings {
     chargeStart: number;
+
     chargeEnd: number;
+
     chargeSound?: number | undefined;
   }
 
   /** Timeline offsets (ms) for the projectile step: start, end, and an optional sound cue. */
   interface ProjectileTimings {
     projectileStart: number;
+
     projectileEnd: number;
+
     projectileSound?: number | undefined;
   }
 
   /** Timeline offsets (ms) for the impact step: start, end, and an optional sound cue. */
   interface ImpactTimings {
     impactStart: number;
+
     impactEnd: number;
+
     impactSound?: number | undefined;
   }
 
   /** The full set of timeline offsets (ms) computed by `_getTimings`, covering every step. */
   interface Timings extends ChargeTimings, ProjectileTimings, ImpactTimings {}
 
+  interface AnimationSchema extends DataSchema {
+    function: fields.StringField<{ required: true }>;
+
+    params: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField>;
+  }
+
+  interface SoundSchema extends DataSchema {
+    src: fields.StringField<{ required: true; blank: false }>;
+
+    align: fields.NumberField<{
+      required: true;
+      nullable: false;
+      choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
+      initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
+    }>;
+
+    volume: fields.AlphaField;
+
+    radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
+
+    easing: fields.BooleanField<{ initial: true }>;
+
+    walls: fields.BooleanField<{ initial: true }>;
+  }
+
   /** Shared sub-schema for a charge, projectile, or impact step. */
   interface AttackStepSchema extends DataSchema {
     texture: fields.StringField<{ required: true }>;
+
     duration: fields.NumberField<{ required: true; nullable: false; initial: 1000 }>;
+
     scale: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: false }>;
+
     size: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ required: false }>>;
-    animations: fields.ArrayField<
-      fields.SchemaField<{
-        function: fields.StringField<{ required: true }>;
-        params: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField>;
-      }>
-    >;
-    sound: fields.SchemaField<
-      {
-        src: fields.StringField<{ required: true; blank: false }>;
-        align: fields.NumberField<{
-          required: true;
-          nullable: false;
-          choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
-          initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
-        }>;
-        volume: fields.AlphaField;
-        radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
-        easing: fields.BooleanField<{ initial: true }>;
-        walls: fields.BooleanField<{ initial: true }>;
-      },
-      { nullable: true; initial: null }
-    >;
+
+    animations: fields.ArrayField<fields.SchemaField<AnimationSchema>>;
+
+    sound: fields.SchemaField<SoundSchema, { nullable: true; initial: null }>;
+  }
+
+  /** The projectile step, which additionally configures a flight speed. */
+  interface ProjectileStepSchema extends AttackStepSchema {
+    speed: fields.NumberField<{ required: false }>;
+  }
+
+  interface PathPointSchema extends DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false }>;
+
+    y: fields.NumberField<{ required: true; nullable: false }>;
+
+    elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    sort: fields.NumberField<{ nullable: false; initial: 0 }>;
+
+    sortLayer: fields.NumberField<{
+      nullable: false;
+      initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+    }>;
+  }
+
+  interface PathTypeSchema extends DataSchema {
+    type: fields.StringField<{ required: true; initial: "linear" }>;
+
+    params: fields.ObjectField<{ required: false }>;
   }
 
   interface Schema extends VFXComponent._Schema<"singleAttack"> {
     /** Array of at least 2 path points. Points may be reference objects with deltas. */
     path: fields.ArrayField<
-      foundry.canvas.vfx.fields.VFXReferenceObjectField<
-        fields.SchemaField<{
-          x: fields.NumberField<{ required: true; nullable: false }>;
-          y: fields.NumberField<{ required: true; nullable: false }>;
-          elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-          sort: fields.NumberField<{ nullable: false; initial: 0 }>;
-          sortLayer: fields.NumberField<{
-            nullable: false;
-            initial: typeof foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
-          }>;
-        }>
-      >,
+      foundry.canvas.vfx.fields.VFXReferenceObjectField<fields.SchemaField<PathPointSchema>>,
       { required: true; min: 2 }
     >;
-    pathType: fields.SchemaField<{
-      type: fields.StringField<{ required: true; initial: "linear" }>;
-      params: fields.ObjectField<{ required: false }>;
-    }>;
+
+    pathType: fields.SchemaField<PathTypeSchema>;
+
     charge: fields.SchemaField<AttackStepSchema>;
-    projectile: fields.SchemaField<
-      AttackStepSchema & {
-        speed: fields.NumberField<{ required: false }>;
-      }
-    >;
+
+    projectile: fields.SchemaField<ProjectileStepSchema>;
+
     impact: fields.SchemaField<AttackStepSchema>;
   }
 

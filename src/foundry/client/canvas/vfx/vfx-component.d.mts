@@ -1,5 +1,5 @@
 import type { PIXI } from "#configuration";
-import type { Identity } from "#utils";
+import type { AnyMutableObject, Identity } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type { Timeline as AnimeTimeline } from "animejs/timeline";
@@ -126,8 +126,8 @@ declare namespace VFXComponent {
    * The shape of a VFX component schema, generic over the component's `type` discriminant literal.
    * Subclasses extend `_Schema<"theirType">` so the initialized `type` narrows to that literal while
    * assignment/persisted stay `string` (keeping the field's method params variance-compatible with the base).
+   * @internal
    */
-  /** @internal */
   interface _Schema<Type extends string> extends DataSchema {
     type: fields.StringField<{ required: true; blank: false }, string, Type, string>;
   }
@@ -150,9 +150,11 @@ declare namespace VFXComponent {
    * A component-specific animation object with optional setup/teardown hooks.
    */
   interface Animation {
-    setup?: ((state: object, params: object) => void) | undefined;
-    animate: (t: number, state: object, params: object) => void;
-    tearDown?: ((state: object, params: object) => void) | undefined;
+    setup?: ((state: AnyMutableObject, params: AnyMutableObject) => void) | undefined;
+
+    animate: (t: number, state: AnyMutableObject, params: AnyMutableObject) => void;
+
+    tearDown?: ((state: AnyMutableObject, params: AnyMutableObject) => void) | undefined;
   }
 }
 

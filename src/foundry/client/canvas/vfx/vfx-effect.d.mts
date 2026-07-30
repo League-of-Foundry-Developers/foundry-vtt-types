@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "./vfx-component.d.mts";
@@ -52,7 +52,7 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    * @returns A Promise which resolves to whether playback fully completed,
    * or `undefined` when the VFX framework is disabled via `CONFIG.Canvas.vfx.enabled`
    */
-  play(references?: Record<string, unknown>): Promise<boolean | undefined>;
+  play(references?: AnyObject): Promise<boolean | undefined>;
 
   /**
    * Stop animation, treating the animation as successfully completed.
@@ -69,7 +69,7 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    * This is idempotent: fields already resolved to concrete values are skipped on subsequent calls.
    * @param references - A record of references used to resolve model data
    */
-  resolveReferences(references?: Record<string, unknown>): void;
+  resolveReferences(references?: AnyObject): void;
 
   /* DataModel overrides */
 
@@ -90,8 +90,15 @@ declare namespace VFXEffect {
   interface Any extends AnyVFXEffect {}
   interface AnyConstructor extends Identity<typeof AnyVFXEffect> {}
 
+  interface TimelineEntrySchema extends DataSchema {
+    component: fields.StringField<{ required: true; nullable: false; blank: false }>;
+
+    position: fields.AnyField;
+  }
+
   interface Schema extends DataSchema {
     name: fields.StringField<{ required: true; nullable: false; blank: false }>;
+
     // `components` is built at runtime from CONFIG.Canvas.vfx.components (open/dynamic set), so
     // there are no static type keys for TypedSchemaField to discriminate on. Override record types.
     components: fields.TypedObjectField<
@@ -101,12 +108,8 @@ declare namespace VFXEffect {
       Record<string, VFXComponent>,
       Record<string, VFXComponent.SourceData>
     >;
-    timeline: fields.ArrayField<
-      fields.SchemaField<{
-        component: fields.StringField<{ required: true; nullable: false; blank: false }>;
-        position: fields.AnyField;
-      }>
-    >;
+
+    timeline: fields.ArrayField<fields.SchemaField<TimelineEntrySchema>>;
   }
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
@@ -116,7 +119,7 @@ declare namespace VFXEffect {
   /** The plain data shape of a VFXEffect configuration. */
   interface Data {
     name: string;
-    components: Record<string, object>;
+    components: Record<string, AnyObject>;
     timeline: TimelineSequenceEntry[];
   }
 
