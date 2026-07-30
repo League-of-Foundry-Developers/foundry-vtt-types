@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type {
   ApplicationV2,
   DocumentSheetV2,
@@ -69,12 +69,12 @@ declare class FolderConfig<
     event: SubmitEvent | null,
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
-  ): object;
+  ): Folder.UpdateData;
 
   protected override _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: AnyObject,
+    submitData: Folder.UpdateData,
     options?: unknown,
   ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult<Folder.Implementation>>;
 

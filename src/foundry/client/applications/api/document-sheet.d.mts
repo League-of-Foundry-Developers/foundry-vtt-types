@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
 
@@ -86,9 +86,14 @@ declare namespace DocumentSheetV2 {
     renderData: object;
   }
 
-  interface SubmitOptions {
+  /** Processed and validated form data used to update a Document. */
+  type SubmitData<ConcreteDocument extends Document.Any = Document.Any> = foundry.data.fields.SchemaField.UpdateData<
+    ConcreteDocument["schema"]["fields"]
+  >;
+
+  interface SubmitOptions<ConcreteDocument extends Document.Any = Document.Any> {
     /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
-    updateData: object;
+    updateData: SubmitData<ConcreteDocument>;
   }
 
   /** The result of submitting a document form. */
@@ -177,14 +182,13 @@ declare class DocumentSheetV2<
    * @param updateData - Additional data passed in if this form is submitted manually which should be merged with prepared formData
    * @returns Prepared submission data as an object
    * @throws Subclasses may throw validation errors here to prevent form submission
-   * @privateRemarks TODO: Improve typing for updateData & return
    */
   protected _prepareSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
     formData: FormDataExtended,
-    updateData?: unknown,
-  ): object;
+    updateData?: DocumentSheetV2.SubmitData<Document>,
+  ): DocumentSheetV2.SubmitData<Document>;
 
   /**
    * Customize how form data is extracted into an expanded object.
@@ -194,7 +198,11 @@ declare class DocumentSheetV2<
    * @returns An expanded object of processed form data
    * @throws Subclasses may throw validation errors here to prevent form submission
    */
-  protected _processFormData(event: SubmitEvent | null, form: HTMLFormElement, formData: FormDataExtended): object;
+  protected _processFormData(
+    event: SubmitEvent | null,
+    form: HTMLFormElement,
+    formData: FormDataExtended,
+  ): DocumentSheetV2.SubmitData<Document>;
 
   /**
    * Submit a document update or creation request based on the processed form data.
@@ -210,7 +218,7 @@ declare class DocumentSheetV2<
   protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: AnyObject,
+    submitData: DocumentSheetV2.SubmitData<Document>,
     options?: unknown,
   ): Promise<DocumentSheetV2.SubmitResult<Document>>;
 
