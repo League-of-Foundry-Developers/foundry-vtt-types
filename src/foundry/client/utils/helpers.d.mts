@@ -49,7 +49,7 @@ type AllowedRelativesOf<
 > = [Name] extends [never]
   ? Doc["documentName"] extends Document.EmbeddedType | "Actor"
     ? Document.Embedded.ParentForName<Doc["documentName"]>
-    : null
+    : undefined
   : Name extends Document.EmbeddedType | "Actor"
     ? Document.Embedded.ParentForName<Name>
     : undefined;
