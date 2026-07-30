@@ -1267,7 +1267,7 @@ declare namespace Document {
     }[keyof Embedded];
 
     /** Provides a union of `Implementation` types for all possible parents of a given embedded Document type */
-    type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
+    type ParentForName<Name extends Document.EmbeddedType | "Actor"> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
 

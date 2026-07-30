@@ -1046,14 +1046,35 @@ declare class InvalidUuid<OriginalUuid extends string> {
 type _MustBeValidUuid<
   Uuid extends string,
   OriginalUuid extends string,
+  // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
   Type extends Document.Type,
-> = Uuid extends `${string}.${string}.${infer Rest}`
+> = Uuid extends `Compendium.${string}.${string}.${infer Rest}`
   ? _MustBeValidUuid<Rest, OriginalUuid, Type>
-  : Uuid extends `${string}.${string}`
-    ? Uuid extends `${Type}.${string}`
-      ? OriginalUuid
-      : InvalidUuid<OriginalUuid>
-    : `${Type}.${string}` | `${string}.${string}.${Type}.${string}`;
+  : Uuid extends `${string}.${string}.${infer Rest}`
+    ? _MustBeValidUuid<Rest, OriginalUuid, Type>
+    : Uuid extends `${string}.${string}`
+      ? Uuid extends `${Type}.${string}`
+        ? OriginalUuid
+        : InvalidUuid<OriginalUuid>
+      :
+          | `${Type}.${string}`
+          | `${string}.${string}.${Type}.${string}`
+          | (Type extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Type}.${string}`);
+
+export type GetNameFromUuid<Uuid extends string | InvalidUuid<string>> = Uuid extends string
+  ? _GetNameFromUuid<Uuid>
+  : never;
+
+type _GetNameFromUuid<Uuid extends string> = string extends Uuid
+  ? never
+  : Uuid extends `Compendium.${string}.${string}.${infer Rest}`
+    ? _GetNameFromUuid<Rest>
+    : Uuid extends `${string}.${string}.${infer Rest}`
+      ? _GetNameFromUuid<Rest>
+      : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
+        Uuid extends `${infer Name extends Document.Type}.${string}`
+        ? Name
+        : never;
 
 /**
  * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`
