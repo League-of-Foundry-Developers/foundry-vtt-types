@@ -744,7 +744,7 @@ declare class ApplicationV2<
    * Insert the application HTML element into the DOM.
    * Subclasses may override this method to customize how the application is inserted.
    * @param element - The element to insert
-   * @param options - Options provided at render-time
+   * @param options - Render options.
    */
   protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): Promise<void>;
 
