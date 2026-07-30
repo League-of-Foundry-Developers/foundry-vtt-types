@@ -28,17 +28,32 @@ describe("VFXReferenceField", () => {
 
   test("options widen the initialized type", () => {
     expectTypeOf<VFXReferenceField.InitializedType<fields.NumberField, { required: true }>>().toEqualTypeOf<
-      number | undefined
+      number | null | undefined
     >();
     expectTypeOf<VFXReferenceField.InitializedType<fields.NumberField, { nullable: true }>>().toEqualTypeOf<
       number | null | undefined
     >();
   });
 
+  test("default options preserve the wrapped field's required state", () => {
+    expectTypeOf<
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      VFXReferenceField.AssignmentType<fields.StringField<{ required: true; nullable: false }>>
+    >().toEqualTypeOf<string | VFXReferenceField.ReferenceData>();
+  });
+
   test("options widen the persisted type", () => {
-    expectTypeOf<VFXReferenceField.PersistedType<fields.NumberField, { nullable: true }>>().toExtend<
+    expectTypeOf<VFXReferenceField.PersistedType<fields.NumberField, { nullable: true }>>().toEqualTypeOf<
       VFXReferenceField.ReferenceData | number | null | undefined
     >();
+  });
+
+  test("reference properties may explicitly be null", () => {
+    const reference = {
+      reference: "target",
+      property: null,
+    } satisfies VFXReferenceField.ReferenceData;
+    expectTypeOf(reference.property).toEqualTypeOf<null>();
   });
 });
 
@@ -55,6 +70,15 @@ describe("VFXReferenceObjectField", () => {
       new fields.SchemaField({ x: new fields.NumberField(), y: new fields.NumberField() }),
     );
     field.resolve({ reference: "target", deltas: { x: 1, y: -1 } }, { target: { x: 0, y: 0 } });
+  });
+
+  test("reference properties may explicitly be null", () => {
+    const reference = {
+      reference: "target",
+      property: null,
+      deltas: {},
+    } satisfies VFXReferenceObjectField.ReferenceData;
+    expectTypeOf(reference.property).toEqualTypeOf<null>();
   });
 });
 
@@ -92,7 +116,7 @@ describe("VFXPointSourcePolygonField", () => {
   });
 
   test("initialized type is always a PointSourcePolygon", () => {
-    expectTypeOf<VFXPointSourcePolygonField.InitializedType>().toExtend<
+    expectTypeOf<VFXPointSourcePolygonField.InitializedType>().toEqualTypeOf<
       foundry.canvas.geometry.PointSourcePolygon | null | undefined
     >();
   });

@@ -1,19 +1,21 @@
 import type VFXPath from "../vfx-path.d.mts";
 
 /**
- * Generate an arcing path between provided control points using cubic Hermite splines.
+ * Generate an arcing path between provided control points using cubic hermite splines.
  * @param waypoints - Explicit waypoints to interpolate
  * @param params    - Spline interpolation parameters
+ * @returns A generated arc path
  */
 declare function arcPath(waypoints: VFXPath.BasePathPoint[], params?: ArcPathOptions): VFXPath;
 
 export default arcPath;
 
 /**
- * Generate cubic Hermite spline points for a pair of control points.
+ * Generate cubic hermite spline points for a pair of control points.
  * @param origin      - Starting point of the arc
  * @param destination - Ending point of the arc
  * @param options     - Configuration options
+ * @returns Array of path points
  */
 export function generateArcPoints(
   origin: VFXPath.BasePathPoint,
@@ -34,7 +36,7 @@ export interface ArcPathOptions {
   /** Number of points to generate (default: half of distance in pixels). */
   numPoints?: number | undefined;
 
-  /** Scaling factor for tangent vectors (default 1). */
+  /** Scaling factor for tangent vectors. Determines how curvy the arc is (default 1). */
   tangentScale?: number | undefined;
 
   /** An array of auxiliary parameter names. */

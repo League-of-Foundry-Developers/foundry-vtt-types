@@ -1,14 +1,23 @@
-import type { Identity, ValueOf } from "#utils";
+import type { Identity } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 import type VFXPath from "../vfx-path.d.mts";
+import type VFXPositionalSoundComponent from "./vfx-positional-sound-component.d.mts";
 
 import fields = foundry.data.fields;
 
 /**
- * A VFX component used for single actor → target direct attacks.
- * Supports up to three steps: pre-attack charge-up, projectile flight, and impact.
+ * A base class VFX component used for single actor -\> target direct attacks.
+ *
+ * This provides a convenience layer that can include any or all of the following:
+ * 1. Pre-attack charge-up sprite animation
+ * 2. Pre-attack charge-up audio
+ * 3. Attack projectile sprite
+ * 4. Attack projectile audio
+ * 5. Pre-impact audio
+ * 6. Impact sprite animation
+ * 7. Impact (or pre-impact) audio
  *
  * @example A projectile with an impact animation
  * ```js
@@ -18,20 +27,38 @@ import fields = foundry.data.fields;
  *     arrowShot: {
  *       type: "singleAttack",
  *       path: [{reference: "token", deltas: {sort: 1}}, {reference: "target", deltas: {sort: 1}}],
+ *       charge: {
+ *         duration: 1000,
+ *         animations: [{function: "drawBack"}],
+ *         sound: {
+ *          src: "assets/sounds/BowAttack1.ogg",
+ *          align: 2
+ *         }
+ *       },
  *       projectile: {
- *         texture: "assets/arrow/arrow-wood.png",
- *         animations: [{function: "followPath"}],
- *         size: 3,
- *         speed: 150
+ *        texture: "assets/arrow/arrow-wood.png",
+ *        animations: [{function: "followPath"}],
+ *        size: 3, // feet
+ *        speed: 150 // feet-per-second
  *       },
  *       impact: {
  *         texture: "assets/impact/BloodSplatter1.png",
- *         duration: 2000
+ *         duration: 2000,
+ *         sound: {
+ *            src: "assets/sounds/ArrowHit1.wav",
+ *            align: 1
+ *         }
  *       }
  *     }
  *   },
  *   timeline: [{component: "arrowShot"}]
  * };
+ * const effect = new foundry.canvas.vfx.VFXEffect(vfxConfig);
+ * const target = game.user.targets.first();
+ * effect.play({
+ *   token: {..._token.center, elevation: _token.document.elevation, sort: _token.document.sort},
+ *   target: {...target.center, elevation: target.document.elevation, sort: target.document.sort}
+ * });
  * ```
  */
 declare class VFXSingleAttackComponent<
@@ -46,15 +73,15 @@ declare class VFXSingleAttackComponent<
 
   /**
    * The configured origin point of the path.
-   * Populated at the beginning of the _draw workflow.
+   * This is recorded at the beginning of the _draw workflow once references are resolved.
    */
-  origin: VFXPath.BasePathPoint;
+  origin: VFXPath.BasePathPoint | undefined;
 
   /**
    * The configured destination point of the path.
-   * Populated at the beginning of the _draw workflow.
+   * This is recorded at the beginning of the _draw workflow once references are resolved.
    */
-  destination: VFXPath.BasePathPoint;
+  destination: VFXPath.BasePathPoint | undefined;
 
   static override defineSchema(): VFXSingleAttackComponent.Schema;
 
@@ -63,20 +90,17 @@ declare class VFXSingleAttackComponent<
   protected override _draw(): Promise<void>;
 
   /**
-   * Basic charge animation.
-   * Subclasses may override this to refine the effect.
+   * Basic charge animation. It is expected for subclasses to override this to refine the effect.
    */
   protected _animateCharge(timings: VFXSingleAttackComponent.ChargeTimings): void;
 
   /**
-   * Basic projectile animation.
-   * Subclasses may override this to refine the effect.
+   * Basic projectile animation. It is expected for subclasses to override this to refine the effect.
    */
   protected _animateProjectile(timings: VFXSingleAttackComponent.ProjectileTimings): void;
 
   /**
-   * Basic impact animation.
-   * Subclasses may override this to refine the effect.
+   * Basic impact animation. It is expected for subclasses to override this to refine the effect.
    */
   protected _animateImpact(timings: VFXSingleAttackComponent.ImpactTimings): void;
 
@@ -150,24 +174,7 @@ declare namespace VFXSingleAttackComponent {
     params: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField>;
   }
 
-  interface SoundSchema extends DataSchema {
-    src: fields.StringField<{ required: true; blank: false }>;
-
-    align: fields.NumberField<{
-      required: true;
-      nullable: false;
-      choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
-      initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
-    }>;
-
-    volume: fields.AlphaField;
-
-    radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
-
-    easing: fields.BooleanField<{ initial: true }>;
-
-    walls: fields.BooleanField<{ initial: true }>;
-  }
+  interface SoundSchema extends VFXPositionalSoundComponent.PositionalSoundSchema {}
 
   /** Shared sub-schema for a charge, projectile, or impact step. */
   interface AttackStepSchema extends DataSchema {
@@ -205,13 +212,14 @@ declare namespace VFXSingleAttackComponent {
   }
 
   interface PathTypeSchema extends DataSchema {
+    /** The path type registered in CONFIG.Canvas.vfx.paths. */
     type: fields.StringField<{ required: true; initial: "linear" }>;
 
+    /** Additional parameters passed to the path generator. */
     params: fields.ObjectField<{ required: false }>;
   }
 
   interface Schema extends VFXComponent._Schema<"singleAttack"> {
-    /** Array of at least 2 path points. Points may be reference objects with deltas. */
     path: fields.ArrayField<
       foundry.canvas.vfx.fields.VFXReferenceObjectField<fields.SchemaField<PathPointSchema>>,
       { required: true; min: 2 }

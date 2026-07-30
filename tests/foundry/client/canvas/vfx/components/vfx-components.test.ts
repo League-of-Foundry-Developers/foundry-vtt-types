@@ -7,6 +7,9 @@ import VFXParticleGeneratorComponent = foundry.canvas.vfx.components.VFXParticle
 import VFXSingleImpactComponent = foundry.canvas.vfx.components.VFXSingleImpactComponent;
 import VFXSingleAttackComponent = foundry.canvas.vfx.components.VFXSingleAttackComponent;
 import VFXComponent = foundry.canvas.vfx.VFXComponent;
+import VFXPath = foundry.canvas.vfx.VFXPath;
+
+import fields = foundry.data.fields;
 
 const impactData = {
   type: "singleImpact",
@@ -41,6 +44,15 @@ describe("VFXScrollingTextComponent", () => {
   test("TYPE literal", () => {
     expectTypeOf(VFXScrollingTextComponent.TYPE).toEqualTypeOf<"scrollingText">();
   });
+
+  test("content remains required through the reference-field wrapper", () => {
+    // @ts-expect-error content is required by the wrapped StringField
+    const missingContent: VFXScrollingTextComponent.CreateData = {
+      type: "scrollingText",
+      origin: { x: 0, y: 0 },
+    };
+    expectTypeOf(missingContent).toEqualTypeOf<VFXScrollingTextComponent.CreateData>();
+  });
 });
 
 describe("VFXPositionalSoundComponent", () => {
@@ -53,16 +65,13 @@ describe("VFXPositionalSoundComponent", () => {
     expectTypeOf(comp.type).toEqualTypeOf<"positionalSound">();
   });
 
-  test("PositionalSoundData interface shape", () => {
-    const data: VFXPositionalSoundComponent.PositionalSoundData = {
-      src: "sounds/boom.ogg",
-      align: 3,
-      volume: 0.8,
-      radius: 60,
-      easing: true,
-      walls: true,
-    };
-    expectTypeOf(data.src).toEqualTypeOf<string>();
+  test("shared sound data is used by attack and impact components", () => {
+    expectTypeOf<
+      fields.SchemaField.InitializedData<VFXSingleAttackComponent.SoundSchema>
+    >().toEqualTypeOf<VFXPositionalSoundComponent.PositionalSoundData>();
+    expectTypeOf<
+      fields.SchemaField.InitializedData<VFXSingleImpactComponent.SoundSchema>
+    >().toEqualTypeOf<VFXPositionalSoundComponent.PositionalSoundData>();
   });
 });
 
@@ -119,5 +128,10 @@ describe("VFXSingleAttackComponent", () => {
 
   test("flightPath is not public", () => {
     expectTypeOf<VFXSingleAttackComponent>().not.toHaveProperty("flightPath");
+  });
+
+  test("origin and destination are undefined before drawing", () => {
+    expectTypeOf<VFXSingleAttackComponent["origin"]>().toEqualTypeOf<VFXPath.BasePathPoint | undefined>();
+    expectTypeOf<VFXSingleAttackComponent["destination"]>().toEqualTypeOf<VFXPath.BasePathPoint | undefined>();
   });
 });

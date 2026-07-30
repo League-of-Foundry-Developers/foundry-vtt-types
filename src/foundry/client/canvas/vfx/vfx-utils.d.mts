@@ -5,9 +5,6 @@ import type VFXComponent from "./vfx-component.mjs";
 
 /**
  * Interpolate rotation in radians between two angles.
- * @param r1 - Start rotation in radians
- * @param r2 - End rotation in radians
- * @param i  - Interpolation weight in [0, 1]
  */
 export function interpolateRotation(r1: number, r2: number, i: number): number;
 
@@ -78,8 +75,8 @@ export function generateHermiteSegment(
  * @param p1        - End control point
  * @param t         - Interpolation parameter
  * @param auxiliary - An array of auxiliary numeric attributes to interpolate. These attributes must be
- *                    present all points. Attributes are either interpolated or carried forward from
- *                    their last-observed value.
+ * present all points. Attributes are either interpolated or carried forward from
+ * their last-observed value.
  * @returns Interpolated auxiliary properties
  */
 export function interpolateProperties(

@@ -5,8 +5,9 @@ import type VFXComponent from "../vfx-component.d.mts";
 import fields = foundry.data.fields;
 
 /**
- * A component for displaying scrolling text effects at a canvas location.
- * Uses the `CanvasInterfaceGroup#createScrollingText` API.
+ * A component for displaying scrolling text effects at a canvas location using the
+ * `CanvasInterfaceGroup#createScrollingText` API.
+ * This can be used for damage numbers, status effects, or other floating text animations.
  *
  * @example Damage number above a token
  * ```js
@@ -24,6 +25,9 @@ import fields = foundry.data.fields;
  *   },
  *   timeline: [{component: "text"}]
  * };
+ * const effect = new foundry.canvas.vfx.VFXEffect(vfxConfig);
+ * const target = game.user.targets.first();
+ * effect.play({target: target.center});
  * ```
  */
 declare class VFXScrollingTextComponent<
@@ -58,36 +62,36 @@ declare namespace VFXScrollingTextComponent {
   interface AnyConstructor extends Identity<typeof AnyVFXScrollingTextComponent> {}
 
   interface Schema extends VFXComponent._Schema<"scrollingText"> {
-    /** The text string to display. May be a reference. */
+    /** The text string to display */
     content: foundry.canvas.vfx.fields.VFXReferenceField<fields.StringField<{ required: true; blank: false }>>;
 
-    /** Distance in pixels the text travels. May be a reference. */
+    /** The distance in pixels the text travels; defaults to twice the text size */
     distance: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ nullable: false }>>;
 
-    /** Duration of the scrolling effect in ms. May be a reference. */
+    /** The duration of the scrolling effect in milliseconds (default 2000) */
     duration: foundry.canvas.vfx.fields.VFXReferenceField<
       fields.NumberField<{ required: true; nullable: false; initial: 2000 }>
     >;
 
-    /** Randomization [0, 1] applied to the initial position. May be a reference. */
+    /** Randomization between [0, 1] applied to the initial position (default 0) */
     jitter: foundry.canvas.vfx.fields.VFXReferenceField<
       fields.NumberField<{ required: true; nullable: false; initial: 0 }>
     >;
 
-    /** The canvas point where text originates. May be a reference. */
+    /** The canvas point where the text originates */
     origin: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: true }>;
 
-    /** Direction the text scrolls; value from CONST.TEXT_ANCHOR_POINTS. May be a reference. */
+    /** The direction the text scrolls in CONST.TEXT_ANCHOR_POINTS (default TOP) */
     scrollDirection: foundry.canvas.vfx.fields.VFXReferenceField<
       fields.NumberField<{ required: true; nullable: false; initial: typeof CONST.TEXT_ANCHOR_POINTS.TOP }>
     >;
 
-    /** Anchor point for the text; value from CONST.TEXT_ANCHOR_POINTS. May be a reference. */
+    /** An anchor point in CONST.TEXT_ANCHOR_POINTS (default CENTER) */
     textAnchor: foundry.canvas.vfx.fields.VFXReferenceField<
       fields.NumberField<{ required: true; nullable: false; initial: typeof CONST.TEXT_ANCHOR_POINTS.CENTER }>
     >;
 
-    /** Additional PIXI.TextStyle parameters. May be a reference. */
+    /** Additional PIXI.TextStyle parameters applied to the text */
     textStyle: foundry.canvas.vfx.fields.VFXReferenceField<fields.ObjectField>;
   }
 

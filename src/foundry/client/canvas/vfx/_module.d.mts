@@ -3,14 +3,14 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
 /**
- * Activate the animejs engine for the Canvas ticker.
- * Called during `Canvas#draw` before the `canvasReady` hook.
+ * Activate the animejs for the Canvas ticker.
+ * This is called during `Canvas#draw` before the `canvasReady` hook.
  */
 export function activate(): void;
 
 /**
  * Deactivate the animejs engine for the Canvas ticker.
- * Called during `Canvas#teardown` before the `canvasTearDown` hook.
+ * This is called during `Canvas#teardown` before the `canvasTearDown` hook.
  */
 export function deactivate(): void;
 

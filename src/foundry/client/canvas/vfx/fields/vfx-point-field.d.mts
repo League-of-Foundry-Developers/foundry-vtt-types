@@ -3,9 +3,7 @@ import type { DataField } from "#common/data/fields.d.mts";
 
 /**
  * A specialized subclass of SchemaField that specifically deals with points.
- * Accepts plain objects with `{x, y}` structure or PIXI.Point-like objects.
- *
- * @template Options - Options for this field instance
+ * This data structure accepts plain objects with \{x, y\} structure or PIXI.Point objects.
  */
 declare class VFXPointField<
   Options extends VFXPointField.Options = VFXPointField.DefaultOptions,
@@ -20,10 +18,6 @@ declare class VFXPointField<
   InitializedType,
   PersistedType
 > {
-  /**
-   * @param options - Options which configure the behavior of the field
-   * @param context - Additional context which describes the field
-   */
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   protected override _cast(value: unknown): AssignmentType;

@@ -6,16 +6,16 @@ import type PointSourcePolygon from "#client/canvas/geometry/shapes/source-polyg
 import type VFXReferenceField from "./vfx-reference-field.d.mts";
 
 /**
- * A specialized VFX reference field that accepts either a pre-computed PointSourcePolygon instance
- * or a serializable configuration object `{x, y, type, radius}` sufficient to create one.
+ * A specialized VFX reference field that accepts either a pre-computed {@link PointSourcePolygon} instance
+ * or a serializable configuration object \{x, y, type, radius\} sufficient to create one.
  *
- * In the serialized path, the field stores a plain config object and automatically computes the
- * polygon during field initialization. In the reference path, the field resolves to a live
- * PointSourcePolygon at runtime, allowing multiple components to share a single pre-computed polygon
- * without redundant computation.
+ * In the serialized path, the field stores a plain config object and automatically computes the polygon
+ * during field initialization. In the reference path, the field resolves to a live PointSourcePolygon
+ * at runtime, allowing multiple components to share a single pre-computed polygon without redundant
+ * computation.
  *
- * In both cases the initialized value accessed by the component is always a PointSourcePolygon
- * instance (or null/undefined if not configured).
+ * In both cases, the initialized value accessed by the component is always a PointSourcePolygon instance
+ * (or null/undefined if not configured).
  */
 declare class VFXPointSourcePolygonField<
   Options extends VFXPointSourcePolygonField.Options = VFXPointSourcePolygonField.DefaultOptions,
@@ -30,10 +30,6 @@ declare class VFXPointSourcePolygonField<
   InitializedType,
   PersistedType
 > {
-  /**
-   * @param options - Options which configure the behavior of the field
-   * @param context - Additional context which describes the field
-   */
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
@@ -81,7 +77,6 @@ declare namespace VFXPointSourcePolygonField {
     rotation: foundry.data.fields.AngleField<{ required: false; initial: undefined }>;
   }
 
-  /** The schema field used to validate the serializable polygon config. */
   type PolygonConfigField = foundry.data.fields.SchemaField<
     PolygonConfigSchema,
     { required: false; nullable: true; initial: null }
@@ -89,7 +84,13 @@ declare namespace VFXPointSourcePolygonField {
 
   interface Options extends VFXReferenceField.Options {}
 
-  type DefaultOptions = VFXReferenceField.DefaultOptions;
+  type DefaultOptions = SimpleMerge<
+    VFXReferenceField.DefaultOptions<PolygonConfigField>,
+    {
+      nullable: true;
+      initial: null;
+    }
+  >;
 
   /**
    * @deprecated AssignmentData is being phased out. See {@linkcode foundry.data.fields.SchemaField.AssignmentData}

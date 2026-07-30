@@ -6,12 +6,12 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
  */
 declare class VFXPath {
   /**
-   * @param points - An array of base path points with length of at least 2
+   * Construct a VFXPath by providing an array of base point data.
    */
   constructor(points: VFXPath.BasePathPoint[]);
 
   /**
-   * The array of points in the path.
+   * The array of points in the path
    */
   get pathPoints(): VFXPath.PathPoint[];
 
@@ -21,7 +21,7 @@ declare class VFXPath {
   get pathLength(): number;
 
   /**
-   * Get the interpolated point for a value x on [0, 1].
+   * Get the interpolated point for a value x on [0, 1]
    * @param x     - The animation progress on [0, 1]
    * @param index - A known index of the path which was already reached
    */
@@ -30,12 +30,14 @@ declare class VFXPath {
   /**
    * Compute an interpolated point along the path at a given distance.
    * @param distance - The desired distance along the path
+   * @returns An interpolated point for object position at that distance
    */
   interpolatedPointAtDistance(distance: number): VFXPath.PathPoint;
 
   /**
    * Get a configured path generator from CONFIG.Canvas.vfx.paths.
    * @param pathName - The named path type
+   * @returns The path generator function
    * @throws If the named path generator has not been registered in `CONFIG.Canvas.vfx.paths`
    */
   static getPathGenerator(pathName: VFXPath.ConfiguredPath): VFXPath.Generator;
@@ -45,6 +47,7 @@ declare class VFXPath {
    * @param pathName   - The named path type to construct
    * @param points     - Path points to construct
    * @param parameters - Additional parameters used to construct the path
+   * @returns The generated path
    */
   static create(pathName: VFXPath.ConfiguredPath, points: VFXPath.BasePathPoint[], parameters?: AnyObject): VFXPath;
 

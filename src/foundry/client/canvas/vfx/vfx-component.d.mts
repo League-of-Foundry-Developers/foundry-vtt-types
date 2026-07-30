@@ -6,10 +6,6 @@ import type { Timeline as AnimeTimeline } from "animejs/timeline";
 
 import fields = foundry.data.fields;
 
-/**
- * A base DataModel class for VFX animation components that can be serialized and played back.
- * @template Schema - The schema type for this component's data
- */
 declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent.Schema> extends DataModel<Schema> {
   /**
    * The type of this component. Must be overridden in the subclass.
@@ -45,6 +41,8 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
 
   /**
    * Adds a DisplayObject to the set of managed primary display objects.
+   * Entries in this list will be added to the primary canvas container when the component is attached and
+   * removed when the component is destroyed.
    * @param object - The object to manage
    * @param group  - A canvas group that should contain the object
    */
@@ -65,6 +63,7 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
 
   /**
    * Prepare the timeline and create display objects used by this component.
+   * Components should override the _draw method to implement subclass-specific steps.
    */
   draw(): Promise<void>;
 
@@ -139,7 +138,6 @@ declare namespace VFXComponent {
     type Any = _Schema<string>;
   }
 
-  /** A component-specific animejs timeline. */
   type Timeline = AnimeTimeline;
 
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}

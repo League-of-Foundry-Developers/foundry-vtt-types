@@ -1,19 +1,21 @@
 import type VFXPath from "../vfx-path.d.mts";
 
 /**
- * Generate an oscillating weave path between provided control points using cubic Hermite splines.
+ * Generate an oscillating weave path between provided control points using cubic hermite splines.
  * @param waypoints - Explicit waypoints to interpolate
  * @param params    - Spline interpolation parameters
+ * @returns A generated weave path
  */
 declare function weavePath(waypoints: VFXPath.BasePathPoint[], params?: WeavePathOptions): VFXPath;
 
 export default weavePath;
 
 /**
- * Generate cubic Hermite spline points for a pair of control points.
- * @param origin      - Starting point of the weave
- * @param destination - Ending point of the weave
+ * Generate cubic hermite spline points for a pair of control points.
+ * @param origin      - Starting point of the arc
+ * @param destination - Ending point of the arc
  * @param options     - Configuration options
+ * @returns Array of path points
  */
 export function generateWeavePoints(
   origin: VFXPath.BasePathPoint,
@@ -25,7 +27,7 @@ export interface WeavePathOptions {
   /** Number of Hermite arcs (1 = single arc, 2 = up/down pair, etc., default 1). */
   arcCount?: number | undefined;
 
-  /** Ratio of the path length that determines the peak displacement (default 0.15). */
+  /** Ratio of the path length that determines the peak displacement of the arcs (1 = full path length, default 0.15). */
   amplitude?: number | undefined;
 
   /** Multiplier applied to the Hermite tangents (default 1). */

@@ -6,12 +6,11 @@ import type VFXComponent from "./vfx-component.d.mts";
 import fields = foundry.data.fields;
 
 /**
- * A specialized DataModel subclass used to configure VFXEffects in a way that can be serialized
- * for storage in a database or transmission over socket. VFXEffect instances involve animation
- * components which are animated over a configured timeline.
- *
- * Playback for a VFXEffect can only happen once. To repeat an effect multiple times, clone it
- * before each successive playback.
+ * A specialized DataModel subclass used to configure VFXEffects in a way that can be serialized for storage in
+ * database or transmission over socket. VFXEffect instances involve animation components which are animated over a
+ * configured timeline.
+ * Playback for a VFXEffect can only happen once. The intended paradigm to repeat an effect multiple times requires
+ * cloning it before each successive playback.
  */
 declare class VFXEffect extends DataModel<VFXEffect.Schema> {
   static override defineSchema(): VFXEffect.Schema;
@@ -51,11 +50,13 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    * @param references - A record of references used to resolve model data
    * @returns A Promise which resolves to whether playback fully completed,
    * or `undefined` when the VFX framework is disabled via `CONFIG.Canvas.vfx.enabled`
+   * @throws An error if playback from this VFXEffect has already started or if
+   * playback failed for some reason.
    */
   play(references?: AnyObject): Promise<boolean | undefined>;
 
   /**
-   * Stop animation, treating the animation as successfully completed.
+   * Stop animation, but treat the animation as successfully completed.
    */
   stop(): Promise<void>;
 
@@ -66,8 +67,12 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
 
   /**
    * Resolve all reference fields within this model against provided reference data.
-   * This is idempotent: fields already resolved to concrete values are skipped on subsequent calls.
+   * This is idempotent: fields that have already been resolved to concrete values are skipped on subsequent calls.
+   * This is invoked automatically as part of {@link VFXEffect#play}, after which point all references must be final.
+   * It can be called manually before {@link VFXEffect#play} to assume direct control over reference resolution before
+   * effect playback begins.
    * @param references - A record of references used to resolve model data
+   * @throws An error if references were unable to resolve
    */
   resolveReferences(references?: AnyObject): void;
 
@@ -116,21 +121,22 @@ declare namespace VFXEffect {
   interface SourceData extends fields.SchemaField.SourceData<Schema> {}
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
-  /** The plain data shape of a VFXEffect configuration. */
   interface Data {
     name: string;
     components: Record<string, AnyObject>;
     timeline: TimelineSequenceEntry[];
   }
 
-  /** A single entry in the VFXEffect timeline. */
   interface TimelineSequenceEntry {
-    /** The labeled component in the sequence. */
+    /** The labeled component in sequence. */
     component: string;
 
     /**
-     * The animejs offset position. Can be a number for absolute timeline values, a label
-     * (with optional prefix), or a relative string (e.g. "+1000").
+     * The animejs offset position. Can be a number for absolute timeline values,
+     * a label (including optional prefixing to reference other effects),
+     * or a relative value (e.g. "+1000" for 1s after the previous effect).
+     * It can also be a combination of label and offset (e.g.
+     * "effect.impact-=1000" for 1s before the `effect.impact` label)
      */
     position?: number | string | undefined;
   }

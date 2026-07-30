@@ -1,13 +1,14 @@
-import type { Identity, ValueOf } from "#utils";
+import type { Identity } from "#utils";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
+import type VFXPositionalSoundComponent from "./vfx-positional-sound-component.d.mts";
 
 import fields = foundry.data.fields;
 
 /**
  * A VFX component used to add a single impact effect at a certain location.
- * Handles basic impacts that can be represented as the combination of a sprite and a sound.
+ * This component handles basic impacts that can be represented as the combination of a sprite and a sound.
  *
  * @example A blood splatter impact
  * ```js
@@ -20,11 +21,19 @@ import fields = foundry.data.fields;
  *       texture: "assets/impact/BloodSplatter1.png",
  *       size: 2,
  *       duration: 2000,
- *       sound: { src: "assets/sounds/ArrowHit1.wav", align: 1 }
+ *       sound: {
+ *         src: "assets/sounds/ArrowHit1.wav",
+ *         align: 1
+ *       }
  *     }
  *   },
  *   timeline: [{component: "splash"}]
  * };
+ * const effect = new foundry.canvas.vfx.VFXEffect(vfxConfig);
+ * const target = game.user.targets.first();
+ * effect.play({
+ *   target: {...target.center, elevation: target.document.elevation, sort: target.document.sort}
+ * });
  * ```
  */
 declare class VFXSingleImpactComponent<
@@ -77,24 +86,7 @@ declare namespace VFXSingleImpactComponent {
     }>;
   }
 
-  interface SoundSchema extends DataSchema {
-    src: fields.StringField<{ required: true; blank: false }>;
-
-    align: fields.NumberField<{
-      required: true;
-      nullable: false;
-      choices: ValueOf<typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT>[];
-      initial: typeof foundry.canvas.vfx.constants.SOUND_ALIGNMENT.END;
-    }>;
-
-    volume: fields.AlphaField;
-
-    radius: fields.NumberField<{ required: true; nullable: false; initial: 60; positive: true }>;
-
-    easing: fields.BooleanField<{ initial: true }>;
-
-    walls: fields.BooleanField<{ initial: true }>;
-  }
+  interface SoundSchema extends VFXPositionalSoundComponent.PositionalSoundSchema {}
 
   interface AnimationSchema extends DataSchema {
     function: fields.StringField<{ required: true }>;
@@ -103,17 +95,14 @@ declare namespace VFXSingleImpactComponent {
   }
 
   interface Schema extends VFXComponent._Schema<"singleImpact"> {
-    /** Position of the impact. May be a reference with deltas. */
     position: foundry.canvas.vfx.fields.VFXReferenceObjectField<fields.SchemaField<PositionSchema>>;
 
     texture: fields.StringField<{ required: true }>;
 
     duration: fields.NumberField<{ required: true; nullable: false; initial: 1000 }>;
 
-    /** Scale override for the impact sprite. May be a reference. */
     scale: foundry.canvas.vfx.fields.VFXReferencePointField<{ required: false }>;
 
-    /** Uniform size in grid units. May be a reference. */
     size: foundry.canvas.vfx.fields.VFXReferenceField<fields.NumberField<{ required: false }>>;
 
     sound: fields.SchemaField<SoundSchema, { nullable: true; initial: null }>;

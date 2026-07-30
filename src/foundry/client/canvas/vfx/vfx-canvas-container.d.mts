@@ -7,7 +7,7 @@ import type PrimaryCanvasContainer from "#client/canvas/primary/primary-canvas-c
  */
 declare class VFXCanvasContainer extends PrimaryCanvasContainer {
   /**
-   * A registry of named display objects which belong to this container.
+   * A registry of named display objects which belong to this container
    */
   sprites: Record<string, PIXI.DisplayObject>;
 
