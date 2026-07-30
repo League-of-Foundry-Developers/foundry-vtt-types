@@ -119,9 +119,6 @@ type FromUuidSyncReturn<
       : _MaybeInvalid<Doc, Coalesce<Invalid, false>> | _IndexEntryFor<string, Doc["documentName"]>)
   | null;
 
-type _x = FromUuidSyncReturn<Macro.Stored, string>;
-type _y = _IndexEntryFor<Actor.Stored["documentName"]>;
-
 declare const __Unset: unique symbol;
 
 type __UnsetDocument = Document.Any & {
