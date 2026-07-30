@@ -67,6 +67,14 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
   protected override _setValue(value: string): void;
 
   /**
+   * @remarks Forwards focus to the underlying CodeMirror view, so unlike
+   * {@linkcode HTMLElement.focus | HTMLElement#focus} it takes no {@linkcode FocusOptions}.
+   * @throws If the element has never been connected to the DOM, as the view is only constructed in {@linkcode HTMLCodeMirrorElement.connectedCallback | #connectedCallback}.
+   * After {@linkcode HTMLCodeMirrorElement.disconnectedCallback | #disconnectedCallback} the view is destroyed but not cleared, so this no longer throws.
+   */
+  override focus(): void;
+
+  /**
    * Given screen co-ordinates, returns the position in the editor's text content at those co-ordinates.
    * @param coords - The screen co-ordinates.
    */
