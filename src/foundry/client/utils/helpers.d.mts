@@ -66,15 +66,13 @@ export function fromUuid<
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
   options?: FromUuidOptions<Uuid, Invalid, ConcreteDocument>,
-): Promise<FromUuidReturn<ConcreteDocument, Uuid, Invalid> | null>;
+): Promise<FromUuidReturn<ConcreteDocument, Uuid, Invalid>>;
 
-type FromUuidReturn<
-  Doc extends Document.Any,
-  Uuid extends string,
-  Invalid extends boolean | undefined = undefined,
-> = __UnsetDocument extends Doc
-  ? FromUuid<Uuid, Coalesce<Invalid, false>>
-  : _MaybeInvalid<Doc, Coalesce<Invalid, false>>;
+type FromUuidReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined = undefined> =
+  | (__UnsetDocument extends Doc
+      ? FromUuid<Uuid, Coalesce<Invalid, false>>
+      : _MaybeInvalid<Doc, Coalesce<Invalid, false>>)
+  | null;
 
 type _MaybeInvalid<Doc extends Document.Any, Invalid extends boolean> =
   | (Invalid extends true ? Document.InvalidForName<Doc["documentName"]> : never)
