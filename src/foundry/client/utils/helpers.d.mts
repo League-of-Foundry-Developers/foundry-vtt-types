@@ -1,5 +1,6 @@
-import type { AnyObject, InexactPartial, MustBeValidUuid } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Coalesce, GetNameFromUuid, InexactPartial, MustBeValidUuid } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * Clean a provided HTML fragment, closing unbalanced tags and stripping some undesirable properties
@@ -24,39 +25,74 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
 export function readTextFromFile(file: File): Promise<string>;
 
 /** @internal */
-interface _FromUuidOptions {
+interface _FromUuidOptions<Uuid extends string, Invalid extends boolean | undefined, Doc extends Document.Any> {
   /** A Document to resolve relative UUIDs against. */
-  relative: Document.Any;
+  relative: AllowedRelativesOf<Uuid, Doc>;
 
   /**
    * Allow retrieving an invalid Document.
    * @defaultValue `false`
    */
-  invalid: boolean;
+  invalid: Invalid;
 }
 
-export interface FromUuidOptions extends InexactPartial<_FromUuidOptions> {}
+export interface FromUuidOptions<
+  Uuid extends string,
+  Invalid extends boolean | undefined,
+  Doc extends Document.Any,
+> extends InexactPartial<_FromUuidOptions<Uuid, Invalid, Doc>> {}
+
+type AllowedRelativesOf<
+  Uuid extends string,
+  Doc extends Document.Any,
+  Name extends GetNameFromUuid<Uuid> = GetNameFromUuid<Uuid>,
+> = [Name] extends [never]
+  ? Doc["documentName"] extends Document.EmbeddedType | "Actor"
+    ? Document.Embedded.ParentForName<Doc["documentName"]>
+    : null
+  : Name extends Document.EmbeddedType | "Actor"
+    ? Document.Embedded.ParentForName<Name>
+    : undefined;
 
 /**
- * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
+ * Retrieve a Document by its Universally Unique Identifier (uuid).
  * @param uuid    - The uuid of the Entity or Embedded Entity to retrieve
  * @param options - Options to configure how a UUID is resolved.
  */
-export function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
-  uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-  options?: FromUuidOptions,
-): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
+export function fromUuid<
+  ConcreteDocument extends Document.Any = __UnsetDocument,
+  Invalid extends boolean | undefined = undefined,
+  const Uuid extends string = string,
+>(
+  uuid: FromUuidValidate<ConcreteDocument, Uuid>,
+  options?: FromUuidOptions<Uuid, Invalid, ConcreteDocument>,
+): Promise<FromUuidReturn<ConcreteDocument, Uuid, Invalid> | null>;
+
+type FromUuidReturn<
+  Doc extends Document.Any,
+  Uuid extends string,
+  Invalid extends boolean | undefined = undefined,
+> = __UnsetDocument extends Doc
+  ? FromUuid<Uuid, Coalesce<Invalid, false>>
+  : _MaybeInvalid<Doc, Coalesce<Invalid, false>>;
+
+type _MaybeInvalid<Doc extends Document.Any, Invalid extends boolean> =
+  | (Invalid extends true ? Document.InvalidForName<Doc["documentName"]> : never)
+  | Doc;
 
 /** @internal */
 interface _FromUuidSyncOptions {
   /**
    * Throw an error if the UUID cannot be resolved synchronously.
    * @defaultValue `true`
+   * @privateRemarks This doesn't actually affect the return type, even with `strict: true` there are paths
+   * that can return `null` before it throws.
    */
   strict: boolean;
 }
 
-export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, InexactPartial<_FromUuidSyncOptions> {}
+export interface FromUuidSyncOptions<Uuid extends string, Invalid extends boolean | undefined, Doc extends Document.Any>
+  extends InexactPartial<_FromUuidOptions<Uuid, Invalid, Doc>>, InexactPartial<_FromUuidSyncOptions> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -68,12 +104,25 @@ export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, I
  */
 export function fromUuidSync<
   ConcreteDocument extends Document.Any = __UnsetDocument,
+  Invalid extends boolean | undefined = undefined,
   const Uuid extends string = string,
 >(
-  uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-  options?: FromUuidSyncOptions,
-  // TODO(LukeAbby): `AnyObject` is actually a stand in for a compendium index entry which should be typed.
-): (__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | AnyObject | null;
+  uuid: FromUuidValidate<ConcreteDocument, Uuid>,
+  options?: FromUuidSyncOptions<Uuid, Invalid, ConcreteDocument>,
+): FromUuidSyncReturn<ConcreteDocument, Uuid, Invalid>;
+
+type FromUuidSyncReturn<
+  Doc extends Document.Any,
+  Uuid extends string,
+  Invalid extends boolean | undefined = undefined,
+> =
+  | (__UnsetDocument extends Doc
+      ? FromUuid<Uuid, Coalesce<Invalid, false>> | _IndexEntryFor<Uuid>
+      : _MaybeInvalid<Doc, Coalesce<Invalid, false>> | _IndexEntryFor<string, Doc["documentName"]>)
+  | null;
+
+type _x = FromUuidSyncReturn<Macro.Stored, string>;
+type _y = _IndexEntryFor<Actor.Stored["documentName"]>;
 
 declare const __Unset: unique symbol;
 
@@ -81,14 +130,20 @@ type __UnsetDocument = Document.Any & {
   [__Unset]: true;
 };
 
+type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name extends never
+  ? never
+  : Name extends Document.CompendiumType
+    ? CompendiumCollection.IndexEntry<Name>
+    : never;
+
 declare const AnyDocumentClass: Document.AnyConstructor;
 declare abstract class InvalidUuid extends AnyDocumentClass {}
 
-type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
-  ? FromUuid<Rest>
-  : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
-    ? Document.StoredForName<DocumentType>
-    : InvalidUuid;
+type FromUuid<
+  Uuid extends string,
+  Invalid extends boolean | undefined = undefined,
+  Name extends GetNameFromUuid<Uuid> = GetNameFromUuid<Uuid>,
+> = [Name] extends [never] ? InvalidUuid : _MaybeInvalid<Document.StoredForName<Name>, Coalesce<Invalid, false>>;
 
 type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid
   ? string

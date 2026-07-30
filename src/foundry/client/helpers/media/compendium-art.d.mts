@@ -1,6 +1,7 @@
-import type { SchemaField } from "#common/data/fields.d.mts";
 import type { Identity } from "#utils";
-import type { PrototypeToken } from "../../data/_module.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
+import type { PrototypeToken } from "#client/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 /**
  * A class responsible for managing package-provided art and applying it to Documents in compendium packs.
@@ -30,6 +31,19 @@ declare class CompendiumArt extends Map<string, CompendiumArt.Info> {
    * @defaultValue `true`
    */
   enabled: boolean;
+
+  /**
+   * Apply any art configured for a Document to its source data as it is initialized from a compendium pack.
+   * @param documentClass - The class of the Document being initialized.
+   * @param source        - The Document's source data.
+   * @param packId        - The ID of the compendium pack the Document is initialized from.
+   * @returns The Document's source data.
+   * @remarks Conditionally calls the `"applyCompendiumArt"` hook via {@linkcode Hooks.callAll}.
+   */
+  applyArt<
+    DocCls extends Document.ImplementationClassFor<Document.CompendiumType>,
+    Source extends Document.SourceForName<DocCls["documentName"]> = Document.SourceForName<DocCls["documentName"]>,
+  >(documentClass: DocCls, source: Source, packId?: string): Source;
 
   /**
    * Retrieve all active packages that provide art mappings in priority order.

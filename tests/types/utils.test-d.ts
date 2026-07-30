@@ -46,14 +46,16 @@ import type {
   // NonNullish,
   // EmptyObject,
   // ShapeWithIndexSignature,
-  // MustBeValidUuid,
+  MustBeValidUuid,
   // Quote,
   SplitString,
   // DeepReadonly,
   // MutableDotKeys,
   // DeletableDotKeys,
   DotKeys,
+  GetNameFromUuid,
 } from "fvtt-types/utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
 
@@ -217,7 +219,57 @@ expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 // TODO: NonNullish
 // TODO: EmptyObject
 // TODO: ShapeWithIndexSignature
-// TODO: MustBeValidUuid
+
+// MustBeValidUuid:
+
+declare const _actorUuid: "Actor.ARandomIDToTest";
+declare const _tokenUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest";
+declare const _compendiumActorUuid: "Compendium.world.a.Actor.ARandomIDToTest";
+declare const _greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+declare const _compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+
+// fallback to 'any of the provided type, if any' if the provided UUID is untestable
+expectTypeOf<MustBeValidUuid<string>>().toEqualTypeOf<
+  | `${string}.${string}.${Document.Type}.${string}`
+  | `${Document.Type}.${string}`
+  | `Compendium.${string}.${string}.${Exclude<Document.Type, Document.NeverCompendiumType>}.${string}`
+>();
+// Actors can have Compendium UUIDs
+expectTypeOf<MustBeValidUuid<string, "Actor">>().toEqualTypeOf<
+  `${string}.${string}.Actor.${string}` | `Actor.${string}` | `Compendium.${string}.${string}.Actor.${string}`
+>();
+// Settings cannot have Compendium UUIDs
+expectTypeOf<MustBeValidUuid<string, "Setting">>().toEqualTypeOf<
+  `${string}.${string}.Setting.${string}` | `Setting.${string}`
+>();
+
+expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Actor">>().toEqualTypeOf<typeof _actorUuid>();
+expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Token">>().not.toExtend<string>();
+
+expectTypeOf<MustBeValidUuid<typeof _compendiumActorUuid, "Actor">>().toEqualTypeOf<typeof _compendiumActorUuid>();
+expectTypeOf<MustBeValidUuid<typeof _compendiumActorUuid, "Token">>().not.toExtend<string>();
+
+expectTypeOf<MustBeValidUuid<typeof _tokenUuid, "Token">>().toEqualTypeOf<typeof _tokenUuid>();
+expectTypeOf<MustBeValidUuid<typeof _tokenUuid, "User">>().not.toExtend<string>();
+
+expectTypeOf<MustBeValidUuid<typeof _greatGreatGrandchildUuid, "ActiveEffect">>().toEqualTypeOf<
+  typeof _greatGreatGrandchildUuid
+>();
+expectTypeOf<MustBeValidUuid<typeof _greatGreatGrandchildUuid, "FogExploration">>().not.toExtend<string>();
+
+expectTypeOf<MustBeValidUuid<typeof _compendiumGreatGreatGrandchildUuid, "ActiveEffect">>().toEqualTypeOf<
+  typeof _compendiumGreatGreatGrandchildUuid
+>();
+expectTypeOf<MustBeValidUuid<typeof _compendiumGreatGreatGrandchildUuid, "Macro">>().not.toExtend<string>();
+
+// GetNameFromUuid:
+
+expectTypeOf<GetNameFromUuid<string>>().toBeNever();
+expectTypeOf<GetNameFromUuid<typeof _actorUuid>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof _compendiumActorUuid>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof _tokenUuid>>().toEqualTypeOf<"Token">();
+expectTypeOf<GetNameFromUuid<typeof _greatGreatGrandchildUuid>>().toEqualTypeOf<"ActiveEffect">();
+
 // TODO: Quote
 
 expectTypeOf<SplitString<"", ".">>().toEqualTypeOf<[]>();
