@@ -161,30 +161,29 @@ export function getDocumentClass<Name extends Document.Type>(documentName: Name)
  * Return a reference to the PlaceableObject class implementation which is configured for use.
  * @param documentName - The canonical Document name, for example "Actor"
  * @returns The configured PlaceableObject class implementation
- * @privateRemarks Consider if the generic should be broader; this returns undefined, rather than errors, if the Name isn't a placeable type
  */
 export function getPlaceableObjectClass<Name extends Document.PlaceableType>(
   documentName: Name,
-): Document.ObjectClassFor<Name> | undefined;
+): Document.ObjectClassFor<Name>;
 
-export interface SortOptions<T, SortKey extends string = "sort"> {
+interface _SortOptions<T, SortKey extends string | undefined> {
   /**
    * The target object relative which to sort
    * @defaultValue `null`
    */
-  target?: T | null | undefined;
+  target: T | null;
 
   /**
    * The sorted Array of siblings which share the same sorted container
    * @defaultValue `[]`
    */
-  siblings?: T[] | undefined;
+  siblings: T[];
 
   /**
    * The name of the data property within the source object which defines the sort key
    * @defaultValue `"sort"`
    */
-  sortKey?: SortKey | undefined;
+  sortKey: SortKey;
 
   /**
    * Whether to explicitly sort before (true) or sort after (false). If nothing is passed
@@ -192,18 +191,22 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
    *
    * @defaultValue `true`
    */
-  sortBefore?: boolean | undefined;
+  sortBefore: boolean;
 }
+
+export interface SortOptions<T, SortKey extends string | undefined = undefined> extends InexactPartial<
+  _SortOptions<T, SortKey>
+> {}
 
 /**
  * Given a source object to sort, a target to sort relative to, and an Array of siblings in the container:
  * Determine the updated sort keys for the source object, or all siblings if a reindex is required.
  * Return an Array of updates to perform, it is up to the caller to dispatch these updates.
  * Each update is structured as:
- * ```typescript
+ * ```ts
  * {
  *   target: object,
- *   update: {sortKey: sortValue}
+ *   update: {[sortKey]: sortValue}
  * }
  * ```
  *
@@ -212,14 +215,15 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
  * @template T   - the type of the source and target object
  *
  * @returns An Array of updates for the caller of the helper function to perform
+ * @privateRemarks Edited the return example to be clearer.
  */
-export function performIntegerSort<T, SortKey extends string = "sort">(
+export function performIntegerSort<T, SortKey extends string | undefined = undefined>(
   source: T,
   options?: SortOptions<T, SortKey>,
 ): Array<{
   target: T;
   update: {
-    [Key in SortKey]: number;
+    [Key in Coalesce<SortKey, "sort">]: number;
   };
 }>;
 
@@ -234,8 +238,9 @@ export function timeSince(timeStamp: Date | string): string;
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.
  * A single HTMLElement is returned if the provided string contains only a single top-level element.
  * An HTMLCollection is returned if the provided string contains multiple top-level elements.
+ * If no element was parsable, the return is `null`.
  */
-export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
+export function parseHTML(htmlString: string): HTMLCollection | HTMLElement | null;
 
 /**
  * Return a URL with a cache-busting query parameter appended.
