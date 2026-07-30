@@ -68,8 +68,9 @@ declare const applicationV2: foundry.applications.api.ApplicationV2;
 
 expectTypeOf(applicationV2.options).toEqualTypeOf<Readonly<foundry.applications.api.ApplicationV2.Configuration>>();
 expectTypeOf(applicationV2.window).toEqualTypeOf<{
-  header?: HTMLElement | undefined;
-  resize?: HTMLElement | undefined;
+  windowId: string | undefined;
+  header: HTMLElement | undefined;
+  resize: HTMLElement | undefined;
   title: HTMLHeadingElement | undefined;
   icon: HTMLElement | undefined;
   close: HTMLButtonElement | undefined;

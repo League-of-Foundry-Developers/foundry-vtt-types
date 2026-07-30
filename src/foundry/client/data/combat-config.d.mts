@@ -47,10 +47,11 @@ declare class CombatConfiguration {
 
   /**
    * Get current turn marker animation.
-   * @remarks Can be `null` if {@linkcode CombatConfiguration.useTurnMarkerAnimation | #useTurnMarkerAnimation} was
-   * last called with an unregistered animation id.
+   * @remarks Is `undefined` until an animation is first selected, and can be `null` if
+   * {@linkcode CombatConfiguration.useTurnMarkerAnimation | #useTurnMarkerAnimation} was last called with an
+   * unregistered animation id.
    */
-  get currentTurnMarkerAnimation(): TurnMarkerData.AnimationData | null;
+  get currentTurnMarkerAnimation(): TurnMarkerData.AnimationData | null | undefined;
 
   /**
    * Add a new turn marker animation.

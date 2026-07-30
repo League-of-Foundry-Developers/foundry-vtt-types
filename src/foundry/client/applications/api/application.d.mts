@@ -382,8 +382,9 @@ declare namespace ApplicationV2 {
   }
 
   interface Window {
-    header?: HTMLElement | undefined;
-    resize?: HTMLElement | undefined;
+    windowId: string | undefined;
+    header: HTMLElement | undefined;
+    resize: HTMLElement | undefined;
     title: HTMLHeadingElement | undefined;
     icon: HTMLElement | undefined;
     close: HTMLButtonElement | undefined;
@@ -960,6 +961,22 @@ declare class ApplicationV2<
    * @param position - The requested application position
    */
   protected _onPosition(position: ApplicationV2.Position): void;
+
+  /**
+   * Actions performed after the Application has been re-attached to the main workspace.
+   * Registered child Applications are re-attached automatically after this method returns.
+   * @param from - The Application's former host document. This document's window may have been closed.
+   * @param to   - The main workspace document.
+   */
+  protected _onAttach(from: Document, to: Document): void;
+
+  /**
+   * Actions performed after the Application has been detached from the main workspace.
+   * Registered child Applications are moved into the same detached window automatically after this method returns.
+   * @param from - The main workspace document.
+   * @param to   - The Application's new host document.
+   */
+  protected _onDetach(from: Document, to: Document): void;
 
   /**
    * Attach event listeners to the Application frame.

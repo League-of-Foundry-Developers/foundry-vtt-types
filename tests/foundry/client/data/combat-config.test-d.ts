@@ -15,7 +15,7 @@ const settings = new CombatConfiguration();
 expectTypeOf(settings.turnMarker).toEqualTypeOf<CombatConfiguration.TurnMarker>();
 expectTypeOf(settings.resource).toBeString();
 expectTypeOf(settings.skipDefeated).toBeBoolean();
-expectTypeOf(settings.currentTurnMarkerAnimation).toEqualTypeOf<TurnMarkerData.AnimationData | null>();
+expectTypeOf(settings.currentTurnMarkerAnimation).toEqualTypeOf<TurnMarkerData.AnimationData | null | undefined>();
 
 declare const animationConfig: TurnMarkerData.AnimationData;
 expectTypeOf(settings.addTurnMarkerAnimation("spin", animationConfig)).toBeVoid();

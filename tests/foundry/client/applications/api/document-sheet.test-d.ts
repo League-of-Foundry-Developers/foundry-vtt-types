@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "fvtt-types/utils";
 
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import Document = foundry.abstract.Document;
@@ -14,8 +15,9 @@ expectTypeOf(documentSheetV2.isEditable).toEqualTypeOf<boolean>();
 declare const event: SubmitEvent;
 declare const form: HTMLFormElement;
 declare const formData: FormDataExtended;
+declare const submitData: AnyObject;
 expectTypeOf(documentSheetV2["_processFormData"](event, form, formData)).toEqualTypeOf<object>();
-expectTypeOf(documentSheetV2["_processSubmitData"](event, form, formData)).toEqualTypeOf<
+expectTypeOf(documentSheetV2["_processSubmitData"](event, form, submitData)).toEqualTypeOf<
   Promise<DocumentSheetV2.SubmitResult<Document.Any>>
 >();
 expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();

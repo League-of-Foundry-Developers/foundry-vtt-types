@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity, MaybePromise } from "#utils";
+import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
 
@@ -210,7 +210,7 @@ declare class DocumentSheetV2<
   protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: object,
+    submitData: AnyObject,
     options?: unknown,
   ): Promise<DocumentSheetV2.SubmitResult<Document>>;
 

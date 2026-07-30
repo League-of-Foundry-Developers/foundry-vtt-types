@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { AnyObject, DeepPartial, Identity } from "#utils";
 import type {
   ApplicationV2,
   DocumentSheetV2,
@@ -74,7 +74,7 @@ declare class FolderConfig<
   protected override _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: object,
+    submitData: AnyObject,
     options?: unknown,
   ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult<Folder.Implementation>>;
 
