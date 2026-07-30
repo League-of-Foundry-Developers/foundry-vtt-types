@@ -25,5 +25,11 @@ expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf<DocumentSheetV2.SubmitData<Folder.Implementation>>().toEqualTypeOf<Folder.UpdateData>();
 expectTypeOf<DocumentSheetV2.SubmitOptions<Folder.Implementation>["updateData"]>().toEqualTypeOf<Folder.UpdateData>();
+expectTypeOf<DocumentSheetV2.ProcessSubmitOptions<Folder.Implementation>>().toEqualTypeOf<
+  Folder.Database.CreateDocumentsOperation | Folder.Database.UpdateOneDocumentOperation
+>();
+expectTypeOf<Parameters<(typeof documentSheetV2)["_processSubmitData"]>[3]>().toEqualTypeOf<
+  DocumentSheetV2.ProcessSubmitOptions<Document.Any> | undefined
+>();
 
 expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();

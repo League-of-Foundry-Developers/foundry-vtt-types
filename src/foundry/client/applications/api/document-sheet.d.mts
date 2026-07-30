@@ -91,6 +91,11 @@ declare namespace DocumentSheetV2 {
     ConcreteDocument["schema"]["fields"]
   >;
 
+  /** Database operation options forwarded when creating or updating a Document. */
+  type ProcessSubmitOptions<ConcreteDocument extends Document.Any = Document.Any> =
+    | Document.Database.CreateDocumentsOperationForName<ConcreteDocument["documentName"]>
+    | Document.Database.UpdateOneDocumentOperationForName<ConcreteDocument["documentName"]>;
+
   interface SubmitOptions<ConcreteDocument extends Document.Any = Document.Any> {
     /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
     updateData: SubmitData<ConcreteDocument>;
@@ -213,13 +218,12 @@ declare class DocumentSheetV2<
    * @returns The result of the form submission that communicates whether a Document was created or updated.
    * It is possible that neither creation nor update occurred.
    * @throws An Error if Document creation or update was prohibited
-   * @privateRemarks TODO: Improve options to capture the Create and/or Update options available to the Document
    */
   protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
     submitData: DocumentSheetV2.SubmitData<Document>,
-    options?: unknown,
+    options?: DocumentSheetV2.ProcessSubmitOptions<Document>,
   ): Promise<DocumentSheetV2.SubmitResult<Document>>;
 
   /**
