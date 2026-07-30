@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 
 import DataField = foundry.data.fields.DataField;
 import fields = foundry.data.fields;
@@ -92,105 +92,13 @@ expectTypeOf(embeddedInitialized?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(embeddedPersisted?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(lightModel.schema.fields.color).toEqualTypeOf<foundry.data.fields.ColorField>();
 
-declare const lightSchemaField: foundry.data.fields.DataModelSchemaField<typeof foundry.data.LightData>;
-expectTypeOf(lightSchemaField.model).toEqualTypeOf<typeof foundry.data.LightData>();
-expectTypeOf(lightSchemaField.clean({})).toEqualTypeOf<
-  foundry.data.fields.DataModelSchemaField.InitializedType<
-    typeof foundry.data.LightData,
-    foundry.data.fields.DataModelSchemaField.DefaultOptions
-  >
->();
-expectTypeOf(lightSchemaField.initialize).returns.toEqualTypeOf<
-  | foundry.data.fields.DataModelSchemaField.InitializedType<
-      typeof foundry.data.LightData,
-      foundry.data.fields.DataModelSchemaField.DefaultOptions
-    >
-  | (() => foundry.data.fields.DataModelSchemaField.InitializedType<
-      typeof foundry.data.LightData,
-      foundry.data.fields.DataModelSchemaField.DefaultOptions
-    > | null)
->();
-
 declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
-expectTypeOf(embeddedLightField).toExtend<foundry.data.fields.DataModelSchemaField<typeof foundry.data.LightData>>();
 
 declare const schemaWithLight: foundry.data.fields.SchemaField.InitializedData<{
   light: typeof embeddedLightField;
 }>;
 expectTypeOf(schemaWithLight.light).toEqualTypeOf<foundry.data.LightData>();
-
-const shapesField = new foundry.data.fields.ShapesField();
-expectTypeOf(shapesField).toExtend<foundry.data.fields.ArrayField<foundry.data.fields.DataField.Any>>();
-expectTypeOf(shapesField.initialize).toEqualTypeOf<foundry.data.fields.ShapesField["initialize"]>();
-
-const gridOffsetField = new foundry.data.fields.GridOffsetField();
-expectTypeOf(gridOffsetField.dimensions).toEqualTypeOf<2 | 3>();
-
-const gridOffsetsField = new foundry.data.fields.GridOffsetsField({ dimensions: 3 });
-expectTypeOf(gridOffsetsField.dimensions).toEqualTypeOf<2 | 3>();
-expectTypeOf(gridOffsetsField.element).toEqualTypeOf<foundry.data.fields.GridOffsetField>();
-
-class GridOffsetsFieldHookCoverage extends foundry.data.fields.GridOffsetsField {
-  protected override _toInput(config: foundry.data.fields.GridOffsetsField.ToInputConfig) {
-    return super._toInput(config);
-  }
-}
-
-expectTypeOf(new GridOffsetsFieldHookCoverage()).toExtend<foundry.data.fields.GridOffsetsField>();
-
-class HookCoverageField extends foundry.data.fields.AnyField {
-  protected override _migrate(
-    value: unknown,
-    options?: foundry.data.fields.DataField.CleanOptions,
-    _state?: foundry.data.fields.DataField.UpdateState,
-  ) {
-    return super._migrate(value, options, _state);
-  }
-
-  protected override _sanitize(
-    value: unknown,
-    options: foundry.data.fields.DataField.SanitizationOptions,
-    state: foundry.data.fields.DataField.UpdateState,
-  ) {
-    return super._sanitize(value, options, state);
-  }
-
-  protected override _validateRecursive(value: unknown, options?: foundry.data.fields.DataField.ValidateOptions<this>) {
-    return super._validateRecursive(value, options);
-  }
-
-  protected override _applyChangeSubtract(
-    value: unknown,
-    delta: unknown,
-    model: foundry.abstract.DataModel.Any,
-    change: ActiveEffect.ChangeData,
-  ) {
-    return super._applyChangeSubtract(value, delta, model, change);
-  }
-
-  protected override _replaceDataRefs(
-    raw: string,
-    data: Record<string, unknown>,
-    options?: foundry.data.fields.DataField.ReplaceDataRefsOptions,
-  ) {
-    return super._replaceDataRefs(raw, data, options);
-  }
-
-  protected override _toInput(config: foundry.data.fields.DataField.ToInputConfig<unknown>) {
-    return super._toInput(config);
-  }
-}
-
-expectTypeOf(new HookCoverageField()).toExtend<foundry.data.fields.AnyField>();
-
-const anyField = new foundry.data.fields.AnyField({ serializable: true });
-expectTypeOf(anyField.serializable).toEqualTypeOf<boolean>();
-
-const typedObjectField = new foundry.data.fields.TypedObjectField(new foundry.data.fields.BooleanField(), {
-  expandKeys: false,
-});
-expectTypeOf(typedObjectField.expandKeys).toEqualTypeOf<boolean>();
 
 /** EmbeddedCollectionField */
 
@@ -223,59 +131,6 @@ expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">()
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
 expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Stored>();
 
-class EmbeddedCollectionHookCoverage extends foundry.data.fields.EmbeddedCollectionField<
-  typeof foundry.documents.BaseActiveEffect,
-  Actor.Implementation
-> {
-  protected override _updateElement(
-    value: Record<string, unknown>,
-    existingSource: Record<string, unknown> | undefined,
-    context: foundry.data.fields.EmbeddedCollectionField.UpdateContext,
-  ) {
-    return super._updateElement(value, existingSource, context);
-  }
-
-  protected override _commitElement(
-    object: Record<string, unknown>,
-    source: Record<string, unknown>[],
-    existing: Record<string, Record<string, unknown>>,
-    changed: Record<string, Record<string, unknown>>,
-    options: foundry.abstract.DataModel.UpdateOptions,
-  ) {
-    return super._commitElement(object, source, existing, changed, options);
-  }
-}
-
-class EmbeddedCollectionDeltaHookCoverage extends foundry.data.fields.EmbeddedCollectionDeltaField<
-  typeof foundry.documents.BaseActiveEffect,
-  Actor.Implementation
-> {
-  protected override _updateElement(
-    value: Record<string, unknown>,
-    existingSource: Record<string, unknown> | undefined,
-    context: foundry.data.fields.EmbeddedCollectionField.UpdateContext,
-  ) {
-    return super._updateElement(value, existingSource, context);
-  }
-
-  protected override _commitElement(
-    object: Record<string, unknown>,
-    source: Record<string, unknown>[],
-    existing: Record<string, Record<string, unknown>>,
-    changed: Record<string, Record<string, unknown>>,
-    options: foundry.abstract.DataModel.UpdateOptions,
-  ) {
-    return super._commitElement(object, source, existing, changed, options);
-  }
-}
-
-expectTypeOf(new EmbeddedCollectionHookCoverage(foundry.documents.BaseActiveEffect)).toExtend<
-  foundry.data.fields.EmbeddedCollectionField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
->();
-expectTypeOf(new EmbeddedCollectionDeltaHookCoverage(foundry.documents.BaseActiveEffect)).toExtend<
-  foundry.data.fields.EmbeddedCollectionDeltaField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
->();
-
 const stringField = new foundry.data.fields.StringField();
 
 const withChoices = new foundry.data.fields.StringField({ choices: ["a", "b", "c"] });
@@ -289,25 +144,6 @@ stringField["_cast"](null);
 stringField.clean(null);
 
 stringField.initialize("", new Actor.implementation({ type: "base", name: "Test Actor" }));
-
-// `apply`'s string form accepts a key of the field to look up and call as a method.
-stringField.apply("clean", "foo");
-
-// @ts-expect-error - `"notAMethod"` is not a key of the field.
-stringField.apply("notAMethod", "foo");
-
-// The function form is unchanged.
-stringField.apply((value) => value, "foo");
-
-// `migrateSource` was removed from Foundry's field classes in v14 and can no longer be called on them.
-// @ts-expect-error - `migrateSource` was removed in v14 in favor of `_migrate`.
-new foundry.data.fields.SchemaField({}).migrateSource({}, {}); // eslint-disable-line @typescript-eslint/no-deprecated
-
-// A subclass-defined `migrateSource` still works (legacy support until v16), including on classes
-// that previously had their own implementation.
-declare class _MigrateSourceField extends foundry.data.fields.SchemaField<DataSchema> {
-  migrateSource(sourceData: AnyObject, fieldData: unknown): void;
-}
 
 type _NullOptions = DataField.Options<null>;
 type _UndefinedOptions = DataField.Options<undefined>;
@@ -564,3 +400,273 @@ test("nullable SchemaField", () => {
 //     return oneOfEverythingSchema;
 //   }
 // }
+
+test("DataModelSchemaField model and data types", () => {
+  const lightSchemaField = new fields.DataModelSchemaField(foundry.data.LightData);
+  const cleanedLight = lightSchemaField.clean({});
+
+  expectTypeOf(lightSchemaField.model).toEqualTypeOf<typeof foundry.data.LightData>();
+  expectTypeOf(cleanedLight).toEqualTypeOf<
+    fields.DataModelSchemaField.InitializedType<
+      typeof foundry.data.LightData,
+      fields.DataModelSchemaField.DefaultOptions
+    >
+  >();
+  expectTypeOf(lightSchemaField.initialize).returns.toEqualTypeOf<
+    | fields.DataModelSchemaField.InitializedType<
+        typeof foundry.data.LightData,
+        fields.DataModelSchemaField.DefaultOptions
+      >
+    | (() => fields.DataModelSchemaField.InitializedType<
+        typeof foundry.data.LightData,
+        fields.DataModelSchemaField.DefaultOptions
+      > | null)
+  >();
+  expectTypeOf<fields.EmbeddedDataField<typeof foundry.data.LightData>>().toExtend<
+    fields.DataModelSchemaField<typeof foundry.data.LightData>
+  >();
+});
+
+test("ShapesField options and concrete shape types", () => {
+  const shapesField = new fields.ShapesField();
+  new fields.ShapesField({ min: 1 });
+  const initializedShapes = shapesField.initialize([], null as unknown as foundry.abstract.DataModel.Any);
+
+  expectTypeOf(initializedShapes).toEqualTypeOf<
+    fields.ShapesField.InitializedType<fields.ShapesField.DefaultOptions>
+  >();
+  expectTypeOf<fields.ShapesField.InitializedElementType>().toExtend<
+    | foundry.data.RectangleShapeData
+    | foundry.data.CircleShapeData
+    | foundry.data.EllipseShapeData
+    | foundry.data.PolygonShapeData
+  >();
+  expectTypeOf<
+    | foundry.data.RectangleShapeData
+    | foundry.data.CircleShapeData
+    | foundry.data.EllipseShapeData
+    | foundry.data.PolygonShapeData
+  >().toExtend<fields.ShapesField.InitializedElementType>();
+  expectTypeOf<fields.ShapesField.InitializedElementType["_index"]>().toEqualTypeOf<number | undefined>();
+});
+
+test("GridOffsetField schemas and string assignments", () => {
+  const gridOffset2D = new fields.GridOffsetField();
+  const gridOffset3D = new fields.GridOffsetField({ dimensions: 3 });
+  const offset2D = gridOffset2D.clean("1.2");
+  const offset3D = gridOffset3D.clean("1.2.3");
+
+  expectTypeOf(gridOffset2D.dimensions).toEqualTypeOf<2>();
+  expectTypeOf(gridOffset3D.dimensions).toEqualTypeOf<3>();
+  expectTypeOf(gridOffset2D.fields).toEqualTypeOf<fields.GridOffsetField.Schema2D>();
+  expectTypeOf(gridOffset3D.fields).toEqualTypeOf<fields.GridOffsetField.Schema3D>();
+  expectTypeOf(offset2D).toEqualTypeOf<{ i: number; j: number }>();
+  expectTypeOf(offset3D).toEqualTypeOf<{ i: number; j: number; k: number }>();
+});
+
+test("GridOffsetField nullish options", () => {
+  const nullableOffset = new fields.GridOffsetField({ dimensions: 3, nullable: true });
+  const optionalOffset = new fields.GridOffsetField({
+    dimensions: 2,
+    required: false,
+    nullable: false,
+    initial: undefined,
+  });
+
+  expectTypeOf(nullableOffset.clean(null)).toEqualTypeOf<{ i: number; j: number; k: number } | null>();
+  expectTypeOf(optionalOffset.clean(undefined)).toEqualTypeOf<{ i: number; j: number } | undefined>();
+  expectTypeOf(nullableOffset.toObject(nullableOffset.clean(null))).toEqualTypeOf<{
+    i: number;
+    j: number;
+    k: number;
+  } | null>();
+});
+
+test("GridOffsetsField element dimensions", () => {
+  const gridOffsets = new fields.GridOffsetsField({ dimensions: 3 });
+  const offsets = gridOffsets.clean(["1.2.3"]);
+
+  expectTypeOf(gridOffsets.dimensions).toEqualTypeOf<3>();
+  expectTypeOf(gridOffsets.element).toEqualTypeOf<
+    fields.GridOffsetField<fields.GridOffsetsField.ElementOptions<{ dimensions: 3 }>>
+  >();
+  expectTypeOf(offsets).toEqualTypeOf<{ i: number; j: number; k: number }[]>();
+});
+
+test("field validation and update-state options", () => {
+  const gridOffset2D = new fields.GridOffsetField();
+  gridOffset2D.validate({ i: 1, j: 2 }, { phase: "pre" });
+  new fields.ArrayField(new fields.NumberField()).validate([1, 2], { dropInvalidElements: true });
+  const updateState = { model: null } satisfies DataField.UpdateState;
+
+  expectTypeOf(updateState.model).toEqualTypeOf<null>();
+  expectTypeOf<DataField.ValidationOptions["phase"]>().toEqualTypeOf<"pre" | "recursive" | "post" | undefined>();
+  expectTypeOf<DataField.ValidationOptions["dropInvalidElements"]>().toEqualTypeOf<boolean | undefined>();
+});
+
+test("DocumentAuthorField default and initial types", () => {
+  const authorField = new fields.DocumentAuthorField<typeof foundry.documents.BaseUser>(foundry.documents.BaseUser);
+
+  expectTypeOf(authorField.nullable).toEqualTypeOf<boolean>();
+  expectTypeOf<fields.DocumentAuthorField.DefaultOptions["nullable"]>().toEqualTypeOf<false>();
+  expectTypeOf<
+    fields.DocumentAuthorField.InitializedType<
+      typeof foundry.documents.BaseUser,
+      fields.DocumentAuthorField.DefaultOptions
+    >
+  >().toEqualTypeOf<User.Stored | null>();
+  expectTypeOf<fields.DocumentAuthorField.PersistedType<fields.DocumentAuthorField.DefaultOptions>>().toEqualTypeOf<
+    string | null
+  >();
+});
+
+test("field hook signatures", () => {
+  class ScalarArrayHookCoverage extends fields.ArrayField<fields.NumberField<{ required: true; nullable: false }>> {
+    protected override _cleanElement(
+      value: number,
+      options?: DataField.CleanOptions,
+      state?: DataField.UpdateState,
+    ): number {
+      return super._cleanElement(value, options, state);
+    }
+
+    protected override _validateModel(data: number[], options?: DataField.ValidateModelOptions): void {
+      return super._validateModel(data, options);
+    }
+  }
+
+  class HookCoverageField extends fields.AnyField {
+    protected override _migrate(
+      value: unknown,
+      options?: DataField.CleanOptions,
+      state?: DataField.UpdateState,
+    ): unknown {
+      return super._migrate(value, options, state);
+    }
+
+    protected override _sanitize(
+      value: unknown,
+      options: DataField.SanitizationOptions,
+      state: DataField.UpdateState,
+    ): unknown {
+      return super._sanitize(value, options, state);
+    }
+
+    protected override _validateRecursive(value: unknown, options?: DataField.ValidateOptions<this>): boolean | void {
+      return super._validateRecursive(value, options);
+    }
+
+    protected override _applyChangeSubtract(
+      value: unknown,
+      delta: unknown,
+      model: foundry.abstract.DataModel.Any,
+      change: ActiveEffect.ChangeData,
+    ): unknown {
+      return super._applyChangeSubtract(value, delta, model, change);
+    }
+
+    protected override _replaceDataRefs(
+      raw: string,
+      data: AnyObject,
+      options?: DataField.ReplaceDataRefsOptions,
+    ): string {
+      return super._replaceDataRefs(raw, data, options);
+    }
+
+    protected override _toInput(
+      config: DataField.ToInputConfig<unknown>,
+    ): HTMLElement | HTMLElement[] | HTMLCollection {
+      return super._toInput(config);
+    }
+  }
+
+  class GridOffsetsFieldHookCoverage extends fields.GridOffsetsField {
+    protected override _toInput(
+      config: fields.GridOffsetsField.ToInputConfig,
+    ): HTMLElement | HTMLElement[] | HTMLCollection {
+      return super._toInput(config);
+    }
+  }
+
+  class EmbeddedCollectionHookCoverage extends fields.EmbeddedCollectionField<
+    typeof foundry.documents.BaseActiveEffect,
+    Actor.Implementation
+  > {
+    protected override _updateElement(
+      value: AnyMutableObject,
+      existingSource: AnyMutableObject | undefined,
+      context: fields.EmbeddedCollectionField.UpdateContext,
+    ): void {
+      return super._updateElement(value, existingSource, context);
+    }
+
+    protected override _commitElement(
+      object: AnyMutableObject,
+      source: AnyMutableObject[],
+      existing: Record<string, AnyMutableObject>,
+      changed: Record<string, AnyMutableObject>,
+      options: foundry.abstract.DataModel.UpdateOptions,
+    ): void {
+      return super._commitElement(object, source, existing, changed, options);
+    }
+  }
+
+  class EmbeddedCollectionDeltaHookCoverage extends fields.EmbeddedCollectionDeltaField<
+    typeof foundry.documents.BaseActiveEffect,
+    Actor.Implementation
+  > {
+    protected override _updateElement(
+      value: AnyMutableObject,
+      existingSource: AnyMutableObject | undefined,
+      context: fields.EmbeddedCollectionField.UpdateContext,
+    ): void {
+      return super._updateElement(value, existingSource, context);
+    }
+
+    protected override _commitElement(
+      object: AnyMutableObject,
+      source: AnyMutableObject[],
+      existing: Record<string, AnyMutableObject>,
+      changed: Record<string, AnyMutableObject>,
+      options: foundry.abstract.DataModel.UpdateOptions,
+    ): void {
+      return super._commitElement(object, source, existing, changed, options);
+    }
+  }
+
+  const scalar = new ScalarArrayHookCoverage(new fields.NumberField({ required: true, nullable: false }));
+  const hook = new HookCoverageField();
+  const gridOffsetsHook = new GridOffsetsFieldHookCoverage();
+  const anyField = new fields.AnyField({ serializable: true });
+  const typedObjectField = new fields.TypedObjectField(new fields.BooleanField(), { expandKeys: false });
+
+  expectTypeOf(scalar).toExtend<fields.ArrayField<fields.NumberField<{ required: true; nullable: false }>>>();
+  expectTypeOf(hook).toExtend<fields.AnyField>();
+  expectTypeOf(gridOffsetsHook).toExtend<fields.GridOffsetsField>();
+  expectTypeOf<EmbeddedCollectionHookCoverage>().toExtend<
+    fields.EmbeddedCollectionField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+  >();
+  expectTypeOf<EmbeddedCollectionDeltaHookCoverage>().toExtend<
+    fields.EmbeddedCollectionDeltaField<typeof foundry.documents.BaseActiveEffect, Actor.Implementation>
+  >();
+  expectTypeOf(anyField.serializable).toEqualTypeOf<boolean>();
+  expectTypeOf(typedObjectField.expandKeys).toEqualTypeOf<boolean>();
+});
+
+test("DataField apply and migrateSource methods", () => {
+  const applyField = new fields.StringField();
+  applyField.apply("clean", "foo");
+  applyField.apply((value) => value, "foo");
+
+  // @ts-expect-error `"notAMethod"` is not a key of the field.
+  applyField.apply("notAMethod", "foo");
+
+  // @ts-expect-error `migrateSource` cannot be called on the base field surface.
+  new fields.SchemaField({}).migrateSource({}, {}); // eslint-disable-line @typescript-eslint/no-deprecated
+
+  class MigrateSourceField extends fields.SchemaField<fields.DataSchema> {
+    override migrateSource(_sourceData: AnyObject, _fieldData: unknown): void {}
+  }
+
+  expectTypeOf<MigrateSourceField["migrateSource"]>().returns.toEqualTypeOf<void>();
+});

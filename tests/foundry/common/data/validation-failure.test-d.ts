@@ -18,7 +18,7 @@ expectTypeOf(myModelValidationFailure.getAllFailures()).toEqualTypeOf<
   Record<string, foundry.data.validation.DataModelValidationFailure>
 >();
 expectTypeOf(myModelValidationFailure.toObject().fallbackValue).toEqualTypeOf<unknown>();
-expectTypeOf(myModelValidationFailure.logAsTable()).toEqualTypeOf<void>();
+expectTypeOf(myModelValidationFailure.logAsTable).returns.toEqualTypeOf<void>();
 expectTypeOf(myModelValidationFailure.asHTML()).toEqualTypeOf<string>();
 
 new foundry.data.validation.DataModelValidationError("Failure", { cause: "nested" });

@@ -352,7 +352,7 @@ declare abstract class DataField<
    * The only place core *calls* this at a top level, it does not pass anything for `options`, relying on SchemaField above
    * to make TypeDataField work
    */
-  protected _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  protected _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions): void;
 
   /**
    * Initialize the original source data into a mutable copy for the DataModel instance.
@@ -842,6 +842,17 @@ declare namespace DataField {
     strict: boolean;
 
     /**
+     * A specific validation phase to perform, specifying this is generally only necessary for _updateDiff workflows
+     * - "pre" occurs before recursion to child nodes
+     * - "recursive" performs recursive validation of child nodes
+     * - "post" occurs after validation of child nodes
+     */
+    phase: "pre" | "recursive" | "post";
+
+    /** Whether invalid array elements should be dropped rather than causing the parent to be considered invalid. */
+    dropInvalidElements: boolean;
+
+    /**
      * If true, invalid embedded documents will emit a warning and be placed in the `invalidDocuments`
      * collection rather than causing the parent to be considered invalid.
      */
@@ -928,7 +939,7 @@ declare namespace DataField {
     creation: boolean;
 
     /** The DataModel instance being cleaned */
-    model: DataModel.Any;
+    model: DataModel.Any | null;
 
     /** Prior source data at the current node */
     source: unknown;
@@ -1030,10 +1041,7 @@ declare namespace DataField {
   }
 
   /** An interface for the options of {@link DataField.validators | `DataField#validators`}. */
-  interface ValidatorsOptions extends Pick<DataField.ValidateOptions<DataField.Any>, "recursive"> {
-    /** Restrict the validators yielded to a specific phase of validation */
-    phase?: "pre" | "recursive" | "post" | undefined;
-  }
+  interface ValidatorsOptions extends Pick<DataField.ValidateOptions<DataField.Any>, "phase" | "recursive"> {}
 
   /**
    * A validation function as yielded by {@link DataField.validators | `DataField#validators`}.
@@ -1373,7 +1381,7 @@ declare class SchemaField<
     options: DataField.ValidateOptions<DataField.Any>,
   ): void;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  protected override _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions): void;
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -2545,7 +2553,7 @@ declare class TypedObjectField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  protected override _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions): void;
 
   override _updateDiff(
     key: string,
@@ -2776,7 +2784,7 @@ declare class ArrayField<
    * @returns Cleaned data for the array entry
    */
   protected _cleanElement(
-    value: AnyObject,
+    value: AssignmentElementType,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
   ): InitializedElementType;
@@ -2791,7 +2799,7 @@ declare class ArrayField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  protected override _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions): void;
 
   /** @internal */
   static _handleValidationFailure(
@@ -3270,7 +3278,7 @@ declare class EmbeddedDataField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions | null): void;
+  protected override _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions | null): void;
 
   override _updateDiff(
     key: string,
@@ -3368,8 +3376,8 @@ declare class EmbeddedCollectionField<
   // TODO(LukeAbby): See if `ParentDataModel` can be made redundant by automatically inferring.
   const ParentDataModel extends Document.Any,
   const Options extends EmbeddedCollectionField.Options<any> = EmbeddedCollectionField.DefaultOptions,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
+  const AssignmentElementType extends AnyMutableObject = // eslint-disable-next-line @typescript-eslint/no-deprecated
+    EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType extends Document.Internal.Instance.Any =
     EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -3461,7 +3469,7 @@ declare class EmbeddedCollectionField<
    * @returns Cleaned data for the candidate embedded record
    */
   protected override _cleanElement(
-    value: AnyObject,
+    value: AnyMutableObject,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
   ): ReturnType<this["schema"]["clean"]>;
@@ -3495,8 +3503,8 @@ declare class EmbeddedCollectionField<
    * @param context        - Loop-local context shared across elements
    */
   protected _updateElement(
-    value: AnyObject,
-    existingSource: AnyObject | undefined,
+    value: AnyMutableObject,
+    existingSource: AnyMutableObject | undefined,
     context: EmbeddedCollectionField.UpdateContext,
   ): void;
 
@@ -3517,10 +3525,10 @@ declare class EmbeddedCollectionField<
    * @param options  - Update options
    */
   protected _commitElement(
-    object: AnyObject,
-    source: AnyObject[],
-    existing: Record<string, AnyObject>,
-    changed: Record<string, AnyObject>,
+    object: AnyMutableObject,
+    source: AnyMutableObject[],
+    existing: Record<string, AnyMutableObject>,
+    changed: Record<string, AnyMutableObject>,
     options: DataModel.UpdateOptions,
   ): void;
 
@@ -3538,10 +3546,10 @@ declare namespace EmbeddedCollectionField {
 
   /** Context shared while applying an embedded collection update. */
   interface UpdateContext {
-    source: AnyObject[];
-    newSource: AnyObject[];
+    source: AnyMutableObject[];
+    newSource: AnyMutableObject[];
     isReplacement: boolean;
-    diff: AnyObject[];
+    diff: AnyMutableObject[];
     collection: foundry.documents.abstract.DocumentCollection<Document.Type>;
     state: DataField.UpdateState;
     failure: DataModelValidationFailure;
@@ -3672,8 +3680,8 @@ declare class EmbeddedCollectionDeltaField<
   const ElementFieldType extends Document.AnyConstructor,
   const ParentDataModel extends Document.Any,
   const Options extends EmbeddedCollectionDeltaField.Options<any> = EmbeddedCollectionDeltaField.DefaultOptions,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
+  const AssignmentElementType extends AnyMutableObject = // eslint-disable-next-line @typescript-eslint/no-deprecated
+    EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType extends Document.Internal.Instance.Any =
     EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -3705,7 +3713,7 @@ declare class EmbeddedCollectionDeltaField<
 
   /** @remarks If `value._tombstone`, cleans with the {@linkcode foundry.data.TombstoneData} schema instead of super */
   protected override _cleanElement(
-    value: AnyObject,
+    value: AnyMutableObject,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
   ): ReturnType<this["schema"]["clean"]>;
@@ -3716,16 +3724,16 @@ declare class EmbeddedCollectionDeltaField<
   ): boolean | void;
 
   protected override _updateElement(
-    value: AnyObject,
-    existingSource: AnyObject | undefined,
+    value: AnyMutableObject,
+    existingSource: AnyMutableObject | undefined,
     context: EmbeddedCollectionField.UpdateContext,
   ): void;
 
   protected override _commitElement(
-    object: AnyObject,
-    source: AnyObject[],
-    existing: Record<string, AnyObject>,
-    changed: Record<string, AnyObject>,
+    object: AnyMutableObject,
+    source: AnyMutableObject[],
+    existing: Record<string, AnyMutableObject>,
+    changed: Record<string, AnyMutableObject>,
     options: DataModel.UpdateOptions,
   ): void;
 }
@@ -4783,13 +4791,11 @@ declare class DocumentAuthorField<
   const DocumentType extends Document.AnyConstructor,
   const Options extends DocumentAuthorField.Options = DocumentAuthorField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = ForeignDocumentField.AssignmentType<DocumentType, Options>,
-  const InitializedType = ForeignDocumentField.InitializedType<DocumentType, Options>,
-  const PersistedType extends string | null | undefined = ForeignDocumentField.PersistedType<Options>,
+  const AssignmentType = DocumentAuthorField.AssignmentType<DocumentType, Options>,
+  const InitializedType = DocumentAuthorField.InitializedType<DocumentType, Options>,
+  const PersistedType extends string | null | undefined = DocumentAuthorField.PersistedType<Options>,
 > extends ForeignDocumentField<DocumentType, Options, AssignmentType, InitializedType, PersistedType> {
-  // TODO: The runtime default is `nullable: false`, but flipping it drops `null` from the initialized
-  // type, which downstream author fields (e.g. `ChatMessage#author`) rely on. Kept `true` until they cope.
-  /** @defaultValue `true` */
+  /** @defaultValue `false` */
   override nullable: boolean;
 
   /** @defaultValue `false` */
@@ -4808,12 +4814,41 @@ declare namespace DocumentAuthorField {
   type DefaultOptions = SimpleMerge<
     ForeignDocumentField.DefaultOptions,
     {
-      //TODO: change nullable into `false` later (matches runtime); see the class body note.
-      nullable: true;
+      nullable: false;
       gmOnly: false;
       initial: () => string | null;
     }
   >;
+
+  /** A helper type for the given options type merged into the default options of the DocumentAuthorField class. */
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+
+  /** @internal */
+  type _InitialNullish<Opts extends Options> = Extract<
+    MergedOptions<Opts>["initial"] extends (...args: never[]) => infer Result ? Result : MergedOptions<Opts>["initial"],
+    null | undefined
+  >;
+
+  /**
+   * A shorthand for the assignment type of a DocumentAuthorField class.
+   * @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  type AssignmentType<
+    DocumentType extends Document.AnyConstructor,
+    Opts extends Options,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  > = ForeignDocumentField.AssignmentType<DocumentType, MergedOptions<Opts>>;
+
+  /** A shorthand for the initialized type of a DocumentAuthorField class. */
+  type InitializedType<DocumentType extends Document.AnyConstructor, Opts extends Options> =
+    | ForeignDocumentField.InitializedType<DocumentType, MergedOptions<Opts>>
+    | _InitialNullish<Opts>;
+
+  /** A shorthand for the persisted type of a DocumentAuthorField class. */
+  type PersistedType<Opts extends Options> =
+    | ForeignDocumentField.PersistedType<MergedOptions<Opts>>
+    | _InitialNullish<Opts>;
 }
 
 /**
@@ -5815,7 +5850,7 @@ declare class TypeDataField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
-  protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
+  protected override _validateModel(data: InitializedType, options?: DataField.ValidateModelOptions): void;
 
   override _updateDiff(
     key: string,
@@ -6305,43 +6340,131 @@ declare namespace SceneLevelsSetField {
   >;
 }
 
-declare class ShapesField extends ArrayField<TypedSchemaField<TypedSchemaField.Types>> {
-  constructor(options?: ArrayField.DefaultOptions, context?: DataField.ConstructionContext);
+declare class ShapesField<const Options extends ShapesField.Options = ShapesField.DefaultOptions> extends ArrayField<
+  ShapesField.ElementField,
+  Options
+> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
+  constructor(options?: Options, context?: DataField.ConstructionContext);
 
   override initialize(
-    ...args: Parameters<ArrayField<TypedSchemaField<TypedSchemaField.Types>>["initialize"]>
-  ): ReturnType<ArrayField<TypedSchemaField<TypedSchemaField.Types>>["initialize"]>;
+    value: ShapesField.PersistedType<Options>,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): ShapesField.InitializedType<Options>;
 }
 
+declare namespace ShapesField {
+  type ElementField = TypedSchemaField<foundry.data.BaseShapeData.Types>;
+
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentElementType = ArrayField.AssignmentElementType<ElementField>;
+  type InitializedElementType = ArrayField.InitializedElementType<ElementField>;
+  type PersistedElementType = ArrayField.PersistedElementType<ElementField>;
+
+  type Options = ArrayField.Options<AssignmentElementType>;
+  type DefaultOptions = ArrayField.DefaultOptions;
+
+  /** @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData} for more details. */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<Opts extends Options> = ArrayField.AssignmentType<AssignmentElementType, Opts>;
+  type InitializedType<Opts extends Options> = ArrayField.InitializedType<InitializedElementType, Opts>;
+  type PersistedType<Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
+}
+
+/**
+ * The field for a grid offset.
+ */
 declare class GridOffsetField<
   const Options extends GridOffsetField.Options = GridOffsetField.DefaultOptions,
-> extends SchemaField<DataSchema, Options, AnyObject | null | undefined, AnyObject, AnyObject | null | undefined> {
+> extends SchemaField<
+  GridOffsetField.Schema<Options>,
+  Options & SchemaField.Options<GridOffsetField.Schema<Options>>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  GridOffsetField.AssignmentType<Options>,
+  GridOffsetField.InitializedType<Options>,
+  GridOffsetField.PersistedType<Options>
+> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `2` */
-  dimensions: 2 | 3;
+  dimensions: GridOffsetField.Dimensions<Options>;
 
   protected static override get _defaults(): GridOffsetField.DefaultOptions;
 
-  protected override _cast(value: unknown): AnyObject | null | undefined;
+  protected override _cast(
+    value: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  ): Exclude<GridOffsetField.AssignmentType<Options>, string>;
 }
 
 declare namespace GridOffsetField {
-  interface Options extends DataField.Options<AnyObject> {
+  type CoordinateField = NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+  interface Schema2D extends DataSchema {
+    i: CoordinateField;
+    j: CoordinateField;
+  }
+
+  interface Schema3D extends Schema2D {
+    k: NumberField<{ required: true; nullable: false; integer: true }>;
+  }
+
+  interface Options extends SchemaField.Options<DataSchema> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
 
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { dimensions: 2 }>;
+
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
+  type SchemaForDimensions<Dimension extends 2 | 3> = Dimension extends 3 ? Schema3D : Schema2D;
+  type Schema<Opts extends Options> = SchemaForDimensions<Dimensions<Opts>>;
+
+  /** @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData} for more details. */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    SchemaField.AssignmentData<Schema<Opts>> | string,
+    MergedOptions<Opts>
+  >;
+
+  type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<
+    SchemaField.InitializedData<Schema<Opts>>,
+    MergedOptions<Opts>
+  >;
+
+  type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<
+    SchemaField.SourceData<Schema<Opts>>,
+    MergedOptions<Opts>
+  >;
+
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AnyAssignment = string | SchemaField.AssignmentData<Schema2D> | SchemaField.AssignmentData<Schema3D>;
 }
 
+/**
+ * The field of an array/set of grid offsets.
+ */
 declare class GridOffsetsField<
   const Options extends GridOffsetsField.Options = GridOffsetsField.DefaultOptions,
-> extends ArrayField<GridOffsetField, Options> {
+> extends ArrayField<GridOffsetsField.ElementField<Options>, Options> {
+  /**
+   * @param options - Options which configure the behavior of the field
+   * @param context - Additional context which describes the field
+   */
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `2` */
-  dimensions: 2 | 3;
+  dimensions: GridOffsetsField.Dimensions<Options>;
 
   protected static override get _defaults(): GridOffsetsField.DefaultOptions;
 
@@ -6351,16 +6474,25 @@ declare class GridOffsetsField<
 }
 
 declare namespace GridOffsetsField {
-  interface Options extends ArrayField.Options<AnyObject> {
+  interface Options extends ArrayField.Options<GridOffsetField.AnyAssignment> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
 
   type DefaultOptions = SimpleMerge<ArrayField.DefaultOptions, { dimensions: 2 }>;
-
-  type ToInputConfig<Opts extends Options = DefaultOptions> = DataField.ToInputConfig<
-    ArrayField.InitializedType<ArrayField.InitializedElementType<GridOffsetField>, Opts>
+  type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
+  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
+  type ElementOptions<Opts extends Options> = SimpleMerge<
+    GridOffsetField.DefaultOptions,
+    { dimensions: Dimensions<Opts> }
   >;
+  type ElementField<Opts extends Options> = GridOffsetField<ElementOptions<Opts>>;
+  type InitializedType<Opts extends Options> = ArrayField.InitializedType<
+    ArrayField.InitializedElementType<ElementField<Opts>>,
+    Opts
+  >;
+
+  type ToInputConfig<Opts extends Options = DefaultOptions> = DataField.ToInputConfig<InitializedType<Opts>>;
 }
 
 export {

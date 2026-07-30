@@ -281,12 +281,16 @@ export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> exte
     | (() => Set<ArrayField.InitializedElementType<ElementFieldType>> | null);
 
   protected override _cleanElement(
-    value: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    value: ArrayField.AssignmentElementType<ElementFieldType>,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
   ): DataField.InitializedTypeFor<ElementFieldType>;
 
-  protected override _validateModel(data: unknown, options?: DataField.ValidateModelOptions): void;
+  protected override _validateModel(
+    data: Set<ArrayField.InitializedElementType<ElementFieldType>>,
+    options?: DataField.ValidateModelOptions,
+  ): void;
 }
 
 /**
