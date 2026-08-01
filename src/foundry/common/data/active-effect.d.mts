@@ -35,7 +35,7 @@ declare namespace ActiveEffectTypeDataModel {
     [type: string]: fields.SchemaField<MinimalChangeSchema>;
   }
 
-  /** The minimum schema a class registered in {@linkcode CONFIG.ActiveEffect.dataModels} must define. */
+  /** The minimum schema for a class which defines its own ActiveEffect changes. */
   interface MinimalSchema extends fields.DataSchema {
     changes: fields.ArrayField.Any & {
       element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
@@ -43,7 +43,7 @@ declare namespace ActiveEffectTypeDataModel {
   }
 
   /**
-   * The static shape a class must have to be registered in {@linkcode CONFIG.ActiveEffect.dataModels}.
+   * The static shape a class which defines its own ActiveEffect changes must have.
    * Structural rather than `typeof ActiveEffectTypeDataModel` because a valid model may extend
    * {@linkcode TypeDataModel} directly.
    */
@@ -99,7 +99,7 @@ declare namespace ActiveEffectTypeDataModel {
   }
 }
 
-declare abstract class AnyActiveEffectTypeDataModel extends ActiveEffectTypeDataModel<ActiveEffectTypeDataModel.Schema> {
+declare abstract class AnyActiveEffectTypeDataModel extends ActiveEffectTypeDataModel<any> {
   constructor(...args: never);
 }
 

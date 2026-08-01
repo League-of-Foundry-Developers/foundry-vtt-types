@@ -1260,7 +1260,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * {@linkcode ActiveEffect.CHANGE_PHASES | ActiveEffect application phase}, or has already completed in this
    * data-preparation cycle.
    */
-  applyActiveEffects(phase: string): void;
+  applyActiveEffects(phase: ActiveEffect.ChangePhase): void;
 
   /**
    * @deprecated "Actor#applyActiveEffects must be called with a string phase identifier, with `"initial"` as

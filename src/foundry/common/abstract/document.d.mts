@@ -1308,8 +1308,9 @@ declare namespace Document {
   }
 
   /**
-   * Documents whose registered `TypeDataModel`s must satisfy a structural minimum, enforced by the runtime
-   * during setup.
+   * Documents whose registered `TypeDataModel`s must satisfy a structural minimum when they define the
+   * corresponding fields. ActiveEffect models which omit `changes` are temporarily preserved because the runtime
+   * patches that field into their schema during setup.
    * @internal
    */
   interface _ModelConstraints {
@@ -1319,8 +1320,19 @@ declare namespace Document {
   /** @internal */
   type _ConstrainModels<Name extends WithSystem, Models> =
     GetKey<_ModelConstraints, Name, unknown> extends infer Constraint
-      ? { [K in keyof Models]: Models[K] extends Constraint ? Models[K] : Constraint }
+      ? {
+          [K in keyof Models]: unknown extends Constraint ? Models[K] : _ConstrainModel<Models[K], Constraint>;
+        }
       : never;
+
+  /** @internal */
+  type _ConstrainModel<Model, Constraint> = Model extends { defineSchema(): infer Schema extends DataSchema }
+    ? RemoveIndexSignatures<Schema> extends { changes: unknown }
+      ? Model extends Constraint
+        ? Model
+        : Constraint
+      : Model
+    : Constraint;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {

@@ -59,7 +59,7 @@ declare namespace ActiveEffect {
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       label: "DOCUMENT.ActiveEffect";
       labelPlural: "DOCUMENT.ActiveEffects";
-      schemaVersion: "14.365";
+      schemaVersion: "14.353";
       permissions: Metadata.Permissions;
     }>
   > {}
@@ -1158,13 +1158,19 @@ declare namespace ActiveEffect {
     effect?: ActiveEffect.Implementation | undefined;
   }
 
+  type ChangeType = keyof typeof CONST.ACTIVE_EFFECT_CHANGE_TYPES | keyof CONFIG.ActiveEffect.ChangeTypes;
+
+  type ChangePhase = CONST.ACTIVE_EFFECT_CHANGE_PHASES | keyof CONFIG.ActiveEffect.Phases;
+
+  type ExpiryEvent = CONST.ACTIVE_EFFECT_EXPIRY_EVENTS | keyof CONFIG.ActiveEffect.ExpiryEvents;
+
   /**
    * The return of {@linkcode ActiveEffect.CHANGE_TYPES}: every key of
    * {@linkcode CONST.ACTIVE_EFFECT_CHANGE_TYPES} is always present, plus whatever a package registered in
    * {@linkcode CONFIG.ActiveEffect.changeTypes}. Any other key — including the `custom.${number}` forms —
    * is unregistered and looks up as `undefined`.
    */
-  interface ChangeTypes extends Record<keyof typeof CONST.ACTIVE_EFFECT_CHANGE_TYPES, ChangeTypeConfig> {
+  interface ChangeTypes extends Record<ChangeType, ChangeTypeConfig> {
     [changeType: string]: ChangeTypeConfig | undefined;
   }
 
@@ -1173,7 +1179,7 @@ declare namespace ActiveEffect {
    * {@linkcode CONST.ACTIVE_EFFECT_CHANGE_PHASES} is always present, plus whatever a package registered in
    * {@linkcode CONFIG.ActiveEffect.phases}.
    */
-  interface ChangePhases extends Record<CONST.ACTIVE_EFFECT_CHANGE_PHASES, ChangePhaseConfig> {
+  interface ChangePhases extends Record<ChangePhase, ChangePhaseConfig> {
     [phase: string]: ChangePhaseConfig | undefined;
   }
 
@@ -1182,7 +1188,7 @@ declare namespace ActiveEffect {
    * {@linkcode CONST.ACTIVE_EFFECT_EXPIRY_EVENTS} is always present, plus whatever a package registered in
    * {@linkcode CONFIG.ActiveEffect.expiryEvents}.
    */
-  interface ExpiryEvents extends Record<CONST.ACTIVE_EFFECT_EXPIRY_EVENTS, string> {
+  interface ExpiryEvents extends Record<ExpiryEvent, string> {
     [expiryEvent: string]: string | undefined;
   }
 
@@ -1248,7 +1254,7 @@ declare namespace ActiveEffect {
   /** Options which affect whether a change is applied. */
   interface ShouldApplyChangeOptions {
     /** The application phase currently being evaluated. */
-    phase?: string | undefined;
+    phase?: ChangePhase | undefined;
   }
 
   /** Options affecting the change application. */

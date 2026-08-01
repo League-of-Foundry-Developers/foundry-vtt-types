@@ -37,7 +37,7 @@ declare abstract class BaseActiveEffect<
    *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
    *   label: "DOCUMENT.ActiveEffect",
    *   labelPlural: "DOCUMENT.ActiveEffects",
-   *   schemaVersion: "14.365",
+   *   schemaVersion: "14.353",
    *   permissions: {
    *     create: BaseActiveEffect.#canCreate,
    *     delete: "OWNER"

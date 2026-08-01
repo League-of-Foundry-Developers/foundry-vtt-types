@@ -1,12 +1,15 @@
 import { expectTypeOf } from "vitest";
+
 import ActiveEffectTypeDataModel = foundry.data.ActiveEffectTypeDataModel;
+import Document = foundry.abstract.Document;
+import fields = foundry.data.fields;
 
 declare const model: ActiveEffectTypeDataModel;
 
 expectTypeOf(ActiveEffectTypeDataModel.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
 
 expectTypeOf(model.changes).toEqualTypeOf<
-  foundry.data.fields.SchemaField.InitializedData<ActiveEffectTypeDataModel.ChangeSchema>[]
+  fields.SchemaField.InitializedData<ActiveEffectTypeDataModel.ChangeSchema>[]
 >();
 
 const change = model.changes[0]!;
@@ -29,58 +32,58 @@ expectTypeOf(new CONFIG.ActiveEffect.dataModels.base()).toEqualTypeOf<ActiveEffe
 expectTypeOf(CONFIG.ActiveEffect.dataModels.base.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
 
 interface ExtraChangeSchema extends ActiveEffectTypeDataModel.MinimalChangeSchema {
-  label: foundry.data.fields.StringField;
+  label: fields.StringField;
 }
 
 interface ConformingSchema extends ActiveEffectTypeDataModel.MinimalSchema {
-  changes: foundry.data.fields.ArrayField<foundry.data.fields.SchemaField<ExtraChangeSchema>>;
-  enabled: foundry.data.fields.BooleanField;
+  changes: fields.ArrayField<fields.SchemaField<ExtraChangeSchema>>;
+  enabled: fields.BooleanField;
 }
 
 declare class _ConformingModel extends ActiveEffectTypeDataModel<ConformingSchema> {}
 
-interface MissingPhaseChangeSchema extends foundry.data.fields.DataSchema {
-  type: foundry.data.fields.StringField;
-  priority: foundry.data.fields.NumberField;
+interface MissingPhaseChangeSchema extends fields.DataSchema {
+  type: fields.StringField;
+  priority: fields.NumberField;
 }
 
-interface MissingPhaseSchema extends foundry.data.fields.DataSchema {
-  changes: foundry.data.fields.ArrayField<foundry.data.fields.SchemaField<MissingPhaseChangeSchema>>;
+interface MissingPhaseSchema extends fields.DataSchema {
+  changes: fields.ArrayField<fields.SchemaField<MissingPhaseChangeSchema>>;
 }
 
 // @ts-expect-error ActiveEffect changes must define `phase`.
 declare class _MissingPhaseModel extends ActiveEffectTypeDataModel<MissingPhaseSchema> {}
 
-interface MissingPriorityChangeSchema extends foundry.data.fields.DataSchema {
-  type: foundry.data.fields.StringField;
-  phase: foundry.data.fields.StringField;
+interface MissingPriorityChangeSchema extends fields.DataSchema {
+  type: fields.StringField;
+  phase: fields.StringField;
 }
 
-interface MissingPrioritySchema extends foundry.data.fields.DataSchema {
-  changes: foundry.data.fields.ArrayField<foundry.data.fields.SchemaField<MissingPriorityChangeSchema>>;
+interface MissingPrioritySchema extends fields.DataSchema {
+  changes: fields.ArrayField<fields.SchemaField<MissingPriorityChangeSchema>>;
 }
 
 // @ts-expect-error ActiveEffect changes must define `priority`.
 declare class _MissingPriorityModel extends ActiveEffectTypeDataModel<MissingPrioritySchema> {}
 
-interface MissingChangesSchema extends foundry.data.fields.DataSchema {
-  enabled: foundry.data.fields.BooleanField;
+interface MissingChangesSchema extends fields.DataSchema {
+  enabled: fields.BooleanField;
 }
 
 // @ts-expect-error ActiveEffect models must define `changes`.
 declare class _MissingChangesModel extends ActiveEffectTypeDataModel<MissingChangesSchema> {}
 
 interface TypedChangeSchema extends ActiveEffectTypeDataModel.MinimalChangeSchema {
-  value: foundry.data.fields.StringField;
+  value: fields.StringField;
 }
 
 interface TypedChanges {
-  [type: string]: foundry.data.fields.SchemaField<TypedChangeSchema>;
-  custom: foundry.data.fields.SchemaField<TypedChangeSchema>;
+  [type: string]: fields.SchemaField<TypedChangeSchema>;
+  custom: fields.SchemaField<TypedChangeSchema>;
 }
 
 interface TypedSchema extends ActiveEffectTypeDataModel.MinimalSchema {
-  changes: foundry.data.fields.ArrayField<foundry.data.fields.TypedSchemaField<TypedChanges>>;
+  changes: fields.ArrayField<fields.TypedSchemaField<TypedChanges>>;
 }
 
 declare class _TypedModel extends ActiveEffectTypeDataModel<TypedSchema> {}
@@ -103,6 +106,43 @@ declare class _NonConformingModel extends foundry.abstract.TypeDataModel<
   static override defineSchema(): MissingPhaseSchema;
 }
 
+declare class _CompatibilityModel extends foundry.abstract.TypeDataModel<
+  MissingChangesSchema,
+  ActiveEffect.Implementation
+> {
+  static override defineSchema(): MissingChangesSchema;
+}
+
+expectTypeOf<_ConformingModel>().toExtend<ActiveEffectTypeDataModel.Any>();
+expectTypeOf<typeof _ConformingModel>().toExtend<ActiveEffectTypeDataModel.AnyConstructor>();
 expectTypeOf<typeof _ConformingRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 expectTypeOf<typeof _TypedRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 expectTypeOf<typeof _NonConformingModel>().not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+
+type CompatibilityModels = Document._ConstrainModels<"ActiveEffect", { testCompatibility: typeof _CompatibilityModel }>;
+expectTypeOf<CompatibilityModels["testCompatibility"]>().toEqualTypeOf<typeof _CompatibilityModel>();
+expectTypeOf<ActiveEffect._ChangesFor<_CompatibilityModel>>().toEqualTypeOf<ActiveEffect.ChangeData[]>();
+
+declare global {
+  namespace CONFIG.ActiveEffect {
+    interface ChangeTypes {
+      "test.change": foundry.documents.ActiveEffect.ChangeTypeConfig;
+    }
+
+    interface Phases {
+      "test.phase": foundry.documents.ActiveEffect.ChangePhaseConfig;
+    }
+
+    interface ExpiryEvents {
+      "test.expiry": string;
+    }
+  }
+}
+
+expectTypeOf<ActiveEffect.ChangeTypes["test.change"]>().toEqualTypeOf<ActiveEffect.ChangeTypeConfig>();
+expectTypeOf<ActiveEffect.ChangePhases["test.phase"]>().toEqualTypeOf<ActiveEffect.ChangePhaseConfig>();
+expectTypeOf<ActiveEffect.ExpiryEvents["test.expiry"]>().toBeString();
+expectTypeOf<"test.phase">().toExtend<ActiveEffect.ChangePhase>();
+expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.phase");
+// @ts-expect-error Only core and package-registered phases are accepted.
+expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.typo");

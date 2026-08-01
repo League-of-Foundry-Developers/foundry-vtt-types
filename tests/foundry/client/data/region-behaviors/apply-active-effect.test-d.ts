@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
+
 import ApplyActiveEffectRegionBehaviorType = foundry.data.regionBehaviors.ApplyActiveEffectRegionBehaviorType;
 import RegionBehaviorType = foundry.data.regionBehaviors.RegionBehaviorType;
 import TypeDataModel = foundry.abstract.TypeDataModel;
