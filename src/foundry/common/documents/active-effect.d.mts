@@ -316,6 +316,7 @@ declare namespace BaseActiveEffect {
   export import DurationData = ActiveEffect.DurationData;
   export import Duration = ActiveEffect.Duration;
   export import ChangeData = ActiveEffect.ChangeData;
+  export import ChangesOfType = ActiveEffect.ChangesOfType;
   export import ChangeTypeConfig = ActiveEffect.ChangeTypeConfig;
   export import ChangePhaseConfig = ActiveEffect.ChangePhaseConfig;
   export import ChangeTarget = ActiveEffect.ChangeTarget;

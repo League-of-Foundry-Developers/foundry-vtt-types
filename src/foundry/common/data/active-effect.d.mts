@@ -8,7 +8,7 @@ import fields = foundry.data.fields;
  * A system can override the changes SchemaField but must preserve definitions for type, phase, and priority.
  */
 declare class ActiveEffectTypeDataModel<
-  Schema extends fields.DataSchema = ActiveEffectTypeDataModel.Schema,
+  Schema extends ActiveEffectTypeDataModel.MinimalSchema = ActiveEffectTypeDataModel.Schema,
 > extends TypeDataModel<Schema, ActiveEffect.Implementation> {
   static override defineSchema(): ActiveEffectTypeDataModel.Schema;
 
@@ -19,7 +19,39 @@ declare namespace ActiveEffectTypeDataModel {
   interface Any extends AnyActiveEffectTypeDataModel {}
   interface AnyConstructor extends Identity<typeof AnyActiveEffectTypeDataModel> {}
 
-  interface ChangeSchema extends fields.DataSchema {
+  /**
+   * The change fields every ActiveEffect system model must preserve. A system can override the changes
+   * SchemaField but must preserve definitions for type, phase, and priority.
+   * @throws Via `Game#verifyActiveEffectModels` during setup if a registered model omits any of these.
+   */
+  interface MinimalChangeSchema extends fields.DataSchema {
+    type: fields.StringField.Any;
+    phase: fields.StringField.Any;
+    priority: fields.NumberField.Any;
+  }
+
+  /** The per-type schemas of a {@linkcode fields.TypedSchemaField}-based changes element. */
+  interface MinimalChangeTypes {
+    [type: string]: fields.SchemaField<MinimalChangeSchema>;
+  }
+
+  /** The minimum schema a class registered in {@linkcode CONFIG.ActiveEffect.dataModels} must define. */
+  interface MinimalSchema extends fields.DataSchema {
+    changes: fields.ArrayField.Any & {
+      element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
+    };
+  }
+
+  /**
+   * The static shape a class must have to be registered in {@linkcode CONFIG.ActiveEffect.dataModels}.
+   * Structural rather than `typeof ActiveEffectTypeDataModel` because a valid model may extend
+   * {@linkcode TypeDataModel} directly.
+   */
+  interface RegistrableClass {
+    defineSchema(): MinimalSchema;
+  }
+
+  interface ChangeSchema extends MinimalChangeSchema {
     /**
      * The attribute path in the Actor or Item data which the change modifies
      * @defaultValue `""`

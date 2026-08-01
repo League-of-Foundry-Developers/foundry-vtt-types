@@ -1290,10 +1290,13 @@ declare namespace Document {
   /**
    * Gets the map of subtypes to configured `TypeDataModel` classes for a given Document.
    */
-  type TypeModelsFor<Name extends WithSystem> = Name extends keyof _CoreTypeModels
-    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      GetKey<DataModelConfig, Name, {}> & _CoreTypeModels[Name]
-    : GetKey<DataModelConfig, Name, EmptyObject>;
+  type TypeModelsFor<Name extends WithSystem> = _ConstrainModels<
+    Name,
+    Name extends keyof _CoreTypeModels
+      ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        GetKey<DataModelConfig, Name, {}> & _CoreTypeModels[Name]
+      : GetKey<DataModelConfig, Name, EmptyObject>
+  >;
 
   /**
    * The subtypes for which Foundry itself registers a `TypeDataModel` in `CONFIG`.
@@ -1303,6 +1306,21 @@ declare namespace Document {
     ActiveEffect: ActiveEffect.CoreTypes;
     RegionBehavior: RegionBehavior.CoreBehaviors;
   }
+
+  /**
+   * Documents whose registered `TypeDataModel`s must satisfy a structural minimum, enforced by the runtime
+   * during setup.
+   * @internal
+   */
+  interface _ModelConstraints {
+    ActiveEffect: foundry.data.ActiveEffectTypeDataModel.RegistrableClass;
+  }
+
+  /** @internal */
+  type _ConstrainModels<Name extends WithSystem, Models> =
+    GetKey<_ModelConstraints, Name, unknown> extends infer Constraint
+      ? { [K in keyof Models]: Models[K] extends Constraint ? Models[K] : Constraint }
+      : never;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1382,20 +1400,24 @@ declare namespace Document {
       Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
 
     /**
-     * The `system` a core subtype has before any `DataModelConfig` entry is layered over it. Foundry
-     * registers a core `TypeDataModel` for `ActiveEffect`'s `"base"` subtype; every other Document's
-     * core subtypes have no system data of their own.
+     * The `system` a core subtype has before any `DataModelConfig` entry is layered over it, read from
+     * the core models Foundry itself registers in `CONFIG` (see {@linkcode Document._CoreTypeModels}).
+     * Core subtypes without a registered model have no system data of their own.
      * @internal
      */
-    type _CoreSystemFor<Name extends Document.WithSubTypes> = Name extends "ActiveEffect"
-      ? foundry.data.ActiveEffectTypeDataModel
-      : EmptyObject;
+    // Note(LukeAbby): The `EmptyObject` defaults matter: `GetKey`'s `never` fallback would distribute over
+    // the naked conditional below, collapsing unregistered subtypes to `never` instead of `EmptyObject`.
+    type _CoreSystemFor<Name extends Document.WithSubTypes, SubType extends Document.CoreTypesForName<Name>> =
+      GetKey<GetKey<_CoreTypeModels, Name, EmptyObject>, SubType, EmptyObject> extends infer Model extends
+        abstract new (...args: never) => DataModel.Any
+        ? FixedInstanceType<Model>
+        : EmptyObject;
 
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.
     type _SystemMap<Name extends Document.WithSubTypes, DataModel, DataConfig> = PrettifyType<
       SimpleMerge<
         {
-          [SubType in Document.CoreTypesForName<Name>]: _CoreSystemFor<Name>;
+          [SubType in Document.CoreTypesForName<Name>]: _CoreSystemFor<Name, SubType>;
         },
         SimpleMerge<
           {

@@ -817,7 +817,9 @@ expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
 // Deprecated since v14, removed in v16
 
 /* eslint-disable @typescript-eslint/no-deprecated */
-expectTypeOf(effect.changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+expectTypeOf(effect.changes).toEqualTypeOf<ActiveEffect.ChangesOfType<ActiveEffect.SubType>>();
+declare const baseEffect: ActiveEffect.OfType<"base">;
+expectTypeOf(baseEffect.changes).toEqualTypeOf<typeof baseEffect.system.changes>();
 expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
 expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();

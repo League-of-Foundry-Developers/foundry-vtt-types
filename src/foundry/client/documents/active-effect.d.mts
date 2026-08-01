@@ -83,7 +83,10 @@ declare namespace ActiveEffect {
    * in {@linkcode CONFIG.ActiveEffect.dataModels}.
    */
   interface CoreTypes {
-    base: typeof foundry.data.ActiveEffectTypeDataModel;
+    // Note(instantiation expression): pins the construct signature to the class' default `Schema` so that
+    // `Document.Internal._CoreSystemFor` infers `ActiveEffectTypeDataModel<Schema>` rather than the
+    // constraint-instantiated `ActiveEffectTypeDataModel<DataSchema>`.
+    base: typeof foundry.data.ActiveEffectTypeDataModel<foundry.data.ActiveEffectTypeDataModel.Schema>;
   }
 
   /**
@@ -135,6 +138,18 @@ declare namespace ActiveEffect {
    * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
    */
   type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
+
+  /**
+   * The `changes` of a given subtype's system model, unioned across subtypes when `Type` is a union.
+   * Falls back to {@linkcode ActiveEffect.ChangeData}[] for a model that declares no `changes` — the
+   * runtime patches one into such a model's schema via `Game##verifyActiveEffectModels` during setup.
+   */
+  // Note: a plain conditional rather than `GetKey` — `GetKey`'s exact-type gadgets are invariant in `T`,
+  // which would fail the `out SubType` variance check on the class when used in the `changes` getter.
+  type ChangesOfType<Type extends SubType = SubType> = _ChangesFor<SystemOfType<Type>>;
+
+  /** @internal */
+  type _ChangesFor<System> = System extends { readonly changes: infer Changes } ? Changes : ChangeData[];
 
   /**
    * @internal
@@ -1779,7 +1794,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @remarks Defined as a getter in {@linkcode ActiveEffect._initialize | ActiveEffect#_initialize}; returns
    * `this.system.changes`.
    */
-  get changes(): ActiveEffect.ChangeData[];
+  get changes(): ActiveEffect.ChangesOfType<SubType>;
 
   /*
    * After this point these are not really overridden methods.
