@@ -35,11 +35,13 @@ declare namespace ActiveEffectTypeDataModel {
     [type: string]: fields.SchemaField<MinimalChangeSchema>;
   }
 
+  interface MinimalChangesField extends fields.ArrayField.Any {
+    element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
+  }
+
   /** The minimum schema for a class which defines its own ActiveEffect changes. */
   interface MinimalSchema extends fields.DataSchema {
-    changes: fields.ArrayField.Any & {
-      element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
-    };
+    changes: MinimalChangesField;
   }
 
   /**
