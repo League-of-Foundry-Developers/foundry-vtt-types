@@ -1290,11 +1290,19 @@ declare namespace Document {
   /**
    * Gets the map of subtypes to configured `TypeDataModel` classes for a given Document.
    */
-  // TODO: Possibly convert to map of names to core models if docs other than RegionBehavior get any.
-  type TypeModelsFor<Name extends WithSystem> = Name extends "RegionBehavior"
+  type TypeModelsFor<Name extends WithSystem> = Name extends keyof _CoreTypeModels
     ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      GetKey<DataModelConfig, Name, {}> & RegionBehavior.CoreBehaviors
+      GetKey<DataModelConfig, Name, {}> & _CoreTypeModels[Name]
     : GetKey<DataModelConfig, Name, EmptyObject>;
+
+  /**
+   * The subtypes for which Foundry itself registers a `TypeDataModel` in `CONFIG`.
+   * @internal
+   */
+  interface _CoreTypeModels {
+    ActiveEffect: ActiveEffect.CoreTypes;
+    RegionBehavior: RegionBehavior.CoreBehaviors;
+  }
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1373,11 +1381,21 @@ declare namespace Document {
       // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
       Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
 
+    /**
+     * The `system` a core subtype has before any `DataModelConfig` entry is layered over it. Foundry
+     * registers a core `TypeDataModel` for `ActiveEffect`'s `"base"` subtype; every other Document's
+     * core subtypes have no system data of their own.
+     * @internal
+     */
+    type _CoreSystemFor<Name extends Document.WithSubTypes> = Name extends "ActiveEffect"
+      ? foundry.data.ActiveEffectTypeDataModel
+      : EmptyObject;
+
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.
     type _SystemMap<Name extends Document.WithSubTypes, DataModel, DataConfig> = PrettifyType<
       SimpleMerge<
         {
-          [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
+          [SubType in Document.CoreTypesForName<Name>]: _CoreSystemFor<Name>;
         },
         SimpleMerge<
           {

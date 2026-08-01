@@ -16,9 +16,17 @@ type AdventureImportOptions = Adventure.ImportOptions;
 
 type AdventureImportResult = Adventure.ImportResult;
 
+type _ActiveEffectChangeData = ActiveEffect.ChangeData;
+
+type ActiveEffectChangeData = ActiveEffect.ChangeData;
+
+type ActiveEffectChangeRenderer = ActiveEffect.ChangeRenderer;
+
+type ActiveEffectChangeHandler = ActiveEffect.ChangeHandler;
+
 type _ActiveEffectDuration = ActiveEffect.Duration;
 
-type ActiveEffectDuration = ActiveEffect.DurationData & _ActiveEffectDuration;
+type ActiveEffectDuration = ActiveEffect.Duration;
 
 type FolderChildNode = Folder.ChildNode;
 

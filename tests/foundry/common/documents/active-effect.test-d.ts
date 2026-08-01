@@ -28,31 +28,39 @@ const fullSource = {
   name: "Stuff +1", // necessary for construction
   img: "path/to/tex.webp",
   type: "base",
-  system: {},
-  changes: [
-    {
-      key: "system.stuff.value",
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-      priority: 60,
-      value: "1",
-    },
-  ],
+  system: {
+    changes: [
+      {
+        key: "system.stuff.value",
+        type: "add",
+        value: 1,
+        phase: "initial",
+        priority: 60,
+      },
+    ],
+  },
   disabled: true,
-  duration: {
-    startTime: 1700000,
-    seconds: 300,
+  start: {
     combat: "CCCCCSomeIDCCCCC",
-    rounds: 20,
-    turns: 3,
-    startRound: 1,
-    startTurn: 3,
+    combatant: "BBBBBSomeIDBBBBB",
+    initiative: 12,
+    round: 1,
+    turn: 3,
+    time: 1700000,
+  },
+  duration: {
+    value: 300,
+    units: "seconds",
+    expiry: "turnStart",
+    expired: false,
   },
   description: "Increment your Stuff",
   origin: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
   tint: "#C8888C",
   transfer: true,
   statuses: ["invisible", "flying"],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
+  folder: null,
   sort: 7,
   flags: {
     core: {
@@ -75,29 +83,21 @@ new TestActiveEffect({
   img: null,
   type: null,
   system: null,
-  changes: [
-    {
-      key: null,
-      mode: null,
-      priority: null,
-      value: null,
-    },
-  ],
   disabled: null,
+  start: null,
   duration: {
-    startTime: null,
-    seconds: null,
-    combat: null,
-    rounds: null,
-    turns: null,
-    startRound: null,
-    startTurn: null,
+    value: null,
+    units: null,
+    expiry: null,
+    expired: null,
   },
   description: null,
   origin: null,
   tint: null,
   transfer: null,
   statuses: null,
+  showIcon: null,
+  folder: null,
   sort: null,
   flags: null,
   _stats: {
@@ -109,7 +109,7 @@ new TestActiveEffect({
 
 new TestActiveEffect({
   name: "Stuff +1", // necessary for construction
-  changes: null,
+  start: null,
   duration: null,
   _stats: null,
 });
@@ -120,29 +120,21 @@ new TestActiveEffect({
   img: undefined,
   type: undefined,
   system: undefined,
-  changes: [
-    {
-      key: undefined,
-      mode: undefined,
-      priority: undefined,
-      value: undefined,
-    },
-  ],
   disabled: undefined,
+  start: undefined,
   duration: {
-    startTime: undefined,
-    seconds: undefined,
-    combat: undefined,
-    rounds: undefined,
-    turns: undefined,
-    startRound: undefined,
-    startTurn: undefined,
+    value: undefined,
+    units: undefined,
+    expiry: undefined,
+    expired: undefined,
   },
   description: undefined,
   origin: undefined,
   tint: undefined,
   transfer: undefined,
   statuses: undefined,
+  showIcon: undefined,
+  folder: undefined,
   sort: undefined,
   flags: undefined,
   _stats: {
@@ -154,7 +146,7 @@ new TestActiveEffect({
 
 new TestActiveEffect({
   name: "Stuff +1", // necessary for construction
-  changes: undefined,
+  start: undefined,
   duration: undefined,
   _stats: undefined,
 });
@@ -163,21 +155,26 @@ expectTypeOf(fullTestAE).toEqualTypeOf<TestActiveEffect<"base">>();
 
 expectTypeOf(fullTestAE._id).toEqualTypeOf<string | null>();
 expectTypeOf(fullTestAE.name).toBeString();
-// @ts-expect-error EffectChangeData is used as an argument interface, so it would match the AssignmentType of the schema,
-// but not InitializedType, due to `undefined` always being a valid assignment to fields with an `initial` set
-expectTypeOf(fullTestAE.changes).toEqualTypeOf<ActiveEffect.EffectChangeData[]>();
-const firstChange = fullTestAE.changes[0]!;
+
+// `changes` moved to `system.changes` in v14
+const firstChange = fullTestAE.system.changes[0]!;
 
 expectTypeOf(firstChange.key).toBeString();
-expectTypeOf(firstChange.value).toBeString();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES>();
+expectTypeOf(firstChange.value).toEqualTypeOf<unknown>();
+expectTypeOf(firstChange.type).toBeString();
+expectTypeOf(firstChange.phase).toBeString();
 expectTypeOf(firstChange.priority).toEqualTypeOf<number | null | undefined>();
 
 expectTypeOf(fullTestAE.disabled).toBeBoolean();
-expectTypeOf(fullTestAE.duration.combat).toEqualTypeOf<Combat.Stored | null>();
+expectTypeOf(fullTestAE.start).toEqualTypeOf<ActiveEffect.StartData | null>();
+expectTypeOf(fullTestAE.start?.combat).toEqualTypeOf<Combat.Stored | null | undefined>();
+expectTypeOf(fullTestAE.start?.combatant).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(fullTestAE.start?.initiative).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(fullTestAE.start?.time).toEqualTypeOf<number | undefined>();
 expectTypeOf(fullTestAE.transfer).toBeBoolean();
 expectTypeOf(fullTestAE.statuses).toEqualTypeOf<Set<string>>();
+expectTypeOf(fullTestAE.showIcon).toEqualTypeOf<CONST.ACTIVE_EFFECT_SHOW_ICON>();
+expectTypeOf(fullTestAE.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(fullTestAE.sort).toBeNumber();
 expectTypeOf(fullTestAE.flags).toEqualTypeOf<
   foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
@@ -192,12 +189,10 @@ expectTypeOf(fullTestAE._stats).toEqualTypeOf<
   foundry.data.fields.SchemaField.InitializedData<foundry.data.fields.DocumentStatsField.Schema>
 >();
 expectTypeOf(fullTestAE.img).toEqualTypeOf<string | null>();
-expectTypeOf(fullTestAE.duration.startTime).toEqualTypeOf<number | null>();
-expectTypeOf(fullTestAE.duration.seconds).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(fullTestAE.duration.rounds).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(fullTestAE.duration.turns).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(fullTestAE.duration.startRound).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(fullTestAE.duration.startTurn).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(fullTestAE.duration.value).toEqualTypeOf<number | null>();
+expectTypeOf(fullTestAE.duration.units).toEqualTypeOf<CONST.ACTIVE_EFFECT_DURATION_UNITS>();
+expectTypeOf(fullTestAE.duration.expiry).toEqualTypeOf<string | null>();
+expectTypeOf(fullTestAE.duration.expired).toBeBoolean();
 expectTypeOf(fullTestAE.origin).toEqualTypeOf<string | null>();
 expectTypeOf(fullTestAE.tint).toEqualTypeOf<Color>();
 
@@ -218,11 +213,10 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: undefi
 
 // migrateData and shimData overridden with no signature changes
 
-// deprecated since v12 until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-fullTestAE.icon = "path/to/tex.png";
+declare const someChanges: ActiveEffect.ChangeData[];
+expectTypeOf(TestActiveEffect["_shimChanges"](someChanges)).toBeVoid();
+
+expectTypeOf(BaseActiveEffect.DEFAULT_ICON).toBeString();
 
 // Document template static overrides
 
@@ -246,11 +240,12 @@ expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<null>();
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<null>();
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" })).toEqualTypeOf<null>();
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null })).toEqualTypeOf<null>();
-// expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined })).toEqualTypeOf<null>();
+// ActiveEffects became indexed compendium documents in v14, so `get` can return an index entry
+type AEIndexEntry = foundry.documents.collections.CompendiumCollection.IndexEntry<"ActiveEffect">;
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<AEIndexEntry | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<AEIndexEntry | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" })).toEqualTypeOf<AEIndexEntry | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null })).toEqualTypeOf<AEIndexEntry | null>();
 
 // no hierarchy, no collections
 expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull();
@@ -326,15 +321,6 @@ expectTypeOf(
       },
     },
     _id: null,
-    changes: [
-      {
-        key: "system.foo.bar",
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        priority: 2,
-        value: "i don't know what AEs look like",
-      },
-    ],
     _stats: {
       compendiumSource: "something",
       duplicateSource: "else",
@@ -354,20 +340,37 @@ expectTypeOf(
     },
     description: "bar",
     disabled: false,
-    duration: {
+    start: {
       combat: "ZZZZZSomeIDZZZZZ",
-      rounds: 2,
-      seconds: 12314,
-      startRound: 1,
-      startTime: 7,
-      startTurn: 1,
-      turns: 42,
+      combatant: "YYYYYSomeIDYYYYY",
+      initiative: 21,
+      round: 1,
+      turn: 1,
+      time: 7,
+    },
+    duration: {
+      value: 42,
+      units: "turns",
+      expiry: "turnEnd",
+      expired: false,
     },
     img: "baz.webp",
-    origin: "a uuid",
+    origin: "Item.WWWWWSomeIDWWWWW",
     sort: 2,
     statuses: [],
-    system: {},
+    showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL,
+    folder: null,
+    system: {
+      changes: [
+        {
+          key: "system.foo.bar",
+          type: "add",
+          value: "i don't know what AEs look like",
+          phase: "initial",
+          priority: 2,
+        },
+      ],
+    },
     tint: "#ABCDEF",
     transfer: true,
     type: "base",
@@ -446,32 +449,30 @@ const fullUpdateData = {
     duplicateSource: "New UUID",
     coreVersion: "13", // TODO: omit server-managed keys of _stats from UpdateData
   },
-  changes: fullTestAE.changes.concat([
-    {
-      key: "name",
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-      priority: 1,
-      value: " the Second",
-    },
-  ]),
   description: "New Description",
   disabled: false,
-  duration: {
+  start: {
     combat: "CCCCCSomeIDCCCCC",
-    rounds: 17,
-    seconds: 42,
-    startRound: 5,
-    startTime: 37373737,
-    startTurn: 2,
-    turns: 24,
+    combatant: "BBBBBSomeIDBBBBB",
+    initiative: 8,
+    round: 5,
+    turn: 2,
+    time: 37373737,
+  },
+  duration: {
+    value: 42,
+    units: "rounds",
+    expiry: "roundEnd",
+    expired: false,
   },
   img: "new/path/to/img.png",
-  // @ts-expect-error TODO: possibly include shims
-  icon: "new/path/to/img.jpg",
+  // @ts-expect-error `changes` moved to `system.changes` in v14
+  changes: [],
   foo: 7,
-  origin: "A UUID",
+  origin: "Item.WWWWWSomeIDWWWWW",
   statuses: ["status1", "status2"],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.NEVER,
+  folder: null,
   tint: "#EDCBAF",
   transfer: true,
   sort: 32,
@@ -483,9 +484,15 @@ const fullUpdateData = {
     },
   },
   system: {
-    // untouched "base" system should allow anything
-    foo: "bar",
-    baz: new Set<number>([1, 2, 3]), // gets serialized to `{}` without datamodel handling
+    changes: fullTestAE.system.changes.concat([
+      {
+        key: "name",
+        type: "add",
+        value: " the Second",
+        phase: "initial",
+        priority: 1,
+      },
+    ]),
   },
   // TODO: mock subtype to test
   type: "base",
@@ -494,29 +501,20 @@ expectTypeOf(fullTestAE.update(fullUpdateData)).toEqualTypeOf<Promise<TestActive
 expectTypeOf(
   fullTestAE.update({
     name: "some name", // no initial, can't be undefined
-    changes: [
-      ...fullTestAE.changes,
-      {
-        key: "name", // required, no initial
-        mode: undefined,
-        priority: undefined,
-        value: " the Second", // required, no initial
-      },
-    ],
     description: undefined,
     disabled: undefined,
+    start: undefined,
     duration: {
-      combat: undefined,
-      rounds: undefined,
-      seconds: undefined,
-      startRound: undefined,
-      startTime: undefined,
-      startTurn: undefined,
-      turns: undefined,
+      value: undefined,
+      units: undefined,
+      expiry: undefined,
+      expired: undefined,
     },
     img: undefined,
     origin: undefined,
     statuses: undefined,
+    showIcon: undefined,
+    folder: undefined,
     tint: undefined,
     transfer: undefined,
     sort: undefined,
@@ -528,35 +526,26 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
-    changes: undefined,
+    start: undefined,
     duration: undefined,
   }),
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
-    changes: [
-      ...fullTestAE.changes,
-      {
-        key: "name", // required, no initial
-        mode: null,
-        priority: null,
-        value: " the Second", // required, no initial
-      },
-    ],
     description: null,
     disabled: null,
+    start: null,
     duration: {
-      combat: null,
-      rounds: null,
-      seconds: null,
-      startRound: null,
-      startTime: null,
-      startTurn: null,
-      turns: null,
+      value: null,
+      units: null,
+      expiry: null,
+      expired: null,
     },
     img: null,
     origin: null,
     statuses: null,
+    showIcon: null,
+    folder: null,
     tint: null,
     transfer: null,
     sort: null,
@@ -567,7 +556,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 expectTypeOf(
   fullTestAE.update({
-    changes: null,
+    start: null,
     duration: null,
   }),
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();

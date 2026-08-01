@@ -6,6 +6,7 @@ import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { IterableWeakMap, IterableWeakSet } from "#common/utils/_module.d.mts";
+import type { ActiveEffectRegistry } from "#client/helpers/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -1253,6 +1254,20 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
+   * @param phase - The application phase under which changes are to be applied.
+   *
+   * @throws Via {@linkcode Hooks.onError} if `phase` is not a registered
+   * {@linkcode ActiveEffect.CHANGE_PHASES | ActiveEffect application phase}, or has already completed in this
+   * data-preparation cycle.
+   */
+  applyActiveEffects(phase: string): void;
+
+  /**
+   * @deprecated "Actor#applyActiveEffects must be called with a string phase identifier, with `"initial"` as
+   * the first phase." (since v14, until v16)
+   *
+   * @remarks Omitting `phase` infers `"final"` if `"initial"` has already completed in this data-preparation
+   * cycle, otherwise `"initial"`.
    */
   applyActiveEffects(): void;
 
@@ -1396,6 +1411,19 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
   protected _updateDependentTokens(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOptions): void;
+
+  /**
+   * Workflows to perform following the update of ActiveEffect durations. This method is called for all users.
+   * @param effects - Effects whose durations were updated
+   * @param event   - The identifier of the event that triggered the duration refresh
+   * @param context - Additional contextual information associated with the duration refresh
+   * @remarks A no-op in core; provided for subclasses to override.
+   */
+  onUpdateEffectDurations(
+    effects: ActiveEffect.Implementation[],
+    event: string,
+    context?: ActiveEffectRegistry.RefreshContext,
+  ): Promise<void>;
 
   /*
    * After this point these are not really overridden methods.
