@@ -127,6 +127,7 @@
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
     "@types/youtube": "~0.0.48",
+    "animejs": "4.3.6",
     "codemirror": "^6.0.2",
     "handlebars": "^4.7.9",
     "handlebars-intl": "^1.1.2",
