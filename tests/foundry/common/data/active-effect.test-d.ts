@@ -70,7 +70,6 @@ interface MissingChangesSchema extends fields.DataSchema {
   enabled: fields.BooleanField;
 }
 
-// @ts-expect-error ActiveEffect models must define `changes`.
 declare class _MissingChangesModel extends ActiveEffectTypeDataModel<MissingChangesSchema> {}
 
 interface TypedChangeSchema extends ActiveEffectTypeDataModel.MinimalChangeSchema {
@@ -115,6 +114,8 @@ declare class _CompatibilityModel extends foundry.abstract.TypeDataModel<
 
 expectTypeOf<_ConformingModel>().toExtend<ActiveEffectTypeDataModel.Any>();
 expectTypeOf<typeof _ConformingModel>().toExtend<ActiveEffectTypeDataModel.AnyConstructor>();
+expectTypeOf<_MissingChangesModel>().toExtend<ActiveEffectTypeDataModel.Any>();
+expectTypeOf<typeof _MissingChangesModel>().toExtend<ActiveEffectTypeDataModel.AnyConstructor>();
 expectTypeOf<typeof _ConformingRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 expectTypeOf<typeof _TypedRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 expectTypeOf<typeof _NonConformingModel>().not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();

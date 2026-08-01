@@ -6,9 +6,13 @@ import fields = foundry.data.fields;
 /**
  * A TypeDataModel for {@linkcode ActiveEffect}s. A single ArrayField is defined for {@linkcode ActiveEffect.ChangeData}.
  * A system can override the changes SchemaField but must preserve definitions for type, phase, and priority.
+ *
+ * @remarks Schemas which omit `changes` are temporarily supported for V13 compatibility. Foundry extends them with
+ * the core changes schema during setup and reports an error to prompt migration.
  */
 declare class ActiveEffectTypeDataModel<
-  Schema extends ActiveEffectTypeDataModel.MinimalSchema = ActiveEffectTypeDataModel.Schema,
+  Schema extends ActiveEffectTypeDataModel.MinimalSchema | ActiveEffectTypeDataModel.LegacySchema =
+    ActiveEffectTypeDataModel.Schema,
 > extends TypeDataModel<Schema, ActiveEffect.Implementation> {
   static override defineSchema(): ActiveEffectTypeDataModel.Schema;
 
@@ -37,6 +41,14 @@ declare namespace ActiveEffectTypeDataModel {
 
   interface MinimalChangesField extends fields.ArrayField.Any {
     element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
+  }
+
+  /**
+   * An ActiveEffect schema from before V14 which does not define its own changes field.
+   * This compatibility path is temporary for Prototype 3.
+   */
+  interface LegacySchema extends fields.DataSchema {
+    changes?: never;
   }
 
   /** The minimum schema for a class which defines its own ActiveEffect changes. */
