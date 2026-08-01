@@ -4069,9 +4069,9 @@ declare namespace DocumentIdField {
 declare class DocumentUUIDField<
   const Options extends DocumentUUIDField.Options = DocumentUUIDField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = StringField.AssignmentType<Options>,
-  const InitializedType = StringField.InitializedType<Options>,
-  const PersistedType extends string | null | undefined = StringField.InitializedType<Options>,
+  const AssignmentType = DocumentUUIDField.AssignmentType<Options>,
+  const InitializedType = DocumentUUIDField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined = DocumentUUIDField.InitializedType<Options>,
 > extends StringField<Options, AssignmentType, InitializedType, PersistedType> {
   /**
    * @param options - Options which configure the behavior of the field
@@ -4159,6 +4159,34 @@ declare namespace DocumentUUIDField {
       embedded: undefined;
       relative: false;
     }
+  >;
+
+  /**
+   * A helper type for the given options type merged into the default options of the DocumentUUIDField class.
+   * @template Options - the options that override the default options
+   */
+  type MergedOptions<Options extends DocumentUUIDField.Options> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a DocumentUUIDField class.
+   * @template Options - the options that override the default options
+   *
+   * @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<Options extends DocumentUUIDField.Options> = DataField.DerivedAssignmentType<
+    string | Document.Any,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a DocumentUUIDField class.
+   * @template Options - the options that override the default options
+   */
+  type InitializedType<Options extends DocumentUUIDField.Options> = DataField.DerivedInitializedType<
+    string,
+    MergedOptions<Options>
   >;
 
   interface RootToInputConfig<InitializedType> extends Omit<
