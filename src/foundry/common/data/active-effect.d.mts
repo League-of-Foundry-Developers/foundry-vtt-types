@@ -85,9 +85,7 @@ declare namespace ActiveEffectTypeDataModel {
      * @defaultValue `""`
      *
      * @privateRemarks Constructed with `{required: true, nullable: true, serializable: true, initial: ""}`,
-     * but {@linkcode fields.AnyField | AnyField} takes no `Options` type parameter — its `Assignment`,
-     * `Initialized`, and `Persisted` types are all fixed at `unknown`, so none of those options can be
-     * reflected here. If `AnyField` ever threads `Options`, this field should pass them.
+     * but `AnyField` does not model options; its value types remain `unknown`.
      */
     value: fields.AnyField;
 
