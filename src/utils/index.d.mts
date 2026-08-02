@@ -1048,6 +1048,8 @@ type _MustBeValidUuid<
     ? InvalidUuid<OriginalUuid>
     : _UUIDFor<Type>;
 
+type _x = _UUIDFor<"PlaylistSound">;
+
 type _UUIDFor<Name extends Document.Type> =
   | (Name extends Document.WorldType ? `${Name}.${string}` : never)
   | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
