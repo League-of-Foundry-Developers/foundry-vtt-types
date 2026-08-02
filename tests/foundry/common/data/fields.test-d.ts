@@ -487,10 +487,17 @@ test("GridOffsetsField element dimensions", () => {
   const offsets = gridOffsets.clean(["1.2.3"]);
 
   expectTypeOf(gridOffsets.dimensions).toEqualTypeOf<3>();
-  expectTypeOf(gridOffsets.element).toEqualTypeOf<
-    fields.GridOffsetField<fields.GridOffsetsField.ElementOptions<{ dimensions: 3 }>>
-  >();
   expectTypeOf(offsets).toEqualTypeOf<{ i: number; j: number; k: number }[]>();
+
+  // The parent's `dimensions` flows through to the element field's own dimensions and schema.
+  const element3D = gridOffsets.element;
+  expectTypeOf(element3D.dimensions).toEqualTypeOf<3>();
+  expectTypeOf(element3D.fields).toEqualTypeOf<fields.GridOffsetField.Schema3D>();
+
+  // Defaulted case models Foundry's `options?.dimensions ?? 2`.
+  const element2D = new fields.GridOffsetsField().element;
+  expectTypeOf(element2D.dimensions).toEqualTypeOf<2>();
+  expectTypeOf(element2D.fields).toEqualTypeOf<fields.GridOffsetField.Schema2D>();
 });
 
 test("field validation and update-state options", () => {
@@ -520,7 +527,7 @@ test("DocumentAuthorField default and initial types", () => {
   >();
 });
 
-test("field hook signatures", () => {
+test("protected override method signatures", () => {
   class ScalarArrayHookCoverage extends fields.ArrayField<fields.NumberField<{ required: true; nullable: false }>> {
     protected override _cleanElement(
       value: number,

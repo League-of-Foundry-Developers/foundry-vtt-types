@@ -11,6 +11,7 @@ import type {
   InterfaceToObject,
   AnyArray,
   GetKey,
+  NullishCoalesce,
   SplitString,
   ValueOf,
   AnyMutableObject,
@@ -286,7 +287,9 @@ declare abstract class DataField<
    * @param options - Options which affect which validators are yielded
    * @yields A validator function
    */
-  validators(options?: DataField.ValidatorsOptions): Generator<DataField.ValidatorFunction, void, void>;
+  validators<const Options extends DataField.ValidatorsOptions | undefined = undefined>(
+    options?: Options,
+  ): Generator<DataField.ValidatorFunction<DataField.Any, Options>, void, void>;
 
   /**
    * Validate candidate input for this field, ensuring it meets the field requirements.
@@ -827,7 +830,36 @@ declare namespace DataField {
   interface GetFieldOptions extends InexactPartial<_GetFieldOptions> {}
 
   /** @internal */
-  interface _ValidationOptions {
+  interface _GetFieldContext {
+    /** The source data of the field */
+    source: AnyObject;
+  }
+
+  /**
+   * An interface for the `options` of {@link DataField.getField | `DataField#getField`} and
+   * {@link DataField._getField | `DataField#_getField`}, which only consult `source`.
+   */
+  interface GetFieldContext extends InexactPartial<_GetFieldContext> {}
+
+  /** @internal */
+  interface _ValidatorsOptions {
+    /**
+     * A specific validation phase to perform, specifying this is generally only necessary for _updateDiff workflows
+     * - "pre" occurs before recursion to child nodes
+     * - "recursive" performs recursive validation of child nodes
+     * - "post" occurs after validation of child nodes
+     */
+    phase: "pre" | "recursive" | "post";
+
+    /**
+     * When validating a field, also validate its children. This can be explicitly turned off to validate just a
+     * single level of a hierarchical data structure, leaving the recursion to the caller.
+     */
+    recursive: boolean;
+  }
+
+  /** @internal */
+  interface _ValidationOptions extends _ValidatorsOptions {
     /** Whether this is a partial schema validation, or a complete one. */
     partial: boolean;
 
@@ -840,14 +872,6 @@ declare namespace DataField {
     /** Whether to throw a DataModelValidationFailure (true) or simply return it (false) */
     strict: boolean;
 
-    /**
-     * A specific validation phase to perform, specifying this is generally only necessary for _updateDiff workflows
-     * - "pre" occurs before recursion to child nodes
-     * - "recursive" performs recursive validation of child nodes
-     * - "post" occurs after validation of child nodes
-     */
-    phase: "pre" | "recursive" | "post";
-
     /** Whether invalid array elements should be dropped rather than causing the parent to be considered invalid. */
     dropInvalidElements: boolean;
 
@@ -856,12 +880,6 @@ declare namespace DataField {
      * collection rather than causing the parent to be considered invalid.
      */
     dropInvalidEmbedded: boolean;
-
-    /**
-     * When validating a field, also validate its children. This can be explicitly turned off to validate just a
-     * single level of a hierarchical data structure, leaving the recursion to the caller.
-     */
-    recursive: boolean;
 
     /** The DataModel instance the field belongs to */
     model: DataModel.Any;
@@ -1040,17 +1058,27 @@ declare namespace DataField {
   }
 
   /** An interface for the options of {@link DataField.validators | `DataField#validators`}. */
-  interface ValidatorsOptions extends Pick<DataField.ValidateOptions<DataField.Any>, "phase" | "recursive"> {}
+  interface ValidatorsOptions extends InexactPartial<_ValidatorsOptions> {
+    /** Whether validation is performed strictly, causing a yielded validator to throw rather than return a failure. */
+    strict?: boolean | undefined;
+  }
 
   /**
    * A validation function as yielded by {@link DataField.validators | `DataField#validators`}.
-   * @template CurrentField - the type of the DataField, which is the receiver of the validator function
+   * @template CurrentField     - the type of the DataField, which is the receiver of the validator function
+   * @template ValidatorOptions - the options {@link DataField.validators | `DataField#validators`} was called with
    */
-  type ValidatorFunction<CurrentField extends DataField.Any = DataField.Any> = (
+  type ValidatorFunction<
+    CurrentField extends DataField.Any = DataField.Any,
+    ValidatorOptions extends DataField.ValidatorsOptions | undefined = undefined,
+  > = _ValidatorFunction<CurrentField, GetKey<ValidatorOptions, "strict", undefined>>;
+
+  /** @internal */
+  type _ValidatorFunction<CurrentField extends DataField.Any, Strict extends boolean | undefined> = (
     this: CurrentField,
     value: unknown,
-    options: DataField.ValidateOptions<DataField.Any>,
-  ) => DataModelValidationFailure | boolean | void;
+    options: DataField.ValidateOptions<CurrentField>,
+  ) => (Strict extends true ? never : DataModelValidationFailure) | boolean | void;
 
   /**
    * @remarks The `options` passed to {@link DataField.initialize | `DataField#initialize`} exclusively (in core) come from
@@ -1294,19 +1322,13 @@ declare class SchemaField<
    * @param options   - Additional options
    * @returns The corresponding DataField definition for that field, or undefined
    */
-  getField(
-    fieldName: MaybeArray<string>,
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Unknown | undefined;
+  getField(fieldName: MaybeArray<string>, options?: DataField.GetFieldContext): DataField.Unknown | undefined;
   // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
   // getField<FieldName extends SchemaField.FieldName<Fields>>(
   //   fieldName: FieldName,
   // ): SchemaField.GetField<this, Fields, FieldName>;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   override getInitialValue(source?: unknown): InitializedType;
 
@@ -2568,10 +2590,7 @@ declare class TypedObjectField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   protected override _cleanType(
     value: InitializedType,
@@ -2797,10 +2816,7 @@ declare class ArrayField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   protected override _cast(value: unknown): AssignmentType;
 
@@ -3165,10 +3181,7 @@ declare class DataModelSchemaField<
    */
   model: ModelType;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   override clean(
     value: AssignmentType,
@@ -6252,10 +6265,7 @@ declare class TypedSchemaField<
    */
   types: TypedSchemaField.ToConfiguredTypes<Types>;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source"> & Partial<Pick<DataField.GetFieldOptions, "type">>,
-  ): DataField.Any;
+  protected override _getField(parts: string[], options?: DataField.GetFieldOptions): DataField.Any;
 
   /**
    * @remarks If `value` has a `#toObject` method, calls it, then returns the result if it is a
@@ -6696,7 +6706,7 @@ declare namespace GridOffsetField {
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { dimensions: 2 }>;
 
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
-  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
+  type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
   type SchemaForDimensions<Dimension extends 2 | 3> = Dimension extends 3 ? Schema3D : Schema2D;
   type Schema<Opts extends Options> = SchemaForDimensions<Dimensions<Opts>>;
 
@@ -6759,12 +6769,10 @@ declare namespace GridOffsetsField {
 
   type DefaultOptions = SimpleMerge<ArrayField.DefaultOptions, { dimensions: 2 }>;
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
-  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
-  type ElementOptions<Opts extends Options> = SimpleMerge<
-    GridOffsetField.DefaultOptions,
-    { dimensions: Dimensions<Opts> }
-  >;
-  type ElementField<Opts extends Options> = GridOffsetField<ElementOptions<Opts>>;
+  type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
+  type ElementField<Opts extends Options> = GridOffsetField<{
+    dimensions: NullishCoalesce<GetKey<Opts, "dimensions", undefined>, 2>;
+  }>;
   type InitializedType<Opts extends Options> = ArrayField.InitializedType<
     ArrayField.InitializedElementType<ElementField<Opts>>,
     Opts
