@@ -74,6 +74,13 @@ import type {
   // Mutable,
 } from "fvtt-types/utils";
 import type { Document } from "#common/abstract/_module.d.mts";
+import {
+  actorUuid,
+  compendiumActorUuid,
+  tokenUuid,
+  greatGreatGrandchildUuid,
+  compendiumGreatGreatGrandchildUuid,
+} from "#tests/client/utils/helpers.test-d.ts";
 
 expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
 expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
@@ -277,12 +284,6 @@ expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 // TODO: ShapeWithIndexSignature
 
 // MustBeValidUuid:
-
-declare const actorUuid: "Actor.ARandomIDToTest";
-declare const tokenUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest";
-declare const compendiumActorUuid: "Compendium.world.a.Actor.ARandomIDToTest";
-declare const greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
-declare const compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
 
 // fallback to 'any of the provided type, if any' if the provided UUID is untestable
 expectTypeOf<MustBeValidUuid<string>>().toEqualTypeOf<

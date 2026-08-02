@@ -250,7 +250,7 @@ describe("fromUuidSync Tests", () => {
     expectTypeOf(fromUuidSync<Actor.Stored, true>(unknownUUID, { invalid: true })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | Actor.Invalid | null
     >();
-    // `CombatantGroup`s are not `Document.CompendiumType`
+    // `CombatantGroup`s are not `Document.CompendiumType`, so no index
     expectTypeOf(fromUuidSync<CombatantGroup.Stored, true>(unknownUUID, { invalid: true })).toEqualTypeOf<
       CombatantGroup.Stored | CombatantGroup.Invalid | null
     >();
