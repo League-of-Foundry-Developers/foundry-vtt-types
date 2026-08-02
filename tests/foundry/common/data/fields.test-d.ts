@@ -670,3 +670,20 @@ test("DataField apply and migrateSource methods", () => {
 
   expectTypeOf<MigrateSourceField["migrateSource"]>().returns.toEqualTypeOf<void>();
 });
+
+test("AnyConstructor accepts subclasses with different constructors", () => {
+  // A subclass with a constructor signature unlike the base's must still satisfy `AnyConstructor`;
+  // this is why the companion `AnyXField` uses `constructor(...args: never)`.
+  class CustomSchemaField extends fields.SchemaField<fields.DataSchema> {
+    constructor(count: number) {
+      super({});
+      void count;
+    }
+  }
+
+  const ctor: fields.SchemaField.AnyConstructor = CustomSchemaField;
+  expectTypeOf(ctor).toExtend<fields.SchemaField.AnyConstructor>();
+
+  const instance: fields.SchemaField.Any = new CustomSchemaField(3);
+  expectTypeOf(instance).toExtend<fields.SchemaField.Any>();
+});
