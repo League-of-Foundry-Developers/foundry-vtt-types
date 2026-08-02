@@ -330,13 +330,13 @@ declare namespace ApplicationV2 {
 
   interface ClosingOptions {
     /** Whether to animate the close, or perform it instantaneously */
-    animate: boolean;
+    animate?: boolean | undefined;
 
     /** Whether the application was closed via keypress. */
-    closeKey: boolean;
+    closeKey?: boolean | undefined;
 
     /** Is the application being closed because a form was submitted? */
-    submitted: boolean;
+    submitted?: boolean | undefined;
   }
 
   type ActionTarget = HTMLElement & { dataset: { action: string } };
@@ -389,7 +389,7 @@ declare namespace ApplicationV2 {
     icon: HTMLElement | undefined;
     close: HTMLButtonElement | undefined;
     controls: HTMLButtonElement | undefined;
-    controlsDropdown: HTMLDivElement | undefined;
+    content: HTMLElement | undefined;
     onDrag: (event: PointerEvent) => void;
     onResize: (event: PointerEvent) => void;
     pointerStartPosition: ApplicationV2.Position | undefined;
@@ -752,9 +752,11 @@ declare class ApplicationV2<
    * Close the Application, removing it from the DOM.
    * @param options - Options which modify how the application is closed.
    * @returns A Promise which resolves to the closed Application instance
+   * @privateRemarks The base always resolves to `Promise<this>`;
+   * `void` is for subclasses that conditionally skip closing, like `PlaceableDirectory#close`.
    */
   // not: null
-  close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this | void>;
+  close(options?: ApplicationV2.ClosingOptions): Promise<this | void>;
 
   /**
    * Remove the application HTML element from the DOM.
@@ -766,7 +768,7 @@ declare class ApplicationV2<
   /**
    * Remove elements from the DOM and trigger garbage collection as part of application closure.
    */
-  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+  protected _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   /**
    * Update the Application element position using provided data which is merged with the prior position.

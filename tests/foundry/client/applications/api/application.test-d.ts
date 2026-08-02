@@ -75,7 +75,7 @@ expectTypeOf(applicationV2.window).toEqualTypeOf<{
   icon: HTMLElement | undefined;
   close: HTMLButtonElement | undefined;
   controls: HTMLButtonElement | undefined;
-  controlsDropdown: HTMLDivElement | undefined;
+  content: HTMLElement | undefined;
   onDrag: (event: PointerEvent) => void;
   onResize: (event: PointerEvent) => void;
   pointerStartPosition: foundry.applications.api.ApplicationV2.Position | undefined;
@@ -92,6 +92,9 @@ expectTypeOf(applicationV2.rendered).toEqualTypeOf<boolean>();
 expectTypeOf(applicationV2.state).toEqualTypeOf<-3 | -2 | -1 | 0 | 1 | 2>();
 expectTypeOf(applicationV2.render()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
 expectTypeOf(applicationV2.close()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2 | void>>();
+expectTypeOf(applicationV2.close({ animate: false })).toEqualTypeOf<
+  Promise<foundry.applications.api.ApplicationV2 | void>
+>();
 expectTypeOf(applicationV2.attachWindow()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
 expectTypeOf(applicationV2.detachWindow()).toEqualTypeOf<Promise<foundry.applications.api.ApplicationV2>>();
 applicationV2.render({ window: { windowId: "detached-window", detached: true } });
@@ -106,6 +109,11 @@ expectTypeOf(applicationV2.bringToFront()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2.changeTab("", "")).toEqualTypeOf<void>();
 expectTypeOf(applicationV2["_refit"]()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2["_refit"]({ width: "auto" })).toEqualTypeOf<void>();
+
+declare const element: HTMLElement;
+expectTypeOf(applicationV2["_insertElement"](element)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(applicationV2["_insertElement"](element, { isFirstRender: true })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(applicationV2["_tearDown"]({ animate: false })).toEqualTypeOf<void>();
 
 declare const formConfig: foundry.applications.api.ApplicationV2.FormConfiguration;
 declare const event: Event;

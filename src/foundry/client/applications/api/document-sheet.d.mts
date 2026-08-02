@@ -87,22 +87,22 @@ declare namespace DocumentSheetV2 {
   }
 
   /** Processed and validated form data used to update a Document. */
-  type SubmitData<ConcreteDocument extends Document.Any = Document.Any> = foundry.data.fields.SchemaField.UpdateData<
+  type SubmitData<ConcreteDocument extends Document.Any> = foundry.data.fields.SchemaField.UpdateData<
     ConcreteDocument["schema"]["fields"]
   >;
 
   /** Database operation options forwarded when creating or updating a Document. */
-  type ProcessSubmitOptions<ConcreteDocument extends Document.Any = Document.Any> =
+  type ProcessSubmitOptions<ConcreteDocument extends Document.Any> =
     | Document.Database.CreateDocumentsOperationForName<ConcreteDocument["documentName"]>
     | Document.Database.UpdateOneDocumentOperationForName<ConcreteDocument["documentName"]>;
 
-  interface SubmitOptions<ConcreteDocument extends Document.Any = Document.Any> {
+  interface SubmitOptions<ConcreteDocument extends Document.Any> {
     /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
     updateData: SubmitData<ConcreteDocument>;
   }
 
   /** The result of submitting a document form. */
-  interface SubmitResult<ConcreteDocument extends Document.Any = Document.Any> {
+  interface SubmitResult<ConcreteDocument extends Document.Any> {
     created?: ConcreteDocument | undefined;
     updated?: ConcreteDocument | undefined;
   }

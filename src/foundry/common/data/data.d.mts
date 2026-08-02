@@ -334,9 +334,8 @@ declare abstract class BaseShapeData<
 
   /**
    * The index of this shape within the array of shapes in its parent.
-   * @remarks Foundry marks this `@internal`, but it is read externally by
-   * {@linkcode foundry.applications.apps.ShapeConfig | ShapeConfig}, which is not a subclass, so it must be public
-   * here.
+   * See `foundry.data.fields.ShapesField`.
+   * @internal
    */
   _index: number | undefined;
 

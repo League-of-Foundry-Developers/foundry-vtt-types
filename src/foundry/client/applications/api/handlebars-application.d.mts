@@ -114,7 +114,7 @@ declare class HandlebarsApplication {
     state: HandlebarsApplicationMixin.PartState,
   ): void;
 
-  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+  protected _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   /**
    * Attach event listeners to rendered template parts.
