@@ -256,9 +256,6 @@ declare class AudioHelper {
    */
   stopLevelReports(id: string): void;
 
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _onFirstGesture(event: never, resolve: never): never;
-
   /**
    * Log a debugging message if the audio debugging flag is enabled.
    * @param message - The message to log
@@ -305,21 +302,6 @@ declare class AudioHelper {
    * @returns A number in the [0,1] range representing the loudest band value among the three contexts.
    */
   getMaxBandLevel(band?: AudioHelper.BandName, options?: AudioHelper.GetMaxBandLevelOptions): number;
-
-  /**
-   * @deprecated "`AudioHelper#getCache` is deprecated in favor of {@linkcode AudioBufferCache | AudioHelper#buffers#get}" (since v12, until v14)
-   */
-  getCache(src: string): AudioBuffer | undefined;
-
-  /**
-   * @deprecated "`AudioHelper#updateCache` is deprecated without replacement" (since v12, until v14)
-   */
-  updateCache(src: string, playing: boolean): void;
-
-  /**
-   * @deprecated "`AudioHelper#setCache` is deprecated in favor of {@linkcode AudioBufferCache |`AudioHelper#buffers#set}" (since v12, until v14)
-   */
-  setCache(src: string, buffer: AudioBuffer): void;
 
   #AudioHelper: true;
 }
