@@ -168,8 +168,8 @@ declare class DocumentSheetV2<
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
   /**
-   * @privateRemarks Sync here, but kept as the base's `MaybePromise<void>` (not `void`) so async
-   * subclass overrides like {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} stay lint-clean.
+   * @privateRemarks Synchronous at runtime; kept as the base's `MaybePromise<void>` so async subclass overrides like
+   * {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} stay lint-clean.
    */
   protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
 

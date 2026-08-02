@@ -149,7 +149,6 @@ declare class FilePicker<
    * @param options - Optional arguments
    *                  (default: `{}`)
    */
-  // not: null
   static browse(source: string, target: string, options?: FilePicker.BrowseOptions): Promise<FilePicker.BrowseReturn>;
 
   /**
@@ -159,7 +158,6 @@ declare class FilePicker<
    * @param options - Optional arguments modifying the request
    *                  (default: `{}`)
    */
-  // not: null
   static configurePath(
     source: string,
     target: string,
@@ -174,7 +172,6 @@ declare class FilePicker<
    *                  (default: `{}`)
    * @returns The full file path of the created directory
    */
-  // not: null
   static createDirectory(source: string, target: string, options?: FilePicker.BrowseOptions): Promise<string>;
 
   /**
@@ -217,7 +214,6 @@ declare class FilePicker<
    * @param options - Browsing options
    *                  (default: `{}`)
    */
-  // not: null
   browse(target?: string, options?: FilePicker.BrowseOptions): Promise<this>;
 
   // Render is overridden for no signature change but omitted here to simplify the deprecation

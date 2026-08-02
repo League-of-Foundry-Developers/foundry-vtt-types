@@ -498,7 +498,6 @@ declare class ApplicationV2<
    * @param options - Options used to configure the Application instance
    *                  (default: `{}`)
    */
-  // not: null
   constructor(options?: DeepPartial<Configuration>);
 
   /**
@@ -650,7 +649,6 @@ declare class ApplicationV2<
    *                  (default: `{}`)
    * @returns A Promise which resolves to the rendered Application instance
    */
-  // not: null
   render(options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -659,7 +657,6 @@ declare class ApplicationV2<
    * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
    *                   (default: `{}`)
    */
-  // not: null
   render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -745,8 +742,10 @@ declare class ApplicationV2<
    * Subclasses may override this method to customize how the application is inserted.
    * @param element - The element to insert
    * @param options - Render options.
+   * @privateRemarks Asynchronous at runtime, but widened to `MaybePromise<void>` so synchronous overrides like
+   * {@linkcode MainMenu._insertElement | MainMenu#_insertElement} remain assignable.
    */
-  protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): Promise<void>;
+  protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): MaybePromise<void>;
 
   /**
    * Close the Application, removing it from the DOM.
@@ -755,7 +754,6 @@ declare class ApplicationV2<
    * @privateRemarks The base always resolves to `Promise<this>`;
    * `void` is for subclasses that conditionally skip closing, like `PlaceableDirectory#close`.
    */
-  // not: null
   close(options?: ApplicationV2.ClosingOptions): Promise<this | void>;
 
   /**
@@ -861,7 +859,6 @@ declare class ApplicationV2<
    * @param options - Additional options which affect tab navigation
    *                  (default: `{}`)
    */
-  // not: null
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
@@ -883,7 +880,6 @@ declare class ApplicationV2<
    * @param options - Options which configure event handling
    * @returns A promise which resoles once the handler is complete if async is true
    */
-  // not: null
   protected _doEvent<HandlerArgs extends AnyArray, Async extends boolean | undefined = false>(
     handler: (...args: HandlerArgs) => Async extends true ? Promise<void> : void,
     options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,

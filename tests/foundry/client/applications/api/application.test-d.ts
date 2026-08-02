@@ -111,8 +111,8 @@ expectTypeOf(applicationV2["_refit"]()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2["_refit"]({ width: "auto" })).toEqualTypeOf<void>();
 
 declare const element: HTMLElement;
-expectTypeOf(applicationV2["_insertElement"](element)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(applicationV2["_insertElement"](element, { isFirstRender: true })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(applicationV2["_insertElement"](element)).toEqualTypeOf<MaybePromise<void>>();
+expectTypeOf(applicationV2["_insertElement"](element, { isFirstRender: true })).toEqualTypeOf<MaybePromise<void>>();
 expectTypeOf(applicationV2["_tearDown"]({ animate: false })).toEqualTypeOf<void>();
 
 declare const formConfig: foundry.applications.api.ApplicationV2.FormConfiguration;
