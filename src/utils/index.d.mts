@@ -1047,66 +1047,63 @@ type _MustBeValidUuid<
   Uuid extends string,
   OriginalUuid extends string,
   Type extends Document.Type,
-  Parsed extends ParseUUIDReturn = ParseUUID<Uuid>,
+  Parsed extends ParsedUUID = ParseUUID<Uuid>,
 > = Parsed["valid"] extends true
   ? Parsed["type"] extends Type
     ? OriginalUuid
     : InvalidUuid<OriginalUuid>
   : Uuid extends `${string}.${string}`
     ? InvalidUuid<OriginalUuid>
-    : _UUIDFor<Type>;
-
-type _x = _UUIDFor<"PlaylistSound">;
-
-type _UUIDFor<Name extends Document.Type> =
-  | (Name extends Document.WorldType ? `${Name}.${string}` : never)
-  | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
-  | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
+    : Document.UUIDFor<Type>;
 
 export type GetNameFromUuid<Uuid extends string | InvalidUuid<string>> = Uuid extends string
   ? _GetNameFromUuid<Uuid>
   : never;
 
-type _GetNameFromUuid<Uuid extends string, Parsed extends ParseUUIDReturn = ParseUUID<Uuid>> = string extends Uuid
+type _GetNameFromUuid<Uuid extends string, Parsed extends ParsedUUID = ParseUUID<Uuid>> = string extends Uuid
   ? never
   : Parsed["valid"] extends true
     ? Parsed["type"]
     : never;
 
-interface ParseUUIDReturn {
+export interface ParsedUUID {
   valid: boolean;
   type: Document.Type;
   compendium: boolean;
   embedded: boolean;
   primary: Document.Type;
+  relative: boolean;
 }
 
 export type ParseUUID<UUID extends string> = _ParseUUID<UUID>;
 
 type _ParseUUID<
   UUID extends string,
-  State extends ParseUUIDReturn = {
+  State extends ParsedUUID = {
     valid: false;
     type: Document.Type;
     compendium: false;
     embedded: false;
     primary: Document.Type;
+    relative: false;
   },
 > = UUID extends `Compendium.${string}.${string}.${infer Rest}`
   ? _ParseUUID<Rest, SimpleMerge<State, { compendium: true }>>
-  : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
-    UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
-    ? _ParseUUID<Rest, SimpleMerge<State, { embedded: true; primary: _ReplaceTypeIf<State["primary"], ParentType> }>>
-    : UUID extends `${infer FinalType extends Document.Type}.${string}`
-      ? SimpleMerge<
-          State,
-          {
-            valid: true;
-            primary: _ReplaceTypeIf<State["primary"], FinalType>;
-            type: FinalType;
-          }
-        >
-      : SimpleMerge<State, { valid: false }>;
+  : UUID extends `.${infer Rest}`
+    ? _ParseUUID<Rest, SimpleMerge<State, { relative: true }>>
+    : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
+      UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
+      ? _ParseUUID<Rest, SimpleMerge<State, { embedded: true; primary: _ReplaceTypeIf<State["primary"], ParentType> }>>
+      : UUID extends `${infer FinalType extends Document.Type}.${string}`
+        ? SimpleMerge<
+            State,
+            {
+              valid: true;
+              primary: _ReplaceTypeIf<State["primary"], FinalType>;
+              type: FinalType;
+            }
+          >
+        : SimpleMerge<State, { valid: false }>;
 
 type _ReplaceTypeIf<
   ExistingType extends Document.Type,

@@ -696,7 +696,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
   ActiveEffect.fromDropData({
-    uuid: "someUUID", // TODO: This should be allowed
+    uuid: "Item.id.ActiveEffect.someID",
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(

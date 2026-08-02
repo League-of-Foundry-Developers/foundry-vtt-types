@@ -22,15 +22,16 @@ declare const journal: JournalEntry.Stored;
 
 // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const unknownUUID: string = "";
-export const actorUuid = "Actor.ARandomIDToTest";
-export const settingUuid = "Setting.ARandomIDToTest";
-export const tokenUuid = "Scene.ARandomIDToTest.Token.ARandomIDToTest";
-export const jepUuid = "JournalEntry.ARandomIDToTest.JournalEntryPage.ARandomIDToTest";
-export const compendiumActorUuid = "Compendium.world.a.Actor.ARandomIDToTest";
-export const greatGreatGrandchildUuid =
+export const actorUUID = "Actor.ARandomIDToTest";
+export const settingUUID = "Setting.ARandomIDToTest";
+export const tokenUUID = "Scene.ARandomIDToTest.Token.ARandomIDToTest";
+export const jepUUID = "JournalEntry.ARandomIDToTest.JournalEntryPage.ARandomIDToTest";
+export const compendiumActorUUID = "Compendium.world.a.Actor.ARandomIDToTest";
+export const greatGreatGrandchildUUID =
   "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
-export const compendiumGreatGreatGrandchildUuid =
+export const compendiumGreatGreatGrandchildUUID =
   "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+export const relativeItemUUID = ".Item.ARandomIDToTest";
 
 describe("fromUuid Tests", () => {
   test("Known UUID", () => {
@@ -43,39 +44,39 @@ describe("fromUuid Tests", () => {
     fromUuid("Item.uuid1.Abc.uuid2");
 
     expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Stored | null>>();
-    expectTypeOf(fromUuid(actorUuid)).toEqualTypeOf<Promise<Actor.Stored | null>>();
-    expectTypeOf(fromUuid(compendiumActorUuid)).toEqualTypeOf<Promise<Actor.Stored | null>>();
-    expectTypeOf(fromUuid(tokenUuid)).toEqualTypeOf<Promise<TokenDocument.Stored | null>>();
-    expectTypeOf(fromUuid(greatGreatGrandchildUuid)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
-    expectTypeOf(fromUuid(compendiumGreatGreatGrandchildUuid)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+    expectTypeOf(fromUuid(actorUUID)).toEqualTypeOf<Promise<Actor.Stored | null>>();
+    expectTypeOf(fromUuid(compendiumActorUUID)).toEqualTypeOf<Promise<Actor.Stored | null>>();
+    expectTypeOf(fromUuid(tokenUUID)).toEqualTypeOf<Promise<TokenDocument.Stored | null>>();
+    expectTypeOf(fromUuid(greatGreatGrandchildUUID)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+    expectTypeOf(fromUuid(compendiumGreatGreatGrandchildUUID)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
 
     // relative:
 
-    expectTypeOf(fromUuid(actorUuid, { relative: undefined })).toEqualTypeOf<Promise<Actor.Stored | null>>;
+    expectTypeOf(fromUuid(actorUUID, { relative: undefined })).toEqualTypeOf<Promise<Actor.Stored | null>>;
     // `Actor`s can be found inside `TokenDocument`s.
-    expectTypeOf(fromUuid(actorUuid, { relative: tokenDoc })).toEqualTypeOf<Promise<Actor.Stored | null>>;
+    expectTypeOf(fromUuid(actorUUID, { relative: tokenDoc })).toEqualTypeOf<Promise<Actor.Stored | null>>;
     // `JournalEntryPage`s can be found inside `JournalEntry`s.
-    expectTypeOf(fromUuid(jepUuid, { relative: journal })).toEqualTypeOf<Promise<JournalEntryPage.Stored | null>>;
+    expectTypeOf(fromUuid(jepUUID, { relative: journal })).toEqualTypeOf<Promise<JournalEntryPage.Stored | null>>;
 
     // @ts-expect-error `Actor`s cannot be found (directly) inside `Scene`s.
-    fromUuid(actorUuid, { relative: scene });
+    fromUuid(actorUUID, { relative: scene });
     // @ts-expect-error `Setting`s cannot be found inside anything, the only valid value is `undefined`.
-    fromUuid(settingUuid, { relative: scene });
-    expectTypeOf(fromUuid(settingUuid, { relative: undefined })).toEqualTypeOf<Promise<Setting.Stored | null>>;
+    fromUuid(settingUUID, { relative: scene });
+    expectTypeOf(fromUuid(settingUUID, { relative: undefined })).toEqualTypeOf<Promise<Setting.Stored | null>>;
 
     // invalid:
 
-    expectTypeOf(fromUuid(actorUuid, { invalid: undefined })).toEqualTypeOf<Promise<Actor.Stored | null>>();
-    expectTypeOf(fromUuid(actorUuid, { invalid: false })).toEqualTypeOf<Promise<Actor.Stored | null>>();
+    expectTypeOf(fromUuid(actorUUID, { invalid: undefined })).toEqualTypeOf<Promise<Actor.Stored | null>>();
+    expectTypeOf(fromUuid(actorUUID, { invalid: false })).toEqualTypeOf<Promise<Actor.Stored | null>>();
 
-    expectTypeOf(fromUuid(actorUuid, { invalid: true })).toEqualTypeOf<Promise<Actor.Stored | Actor.Invalid | null>>();
-    expectTypeOf(fromUuid(compendiumActorUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuid(actorUUID, { invalid: true })).toEqualTypeOf<Promise<Actor.Stored | Actor.Invalid | null>>();
+    expectTypeOf(fromUuid(compendiumActorUUID, { invalid: true })).toEqualTypeOf<
       Promise<Actor.Stored | Actor.Invalid | null>
     >();
-    expectTypeOf(fromUuid(jepUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuid(jepUUID, { invalid: true })).toEqualTypeOf<
       Promise<JournalEntryPage.Stored | JournalEntryPage.Invalid | null>
     >();
-    expectTypeOf(fromUuid(settingUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuid(settingUUID, { invalid: true })).toEqualTypeOf<
       Promise<Setting.Stored | Setting.Invalid | null>
     >();
   });
@@ -88,7 +89,7 @@ describe("fromUuid Tests", () => {
     // This is actually incorrect but can't be easily fixed.
     // The issue is that as soon as a generic parameter is provided all other generic parameters use their
     // defaults and stop inferring. This means that `Uuid` is `string` and not validatable.
-    expectTypeOf(fromUuid<Actor.Implementation>(settingUuid)).toEqualTypeOf<Promise<Actor.Implementation | null>>;
+    expectTypeOf(fromUuid<Actor.Implementation>(settingUUID)).toEqualTypeOf<Promise<Actor.Implementation | null>>;
 
     // relative:
 
@@ -139,65 +140,65 @@ describe("fromUuidSync Tests", () => {
     expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
-    expectTypeOf(fromUuidSync(actorUuid)).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID)).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
-    expectTypeOf(fromUuidSync(compendiumActorUuid)).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(compendiumActorUUID)).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
     // `"Token"` does not extend `Document.CompendiumType`, so no index
-    expectTypeOf(fromUuidSync(tokenUuid)).toEqualTypeOf<TokenDocument.Stored | null>();
-    expectTypeOf(fromUuidSync(greatGreatGrandchildUuid)).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(tokenUUID)).toEqualTypeOf<TokenDocument.Stored | null>();
+    expectTypeOf(fromUuidSync(greatGreatGrandchildUUID)).toEqualTypeOf<
       ActiveEffect.Stored | CompendiumCollection.IndexEntry<"ActiveEffect"> | null
     >();
-    expectTypeOf(fromUuidSync(compendiumGreatGreatGrandchildUuid)).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(compendiumGreatGreatGrandchildUUID)).toEqualTypeOf<
       ActiveEffect.Stored | CompendiumCollection.IndexEntry<"ActiveEffect"> | null
     >();
 
     // `strict` has no bearing on return type:
 
-    expectTypeOf(fromUuidSync(settingUuid, { strict: true })).toEqualTypeOf<Setting.Stored | null>();
-    expectTypeOf(fromUuidSync(settingUuid, { strict: false })).toEqualTypeOf<Setting.Stored | null>();
-    expectTypeOf(fromUuidSync(settingUuid, { strict: undefined })).toEqualTypeOf<Setting.Stored | null>();
+    expectTypeOf(fromUuidSync(settingUUID, { strict: true })).toEqualTypeOf<Setting.Stored | null>();
+    expectTypeOf(fromUuidSync(settingUUID, { strict: false })).toEqualTypeOf<Setting.Stored | null>();
+    expectTypeOf(fromUuidSync(settingUUID, { strict: undefined })).toEqualTypeOf<Setting.Stored | null>();
 
     // relative:
 
-    expectTypeOf(fromUuidSync(actorUuid, { relative: undefined })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID, { relative: undefined })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
     // `Actor`s can be found inside `TokenDocument`s.
-    expectTypeOf(fromUuidSync(actorUuid, { relative: tokenDoc })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID, { relative: tokenDoc })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
     // `JournalEntryPage`s can be found inside `JournalEntry`s, but not directly in compendia.
-    expectTypeOf(fromUuidSync(jepUuid, { relative: journal })).toEqualTypeOf<JournalEntryPage.Stored | null>();
+    expectTypeOf(fromUuidSync(jepUUID, { relative: journal })).toEqualTypeOf<JournalEntryPage.Stored | null>();
 
     // @ts-expect-error `Actor`s cannot be found (directly) inside `Scene`s.
-    fromUuidSync(actorUuid, { relative: scene });
+    fromUuidSync(actorUUID, { relative: scene });
     // @ts-expect-error `Setting`s cannot be found inside anything, the only valid value is `undefined`.
-    fromUuidSync(settingUuid, { relative: scene });
+    fromUuidSync(settingUUID, { relative: scene });
     // `Setting`s are never found in compendia, no index.
-    expectTypeOf(fromUuidSync(settingUuid, { relative: undefined })).toEqualTypeOf<Setting.Stored | null>();
+    expectTypeOf(fromUuidSync(settingUUID, { relative: undefined })).toEqualTypeOf<Setting.Stored | null>();
 
     // invalid:
 
-    expectTypeOf(fromUuidSync(actorUuid, { invalid: undefined })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID, { invalid: undefined })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
-    expectTypeOf(fromUuidSync(actorUuid, { invalid: false })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID, { invalid: false })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
     >();
 
-    expectTypeOf(fromUuidSync(actorUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(actorUUID, { invalid: true })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | Actor.Invalid | null
     >();
-    expectTypeOf(fromUuidSync(compendiumActorUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(compendiumActorUUID, { invalid: true })).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | Actor.Invalid | null
     >();
-    expectTypeOf(fromUuidSync(jepUuid, { invalid: true })).toEqualTypeOf<
+    expectTypeOf(fromUuidSync(jepUUID, { invalid: true })).toEqualTypeOf<
       JournalEntryPage.Stored | JournalEntryPage.Invalid | null
     >();
-    expectTypeOf(fromUuidSync(settingUuid, { invalid: true })).toEqualTypeOf<Setting.Stored | Setting.Invalid | null>();
+    expectTypeOf(fromUuidSync(settingUUID, { invalid: true })).toEqualTypeOf<Setting.Stored | Setting.Invalid | null>();
   });
 
   test("Unknown UUID", () => {
@@ -216,7 +217,7 @@ describe("fromUuidSync Tests", () => {
     // This is actually incorrect but can't be easily fixed.
     // The issue is that as soon as a generic parameter is provided all other generic parameters use their
     // defaults and stop inferring. This means that `Uuid` is `string` and not validatable.
-    expectTypeOf(fromUuidSync<Actor.Implementation>(settingUuid)).toEqualTypeOf<
+    expectTypeOf(fromUuidSync<Actor.Implementation>(settingUUID)).toEqualTypeOf<
       Actor.Implementation | CompendiumCollection.IndexEntry<"Actor"> | null
     >;
 

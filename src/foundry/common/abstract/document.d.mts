@@ -1645,8 +1645,7 @@ declare namespace Document {
        * The uuid of an existing document.
        * At least one of `data` and `uuid` must be set.
        */
-      // TODO: Handle as part of the UUID update.
-      uuid?: string;
+      uuid?: Document.UUIDFor<DocumentType>;
     }
 
     // Like `keyof` but handles properties desirable for flags:
@@ -1807,6 +1806,12 @@ declare namespace Document {
         ]
       : never;
   }
+
+  // TODO: recursive helper for embedded types
+  type UUIDFor<Name extends Document.Type> =
+    | (Name extends Document.WorldType ? `${Name}.${string}` : never)
+    | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
+    | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
 
   /** Any Document, that is a child of the given parent Document. */
   // An empty schema is the most appropriate type due to removing index signatures.

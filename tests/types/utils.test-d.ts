@@ -75,11 +75,12 @@ import type {
 } from "fvtt-types/utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import {
-  actorUuid,
-  compendiumActorUuid,
-  tokenUuid,
-  greatGreatGrandchildUuid,
-  compendiumGreatGreatGrandchildUuid,
+  actorUUID,
+  compendiumActorUUID,
+  tokenUUID,
+  greatGreatGrandchildUUID,
+  compendiumGreatGreatGrandchildUUID,
+  relativeItemUUID,
 } from "#tests/client/utils/helpers.test-d.ts";
 
 expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
@@ -315,33 +316,38 @@ declare function mustBeValidUuid<Uuid extends string, Name extends Document.Type
   docName?: Name,
 ): void;
 
-mustBeValidUuid(actorUuid, "Actor");
+mustBeValidUuid(actorUUID, "Actor");
 // @ts-expect-error `Actor`s aren't `Token`s
-mustBeValidUuid(actorUuid, "Token");
+mustBeValidUuid(actorUUID, "Token");
 
-mustBeValidUuid(compendiumActorUuid, "Actor");
+mustBeValidUuid(compendiumActorUUID, "Actor");
 // @ts-expect-error `Actor`s aren't `Token`s
-mustBeValidUuid(compendiumActorUuid, "Token");
+mustBeValidUuid(compendiumActorUUID, "Token");
 
-mustBeValidUuid(tokenUuid, "Token");
+mustBeValidUuid(tokenUUID, "Token");
 // @ts-expect-error `Token`s aren't `User`s
-mustBeValidUuid(tokenUuid, "User");
+mustBeValidUuid(tokenUUID, "User");
 
-mustBeValidUuid(greatGreatGrandchildUuid, "ActiveEffect");
+mustBeValidUuid(greatGreatGrandchildUUID, "ActiveEffect");
 // @ts-expect-error `ActiveEffect`s aren't `FogExploration`s
-mustBeValidUuid(greatGreatGrandchildUuid, "FogExploration");
+mustBeValidUuid(greatGreatGrandchildUUID, "FogExploration");
 
-mustBeValidUuid(compendiumGreatGreatGrandchildUuid, "ActiveEffect");
+mustBeValidUuid(compendiumGreatGreatGrandchildUUID, "ActiveEffect");
 // @ts-expect-error `ActiveEffect`s aren't `Macro`s
-mustBeValidUuid(compendiumGreatGreatGrandchildUuid, "Macro");
+mustBeValidUuid(compendiumGreatGreatGrandchildUUID, "Macro");
+
+mustBeValidUuid(relativeItemUUID, "Item");
+// @ts-expect-error `Item`s aren't `RollTable`s
+mustBeValidUuid(relativeItemUUID, "RollTable");
 
 // GetNameFromUuid:
 
 expectTypeOf<GetNameFromUuid<string>>().toBeNever();
-expectTypeOf<GetNameFromUuid<typeof actorUuid>>().toEqualTypeOf<"Actor">();
-expectTypeOf<GetNameFromUuid<typeof compendiumActorUuid>>().toEqualTypeOf<"Actor">();
-expectTypeOf<GetNameFromUuid<typeof tokenUuid>>().toEqualTypeOf<"Token">();
-expectTypeOf<GetNameFromUuid<typeof greatGreatGrandchildUuid>>().toEqualTypeOf<"ActiveEffect">();
+expectTypeOf<GetNameFromUuid<typeof actorUUID>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof compendiumActorUUID>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof tokenUUID>>().toEqualTypeOf<"Token">();
+expectTypeOf<GetNameFromUuid<typeof greatGreatGrandchildUUID>>().toEqualTypeOf<"ActiveEffect">();
+expectTypeOf<GetNameFromUuid<typeof relativeItemUUID>>().toEqualTypeOf<"Item">();
 
 // TODO: Quote
 
