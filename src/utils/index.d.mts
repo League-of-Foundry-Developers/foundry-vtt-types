@@ -1015,12 +1015,6 @@ export type ShapeWithIndexSignature<
   readonly [K in keyof T & IndexSignature]: K extends keyof PrimaryShape ? PrimaryShape[K] : IndexType;
 };
 
-export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
-  Uuid,
-  Uuid,
-  Type
->;
-
 /**
  * Quotes a string for human readability. This is useful for error messages.
  *
@@ -1043,38 +1037,79 @@ declare class InvalidUuid<OriginalUuid extends string> {
   message: `The UUID ${Quote<OriginalUuid>} is invalid .`;
 }
 
+export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
+  Uuid,
+  Uuid,
+  Type
+>;
+
 type _MustBeValidUuid<
   Uuid extends string,
   OriginalUuid extends string,
-  // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
   Type extends Document.Type,
-> = Uuid extends `Compendium.${string}.${string}.${infer Rest}`
-  ? _MustBeValidUuid<Rest, OriginalUuid, Type>
-  : Uuid extends `${string}.${string}.${infer Rest}`
-    ? _MustBeValidUuid<Rest, OriginalUuid, Type>
-    : Uuid extends `${string}.${string}`
-      ? Uuid extends `${Type}.${string}`
-        ? OriginalUuid
-        : InvalidUuid<OriginalUuid>
-      :
-          | `${Type}.${string}`
-          | `${string}.${string}.${Type}.${string}`
-          | (Type extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Type}.${string}`);
+  Parsed extends ParseUUIDReturn = ParseUUID<Uuid>,
+> = Parsed["valid"] extends true
+  ? Parsed["type"] extends Type
+    ? OriginalUuid
+    : InvalidUuid<OriginalUuid>
+  : Uuid extends `${string}.${string}`
+    ? InvalidUuid<OriginalUuid>
+    : _UUIDFor<Type>;
+
+type _UUIDFor<Name extends Document.Type> =
+  | (Name extends Document.WorldType ? `${Name}.${string}` : never)
+  | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
+  | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
 
 export type GetNameFromUuid<Uuid extends string | InvalidUuid<string>> = Uuid extends string
   ? _GetNameFromUuid<Uuid>
   : never;
 
-type _GetNameFromUuid<Uuid extends string> = string extends Uuid
+type _GetNameFromUuid<Uuid extends string, Parsed extends ParseUUIDReturn = ParseUUID<Uuid>> = string extends Uuid
   ? never
-  : Uuid extends `Compendium.${string}.${string}.${infer Rest}`
-    ? _GetNameFromUuid<Rest>
-    : Uuid extends `${string}.${string}.${infer Rest}`
-      ? _GetNameFromUuid<Rest>
-      : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
-        Uuid extends `${infer Name extends Document.Type}.${string}`
-        ? Name
-        : never;
+  : Parsed["valid"] extends true
+    ? Parsed["type"]
+    : never;
+
+interface ParseUUIDReturn {
+  valid: boolean;
+  type: Document.Type;
+  compendium: boolean;
+  embedded: boolean;
+  primary: Document.Type;
+}
+
+export type ParseUUID<UUID extends string> = _ParseUUID<UUID>;
+
+type _ParseUUID<
+  UUID extends string,
+  State extends ParseUUIDReturn = {
+    valid: false;
+    type: Document.Type;
+    compendium: false;
+    embedded: false;
+    primary: Document.Type;
+  },
+> = UUID extends `Compendium.${string}.${string}.${infer Rest}`
+  ? _ParseUUID<Rest, SimpleMerge<State, { compendium: true }>>
+  : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
+    UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
+    ? _ParseUUID<Rest, SimpleMerge<State, { embedded: true; primary: _ReplaceTypeIf<State["primary"], ParentType> }>>
+    : UUID extends `${infer FinalType extends Document.Type}.${string}`
+      ? SimpleMerge<
+          State,
+          {
+            valid: true;
+            primary: _ReplaceTypeIf<State["primary"], FinalType>;
+            type: FinalType;
+          }
+        >
+      : SimpleMerge<State, { valid: false }>;
+
+type _ReplaceTypeIf<
+  ExistingType extends Document.Type,
+  NewType extends Document.Type,
+> = Document.Type extends ExistingType ? NewType : ExistingType;
 
 /**
  * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`
@@ -1139,6 +1174,8 @@ export type Coalesce<T, D, CoalesceType = undefined> = T extends CoalesceType ? 
  * See {@linkcode Coalesce}.
  */
 export type NullishCoalesce<T, D> = T extends null | undefined ? D : T;
+
+export type CoalesceNever<T, U> = [T] extends [never] ? U : T;
 
 export interface EarlierHook {
   none: never;
@@ -1420,6 +1457,21 @@ type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
     : never;
 
 /**
+ * Handles cases where an empty object is defined somewhere and then filled in some time before the given hook.
+ * See {@linkcode CONFIG.Actor.typeLabels}.
+ */
+export type PartialUntilInitialized<T extends object, HookName extends InitializationHook> = InitializedOn<
+  T,
+  HookName,
+  IntentionalPartial<T>
+>;
+
+/** An inverse of {@linkcode Readonly} */
+export type Mutable<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+
+/**
  * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
  */
 export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
@@ -1442,18 +1494,3 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
  * @deprecated No replacement as this was deemed too niche.
  */
 export type FolderDocumentTypes = Exclude<CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
-
-/**
- * Handles cases where an empty object is defined somewhere and then filled in some time before the given hook.
- * See {@linkcode CONFIG.Actor.typeLabels}.
- */
-export type PartialUntilInitialized<T extends object, HookName extends InitializationHook> = InitializedOn<
-  T,
-  HookName,
-  IntentionalPartial<T>
->;
-
-/** An inverse of {@linkcode Readonly} */
-export type Mutable<T> = {
-  -readonly [K in keyof T]: T[K];
-};

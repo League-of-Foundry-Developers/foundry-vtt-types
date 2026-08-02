@@ -2,6 +2,8 @@
 
 import { assertType, expectTypeOf } from "vitest";
 import type {
+  // FixedInstanceType,
+  // LoggingLevels,
   GetKey,
   IntentionalPartial,
   OverlapsWith,
@@ -15,7 +17,6 @@ import type {
   // PropertiesOfType,
   Brand,
   // PrettifyType,
-  // PrettifyTypeDeep,
   // UnionToIntersection,
   DeepPartial,
   AllKeysOf,
@@ -36,6 +37,7 @@ import type {
   // HandleEmptyObject,
   // AnyObject,
   // AnyMutableObject,
+  // MaybeArray,
   // AnyArray,
   // MutableArray,
   // AnyFunction,
@@ -46,14 +48,30 @@ import type {
   // NonNullish,
   // EmptyObject,
   // ShapeWithIndexSignature,
-  MustBeValidUuid,
   // Quote,
+  MustBeValidUuid,
+  GetNameFromUuid,
+  // ParseUUID,
+  // Coalesce,
+  // NullishCoalesce,
+  // CoalesceNever,
+  // EarlierHook,
+  // InitializationHook,
+  // HooksRan,
+  // InitializedOn,
+  // Identity,
+  // DiscriminatedUnion,
+  // PickValue,
+  // JSONValue,
+  // PhantomConstructor,
   SplitString,
   // DeepReadonly,
   // MutableDotKeys,
   // DeletableDotKeys,
   DotKeys,
-  GetNameFromUuid,
+  // GetProperty,
+  // PartialUntilInitialized,
+  // Mutable,
 } from "fvtt-types/utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 
@@ -267,19 +285,19 @@ declare const _greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDT
 declare const _compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
 
 // fallback to 'any of the provided type, if any' if the provided UUID is untestable
+
 expectTypeOf<MustBeValidUuid<string>>().toEqualTypeOf<
-  | `${string}.${string}.${Document.Type}.${string}`
-  | `${Document.Type}.${string}`
+  | `${string}.${string}.${Document.EmbeddedType | "Actor"}.${string}`
+  | `${Document.WorldType}.${string}`
   | `Compendium.${string}.${string}.${Exclude<Document.Type, Document.NeverCompendiumType>}.${string}`
 >();
+
 // Actors can have Compendium UUIDs
 expectTypeOf<MustBeValidUuid<string, "Actor">>().toEqualTypeOf<
   `${string}.${string}.Actor.${string}` | `Actor.${string}` | `Compendium.${string}.${string}.Actor.${string}`
 >();
-// Settings cannot have Compendium UUIDs
-expectTypeOf<MustBeValidUuid<string, "Setting">>().toEqualTypeOf<
-  `${string}.${string}.Setting.${string}` | `Setting.${string}`
->();
+// Settings cannot have Compendium or Embedded UUIDs
+expectTypeOf<MustBeValidUuid<string, "Setting">>().toEqualTypeOf<`Setting.${string}`>();
 
 expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Actor">>().toEqualTypeOf<typeof _actorUuid>();
 expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Token">>().not.toExtend<string>();
