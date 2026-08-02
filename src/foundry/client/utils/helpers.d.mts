@@ -1,4 +1,4 @@
-import type { Coalesce, GetNameFromUuid, InexactPartial, MustBeValidUuid } from "#utils";
+import type { Coalesce, CoalesceNever, GetNameFromUuid, InexactPartial, MustBeValidUuid } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
@@ -25,9 +25,9 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
 export function readTextFromFile(file: File): Promise<string>;
 
 /** @internal */
-interface _FromUuidOptions<Uuid extends string, Invalid extends boolean | undefined, Doc extends Document.Any> {
+interface _FromUuidOptions<Invalid extends boolean | undefined, Name extends Document.Type> {
   /** A Document to resolve relative UUIDs against. */
-  relative: AllowedRelativesOf<Uuid, Doc>;
+  relative: AllowedRelativesOf<Name>;
 
   /**
    * Allow retrieving an invalid Document.
@@ -37,22 +37,14 @@ interface _FromUuidOptions<Uuid extends string, Invalid extends boolean | undefi
 }
 
 export interface FromUuidOptions<
+  Doc extends Document.Any,
   Uuid extends string,
   Invalid extends boolean | undefined,
-  Doc extends Document.Any,
-> extends InexactPartial<_FromUuidOptions<Uuid, Invalid, Doc>> {}
+> extends InexactPartial<_FromUuidOptions<Invalid, CoalesceNever<GetNameFromUuid<Uuid>, Doc["documentName"]>>> {}
 
-type AllowedRelativesOf<
-  Uuid extends string,
-  Doc extends Document.Any,
-  Name extends GetNameFromUuid<Uuid> = GetNameFromUuid<Uuid>,
-> = [Name] extends [never]
-  ? Doc["documentName"] extends Document.EmbeddedType | "Actor"
-    ? Document.Embedded.ParentForName<Doc["documentName"]>
-    : undefined
-  : Name extends Document.EmbeddedType | "Actor"
-    ? Document.Embedded.ParentForName<Name>
-    : undefined;
+type AllowedRelativesOf<Name extends Document.Type> = Name extends Document.EmbeddedType | "Actor"
+  ? Document.Embedded.ParentForName<Name>
+  : undefined;
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid).
@@ -65,10 +57,10 @@ export function fromUuid<
   const Uuid extends string = string,
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
-  options?: FromUuidOptions<Uuid, Invalid, ConcreteDocument>,
+  options?: FromUuidOptions<ConcreteDocument, Uuid, Invalid>,
 ): Promise<FromUuidReturn<ConcreteDocument, Uuid, Invalid>>;
 
-type FromUuidReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined = undefined> =
+type FromUuidReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined> =
   | (__UnsetDocument extends Doc
       ? FromUuid<Uuid, Coalesce<Invalid, false>>
       : _MaybeInvalid<Doc, Coalesce<Invalid, false>>)
@@ -89,8 +81,8 @@ interface _FromUuidSyncOptions {
   strict: boolean;
 }
 
-export interface FromUuidSyncOptions<Uuid extends string, Invalid extends boolean | undefined, Doc extends Document.Any>
-  extends InexactPartial<_FromUuidOptions<Uuid, Invalid, Doc>>, InexactPartial<_FromUuidSyncOptions> {}
+export interface FromUuidSyncOptions<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined>
+  extends InexactPartial<FromUuidOptions<Doc, Uuid, Invalid>>, InexactPartial<_FromUuidSyncOptions> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -106,14 +98,10 @@ export function fromUuidSync<
   const Uuid extends string = string,
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
-  options?: FromUuidSyncOptions<Uuid, Invalid, ConcreteDocument>,
+  options?: FromUuidSyncOptions<ConcreteDocument, Uuid, Invalid>,
 ): FromUuidSyncReturn<ConcreteDocument, Uuid, Invalid>;
 
-type FromUuidSyncReturn<
-  Doc extends Document.Any,
-  Uuid extends string,
-  Invalid extends boolean | undefined = undefined,
-> =
+type FromUuidSyncReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined> =
   | (__UnsetDocument extends Doc
       ? FromUuid<Uuid, Coalesce<Invalid, false>> | _IndexEntryFor<Uuid>
       : _MaybeInvalid<Doc, Coalesce<Invalid, false>> | _IndexEntryFor<string, Doc["documentName"]>)
@@ -125,11 +113,9 @@ type __UnsetDocument = Document.Any & {
   [__Unset]: true;
 };
 
-type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name extends never
-  ? never
-  : Name extends Document.CompendiumType
-    ? CompendiumCollection.IndexEntry<Name>
-    : never;
+type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name extends Document.CompendiumType
+  ? CompendiumCollection.IndexEntry<Name>
+  : never;
 
 declare const AnyDocumentClass: Document.AnyConstructor;
 declare abstract class InvalidUuid extends AnyDocumentClass {}

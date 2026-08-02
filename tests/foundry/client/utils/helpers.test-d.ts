@@ -20,14 +20,17 @@ declare const tokenDoc: TokenDocument.Stored;
 declare const scene: Scene.Stored;
 declare const journal: JournalEntry.Stored;
 
-declare const unknownUUID: string;
-declare const actorUuid: "Actor.ARandomIDToTest";
-declare const settingUuid: "Setting.ARandomIDToTest";
-declare const tokenUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest";
-declare const jepUuid: "JournalEntry.ARandomIDToTest.JournalEntryPage.ARandomIDToTest";
-declare const compendiumActorUuid: "Compendium.world.a.Actor.ARandomIDToTest";
-declare const greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
-declare const compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const unknownUUID: string = "";
+export const actorUuid = "Actor.ARandomIDToTest";
+export const settingUuid = "Setting.ARandomIDToTest";
+export const tokenUuid = "Scene.ARandomIDToTest.Token.ARandomIDToTest";
+export const jepUuid = "JournalEntry.ARandomIDToTest.JournalEntryPage.ARandomIDToTest";
+export const compendiumActorUuid = "Compendium.world.a.Actor.ARandomIDToTest";
+export const greatGreatGrandchildUuid =
+  "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+export const compendiumGreatGreatGrandchildUuid =
+  "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
 
 describe("fromUuid Tests", () => {
   test("Known UUID", () => {
@@ -131,7 +134,7 @@ describe("fromUuidSync Tests", () => {
     // @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
     // However the usual strategy of returning a union of possible uuids isn't possible here because
     // `Item.${string}` would erroneously allow it as a 'valid' uuid.
-    fromUuidSync("Item.uuid1.Abc.uuid2");
+    const _x = fromUuidSync("Item.uuid1.Abc.uuid2");
 
     expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<
       Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null
