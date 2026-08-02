@@ -5,18 +5,19 @@ import AVMaster = foundry.av.AVMaster;
 import AVSettings = foundry.av.AVSettings;
 
 declare class CustomAVCLient extends AVClient {
-  updateLocalStream(): Promise<void>;
-  initialize(): Promise<void>;
-  connect(): Promise<boolean>;
-  disconnect(): Promise<boolean>;
-  getConnectedUsers(): string[];
-  getMediaStreamForUser(userId: string): MediaStream | null;
-  isAudioEnabled(): boolean;
-  isVideoEnabled(): boolean;
-  toggleAudio(enable: boolean): void;
-  toggleBroadcast(broadcast: boolean): void;
-  toggleVideo(enable: boolean): void;
-  setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
+  override updateLocalStream(): Promise<void>;
+  override initialize(): Promise<void>;
+  override connect(): Promise<boolean>;
+  override disconnect(): Promise<boolean>;
+  override getConnectedUsers(): string[];
+  override getMediaStreamForUser(userId: string): MediaStream | null | undefined;
+  override getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
+  override isAudioEnabled(): boolean;
+  override isVideoEnabled(): boolean;
+  override toggleAudio(enable: boolean): void;
+  override toggleBroadcast(broadcast: boolean): void;
+  override toggleVideo(enable: boolean): void;
+  override setUserVideo(userId: string, videoElement: HTMLVideoElement): Promise<void>;
 }
 
 declare const avMaster: AVMaster;
@@ -33,5 +34,6 @@ expectTypeOf(avClient.isMuted).toEqualTypeOf<boolean>();
 expectTypeOf(avClient.getAudioSinks()).toEqualTypeOf<Promise<Record<string, string>>>();
 expectTypeOf(avClient.getAudioSources()).toEqualTypeOf<Promise<Record<string, string>>>();
 expectTypeOf(avClient.getVideoSources()).toEqualTypeOf<Promise<Record<string, string>>>();
+expectTypeOf(avClient.getMediaStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
 expectTypeOf(avClient.getLevelsStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
 expectTypeOf(avClient.onSettingsChanged({})).toEqualTypeOf<void>();

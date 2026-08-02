@@ -184,22 +184,4 @@ describe("Sound Tests", () => {
     expectTypeOf(sound.removeEventListener("eventName", eventCallback)).toBeVoid();
     expectTypeOf(sound.dispatchEvent(new Event("eventName"))).toBeBoolean();
   });
-
-  test("Deprecated", () => {
-    // Deprecated since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(Sound.LOAD_STATES).toEqualTypeOf<Sound.States>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.loadState).toEqualTypeOf<Sound.STATES>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.container).toEqualTypeOf<Sound>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.node).toEqualTypeOf<Sound["sourceNode"]>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.on("load", (ev) => console.log(ev))).toBeVoid();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.off("load", (ev) => console.log(ev))).toBeVoid();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(sound.emit("load")).toBeVoid();
-  });
 });

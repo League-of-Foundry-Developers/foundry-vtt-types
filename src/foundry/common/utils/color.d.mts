@@ -82,7 +82,7 @@ declare class InternalColor extends PatchedNumber {
   override toString(): string;
 
   /**
-   * Serialize the Color.
+   * Serialize the `Color`.
    * @returns The color as a CSS string
    */
   toJSON(): string;
@@ -108,56 +108,56 @@ declare class InternalColor extends PatchedNumber {
   toRGBA(alpha: number): string;
 
   /**
-   * Mix this Color with some other Color using a provided interpolation weight.
-   * @param other  - Some other Color to mix with
+   * Mix this `Color` with some other `Color` using a provided interpolation weight.
+   * @param other  - Some other `Color` to mix with
    * @param weight - The mixing weight placed on this color where weight is placed on the other color
-   * @returns The resulting mixed Color
+   * @returns The resulting mixed `Color`
    * @remarks `weight` should be in the range [0, 1]
    */
   mix(other: Color, weight: number): Color;
 
   /**
-   * Multiply this Color by another Color or a static scalar.
-   * @param other - Some other Color or a static scalar.
-   * @returns The resulting Color.
+   * Multiply this `Color` by another `Color` or a static scalar.
+   * @param other - Some other `Color` or a static scalar.
+   * @returns The resulting `Color`.
    */
   multiply(other: Color | number): Color;
 
   /**
-   * Add this Color by another Color or a static scalar.
-   * @param other - Some other Color or a static scalar.
-   * @returns The resulting Color.
+   * Add this `Color` by another `Color` or a static scalar.
+   * @param other - Some other `Color` or a static scalar.
+   * @returns The resulting `Color`.
    */
   add(other: Color | number): Color;
 
   /**
-   * Subtract this Color by another Color or a static scalar.
-   * @param other - Some other Color or a static scalar.
-   * @returns The resulting Color.
+   * Subtract this `Color` by another `Color` or a static scalar.
+   * @param other - Some other `Color` or a static scalar.
+   * @returns The resulting `Color`.
    */
   subtract(other: Color | number): Color;
 
   /**
-   * Max this color by another Color or a static scalar.
-   * @param other - Some other Color or a static scalar.
-   * @returns The resulting Color.
+   * Max this color by another `Color` or a static scalar.
+   * @param other - Some other `Color` or a static scalar.
+   * @returns The resulting `Color`.
    */
   maximize(other: Color | number): Color;
 
   /**
-   * Min this color by another Color or a static scalar.
-   * @param other - Some other Color or a static scalar.
-   * @returns The resulting Color.
+   * Min this color by another `Color` or a static scalar.
+   * @param other - Some other `Color` or a static scalar.
+   * @returns The resulting `Color`.
    */
   minimize(other: Color | number): Color;
 
   /**
-   * Iterating over a Color is equivalent to iterating over its [r,g,b] color channels.
+   * Iterating over a `Color` is equivalent to iterating over its [r,g,b] color channels.
    */
   [Symbol.iterator](): Generator<number, void, undefined>;
 
   /**
-   * Set an rgb array with the rgb values contained in this Color class.
+   * Set an rgb array with the rgb values contained in this `Color` class.
    * @param vec3 - Receive the result. Must be an array with at least a length of 3.
    */
   applyRGB(vec: number[]): void;
@@ -252,7 +252,7 @@ declare class InternalColor extends PatchedNumber {
   static applyRGB(color: number, vec3: number[]): void;
 
   /**
-   * Create a Color instance from an RGB array.
+   * Create a `Color` instance from an RGB array.
    * @param color - A color input
    * @returns The hex color instance or `NaN`
    * @remarks Nullish values return `Color(NaN)`
@@ -260,21 +260,21 @@ declare class InternalColor extends PatchedNumber {
   static from(color: Color.Source | null | undefined): Color;
 
   /**
-   * Create a Color instance from a color string which either includes or does not include a leading #.
+   * Create a `Color` instance from a color string which either includes or does not include a leading #.
    * @param color - A color string
    * @returns The hex color instance
    */
   static fromString(color: string): Color;
 
   /**
-   * Create a Color instance from an RGB array.
+   * Create a `Color` instance from an RGB array.
    * @param rgb - An RGB tuple
    * @returns The hex color instance
    */
   static fromRGB(rgb: Color.RGBColorVector): Color;
 
   /**
-   * Create a Color instance from an RGB normalized values.
+   * Create a `Color` instance from an RGB normalized values.
    * @param r - The red value
    * @param g - The green value
    * @param b - The blue value
@@ -283,7 +283,7 @@ declare class InternalColor extends PatchedNumber {
   static fromRGBvalues(r: number, g: number, b: number): Color;
 
   /**
-   * Create a Color instance from an HSV array.
+   * Create a `Color` instance from an HSV array.
    * Conversion formula adapted from {@link http://en.wikipedia.org/wiki/HSV_color_space}.
    * Assumes h, s, and v are contained in the set [0, 1].
    * @param hsv - An HSV tuple
@@ -292,7 +292,7 @@ declare class InternalColor extends PatchedNumber {
   static fromHSV(hsv: Color.HSVColorVector): Color;
 
   /**
-   * Create a Color instance from an HSL array.
+   * Create a `Color` instance from an HSL array.
    * Assumes h, s, and l are contained in the set [0, 1].
    * @param hsl - An HSL tuple
    * @returns The hex color instance
@@ -300,7 +300,7 @@ declare class InternalColor extends PatchedNumber {
   static fromHSL(hsl: Color.HSLColorVector): Color;
 
   /**
-   * Create a Color instance (sRGB) from a linear rgb array.
+   * Create a `Color` instance (sRGB) from a linear rgb array.
    * Assumes r, g, and b are contained in the set [0, 1].
    * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    * @param linear - The linear rgb array

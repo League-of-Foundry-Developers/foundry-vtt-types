@@ -10,7 +10,7 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   /**
    * @param entries - The initial entries.
    */
-  constructor(entries?: Iterable<[K, V]>);
+  constructor(entries?: Iterable<[K, V], undefined, unknown>);
 
   /**
    * Remove a key from the map.
