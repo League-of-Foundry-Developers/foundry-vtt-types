@@ -13,7 +13,7 @@ declare class EventEmitter {
 
   /**
    * An array of event types which are valid for this class.
-   * @privateRemarks `| readonly` because {@linkcode foundry.canvas.perception.FogManager | FogManager.emittedEvents} is frozen
+   * @privateRemarks `| readonly` because {@linkcode foundry.canvas.perception.FogManager | FogManager.emittedEvents} is frozen.
    */
   static emittedEvents: string[] | readonly string[];
 
@@ -24,7 +24,6 @@ declare class EventEmitter {
    * @param listener - The listener function called when the event occurs
    * @param options  - Options which configure the event listener
    */
-  // options: not null (destructured)
   addEventListener(
     type: string,
     listener: EventEmitterMixin.EventListener,
@@ -41,7 +40,7 @@ declare class EventEmitter {
   /**
    * Dispatch an event on this target.
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent}
-   * @param event - The Event to dispatch
+   * @param event - The `Event` to dispatch
    * @returns Was default behavior for the event prevented?
    */
   dispatchEvent(event: Event): boolean;

@@ -16,5 +16,6 @@ export { default as Semaphore } from "./semaphore.mjs";
 export { default as BitMask } from "./bitmask.mjs";
 export { default as WordTree } from "./word-tree.mjs";
 export { default as StringTree } from "./string-tree.mjs";
+export { default as StringNode } from "./string-node.mjs";
 
 export const AsyncFunction: AnyFunction;
