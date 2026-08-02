@@ -278,53 +278,69 @@ expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
 
 // MustBeValidUuid:
 
-declare const _actorUuid: "Actor.ARandomIDToTest";
-declare const _tokenUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest";
-declare const _compendiumActorUuid: "Compendium.world.a.Actor.ARandomIDToTest";
-declare const _greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
-declare const _compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+declare const actorUuid: "Actor.ARandomIDToTest";
+declare const tokenUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest";
+declare const compendiumActorUuid: "Compendium.world.a.Actor.ARandomIDToTest";
+declare const greatGreatGrandchildUuid: "Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
+declare const compendiumGreatGreatGrandchildUuid: "Compendium.world.pack-name.Scene.ARandomIDToTest.Token.ARandomIDToTest.Actor.ARandomIDToTest.Item.ARandomIDToTest.ActiveEffect.ARandomIDToTest";
 
 // fallback to 'any of the provided type, if any' if the provided UUID is untestable
-
 expectTypeOf<MustBeValidUuid<string>>().toEqualTypeOf<
   | `${string}.${string}.${Document.EmbeddedType | "Actor"}.${string}`
   | `${Document.WorldType}.${string}`
   | `Compendium.${string}.${string}.${Exclude<Document.Type, Document.NeverCompendiumType>}.${string}`
 >();
 
-// Actors can have Compendium UUIDs
+// `Actor`s can have World, Compendium, or Embedded UUIDs
 expectTypeOf<MustBeValidUuid<string, "Actor">>().toEqualTypeOf<
   `${string}.${string}.Actor.${string}` | `Actor.${string}` | `Compendium.${string}.${string}.Actor.${string}`
 >();
-// Settings cannot have Compendium or Embedded UUIDs
+
+// `Setting`s cannot have Compendium or Embedded UUIDs, only World
 expectTypeOf<MustBeValidUuid<string, "Setting">>().toEqualTypeOf<`Setting.${string}`>();
 
-expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Actor">>().toEqualTypeOf<typeof _actorUuid>();
-expectTypeOf<MustBeValidUuid<typeof _actorUuid, "Token">>().not.toExtend<string>();
-
-expectTypeOf<MustBeValidUuid<typeof _compendiumActorUuid, "Actor">>().toEqualTypeOf<typeof _compendiumActorUuid>();
-expectTypeOf<MustBeValidUuid<typeof _compendiumActorUuid, "Token">>().not.toExtend<string>();
-
-expectTypeOf<MustBeValidUuid<typeof _tokenUuid, "Token">>().toEqualTypeOf<typeof _tokenUuid>();
-expectTypeOf<MustBeValidUuid<typeof _tokenUuid, "User">>().not.toExtend<string>();
-
-expectTypeOf<MustBeValidUuid<typeof _greatGreatGrandchildUuid, "ActiveEffect">>().toEqualTypeOf<
-  typeof _greatGreatGrandchildUuid
+// `PlaylistSounds` cannot have World UUIDs, only Embedded or Compendium
+expectTypeOf<MustBeValidUuid<string, "PlaylistSound">>().toEqualTypeOf<
+  `${string}.${string}.PlaylistSound.${string}` | `Compendium.${string}.${string}.PlaylistSound.${string}`
 >();
-expectTypeOf<MustBeValidUuid<typeof _greatGreatGrandchildUuid, "FogExploration">>().not.toExtend<string>();
 
-expectTypeOf<MustBeValidUuid<typeof _compendiumGreatGreatGrandchildUuid, "ActiveEffect">>().toEqualTypeOf<
-  typeof _compendiumGreatGreatGrandchildUuid
->();
-expectTypeOf<MustBeValidUuid<typeof _compendiumGreatGreatGrandchildUuid, "Macro">>().not.toExtend<string>();
+// `Adventure`s cannot have Compendium or Embedded UUIDs, only Compendium
+expectTypeOf<
+  MustBeValidUuid<string, "Adventure">
+>().toEqualTypeOf<`Compendium.${string}.${string}.Adventure.${string}`>();
+
+declare function mustBeValidUuid<Uuid extends string, Name extends Document.Type = Document.Type>(
+  uuid: MustBeValidUuid<Uuid, NoInfer<Name>>,
+  docName?: Name,
+): void;
+
+mustBeValidUuid(actorUuid, "Actor");
+// @ts-expect-error `Actor`s aren't `Token`s
+mustBeValidUuid(actorUuid, "Token");
+
+mustBeValidUuid(compendiumActorUuid, "Actor");
+// @ts-expect-error `Actor`s aren't `Token`s
+mustBeValidUuid(compendiumActorUuid, "Token");
+
+mustBeValidUuid(tokenUuid, "Token");
+// @ts-expect-error `Token`s aren't `User`s
+mustBeValidUuid(tokenUuid, "User");
+
+mustBeValidUuid(greatGreatGrandchildUuid, "ActiveEffect");
+// @ts-expect-error `ActiveEffect`s aren't `FogExploration`s
+mustBeValidUuid(greatGreatGrandchildUuid, "FogExploration");
+
+mustBeValidUuid(compendiumGreatGreatGrandchildUuid, "ActiveEffect");
+// @ts-expect-error `ActiveEffect`s aren't `Macro`s
+mustBeValidUuid(compendiumGreatGreatGrandchildUuid, "Macro");
 
 // GetNameFromUuid:
 
 expectTypeOf<GetNameFromUuid<string>>().toBeNever();
-expectTypeOf<GetNameFromUuid<typeof _actorUuid>>().toEqualTypeOf<"Actor">();
-expectTypeOf<GetNameFromUuid<typeof _compendiumActorUuid>>().toEqualTypeOf<"Actor">();
-expectTypeOf<GetNameFromUuid<typeof _tokenUuid>>().toEqualTypeOf<"Token">();
-expectTypeOf<GetNameFromUuid<typeof _greatGreatGrandchildUuid>>().toEqualTypeOf<"ActiveEffect">();
+expectTypeOf<GetNameFromUuid<typeof actorUuid>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof compendiumActorUuid>>().toEqualTypeOf<"Actor">();
+expectTypeOf<GetNameFromUuid<typeof tokenUuid>>().toEqualTypeOf<"Token">();
+expectTypeOf<GetNameFromUuid<typeof greatGreatGrandchildUuid>>().toEqualTypeOf<"ActiveEffect">();
 
 // TODO: Quote
 
