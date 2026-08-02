@@ -65,7 +65,10 @@ export function threadLock(ms: number, debug?: boolean): Promise<void>;
  */
 export function debounce<T extends AnyFunction>(callback: T, delay: number): DebounceReturn<T>;
 
-export type DebounceReturn<T extends AnyFunction> = ((...args: Parameters<T>) => void) & { cancel: () => void };
+export interface DebounceReturn<T extends AnyFunction> {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+}
 
 /**
  * Wrap a callback in a throttled timeout.
