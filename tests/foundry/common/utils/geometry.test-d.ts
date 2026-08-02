@@ -20,6 +20,9 @@ expectTypeOf(fu.lineCircleIntersection(a, b, c, 0)).toEqualTypeOf<fu.LineCircleI
 
 expectTypeOf(fu.closestPointToSegment(a, b, c)).toEqualTypeOf<Canvas.Point>();
 
+expectTypeOf(fu.closestPointToPath(a, [b, d], true)).toEqualTypeOf<Canvas.Point>();
+expectTypeOf(fu.closestPointToPath(b, [a, c], false)).toEqualTypeOf<Canvas.Point>();
+
 expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)).toEqualTypeOf<[Canvas.Point?, Canvas.Point?]>();
 
 const points = [

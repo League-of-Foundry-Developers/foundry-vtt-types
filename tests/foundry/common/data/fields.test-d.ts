@@ -487,10 +487,17 @@ test("GridOffsetsField element dimensions", () => {
   const offsets = gridOffsets.clean(["1.2.3"]);
 
   expectTypeOf(gridOffsets.dimensions).toEqualTypeOf<3>();
-  expectTypeOf(gridOffsets.element).toEqualTypeOf<
-    fields.GridOffsetField<fields.GridOffsetsField.ElementOptions<{ dimensions: 3 }>>
-  >();
   expectTypeOf(offsets).toEqualTypeOf<{ i: number; j: number; k: number }[]>();
+
+  // The parent's `dimensions` flows through to the element field's own dimensions and schema.
+  const element3D = gridOffsets.element;
+  expectTypeOf(element3D.dimensions).toEqualTypeOf<3>();
+  expectTypeOf(element3D.fields).toEqualTypeOf<fields.GridOffsetField.Schema3D>();
+
+  // Defaulted case models Foundry's `options?.dimensions ?? 2`.
+  const element2D = new fields.GridOffsetsField().element;
+  expectTypeOf(element2D.dimensions).toEqualTypeOf<2>();
+  expectTypeOf(element2D.fields).toEqualTypeOf<fields.GridOffsetField.Schema2D>();
 });
 
 test("field validation and update-state options", () => {
@@ -520,7 +527,7 @@ test("DocumentAuthorField default and initial types", () => {
   >();
 });
 
-test("field hook signatures", () => {
+test("protected override method signatures", () => {
   class ScalarArrayHookCoverage extends fields.ArrayField<fields.NumberField<{ required: true; nullable: false }>> {
     protected override _cleanElement(
       value: number,
@@ -669,4 +676,46 @@ test("DataField apply and migrateSource methods", () => {
   }
 
   expectTypeOf<MigrateSourceField["migrateSource"]>().returns.toEqualTypeOf<void>();
+});
+
+test("AnyConstructor accepts subclasses with different constructors", () => {
+  // A subclass with a constructor signature unlike the base's must still satisfy `AnyConstructor`;
+  // this is why the companion `AnyXField` uses `constructor(...args: never)`.
+  class CustomSchemaField extends fields.SchemaField<fields.DataSchema> {
+    constructor(count: number) {
+      super({});
+      void count;
+    }
+  }
+
+  const ctor: fields.SchemaField.AnyConstructor = CustomSchemaField;
+  expectTypeOf(ctor).toExtend<fields.SchemaField.AnyConstructor>();
+
+  const instance: fields.SchemaField.Any = new CustomSchemaField(3);
+  expectTypeOf(instance).toExtend<fields.SchemaField.Any>();
+});
+
+test("validators() threads the receiver and narrows on strict", () => {
+  type Yielded<G> = G extends Generator<infer V, unknown, unknown> ? V : never;
+
+  const strField = new fields.StringField();
+
+  // The yielded validator's receiver narrows to the concrete field (method-bivariance `this` trick).
+  type DefaultV = Yielded<ReturnType<typeof strField.validators>>;
+  expectTypeOf<ThisParameterType<DefaultV>>().toEqualTypeOf<typeof strField>();
+  expectTypeOf<ReturnType<DefaultV>>().toEqualTypeOf<
+    foundry.data.validation.DataModelValidationFailure | boolean | void
+  >();
+
+  // `strict: true` drops the returnable failure branch (a failure throws instead).
+  const _strictGen = strField.validators({ strict: true });
+  type StrictV = Yielded<typeof _strictGen>;
+  expectTypeOf<ThisParameterType<StrictV>>().toEqualTypeOf<typeof strField>();
+  expectTypeOf<ReturnType<StrictV>>().toEqualTypeOf<boolean | void>();
+
+  // `strict: false` keeps the failure branch.
+  const _looseGen = strField.validators({ strict: false });
+  expectTypeOf<ReturnType<Yielded<typeof _looseGen>>>().toEqualTypeOf<
+    foundry.data.validation.DataModelValidationFailure | boolean | void
+  >();
 });

@@ -11,6 +11,7 @@ import type {
   InterfaceToObject,
   AnyArray,
   GetKey,
+  NullishCoalesce,
   SplitString,
   ValueOf,
   AnyMutableObject,
@@ -286,7 +287,9 @@ declare abstract class DataField<
    * @param options - Options which affect which validators are yielded
    * @yields A validator function
    */
-  validators(options?: DataField.ValidatorsOptions): Generator<DataField.ValidatorFunction, void, void>;
+  validators<const Options extends DataField.ValidatorsOptions | undefined = undefined>(
+    options?: Options,
+  ): Generator<DataField.ValidatorFunction<this, Options>, void, void>;
 
   /**
    * Validate candidate input for this field, ensuring it meets the field requirements.
@@ -827,7 +830,36 @@ declare namespace DataField {
   interface GetFieldOptions extends InexactPartial<_GetFieldOptions> {}
 
   /** @internal */
-  interface _ValidationOptions {
+  interface _GetFieldContext {
+    /** The source data of the field */
+    source: AnyObject;
+  }
+
+  /**
+   * An interface for the `options` of {@link DataField.getField | `DataField#getField`} and
+   * {@link DataField._getField | `DataField#_getField`}, which only consult `source`.
+   */
+  interface GetFieldContext extends InexactPartial<_GetFieldContext> {}
+
+  /** @internal */
+  interface _ValidatorsOptions {
+    /**
+     * A specific validation phase to perform, specifying this is generally only necessary for _updateDiff workflows
+     * - "pre" occurs before recursion to child nodes
+     * - "recursive" performs recursive validation of child nodes
+     * - "post" occurs after validation of child nodes
+     */
+    phase: "pre" | "recursive" | "post";
+
+    /**
+     * When validating a field, also validate its children. This can be explicitly turned off to validate just a
+     * single level of a hierarchical data structure, leaving the recursion to the caller.
+     */
+    recursive: boolean;
+  }
+
+  /** @internal */
+  interface _ValidationOptions extends _ValidatorsOptions {
     /** Whether this is a partial schema validation, or a complete one. */
     partial: boolean;
 
@@ -840,14 +872,6 @@ declare namespace DataField {
     /** Whether to throw a DataModelValidationFailure (true) or simply return it (false) */
     strict: boolean;
 
-    /**
-     * A specific validation phase to perform, specifying this is generally only necessary for _updateDiff workflows
-     * - "pre" occurs before recursion to child nodes
-     * - "recursive" performs recursive validation of child nodes
-     * - "post" occurs after validation of child nodes
-     */
-    phase: "pre" | "recursive" | "post";
-
     /** Whether invalid array elements should be dropped rather than causing the parent to be considered invalid. */
     dropInvalidElements: boolean;
 
@@ -856,12 +880,6 @@ declare namespace DataField {
      * collection rather than causing the parent to be considered invalid.
      */
     dropInvalidEmbedded: boolean;
-
-    /**
-     * When validating a field, also validate its children. This can be explicitly turned off to validate just a
-     * single level of a hierarchical data structure, leaving the recursion to the caller.
-     */
-    recursive: boolean;
 
     /** The DataModel instance the field belongs to */
     model: DataModel.Any;
@@ -1040,17 +1058,33 @@ declare namespace DataField {
   }
 
   /** An interface for the options of {@link DataField.validators | `DataField#validators`}. */
-  interface ValidatorsOptions extends Pick<DataField.ValidateOptions<DataField.Any>, "phase" | "recursive"> {}
+  interface ValidatorsOptions extends InexactPartial<_ValidatorsOptions> {
+    /** Whether validation is performed strictly, causing a yielded validator to throw rather than return a failure. */
+    strict?: boolean | undefined;
+  }
 
   /**
    * A validation function as yielded by {@link DataField.validators | `DataField#validators`}.
-   * @template CurrentField - the type of the DataField, which is the receiver of the validator function
+   * @template CurrentField     - the type of the DataField, which is the receiver of the validator function
+   * @template ValidatorOptions - the options {@link DataField.validators | `DataField#validators`} was called with
+   *
+   * @privateRemarks Uses the method-bivariance hack (like {@linkcode Validator}), not an arrow:
+   * `CurrentField` sits in contravariant positions and is yielded by `validators()`, so an arrow type
+   * would make fields fail `extends DataField.Any`.
    */
-  type ValidatorFunction<CurrentField extends DataField.Any = DataField.Any> = (
-    this: CurrentField,
-    value: unknown,
-    options: DataField.ValidateOptions<DataField.Any>,
-  ) => DataModelValidationFailure | boolean | void;
+  type ValidatorFunction<
+    CurrentField extends DataField.Any = DataField.Any,
+    ValidatorOptions extends DataField.ValidatorsOptions | undefined = undefined,
+  > = _ValidatorFunction<CurrentField, GetKey<ValidatorOptions, "strict", undefined>>;
+
+  /** @internal */
+  type _ValidatorFunction<CurrentField extends DataField.Any, Strict extends boolean | undefined> = {
+    validator(
+      this: CurrentField,
+      value: unknown,
+      options: DataField.ValidateOptions<CurrentField>,
+    ): (Strict extends true ? never : DataModelValidationFailure) | boolean | void;
+  }["validator"];
 
   /**
    * @remarks The `options` passed to {@link DataField.initialize | `DataField#initialize`} exclusively (in core) come from
@@ -1294,19 +1328,13 @@ declare class SchemaField<
    * @param options   - Additional options
    * @returns The corresponding DataField definition for that field, or undefined
    */
-  getField(
-    fieldName: MaybeArray<string>,
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Unknown | undefined;
+  getField(fieldName: MaybeArray<string>, options?: DataField.GetFieldContext): DataField.Unknown | undefined;
   // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
   // getField<FieldName extends SchemaField.FieldName<Fields>>(
   //   fieldName: FieldName,
   // ): SchemaField.GetField<this, Fields, FieldName>;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   override getInitialValue(source?: unknown): InitializedType;
 
@@ -1400,8 +1428,8 @@ declare class SchemaField<
 }
 
 declare namespace SchemaField {
-  interface Any extends SchemaField<any, any, any, any, any> {}
-  interface AnyConstructor extends Identity<typeof SchemaField> {}
+  interface Any extends AnySchemaField {}
+  interface AnyConstructor extends Identity<typeof AnySchemaField> {}
 
   /**
    * A shorthand for the options of a SchemaField class.
@@ -1668,6 +1696,10 @@ declare namespace SchemaField {
       : ["never3"]; // An array like `["element"?]` or `string[]` just falls back to any
 }
 
+declare abstract class AnySchemaField extends SchemaField<any, any, any, any, any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode DataField} which deals with boolean-typed data.
  * @template Options         - the options of the BooleanField instance
@@ -1755,8 +1787,8 @@ declare class BooleanField<
 }
 
 declare namespace BooleanField {
-  interface Any extends BooleanField<any> {}
-  interface AnyConstructor extends Identity<typeof BooleanField> {}
+  interface Any extends AnyBooleanField {}
+  interface AnyConstructor extends Identity<typeof AnyBooleanField> {}
 
   /** A shorthand for the options of a BooleanField class. */
   type Options = DataField.Options<boolean>;
@@ -1792,6 +1824,10 @@ declare namespace BooleanField {
    * @template Opts - the options that override the default options
    */
   type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<boolean, MergedOptions<Opts>>;
+}
+
+declare abstract class AnyBooleanField extends BooleanField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -1962,8 +1998,8 @@ declare class NumberField<
 }
 
 declare namespace NumberField {
-  interface Any extends NumberField<any> {}
-  interface AnyConstructor extends Identity<typeof NumberField> {}
+  interface Any extends AnyNumberField {}
+  interface AnyConstructor extends Identity<typeof AnyNumberField> {}
 
   /** The type of the default options for the {@linkcode NumberField} class. */
   type DefaultOptions = SimpleMerge<
@@ -2081,6 +2117,10 @@ declare namespace NumberField {
     | _ToInputConfig<InitializedType>
     | ToInputConfigWithChoices<InitializedType, Choices>
     | ToInputConfigWithOptions<InitializedType>;
+}
+
+declare abstract class AnyNumberField extends NumberField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -2224,8 +2264,8 @@ declare class StringField<
 }
 
 declare namespace StringField {
-  interface Any extends StringField<any> {}
-  interface AnyConstructor extends Identity<typeof StringField> {}
+  interface Any extends AnyStringField {}
+  interface AnyConstructor extends Identity<typeof AnyStringField> {}
 
   /** The type of the default options for the {@linkcode StringField} class. */
   type DefaultOptions = SimpleMerge<
@@ -2377,6 +2417,10 @@ declare namespace StringField {
   interface GetChoicesOptions extends PrepareChoiceConfig {}
 }
 
+declare abstract class AnyStringField extends StringField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode DataField} which deals with object-typed data.
  * @template Options         - the options of the ObjectField instance
@@ -2460,8 +2504,8 @@ declare class ObjectField<
 }
 
 declare namespace ObjectField {
-  interface Any extends ObjectField<any> {}
-  interface AnyConstructor extends Identity<typeof ObjectField> {}
+  interface Any extends AnyObjectField {}
+  interface AnyConstructor extends Identity<typeof AnyObjectField> {}
 
   /** The type of the default options for the {@linkcode ObjectField} class. */
   type DefaultOptions = SimpleMerge<
@@ -2508,6 +2552,10 @@ declare namespace ObjectField {
   >;
 }
 
+declare abstract class AnyObjectField extends ObjectField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of ObjectField that represents a mapping of keys to the provided DataField type.
  */
@@ -2548,10 +2596,7 @@ declare class TypedObjectField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   protected override _cleanType(
     value: InitializedType,
@@ -2591,8 +2636,8 @@ declare class TypedObjectField<
 }
 
 declare namespace TypedObjectField {
-  interface Any extends TypedObjectField<any> {}
-  interface AnyConstructor extends Identity<typeof TypedObjectField> {}
+  interface Any extends AnyTypedObjectField {}
+  interface AnyConstructor extends Identity<typeof AnyTypedObjectField> {}
 
   /** The type of the default options for the {@linkcode ObjectField} class. */
   type DefaultOptions = SimpleMerge<
@@ -2667,6 +2712,10 @@ declare namespace TypedObjectField {
     },
     MergedOptions<Options>
   >;
+}
+
+declare abstract class AnyTypedObjectField extends TypedObjectField<any> {
+  constructor(...args: never);
 }
 
 type ArrayFieldElement<ElementFieldType extends DataField.Any | Document.AnyConstructor> =
@@ -2773,10 +2822,7 @@ declare class ArrayField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   protected override _cast(value: unknown): AssignmentType;
 
@@ -2869,8 +2915,8 @@ declare class ArrayField<
 }
 
 declare namespace ArrayField {
-  interface Any extends ArrayField<any> {}
-  interface AnyConstructor extends Identity<typeof ArrayField> {}
+  interface Any extends AnyArrayField {}
+  interface AnyConstructor extends Identity<typeof AnyArrayField> {}
 
   /**
    * A shorthand for the options of an ArrayField class.
@@ -3018,6 +3064,10 @@ declare namespace ArrayField {
   >;
 }
 
+declare abstract class AnyArrayField extends ArrayField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode ArrayField} which supports a set of contained elements.
  * Elements in this set are treated as fungible and may be represented in any order or discarded if invalid.
@@ -3137,10 +3187,7 @@ declare class DataModelSchemaField<
    */
   model: ModelType;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source">,
-  ): DataField.Any | undefined;
+  protected override _getField(parts: string[], options?: DataField.GetFieldContext): DataField.Any | undefined;
 
   override clean(
     value: AssignmentType,
@@ -3159,8 +3206,8 @@ declare class DataModelSchemaField<
 }
 
 declare namespace DataModelSchemaField {
-  interface Any extends DataModelSchemaField<any> {}
-  interface AnyConstructor extends Identity<typeof DataModelSchemaField> {}
+  interface Any extends AnyDataModelSchemaField {}
+  interface AnyConstructor extends Identity<typeof AnyDataModelSchemaField> {}
 
   type Options<ModelType extends DataModel.AnyConstructor> = DataField.Options<
     // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -3191,9 +3238,13 @@ declare namespace DataModelSchemaField {
   > = SchemaField.Internal.PersistedType<DataModel.SchemaOfClass<ModelType>, MergedOptions<ModelType, Opts>>;
 }
 
+declare abstract class AnyDataModelSchemaField extends DataModelSchemaField<any> {
+  constructor(...args: never);
+}
+
 declare namespace SetField {
-  interface Any extends SetField<DataField.Any, any, any, any, any, any, any, any> {}
-  interface AnyConstructor extends Identity<typeof SetField> {}
+  interface Any extends AnySetField {}
+  interface AnyConstructor extends Identity<typeof AnySetField> {}
 
   /**
    * A shorthand for the options of a SetField class.
@@ -3270,6 +3321,10 @@ declare namespace SetField {
         DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
 }
 
+declare abstract class AnySetField extends SetField<DataField.Any, any, any, any, any, any, any, any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode ObjectField} which embeds some other DataModel definition as an inner object.
  * @template ModelType       - the DataModel for the embedded data
@@ -3312,8 +3367,8 @@ declare class EmbeddedDataField<
 }
 
 declare namespace EmbeddedDataField {
-  interface Any extends EmbeddedDataField<any> {}
-  interface AnyConstructor extends Identity<typeof EmbeddedDataField> {}
+  interface Any extends AnyEmbeddedDataField {}
+  interface AnyConstructor extends Identity<typeof AnyEmbeddedDataField> {}
 
   /**
    * A shorthand for the options of an EmbeddedDataField class.
@@ -3374,6 +3429,10 @@ declare namespace EmbeddedDataField {
     SchemaField.SourceData<DataModel.SchemaOfClass<ModelType>>,
     MergedOptions<ModelType, Opts>
   >;
+}
+
+declare abstract class AnyEmbeddedDataField extends EmbeddedDataField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -3565,8 +3624,8 @@ declare class EmbeddedCollectionField<
 }
 
 declare namespace EmbeddedCollectionField {
-  interface Any extends EmbeddedCollectionField<any, any, any, any, any, any, any, any, any> {}
-  interface AnyConstructor extends Identity<typeof EmbeddedCollectionField> {}
+  interface Any extends AnyEmbeddedCollectionField {}
+  interface AnyConstructor extends Identity<typeof AnyEmbeddedCollectionField> {}
 
   /** Context shared while applying an embedded collection update. */
   interface UpdateContext {
@@ -3682,6 +3741,20 @@ declare namespace EmbeddedCollectionField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
+declare abstract class AnyEmbeddedCollectionField extends EmbeddedCollectionField<
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode EmbeddedCollectionField} which manages a collection of delta objects relative to another
  * collection.
@@ -3763,8 +3836,8 @@ declare class EmbeddedCollectionDeltaField<
 }
 
 declare namespace EmbeddedCollectionDeltaField {
-  interface Any extends EmbeddedCollectionDeltaField<any, any> {}
-  interface AnyConstructor extends Identity<typeof EmbeddedCollectionDeltaField> {}
+  interface Any extends AnyEmbeddedCollectionDeltaField {}
+  interface AnyConstructor extends Identity<typeof AnyEmbeddedCollectionDeltaField> {}
 
   /**
    * A shorthand for the options of an EmbeddedCollectionDeltaField class.
@@ -3870,6 +3943,10 @@ declare namespace EmbeddedCollectionDeltaField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
+declare abstract class AnyEmbeddedCollectionDeltaField extends EmbeddedCollectionDeltaField<any, any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode EmbeddedDataField} which supports a single embedded Document.
  * @template DocumentType    - the type of the embedded Document
@@ -3921,8 +3998,8 @@ declare class EmbeddedDocumentField<
 }
 
 declare namespace EmbeddedDocumentField {
-  interface Any extends EmbeddedDocumentField<any, any, any, any, any> {}
-  interface AnyConstructor extends Identity<typeof EmbeddedDocumentField> {}
+  interface Any extends AnyEmbeddedDocumentField {}
+  interface AnyConstructor extends Identity<typeof AnyEmbeddedDocumentField> {}
 
   /**
    * A shorthand for the options of an EmbeddedDocumentField class.
@@ -3997,6 +4074,10 @@ declare namespace EmbeddedDocumentField {
   >;
 }
 
+declare abstract class AnyEmbeddedDocumentField extends EmbeddedDocumentField<any, any, any, any, any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode StringField} which provides the primary _id for a Document.
  * The field may be initially null, but it must be non-null when it is saved to the database.
@@ -4045,8 +4126,8 @@ declare class DocumentIdField<
 }
 
 declare namespace DocumentIdField {
-  interface Any extends DocumentIdField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentIdField> {}
+  interface Any extends AnyDocumentIdField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentIdField> {}
 
   type Options = StringField.Options<unknown> & {
     readonly?: boolean;
@@ -4091,6 +4172,10 @@ declare namespace DocumentIdField {
     string,
     MergedOptions<Options>
   >;
+}
+
+declare abstract class AnyDocumentIdField extends DocumentIdField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -4168,8 +4253,8 @@ declare class DocumentUUIDField<
 }
 
 declare namespace DocumentUUIDField {
-  interface Any extends DocumentUUIDField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentUUIDField> {}
+  interface Any extends AnyDocumentUUIDField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentUUIDField> {}
 
   type Options = StringField.Options & {
     /** A specific document type in {@linkcode CONST.ALL_DOCUMENT_TYPES} required by this field */
@@ -4246,6 +4331,10 @@ declare namespace DocumentUUIDField {
     | ToInputConfigWithChoices<InitializedType>;
 }
 
+declare abstract class AnyDocumentUUIDField extends DocumentUUIDField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A special class of {@linkcode StringField} field which references another DataModel by its id.
  * This field may also be null to indicate that no foreign model is linked.
@@ -4318,8 +4407,8 @@ declare class ForeignDocumentField<
 }
 
 declare namespace ForeignDocumentField {
-  interface Any extends ForeignDocumentField<any> {}
-  interface AnyConstructor extends Identity<typeof ForeignDocumentField> {}
+  interface Any extends AnyForeignDocumentField {}
+  interface AnyConstructor extends Identity<typeof AnyForeignDocumentField> {}
 
   /** The options for the ForeignDocumentField class. */
   // TODO(LukeAbby)
@@ -4380,6 +4469,10 @@ declare namespace ForeignDocumentField {
   type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<string, MergedOptions<Opts>>;
 }
 
+declare abstract class AnyForeignDocumentField extends ForeignDocumentField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A special {@linkcode StringField} which records a standardized CSS color string.
  * @template Options         - the options of the ColorField instance
@@ -4431,8 +4524,8 @@ declare class ColorField<
 }
 
 declare namespace ColorField {
-  interface Any extends ColorField<any> {}
-  interface AnyConstructor extends Identity<typeof ColorField> {}
+  interface Any extends AnyColorField {}
+  interface AnyConstructor extends Identity<typeof AnyColorField> {}
 
   /** The type of the default options for the {@linkcode ColorField} class. */
   type DefaultOptions = SimpleMerge<
@@ -4480,6 +4573,10 @@ declare namespace ColorField {
     string,
     MergedOptions<Options>
   >;
+}
+
+declare abstract class AnyColorField extends ColorField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -4561,8 +4658,8 @@ declare class FilePathField<
 }
 
 declare namespace FilePathField {
-  interface Any extends FilePathField<any> {}
-  interface AnyConstructor extends Identity<typeof FilePathField> {}
+  interface Any extends AnyFilePathField {}
+  interface AnyConstructor extends Identity<typeof AnyFilePathField> {}
 
   /** The type of the default options for the {@linkcode FilePathField} class. */
   type DefaultOptions = SimpleMerge<
@@ -4633,6 +4730,10 @@ declare namespace FilePathField {
   >;
 }
 
+declare abstract class AnyFilePathField extends FilePathField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A special {@linkcode NumberField} which represents an angle of rotation in degrees between 0 and 360.
  * @template Options         - the options of the AngleField instance
@@ -4685,8 +4786,8 @@ declare class AngleField<
 }
 
 declare namespace AngleField {
-  interface Any extends AngleField<any> {}
-  interface AnyConstructor extends Identity<typeof AngleField> {}
+  interface Any extends AnyAngleField {}
+  interface AnyConstructor extends Identity<typeof AnyAngleField> {}
 
   interface Options extends NumberField.Options {
     /** Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true. */
@@ -4736,6 +4837,10 @@ declare namespace AngleField {
   >;
 }
 
+declare abstract class AnyAngleField extends AngleField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A special {@linkcode NumberField} represents a number between 0 and 1.
  * @template Options         - the options of the AlphaField instance
@@ -4778,8 +4883,8 @@ declare class AlphaField<
 }
 
 declare namespace AlphaField {
-  interface Any extends AlphaField<any> {}
-  interface AnyConstructor extends Identity<typeof AlphaField> {}
+  interface Any extends AnyAlphaField {}
+  interface AnyConstructor extends Identity<typeof AnyAlphaField> {}
 
   /** The type of the default options for the {@linkcode AlphaField} class. */
   type DefaultOptions = SimpleMerge<
@@ -4823,6 +4928,10 @@ declare namespace AlphaField {
   >;
 }
 
+declare abstract class AnyAlphaField extends AlphaField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A special {@linkcode NumberField} represents a number between 0 (inclusive) and 1 (exclusive).
  * Its values are normalized (modulo 1) to the range [0, 1) instead of being clamped.
@@ -4845,8 +4954,8 @@ declare class HueField<
 }
 
 declare namespace HueField {
-  interface Any extends HueField<any> {}
-  interface AnyConstructor extends Identity<typeof HueField> {}
+  interface Any extends AnyHueField {}
+  interface AnyConstructor extends Identity<typeof AnyHueField> {}
 
   type Options = NumberField.Options;
 
@@ -4861,6 +4970,10 @@ declare namespace HueField {
       validationError: "is not a number between 0 (inclusive) and 1 (exclusive)";
     }
   >;
+}
+
+declare abstract class AnyHueField extends HueField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -4888,8 +5001,8 @@ declare class DocumentAuthorField<
 }
 
 declare namespace DocumentAuthorField {
-  interface Any extends DocumentAuthorField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentAuthorField> {}
+  interface Any extends AnyDocumentAuthorField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentAuthorField> {}
 
   interface Options extends ForeignDocumentField.Options {}
 
@@ -4932,6 +5045,10 @@ declare namespace DocumentAuthorField {
   type PersistedType<Opts extends Options> =
     | ForeignDocumentField.PersistedType<MergedOptions<Opts>>
     | _InitialNullish<Opts>;
+}
+
+declare abstract class AnyDocumentAuthorField extends DocumentAuthorField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -4981,8 +5098,8 @@ declare class DocumentOwnershipField<
 }
 
 declare namespace DocumentOwnershipField {
-  interface Any extends DocumentOwnershipField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentOwnershipField> {}
+  interface Any extends AnyDocumentOwnershipField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentOwnershipField> {}
 
   /** A shorthand for the options of a DocumentOwnershipField class. */
   type Options = DataField.Options<Record<string, DOCUMENT_OWNERSHIP_LEVELS>>;
@@ -5024,6 +5141,10 @@ declare namespace DocumentOwnershipField {
     Record<string, DOCUMENT_OWNERSHIP_LEVELS>,
     MergedOptions<Opts>
   >;
+}
+
+declare abstract class AnyDocumentOwnershipField extends DocumentOwnershipField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -5116,8 +5237,8 @@ declare class JSONField<
 }
 
 declare namespace JSONField {
-  interface Any extends JSONField<any> {}
-  interface AnyConstructor extends Identity<typeof JSONField> {}
+  interface Any extends AnyJSONField {}
+  interface AnyConstructor extends Identity<typeof AnyJSONField> {}
 
   /** The type of the default options for the {@linkcode JSONField} class. */
   type DefaultOptions = SimpleMerge<
@@ -5166,6 +5287,10 @@ declare namespace JSONField {
     string,
     MergedOptions<Options>
   >;
+}
+
+declare abstract class AnyJSONField extends JSONField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -5294,8 +5419,8 @@ declare class HTMLField<
 }
 
 declare namespace HTMLField {
-  interface Any extends HTMLField<any> {}
-  interface AnyConstructor extends Identity<typeof HTMLField> {}
+  interface Any extends AnyHTMLField {}
+  interface AnyConstructor extends Identity<typeof AnyHTMLField> {}
 
   /** The type of the default options for the {@linkcode HTMLField} class. */
   type DefaultOptions = SimpleMerge<
@@ -5337,6 +5462,10 @@ declare namespace HTMLField {
   }
 }
 
+declare abstract class AnyHTMLField extends HTMLField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode NumberField} which is used for storing integer sort keys.
  * @template Options         - the options of the IntegerSortField instance
@@ -5373,8 +5502,8 @@ declare class IntegerSortField<
 }
 
 declare namespace IntegerSortField {
-  interface Any extends IntegerSortField<any> {}
-  interface AnyConstructor extends Identity<typeof IntegerSortField> {}
+  interface Any extends AnyIntegerSortField {}
+  interface AnyConstructor extends Identity<typeof AnyIntegerSortField> {}
 
   /** The type of the default options for the {@linkcode IntegerSortField} class. */
   type DefaultOptions = SimpleMerge<
@@ -5416,6 +5545,10 @@ declare namespace IntegerSortField {
   >;
 }
 
+declare abstract class AnyIntegerSortField extends IntegerSortField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode TypedObjectField} that is used specifically for the Document "flags" field.
  */
@@ -5439,8 +5572,8 @@ declare class DocumentFlagsField<
 }
 
 declare namespace DocumentFlagsField {
-  interface Any extends DocumentFlagsField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentFlagsField> {}
+  interface Any extends AnyDocumentFlagsField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentFlagsField> {}
 
   interface Options extends TypedObjectField.Options<Record<string, AnyObject>> {}
 
@@ -5501,6 +5634,10 @@ declare namespace DocumentFlagsField {
 
   /** @internal */
   type _PartialObject<T> = T extends object ? Partial<T> : T;
+}
+
+declare abstract class AnyDocumentFlagsField extends DocumentFlagsField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -5620,8 +5757,8 @@ declare class DocumentStatsField<
 }
 
 declare namespace DocumentStatsField {
-  interface Any extends DocumentStatsField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentStatsField> {}
+  interface Any extends AnyDocumentStatsField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentStatsField> {}
 
   /** A shorthand for the options of a DocumentStatsField class. */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -5751,6 +5888,10 @@ declare namespace DocumentStatsField {
   }
 }
 
+declare abstract class AnyDocumentStatsField extends DocumentStatsField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode StringField} that is used specifically for the Document "type" field.
  */
@@ -5792,8 +5933,8 @@ declare class DocumentTypeField<
 }
 
 declare namespace DocumentTypeField {
-  interface Any extends DocumentTypeField<any> {}
-  interface AnyConstructor extends Identity<typeof DocumentTypeField> {}
+  interface Any extends AnyDocumentTypeField {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentTypeField> {}
 
   /** The type of the default options for the {@linkcode DocumentTypeField} class. */
   type DefaultOptions = SimpleMerge<
@@ -5838,6 +5979,10 @@ declare namespace DocumentTypeField {
     ConcreteDocumentClass extends Document.AnyConstructor,
     Options extends StringField.Options,
   > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
+}
+
+declare abstract class AnyDocumentTypeField extends DocumentTypeField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -5978,8 +6123,8 @@ declare class TypeDataField<
 }
 
 declare namespace TypeDataField {
-  interface Any extends TypeDataField<any> {}
-  interface AnyConstructor extends Identity<typeof TypeDataField> {}
+  interface Any extends AnyTypeDataField {}
+  interface AnyConstructor extends Identity<typeof AnyTypeDataField> {}
 
   /**
    * A shorthand for the options of a TypeDataField class.
@@ -6087,6 +6232,10 @@ declare namespace TypeDataField {
   }[keyof T];
 }
 
+declare abstract class AnyTypeDataField extends TypeDataField<any> {
+  constructor(...args: never);
+}
+
 /**
  * A subclass of {@linkcode DataField} which allows to typed schemas.
  */
@@ -6122,10 +6271,7 @@ declare class TypedSchemaField<
    */
   types: TypedSchemaField.ToConfiguredTypes<Types>;
 
-  protected override _getField(
-    parts: string[],
-    options?: Pick<DataField.GetFieldOptions, "source"> & Partial<Pick<DataField.GetFieldOptions, "type">>,
-  ): DataField.Any;
+  protected override _getField(parts: string[], options?: DataField.GetFieldOptions): DataField.Any;
 
   /**
    * @remarks If `value` has a `#toObject` method, calls it, then returns the result if it is a
@@ -6183,8 +6329,8 @@ declare class TypedSchemaField<
 }
 
 declare namespace TypedSchemaField {
-  interface Any extends TypedSchemaField<any> {}
-  interface AnyConstructor extends Identity<typeof TypedSchemaField> {}
+  interface Any extends AnyTypedSchemaField {}
+  interface AnyConstructor extends Identity<typeof AnyTypedSchemaField> {}
 
   interface Options<T extends Types> extends DataField.Options<_AssignmentType<ToConfiguredTypes<T>>> {}
 
@@ -6284,6 +6430,10 @@ declare namespace TypedSchemaField {
   > = DataField.DerivedInitializedType<_PersistedType<ToConfiguredTypes<Types>>, Options>;
 }
 
+declare abstract class AnyTypedSchemaField extends TypedSchemaField<any> {
+  constructor(...args: never);
+}
+
 // The subclassing of `StringField` can't be done in one step because
 // `ToInputOptions` both adds and removes properties.
 // This is done this way to avoid the need for some `@ts-expect-error`
@@ -6339,8 +6489,8 @@ declare class JavaScriptField<
 }
 
 declare namespace JavaScriptField {
-  interface Any extends JavaScriptField<any> {}
-  interface AnyConstructor extends Identity<typeof JavaScriptField> {}
+  interface Any extends AnyJavaScriptField {}
+  interface AnyConstructor extends Identity<typeof AnyJavaScriptField> {}
 
   // TODO(LukeAbby): `choices` is effectively deleted due to being unconditionally set to `undefined` in the constructor.
   type Options = StringField.Options & {
@@ -6372,6 +6522,10 @@ declare namespace JavaScriptField {
   > {}
 }
 
+declare abstract class AnyJavaScriptField extends JavaScriptField<any> {
+  constructor(...args: never);
+}
+
 declare class SceneLevelsSetField<
   const Options extends SceneLevelsSetField.AnyOptions = SceneLevelsSetField.DefaultOptions,
 > extends SetField<
@@ -6392,8 +6546,8 @@ declare class SceneLevelsSetField<
 }
 
 declare namespace SceneLevelsSetField {
-  interface Any extends SceneLevelsSetField<any> {}
-  interface AnyConstructor extends Identity<typeof SceneLevelsSetField> {}
+  interface Any extends AnySceneLevelsSetField {}
+  interface AnyConstructor extends Identity<typeof AnySceneLevelsSetField> {}
 
   type Element = DocumentIdField<{ nullable: false; readonly: false }>;
 
@@ -6459,6 +6613,10 @@ declare namespace SceneLevelsSetField {
   >;
 }
 
+declare abstract class AnySceneLevelsSetField extends SceneLevelsSetField<any> {
+  constructor(...args: never);
+}
+
 declare class ShapesField<const Options extends ShapesField.Options = ShapesField.DefaultOptions> extends ArrayField<
   ShapesField.ElementField,
   Options
@@ -6477,8 +6635,8 @@ declare class ShapesField<const Options extends ShapesField.Options = ShapesFiel
 }
 
 declare namespace ShapesField {
-  interface Any extends ShapesField<any> {}
-  interface AnyConstructor extends Identity<typeof ShapesField> {}
+  interface Any extends AnyShapesField {}
+  interface AnyConstructor extends Identity<typeof AnyShapesField> {}
 
   type ElementField = TypedSchemaField<foundry.data.BaseShapeData.Types>;
 
@@ -6495,6 +6653,10 @@ declare namespace ShapesField {
   type AssignmentType<Opts extends Options> = ArrayField.AssignmentType<AssignmentElementType, Opts>;
   type InitializedType<Opts extends Options> = ArrayField.InitializedType<InitializedElementType, Opts>;
   type PersistedType<Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
+}
+
+declare abstract class AnyShapesField extends ShapesField<any> {
+  constructor(...args: never);
 }
 
 /**
@@ -6528,8 +6690,8 @@ declare class GridOffsetField<
 }
 
 declare namespace GridOffsetField {
-  interface Any extends GridOffsetField<any> {}
-  interface AnyConstructor extends Identity<typeof GridOffsetField> {}
+  interface Any extends AnyGridOffsetField {}
+  interface AnyConstructor extends Identity<typeof AnyGridOffsetField> {}
 
   type CoordinateField = NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
 
@@ -6550,7 +6712,7 @@ declare namespace GridOffsetField {
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { dimensions: 2 }>;
 
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
-  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
+  type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
   type SchemaForDimensions<Dimension extends 2 | 3> = Dimension extends 3 ? Schema3D : Schema2D;
   type Schema<Opts extends Options> = SchemaForDimensions<Dimensions<Opts>>;
 
@@ -6576,6 +6738,10 @@ declare namespace GridOffsetField {
   type AnyAssignment = string | SchemaField.AssignmentData<Schema2D> | SchemaField.AssignmentData<Schema3D>;
 }
 
+declare abstract class AnyGridOffsetField extends GridOffsetField<any> {
+  constructor(...args: never);
+}
+
 /**
  * The field of an array/set of grid offsets.
  */
@@ -6599,8 +6765,8 @@ declare class GridOffsetsField<
 }
 
 declare namespace GridOffsetsField {
-  interface Any extends GridOffsetsField<any> {}
-  interface AnyConstructor extends Identity<typeof GridOffsetsField> {}
+  interface Any extends AnyGridOffsetsField {}
+  interface AnyConstructor extends Identity<typeof AnyGridOffsetsField> {}
 
   interface Options extends ArrayField.Options<GridOffsetField.AnyAssignment> {
     /** @defaultValue `2` */
@@ -6609,18 +6775,20 @@ declare namespace GridOffsetsField {
 
   type DefaultOptions = SimpleMerge<ArrayField.DefaultOptions, { dimensions: 2 }>;
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
-  type Dimensions<Opts extends Options> = Extract<MergedOptions<Opts>["dimensions"], 2 | 3>;
-  type ElementOptions<Opts extends Options> = SimpleMerge<
-    GridOffsetField.DefaultOptions,
-    { dimensions: Dimensions<Opts> }
-  >;
-  type ElementField<Opts extends Options> = GridOffsetField<ElementOptions<Opts>>;
+  type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
+  type ElementField<Opts extends Options> = GridOffsetField<{
+    dimensions: NullishCoalesce<GetKey<Opts, "dimensions", undefined>, 2>;
+  }>;
   type InitializedType<Opts extends Options> = ArrayField.InitializedType<
     ArrayField.InitializedElementType<ElementField<Opts>>,
     Opts
   >;
 
   type ToInputConfig<Opts extends Options = DefaultOptions> = DataField.ToInputConfig<InitializedType<Opts>>;
+}
+
+declare abstract class AnyGridOffsetsField extends GridOffsetsField<any> {
+  constructor(...args: never);
 }
 
 export {

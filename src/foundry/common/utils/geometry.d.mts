@@ -12,9 +12,9 @@ import type { InexactPartial } from "#utils";
  * @param c - A point that is tested relative to segment AB
  *
  * @returns The relative orientation of points A, B, and C
- *          A positive value if the points are in counter-clockwise order (C lies to the left of AB)
- *          A negative value if the points are in clockwise order (C lies to the right of AB)
- *          Zero if the points A, B, and C are collinear.
+ * - A positive value if the points are in counter-clockwise order (C lies to the left of AB)
+ * - A negative value if the points are in clockwise order (C lies to the right of AB)
+ * - Zero if the points A, B, and C are collinear.
  */
 export declare function orient2dFast(a: Canvas.Point, b: Canvas.Point, c: Canvas.Point): number;
 
@@ -148,13 +148,25 @@ export declare function lineCircleIntersection(
  * @param b - Point B on segment AB
  *
  * @returns The closest point to C on segment AB
+ * @see {@link https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points}
  */
 export declare function closestPointToSegment(c: Canvas.Point, a: Canvas.Point, b: Canvas.Point): Canvas.Point;
 
 /**
+ * Find a point that is closest to the path (open or closed).
+ * @param c      - The reference point C
+ * @param points - The points of the path P, which must not be empty
+ * @param close  - If true, the edge from the last to the first point of the path is tested (default: `false`)
+ * @returns The closest point to C on the path P
+ * @see {@link https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points}
+ * @privateRemarks `close`'s default is actually `undefined`, but it's only checked for simple truthiness.
+ */
+export function closestPointToPath(c: Canvas.Point, points: Points, close?: boolean): Canvas.Point;
+
+/**
  * Determine the points of intersection between a line segment (p0,p1) and a circle.
  * There will be zero, one, or two intersections
- * See https://math.stackexchange.com/a/311956
+ * See {@link https://math.stackexchange.com/a/311956}
  *
  * @param p0      - The initial point of the line segment
  * @param p1      - The terminal point of the line segment
@@ -174,10 +186,11 @@ declare type Points = Canvas.Point[] | number[];
 
 /**
  * Calculate the centroid non-self-intersecting closed polygon.
- * See https://en.wikipedia.org/wiki/Centroid#Of_a_polygon.
- *
- * @param points    - The points of the polygon
- * @returns         - The centroid of the polygon
+ * If the polygon's area is zero, the first point of the polygon is returned, if it has at least on point,
+ * otherwise the point `{x: 0, y: 0}` is returned.
+ * @param points - The points of the polygon
+ * @returns The centroid of the polygon
+ * @see {@link https://en.wikipedia.org/wiki/Centroid#Of_a_polygon}
  */
 export declare function polygonCentroid(points: Points): Canvas.Point;
 
@@ -185,7 +198,7 @@ export declare function polygonCentroid(points: Points): Canvas.Point;
  * Test whether the circle given by the center and radius intersects the path (open or closed).
  *
  * @param points    - The points of the path
- * @param close     - If true, the edge from the last to the first point is tested
+ * @param close     - If true, the edge from the last to the first point of the path is tested
  * @param center    - The center of the circle
  * @param radius    - The radius of the circle
  * @returns         - Whether the circle intersect the path

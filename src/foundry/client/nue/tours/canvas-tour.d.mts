@@ -7,17 +7,17 @@ import type { SceneControls } from "#client/applications/ui/_module.d.mts";
  * Automatically activates a certain canvas layer or tool depending on the needs of the step.
  */
 declare class CanvasTour extends Tour {
-  /** @privateRemarks Fake type override */
+  // fake type override
   constructor(config: CanvasTour.Config, options?: Tour.ConstructorOptions);
 
-  /** @privateRemarks Fake type override */
+  // fake type override
   override config: CanvasTour.Config;
 
   override start(): Promise<void>;
 
   override get canStart(): boolean;
 
-  /** @privateRemarks Fake type override */
+  // fake type override
   static override fromJSON(filepath: string): Promise<CanvasTour.Any>;
 
   protected override _preStep(): Promise<void>;
@@ -37,7 +37,8 @@ declare namespace CanvasTour {
   interface _Step {
     /**
      * Activates a particular canvas layer and its respective control group. Usable in `CanvasTour` instances
-     * @privateRemarks This is just `string` for now, but we may narrow the controls type to only configured values in future
+     * @privateRemarks `keyof SceneControls["controls"]` is just `string` for now,
+     * but we may narrow the controls type to only configured values in future.
      */
     layer: keyof SceneControls["controls"];
 

@@ -12,9 +12,9 @@ export declare function logCompatibilityWarning(message: string, options?: LogCo
 /** @internal */
 interface _LogCompatibilityWarningOptions {
   /**
-   * A logging level in COMPATIBILITY_MODES which overrides the configured default
+   * A logging level in {@linkcode COMPATIBILITY_MODES} which overrides the configured default
    * @remarks Defaults to {@linkcode CONFIG.compatibility.mode} if `CONFIG.compatibility` exists,
-   * falls back to {@linkcode COMPATIBILITY_MODES.WARNING} otherwise
+   * falls back to {@linkcode COMPATIBILITY_MODES.WARNING} otherwise.
    */
   mode: COMPATIBILITY_MODES;
 

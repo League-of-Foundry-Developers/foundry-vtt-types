@@ -5,7 +5,6 @@ import AudioHelper = foundry.audio.AudioHelper;
 
 const path = "a/path/to/some/sound/file.ogg";
 declare const socket: io.Socket;
-declare const buffer: AudioBuffer;
 declare const context: AudioContext;
 declare const autoplayOptions: Sound.PlaybackOptions; // full testing of this is in Sound's file
 declare const mediaStream: MediaStream;
@@ -165,15 +164,5 @@ describe("AudioHelper Tests", () => {
     expectTypeOf(helper.play(path)).toEqualTypeOf<Promise<Sound>>();
     expectTypeOf(helper.play(path, {})).toEqualTypeOf<Promise<Sound>>();
     expectTypeOf(helper.play(path, playOptions)).toEqualTypeOf<Promise<Sound>>();
-  });
-
-  test("Deprecated", () => {
-    // deprecated since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(helper.getCache("bar")).toEqualTypeOf<AudioBuffer | undefined>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(helper.updateCache("baz", true)).toBeVoid();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(helper.setCache("fizz", buffer)).toBeVoid();
   });
 });
