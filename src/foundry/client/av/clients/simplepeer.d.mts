@@ -29,34 +29,12 @@ declare class SimplePeerAVClient extends AVClient {
   remoteStreams: Map<string, MediaStream>;
 
   /**
-   * Has the client been successfully initialized?
-   * @defaultValue `false`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _initialized: never;
-
-  /**
    * Is outbound broadcast of local audio enabled?
    * @defaultValue `false`
    */
   audioBroadcastEnabled: boolean;
 
-  /**
-   * The polling interval ID for connected users that might have unexpectedly dropped out of our peer network.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connectionPoll: never;
-
   override connect(): Promise<boolean>;
-
-  /**
-   * Try to establish a peer connection with each user connected to the server.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connect(): never;
 
   override disconnect(): Promise<boolean>;
 
@@ -86,15 +64,6 @@ declare class SimplePeerAVClient extends AVClient {
   initializeLocalStream(): Promise<MediaStream | null>;
 
   /**
-   * Attempt to create local media streams.
-   * @param params - Parameters for the getUserMedia request.
-   * @returns The created MediaStream or an error.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _createMediaStream(params: never): never;
-
-  /**
    * Listen for Audio/Video updates on the av socket to broker connections between peers
    */
   activateSocketListeners(): void;
@@ -116,30 +85,10 @@ declare class SimplePeerAVClient extends AVClient {
   /**
    * Connect to a peer directly, either as the initiator or as the receiver
    * @param userId      - The Foundry user ID with whom we are connecting
-   * @param isInitiator - Is the current user initiating the connection, or responding to it?
-   *                      (default: `false`)
+   * @param isInitiator - Is the current user initiating the connection, or responding to it? (default: `false`)
    * @returns The constructed and configured SimplePeer instance
    */
   connectPeer(userId: string, isInitiator?: boolean): SimplePeer.Instance;
-
-  /**
-   * Create the SimplePeer instance for the desired peer connection.
-   * Modules may implement more advanced connection strategies by overriding this method.
-   * @param userId      - The Foundry user ID with whom we are connecting
-   * @param isInitiator - Is the current user initiating the connection, or responding to it?
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  _createPeerConnection(userId: never, isInitiator: never): never;
-
-  /**
-   * Setup the custom TURN relay to be used in subsequent calls if there is one configured.
-   * TURN credentials are mandatory in WebRTC.
-   * @param options - The SimplePeer configuration object.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  _setupCustomTURN(options: never): never;
 
   /**
    * Disconnect from a peer by stopping current stream tracks and destroying the SimplePeer instance
