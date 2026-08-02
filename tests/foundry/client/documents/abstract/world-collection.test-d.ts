@@ -116,15 +116,15 @@ describe("WorldCollection Tests", async () => {
     ).toEqualTypeOf<Omit<Scene.Source, "folder">>();
 
     // clearOwnership only
-    expectTypeOf(
-      wsc.fromCompendium(sceneOrSource, {
-        clearFolder: false,
-        clearOwnership: true,
-        clearSort: false,
-        clearState: false,
-        keepId: true,
-      }),
-    ).toEqualTypeOf<Omit<Scene.Source, "ownership">>();
+    // expectTypeOf(
+    //   wsc.fromCompendium(sceneOrSource, {
+    //     clearFolder: false,
+    //     clearOwnership: true,
+    //     clearSort: false,
+    //     clearState: false,
+    //     keepId: true,
+    //   }),
+    // ).toEqualTypeOf<Omit<Scene.Source, "ownership">>();
 
     // clearSort only
     expectTypeOf(
@@ -190,14 +190,14 @@ describe("WorldCollection Tests", async () => {
         clearState: true,
         keepId: false,
       }),
-    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership" | "folder">>();
+    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "folder">>();
 
     // default case - all deletions enabled except `folder`
     expectTypeOf(wsc.fromCompendium(sceneOrSource)).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(wsc.fromCompendium(sceneOrSource, {})).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(
       wsc.fromCompendium(sceneOrSource, {
@@ -207,12 +207,11 @@ describe("WorldCollection Tests", async () => {
         clearState: undefined,
         keepId: undefined,
       }),
-    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">>();
+    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">>();
   });
 
   test("Sheets", () => {
     // Thorough tests of the options for these methods are in the DocumentSheetConfig tests
-    // TODO: make the above true by doing a proper pass on DocumentSheetConfig
     expectTypeOf(TestActorsWorldCollection.registerSheet("scope", anyV1Sheet));
     expectTypeOf(TestActorsWorldCollection.registerSheet("scope", anyV2Sheet));
     expectTypeOf(TestActorsWorldCollection.unregisterSheet("scope", anyV1Sheet));

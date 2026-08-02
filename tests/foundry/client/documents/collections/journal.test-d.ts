@@ -46,6 +46,16 @@ describe("Journal Tests", async () => {
 
   test("Showing", () => {
     expectTypeOf(Journal.showDialog(je)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(Journal.showDialog(je, {})).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(Journal.showDialog(je, { parent: undefined, renderOptions: undefined })).toEqualTypeOf<
+      Promise<void>
+    >();
+    expectTypeOf(
+      Journal.showDialog(je, {
+        parent: new foundry.applications.sheets.journal.JournalEntrySheet({ document: je }),
+        renderOptions: { force: true },
+      }),
+    ).toEqualTypeOf<Promise<void>>();
 
     expectTypeOf(Journal.show(je)).toEqualTypeOf<Promise<JournalEntry.Stored>>();
     expectTypeOf(Journal.show(je, {})).toEqualTypeOf<Promise<JournalEntry.Stored>>();
@@ -159,8 +169,7 @@ describe("Journal Tests", async () => {
     journals.set("ID", jeImpl);
     // @ts-expect-error `Actor`s are not `JournalEntry`s
     journals.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(journals.set("ID", je)).toBeVoid();
+    expectTypeOf(journals.set("ID", je)).toEqualTypeOf<typeof journals>();
 
     expectTypeOf(journals.delete("ID")).toBeBoolean();
   });

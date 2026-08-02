@@ -1,9 +1,9 @@
 import type { InexactPartial, Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { DocumentSheetConfig, ImagePopout } from "#client/applications/apps/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
-import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 
 /**
  * The singleton collection of JournalEntry documents which exist within the active World.
@@ -22,7 +22,10 @@ declare class Journal extends WorldCollection<"JournalEntry"> {
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
    * @param doc - The JournalEntry or JournalEntryPage to show.
    */
-  static showDialog(doc: JournalEntry.Implementation | JournalEntryPage.Implementation): Promise<void>;
+  static showDialog(
+    doc: JournalEntry.Implementation | JournalEntryPage.Implementation,
+    options?: Journal.ShowDialogOptions,
+  ): Promise<void>;
 
   /**
    * Show the JournalEntry or JournalEntryPage to connected players.
@@ -62,6 +65,8 @@ declare class Journal extends WorldCollection<"JournalEntry"> {
    */
   static _showEntry(uuid: string, force?: boolean): Promise<void>;
 
+  // `JournalEntry`s do not have type data, so this collection does not require an `importDocument` fake override
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
@@ -97,6 +102,17 @@ declare namespace Journal {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"JournalEntry"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"JournalEntry"> {}
+
+  /** @internal */
+  interface _ShowDialogOptions {
+    /** A parent Application to register the dialog as a child of. */
+    parent: ApplicationV2.Any;
+
+    /** Options to forward to the dialog render call. */
+    renderOptions: InexactPartial<ApplicationV2.RenderOptions>;
+  }
+
+  interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
 
   interface _ShowOptions {
     /**

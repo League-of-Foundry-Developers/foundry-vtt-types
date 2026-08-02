@@ -15,25 +15,25 @@ import type { collections } from "#client/documents/_module.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.
- * Each primary Document type has an associated subclass of WorldCollection which contains them.
+ * Each primary Document type has an associated subclass of `WorldCollection` which contains them.
  * @see {@linkcode foundry.Game.collections | Game#collections}
  */
 declare abstract class WorldCollection<DocumentName extends Document.WorldType> extends DirectoryCollectionMixin(
   DocumentCollection,
 )<DocumentName> {
   /**
-   * Reference the set of Folders which contain documents in this collection
+   * Reference the set of `Folder`s which contain documents in this collection
    */
   get folders(): WorldCollection.Folders<DocumentName>;
 
   /**
-   * Return a reference to the SidebarDirectory application for this WorldCollection.
+   * Return a reference to the `SidebarDirectory` application for this WorldCollection.
    * @remarks This getter has several hardcoded special cases, see {@linkcode WorldCollection.Directory}
    */
   get directory(): WorldCollection.Directory<DocumentName>;
 
   /**
-   * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
+   * Return a reference to the singleton instance of this `WorldCollection`, or `null` if it has not yet been created.
    */
   static get instance(): InitializedOn<WorldCollection.Any, "setup">;
 
@@ -41,6 +41,8 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
 
   /**
    * Import a Document from a Compendium collection, adding it to the current World.
+   * This method is a convenience wrapper around the underlying {@linkcode WorldCollection.importDocument | WorldCollection#importDocument}
+   * workflow.
    * @param pack       - The CompendiumCollection instance from which to import
    * @param id         - The ID of the compendium entry to import
    * @param updateData - Optional additional data used to modify the imported Document before it is created (default: `{}`)
@@ -61,8 +63,21 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
-    options?: WorldCollection.ImportFromCompendiumOptions<DocumentName>,
+    options?: WorldCollection.ImportDocumentOptions<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName> | undefined>;
+
+  // fake type override
+  override importDocument(
+    document: Document.ImplementationFor<DocumentName>,
+    options: WorldCollection.ImportDocumentOptions<DocumentName>,
+  ): Promise<Document.StoredForName<DocumentName> | undefined>;
+
+  protected override _prepareImportDocument<
+    Options extends WorldCollection.ImportDocumentOptions<DocumentName> | undefined = undefined,
+  >(
+    document: Document.ImplementationFor<DocumentName>,
+    options: Options,
+  ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 
   /**
    * Apply data transformations when importing a Document from a Compendium pack
@@ -83,7 +98,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * See {@linkcode DocumentSheetConfig.registerSheet} for details.
    *
    * @example
-   * Register a new ActorSheet subclass for use with certain Actor types.
+   * Register a new `ActorSheet` subclass for use with certain Actor types.
    * ```ts
    * foundry.documents.collections.Actors.registerSheet("dnd5e", ActorSheet5eCharacter, {
    *   types: ["character"],
@@ -219,13 +234,7 @@ declare namespace WorldCollection {
     clearState: boolean;
   }
 
-  interface FromCompendiumOptions extends InexactPartial<_FromCompendiumOptions> {
-    /**
-     * @deprecated "The `addFlags` option for {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}
-     * has been removed." (since v12, until v14)
-     */
-    addFlags?: never;
-  }
+  interface FromCompendiumOptions extends InexactPartial<_FromCompendiumOptions> {}
 
   /**
    * The return type for {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}.
@@ -242,22 +251,27 @@ declare namespace WorldCollection {
     Document.SourceForName<DocumentType>,
     | ClientDocument._OmitProperty<GetKey<Options, "clearFolder", undefined>, false, "folder">
     | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navOrder">
-    | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
+    // As of v14, even if `clearOwnership` is `true`, the resulting source will still have, at minimum, `ownership: {[game.user.id]: OWNER}`
+    // | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
     | ClientDocument._OmitProperty<GetKey<Options, "clearState", undefined>, true, "active">
     | (true extends GetKey<Options, "keepId", undefined> ? never : "_id")
   >;
 
   /**
-   * @remarks {@linkcode WorldCollection.importFromCompendium | WorldCollection#importFromCompendium} passes the same options object
-   * to both {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and {@linkcode Document.create}.
+   * As of v14, {@linkcode WorldCollection.importFromCompendium | WorldCollection#importFromCompendium} forwards to
+   * {@linkcode WorldCollection.importDocument | #importDocument}, which passes the same options object to both
+   * {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} (via
+   * {@linkcode WorldCollection._prepareImportDocument | #_prepareImportDocument}) and {@linkcode Document.create}.
    */
-  type ImportFromCompendiumOptions<DocumentName extends Document.WorldType> =
-    Document.Database.CreateDocumentsOperation<Document.Database.CreateOperationForName<DocumentName>> &
-      FromCompendiumOptions;
+  type ImportDocumentOptions<Name extends Document.WorldType> = FromCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Name>;
 
   type Pack<DocumentName extends Document.WorldType> = DocumentName extends CompendiumCollection.DocumentName
     ? CompendiumCollection<DocumentName>
     : never;
+
+  /** @deprecated Use {@linkcode WorldCollection.ImportDocumentOptions} instead. This type will be removed in v15. */
+  type ImportFromCompendiumOptions<DocumentName extends Document.WorldType> = ImportDocumentOptions<DocumentName>;
 }
 
 export default WorldCollection;

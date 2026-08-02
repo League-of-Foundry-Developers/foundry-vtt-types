@@ -430,10 +430,71 @@ describe("CompendiumCollection Tests", async () => {
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     actorPack.set("ID", tempActor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(actorPack.set("ID", actor)).toBeVoid();
+    expectTypeOf(actorPack.set("ID", actor)).toEqualTypeOf<typeof actorPack>();
 
     expectTypeOf(actorPack.delete("ID")).toBeBoolean();
+  });
+
+  test("Callback methods", () => {
+    expectTypeOf(
+      actorPack.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      actorPack.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      actorPack.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      actorPack.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Actor"[]>;
+
+    expectTypeOf(
+      actorPack.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      actorPack.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      actorPack.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Actor.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
   });
 
   afterAll(async () => {

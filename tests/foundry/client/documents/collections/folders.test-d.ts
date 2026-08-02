@@ -109,13 +109,27 @@ describe("Folders Tests", async () => {
     folders.set("ID", folderImpl);
     // @ts-expect-error `Actor`s are not `Folder`s
     folders.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(folders.set("ID", folder)).toBeVoid();
+
+    expectTypeOf(folders.set("ID", folder)).toEqualTypeOf<typeof folders>();
 
     expectTypeOf(folders.delete("ID")).toBeBoolean();
   });
 
-  // TODO: _onModifyContents tests on the db-ops branch
+  // TODO: _onModifyContents tests
+
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await folders.importDocument(folder, {});
+    if (!imported1) throw new Error("Failed to create test `Folder` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Folder.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await folders.importDocument(folderImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Folder` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Folder.Stored<"Actor">>();
+  });
 
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();

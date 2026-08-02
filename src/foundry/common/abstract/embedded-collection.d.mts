@@ -7,7 +7,7 @@ import type { DocumentCollection } from "#client/documents/abstract/_module.d.mt
 import type EmbeddedCollectionDelta from "#common/abstract/embedded-collection-delta.d.mts";
 
 /**
- * An extension of the Collection.
+ * An extension of the {@linkcode Collection}.
  * Used for the specific task of containing embedded Document instances within a parent Document.
  *
  * @privateRemarks `ParentDocument` would ideally be `NonNullable<Document.ParentForName<ContainedDocument["documentName"]>>`, but this
@@ -50,7 +50,7 @@ declare class EmbeddedCollection<
   readonly name: string;
 
   /**
-   * The parent DataModel to which this EmbeddedCollection instance belongs.
+   * The parent `DataModel` to which this `EmbeddedCollection` instance belongs.
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly model: ParentDocument;
@@ -81,7 +81,7 @@ declare class EmbeddedCollection<
   get documentsByType(): Record<string, ContainedDocument[]>;
 
   /**
-   * Initialize the EmbeddedCollection object by constructing its contained Document instances
+   * Initialize the `EmbeddedCollection` object by constructing its contained Document instances
    * @param options - Initialization options (default: `{}`)
    */
   initialize(options?: EmbeddedCollection.InitializeOptions): void;
@@ -111,15 +111,23 @@ declare class EmbeddedCollection<
 
   /**
    * Log warnings or errors when a Document is found to be invalid.
-   * @param id      - The invalid Document's ID.
+   * @param data    - The invalid Document's data.
    * @param err     - The validation error
    * @param options - Options to configure invalid Document handling.
    */
   protected _handleInvalidDocument(
-    id: string,
+    data: object,
     err: Error,
     options?: EmbeddedCollection.HandleInvalidDocumentOptions,
   ): void;
+
+  /**
+   * Add a document to the collection
+   * @param key     - The embedded Document ID
+   * @param value   - The embedded Document instance
+   * @param options - Additional options to the set operation
+   */
+  set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
 
   /**
    * Modify the underlying source array to include the Document.
@@ -127,6 +135,13 @@ declare class EmbeddedCollection<
    * @param value - The Document
    */
   protected _set(key: string, value: ContainedDocument): void;
+
+  /**
+   * Remove a document from the collection.
+   * @param key     - The embedded Document ID.
+   * @param options - Additional options to the delete operation.
+   */
+  delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
 
   /**
    * Remove the value from the underlying source array.
@@ -150,14 +165,23 @@ declare class EmbeddedCollection<
   ): EmbeddedCollection.GetInvalidReturn<ContainedDocument, Options>;
 
   /**
-   * Convert the EmbeddedCollection to an array of simple objects.
+   * Does this `SingletonEmbeddedCollection` actively manage the Document with a specific ID.
+   * @param id - The Document ID to check
+   * @returns Is the specified document managed by this collection?
+   * @remarks Yes, that's what foundry has for the JSDoc on this method, despite this class not being
+   * {@linkcode foundry.abstract.SingletonEmbeddedCollection}.
+   */
+  manages(id: string): boolean;
+
+  /**
+   * Convert the `EmbeddedCollection` to an array of simple objects.
    * @param source - Draw data for contained Documents from the underlying data source? (default: `true`)
    * @returns The extracted array of primitive objects
    */
   toObject(source?: boolean): ContainedDocument["_source"][];
 
   /**
-   * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
+   * Follow-up actions to take when a database operation modifies Documents in this `EmbeddedCollection`.
    * @param action    - The database action performed
    * @param documents - The array of modified Documents
    * @param result    - The result of the database operation
@@ -189,12 +213,6 @@ declare class EmbeddedCollection<
    * @privateRemarks `EmbeddedCollection` doesn't have an `index`, so this return type is correct
    */
   search(search: DocumentCollection.SearchOptions): ContainedDocument[];
-
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  update(...args: never): never;
-
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  protected _createOrUpdate(...args: never): never;
 
   #EmbeddedCollection: true;
 }
@@ -323,21 +341,6 @@ declare namespace EmbeddedCollection {
       id: string,
       options?: Options,
     ): EmbeddedCollection.GetReturn<ContainedDocument, Options>;
-
-    /**
-     * Add a document to the collection
-     * @param key     - The embedded Document ID
-     * @param value   - The embedded Document instance
-     * @param options - Additional options to the set operation
-     */
-    set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
-
-    /**
-     * Remove a document from the collection.
-     * @param key     - The embedded Document ID.
-     * @param options - Additional options to the delete operation.
-     */
-    delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
   }
 }
 

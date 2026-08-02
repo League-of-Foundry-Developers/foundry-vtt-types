@@ -9,7 +9,7 @@ describe("CombatEncounters Tests", async () => {
   if (!combat) throw new Error("Failed to create test Combat.");
   docsToCleanUp.add(combat);
 
-  const combatImpl = new Combat.implementation();
+  const combatImpl = new Combat.implementation({ type: "base" });
   const combatSource = combat.toObject();
 
   const actor = await Actor.implementation.create({
@@ -102,13 +102,27 @@ describe("CombatEncounters Tests", async () => {
     expectTypeOf(encounters.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Combat.Stored | undefined>();
   });
 
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await encounters.importDocument(combat, {});
+    if (!imported1) throw new Error("Failed to create test `Combat` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Combat.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await encounters.importDocument(combatImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Combat` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Combat.Stored<"base">>();
+  });
+
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     encounters.set("ID", combatImpl);
     // @ts-expect-error `Actor`s are not `Combat`s
     encounters.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(encounters.set("ID", combat)).toBeVoid();
+
+    expectTypeOf(encounters.set("ID", combat)).toEqualTypeOf<typeof encounters>();
 
     expectTypeOf(encounters.delete("ID")).toBeBoolean();
   });

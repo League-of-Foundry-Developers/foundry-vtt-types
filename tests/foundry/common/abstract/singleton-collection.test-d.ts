@@ -102,6 +102,10 @@ describe("SingletonEmbeddedCollection Tests", async () => {
     expectTypeOf(sec["_set"]("ID", deltaStored)).toBeVoid();
   });
 
+  test("Miscellaneous", () => {
+    expectTypeOf(sec.manages("foo")).toBeBoolean();
+  });
+
   test("Deleting", () => {
     expectTypeOf(sec["_delete"]("ID")).toBeVoid();
   });

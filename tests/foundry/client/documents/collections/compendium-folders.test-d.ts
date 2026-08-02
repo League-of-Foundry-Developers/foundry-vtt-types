@@ -113,10 +113,19 @@ describe("CompendiumFolderCollection Tests", async () => {
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     apf.set("ID", folderImpl);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(apf.set("ID", folder)).toBeVoid();
+
+    expectTypeOf(apf.set("ID", folder)).toEqualTypeOf<typeof apf>();
 
     expectTypeOf(apf.delete("ID")).toBeBoolean();
+  });
+
+  test("_prepareImportDocument", () => {
+    expectTypeOf(itemPack.folders["_prepareImportDocument"](folderImpl, {})).toEqualTypeOf<
+      ClientDocument.ToCompendiumReturnType<"Folder", undefined>
+    >();
+    expectTypeOf(
+      itemPack.folders["_prepareImportDocument"](folderImpl, { clearSort: false, noHook: true }),
+    ).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Folder", { clearSort: false; noHook: true }>>();
   });
 
   test("updateAll", () => {

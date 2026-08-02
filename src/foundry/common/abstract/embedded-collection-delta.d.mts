@@ -13,8 +13,7 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
 declare class EmbeddedCollectionDelta<
   ContainedDocument extends Document.Any,
   ParentDataModel extends Document.Any,
-  Methods extends Collection.Methods.Any = EmbeddedCollectionDelta.Methods<ContainedDocument>,
-> extends EmbeddedCollection<ContainedDocument, ParentDataModel, Methods> {
+> extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
   /**
    * A convenience getter to return the corresponding base collection.
    * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}
@@ -28,11 +27,7 @@ declare class EmbeddedCollectionDelta<
    */
   get syntheticCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation>;
 
-  /**
-   * Determine whether a given ID is managed directly by this collection delta or inherited from the base collection.
-   * @param key - The Document ID.
-   */
-  manages(key: string): boolean;
+  override manages(id: string): boolean;
 
   /**
    * Determine whether a given ID exists as a tombstone Document in the collection delta.
@@ -92,12 +87,13 @@ declare class EmbeddedCollectionDelta<
     options?: DataModel.UpdateOptions,
   ): void;
 
+  override set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): this;
+
   protected override _set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
 
-  protected override _delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
+  override delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): boolean;
 
-  /** @deprecated Removed without replacement in v13. This method will be removed in v14. */
-  protected override _createOrUpdate(...args: never): never;
+  protected override _delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
 
   #EmbeddedCollectionDelta: true;
 }
@@ -141,33 +137,6 @@ declare namespace EmbeddedCollectionDelta {
    * {@linkcode EmbeddedCollectionDelta._delete | #_delete}
    */
   interface DeleteOptions extends EmbeddedCollection.DeleteOptions, InexactPartial<_RestoreDelta> {}
-
-  /**
-   * The method signatures for {@linkcode EmbeddedCollectionDelta}.
-   * @see {@linkcode Collection.Methods}
-   * @see {@linkcode Collection.SetMethod}
-   *
-   * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
-   */
-  interface Methods<ContainedDocument extends Document.Any> extends Pick<
-    EmbeddedCollection.Methods<ContainedDocument>,
-    "get"
-  > {
-    /**
-     * Add a document to the collection
-     * @param key     - The embedded Document ID
-     * @param value   - The embedded Document instance
-     * @param options - Additional options to the set operation
-     */
-    set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
-
-    /**
-     * Remove a document from the collection.
-     * @param key     - The embedded Document ID.
-     * @param options - Additional options to the delete operation.
-     */
-    delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
-  }
 }
 
 export default EmbeddedCollectionDelta;
