@@ -694,3 +694,28 @@ test("AnyConstructor accepts subclasses with different constructors", () => {
   const instance: fields.SchemaField.Any = new CustomSchemaField(3);
   expectTypeOf(instance).toExtend<fields.SchemaField.Any>();
 });
+
+test("validators() threads the receiver and narrows on strict", () => {
+  type Yielded<G> = G extends Generator<infer V, unknown, unknown> ? V : never;
+
+  const strField = new fields.StringField();
+
+  // The yielded validator's receiver narrows to the concrete field (method-bivariance `this` trick).
+  type DefaultV = Yielded<ReturnType<typeof strField.validators>>;
+  expectTypeOf<ThisParameterType<DefaultV>>().toEqualTypeOf<typeof strField>();
+  expectTypeOf<ReturnType<DefaultV>>().toEqualTypeOf<
+    foundry.data.validation.DataModelValidationFailure | boolean | void
+  >();
+
+  // `strict: true` drops the returnable failure branch (a failure throws instead).
+  const _strictGen = strField.validators({ strict: true });
+  type StrictV = Yielded<typeof _strictGen>;
+  expectTypeOf<ThisParameterType<StrictV>>().toEqualTypeOf<typeof strField>();
+  expectTypeOf<ReturnType<StrictV>>().toEqualTypeOf<boolean | void>();
+
+  // `strict: false` keeps the failure branch.
+  const _looseGen = strField.validators({ strict: false });
+  expectTypeOf<ReturnType<Yielded<typeof _looseGen>>>().toEqualTypeOf<
+    foundry.data.validation.DataModelValidationFailure | boolean | void
+  >();
+});

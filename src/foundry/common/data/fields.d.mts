@@ -289,7 +289,7 @@ declare abstract class DataField<
    */
   validators<const Options extends DataField.ValidatorsOptions | undefined = undefined>(
     options?: Options,
-  ): Generator<DataField.ValidatorFunction<DataField.Any, Options>, void, void>;
+  ): Generator<DataField.ValidatorFunction<this, Options>, void, void>;
 
   /**
    * Validate candidate input for this field, ensuring it meets the field requirements.
@@ -1067,6 +1067,10 @@ declare namespace DataField {
    * A validation function as yielded by {@link DataField.validators | `DataField#validators`}.
    * @template CurrentField     - the type of the DataField, which is the receiver of the validator function
    * @template ValidatorOptions - the options {@link DataField.validators | `DataField#validators`} was called with
+   *
+   * @privateRemarks Uses the method-bivariance hack (like {@linkcode Validator}), not an arrow:
+   * `CurrentField` sits in contravariant positions and is yielded by `validators()`, so an arrow type
+   * would make fields fail `extends DataField.Any`.
    */
   type ValidatorFunction<
     CurrentField extends DataField.Any = DataField.Any,
@@ -1074,11 +1078,13 @@ declare namespace DataField {
   > = _ValidatorFunction<CurrentField, GetKey<ValidatorOptions, "strict", undefined>>;
 
   /** @internal */
-  type _ValidatorFunction<CurrentField extends DataField.Any, Strict extends boolean | undefined> = (
-    this: CurrentField,
-    value: unknown,
-    options: DataField.ValidateOptions<CurrentField>,
-  ) => (Strict extends true ? never : DataModelValidationFailure) | boolean | void;
+  type _ValidatorFunction<CurrentField extends DataField.Any, Strict extends boolean | undefined> = {
+    validator(
+      this: CurrentField,
+      value: unknown,
+      options: DataField.ValidateOptions<CurrentField>,
+    ): (Strict extends true ? never : DataModelValidationFailure) | boolean | void;
+  }["validator"];
 
   /**
    * @remarks The `options` passed to {@link DataField.initialize | `DataField#initialize`} exclusively (in core) come from
