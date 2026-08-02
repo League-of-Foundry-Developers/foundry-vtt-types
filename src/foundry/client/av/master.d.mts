@@ -5,7 +5,7 @@ import type { AVConfig } from "#client/applications/settings/menus/_module.d.mts
 
 /**
  * The master Audio/Video controller instance.
- * This is available as the singleton game.webrtc
+ * This is available as the singleton {@linkcode game.webrtc}
  */
 declare class AVMaster {
   constructor();
@@ -28,33 +28,6 @@ declare class AVMaster {
    * @privateRemarks Defined during construction.
    */
   broadcasting: boolean;
-
-  /**
-   * Flag to determine if we are connected to the signalling server or not.
-   * This is required for synchronization between connection and reconnection attempts.
-   * @defaultValue `false`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connected: never;
-
-  /**
-   * The cached connection promise.
-   * This is required to prevent re-triggering a connection while one is already in progress.
-   * @defaultValue `null`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _connecting: never;
-
-  /**
-   * A flag to track whether the A/V system is currently in the process of reconnecting.
-   * This occurs if the connection is lost or interrupted.
-   * @defaultValue `false`
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _reconnecting: never;
 
   /**
    * @defaultValue `{ speaking: false, volumeHistories: [] }`
@@ -97,13 +70,6 @@ declare class AVMaster {
   reestablish(): Promise<void>;
 
   /**
-   * Initialize the local broadcast state.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _initialize(): never;
-
-  /**
    * A user can broadcast audio if the AV mode is compatible and if they are allowed to broadcast.
    */
   canUserBroadcastAudio(userId: string): boolean;
@@ -126,7 +92,7 @@ declare class AVMaster {
   /**
    * Trigger a change in the audio broadcasting state when using a push-to-talk workflow.
    * @param intent - The user's intent to broadcast. Whether an actual broadcast occurs will depend
-   *                 on whether or not the user has muted their audio feed.
+   * on whether or not the user has muted their audio feed.
    */
   broadcast(intent: boolean): void;
 
@@ -142,7 +108,7 @@ declare class AVMaster {
    * Currently only a MediaStream is supported because MediaStreamTrack processing is not yet supported cross-browser.
    * @param stream - The MediaStream which corresponds to that User
    * @param ms     - A number of milliseconds which represents the voice activation volume interval
-   *                 (default: `CONFIG.WebRTC.detectPeerVolumeInterval`)
+   *                 (default: {@linkcode CONFIG.WebRTC.detectPeerVolumeInterval})
    */
   activateVoiceDetection(stream: MediaStream, ms?: number): void;
 
@@ -150,33 +116,6 @@ declare class AVMaster {
    * Actions which the orchestration layer should take when a peer user disconnects from the audio/video service.
    */
   deactivateVoiceDetection(): void;
-
-  /**
-   * Periodic notification of user audio level
-   *
-   * This function uses the audio level (in dB) of the audio stream to determine if the user is speaking or not and
-   * notifies the UI of such changes.
-   *
-   * The User is considered speaking if they are above the decibel threshold in any of the history values.
-   * This marks them as speaking as soon as they have a high enough volume, and marks them as not speaking only after
-   * they drop below the threshold in all histories (last 4 volumes = for 200 ms).
-   *
-   * There can be more optimal ways to do this and which uses whether the user was already considered speaking before
-   * or not, in order to eliminate short bursts of audio (coughing for example).
-   *
-   * @param dbLevel - The audio level in decibels of the user within the last 50ms
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _onAudioLevel(dbLevel: never): never;
-
-  /**
-   * Resets the speaking history of a user
-   * If the user was considered speaking, then mark them as not speaking
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _resetSpeakingHistory(): never;
 
   /**
    * Handle activation of a push-to-talk key or button.
@@ -193,11 +132,6 @@ declare class AVMaster {
   _onPTTEnd(context: KeyboardManager.KeyboardEventContext): void;
 
   render(): void;
-
-  /**
-   * @deprecated Foundry removed this method in v13. This warning will be removed in v14.
-   */
-  onRender(): never;
 
   /**
    * Respond to changes which occur to AV Settings.

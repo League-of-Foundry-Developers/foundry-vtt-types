@@ -103,6 +103,15 @@ describe("Tour Tests", () => {
     expectTypeOf(tour.targetElement).toEqualTypeOf<HTMLElement | null | undefined>();
     expectTypeOf(tour.fadeElement).toEqualTypeOf<HTMLElement | undefined>();
     expectTypeOf(tour.overlayElement).toEqualTypeOf<HTMLElement | undefined>();
+
+    expectTypeOf(Tour.highlightElement(tour.targetElement!)).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(Tour.highlightElement(tour.targetElement!, {})).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(
+      Tour.highlightElement(tour.targetElement!, { padding: 15, preventInteraction: false }),
+    ).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(
+      Tour.highlightElement(tour.targetElement!, { padding: undefined, preventInteraction: undefined }),
+    ).toEqualTypeOf<HTMLElement>();
   });
 
   test("Identity", () => {

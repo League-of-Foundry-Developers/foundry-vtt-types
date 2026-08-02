@@ -24,8 +24,7 @@ import type { Identity } from "#utils";
  */
 declare class Semaphore {
   /**
-   * @param max - The maximum number of tasks which are allowed concurrently.
-   *              (default: 1)
+   * @param max - The maximum number of tasks which are allowed concurrently. (default: `1`)
    */
   constructor(max?: number);
 
