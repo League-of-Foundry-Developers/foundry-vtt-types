@@ -1222,7 +1222,7 @@ declare namespace DataField {
   interface ReplaceDataRefsOptions extends InexactPartial<_ReplaceDataRefsOptions> {}
 }
 
-declare abstract class AnyDataField extends DataField<DataField.Options.Any & object, unknown, any, unknown> {
+declare abstract class AnyDataField extends DataField<DataField.Options.Any & object, unknown, unknown, unknown> {
   constructor(...args: never);
 }
 

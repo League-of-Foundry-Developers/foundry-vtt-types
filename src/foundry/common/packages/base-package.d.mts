@@ -285,7 +285,7 @@ export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> exte
     value: ArrayField.AssignmentElementType<ElementFieldType>,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
-  ): DataField.InitializedTypeFor<ElementFieldType>;
+  ): ArrayField.InitializedElementType<ElementFieldType>;
 
   protected override _validateModel(
     data: Set<ArrayField.InitializedElementType<ElementFieldType>>,
