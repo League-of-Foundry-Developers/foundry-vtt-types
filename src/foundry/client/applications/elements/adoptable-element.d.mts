@@ -15,6 +15,8 @@ declare abstract class AdoptableHTMLElement extends HTMLElement {
    * have any disconnectedCallback overrides invoked appropriately.
    */
   disconnectedCallback(): void;
+
+  static #AdoptableHTMLElement: true;
 }
 
 export default AdoptableHTMLElement;

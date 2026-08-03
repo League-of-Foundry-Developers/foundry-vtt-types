@@ -9,7 +9,7 @@ import type AbstractFormInputElement from "./form-element.d.mts";
  * `Set<string>`, but {@linkcode AbstractMultiSelectElement.value | #value}, {@linkcode AbstractMultiSelectElement._getValue | #_getValue},
  * and {@linkcode AbstractMultiSelectElement._setValue | #_setValue} all take/return `string[]`s.
  */
-export abstract class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
+declare abstract class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
   /**
    * Predefined `<option>` and `<optgroup>` elements which were defined in the original HTML.
    */
@@ -71,7 +71,6 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
    * Toggle the disabled state of a specific option.
    * @param value    - The option value to modify
    * @param disabled - Whether the option should be disabled (default: `true`)
-   * @remarks
    * @throws If the passed value isn't in {@linkcode AbstractMultiSelectElement._choices | this._choices}.
    */
   disableOption(value: string, disabled?: boolean): void;
@@ -79,7 +78,6 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
   protected override _getValue(): string[];
 
   /**
-   * @remarks
    * @throws If any element passed is not in {@linkcode AbstractMultiSelectElement._choices | this._choices}
    */
   protected override _setValue(value: string[]): void;
@@ -104,7 +102,7 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
  * </multi-select>
  * ```
  */
-export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
+declare class HTMLMultiSelectElement extends AbstractMultiSelectElement {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
    * Use {@linkcode HTMLMultiSelectElement.create} or {@linkcode foundry.applications.fields.createMultiSelectInput} instead.
@@ -134,9 +132,17 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
    * {@linkcode MultiSelectInputConfig.type} allows. This is harmless, as `createMultiSelectInput` only checks for
    * `=== "checkboxes"`, but it means the value can't be narrowed to the documented union.
    */
-  static create(config: Omit<MultiSelectInputConfig, "type">): HTMLMultiSelectElement;
+  static create(config: HTMLMultiSelectElement.Config): HTMLMultiSelectElement;
 
   #HTMLMultiSelectElement: true;
+}
+
+declare namespace HTMLMultiSelectElement {
+  /**
+   * @remarks {@linkcode MultiSelectInputConfig.type | type} is omitted because
+   * {@linkcode HTMLMultiSelectElement.create} sets it itself.
+   */
+  interface Config extends Omit<MultiSelectInputConfig, "type"> {}
 }
 
 /**
@@ -158,7 +164,7 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
  * </multi-checkbox>
  * ```
  */
-export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
+declare class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
    * Use {@linkcode HTMLMultiCheckboxElement.create} or {@linkcode foundry.applications.fields.createMultiSelectInput}
@@ -186,7 +192,17 @@ export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
    * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput}, overriding
    * {@linkcode MultiSelectInputConfig.type | config.type} with `"checkboxes"`, hence its omission here.
    */
-  static create(config: Omit<MultiSelectInputConfig, "type">): HTMLMultiCheckboxElement;
+  static create(config: HTMLMultiCheckboxElement.Config): HTMLMultiCheckboxElement;
 
   #HTMLMultiCheckboxElement: true;
 }
+
+declare namespace HTMLMultiCheckboxElement {
+  /**
+   * @remarks {@linkcode MultiSelectInputConfig.type | type} is omitted because
+   * {@linkcode HTMLMultiCheckboxElement.create} sets it itself.
+   */
+  interface Config extends Omit<MultiSelectInputConfig, "type"> {}
+}
+
+export { AbstractMultiSelectElement, HTMLMultiCheckboxElement, HTMLMultiSelectElement };
