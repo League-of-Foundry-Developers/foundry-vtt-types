@@ -24,6 +24,15 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
    */
   protected _choices: Record<string, string>;
 
+  /**
+   * Option values which were originally marked as disabled.
+   * @remarks Initialized to `new Set()` in the class body, then populated in
+   * {@linkcode AbstractMultiSelectElement._initialize | #_initialize} from any child `<option>` carrying the
+   * `disabled` attribute. Values in this set are locked to their current selected state; see
+   * {@linkcode AbstractMultiSelectElement.disableOption | #disableOption}.
+   */
+  protected _disabledOptions: Set<string>;
+
   /** @remarks Initialized to `new Set()` in the class body */
   protected override _value: Set<string>;
 
@@ -43,16 +52,29 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
   /**
    * Mark a choice as selected.
    * @param value - The value to add to the chosen set
-   * @remarks
-   * @throws If the passed value isn't in {@linkcode AbstractMultiSelectElement._choices | this._choices}.
+   * @remarks No-ops if the value is already selected, or if it's in
+   * {@linkcode AbstractMultiSelectElement._disabledOptions | this._disabledOptions}.
+   * @throws If the passed value isn't already selected and isn't in
+   * {@linkcode AbstractMultiSelectElement._choices | this._choices}.
    */
   select(value: string): void;
 
   /**
    * Mark a choice as un-selected.
    * @param value - The value to delete from the chosen set
+   * @remarks No-ops if the value is in {@linkcode AbstractMultiSelectElement._disabledOptions | this._disabledOptions},
+   * as disabled values are locked to their current state.
    */
   unselect(value: string): void;
+
+  /**
+   * Toggle the disabled state of a specific option.
+   * @param value    - The option value to modify
+   * @param disabled - Whether the option should be disabled (default: `true`)
+   * @remarks
+   * @throws If the passed value isn't in {@linkcode AbstractMultiSelectElement._choices | this._choices}.
+   */
+  disableOption(value: string, disabled?: boolean): void;
 
   protected override _getValue(): string[];
 
@@ -106,9 +128,13 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
 
   /**
    * Create a {@linkcode HTMLMultiSelectElement} using provided configuration data.
-   * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput} in 13.351
+   * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput}, overriding
+   * {@linkcode MultiSelectInputConfig.type | config.type}, hence its omission here.
+   * @privateRemarks Foundry passes `type: "multi-select"`, which isn't one of the values
+   * {@linkcode MultiSelectInputConfig.type} allows. This is harmless, as `createMultiSelectInput` only checks for
+   * `=== "checkboxes"`, but it means the value can't be narrowed to the documented union.
    */
-  static create(config: MultiSelectInputConfig): HTMLMultiSelectElement;
+  static create(config: Omit<MultiSelectInputConfig, "type">): HTMLMultiSelectElement;
 
   #HTMLMultiSelectElement: true;
 }
@@ -135,7 +161,8 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
 export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
-   * Use {@linkcode foundry.applications.fields.createMultiSelectInput} with `type: "checkboxes"` in the config instead.
+   * Use {@linkcode HTMLMultiCheckboxElement.create} or {@linkcode foundry.applications.fields.createMultiSelectInput}
+   * with `type: "checkboxes"` in the config instead.
    */
   protected constructor();
 
@@ -153,6 +180,13 @@ export class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
   protected override _activateListeners(): void;
 
   protected override _toggleDisabled(disabled: boolean): void;
+
+  /**
+   * Create a {@linkcode HTMLMultiCheckboxElement} using provided configuration data.
+   * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput}, overriding
+   * {@linkcode MultiSelectInputConfig.type | config.type} with `"checkboxes"`, hence its omission here.
+   */
+  static create(config: Omit<MultiSelectInputConfig, "type">): HTMLMultiCheckboxElement;
 
   #HTMLMultiCheckboxElement: true;
 }

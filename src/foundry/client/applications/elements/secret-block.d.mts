@@ -1,8 +1,9 @@
+import type AdoptableHTMLElement from "./adoptable-element.d.mts";
+
 /**
  * A custom HTML element used to wrap secret blocks in HTML content in order to provide additional interactivity.
- * @privateRemarks TODO: Stub
  */
-declare class HTMLSecretBlockElement extends HTMLElement {
+declare class HTMLSecretBlockElement extends AdoptableHTMLElement {
   /** @defaultValue `"secret-block"` */
   static tagName: string;
 
@@ -16,6 +17,13 @@ declare class HTMLSecretBlockElement extends HTMLElement {
    * The revealed state of the secret block
    */
   get revealed(): boolean;
+
+  /**
+   * Show the button to toggle the revealed state?
+   */
+  get revealable(): boolean;
+
+  set revealable(value: boolean);
 
   connectedCallback(): void;
 
