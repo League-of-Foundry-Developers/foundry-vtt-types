@@ -171,6 +171,38 @@ stringField.toInput({ blank: "blank option" });
 // Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.
 withChoices.toInput({ blank: "blank option" });
 
+// The `input` callback (`CustomFormInput`) receives the owning field, narrowed to the concrete field
+// type rather than `DataField.Any`, threaded through the whole `ToInputConfig` family.
+test("toInput/toFormGroup thread the owning field into the `input` callback", () => {
+  stringField.toInput({
+    input: (field) => {
+      expectTypeOf(field).toEqualTypeOf<typeof stringField>();
+      return document.createElement("input");
+    },
+  });
+
+  stringField.toFormGroup(
+    {},
+    {
+      input: (field) => {
+        expectTypeOf(field).toEqualTypeOf<typeof stringField>();
+        return document.createElement("input");
+      },
+    },
+  );
+
+  // A subclass family (`NumberField`) threads its own field type through too, not just the base.
+  // Value-form assertion: the generic `toEqualTypeOf<typeof numberField>()` trips vitest's own
+  // constraint machinery on `NumberField`'s more complex instantiation, though the narrowing is identical.
+  const numberField = new fields.NumberField();
+  numberField.toInput({
+    input: (field) => {
+      expectTypeOf(field).toEqualTypeOf(numberField);
+      return document.createElement("input");
+    },
+  });
+});
+
 // Regression test for a "type instantation is excessively deep" error reported by @Eon.
 // Reduction case: https://tsplay.dev/W4964w
 test("circular data model heritage regression test", () => {
@@ -581,7 +613,7 @@ test("protected override method signatures", () => {
     }
 
     protected override _toInput(
-      config: DataField.ToInputConfig<unknown>,
+      config: DataField.ToInputConfig<this, unknown>,
     ): HTMLElement | HTMLElement[] | HTMLCollection {
       return super._toInput(config);
     }
@@ -589,7 +621,7 @@ test("protected override method signatures", () => {
 
   class GridOffsetsFieldHookCoverage extends fields.GridOffsetsField {
     protected override _toInput(
-      config: fields.GridOffsetsField.ToInputConfig,
+      config: fields.GridOffsetsField.ToInputConfig<this>,
     ): HTMLElement | HTMLElement[] | HTMLCollection {
       return super._toInput(config);
     }
