@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -31,7 +31,8 @@ declare class MainMenu<
    */
   get items(): Record<string, MainMenu.MainMenuItem>;
 
-  protected override _insertElement(element: HTMLElement): Promise<void>;
+  /** @privateRemarks Synchronous at runtime; kept as the base's `MaybePromise<void>` to allow async overrides. */
+  protected override _insertElement(element: HTMLElement): MaybePromise<void>;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

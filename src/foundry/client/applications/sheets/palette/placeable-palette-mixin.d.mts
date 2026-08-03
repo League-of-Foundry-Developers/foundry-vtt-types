@@ -166,7 +166,7 @@ declare class PlaceablePalette {
     form: HTMLFormElement,
     submitData: AnyObject,
     options?: unknown,
-  ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult>;
+  ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult<Document.Any>>;
 
   protected _renderFrame(options: DeepPartial<PlaceablePaletteMixin.RenderOptions>): Promise<HTMLElement>;
 

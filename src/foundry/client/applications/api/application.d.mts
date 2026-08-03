@@ -330,13 +330,13 @@ declare namespace ApplicationV2 {
 
   interface ClosingOptions {
     /** Whether to animate the close, or perform it instantaneously */
-    animate: boolean;
+    animate?: boolean | undefined;
 
     /** Whether the application was closed via keypress. */
-    closeKey: boolean;
+    closeKey?: boolean | undefined;
 
     /** Is the application being closed because a form was submitted? */
-    submitted: boolean;
+    submitted?: boolean | undefined;
   }
 
   type ActionTarget = HTMLElement & { dataset: { action: string } };
@@ -382,13 +382,14 @@ declare namespace ApplicationV2 {
   }
 
   interface Window {
-    header?: HTMLElement | undefined;
-    resize?: HTMLElement | undefined;
+    windowId: string | undefined;
+    header: HTMLElement | undefined;
+    resize: HTMLElement | undefined;
     title: HTMLHeadingElement | undefined;
     icon: HTMLElement | undefined;
     close: HTMLButtonElement | undefined;
     controls: HTMLButtonElement | undefined;
-    controlsDropdown: HTMLDivElement | undefined;
+    content: HTMLElement | undefined;
     onDrag: (event: PointerEvent) => void;
     onResize: (event: PointerEvent) => void;
     pointerStartPosition: ApplicationV2.Position | undefined;
@@ -497,7 +498,6 @@ declare class ApplicationV2<
    * @param options - Options used to configure the Application instance
    *                  (default: `{}`)
    */
-  // not: null
   constructor(options?: DeepPartial<Configuration>);
 
   /**
@@ -649,7 +649,6 @@ declare class ApplicationV2<
    *                  (default: `{}`)
    * @returns A Promise which resolves to the rendered Application instance
    */
-  // not: null
   render(options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -658,7 +657,6 @@ declare class ApplicationV2<
    * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
    *                   (default: `{}`)
    */
-  // not: null
   render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -743,17 +741,20 @@ declare class ApplicationV2<
    * Insert the application HTML element into the DOM.
    * Subclasses may override this method to customize how the application is inserted.
    * @param element - The element to insert
-   * @param options - Options provided at render-time
+   * @param options - Render options.
+   * @privateRemarks Asynchronous at runtime, but widened to `MaybePromise<void>` so synchronous overrides like
+   * {@linkcode MainMenu._insertElement | MainMenu#_insertElement} remain assignable.
    */
-  protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): Promise<void>;
+  protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): MaybePromise<void>;
 
   /**
    * Close the Application, removing it from the DOM.
    * @param options - Options which modify how the application is closed.
    * @returns A Promise which resolves to the closed Application instance
+   * @privateRemarks The base always resolves to `Promise<this>`;
+   * `void` is for subclasses that conditionally skip closing, like `PlaceableDirectory#close`.
    */
-  // not: null
-  close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this | void>;
+  close(options?: ApplicationV2.ClosingOptions): Promise<this | void>;
 
   /**
    * Remove the application HTML element from the DOM.
@@ -765,7 +766,7 @@ declare class ApplicationV2<
   /**
    * Remove elements from the DOM and trigger garbage collection as part of application closure.
    */
-  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+  protected _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   /**
    * Update the Application element position using provided data which is merged with the prior position.
@@ -858,7 +859,6 @@ declare class ApplicationV2<
    * @param options - Additional options which affect tab navigation
    *                  (default: `{}`)
    */
-  // not: null
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
@@ -880,7 +880,6 @@ declare class ApplicationV2<
    * @param options - Options which configure event handling
    * @returns A promise which resoles once the handler is complete if async is true
    */
-  // not: null
   protected _doEvent<HandlerArgs extends AnyArray, Async extends boolean | undefined = false>(
     handler: (...args: HandlerArgs) => Async extends true ? Promise<void> : void,
     options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,
@@ -960,6 +959,22 @@ declare class ApplicationV2<
    * @param position - The requested application position
    */
   protected _onPosition(position: ApplicationV2.Position): void;
+
+  /**
+   * Actions performed after the Application has been re-attached to the main workspace.
+   * Registered child Applications are re-attached automatically after this method returns.
+   * @param from - The Application's former host document. This document's window may have been closed.
+   * @param to   - The main workspace document.
+   */
+  protected _onAttach(from: Document, to: Document): void;
+
+  /**
+   * Actions performed after the Application has been detached from the main workspace.
+   * Registered child Applications are moved into the same detached window automatically after this method returns.
+   * @param from - The main workspace document.
+   * @param to   - The Application's new host document.
+   */
+  protected _onDetach(from: Document, to: Document): void;
 
   /**
    * Attach event listeners to the Application frame.

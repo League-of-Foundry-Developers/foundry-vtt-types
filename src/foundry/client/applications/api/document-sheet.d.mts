@@ -86,13 +86,23 @@ declare namespace DocumentSheetV2 {
     renderData: object;
   }
 
-  interface SubmitOptions {
+  /** Processed and validated form data used to update a Document. */
+  type SubmitData<ConcreteDocument extends Document.Any> = foundry.data.fields.SchemaField.UpdateData<
+    ConcreteDocument["schema"]["fields"]
+  >;
+
+  /** Database operation options forwarded when creating or updating a Document. */
+  type ProcessSubmitOptions<ConcreteDocument extends Document.Any> =
+    | Document.Database.CreateDocumentsOperationForName<ConcreteDocument["documentName"]>
+    | Document.Database.UpdateOneDocumentOperationForName<ConcreteDocument["documentName"]>;
+
+  interface SubmitOptions<ConcreteDocument extends Document.Any> {
     /** Additional data passed in if this form is submitted manually which should be merged with prepared formData. */
-    updateData: object;
+    updateData: SubmitData<ConcreteDocument>;
   }
 
   /** The result of submitting a document form. */
-  interface SubmitResult<ConcreteDocument extends Document.Any = Document.Any> {
+  interface SubmitResult<ConcreteDocument extends Document.Any> {
     created?: ConcreteDocument | undefined;
     updated?: ConcreteDocument | undefined;
   }
@@ -158,8 +168,8 @@ declare class DocumentSheetV2<
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
   /**
-   * @privateRemarks Sync here, but kept as the base's `MaybePromise<void>` (not `void`) so async
-   * subclass overrides like {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} stay lint-clean.
+   * @privateRemarks Synchronous at runtime; kept as the base's `MaybePromise<void>` so async subclass overrides like
+   * {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} stay lint-clean.
    */
   protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
 
@@ -177,14 +187,13 @@ declare class DocumentSheetV2<
    * @param updateData - Additional data passed in if this form is submitted manually which should be merged with prepared formData
    * @returns Prepared submission data as an object
    * @throws Subclasses may throw validation errors here to prevent form submission
-   * @privateRemarks TODO: Improve typing for updateData & return
    */
   protected _prepareSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
     formData: FormDataExtended,
-    updateData?: unknown,
-  ): object;
+    updateData?: DocumentSheetV2.SubmitData<Document>,
+  ): DocumentSheetV2.SubmitData<Document>;
 
   /**
    * Customize how form data is extracted into an expanded object.
@@ -194,7 +203,11 @@ declare class DocumentSheetV2<
    * @returns An expanded object of processed form data
    * @throws Subclasses may throw validation errors here to prevent form submission
    */
-  protected _processFormData(event: SubmitEvent | null, form: HTMLFormElement, formData: FormDataExtended): object;
+  protected _processFormData(
+    event: SubmitEvent | null,
+    form: HTMLFormElement,
+    formData: FormDataExtended,
+  ): DocumentSheetV2.SubmitData<Document>;
 
   /**
    * Submit a document update or creation request based on the processed form data.
@@ -205,13 +218,12 @@ declare class DocumentSheetV2<
    * @returns The result of the form submission that communicates whether a Document was created or updated.
    * It is possible that neither creation nor update occurred.
    * @throws An Error if Document creation or update was prohibited
-   * @privateRemarks TODO: Improve options to capture the Create and/or Update options available to the Document
    */
   protected _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: object,
-    options?: unknown,
+    submitData: DocumentSheetV2.SubmitData<Document>,
+    options?: DocumentSheetV2.ProcessSubmitOptions<Document>,
   ): Promise<DocumentSheetV2.SubmitResult<Document>>;
 
   /**

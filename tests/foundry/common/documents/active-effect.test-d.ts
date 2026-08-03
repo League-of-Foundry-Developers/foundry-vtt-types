@@ -53,6 +53,7 @@ const fullSource = {
   tint: "#C8888C",
   transfer: true,
   statuses: ["invisible", "flying"],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL,
   sort: 7,
   flags: {
     core: {
@@ -367,6 +368,7 @@ expectTypeOf(
     origin: "a uuid",
     sort: 2,
     statuses: [],
+    showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL,
     system: {},
     tint: "#ABCDEF",
     transfer: true,

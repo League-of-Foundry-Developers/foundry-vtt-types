@@ -96,9 +96,6 @@ declare class AVSettings {
    */
   activity: Record<string, AVSettings.Data>;
 
-  /** @deprecated Foundry made this private in v13. This warning will be removed in v14. */
-  initialize(): never;
-
   get<S extends "client" | "world">(scope: S, setting: string): unknown; // TODO: Improve once we have proper typing for dot notation
 
   getUser(userId: string): AVSettings.UserSettings | null;
@@ -114,20 +111,6 @@ declare class AVSettings {
    * A helper to determine if the dock is configured in a vertical position.
    */
   get verticalDock(): boolean;
-
-  /**
-   * Prepare a standardized object of user settings data for a single User
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _getUserSettings(user: never): AVSettings.UserSettings;
-
-  /**
-   * Handle setting changes to either rctClientSettings or rtcWorldSettings.
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _onSettingsChanged(): void;
 
   /**
    * Handle another connected user changing their AV settings.
@@ -349,19 +332,6 @@ declare namespace AVSettings {
      */
     speaking?: boolean;
   }
-
-  /** @deprecated Use {@linkcode AVSettings.WorldSettingData} instead. This type will be removed in v14. */
-  type WorldSettings = WorldSettingData;
-
-  /** @deprecated Use {@linkcode AVSettings.ClientSettingData} instead. This type will be removed in v14. */
-  type ClientSettings = ClientSettingData;
-
-  /** @deprecated Use {@linkcode AVSettings.UserData} instead. This type will be removed in v14. */
-  type StoredUserSettings = UserData;
-
-  /** @deprecated This interface has been deprecated, the types it was allowing configuration of are not intended to be extended. */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface Overrides {}
 }
 
 export default AVSettings;

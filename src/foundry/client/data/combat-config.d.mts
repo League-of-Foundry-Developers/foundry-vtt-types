@@ -47,10 +47,11 @@ declare class CombatConfiguration {
 
   /**
    * Get current turn marker animation.
-   * @remarks Can be `null` if {@linkcode CombatConfiguration.useTurnMarkerAnimation | #useTurnMarkerAnimation} was
-   * last called with an unregistered animation id.
+   * @remarks Is `undefined` until an animation is first selected, and can be `null` if
+   * {@linkcode CombatConfiguration.useTurnMarkerAnimation | #useTurnMarkerAnimation} was last called with an
+   * unregistered animation id.
    */
-  get currentTurnMarkerAnimation(): TurnMarkerData.AnimationData | null;
+  get currentTurnMarkerAnimation(): TurnMarkerData.AnimationData | null | undefined;
 
   /**
    * Add a new turn marker animation.
@@ -102,10 +103,8 @@ declare namespace CombatConfiguration {
 
   /**
    * Default combat tracker settings used in Foundry VTT.
-   * @remarks Foundry's own JSDoc `@typedef` for this (`CombatConfigurationData`) claims `turnMarker.path: string` and
-   * `turnMarker.disposition: string`, but the actual registered schema (see {@linkcode TurnMarkerSchema}) has neither
-   * a `path` field (it's {@linkcode TurnMarkerSchema.src | src}) nor a string `disposition` (it's a
-   * {@linkcode foundry.data.fields.BooleanField | BooleanField}). This interface matches the schema.
+   * @remarks Foundry's own JSDoc `@typedef` for this (`CombatConfigurationData`) is out of date with the schema it
+   * describes; this interface matches the registered schema (see {@linkcode TurnMarkerSchema}) instead.
    */
   interface Data {
     /**
@@ -132,6 +131,8 @@ declare namespace CombatConfiguration {
 
     /**
      * The file path for the turn marker icon.
+     * @remarks Foundry's `CombatConfigurationData` typedef calls this `path`, but the registered schema field is
+     * {@linkcode TurnMarkerSchema.src | src}.
      */
     src: string;
 

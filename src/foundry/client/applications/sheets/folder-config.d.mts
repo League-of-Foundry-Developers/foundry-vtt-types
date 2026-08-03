@@ -69,13 +69,13 @@ declare class FolderConfig<
     event: SubmitEvent | null,
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
-  ): object;
+  ): Folder.UpdateData;
 
   protected override _processSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    submitData: object,
-    options?: unknown,
+    submitData: Folder.UpdateData,
+    options?: foundry.applications.api.DocumentSheetV2.ProcessSubmitOptions<Folder.Implementation>,
   ): Promise<foundry.applications.api.DocumentSheetV2.SubmitResult<Folder.Implementation>>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
