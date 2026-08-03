@@ -652,6 +652,24 @@ export interface AllHooks extends DynamicHooks {
    */
   collapseSceneNavigation: (nav: foundry.applications.ui.SceneNavigation, collapsed: boolean) => void;
 
+  /**
+   * A hook event that fires whenever a detached window is created.
+   * @param id  - The window's unique identifier.
+   * @param win - The window instance.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.detached.openWindow | foundry.applications.detached#openWindow}
+   */
+  openDetachedWindow: (id: string, win: WindowProxy) => void;
+
+  /**
+   * A hook event that fires whenever a detached window is closed.
+   * @param id  - The window's unique identifier.
+   * @param win - The window instance.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.detached._onWindowClosed | foundry.applications.detached#_onWindowClosed}
+   */
+  closeDetachedWindow: (id: string, win: WindowProxy) => void;
+
   /* Active Effects */
 
   /**
