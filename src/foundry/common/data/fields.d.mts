@@ -1222,7 +1222,7 @@ declare namespace DataField {
   interface ReplaceDataRefsOptions extends InexactPartial<_ReplaceDataRefsOptions> {}
 }
 
-declare abstract class AnyDataField extends DataField<any, any, any, any> {
+declare abstract class AnyDataField extends DataField<DataField.Options.Any & object, unknown, any, unknown> {
   constructor(...args: never);
 }
 
@@ -1711,7 +1711,13 @@ declare namespace SchemaField {
       : ["never3"]; // An array like `["element"?]` or `string[]` just falls back to any
 }
 
-declare abstract class AnySchemaField extends SchemaField<any, any, any, any, any> {
+declare abstract class AnySchemaField extends SchemaField<
+  DataSchema,
+  SchemaField.Options<DataSchema>,
+  unknown,
+  any,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -1841,7 +1847,12 @@ declare namespace BooleanField {
   type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<boolean, MergedOptions<Opts>>;
 }
 
-declare abstract class AnyBooleanField extends BooleanField<any> {
+declare abstract class AnyBooleanField extends BooleanField<
+  BooleanField.Options,
+  unknown,
+  unknown,
+  boolean | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -2147,7 +2158,12 @@ declare namespace NumberField {
     | ToInputConfigWithOptions<CurrentField, InitializedType>;
 }
 
-declare abstract class AnyNumberField extends NumberField<any> {
+declare abstract class AnyNumberField extends NumberField<
+  NumberField.Options,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -2447,7 +2463,12 @@ declare namespace StringField {
   interface GetChoicesOptions extends PrepareChoiceConfig {}
 }
 
-declare abstract class AnyStringField extends StringField<any> {
+declare abstract class AnyStringField extends StringField<
+  StringField.Options<unknown>,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -2582,7 +2603,12 @@ declare namespace ObjectField {
   >;
 }
 
-declare abstract class AnyObjectField extends ObjectField<any> {
+declare abstract class AnyObjectField extends ObjectField<
+  DataField.Options<AnyMutableObject>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -2744,7 +2770,13 @@ declare namespace TypedObjectField {
   >;
 }
 
-declare abstract class AnyTypedObjectField extends TypedObjectField<any> {
+declare abstract class AnyTypedObjectField extends TypedObjectField<
+  DataField.Any,
+  TypedObjectField.Options<AnyObject>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -3094,7 +3126,16 @@ declare namespace ArrayField {
   >;
 }
 
-declare abstract class AnyArrayField extends ArrayField<any> {
+declare abstract class AnyArrayField extends ArrayField<
+  DataField.Any | Document.AnyConstructor,
+  ArrayField.AnyOptions,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -3268,7 +3309,13 @@ declare namespace DataModelSchemaField {
   > = SchemaField.Internal.PersistedType<DataModel.SchemaOfClass<ModelType>, MergedOptions<ModelType, Opts>>;
 }
 
-declare abstract class AnyDataModelSchemaField extends DataModelSchemaField<any> {
+declare abstract class AnyDataModelSchemaField extends DataModelSchemaField<
+  DataModel.AnyConstructor,
+  DataModelSchemaField.Options<DataModel.AnyConstructor>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -3356,7 +3403,16 @@ declare namespace SetField {
         | (DataField.ToInputConfig<CurrentField, InitializedType> & MultiSelectInputConfig);
 }
 
-declare abstract class AnySetField extends SetField<DataField.Any, any, any, any, any, any, any, any> {
+declare abstract class AnySetField extends SetField<
+  DataField.Any,
+  SetField.AnyOptions,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -3466,7 +3522,13 @@ declare namespace EmbeddedDataField {
   >;
 }
 
-declare abstract class AnyEmbeddedDataField extends EmbeddedDataField<any> {
+declare abstract class AnyEmbeddedDataField extends EmbeddedDataField<
+  DataModel.AnyConstructor,
+  EmbeddedDataField.Options<DataModel.AnyConstructor>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -3777,15 +3839,15 @@ declare namespace EmbeddedCollectionField {
 }
 
 declare abstract class AnyEmbeddedCollectionField extends EmbeddedCollectionField<
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any,
-  any
+  Document.AnyConstructor,
+  Document.Any,
+  EmbeddedCollectionField.Options<AnyMutableObject>,
+  AnyMutableObject,
+  Document.Internal.Instance.Any,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
 > {
   constructor(...args: never);
 }
@@ -3978,7 +4040,17 @@ declare namespace EmbeddedCollectionDeltaField {
   > = DataField.DerivedInitializedType<PersistedElementType[], MergedOptions<AssignmentElementType, Opts>>;
 }
 
-declare abstract class AnyEmbeddedCollectionDeltaField extends EmbeddedCollectionDeltaField<any, any> {
+declare abstract class AnyEmbeddedCollectionDeltaField extends EmbeddedCollectionDeltaField<
+  Document.AnyConstructor,
+  Document.Any,
+  EmbeddedCollectionDeltaField.Options<AnyMutableObject>,
+  AnyMutableObject,
+  Document.Internal.Instance.Any,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4109,7 +4181,13 @@ declare namespace EmbeddedDocumentField {
   >;
 }
 
-declare abstract class AnyEmbeddedDocumentField extends EmbeddedDocumentField<any, any, any, any, any> {
+declare abstract class AnyEmbeddedDocumentField extends EmbeddedDocumentField<
+  Document.AnyConstructor,
+  EmbeddedDocumentField.Options<Document.AnyConstructor>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4209,7 +4287,12 @@ declare namespace DocumentIdField {
   >;
 }
 
-declare abstract class AnyDocumentIdField extends DocumentIdField<any> {
+declare abstract class AnyDocumentIdField extends DocumentIdField<
+  DocumentIdField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4367,7 +4450,12 @@ declare namespace DocumentUUIDField {
     | ToInputConfigWithChoices<CurrentField, InitializedType>;
 }
 
-declare abstract class AnyDocumentUUIDField extends DocumentUUIDField<any> {
+declare abstract class AnyDocumentUUIDField extends DocumentUUIDField<
+  DocumentUUIDField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4505,7 +4593,13 @@ declare namespace ForeignDocumentField {
   type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<string, MergedOptions<Opts>>;
 }
 
-declare abstract class AnyForeignDocumentField extends ForeignDocumentField<any> {
+declare abstract class AnyForeignDocumentField extends ForeignDocumentField<
+  Document.AnyConstructor,
+  ForeignDocumentField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4611,7 +4705,12 @@ declare namespace ColorField {
   >;
 }
 
-declare abstract class AnyColorField extends ColorField<any> {
+declare abstract class AnyColorField extends ColorField<
+  StringField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4766,7 +4865,12 @@ declare namespace FilePathField {
   >;
 }
 
-declare abstract class AnyFilePathField extends FilePathField<any> {
+declare abstract class AnyFilePathField extends FilePathField<
+  FilePathField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4873,7 +4977,12 @@ declare namespace AngleField {
   >;
 }
 
-declare abstract class AnyAngleField extends AngleField<any> {
+declare abstract class AnyAngleField extends AngleField<
+  AngleField.Options,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -4964,7 +5073,12 @@ declare namespace AlphaField {
   >;
 }
 
-declare abstract class AnyAlphaField extends AlphaField<any> {
+declare abstract class AnyAlphaField extends AlphaField<
+  NumberField.Options,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5008,7 +5122,7 @@ declare namespace HueField {
   >;
 }
 
-declare abstract class AnyHueField extends HueField<any> {
+declare abstract class AnyHueField extends HueField<HueField.Options, unknown, unknown, number | null | undefined> {
   constructor(...args: never);
 }
 
@@ -5083,7 +5197,13 @@ declare namespace DocumentAuthorField {
     | _InitialNullish<Opts>;
 }
 
-declare abstract class AnyDocumentAuthorField extends DocumentAuthorField<any> {
+declare abstract class AnyDocumentAuthorField extends DocumentAuthorField<
+  Document.AnyConstructor,
+  DocumentAuthorField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5179,7 +5299,12 @@ declare namespace DocumentOwnershipField {
   >;
 }
 
-declare abstract class AnyDocumentOwnershipField extends DocumentOwnershipField<any> {
+declare abstract class AnyDocumentOwnershipField extends DocumentOwnershipField<
+  DocumentOwnershipField.Options,
+  unknown,
+  unknown,
+  Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5327,7 +5452,12 @@ declare namespace JSONField {
   >;
 }
 
-declare abstract class AnyJSONField extends JSONField<any> {
+declare abstract class AnyJSONField extends JSONField<
+  StringField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5504,7 +5634,12 @@ declare namespace HTMLField {
   }
 }
 
-declare abstract class AnyHTMLField extends HTMLField<any> {
+declare abstract class AnyHTMLField extends HTMLField<
+  StringField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5587,7 +5722,12 @@ declare namespace IntegerSortField {
   >;
 }
 
-declare abstract class AnyIntegerSortField extends IntegerSortField<any> {
+declare abstract class AnyIntegerSortField extends IntegerSortField<
+  NumberField.Options,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5678,7 +5818,11 @@ declare namespace DocumentFlagsField {
   type _PartialObject<T> = T extends object ? Partial<T> : T;
 }
 
-declare abstract class AnyDocumentFlagsField extends DocumentFlagsField<any> {
+declare abstract class AnyDocumentFlagsField extends DocumentFlagsField<
+  Document.Type,
+  AnyObject,
+  DocumentFlagsField.Options
+> {
   constructor(...args: never);
 }
 
@@ -5930,7 +6074,12 @@ declare namespace DocumentStatsField {
   }
 }
 
-declare abstract class AnyDocumentStatsField extends DocumentStatsField<any> {
+declare abstract class AnyDocumentStatsField extends DocumentStatsField<
+  DocumentStatsField.Options,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6023,7 +6172,13 @@ declare namespace DocumentTypeField {
   > = StringField.InitializedType<MergedOptions<ConcreteDocumentClass, Options>>;
 }
 
-declare abstract class AnyDocumentTypeField extends DocumentTypeField<any> {
+declare abstract class AnyDocumentTypeField extends DocumentTypeField<
+  Document.AnyConstructor,
+  DocumentTypeField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6274,7 +6429,13 @@ declare namespace TypeDataField {
   }[keyof T];
 }
 
-declare abstract class AnyTypeDataField extends TypeDataField<any> {
+declare abstract class AnyTypeDataField extends TypeDataField<
+  Document.SystemConstructor,
+  TypeDataField.Options<Document.SystemConstructor>,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6472,7 +6633,13 @@ declare namespace TypedSchemaField {
   > = DataField.DerivedInitializedType<_PersistedType<ToConfiguredTypes<Types>>, Options>;
 }
 
-declare abstract class AnyTypedSchemaField extends TypedSchemaField<any> {
+declare abstract class AnyTypedSchemaField extends TypedSchemaField<
+  TypedSchemaField.Types,
+  TypedSchemaField.Options<TypedSchemaField.Types>,
+  unknown,
+  unknown,
+  unknown
+> {
   constructor(...args: never);
 }
 
@@ -6564,7 +6731,12 @@ declare namespace JavaScriptField {
   > {}
 }
 
-declare abstract class AnyJavaScriptField extends JavaScriptField<any> {
+declare abstract class AnyJavaScriptField extends JavaScriptField<
+  JavaScriptField.Options,
+  unknown,
+  unknown,
+  string | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6655,7 +6827,7 @@ declare namespace SceneLevelsSetField {
   >;
 }
 
-declare abstract class AnySceneLevelsSetField extends SceneLevelsSetField<any> {
+declare abstract class AnySceneLevelsSetField extends SceneLevelsSetField<SceneLevelsSetField.AnyOptions> {
   constructor(...args: never);
 }
 
@@ -6697,7 +6869,7 @@ declare namespace ShapesField {
   type PersistedType<Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
 }
 
-declare abstract class AnyShapesField extends ShapesField<any> {
+declare abstract class AnyShapesField extends ShapesField<ShapesField.Options> {
   constructor(...args: never);
 }
 
@@ -6780,7 +6952,7 @@ declare namespace GridOffsetField {
   type AnyAssignment = string | SchemaField.AssignmentData<Schema2D> | SchemaField.AssignmentData<Schema3D>;
 }
 
-declare abstract class AnyGridOffsetField extends GridOffsetField<any> {
+declare abstract class AnyGridOffsetField extends GridOffsetField<GridOffsetField.Options> {
   constructor(...args: never);
 }
 
@@ -6832,7 +7004,7 @@ declare namespace GridOffsetsField {
   > = DataField.ToInputConfig<CurrentField, InitializedType<Opts>>;
 }
 
-declare abstract class AnyGridOffsetsField extends GridOffsetsField<any> {
+declare abstract class AnyGridOffsetsField extends GridOffsetsField<GridOffsetsField.Options> {
   constructor(...args: never);
 }
 
