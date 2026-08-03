@@ -14,8 +14,22 @@ expectTypeOf(documentSheetV2.isEditable).toEqualTypeOf<boolean>();
 declare const event: SubmitEvent;
 declare const form: HTMLFormElement;
 declare const formData: FormDataExtended;
-expectTypeOf(documentSheetV2["_processFormData"](event, form, formData)).toEqualTypeOf<object>();
-expectTypeOf(documentSheetV2["_processSubmitData"](event, form, formData)).toEqualTypeOf<Promise<void>>();
+declare const submitData: DocumentSheetV2.SubmitData<Document.Any>;
+expectTypeOf(documentSheetV2["_processFormData"](event, form, formData)).toEqualTypeOf<
+  DocumentSheetV2.SubmitData<Document.Any>
+>();
+expectTypeOf(documentSheetV2["_processSubmitData"](event, form, submitData)).toEqualTypeOf<
+  Promise<DocumentSheetV2.SubmitResult<Document.Any>>
+>();
 expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
+
+expectTypeOf<DocumentSheetV2.SubmitData<Folder.Implementation>>().toEqualTypeOf<Folder.UpdateData>();
+expectTypeOf<DocumentSheetV2.SubmitOptions<Folder.Implementation>["updateData"]>().toEqualTypeOf<Folder.UpdateData>();
+expectTypeOf<DocumentSheetV2.ProcessSubmitOptions<Folder.Implementation>>().toEqualTypeOf<
+  Folder.Database.CreateDocumentsOperation | Folder.Database.UpdateOneDocumentOperation
+>();
+expectTypeOf<Parameters<(typeof documentSheetV2)["_processSubmitData"]>[3]>().toEqualTypeOf<
+  DocumentSheetV2.ProcessSubmitOptions<Document.Any> | undefined
+>();
 
 expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();

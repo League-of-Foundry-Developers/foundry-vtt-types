@@ -70,6 +70,7 @@ export const source = {
   tint: "#C8888C",
   transfer: true,
   statuses: ["invisible", "flying"],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL,
   sort: 7,
   flags: {
     core: {
@@ -459,6 +460,7 @@ export const realSource = {
   name: "Unarmored Defense",
   description: "",
   statuses: [],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL,
   _stats: {
     createdTime: 1252345,
     modifiedTime: 13245234623624,
@@ -521,6 +523,7 @@ export const maximumSource = {
   img: null,
   sort: 0,
   statuses: [],
+  showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
   system: {},
   type: "base",
 } as const satisfies Source;

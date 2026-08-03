@@ -330,6 +330,17 @@ declare namespace ActiveEffect {
     statuses: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
     /**
+     * Should this ActiveEffect's image be prominently displayed as an icon alongside Tokens, Combatants, etc.?
+     * Defaults to a CONDITIONAL (1).
+     */
+    showIcon: fields.NumberField<{
+      required: true;
+      nullable: false;
+      choices: CONST.ACTIVE_EFFECT_SHOW_ICON[];
+      initial: typeof CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL;
+    }>;
+
+    /**
      * The sort value
      * @defaultValue `0`
      */
