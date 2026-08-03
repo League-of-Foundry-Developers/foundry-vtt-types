@@ -728,7 +728,7 @@ declare global {
     }
 
     /**
-     * Common properties for the 11 (as of 14.364) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
+     * Common properties for the 11 (as of 14.365) Documents with a {@linkcode foundry.data.TypeDataField}. In addition to having
      * `dataModels` and `typeIcons` fields, their `typeLabels` are defined in their `CONFIG` entry immediately,
      * rather than being added later.
      * @internal
@@ -1615,7 +1615,7 @@ declare global {
       DragDrop: typeof foundry.applications.ux.DragDrop;
 
       /**
-       * @defaultValue {@linkcode foundry.applications.ux.FilePicker}
+       * @defaultValue {@linkcode foundry.applications.apps.FilePicker}
        * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
        */
       FilePicker: typeof foundry.applications.apps.FilePicker;

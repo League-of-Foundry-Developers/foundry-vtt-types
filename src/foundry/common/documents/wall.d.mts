@@ -42,6 +42,24 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override defineSchema(): BaseWall.Schema;
 
+  /**
+   * Colors for each category of wall.
+   * @defaultValue
+   * ```js
+   * {
+   *   door: Color.from(0x6666EE),
+   *   ethereal: Color.from(0xCA81FF),
+   *   invisible: Color.from(0x77E7E8),
+   *   normal: Color.from(0xFFFFBB),
+   *   secret: Color.from(0xA612D4),
+   *   terrain: Color.from(0x81B90C),
+   *   window: Color.from(0xC7D8FF),
+   *   blank: Color.from(0x555555)
+   * }
+   * ```
+   */
+  static CATEGORY_COLORS: Record<WallDocument.Category, Color>;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -223,6 +241,7 @@ export default BaseWall;
 declare namespace BaseWall {
   // All types really live in the full document and are mirrored here for convenience
   export import Name = WallDocument.Name;
+  export import Category = WallDocument.Category;
   export import ConstructionContext = WallDocument.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = WallDocument.ConstructorArgs;

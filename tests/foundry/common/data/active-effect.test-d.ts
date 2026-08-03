@@ -87,6 +87,18 @@ interface TypedSchema extends ActiveEffectTypeDataModel.MinimalSchema {
 
 declare class _TypedModel extends ActiveEffectTypeDataModel<TypedSchema> {}
 
+interface BadTypedChanges {
+  [type: string]: fields.SchemaField<MissingPhaseChangeSchema>;
+  custom: fields.SchemaField<MissingPhaseChangeSchema>;
+}
+
+interface BadTypedSchema extends fields.DataSchema {
+  changes: fields.ArrayField<fields.TypedSchemaField<BadTypedChanges>>;
+}
+
+// @ts-expect-error Each type of a `TypedSchemaField` changes element must define `phase` too.
+declare class _BadTypedModel extends ActiveEffectTypeDataModel<BadTypedSchema> {}
+
 declare class _ConformingRegistrableModel extends foundry.abstract.TypeDataModel<
   ConformingSchema,
   ActiveEffect.Implementation

@@ -34,13 +34,16 @@ declare namespace ActiveEffectTypeDataModel {
     priority: fields.NumberField.Any;
   }
 
-  /** The per-type schemas of a {@linkcode fields.TypedSchemaField}-based changes element. */
-  interface MinimalChangeTypes {
-    [type: string]: fields.SchemaField<MinimalChangeSchema>;
+  /**
+   * A per-type changes element. Each of its types must itself define the minimal change fields.
+   */
+  interface MinimalTypedChangesField extends fields.TypedSchemaField.Any {
+    types: Record<string, fields.SchemaField<MinimalChangeSchema>>;
   }
 
+  /** The `changes` field a system model which defines one must declare. */
   interface MinimalChangesField extends fields.ArrayField.Any {
-    element: fields.SchemaField<MinimalChangeSchema> | { types: MinimalChangeTypes };
+    element: fields.SchemaField<MinimalChangeSchema> | MinimalTypedChangesField;
   }
 
   /**

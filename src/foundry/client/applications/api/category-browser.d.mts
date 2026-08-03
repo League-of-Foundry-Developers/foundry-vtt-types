@@ -65,7 +65,7 @@ declare abstract class CategoryBrowser<
    */
   protected _sortCategories(a: CategoryBrowser.CategoryData<Entry>, b: CategoryBrowser.CategoryData<Entry>): number;
 
-  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+  protected _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 

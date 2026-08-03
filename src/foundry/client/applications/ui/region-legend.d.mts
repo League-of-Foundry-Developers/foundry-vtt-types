@@ -33,7 +33,7 @@ declare class RegionLegend<
 
   protected override _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
 
-  override close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this>;
+  override close(options?: ApplicationV2.ClosingOptions): Promise<this>;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,
