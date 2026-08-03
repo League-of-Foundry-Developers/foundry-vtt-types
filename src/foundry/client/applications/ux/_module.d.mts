@@ -2,9 +2,11 @@
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
 
+export { default as Autocomplete } from "./autocomplete.mjs";
 export { default as ContextMenu } from "./context-menu.mjs";
 export { default as DragDrop } from "./drag-drop.mjs";
 export { default as Draggable } from "./draggable.mjs";
+export { default as FilterMenu } from "./filter-menu.mjs";
 export { default as FormDataExtended } from "./form-data-extended.mjs";
 export { default as HTMLSecret } from "./html-secret.mjs";
 export { default as ProseMirrorEditor } from "./prosemirror-editor.mjs";
