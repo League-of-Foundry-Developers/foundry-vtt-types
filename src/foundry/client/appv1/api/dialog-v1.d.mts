@@ -1,4 +1,4 @@
-import type { Identity, MaybePromise } from "#utils";
+import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Application from "./application-v1.d.mts";
 
 declare module "#configuration" {
@@ -10,7 +10,7 @@ declare module "#configuration" {
 }
 
 /**
- * Create a modal dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
+ * Create a dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
  *
  * @example Constructing a custom dialog instance
  * ```typescript
@@ -19,12 +19,12 @@ declare module "#configuration" {
  *  content: "<p>You must choose either Option 1, or Option 2</p>",
  *  buttons: {
  *   one: {
- *    icon: '<i class="fas fa-check"></i>',
+ *    icon: '<i class="fa-solid fa-check"></i>',
  *    label: "Option One",
  *    callback: () => console.log("Chose One")
  *   },
  *   two: {
- *    icon: '<i class="fas fa-times"></i>',
+ *    icon: '<i class="fa-solid fa-xmark"></i>',
  *    label: "Option Two",
  *    callback: () => console.log("Chose Two")
  *   }
@@ -47,11 +47,6 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
   data: Dialog.Data<JQuery | HTMLElement>;
 
   /**
-   * A bound instance of the _onKeyDown method which is used to listen to keypress events while the Dialog is active.
-   */
-  #onKeyDown: ((event: KeyboardEvent) => MaybePromise<void>) | undefined;
-
-  /**
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
@@ -67,31 +62,26 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
 
   override get title(): string;
 
-  override getData(options?: Partial<Options>): MaybePromise<object>;
+  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<Dialog.GetDataReturn>>;
 
   override activateListeners(html: JQuery): void;
 
   /**
-   * Handle a left-mouse click on one of the dialog choice buttons
-   * @param event - The left-mouse click event
-   */
-  protected _onClickButton(event: MouseEvent): void;
-
-  /**
    * Handle a keydown event while the dialog is active
    * @param event - The keydown event
+   * @privateRemarks Not marked as an `async` method; the `Escape` branch forwards {@linkcode Dialog.close | Dialog#close}'s
+   * promise, and every other branch returns `undefined`.
    */
-  protected _onKeyDown(event: KeyboardEvent & { key: "Escape" }): Promise<void>;
-  protected _onKeyDown(event: KeyboardEvent): void;
+  protected _onKeyDown(event: KeyboardEvent): MaybePromise<void>;
 
-  override _renderOuter(): ReturnType<Application["_renderOuter"]>;
+  protected override _renderOuter(): Promise<JQuery>;
 
   /**
-   * Submit the Dialog by selecting one of its buttons
+   * Submit the Dialog by selecting one of its buttons.
    * @param button - The configuration of the chosen button
-   * @param event - The originating click event
+   * @param event  - The originating click event
    */
-  protected submit(button: Dialog.Button, event?: MouseEvent): void;
+  submit(button: Dialog.Button, event?: MouseEvent): void;
 
   override close(options?: Application.CloseOptions): Promise<void>;
 
@@ -145,6 +135,8 @@ declare class Dialog<Options extends Dialog.Options = Dialog.Options> extends Ap
     options?: Options,
     renderOptions?: Options & Application._RenderOptions,
   ): Promise<unknown>;
+
+  #Dialog: true;
 }
 
 declare namespace Dialog {
@@ -279,7 +271,13 @@ declare namespace Dialog {
      * future will become false by default.
      * @defaultValue `true`
      */
-    jQuery?: boolean;
+    jQuery: boolean;
+
+    /**
+     * Whether to focus the default button when the Dialog is rendered.
+     * @defaultValue `true`
+     */
+    focus: boolean;
   }
 
   interface Button<T = unknown, JQueryOrHtml = JQuery | HTMLElement> {
@@ -302,6 +300,22 @@ declare namespace Dialog {
      * A callback function that fires when the button is clicked
      */
     callback?: (html: JQueryOrHtml, event?: MouseEvent) => T;
+
+    /**
+     * Whether the button is included in the rendered dialog.
+     * @remarks Only an explicit `false` excludes the button.
+     */
+    condition?: boolean | undefined;
+
+    /**
+     * @remarks Assigned by {@linkcode Dialog.getData | Dialog#getData}, not provided by callers.
+     */
+    cssClass?: string | undefined;
+  }
+
+  interface GetDataReturn {
+    content: string;
+    buttons: Record<string, Button<unknown, JQuery | HTMLElement>>;
   }
 
   interface Data<JQueryOrHTML extends JQuery | HTMLElement> {

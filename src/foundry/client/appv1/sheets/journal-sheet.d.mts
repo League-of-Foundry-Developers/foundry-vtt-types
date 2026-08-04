@@ -1,6 +1,7 @@
-import type { MaybePromise, InexactPartial } from "#utils";
+import type { AnyMutableObject, GetDataReturnType, Identity, MaybePromise, InexactPartial, ValueOf } from "#utils";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
-import type { JournalPageSheet } from "./journal-page-sheet.d.mts";
+import type { ContextMenu } from "#client/applications/ux/_module.d.mts";
+import type DocumentSheetV2 from "#client/applications/api/document-sheet.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -45,12 +46,13 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
    * The cached list of processed page entries.
    * This array is populated in the getData method.
    */
-  _pages: JournalEntryPage.Implementation[];
+  protected _pages: JournalSheet.PageData[];
 
   /**
    * Get the journal entry's current view mode.
+   * @see {@linkcode JournalSheet.VIEW_MODES}
    */
-  get mode(): (typeof JournalSheet)["VIEW_MODES"] | null;
+  get mode(): JournalSheet.ViewMode;
 
   /**
    * The current search mode for this journal
@@ -103,13 +105,15 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
 
   protected override _getHeaderButtons(): Application.HeaderButton[];
 
-  override getData(options?: Partial<Options>): MaybePromise<object>; // TODO: implement GetDataReturnType
+  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<JournalSheet.Data>>;
 
   /**
    * Prepare pages for display.
    * @returns The sorted list of pages.
+   * @privateRemarks Foundry documents this as returning `JournalEntryPage[]`, but the runtime returns each page's
+   * source data decorated with display-only properties.
    */
-  protected _getPageData(): JournalEntryPage.Implementation[];
+  protected _getPageData(): JournalSheet.PageData[];
 
   /**
    * Identify which page of the journal sheet should be currently rendered.
@@ -133,11 +137,30 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
   protected _renderPageViews(): Promise<void>;
 
   /**
+   * Render the page view for an app v1 page sheet.
+   * @param element - The existing page element in the journal entry view.
+   * @param sheet   - The page sheet.
+   */
+  protected _renderAppV1PageView(element: HTMLElement, sheet: Application.Any): Promise<void>;
+
+  /**
+   * Render the page view for a page sheet.
+   * @param element - The existing page element in the journal entry view.
+   * @param sheet   - The page sheet.
+   */
+  protected _renderPageView(element: HTMLElement, sheet: DocumentSheetV2.Any): Promise<void>;
+
+  /**
    * Add headings to the table of contents for the given page node.
    * @param pageNode - The HTML node of the page's rendered contents.
    * @param toc      - The page's table of contents.
    */
-  protected _renderHeadings(pageNode: HTMLElement, toc: JournalEntryPage.TOC): void;
+  protected _renderHeadings(pageNode: HTMLElement, toc: JournalEntryPage.TOC): Promise<void>;
+
+  /**
+   * Create an intersection observer to maintain a list of pages that are in view.
+   */
+  protected _observePages(): void;
 
   /**
    * Create an intersection observer to maintain a list of headings that are in view. This is much more performant than
@@ -156,7 +179,7 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
   /**
    * Prompt the user with a Dialog for creation of a new JournalEntryPage
    */
-  createPage(): Promise<JournalEntryPage.Implementation>;
+  createPage(): Promise<JournalEntryPage.CreateDialogReturn<JournalEntryPage.CreateDialogOptions>>;
 
   /**
    * Turn to the previous page.
@@ -179,11 +202,11 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
    * Retrieve the sheet instance for rendering this page inline.
    * @param pageId - The ID of the page.
    */
-  getPageSheet(pageId: string): JournalPageSheet; // Should probably be configured sheet class?
+  getPageSheet(pageId: string): Application.Any | DocumentSheetV2.Any;
 
   /**
    * Determine whether a page is visible to the current user.
-   * @param page - The Page
+   * @param page - The page.
    */
   isPageVisible(page: JournalEntryPage.Implementation): boolean;
 
@@ -198,20 +221,20 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
   protected _updateButtonState(): void;
 
   /**
-   *  Edit one of this JournalEntry's JournalEntryPages.
-   * @param event - The originating page edit event
+   * Edit one of this JournalEntry's JournalEntryPages.
+   * @param event - The originating page edit event.
    */
   protected _onEditPage(event: JQuery.TriggeredEvent): void;
 
   /**
    * Handle clicking an entry in the sidebar to scroll that heading into view.
-   * @param event - The originating click event
+   * @param event - The originating click event.
    */
   protected _onClickPageLink(event: JQuery.TriggeredEvent): void;
 
   /**
    * Handle clicking an image to pop it out for fullscreen view.
-   * @param event - The click event
+   * @param event - The click event.
    */
   protected _onClickImage(event: MouseEvent): void;
 
@@ -234,7 +257,7 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
    */
   protected _synchronizeSidebar(): void;
 
-  protected _contextMenu(html: JQuery<HTMLElement>): void;
+  protected override _contextMenu(html: JQuery<HTMLElement>): void;
 
   /**
    * Handle opening the context menu.
@@ -251,45 +274,121 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
   /**
    * Get the set of ContextMenu options which should be used for JournalEntryPages in the sidebar.
    * @returns The Array of context options passed to the ContextMenu instance.
+   * @remarks The menu is created with `jQuery: false`, so entries receive `HTMLElement`s.
    */
-  protected _getEntryContextOptions(): foundry.applications.ux.ContextMenu.Entry<JQuery>[];
+  // TODO: `ContextMenu.Entry` is still the V13 shape (`name`/`callback`/`condition`). V14 entries use
+  // `label`/`onClick(event, li)`/`visible`; migrating that type belongs with `ux/context-menu.d.mts`.
+  protected _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
 
-  protected override _updateObject(event: Event, formData: JournalSheet.FormData): Promise<unknown>;
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown>;
 
   /**
    * Handle requests to show the referenced Journal Entry to other Users
    * Save the form before triggering the show request, in case content has changed
    * @param event - The triggering click event
-   * @internal
    */
-  protected _onShowPlayers(event: Event): Promise<void>;
+  _onShowPlayers(event: Event): Promise<void>;
 
-  protected _canDragStart(selector: string): boolean;
+  protected override _canDragStart(selector: string): boolean;
 
-  protected _canDragDrop(selector: string): boolean;
+  protected override _canDragDrop(selector: string): boolean;
 
-  protected _onDragStart(event: DragEvent): void;
+  protected override _onDragStart(event: DragEvent): void;
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected _onDrop(event: DragEvent): Promise<void>;
+  protected override _onDrop(event: DragEvent): Promise<unknown>;
 
-  protected _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+  protected override _onSearchFilter(event: KeyboardEvent, query: string, rgx: RegExp, html: HTMLElement): void;
+
+  #JournalSheet: true;
 }
 
 declare namespace JournalSheet {
-  interface Any extends JournalSheet<any> {}
+  interface Any extends AnyJournalSheet {}
+  interface AnyConstructor extends Identity<typeof AnyJournalSheet> {}
 
   type SheetMode = "text" | "image";
+
+  /**
+   * @see {@linkcode JournalSheet.VIEW_MODES}
+   */
+  type ViewMode = ValueOf<(typeof JournalSheet)["VIEW_MODES"]>;
 
   interface Options extends DocumentSheet.Options<JournalEntry.Implementation> {
     /** The current display mode of the journal. Either "text" or "image". */
     sheetMode?: JournalSheet.SheetMode | null;
+
+    /**
+     * A numbered index of the page to render.
+     * @defaultValue `undefined`
+     */
+    pageIndex?: number | undefined;
+
+    /**
+     * The ID of the page to render.
+     * @defaultValue `undefined`
+     */
+    pageId?: string | undefined;
+  }
+
+  /**
+   * A page's source data, decorated by {@linkcode JournalSheet._getPageData | JournalSheet#_getPageData} with the
+   * display-only properties consumed by the sheet template.
+   */
+  interface PageData extends JournalEntryPage.Source {
+    /** CSS classes applied to the page's entry in the table of contents. */
+    tocClass: string;
+
+    /** CSS classes applied to the page itself. */
+    cssClass: string;
+
+    /** CSS classes applied to the page in view mode, including the page sheet's `viewClasses`. */
+    viewClass: string;
+
+    /** Whether the current user may edit this page. */
+    editable: boolean;
+
+    /** The page's position among the visible pages. */
+    number: number;
+
+    /** The icon representing this page's default ownership level. */
+    icon: string;
+
+    /** The lower-cased name of this page's default ownership level. */
+    ownershipCls: string;
+  }
+
+  /** A labelled toggle rendered in the journal header. */
+  interface ModeToggle {
+    label: string;
+    icon: string;
+  }
+
+  interface ViewModeToggle extends ModeToggle {
+    cls: string;
+  }
+
+  interface Data extends DocumentSheet.Data<JournalSheet.Options, JournalEntry.Implementation> {
+    mode: ViewMode;
+
+    toc: PageData[];
+
+    pages: PageData[];
+
+    viewMode: ViewModeToggle;
+
+    sidebarClass: string;
+
+    collapseMode: ModeToggle;
+
+    searchIcon: string;
+
+    searchTooltip: string;
   }
 
   type RenderOptions<Options extends JournalSheet.Options = JournalSheet.Options> = Application.RenderOptions<Options> &
     InexactPartial<{
       /** Render the sheet in a given view mode, see {@linkcode JournalSheet.VIEW_MODES}. */
-      mode: number;
+      mode: ViewMode;
 
       /** Render the sheet with the page with the given ID in view. */
       pageId: string;
@@ -307,12 +406,6 @@ declare namespace JournalSheet {
       collapsed: boolean;
     }>;
 
-  interface FormData {
-    content: string;
-    folder: string;
-    name: string;
-  }
-
   interface GetCurrentPageOptions {
     /** A numbered index of page to render */
     pageIndex?: number | undefined;
@@ -320,6 +413,10 @@ declare namespace JournalSheet {
     /** The ID of a page to render */
     pageId?: string | undefined;
   }
+}
+
+declare abstract class AnyJournalSheet extends JournalSheet<JournalSheet.Options> {
+  constructor(...args: never);
 }
 
 export default JournalSheet;
