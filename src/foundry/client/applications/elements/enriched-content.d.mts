@@ -1,7 +1,9 @@
+import type AdoptableHTMLElement from "./adoptable-element.d.mts";
+
 /**
  * A custom HTMLElement that is used to wrap enriched content that requires additional interactivity.
  */
-export default class HTMLEnrichedContentElement extends HTMLElement {
+export default class HTMLEnrichedContentElement extends AdoptableHTMLElement {
   /**
    * The HTML tag named used by this element.
    * @defaultValue `"enriched-content"`

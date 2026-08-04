@@ -68,6 +68,10 @@ describe("HTMLCodeMirrorElement Tests", () => {
     expectTypeOf(el.scrollTo(0, 50)).toBeVoid();
     // only `top` matters, `left` would be ignored
     expectTypeOf(el.scrollTo({ top: 50 })).toBeVoid();
+
+    expectTypeOf(el.focus()).toBeVoid();
+    // @ts-expect-error this override forwards to the CodeMirror view and takes no `FocusOptions`
+    el.focus({ preventScroll: true });
   });
 
   test("Element API and lifecycle methods", () => {

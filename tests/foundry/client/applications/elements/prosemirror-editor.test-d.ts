@@ -9,7 +9,6 @@ describe("HTMLProseMirrorElement Tests", () => {
     enriched: `<a data-action="foo">a foo link</a>`,
     toggled: true,
     collaborate: true,
-    compact: true,
     documentUUID: "Item.1234567890ABCDEF",
     height: 400,
     value: `@Action[foo]{a foo link}`,
@@ -40,6 +39,8 @@ describe("HTMLProseMirrorElement Tests", () => {
     expectTypeOf(el["_configurePlugins"]()).toEqualTypeOf<Record<string, Plugin>>();
 
     expectTypeOf(el.isDirty()).toBeBoolean();
+    expectTypeOf(el.save()).toBeVoid();
+    expectTypeOf(el.focus()).toBeVoid();
   });
 
   test("Value", () => {
