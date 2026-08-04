@@ -315,7 +315,11 @@ declare namespace Dialog {
 
   interface GetDataReturn {
     content: string;
-    buttons: Record<string, Button<unknown, JQuery | HTMLElement>>;
+    buttons: Record<string, GetDataButton>;
+  }
+
+  interface GetDataButton extends Button<unknown, JQuery | HTMLElement> {
+    cssClass: string;
   }
 
   interface Data<JQueryOrHTML extends JQuery | HTMLElement> {

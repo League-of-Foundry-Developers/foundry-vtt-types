@@ -29,6 +29,8 @@ expectTypeOf(journalSheet.getPageSheet("someId")).toEqualTypeOf<Application.Any 
 // Options registered by `defaultOptions` but previously missing from the interface.
 expectTypeOf(journalSheet.options.pageIndex).toEqualTypeOf<number | undefined>();
 expectTypeOf(journalSheet.options.pageId).toEqualTypeOf<string | undefined>();
+const requiredPageOptions: { pageIndex: number | undefined; pageId: string | undefined } = journalSheet.options;
+void requiredPageOptions;
 
 // `_getPageData` returns decorated source data, not documents.
 declare const pageData: JournalSheet.PageData;
@@ -40,5 +42,15 @@ class CustomJournalSheet extends JournalSheet {
   protected override _observePages(): void {}
   protected override async _renderPageView(_element: HTMLElement, _sheet: DocumentSheetV2.Any): Promise<void> {}
   protected override async _renderAppV1PageView(_element: HTMLElement, _sheet: Application.Any): Promise<void> {}
+
+  testContextOptions(): void {
+    const [option] = this._getEntryContextOptions();
+    expectTypeOf(option?.label).toEqualTypeOf<string | undefined>();
+    expectTypeOf(option?.onClick).toEqualTypeOf<foundry.applications.ux.ContextMenu.EntryCallback | undefined>();
+  }
+
+  testDrop(event: DragEvent): void {
+    expectTypeOf(this._onDrop(event)).toEqualTypeOf<Promise<unknown>>();
+  }
 }
 void CustomJournalSheet;

@@ -711,3 +711,6 @@ expectTypeOf(dialog.submit).toBeFunction();
 declare const button: Dialog.Button;
 expectTypeOf(button.condition).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(button.cssClass).toEqualTypeOf<string | undefined>();
+
+declare const getDataButton: Dialog.GetDataButton;
+expectTypeOf(getDataButton.cssClass).toEqualTypeOf<string>();

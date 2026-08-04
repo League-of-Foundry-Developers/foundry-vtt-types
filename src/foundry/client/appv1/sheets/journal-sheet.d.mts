@@ -276,8 +276,6 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
    * @returns The Array of context options passed to the ContextMenu instance.
    * @remarks The menu is created with `jQuery: false`, so entries receive `HTMLElement`s.
    */
-  // TODO: `ContextMenu.Entry` is still the V13 shape (`name`/`callback`/`condition`). V14 entries use
-  // `label`/`onClick(event, li)`/`visible`; migrating that type belongs with `ux/context-menu.d.mts`.
   protected _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
 
   protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown>;
@@ -321,13 +319,13 @@ declare namespace JournalSheet {
      * A numbered index of the page to render.
      * @defaultValue `undefined`
      */
-    pageIndex?: number | undefined;
+    pageIndex: number | undefined;
 
     /**
      * The ID of the page to render.
      * @defaultValue `undefined`
      */
-    pageId?: string | undefined;
+    pageId: string | undefined;
   }
 
   /**
