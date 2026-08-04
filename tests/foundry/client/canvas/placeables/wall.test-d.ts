@@ -112,6 +112,7 @@ expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).to
 expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
 expectTypeOf(wall["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
 expectTypeOf(wall["_onClickLeft"](pointerEvent)).toBeBoolean();
 expectTypeOf(wall["_onClickLeft2"](pointerEvent)).toBeVoid();
 expectTypeOf(wall["_onClickRight2"](pointerEvent)).toBeVoid();

@@ -79,10 +79,15 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 
   protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
-  // Foundry reiterates the JSDoc here to add `updateLegend` to the options; omitted because redundant
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: Region.HoverInOptions): boolean | void;
+  /**
+   * @remarks Throws when {@linkcode Region.HoverInOptions.updateLegend | options.updateLegend} is truthy: the
+   * override still calls `this.layer.legend`, but `RegionLegend` was removed in v14 and
+   * {@linkcode foundry.canvas.layers.RegionLayer | RegionLayer} no longer defines a `legend` getter.
+   */
+  protected override _onHoverIn(event: Canvas.Event.Pointer | Event, options?: Region.HoverInOptions): boolean | void;
 
-  protected override _onHoverOut(event: Canvas.Event.Pointer, options?: Region.HoverOutOptions): void;
+  /** @remarks See {@linkcode Region._onHoverIn | Region#_onHoverIn}. */
+  protected override _onHoverOut(event?: Canvas.Event.Pointer | Event, options?: Region.HoverOutOptions): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -235,18 +240,9 @@ declare namespace Region {
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 
-  /** @internal */
-  interface _HoverInOptions {
-    /**
-     * Highlight corresponding entry in the RegionLegend.
-     * @defaultValue `true`
-     */
-    updateLegend: boolean;
-  }
+  interface HoverInOptions extends PlaceableObject.HoverInOptions {}
 
-  interface HoverInOptions extends InexactPartial<_HoverInOptions>, PlaceableObject.HoverInOptions {}
-
-  interface HoverOutOptions extends InexactPartial<_HoverInOptions> {}
+  interface HoverOutOptions extends PlaceableObject.HoverOutOptions {}
 
   /** @internal */
   interface _SegmentizeMovementOptions {
