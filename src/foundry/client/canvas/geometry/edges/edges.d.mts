@@ -1,6 +1,6 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { Identity, InexactPartial, ToMethod } from "#utils";
+import type { Level } from "#client/documents/_module.d.mts";
 import type Edge from "./edge.d.mts";
-import type { Quadtree } from "../_module.d.mts";
 
 /**
  * A specialized Map class that manages all edges used to restrict perception in a Scene.
@@ -8,30 +8,46 @@ import type { Quadtree } from "../_module.d.mts";
  */
 declare class CanvasEdges extends Map<string, Edge> {
   /**
-   * Clear content and initializes the quadtree.
-   * @remarks Calls `"initializeEdges"` hook via `callAll`
+   * @param level - The Level these edges belong to
+   * @throws If `level` is not a {@linkcode foundry.documents.Level | Level} instance
    */
-  initialize(): void;
+  constructor(level: Level.Implementation);
 
+  /**
+   * The Level these edges belong to.
+   */
+  get level(): Level.Implementation;
+
+  /**
+   * @throws If the edges of the parent Scene have not been initialized yet
+   */
   override set(key: string, value: Edge): this;
 
   override delete(key: string): boolean;
 
-  override clear(): void;
+  /** @remarks Unlike {@linkcode Map.clear | Map#clear}, this returns the `CanvasEdges` for method chaining */
+  override clear(): this;
 
   /**
-   * Incrementally refreshes edges by computing intersections between all registered edges.
-   * Utilizes the Quadtree to optimize the intersection detection process.
-   */
-  refresh(): void;
-
-  /**
-   * Retrieves edges that intersect with a given rectangle.
+   * Retrieves edges that overlap with a given rectangle.
    * Utilizes the Quadtree for efficient spatial querying.
+   * This function computes edge intersections if necessary.
    * @param rect - The rectangle to query against.
    * @returns A set of {@linkcode Edge} instances that intersect with the provided rectangle.
    */
   getEdges(rect: PIXI.Rectangle, options?: CanvasEdges.GetEdgesOptions): Set<Edge>;
+
+  /**
+   * @deprecated "CanvasEdges#inititalize has been deprecated. Use Scene#initializeEdges instead." (since v14, until v16)
+   * @remarks Foundry misspells this method; it is `inititalize`, not `initialize`.
+   */
+  inititalize(): void;
+
+  /**
+   * @deprecated "CanvasEdges#refresh has been deprecated. CanvasEdges#getEdges computes edge intersections
+   * automatically if necessary." (since v14, until v16)
+   */
+  refresh(): void;
 
   #CanvasEdges: true;
 }
@@ -39,6 +55,8 @@ declare class CanvasEdges extends Map<string, Edge> {
 declare namespace CanvasEdges {
   interface Any extends AnyCanvasEdges {}
   interface AnyConstructor extends Identity<typeof AnyCanvasEdges> {}
+
+  type CollisionTestFunction = ToMethod<(edge: Edge) => boolean>;
 
   /** @internal */
   interface _GetEdgesOptions {
@@ -57,7 +75,13 @@ declare namespace CanvasEdges {
     /**
      * Collision function to test edge inclusion.
      */
-    collisionTest: Quadtree.CollisionTestFunction<Edge>;
+    collisionTest: CollisionTestFunction;
+
+    /**
+     * Apply collision test to bounds?
+     * @defaultValue `false`
+     */
+    collisionTestBounds: boolean;
   }
 
   interface GetEdgesOptions extends InexactPartial<_GetEdgesOptions> {}

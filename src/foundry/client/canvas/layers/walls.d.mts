@@ -137,21 +137,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
-   * Perform initialization steps for the WallsLayer whenever the composition of walls in the Scene is changed.
-   * Cache unique wall endpoints and identify interior walls using overhead roof tiles.
-   * @deprecated "`WallsLayer#initialize` is deprecated in favor of
-   * {@linkcode foundry.canvas.geometry.edges.CanvasEdges.initialize | Canvas#edges#initialize}" (since v12, until v14)
-   */
-  initialize(): void;
-
-  /**
-   * Identify walls which are treated as "interior" because they are contained fully within a roof tile.
-   * @deprecated "`WallsLayer#identifyInteriorWalls` has been deprecated. It has no effect anymore and there's no replacement."
-   * (since v12, until v14)
-   */
-  identifyInteriorWalls(): void;
-
-  /**
    * Initialization to identify all intersections between walls.
    * These intersections are cached and used later when computing point source polygons.
    * @deprecated "`WallsLayer#identifyWallIntersections` is deprecated in favor of
