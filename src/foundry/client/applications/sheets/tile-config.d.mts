@@ -1,6 +1,8 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity, IntentionalPartial } from "#utils";
+import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type PlaceableConfig from "./placeable-config.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -12,30 +14,60 @@ declare module "#configuration" {
 
 /**
  * The Application responsible for configuring a single Tile document within a parent Scene.
- * @remarks TODO: Stub
  */
 declare class TileConfig<
   RenderContext extends TileConfig.RenderContext = TileConfig.RenderContext,
   Configuration extends TileConfig.Configuration = TileConfig.Configuration,
   RenderOptions extends TileConfig.RenderOptions = TileConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  TileDocument.Implementation,
-  RenderContext,
-  Configuration,
-  RenderOptions
-> {}
+> extends PlaceableConfig<TileDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
+
+  override get title(): string;
+
+  protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _preparePartContext(
+    partId: string,
+    context: ApplicationV2.RenderContextOf<this>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<ApplicationV2.RenderContextOf<this>>;
+
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  protected override _previewChanges(changes: DocumentSheetV2.SubmitData<TileDocument.Implementation>): void;
+}
 
 declare namespace TileConfig {
   interface Any extends AnyTileConfig {}
   interface AnyConstructor extends Identity<typeof AnyTileConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<TileDocument.Implementation> {}
+    extends PlaceableConfig.RenderContext<TileDocument.Implementation>, IntentionalPartial<PreparePartContext> {
+    tabClasses: string;
 
-  interface Configuration
-    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<TileDocument.Implementation> {}
+    buttons: ApplicationV2.FormFooterButton[];
+  }
 
-  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+  /** @remarks Added by {@linkcode TileConfig._preparePartContext | #_preparePartContext} */
+  interface PreparePartContext {
+    /** @remarks Added for the `appearance` part; whether the Tile's texture source is a video. */
+    hasVideo: boolean;
+
+    /** @remarks Only added when the part being rendered is also a tab of the `sheet` group. */
+    tab: ApplicationV2.Tab;
+  }
+
+  interface Configuration extends PlaceableConfig.Configuration<TileDocument.Implementation> {}
+
+  interface RenderOptions extends PlaceableConfig.RenderOptions {}
 }
 
 declare abstract class AnyTileConfig extends TileConfig<

@@ -1,7 +1,8 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, RemoveIndexSignatures } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type PlaceableConfig from "./placeable-config.d.mts";
 import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 declare module "#configuration" {
@@ -13,101 +14,75 @@ declare module "#configuration" {
 }
 
 /**
- * The AmbientLight configuration application.
+ * The Application responsible for configuring a single AmbientLight document within a parent Scene.
  */
 declare class AmbientLightConfig<
-  RenderContext extends object = AmbientLightConfig.RenderContext,
+  RenderContext extends AmbientLightConfig.RenderContext = AmbientLightConfig.RenderContext,
   Configuration extends AmbientLightConfig.Configuration = AmbientLightConfig.Configuration,
   RenderOptions extends AmbientLightConfig.RenderOptions = AmbientLightConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  AmbientLightDocument.Implementation,
-  RenderContext,
-  Configuration,
-  RenderOptions
-> {
-  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+> extends PlaceableConfig<AmbientLightDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
-  /**
-   * Maintain a copy of the original to show a real-time preview of changes.
-   */
-  preview: AmbientLightDocument.Implementation | undefined;
-
-  override tabGroups: {
-    sheet: string;
-  };
-
-  protected override _preRender(
-    context: DeepPartial<RenderContext>,
-    options: DeepPartial<RenderOptions>,
-  ): Promise<void>;
+  static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
-  protected override _onClose(options: DeepPartial<RenderOptions>): void;
-
-  protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
 
   override changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
-  override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  protected override _previewChanges(changes: DocumentSheetV2.SubmitData<AmbientLightDocument.Implementation>): void;
 
   /**
-   * Preview changes to the AmbientLight document as if they were true document updates.
-   * @param change - A change to preview
+   * @deprecated since v14, until v16
+   * @remarks "The AmbientLightConfig#preview has been deprecated in favor of AmbientLightConfig#_preview"
    */
-  protected _previewChanges(change?: foundry.documents.BaseAmbientLight.UpdateData): void;
-
-  /**
-   * Restore the true data for the AmbientLight document when the form is submitted or closed.
-   */
-  protected _resetPreview(): void;
-
-  /**
-   * @privateRemarks Prevents duck typing
-   */
-  #private: true;
+  get preview(): AmbientLightDocument.Implementation | null;
 }
 
 declare namespace AmbientLightConfig {
   interface Any extends AnyAmbientLightConfig {}
   interface AnyConstructor extends Identity<typeof AnyAmbientLightConfig> {}
 
-  interface RenderContext
-    extends
-      HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<AmbientLightDocument.Implementation> {
-    document: AmbientLightDocument.Implementation;
+  interface RenderContext extends PlaceableConfig.RenderContext<AmbientLightDocument.Implementation> {
+    tabClasses: string;
+
+    /**
+     * @remarks The preview document, the same value as {@linkcode PlaceableConfig.RenderContext.model | context.model}.
+     */
     light: AmbientLightDocument.Implementation;
-    source: foundry.documents.BaseAmbientLight.Source;
 
-    /**
-     * @deprecated Foundry deleted this with no deprecation in v13.
-     */
-    fields: foundry.documents.BaseAmbientLight.Schema;
     colorationTechniques: typeof AdaptiveLightingShader.SHADER_TECHNIQUES;
-    gridUnits: string;
-    isDarkness: boolean;
-    lightAnimations: unknown; // TODO: Update after CONFIG updated
 
     /**
-     * @deprecated Foundry deleted this with no deprecation in v13.
+     * @remarks Whether the previewed light is a darkness source, i.e. its `config.negative` is set.
      */
-    tabs: Record<string, ApplicationV2.Tab>;
+    isDarkness: boolean;
+
+    /**
+     * @remarks {@linkcode CONFIG.Canvas.darknessAnimations} when {@linkcode RenderContext.isDarkness | isDarkness},
+     * otherwise {@linkcode CONFIG.Canvas.lightAnimations}.
+     */
+    lightAnimations:
+      | RemoveIndexSignatures<CONFIG.Canvas.LightAnimations>
+      | RemoveIndexSignatures<CONFIG.Canvas.DarknessAnimations>;
+
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration
-    extends
-      HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> {}
+  interface Configuration extends PlaceableConfig.Configuration<AmbientLightDocument.Implementation> {}
 
-  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+  interface RenderOptions extends PlaceableConfig.RenderOptions {}
 }
 
 declare abstract class AnyAmbientLightConfig extends AmbientLightConfig<
-  object,
+  AmbientLightConfig.RenderContext,
   AmbientLightConfig.Configuration,
   AmbientLightConfig.RenderOptions
 > {

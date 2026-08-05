@@ -15,7 +15,7 @@ declare module "#configuration" {
  * The Scene Region configuration application.
  */
 declare class RegionBehaviorConfig<
-  RenderContext extends object = RegionBehaviorConfig.RenderContext,
+  RenderContext extends RegionBehaviorConfig.RenderContext = RegionBehaviorConfig.RenderContext,
   Configuration extends RegionBehaviorConfig.Configuration = RegionBehaviorConfig.Configuration,
   RenderOptions extends RegionBehaviorConfig.RenderOptions = RegionBehaviorConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
@@ -27,27 +27,50 @@ declare class RegionBehaviorConfig<
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
   ): Promise<RenderContext>;
 
-  /** Prepare form field structure for rendering. */
+  /**
+   * Prepare form field structure for rendering.
+   */
   protected _getFields(): FormNode[];
 
-  /** Get footer buttons for this behavior config sheet. */
-  _getButtons(): FormFooterButton[];
+  /**
+   * Get footer buttons for this behavior config sheet.
+   */
+  protected _getButtons(): FormFooterButton[];
 
-  #regionBehaviorConfig: true;
+  #RegionBehaviorConfig: true;
 }
 
 declare namespace RegionBehaviorConfig {
   interface Any extends AnyRegionBehaviorConfig {}
   interface AnyConstructor extends Identity<typeof AnyRegionBehaviorConfig> {}
 
+  /**
+   * @remarks `fields` is omitted and redeclared because
+   * {@linkcode RegionBehaviorConfig._prepareContext | #_prepareContext} replaces the schema fields from
+   * {@linkcode DocumentSheetV2._prepareContext | DocumentSheetV2#_prepareContext} with the form structure
+   * built by {@linkcode RegionBehaviorConfig._getFields | #_getFields}.
+   */
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<RegionBehavior.Implementation> {}
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      Omit<DocumentSheetV2.RenderContext<RegionBehavior.Implementation>, "fields"> {
+    /** @remarks The same value as {@linkcode DocumentSheetV2.RenderContext.document | context.document}. */
+    region: RegionBehavior.Implementation;
+
+    fields: FormNode[];
+
+    /** @remarks The behavior type's configured hint, or `undefined` when its type has none. */
+    hint: string | undefined;
+
+    buttons: FormFooterButton[];
+  }
 
   interface Configuration
     extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<RegionBehavior.Implementation> {}
@@ -56,7 +79,7 @@ declare namespace RegionBehaviorConfig {
 }
 
 declare abstract class AnyRegionBehaviorConfig extends RegionBehaviorConfig<
-  object,
+  RegionBehaviorConfig.RenderContext,
   RegionBehaviorConfig.Configuration,
   RegionBehaviorConfig.RenderOptions
 > {

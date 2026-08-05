@@ -1,4 +1,5 @@
 import type { DeepPartial, Identity } from "#utils";
+import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { DataField } from "#common/data/fields.d.mts";
@@ -15,7 +16,7 @@ declare module "#configuration" {
  * The User configuration application.
  */
 declare class UserConfig<
-  RenderContext extends object = UserConfig.RenderContext,
+  RenderContext extends UserConfig.RenderContext = UserConfig.RenderContext,
   Configuration extends UserConfig.Configuration = UserConfig.Configuration,
   RenderOptions extends UserConfig.RenderOptions = UserConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
@@ -28,14 +29,13 @@ declare class UserConfig<
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
-  get title(): string;
+  override get title(): string;
 
-  protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
 
-  /**
-   * @privateRemarks Prevents duck typing
-   */
-  #private: true;
+  static #UserConfig: true;
 }
 
 declare namespace UserConfig {
@@ -44,10 +44,16 @@ declare namespace UserConfig {
 
   interface RenderContext
     extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<User.Implementation> {
+    /** @remarks The same value as {@linkcode DocumentSheetV2.RenderContext.document | context.document}. */
     user: User.Implementation;
-    source: foundry.documents.BaseUser.Source;
-    fields: foundry.documents.BaseUser.Schema;
+
+    /**
+     * @remarks Renders the `character` field as a choice between the Actors this User can observe, grouped by
+     * whether they own them.
+     */
     characterWidget: DataField.CustomFormGroup;
+
+    buttons: ApplicationV2.FormFooterButton[];
   }
 
   interface Configuration
@@ -56,7 +62,11 @@ declare namespace UserConfig {
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }
 
-declare abstract class AnyUserConfig extends UserConfig<object, UserConfig.Configuration, UserConfig.RenderOptions> {
+declare abstract class AnyUserConfig extends UserConfig<
+  UserConfig.RenderContext,
+  UserConfig.Configuration,
+  UserConfig.RenderOptions
+> {
   constructor(...args: never);
 }
 

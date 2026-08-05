@@ -1,6 +1,6 @@
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 
 import Document = foundry.abstract.Document;
 
@@ -13,15 +13,23 @@ declare module "#configuration" {
 }
 
 /**
- * The Application responsible for displaying a basic sheet for any Document sub-types that do not have a sheet registered.
- * @remarks TODO: Stub
+ * The Application responsible for displaying a basic sheet for any Document sub-types that do not have a sheet
+ * registered.
  */
 declare class BaseSheet<
   Document extends Document.Any = Document.Any,
   RenderContext extends BaseSheet.RenderContext<Document> = BaseSheet.RenderContext<Document>,
   Configuration extends BaseSheet.Configuration<Document> = BaseSheet.Configuration<Document>,
   RenderOptions extends BaseSheet.RenderOptions = BaseSheet.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+}
 
 declare namespace BaseSheet {
   interface Any extends AnyBaseSheet {}
@@ -29,7 +37,15 @@ declare namespace BaseSheet {
 
   interface RenderContext<Document extends Document.Any>
     extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {
-    descriptionHTML?: string;
+    /**
+     * @remarks Only present when the Document's schema has a `description` {@linkcode foundry.data.fields.StringField}.
+     */
+    descriptionHTML?: string | undefined;
+
+    /**
+     * @remarks `true` when the Document's schema has none of `description`, `img`, or `name`, so the sheet has
+     * nothing to display.
+     */
     hasNothing: boolean;
   }
 
