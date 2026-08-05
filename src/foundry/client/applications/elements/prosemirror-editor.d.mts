@@ -50,7 +50,20 @@ declare class HTMLProseMirrorElement extends AbstractFormInputElement<string> {
    */
   protected _configurePlugins(): Record<string, Plugin>;
 
+  /**
+   * Handle saving the editor content.
+   * Store new parsed HTML into the `_value` attribute of the element.
+   * If the editor is toggled, also deactivate editing mode.
+   */
+  save(): void;
+
   protected override _toggleDisabled(disabled: boolean): void;
+
+  /**
+   * @remarks Forwards focus to the underlying ProseMirror view if one has been constructed, falling back to
+   * {@linkcode HTMLElement.focus | HTMLElement#focus} otherwise.
+   */
+  override focus(): void;
 
   /**
    * Determine if the editor has unsaved changes.
@@ -105,12 +118,6 @@ declare namespace HTMLProseMirrorElement {
      * @defaultValue `false`
      */
     collaborate: boolean;
-
-    /**
-     * Should the editor be presented in compact mode?
-     * @defaultValue `false`
-     */
-    compact: boolean;
 
     /**
      * A Document UUID. Required for collaborative editing

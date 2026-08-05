@@ -254,7 +254,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
-  protected override _onHoverOut(event: Canvas.Event.Pointer): void;
+  protected override _onHoverOut(event?: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverOutOptions): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
