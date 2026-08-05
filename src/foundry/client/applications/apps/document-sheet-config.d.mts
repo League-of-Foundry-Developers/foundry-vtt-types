@@ -145,49 +145,52 @@ declare namespace DocumentSheetConfig {
 
   /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} */
   interface PrepareFormContext {
-    defaults: {
-      sheet: {
-        field: fields.StringField<{
-          label: "SHEETS.DefaultSheet";
+    /** @remarks Also cached on the instance, so {@linkcode DocumentSheetConfig._onChangeForm | #_onChangeForm} can rebuild the theme selector. */
+    defaults: DefaultsContext;
+  }
 
-          hint: "SHEETS.TypeSheetHint";
+  interface DefaultsContext {
+    sheet: {
+      field: fields.StringField<{
+        label: "SHEETS.DefaultSheet";
 
-          /** @remarks `choices` is `{ defaultClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
-          choices: Record<string, string>;
-        }>;
+        hint: "SHEETS.TypeSheetHint";
 
-        name: "defaultClass";
+        /** @remarks `choices` is `{ defaultClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
+        choices: Record<string, string>;
+      }>;
 
-        /** @remarks `!game.user.isGM` */
-        disabled: boolean;
+      name: "defaultClass";
 
-        /** @remarks `{ defaultClass } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
-        value: string;
-      };
+      /** @remarks `!game.user.isGM` */
+      disabled: boolean;
 
-      theme: {
-        field: fields.StringField<{
-          label: "SHEETS.Theme";
+      /** @remarks `{ defaultClass } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
+      value: string;
+    };
 
-          hint: "SHEETS.ThemeHint";
+    theme: {
+      field: fields.StringField<{
+        label: "SHEETS.Theme";
 
-          /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
-          choices: Record<string, string>;
-        }>;
+        hint: "SHEETS.ThemeHint";
 
-        name: "defaultTheme";
+        /** @remarks `CONFIG[documentName].sheetClasses[type]?.[defaultClass]?.themes ?? {}` */
+        choices: Record<string, string>;
+      }>;
 
-        /**
-         * @remarks
-         * ```js
-         * foundry.utils.getProperty(game.settings.get("core", "sheetThemes"), `defaults.${documentName}.${type}`) || ""
-         * ```
-         */
-        value: string;
+      name: "defaultTheme";
 
-        /** @remarks `true` if the default sheet class for this document is `AppV1` */
-        disabled: boolean;
-      };
+      /**
+       * @remarks
+       * ```js
+       * foundry.utils.getProperty(themes, `defaults.${documentName}`)?.[type] || ""
+       * ```
+       */
+      value: string;
+
+      /** @remarks `true` if the default sheet class for this document is `AppV1` */
+      disabled: boolean;
     };
   }
 
@@ -220,7 +223,7 @@ declare namespace DocumentSheetConfig {
 
         hint: "SHEETS.ThemeHint";
 
-        /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
+        /** @remarks `CONFIG[documentName].sheetClasses[type]?.[sheetClass || defaultClass]?.themes ?? {}` */
         choices: Record<string, string>;
       }>;
 

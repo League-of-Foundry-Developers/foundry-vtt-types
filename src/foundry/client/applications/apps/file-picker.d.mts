@@ -35,6 +35,10 @@ declare class FilePicker<
    */
   callback: FilePicker.Callback | null;
 
+  /**
+   * The general file type which controls the set of extensions which will be accepted
+   * @defaultValue `"any"`
+   */
   type: FilePicker.Type;
 
   /**
@@ -53,7 +57,7 @@ declare class FilePicker<
    * The display mode of the FilePicker UI
    * @defaultValue `FilePicker.LAST_DISPLAY_MODE`
    */
-  displayMode: string;
+  displayMode: FilePicker.DisplayMode;
 
   /**
    * The file sources available for browsing
@@ -71,14 +75,21 @@ declare class FilePicker<
 
   /**
    * The allowed values for the type of this FilePicker instance.
-   * @defaultValue `["image", "audio", "video", "text", "imagevideo", "font", "folder", "any"]`
+   * @defaultValue `["any", "audio", "folder", "font", "graphics", "image", "imagevideo", "text", "texture", "video"]`
    */
   static FILE_TYPES: FilePicker.Type[];
 
   /**
    * Record the last-browsed directory path so that re-opening a different FilePicker instance uses the same target
+   * @defaultValue `""`
    */
-  static LAST_BROWSED_DIRECTORY: FilePicker.SourceType;
+  static LAST_BROWSED_DIRECTORY: string;
+
+  /**
+   * Record the last-configured tile size which can automatically be applied to new FilePicker instances
+   * @defaultValue `null`
+   */
+  static LAST_TILE_SIZE: number | null;
 
   /**
    * Record the last-configured display mode so that re-opening a different FilePicker instance uses the same mode.
@@ -104,14 +115,28 @@ declare class FilePicker<
   static get uploadURL(): string;
 
   /**
+   * Retrieve the configured FilePicker implementation.
+   */
+  static get implementation(): FilePicker.ImplementationClass;
+
+  /**
    * The latest set of results browsed from the server
+   * @defaultValue `{}`
    */
   results: AnyObject;
 
   /**
-   * The current set of file extensions which are being filtered upon
+   * The result of the most recent {@linkcode FilePicker.browse | FilePicker#browse} call.
+   * @privateRemarks Foundry declares {@linkcode FilePicker.results | #results} but never writes to it; every
+   * consumer reads `this.result`, which `#browse` assigns.
    */
-  extensions: FilePicker.Type[];
+  result: FilePicker.BrowseReturn;
+
+  /**
+   * The current set of file extensions which are being filtered upon
+   * @remarks Each entry is dot-prefixed, e.g. `".webp"`.
+   */
+  extensions: string[];
 
   /**
    * Get favorite folders for quick access
@@ -123,7 +148,7 @@ declare class FilePicker<
   /**
    * Return the source object for the currently active source
    */
-  get source(): FilePicker.SourceType | FilePicker.S3SourceInfo;
+  get source(): FilePicker.SourceInfo | FilePicker.S3SourceInfo;
 
   /**
    * Return the target directory for the currently active source
@@ -131,7 +156,12 @@ declare class FilePicker<
   get target(): string;
 
   /**
-   * Return a flag for whether the current user is able to upload file content
+   * Whether the current user is able to create folders.
+   */
+  get canCreateFolder(): boolean;
+
+  /**
+   * Whether the current use is able to upload file content.
    */
   get canUpload(): boolean;
 
@@ -170,9 +200,12 @@ declare class FilePicker<
    * @param target  - The target within the source location
    * @param options - Optional arguments which modify the request
    *                  (default: `{}`)
-   * @returns The full file path of the created directory
    */
-  static createDirectory(source: string, target: string, options?: FilePicker.BrowseOptions): Promise<string>;
+  static createDirectory(
+    source: string,
+    target: string,
+    options?: FilePicker.BrowseOptions,
+  ): Promise<FilePicker.CreateDirectoryReturn>;
 
   /**
    * Dispatch a POST request to the server containing a directory path and a file to upload
@@ -209,6 +242,19 @@ declare class FilePicker<
   ): Promise<FilePicker.UploadReturn>;
 
   /**
+   * Request wildcard token images from the server and return them.
+   * @param actorId - The actor whose prototype token contains the wildcard image path.
+   */
+  static requestTokenImages(actorId: string, options?: FilePicker.RequestTokenImagesOptions): Promise<string[]>;
+
+  /**
+   * Given a current file path, determine the directory to which it belongs.
+   * @param target - The currently requested target path
+   * @returns A tuple of the inferred source and target directory path
+   */
+  protected _inferSourceAndTarget(target: string): [source: FilePicker.SourceType, revisedTarget: string];
+
+  /**
    * Browse to a specific location for this FilePicker instance
    * @param target  - The target within the currently active source location.
    * @param options - Browsing options
@@ -225,6 +271,8 @@ declare class FilePicker<
   protected override _prepareTabs(group: string): Record<string, ApplicationV2.Tab>;
 
   override changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
+
+  protected override _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
@@ -248,13 +296,9 @@ declare class FilePicker<
    * The data-type attribute is a string in ["image", "audio"] which sets the file extensions which will be accepted
    *
    * @param button - The button element
+   * @throws If the provided element is not an `HTMLButtonElement`.
    */
-  static fromButton(button: HTMLButtonElement): FilePicker;
-
-  /**
-   * Retrieve the configured FilePicker implementation.
-   */
-  static get implementation(): FilePicker.ImplementationClass;
+  static fromButton(button: HTMLButtonElement): FilePicker.Implementation;
 }
 
 declare namespace FilePicker {
@@ -293,15 +337,22 @@ declare namespace FilePicker {
   }
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
+    /** @remarks Always `"top-tabs"`. */
+    tabClasses: string;
+
+    rootId: string;
     bucket: string | null;
     buckets: FormSelectOption[] | null;
     canGoBack: boolean;
+    canCreateFolder: boolean;
     canUpload: boolean;
     canSelect: boolean;
+    canTogglePrivacy: boolean;
     dirs: FolderContext[];
     displayMode: DisplayMode;
     extensions: string[];
     files: FileContext[];
+    isFolderPicker: boolean;
     isS3: boolean;
     noResults: boolean;
     selected: string;
@@ -322,8 +373,13 @@ declare namespace FilePicker {
 
   interface FileContext {
     name: string;
+
     url: string;
-    img: string;
+
+    /** @remarks Only set for files with an image extension; the file's own path is reused as its thumbnail. */
+    img?: string | undefined;
+
+    icon: string;
   }
 
   interface Configuration<FilePicker extends FilePicker.Internal.Any = FilePicker.Implementation>
@@ -359,9 +415,9 @@ declare namespace FilePicker {
     button?: HTMLButtonElement;
 
     /** The picker display mode in FilePicker.DISPLAY_MODES. */
-    displayMode?: string;
+    displayMode?: DisplayMode;
 
-    /** The picker display mode in FilePicker.DISPLAY_MODES. */
+    /** The favorite folders */
     favorites?: Record<string, FavoriteFolder>;
 
     /**
@@ -372,6 +428,9 @@ declare namespace FilePicker {
 
     /** Redirect to the root directory rather than starting in the source directory of one of these files. */
     redirectToRoot?: string[] | null | undefined;
+
+    /** A Document instance associated with this FilePicker. */
+    document?: foundry.abstract.Document.Any;
   }
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
@@ -394,7 +453,7 @@ declare namespace FilePicker {
     label: string;
   }
 
-  type Type = "image" | "audio" | "video" | "text" | "imagevideo" | "font" | "folder" | "any";
+  type Type = "any" | "audio" | "folder" | "font" | "graphics" | "image" | "imagevideo" | "text" | "texture" | "video";
 
   type SourceType = keyof Sources;
 
@@ -428,6 +487,11 @@ declare namespace FilePicker {
     wildcard?: boolean;
   }
 
+  interface RequestTokenImagesOptions {
+    /** The ID of the compendium the actor is in. */
+    pack?: string | undefined;
+  }
+
   interface UploadOptions {
     /**
      * Display a UI notification when the upload is processed
@@ -439,6 +503,9 @@ declare namespace FilePicker {
 
   // Unknown if these are all possible properties
   interface BrowseReturn {
+    /** @remarks Only returned when browsing the `"s3"` source. */
+    bucket?: string | undefined;
+
     dirs: string[];
     extensions: string[];
     files: string[];
@@ -451,6 +518,14 @@ declare namespace FilePicker {
   // Unknown if these are all possible properties
   interface ConfigurePathReturn {
     private?: boolean;
+  }
+
+  /**
+   * @remarks The raw `manageFiles` socket response. Only `target` — the created directory's full path — is
+   * relied upon by any client-side consumer.
+   */
+  interface CreateDirectoryReturn extends AnyObject {
+    target?: string | undefined;
   }
 
   interface UploadBody extends AnyObject {}

@@ -576,6 +576,11 @@ export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
  */
 export declare const cursors: CONFIG.Cursors;
 
+/**
+ * Configure the formula editor.
+ */
+export declare const formulaEditor: CONFIG.FormulaEditor;
+
 declare global {
   namespace CONFIG {
     interface Debug {
@@ -4537,6 +4542,29 @@ declare global {
     interface CursorDescriptor extends InexactPartial<_CursorDescriptor> {
       /** The URL of the cursor image. Must be no larger than 128x128. 32x32 is recommended. */
       url: string;
+    }
+
+    interface FormulaEditor {
+      contexts: FormulaEditor.Contexts;
+    }
+
+    namespace FormulaEditor {
+      /**
+       * The editing contexts a {@linkcode foundry.applications.apps.FormulaEditor | FormulaEditor} can be opened in,
+       * selected by the `context` option. Core registers none; systems and modules add their own.
+       */
+      interface Contexts {
+        [context: Brand<string, "CONFIG.formulaEditor.contexts">]: Context;
+      }
+
+      interface Context {
+        /**
+         * A map of data paths to human-readable labels.
+         * @remarks Optional because {@linkcode foundry.applications.apps.FormulaEditor.context | FormulaEditor#context}
+         * falls back to `{}` when the requested context is not registered, and reads it as `this.#context.labels ?? {}`.
+         */
+        labels?: Record<string, string> | undefined;
+      }
     }
 
     interface TextEditorEngineRenderOptions extends foundry.applications.fields.EditorInputConfig {}
