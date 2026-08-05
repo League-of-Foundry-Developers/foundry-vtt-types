@@ -133,12 +133,22 @@ declare namespace HTMLProseMirrorElement {
   interface Config extends InexactPartial<_Config>, FormInputConfig<string> {}
 
   /**
+   * A custom event class for configuring ProseMirror plugins.
+   * @remarks The `plugins` event fired by {@linkcode HTMLProseMirrorElement._configurePlugins | #_configurePlugins}.
+   * Foundry does not export the class itself, so only its interface is described here.
+   */
+  interface PluginsEvent extends CustomEvent<Record<string, Plugin>> {
+    /**
+     * The currently configured plugins.
+     */
+    readonly plugins: Record<string, Plugin>;
+  }
+
+  /**
    * @deprecated This interface has been renamed for consistency with other elements.
    * Use {@linkcode HTMLProseMirrorElement.Config} instead. This alias will be removed in v15.
    */
   type ProseMirrorInputConfig = Config;
 }
-
-// ProseMirrorPluginEvent is never exported or otherwise available publicly, so it has not been typed.
 
 export default HTMLProseMirrorElement;
