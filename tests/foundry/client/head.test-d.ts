@@ -37,6 +37,9 @@ expectTypeOf(ui.scenes).toEqualTypeOf<tabs.SceneDirectory | undefined>();
 expectTypeOf(ui.settings).toEqualTypeOf<tabs.Settings | undefined>();
 expectTypeOf(ui.tables).toEqualTypeOf<tabs.RollTableDirectory | undefined>();
 expectTypeOf(ui.webrtc).toEqualTypeOf<foundry.applications.apps.av.CameraViews | undefined>();
+expectTypeOf(ui.placeablesPalette).toEqualTypeOf<
+  foundry.applications.sheets.palette.PlaceablePaletteMixin.AnyMixed | null | undefined
+>();
 
 const myColor = Color.from("foobar");
 

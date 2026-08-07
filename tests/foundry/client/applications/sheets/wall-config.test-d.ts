@@ -13,7 +13,7 @@ expectTypeOf(wallConfig.document).toEqualTypeOf<WallDocument.Implementation>();
 expectTypeOf(WallConfig.DEFAULT_OPTIONS).toEqualTypeOf<PlaceableConfig.DefaultOptions>();
 
 declare const context: WallConfig.RenderContext;
-expectTypeOf(context.coordinates).toBeString();
+expectTypeOf(context.coordinates).toEqualTypeOf<string | undefined>();
 expectTypeOf(context.thresholdFields).toEqualTypeOf<WallConfig.ThresholdField[]>();
 expectTypeOf(context.thresholdFields[0]!.name).toEqualTypeOf<WallConfig.SenseType>();
 expectTypeOf(context.animation).toEqualTypeOf<AnyObject>();
