@@ -70,6 +70,11 @@ declare global {
     context?: foundry.applications.ux.ContextMenu;
 
     /**
+     * The currently open placeable palette.
+     */
+    placeablesPalette?: foundry.applications.sheets.palette.PlaceablePaletteMixin.AnyMixed | null | undefined;
+
+    /**
      * @defaultValue `{}`
      */
     windows: Record<number, foundry.appv1.api.Application.Any>;

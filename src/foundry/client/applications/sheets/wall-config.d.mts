@@ -48,8 +48,11 @@ declare namespace WallConfig {
   interface AnyConstructor extends Identity<typeof AnyWallConfig> {}
 
   interface RenderContext extends PlaceableConfig.RenderContext<WallDocument.Implementation> {
-    /** @remarks The localization of `"WALL.CoordinateRange"` filled in with the Wall's endpoints. */
-    coordinates: string;
+    /**
+     * @remarks The localization of `"WALL.CoordinateRange"` filled in with the Wall's endpoints. It is absent for a
+     * {@linkcode foundry.applications.sheets.palette.WallPalette}, which has no single pair of endpoints.
+     */
+    coordinates?: string | undefined;
 
     thresholdFields: ThresholdField[];
 
