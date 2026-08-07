@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 
 declare module "#configuration" {
@@ -17,10 +17,14 @@ declare abstract class AbstractSidebarTab<
   Configuration extends AbstractSidebarTab.Configuration = AbstractSidebarTab.Configuration,
   RenderOptions extends AbstractSidebarTab.RenderOptions = AbstractSidebarTab.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  /**
+   * The base name of the sidebar tab.
+   * @abstract
+   */
+  static tabName: string;
+
   // Fake override.
   static override DEFAULT_OPTIONS: AbstractSidebarTab.DefaultOptions;
-
-  static tabName: string;
 
   static override readonly emittedEvents: string[];
 
@@ -36,6 +40,8 @@ declare abstract class AbstractSidebarTab<
 
   /**
    * A reference to the popped-out version of this tab, if one exists.
+   *
+   * @remarks Held by a `WeakRef`, so this becomes `undefined` once the popped-out tab is closed and garbage-collected.
    */
   get popout(): this | undefined;
 
@@ -70,7 +76,11 @@ declare abstract class AbstractSidebarTab<
    */
   protected _onActivate(): void;
 
-  protected override _onClose(options: DeepPartial<RenderOptions>): void;
+  /**
+   * @privateRemarks Synchronous at runtime; kept as the base's {@linkcode MaybePromise}`<void>` so that
+   * async overrides in concrete tabs still fit. Post-close steps are never awaited.
+   */
+  protected override _onClose(options: DeepPartial<RenderOptions>): MaybePromise<void>;
 
   /**
    * Actions performed when this tab is deactivated in the sidebar.
@@ -81,13 +91,20 @@ declare abstract class AbstractSidebarTab<
     context: DeepPartial<RenderContext>,
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
+
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  #AbstractSidebarTab: true;
 }
 
 declare namespace AbstractSidebarTab {
   interface Any extends AnyAbstractSidebarTab {}
   interface AnyConstructor extends Identity<typeof AnyAbstractSidebarTab> {}
 
-  interface RenderContext extends ApplicationV2.RenderContext {}
+  interface RenderContext extends ApplicationV2.RenderContext {
+    /** @defaultValue {@linkcode game.user} */
+    user: User.Stored;
+  }
 
   interface Configuration<
     AbstractSidebarTab extends AbstractSidebarTab.Any = AbstractSidebarTab.Any,
@@ -102,12 +119,7 @@ declare namespace AbstractSidebarTab {
 
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 
-  type EmittedEvents = Readonly<["render", "close", "position", "activate", "deactivate"]>;
-
-  interface RenderContext extends ApplicationV2.RenderContext {
-    /** @defaultValue {@linkcode game.user} */
-    user: User.Stored;
-  }
+  type EmittedEvents = [...ApplicationV2.EmittedEvents, "activate", "deactivate"];
 }
 
 declare abstract class AnyAbstractSidebarTab extends AbstractSidebarTab<
