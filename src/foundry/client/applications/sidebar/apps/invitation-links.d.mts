@@ -10,9 +10,6 @@ declare module "#configuration" {
   }
 }
 
-/**
- * @remarks TODO: Stub
- */
 declare class InvitationLinks<
   RenderContext extends InvitationLinks.RenderContext = InvitationLinks.RenderContext,
   Configuration extends InvitationLinks.Configuration = InvitationLinks.Configuration,
@@ -20,13 +17,53 @@ declare class InvitationLinks<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   // Fake override.
   static override DEFAULT_OPTIONS: InvitationLinks.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * @remarks The context is {@linkcode Game.data | game.data.addresses} itself, annotated in place with the
+   * connectivity members before being returned, so preparing it mutates the game data. When `remote` is
+   * `undefined` — an IPv6 setup — that annotation is skipped and the addresses are returned unchanged.
+   */
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  static #InvitationLinks: true;
 }
 
 declare namespace InvitationLinks {
   interface Any extends AnyInvitationLinks {}
   interface AnyConstructor extends Identity<typeof AnyInvitationLinks> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
+    /** The local network address of the server. */
+    local: string;
+
+    /** The public address of the server, absent when the server could not determine one. */
+    remote?: string | undefined;
+
+    /** Whether the public address responded, or `null` while the check is outstanding. */
+    remoteIsAccessible: boolean | null;
+
+    /**
+     * A CSS class describing the connection state.
+     *
+     * @remarks Omitted, along with every member below it, when `remote` is `undefined`.
+     */
+    remoteClass?: string | undefined;
+
+    /** A localized tooltip describing the connection state. */
+    remoteTitle?: string | undefined;
+
+    /** Set when the connectivity check has not resolved. */
+    failedCheck?: boolean | undefined;
+
+    /** Whether the public address is reachable. Absent while the check is outstanding. */
+    canConnect?: boolean | undefined;
+
+    rootId?: string | undefined;
+  }
 
   interface Configuration<InvitationLinks extends InvitationLinks.Any = InvitationLinks.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<InvitationLinks> {}

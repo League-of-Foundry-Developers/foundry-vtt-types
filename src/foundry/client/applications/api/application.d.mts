@@ -708,8 +708,12 @@ declare class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    * @returns The result of HTML rendering may be implementation specific.
    *          Whatever value is returned here is passed to _replaceHTML
+   *
+   * @privateRemarks Asynchronous in every core implementation but one, and widened to
+   * {@linkcode MaybePromise} so that a synchronous override fits — `FrameViewer#_renderHTML` builds its iframe
+   * and returns it directly. `render` awaits the result either way.
    */
-  protected _renderHTML(context: RenderContext, options: DeepPartial<RenderOptions>): Promise<unknown>;
+  protected _renderHTML(context: RenderContext, options: DeepPartial<RenderOptions>): MaybePromise<unknown>;
 
   /**
    * Replace the HTML of the application with the result provided by the rendering backend.
