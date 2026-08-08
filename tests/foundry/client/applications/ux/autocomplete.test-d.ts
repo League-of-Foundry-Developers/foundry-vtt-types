@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 import Autocomplete = foundry.applications.ux.Autocomplete;
 
@@ -25,3 +26,4 @@ expectTypeOf(
 
 expectTypeOf(Autocomplete.activateListeners()).toBeVoid();
 expectTypeOf(Autocomplete.implementation).toEqualTypeOf<Autocomplete.ImplementationClass>();
+expectTypeOf<Autocomplete.Implementation>().toEqualTypeOf<FixedInstanceType<Autocomplete.ImplementationClass>>();

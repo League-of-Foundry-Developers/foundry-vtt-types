@@ -28,4 +28,14 @@ expectTypeOf(
   new FilterMenu.implementation(container, "search [data-action=filterByLevel]", {
     menuItems: () => [],
   }),
-).toEqualTypeOf<FilterMenu.Implementation>();
+).toEqualTypeOf<FilterMenu<false>>();
+
+// `jQuery` defaults to `false` but the constructor merges caller options over that default, so it can be
+// opted back in; entries and callbacks then transact jQuery objects.
+const jqueryMenu = new FilterMenu(container, "search", {
+  jQuery: true,
+  menuItems: () => [],
+});
+expectTypeOf(jqueryMenu).toEqualTypeOf<FilterMenu<true>>();
+expectTypeOf(jqueryMenu.menuItems).toEqualTypeOf<ContextMenu.Entry<JQuery>[]>();
+expectTypeOf(menu.menuItems).toEqualTypeOf<ContextMenu.Entry<HTMLElement>[]>();

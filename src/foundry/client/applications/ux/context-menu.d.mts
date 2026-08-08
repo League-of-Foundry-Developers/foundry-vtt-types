@@ -1,4 +1,4 @@
-import type { Coalesce, FixedInstanceType, Identity } from "#utils";
+import type { Coalesce, FixedInstanceType, Identity, MaybePromise } from "#utils";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
@@ -302,7 +302,7 @@ declare namespace ContextMenu {
      * on how the ContextMenu was configured.
      * @deprecated "`ContextMenuEntry#callback` is deprecated. Use `ContextMenuEntry#onClick` instead." (since v14, until v16)
      */
-    callback?: ((target: ElementType, event: PointerEvent) => unknown) | undefined;
+    callback?: ((target: ElementType, event: PointerEvent) => void) | undefined;
 
     /**
      * A function to call or boolean value to determine if this entry
@@ -316,8 +316,10 @@ declare namespace ContextMenu {
   /**
    * @param event  - The triggering event.
    * @param target - The element that the context menu has been triggered for.
+   *
+   * @remarks The result is discarded; an `async` handler is fire-and-forget, never awaited.
    */
-  type EntryCallback = (event: PointerEvent, target: HTMLElement) => unknown;
+  type EntryCallback = (event: PointerEvent, target: HTMLElement) => MaybePromise<void>;
 
   /**
    * @param html - The element of the context menu entry.
@@ -428,15 +430,12 @@ declare abstract class AnyContextMenu extends ContextMenu<boolean> {
 }
 
 /**
- * @privateRemarks Unlike {@linkcode AnyContextMenu}, this is not `abstract` and takes `...args: any[]`, because
- * {@linkcode ContextMenu.implementation} is instantiated directly and so must stay `new`-able. `menuItems` is
- * `any` because it's mutable, and therefore invariant, in `UsesJQuery`, leaving `ContextMenu<true>` and
- * `ContextMenu<false>` with no common supertype.
+ * @privateRemarks Not `abstract`, and takes `...args: any[]`, because {@linkcode ContextMenu.implementation}
+ * is instantiated directly. Instantiated at `never` because {@linkcode ContextMenu.Entry | Entry} is
+ * contravariant in `ElementType`, so only `Entry<never>` is a supertype of every menu's entries.
  */
-declare class AnyContextMenuImplementation extends ContextMenu<boolean> {
+declare class AnyContextMenuImplementation extends ContextMenu<never> {
   constructor(...args: any[]);
-
-  override menuItems: any;
 }
 
 export default ContextMenu;

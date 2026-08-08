@@ -4,14 +4,14 @@ import type ContextMenu from "./context-menu.d.mts";
 /**
  * A specialized subclass of ContextMenu designed for displaying a menu of filter options.
  */
-declare class FilterMenu extends ContextMenu<false> {
+declare class FilterMenu<UsesJQuery extends boolean = false> extends ContextMenu<UsesJQuery> {
   /**
    * @param container - The HTML element that contains the context menu targets.
    * @param selector  - A CSS selector which activates the context menu.
    * @param options   - Additional options to configure the context menu.
    *                    (default: `{}`)
    */
-  constructor(container: HTMLElement, selector: string, options?: FilterMenu.Options);
+  constructor(container: HTMLElement, selector: string, options?: FilterMenu.Options<UsesJQuery>);
 
   protected override _preRenderEntries(options?: ContextMenu.RenderOptions): Promise<void>;
 
@@ -24,24 +24,31 @@ declare class FilterMenu extends ContextMenu<false> {
 }
 
 declare namespace FilterMenu {
-  interface Any extends AnyFilterMenu {}
-  interface AnyConstructor extends Identity<typeof AnyFilterMenu> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyFilterMenu {}
+    interface AnyConstructor extends Identity<typeof AnyFilterMenu> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.ux.FilterMenu> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  /** @internal */
-  interface _Options {
+  interface Options<UsesJQuery extends boolean = false> extends InexactPartial<
+    ContextMenu.ConstructorOptions<UsesJQuery>
+  > {
     /**
      * The menu item generator.
      */
-    menuItems?: (() => ContextMenu.Entry<HTMLElement>[]) | undefined;
+    menuItems?: (() => ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[]) | undefined;
   }
-
-  interface Options extends InexactPartial<Omit<ContextMenu.ConstructorOptions<false>, "jQuery">>, _Options {}
 }
 
-declare abstract class AnyFilterMenu extends FilterMenu {
+declare abstract class AnyFilterMenu extends FilterMenu<boolean> {
   constructor(...args: never);
 }
 
