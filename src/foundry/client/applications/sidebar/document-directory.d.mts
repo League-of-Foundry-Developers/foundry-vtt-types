@@ -363,7 +363,7 @@ declare class DocumentDirectory<
    * @param folder       - The dropped folder.
    * @param targetFolder - A folder to import into if not the directory root.
    *
-   * @privateRemarks Synchronous at runtime despite Foundry's `@returns {Promise<…>}`; widened to
+   * @privateRemarks Synchronous at runtime despite Foundry's `@returns {Promise<...>}`; widened to
    * {@linkcode MaybePromise} because {@linkcode DocumentDirectory._createDroppedFolderContent} awaits the
    * result, so an async override in a subclass is safe.
    */
