@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise } from "#utils";
+import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type { DocumentSheet } from "../api/_module.d.mts";
 
 declare module "#configuration" {
@@ -56,7 +56,8 @@ declare class ItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> e
 }
 
 declare namespace ItemSheet {
-  interface Any extends ItemSheet<any> {}
+  interface Any extends AnyItemSheet {}
+  interface AnyConstructor extends Identity<typeof AnyItemSheet> {}
 
   interface Options extends DocumentSheet.Options<Item.Implementation> {}
 
@@ -72,4 +73,9 @@ declare namespace ItemSheet {
    */
   type ItemSheetData = Data;
 }
+
+declare abstract class AnyItemSheet extends ItemSheet<ItemSheet.Options> {
+  constructor(...args: never);
+}
+
 export default ItemSheet;

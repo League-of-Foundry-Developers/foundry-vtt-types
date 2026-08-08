@@ -1,4 +1,4 @@
-import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
+import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
 
 declare module "#configuration" {
@@ -33,8 +33,9 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
    *   submitOnChange: true,
    *   resizable: true,
    *   baseApplication: "ActorSheet",
-   *   dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
-   *   token: null,
+   *   dragDrop: [{dragSelector: ".item-list .item"}],
+   *   secrets: [{parentSelector: ".editor"}],
+   *   token: null
    * });
    * ```
    */
@@ -58,10 +59,12 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
 
   protected override _getHeaderButtons(): Application.HeaderButton[];
 
-  protected override _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>>;
+  protected override _getSubmitData(updateData?: AnyObject | null): AnyObject;
 
   /**
    * Handle requests to configure the Token for the Actor
+   * @param event - The originating click event
+   * @internal
    */
   protected _onConfigureToken(event: JQuery.ClickEvent): void;
 
@@ -71,7 +74,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
 
   protected override _onDragStart(event: DragEvent): void;
 
-  protected override _onDrop(event: DragEvent): void;
+  protected override _onDrop(event: DragEvent): Promise<unknown>;
 
   /**
    * Handle the dropping of ActiveEffect data onto an Actor Sheet
@@ -107,7 +110,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
 
   /**
    * Handle dropping of a Folder on an Actor Sheet.
-   * Currently supports dropping a Folder of Items to create all items as owned items.
+   * The core sheet currently supports dropping a Folder of Items to create all items as owned items.
    * @param event - The concluding DragEvent which contains drop data
    * @param data  - The data transfer extracted from the event
    * @remarks This is intentionally typed to return `Promise<unknown>` to
@@ -120,25 +123,22 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
    * Handle the final creation of dropped Item data on the Actor.
    * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
    * @param itemData - The item data requested for creation
+   * @param event    - The concluding DragEvent which provided the drop data
+   * @internal
    */
   protected _onDropItemCreate(
     itemData: Item.Implementation["_source"][] | Item.Implementation["_source"],
+    event: DragEvent,
   ): Promise<Item.Implementation[]>;
 
   /**
    * Handle a drop event for an existing embedded Item to sort that Item relative to its siblings
+   * @internal
    */
   protected _onSortItem(
     event: Event,
     itemData: Item.Implementation["_source"],
   ): undefined | Promise<Item.Implementation[]>;
-
-  /**
-   * Is the drop data coming from the same actor?
-   * @param data - The drop data.
-   * @internal
-   */
-  protected _isFromSameActor(data: ActorSheet.DropData.Item): Promise<boolean>;
 }
 
 declare namespace ActorSheet {
@@ -176,7 +176,11 @@ declare namespace ActorSheet {
   }
 
   interface Options extends DocumentSheet.Options<Actor.Implementation> {
-    token?: TokenDocument.Implementation | null;
+    /**
+     * If this Actor Sheet represents a synthetic Token actor, the active Token.
+     * @defaultValue `null`
+     */
+    token: TokenDocument.Implementation | null;
   }
 
   interface Data<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet.Data<

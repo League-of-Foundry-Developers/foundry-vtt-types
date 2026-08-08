@@ -697,3 +697,20 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<Promise<unknown>>();
+
+// V14 surface
+declare const dialog: Dialog;
+
+expectTypeOf(Dialog.defaultOptions).toEqualTypeOf<Dialog.Options>();
+expectTypeOf(dialog.options.jQuery).toEqualTypeOf<boolean>();
+expectTypeOf(dialog.options.focus).toEqualTypeOf<boolean>();
+
+// `submit` is public in V14; `_onClickButton` became a truly private `#onClickButton`.
+expectTypeOf(dialog.submit).toBeFunction();
+
+declare const button: Dialog.Button;
+expectTypeOf(button.condition).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(button.cssClass).toEqualTypeOf<string | undefined>();
+
+declare const getDataButton: Dialog.GetDataButton;
+expectTypeOf(getDataButton.cssClass).toEqualTypeOf<string>();
