@@ -1595,6 +1595,12 @@ declare global {
 
     interface UX {
       /**
+       * @defaultValue {@linkcode foundry.applications.ux.Autocomplete}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.apps.FormulaEditor | FormulaEditor}, among other places.
+       */
+      Autocomplete: typeof foundry.applications.ux.Autocomplete;
+
+      /**
        * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
        * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
        * among other places.
@@ -1619,6 +1625,12 @@ declare global {
        * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
        */
       FilePicker: typeof foundry.applications.apps.FilePicker;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilterMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.tabs.PlaceableTab._attachFrameListeners | PlaceableTab#_attachFrameListeners}.
+       */
+      FilterMenu: typeof foundry.applications.ux.FilterMenu;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
