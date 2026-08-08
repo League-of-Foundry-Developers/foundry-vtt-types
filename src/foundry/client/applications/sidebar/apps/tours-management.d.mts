@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type CategoryBrowser from "../../api/category-browser.d.mts";
 
 declare module "#configuration" {
@@ -18,14 +18,23 @@ declare class ToursManagement<
   Configuration extends ToursManagement.Configuration = ToursManagement.Configuration,
   RenderOptions extends ToursManagement.RenderOptions = ToursManagement.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
-  static override DEFAULT_OPTIONS: Partial<CategoryBrowser.Configuration>;
-  protected override _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+  // Fake override.
+  static override DEFAULT_OPTIONS: ToursManagement.DefaultOptions;
+
+  /**
+   * @privateRemarks Synchronous at runtime; kept at the base's {@linkcode MaybePromise} width.
+   */
+  protected override _prepareCategoryData(): MaybePromise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+
+  /** @remarks Orders `core` first, then the active system, then everything else alphabetically by label. */
   protected override _sortCategories(
     a: CategoryBrowser.CategoryData<Entry>,
     b: CategoryBrowser.CategoryData<Entry>,
   ): number;
 
-  #toursManagement: true;
+  #ToursManagement: true;
+
+  static #ToursManagementStatic: true;
 }
 
 declare namespace ToursManagement {
@@ -33,19 +42,45 @@ declare namespace ToursManagement {
   interface AnyConstructor extends Identity<typeof AnyToursManagement> {}
 
   interface Entry {
+    /** The tour's fully-qualified identifier, `<namespace>.<id>`. */
     id: string;
+
     label: string;
+
     completed: boolean;
+
+    /** The restriction notice and the tour description, joined by `<br>`. */
     hint: string;
+
     status: string;
+
+    /**
+     * Whether the tour can be started or resumed.
+     *
+     * @remarks Absent for a completed tour, which offers only a reset.
+     */
     canPlay?: boolean | undefined;
+
+    /** The localized label for the play button, absent for a completed tour. */
     startOrResume?: string | undefined;
+
+    /** Present only once the tour has been started. */
     canReset?: boolean | undefined;
   }
 
   interface RenderContext<Entry> extends CategoryBrowser.RenderContext<Entry> {}
 
-  interface Configuration extends CategoryBrowser.Configuration {}
+  interface Configuration<
+    ToursManagement extends ToursManagement.Any = ToursManagement.Any,
+  > extends CategoryBrowser.Configuration<ToursManagement> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<ToursManagement extends ToursManagement.Any = ToursManagement.Any> = DeepPartial<
+    Configuration<ToursManagement>
+  > &
+    object;
+
   interface RenderOptions extends CategoryBrowser.RenderOptions {}
 }
 
