@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { GetKey, Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { DialogV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
@@ -39,6 +39,12 @@ declare class ChatMessages extends WorldCollection<"ChatMessage"> {
    */
   flush(): Promise<ChatMessages.FlushDialogReturn>;
 
+  // fake type override
+  override importDocument<Doc extends ChatMessage.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"ChatMessage">,
+  ): ChatMessages.ImportDocumentReturn<Doc>;
+
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
@@ -76,6 +82,10 @@ declare namespace ChatMessages {
   interface Implementation extends Document.Internal.ConfiguredCollection<"ChatMessage"> {}
 
   type FlushDialogReturn = DialogV2.ConfirmReturn<{ yes: { callback: () => Promise<void> } }>;
+
+  type ImportDocumentReturn<Doc extends ChatMessage.Implementation> = Promise<
+    ChatMessage.Stored<GetKey<Doc, "type">> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

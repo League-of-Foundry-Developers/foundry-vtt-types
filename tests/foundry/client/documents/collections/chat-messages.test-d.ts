@@ -10,7 +10,7 @@ describe("ChatMessages Tests", async () => {
   docsToCleanUp.add(message);
 
   const messageSource = message.toObject();
-  const messageImpl = new ChatMessage.implementation();
+  const messageImpl = new ChatMessage.implementation({ type: "base" });
 
   const actor = await Actor.implementation.create({
     name: "ChatMessages Collection Test Actor",
@@ -117,10 +117,24 @@ describe("ChatMessages Tests", async () => {
     messages.set("ID", messageImpl);
     // @ts-expect-error `Actor`s are not `ChatMessage`s
     messages.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(messages.set("ID", message)).toBeVoid();
+
+    expectTypeOf(messages.set("ID", message)).toEqualTypeOf<typeof messages>();
 
     expectTypeOf(messages.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await messages.importDocument(message, {});
+    if (!imported1) throw new Error("Failed to create test `ChatMessage` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<ChatMessage.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await messages.importDocument(messageImpl, {});
+    if (!imported2) throw new Error("Failed to create test `ChatMessage` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<ChatMessage.Stored<"base">>();
   });
 
   afterAll(async () => {

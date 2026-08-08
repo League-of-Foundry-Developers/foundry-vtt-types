@@ -102,8 +102,8 @@ describe("Macros Tests", async () => {
     macros.set("ID", macroImpl);
     // @ts-expect-error `Actor`s are not `Macro`s
     macros.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(macros.set("ID", macro)).toBeVoid();
+
+    expectTypeOf(macros.set("ID", macro)).toEqualTypeOf<typeof macros>();
 
     expectTypeOf(macros.delete("ID")).toBeBoolean();
   });
@@ -125,12 +125,8 @@ describe("Macros Tests", async () => {
     // more thorough options testing is in the `WorldCollection` tests
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(macros.fromCompendium(macroOrSource)).toEqualTypeOf<
-      Omit<Macro.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(macros.fromCompendium(macroOrSource, {})).toEqualTypeOf<
-      Omit<Macro.Source, "_id" | "sort" | "ownership">
-    >();
+    expectTypeOf(macros.fromCompendium(macroOrSource)).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
+    expectTypeOf(macros.fromCompendium(macroOrSource, {})).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
     expectTypeOf(
       macros.fromCompendium(macroOrSource, {
         clearFolder: undefined,
@@ -139,10 +135,24 @@ describe("Macros Tests", async () => {
         clearState: undefined,
         keepId: undefined,
       }),
-    ).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort" | "ownership">>();
+    ).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort">>();
 
     // @ts-expect-error `Actor.Stored`s aren't `Macro.Stored`s
     macros.fromCompendium(actor);
+  });
+
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await macros.importDocument(macro, {});
+    if (!imported1) throw new Error("Failed to create test `Macro` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Macro.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await macros.importDocument(macroImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Macro` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Macro.Stored<"script">>();
   });
 
   afterAll(async () => {

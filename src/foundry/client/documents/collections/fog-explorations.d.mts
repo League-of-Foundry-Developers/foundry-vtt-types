@@ -1,5 +1,5 @@
 import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -20,6 +20,8 @@ declare class FogExplorations extends WorldCollection<"FogExploration"> {
    * @param socket - The active web socket connection
    */
   static _activateSocketListeners(socket: io.Socket): void;
+
+  // `FogExploration`s do not have type data, so this collection does not require an `importDocument` fake override
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(

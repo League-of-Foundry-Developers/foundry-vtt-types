@@ -124,10 +124,10 @@ describe("EmbeddedCollection Tests", async () => {
       }),
     ).toEqualTypeOf<Item.Implementation>();
 
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error())).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), {})).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: true })).toBeVoid();
-    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: undefined })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error())).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), {})).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), { strict: true })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]({ _id: "ID" }, new Error(), { strict: undefined })).toBeVoid();
   });
 
   test("Miscellaneous", () => {
@@ -146,8 +146,10 @@ describe("EmbeddedCollection Tests", async () => {
     expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Stored["_source"][]>();
 
     // Inherited from Collection:
-    // TODO: Waiting on a luke reduction
+    // TODO: Waiting on a luke reduction, or work on StoredSource types
     // expectTypeOf(ec.toJSON()).toEqualTypeOf<Item.Source[]>();
+
+    expectTypeOf(ec.manages("foo")).toBeBoolean();
   });
 
   test("Getting and Searching", () => {
@@ -211,6 +213,68 @@ describe("EmbeddedCollection Tests", async () => {
 
     // same options interface as `#delete` above
     expectTypeOf(ec["_delete"]("ID")).toBeVoid();
+  });
+
+  test("Callback methods", () => {
+    expectTypeOf(
+      ec.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      ec.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      ec.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      ec.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Item"[]>;
+
+    expectTypeOf(
+      ec.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      ec.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      ec.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof ec>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
   });
 
   test("_onModifyContents", () => {

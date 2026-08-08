@@ -119,7 +119,7 @@ declare namespace Module {
     active: boolean;
   }
 
-  type GetReturn<ID extends string> = foundry.Game._ModuleCollectionGetReturn<ID>;
+  type GetReturn<ID extends string> = foundry.Game.ModuleCollectionGetReturn<ID>;
 }
 
 export default Module;

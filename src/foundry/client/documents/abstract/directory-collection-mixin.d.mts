@@ -2,16 +2,14 @@ import type { AnyObject, FixedInstanceType, InitializedOn, Mixin } from "#utils"
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 
-/** @privateRemarks `CompendiumCollection` and `CompendiumPacks` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type { CompendiumCollection, CompendiumPacks } from "#client/documents/collections/_module.d.mts";
 
-/** @privateRemarks `WorldCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
- * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
+ * An extension of the {@linkcode Collection} class which adds behaviors specific to tree-based collections of entries and folders.
  */
 declare class DirectoryCollection {
   /** @privateRemarks All mixin classes need a constructor like this */

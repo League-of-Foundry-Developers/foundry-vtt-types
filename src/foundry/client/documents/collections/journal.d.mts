@@ -1,5 +1,5 @@
 import type { DeepPartial, InexactPartial, Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { DocumentSheetConfig, ImagePopout } from "#client/applications/apps/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
@@ -65,6 +65,8 @@ declare class Journal extends WorldCollection<"JournalEntry"> {
    * @internal
    */
   static _showEntry(uuid: string, force?: boolean): Promise<void>;
+
+  // `JournalEntry`s do not have type data, so this collection does not require an `importDocument` fake override
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
