@@ -82,6 +82,10 @@ describe("EmbeddedCollection Tests", async () => {
 
   const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, [itemSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = ec;
+  });
+
   test("Initialization", () => {
     expectTypeOf(ec["_initialized"]).toBeBoolean();
 

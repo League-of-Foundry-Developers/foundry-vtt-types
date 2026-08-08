@@ -63,6 +63,11 @@ describe("EmbeddedCollectionDelta Tests", async () => {
     itemSource,
   ]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = itemCollOnDelta;
+    const _ec: EmbeddedCollection.Any = itemCollOnDelta;
+  });
+
   test("Collection getters", () => {
     expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Stored>>();
     expectTypeOf(itemCollOnDelta.syntheticCollection).toEqualTypeOf<

@@ -86,6 +86,11 @@ describe("DocumentCollection Tests", async () => {
 
   const dc = new TestItemCollection([itemSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = dc;
+    const _class: Collection.AnyConstructor = DocumentCollection;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
@@ -202,7 +207,7 @@ describe("DocumentCollection Tests", async () => {
 
   test("Importing", async () => {
     // @ts-expect-error importDocument will throw if not passed an object for `options`, because it lacks a signature default.
-    expect(async () => await dc.importDocument(itemImpl));
+    expect(async () => await dc.importDocument(itemImpl)).toThrow();
 
     // DC has these methods widened for subclassing purposes
 
@@ -259,7 +264,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Item.Stored | undefined>();
 
     expectTypeOf(
       dc.filter((entry, index, collection) => {
@@ -268,7 +273,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Item.Stored[]>();
 
     expectTypeOf(
       dc.forEach((entry, index) => {
@@ -284,7 +289,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return entry.documentName;
       }),
-    ).toEqualTypeOf<"Item"[]>;
+    ).toEqualTypeOf<"Item"[]>();
 
     expectTypeOf(
       dc.reduce((acc, curr, index, collection) => {

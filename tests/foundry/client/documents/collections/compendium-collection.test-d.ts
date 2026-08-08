@@ -136,10 +136,19 @@ describe("CompendiumCollection Tests", async () => {
     const testPack2 = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
     compendiaToCleanUp.add(testPack2);
     expectTypeOf(testPack2).toEqualTypeOf<CompendiumCollection<"Actor">>();
+
+    // maintaining assignability down the chain
+    // const _dc: DocumentCollection.Any = testPack1
   });
 
   const actorPack = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
   compendiaToCleanUp.add(actorPack);
+
+  test("Inheritance", () => {
+    const _collection: Collection.Any = actorPack;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = actorPack;
+  });
 
   test("Other Compendium management", () => {
     expectTypeOf(actorPack.deleteCompendium()).toEqualTypeOf<Promise<typeof actorPack>>();
@@ -443,7 +452,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Actor.Stored | undefined>;
 
     expectTypeOf(
       actorPack.filter((entry, index, collection) => {
@@ -452,7 +461,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Actor.Stored[]>();
 
     expectTypeOf(
       actorPack.forEach((entry, index) => {
@@ -468,7 +477,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return entry.documentName;
       }),
-    ).toEqualTypeOf<"Actor"[]>;
+    ).toEqualTypeOf<"Actor"[]>();
 
     expectTypeOf(
       actorPack.reduce((acc, curr, index, collection) => {

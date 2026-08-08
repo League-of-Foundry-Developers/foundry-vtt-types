@@ -42,6 +42,13 @@ describe("Folders Tests", async () => {
 
   const folders = new Folders([folderSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = folders;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = folders;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = folders;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Folders.documentName).toEqualTypeOf<"Folder">();
     expectTypeOf(Folders.instance).toEqualTypeOf<Folders.Implementation>();

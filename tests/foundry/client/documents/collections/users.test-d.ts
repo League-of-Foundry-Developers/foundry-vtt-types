@@ -26,6 +26,13 @@ describe("Users Tests", () => {
 
   const users = new Users([userCreateData]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = users;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = users;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = users;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Users.documentName).toEqualTypeOf<"User">();
     expectTypeOf(Users.instance).toEqualTypeOf<Users.Implementation>();

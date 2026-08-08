@@ -41,6 +41,13 @@ describe("Items Tests", async () => {
 
   const items = new Items([itemSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = items;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = items;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = items;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Items.documentName).toEqualTypeOf<"Item">();
     expectTypeOf(Items.instance).toEqualTypeOf<Items.Implementation>();

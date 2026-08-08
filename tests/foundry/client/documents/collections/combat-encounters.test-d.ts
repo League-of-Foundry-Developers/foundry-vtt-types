@@ -35,6 +35,13 @@ describe("CombatEncounters Tests", async () => {
 
   const encounters = new CombatEncounters([combatSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = encounters;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = encounters;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = encounters;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(CombatEncounters.documentName).toEqualTypeOf<"Combat">();
     expectTypeOf(CombatEncounters.instance).toEqualTypeOf<CombatEncounters.Implementation>();

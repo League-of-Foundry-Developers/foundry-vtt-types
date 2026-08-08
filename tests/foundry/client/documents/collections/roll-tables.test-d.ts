@@ -35,6 +35,13 @@ describe("RollTables Tests", async () => {
 
   const tables = new RollTables([tableSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = tables;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = tables;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = tables;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(RollTables.documentName).toEqualTypeOf<"RollTable">();
     expectTypeOf(RollTables.instance).toEqualTypeOf<RollTables.Implementation>();

@@ -35,6 +35,13 @@ describe("Journal Tests", async () => {
 
   const journals = new Journal([jeSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = journals;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = journals;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = journals;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Journal.documentName).toEqualTypeOf<"JournalEntry">();
     expectTypeOf(Journal.instance).toEqualTypeOf<Journal.Implementation>();

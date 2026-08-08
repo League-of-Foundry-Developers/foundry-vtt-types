@@ -32,6 +32,13 @@ describe("Actors Tests", async () => {
 
   const actors = new Actors([actorSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = actors;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = actors;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = actors;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Actors.documentName).toEqualTypeOf<"Actor">();
     expectTypeOf(Actors.instance).toEqualTypeOf<Actors.Implementation>();

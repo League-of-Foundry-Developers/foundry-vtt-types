@@ -39,6 +39,13 @@ describe("Playlists Tests", async () => {
 
   const playlists = new Playlists([playlistSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = playlists;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = playlists;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = playlists;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Playlists.documentName).toEqualTypeOf<"Playlist">();
     expectTypeOf(Playlists.instance).toEqualTypeOf<Playlists.Implementation>();

@@ -40,6 +40,13 @@ describe("Macros Tests", async () => {
 
   const macros = new Macros([macroSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = macros;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = macros;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = macros;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Macros.documentName).toEqualTypeOf<"Macro">();
     expectTypeOf(Macros.instance).toEqualTypeOf<Macros.Implementation>();

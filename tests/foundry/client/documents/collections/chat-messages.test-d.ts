@@ -35,6 +35,13 @@ describe("ChatMessages Tests", async () => {
 
   const messages = new ChatMessages([messageSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = messages;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = messages;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = messages;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(ChatMessages.documentName).toEqualTypeOf<"ChatMessage">();
     expectTypeOf(ChatMessages.instance).toEqualTypeOf<ChatMessages.Implementation>();

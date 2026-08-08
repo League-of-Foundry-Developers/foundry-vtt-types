@@ -45,6 +45,11 @@ describe("SingletonEmbeddedCollection Tests", async () => {
     deltaSource,
   ]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = sec;
+    const _ec: foundry.abstract.EmbeddedCollection.Any = sec;
+  });
+
   test("Getting", () => {
     expectTypeOf(sec.get("ID")).toEqualTypeOf<ActorDelta.Stored | undefined>();
     expectTypeOf(sec.get("ID", {})).toEqualTypeOf<ActorDelta.Stored | undefined>();

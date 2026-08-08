@@ -32,6 +32,13 @@ describe("CardStacks Tests", async () => {
 
   const stacks = new CardStacks([cardsSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = stacks;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = stacks;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = stacks;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(CardStacks.documentName).toEqualTypeOf<"Cards">();
     expectTypeOf(CardStacks.instance).toEqualTypeOf<CardStacks.Implementation>();

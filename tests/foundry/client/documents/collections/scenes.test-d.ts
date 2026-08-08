@@ -41,6 +41,13 @@ describe("Scenes Tests", async () => {
 
   const scenes = new Scenes([sceneSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = scenes;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = scenes;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = scenes;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(Scenes.documentName).toEqualTypeOf<"Scene">();
     expectTypeOf(Scenes.instance).toEqualTypeOf<Scenes.Implementation>();

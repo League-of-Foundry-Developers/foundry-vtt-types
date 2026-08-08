@@ -32,6 +32,13 @@ describe("WorldSettings Tests", async () => {
 
   const settings = new WorldSettings([settingSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = settings;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = settings;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = settings;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(WorldSettings.documentName).toEqualTypeOf<"Setting">();
     expectTypeOf(WorldSettings.instance).toEqualTypeOf<WorldSettings.Implementation>();

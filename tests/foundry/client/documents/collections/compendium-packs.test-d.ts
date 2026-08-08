@@ -21,6 +21,10 @@ describe("CompendiumPacks Tests", () => {
 
   const packs = new CompendiumPacks(packsData);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = packs;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(packs.name).toBeString();
     expectTypeOf(packs.folders).toEqualTypeOf<Collection<Folder.Stored<"Compendium">>>();

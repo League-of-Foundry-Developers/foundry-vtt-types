@@ -36,6 +36,13 @@ describe("FogExplorations Tests", async () => {
 
   const fogs = new FogExplorations([fogSource]);
 
+  test("Inheritance", () => {
+    const _collection: Collection.Any = fogs;
+    // @ts-expect-error Currently broken
+    const _dc: foundry.documents.abstract.DocumentCollection.Any = fogs;
+    const _wc: foundry.documents.abstract.WorldCollection.Any = fogs;
+  });
+
   test("Miscellaneous", () => {
     expectTypeOf(FogExplorations.documentName).toEqualTypeOf<"FogExploration">();
     expectTypeOf(FogExplorations.instance).toEqualTypeOf<FogExplorations.Implementation>();
