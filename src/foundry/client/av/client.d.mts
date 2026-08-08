@@ -1,4 +1,4 @@
-import type { DeepPartial, FixedInstanceType } from "#utils";
+import type { DeepPartial, FixedInstanceType, Identity } from "#utils";
 import type { AVMaster, AVSettings } from "#client/av/_module.d.mts";
 
 /**
@@ -81,14 +81,6 @@ declare abstract class AVClient {
   getVideoSources(): Promise<Record<string, string>>;
 
   /**
-   * Obtain a mapping of available device sources for a given type.
-   * @param kind - The type of device source being requested
-   * @internal
-   * @deprecated Foundry made this hard private in v13. This warning will be removed in v14.
-   */
-  protected _getSourcesOfType(kind: never): never;
-
-  /**
    * Return an array of Foundry User IDs which are currently connected to A/V.
    * The current user should also be included as a connected user in addition to all peers.
    * @returns The connected User IDs
@@ -96,19 +88,18 @@ declare abstract class AVClient {
   abstract getConnectedUsers(): string[];
 
   /**
-   * Provide a MediaStream instance for a given user ID
+   * Provide a {@linkcode MediaStream} instance for a given user ID
    * @param userId - The User id
-   * @returns The MediaStream for the user, or null if the user does not have one
+   * @returns The `MediaStream` for the user, or `null` if the user does not have one
    */
   abstract getMediaStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
-   * Provide a MediaStream for monitoring a given user's voice volume levels.
+   * Provide a {@linkcode MediaStream} for monitoring a given user's voice volume levels.
    * @param userId - The User ID.
-   * @returns The MediaStream for the user, or null if the user does not have one.
-   * @remarks The getLevelsStreamForUser() method must be defined by an AVClient subclass and will be strictly required starting in v10
+   * @returns The `MediaStream` for the user, or `null` if the user does not have one.
    */
-  getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
+  abstract getLevelsStreamForUser(userId: string): MediaStream | null | undefined;
 
   /**
    * Is outbound audio enabled for the current user?
@@ -154,16 +145,13 @@ declare abstract class AVClient {
    */
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 
-  /**
-   * Replace the local stream for each connected peer with a re-generated MediaStream.
-   * @remarks The updateLocalStream() method must be defined by an AVClient subclass.
-   */
+  /** Replace the local stream for each connected peer with a re-generated MediaStream. */
   abstract updateLocalStream(): Promise<void>;
 }
 
 declare namespace AVClient {
-  type Implementation = FixedInstanceType<ImplementationClass>;
-  type ImplementationClass = CONFIG["WebRTC"]["clientClass"];
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.WebRTC.clientClass> {}
 }
 
 export default AVClient;

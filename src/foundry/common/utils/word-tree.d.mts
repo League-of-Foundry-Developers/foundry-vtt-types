@@ -7,7 +7,7 @@ import type { Document } from "#common/abstract/_module.d.mts";
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<string> = string> extends StringTree<
+declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<string> = string[]> extends StringTree<
   WordTree.Entry<DocumentName>,
   Key
 > {

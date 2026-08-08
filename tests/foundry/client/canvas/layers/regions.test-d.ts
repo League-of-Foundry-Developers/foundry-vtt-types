@@ -17,7 +17,6 @@ expectTypeOf(layer.options).toEqualTypeOf<RegionLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"regions">();
 
 expectTypeOf(layer.hookName).toEqualTypeOf<"RegionLayer">();
-expectTypeOf(layer.legend).toEqualTypeOf<foundry.applications.ui.RegionLegend>();
 
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();

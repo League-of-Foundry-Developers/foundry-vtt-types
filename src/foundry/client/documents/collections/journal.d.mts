@@ -1,4 +1,4 @@
-import type { InexactPartial, Identity } from "#utils";
+import type { DeepPartial, InexactPartial, Identity } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { DocumentSheetConfig, ImagePopout } from "#client/applications/apps/_module.d.mts";
@@ -20,7 +20,8 @@ declare class Journal extends WorldCollection<"JournalEntry"> {
 
   /**
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
-   * @param doc - The JournalEntry or JournalEntryPage to show.
+   * @param doc     - The JournalEntry or JournalEntryPage to show.
+   * @param options - (default: `{}`)
    */
   static showDialog(
     doc: JournalEntry.Implementation | JournalEntryPage.Implementation,
@@ -103,17 +104,6 @@ declare namespace Journal {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"JournalEntry"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"JournalEntry"> {}
 
-  /** @internal */
-  interface _ShowDialogOptions {
-    /** A parent Application to register the dialog as a child of. */
-    parent: ApplicationV2.Any;
-
-    /** Options to forward to the dialog render call. */
-    renderOptions: InexactPartial<ApplicationV2.RenderOptions>;
-  }
-
-  interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
-
   interface _ShowOptions {
     /**
      * Display the entry to all players regardless of normal permissions.
@@ -129,6 +119,21 @@ declare namespace Journal {
   }
 
   interface ShowOptions extends InexactPartial<_ShowOptions> {}
+
+  interface _ShowDialogOptions {
+    /**
+     * A parent Application to register the dialog as a child of.
+     */
+    parent: ApplicationV2.Any;
+
+    /**
+     * Options to forward to the dialog render call.
+     * @defaultValue `{}`
+     */
+    renderOptions: DeepPartial<ApplicationV2.RenderOptions>;
+  }
+
+  interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
 
   /**
    * Options for {@linkcode Journal.showImage}.

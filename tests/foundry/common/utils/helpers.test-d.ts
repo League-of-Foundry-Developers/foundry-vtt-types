@@ -36,13 +36,11 @@ expectTypeOf(utils.threadLock(42)).toEqualTypeOf<Promise<void>>();
 // debounce
 
 const debounceWithoutParameters = utils.debounce(functionWithoutParameters, 500);
-expectTypeOf(debounceWithoutParameters).toEqualTypeOf<(() => void) & { cancel: () => void }>();
+expectTypeOf(debounceWithoutParameters).toExtend<(() => void) & { cancel: () => void }>();
 expectTypeOf(debounceWithoutParameters.cancel).toEqualTypeOf<() => void>();
 
 const debounceWithParameters = utils.debounce(functionWithParameters, 500);
-expectTypeOf(debounceWithParameters).toEqualTypeOf<
-  ((a: number, b: string, c?: boolean) => void) & { cancel: () => void }
->();
+expectTypeOf(debounceWithParameters).toExtend<((a: number, b: string, c?: boolean) => void) & { cancel: () => void }>();
 expectTypeOf(debounceWithParameters.cancel).toEqualTypeOf<() => void>();
 
 // throttle

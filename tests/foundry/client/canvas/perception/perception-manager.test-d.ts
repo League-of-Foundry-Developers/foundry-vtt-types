@@ -30,7 +30,6 @@ describe(" Tests", () => {
     // all
     expectTypeOf(
       manager.update({
-        refreshEdges: true,
         initializeLighting: false,
         initializeLightSources: undefined,
         refreshLighting: true,
@@ -46,11 +45,10 @@ describe(" Tests", () => {
         initializeSounds: false,
         refreshSounds: undefined,
         soundFadeDuration: true,
-        // deprecated since v12, until v14
-        refreshTiles: false,
-        identifyInteriorWalls: undefined,
         // deprecated since v13, until v15
         initializeDarknessSources: true,
+        // deprecated since v14, until v16
+        refreshEdges: true,
       }),
     ).toBeVoid();
 

@@ -332,6 +332,13 @@ declare abstract class BaseShapeData<
 
   static override defineSchema(): BaseShapeData.Schema;
 
+  /**
+   * The index of this shape within the array of shapes in its parent.
+   * See `foundry.data.fields.ShapesField`.
+   * @internal
+   */
+  _index: number | undefined;
+
   static #BaseShapeData: true;
 }
 

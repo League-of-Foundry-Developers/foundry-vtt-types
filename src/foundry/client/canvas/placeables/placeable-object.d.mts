@@ -494,7 +494,7 @@ declare abstract class PlaceableObject<
    * Actions that should be taken for this Placeable Object when a mouseover event occurs.
    * Hover events on PlaceableObject instances allow event propagation by default.
    * @see `MouseInteractionManager##handlePointerOver`
-   * @param event   - The triggering canvas interaction event
+   * @param event   - The triggering canvas or DOM interaction event
    * @param options - Options which customize event handling
    * @remarks {@linkcode Wall._onHoverIn | Wall#_onHoverIn} can return `false`, otherwise this is always `void`.
    */
@@ -502,10 +502,11 @@ declare abstract class PlaceableObject<
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
-   * @param event - The triggering canvas interaction event
+   * @param event   - The triggering canvas or DOM interaction event
+   * @param options - Options which customize event handling
    * @remarks The event is not used in the method.
    */
-  protected _onHoverOut(event?: Canvas.Event.Pointer): void;
+  protected _onHoverOut(event?: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverOutOptions): void;
 
   /**
    * Should the placeable propagate left click downstream?
@@ -752,7 +753,16 @@ declare namespace PlaceableObject {
   > {}
 
   /** @internal */
-  interface _HoverInOptions {
+  interface _HoverOptions {
+    /**
+     * Highlight corresponding entry in the sidebar legend.
+     * @defaultValue `true`
+     */
+    updateLegend: boolean;
+  }
+
+  /** @internal */
+  interface _HoverInOptions extends _HoverOptions {
     /**
      * Trigger hover-out behavior on sibling objects
      * @defaultValue `false`
@@ -761,6 +771,8 @@ declare namespace PlaceableObject {
   }
 
   interface HoverInOptions extends InexactPartial<_HoverInOptions> {}
+
+  interface HoverOutOptions extends InexactPartial<_HoverOptions> {}
 
   /**
    * @remarks While in theory a custom action could be added through a custom `_can*` method method Atropos

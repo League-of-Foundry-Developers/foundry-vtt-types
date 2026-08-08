@@ -1,8 +1,13 @@
-import type { Brand, Coalesce, Identity, InexactPartial } from "#utils";
+import type { Coalesce, Identity, InexactPartial } from "#utils";
 import type PointEffectSourceMixin from "#client/canvas/sources/point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { PolygonVertex } from "#client/canvas/geometry/edges/_module.d.mts";
+import type ElevatedSurfaceExposureGenerator from "./elevated-surface-exposure-polygon.d.mts";
+// TODO: V14 renames this to `PolygonTree` and moves it to `client/data/polygon-tree.mjs`; retarget this
+// import in the `client/data` migration.
+import type { RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
+import type { Level, Scene } from "#client/documents/_module.d.mts";
 
 /**
  * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
@@ -27,8 +32,12 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * Customize how wall direction of one-way walls is applied
+   * @deprecated "`PointSourcePolygon.WALL_DIRECTION_MODES` has been deprecated in favor of
+   * {@linkcode CONST.EDGE_DIRECTION_MODES}." (since v14, until v16)
+   * @remarks Returns {@linkcode CONST.EDGE_DIRECTION_MODES} itself, not a distinct object, so its members
+   * remain assignable to {@linkcode ClockwiseSweepPolygon.Config.edgeDirectionMode | edgeDirectionMode}.
    */
-  static WALL_DIRECTION_MODES: PointSourcePolygon.WallDirectionModes;
+  static get WALL_DIRECTION_MODES(): typeof CONST.EDGE_DIRECTION_MODES;
 
   /**
    * The rectangular bounds of this polygon
@@ -38,15 +47,31 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * The origin point of the source polygon.
-   * @privateRemarks Not initialized to any value, but immediately set by {@linkcode PointSourcePolygon.initialize | #initialize}
+   * @privateRemarks Declared without an initializer, so `undefined` until {@linkcode PointSourcePolygon.initialize | #initialize} sets it.
    */
-  origin: Canvas.ElevatedPoint;
+  origin: Canvas.ElevatedPoint | undefined;
 
   /**
    * The configuration of this polygon.
    * @remarks Initialized as `{}` but immediately filled by  {@linkcode PointSourcePolygon.initialize | #initialize}
    */
   config: PointSourcePolygon.StoredConfig;
+
+  /**
+   * The area of surfaces that is visible to this polygon, if any.
+   * @privateRemarks Declared without an initializer, so `undefined` until {@linkcode PointSourcePolygon.create} assigns it.
+   */
+  surfaceExposure: RegionPolygonTree | null | undefined;
+
+  /**
+   * The level the polygon is computed it.
+   */
+  get level(): Level.Implementation;
+
+  /**
+   * The level the polygon is computed it.
+   */
+  get scene(): Scene.Implementation;
 
   /**
    * An indicator for whether this polygon is constrained by some boundary shape?
@@ -150,12 +175,18 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * @param ray         - The Ray to test
    * @param mode        - The collision mode being tested
    * @param destination - The destination
+   * @param tMin        - Intersections of the ray and an edge with t-value at most
+   * `tMin` are not considered collisions. Default: `0`.
+   * @param tMax        - Intersections of the ray and an edge with t-value greater than
+   * `tMax` are not considered collisions. Default: `1`.
    * @returns The collision test result
    */
   protected abstract _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
     ray: Ray,
     mode: Mode,
     destination: Canvas.ElevatedPoint,
+    tMin: number,
+    tMax: number,
   ): PointSourcePolygon.TestCollision<Mode>;
 
   /**
@@ -183,14 +214,17 @@ declare namespace PointSourcePolygon {
   interface Any extends AnyPointSourcePolygon {}
   interface AnyConstructor extends Identity<typeof AnyPointSourcePolygon> {}
 
-  type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
+  /**
+   * @deprecated V14 collapsed this into {@linkcode CONST.EDGE_DIRECTION_MODES}; the branded standalone type it
+   * described no longer exists at runtime. Use {@linkcode CONST.EDGE_DIRECTION_MODES} instead.
+   */
+  type WALL_DIRECTION_MODES = CONST.EDGE_DIRECTION_MODES;
 
-  /** @remarks {@linkcode PointSourcePolygon.WALL_DIRECTION_MODES} is frozen*/
-  interface WallDirectionModes {
-    readonly NORMAL: 0 & WALL_DIRECTION_MODES;
-    readonly REVERSED: 1 & WALL_DIRECTION_MODES;
-    readonly BOTH: 2 & WALL_DIRECTION_MODES;
-  }
+  /**
+   * @deprecated V14 collapsed this into {@linkcode CONST.EDGE_DIRECTION_MODES}. Use
+   * {@linkcode CONST.EDGE_DIRECTION_MODES} instead.
+   */
+  type WallDirectionModes = typeof CONST.EDGE_DIRECTION_MODES;
 
   /**
    * Properties of the config that get set with no respect to their passed value
@@ -251,6 +285,18 @@ declare namespace PointSourcePolygon {
    */
   interface _BaseConfig {
     /**
+     * The Level the polygon is computed in. Defaults to the viewed Level.
+     * @defaultValue {@linkcode Canvas.level | canvas.level}
+     */
+    level: Level.Implementation;
+
+    /**
+     * Additional options passed through to surface exposure generator
+     * @defaultValue `{}`
+     */
+    surfaceExposure: ElevatedSurfaceExposureGenerator.Options;
+
+    /**
      * A limited radius of the resulting polygon
      * @defaultValue {@linkcode Canvas.Dimensions.maxR | canvas.dimensions.maxR}
      * @remarks Will be replaced with `maxR` if passed value is larger
@@ -274,12 +320,6 @@ declare namespace PointSourcePolygon {
      * @defaultValue `0`
      */
     rotation: number;
-
-    /**
-     * Customize how wall direction of one-way walls is applied
-     * @defaultValue {@linkcode PointSourcePolygon.WALL_DIRECTION_MODES.NORMAL}
-     */
-    wallDirectionMode: PointSourcePolygon.WALL_DIRECTION_MODES;
 
     /**
      * Compute the polygon with threshold wall constraints applied
@@ -345,6 +385,18 @@ declare namespace PointSourcePolygon {
      * @defaultValue `"all"`
      */
     mode: Mode;
+
+    /**
+     * Intersections of the ray and an edge with t-value at most `tMin` are not considered collisions.
+     * @defaultValue `0`
+     */
+    tMin: number;
+
+    /**
+     * Intersections of the ray and an edge with t-value greater than `tMax` are not considered collisions.
+     * @defaultValue `1`
+     */
+    tMax: number;
   }
 
   interface TestCollisionOptions<Mode extends CollisionModes | undefined = undefined>

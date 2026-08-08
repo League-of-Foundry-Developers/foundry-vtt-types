@@ -29,7 +29,8 @@ declare class Tour {
   /**
    * Handle a movement action to either progress or regress the Tour
    * @param movementDirections - The Directions being moved in
-   * @remarks This method's one call in core is by full path name inside `ClientKeybindings##onPan`, so extending in subclasses has no effect
+   * @remarks This method's one call in core is by full path name inside `ClientKeybindings##onPan`,
+   * so extending in subclasses has no effect.
    */
   static onMovementAction(movementDirections: ClientKeybindings.MOVEMENT_DIRECTIONS[]): true | void;
 
@@ -40,7 +41,7 @@ declare class Tour {
 
   /**
    * The HTMLElement which is the focus of the current tour step.
-   * @remarks Only `undefined` prior to Tour {@linkcode start}
+   * @remarks Only `undefined` prior to Tour {@linkcode start}.
    */
   targetElement: HTMLElement | undefined | null;
 
@@ -159,14 +160,14 @@ declare class Tour {
    * Progresses to a given Step
    * @param stepIndex - The step to progress to
    * @remarks
-   * @throws If `stepIndex` is outside the range `[0, this.steps.length]`
+   * @throws If `stepIndex` is outside the range `[0, this.steps.length]`.
    */
   progress(stepIndex: number): Promise<void>;
 
   /**
    * Query the DOM for the target element using the provided selector
    * @param selector - A CSS selector
-   * @returns The target element, or null if not found
+   * @returns The target element, or null if not found.
    */
   protected _getTargetElement(selector: string): Element | null;
 
@@ -181,7 +182,7 @@ declare class Tour {
    * Set-up operations performed before a step is shown.
    * @abstract
    * @remarks Despite being marked `@abstract`, the base implementation is a no-op and doesn't throw.
-   * Implementation is therefor *not* required by subclasses, but most probably will do so anyway
+   * Implementation is therefore *not* required by subclasses, but most probably will provide one anyway.
    */
   protected _preStep(): Promise<void>;
 
@@ -189,7 +190,7 @@ declare class Tour {
    * Clean-up operations performed after a step is completed.
    * @abstract
    * @remarks Despite being marked `@abstract`, the base implementation is a method with a real body
-   * and doesn't throw. Implementation is therefor *not* required by subclasses; none of core's  do,
+   * and doesn't throw. Implementation is therefore *not* required by subclasses; none of core's  do,
    * and any that do must call `super._postStep()` in them
    */
   protected _postStep(): Promise<void>;
@@ -199,20 +200,18 @@ declare class Tour {
    */
   protected _renderStep(): Promise<void>;
 
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _onButtonClick(event: never, buttons: never): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _saveProgress(): never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _loadProgress(): never;
-
   /**
    * Reloads the Tour's current step from the saved progress
    * @internal
    */
   _reloadProgress(): void;
+
+  /**
+   * Create and append a tour-fadeout highlight element positioned over the given target element.
+   * @param element - The element to highlight.
+   * @returns The created fadeout element, already appended to document.body.
+   */
+  static highlightElement(element: HTMLElement, options?: Tour.HighlightElementOptions): HTMLElement;
 
   #Tour: true;
 }
@@ -299,24 +298,41 @@ declare namespace Tour {
     content: string;
   }
 
-  type STATUS = ValueOf<Status>;
-
   /** @internal */
   interface _ConstructorOptions {
     /** A tour ID that supersedes `TourConfig#id` */
     id: string;
 
-    /** A tour namespace that supersedes `TourConfig#namespace` */
+    /** A tour namespace that supersedes {@linkcode Tour.Config.namespace} */
     namespace: string;
   }
 
   interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
+
+  /** @internal */
+  interface _HighlightElementOptions {
+    /**
+     * Padding (px) around the element.
+     * @defaultValue {@linkcode Tour.HIGHLIGHT_PADDING}
+     */
+    padding: number;
+
+    /**
+     * Whether user interaction should be prevented while the highlight is in effect.
+     * @defaultValue `true`
+     */
+    preventInteraction: boolean;
+  }
+
+  interface HighlightElementOptions extends InexactPartial<_HighlightElementOptions> {}
 
   interface Status {
     readonly UNSTARTED: "unstarted";
     readonly IN_PROGRESS: "in-progress";
     readonly COMPLETED: "completed";
   }
+
+  type STATUS = ValueOf<Status>;
 }
 
 export default Tour;

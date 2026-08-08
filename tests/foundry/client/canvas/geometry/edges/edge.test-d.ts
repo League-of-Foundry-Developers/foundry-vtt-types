@@ -16,6 +16,7 @@ new Edge(p, p, {
   move: undefined,
   sound: undefined,
   light: undefined,
+  darkness: undefined,
   id: undefined,
   object: undefined,
   direction: undefined,
@@ -23,27 +24,28 @@ new Edge(p, p, {
   priority: undefined,
 });
 const edge = new Edge(p, p, {
-  type: "darkness",
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  sight: CONST.WALL_SENSE_TYPES.DISTANCE,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  move: CONST.WALL_SENSE_TYPES.LIMITED,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  sound: CONST.WALL_SENSE_TYPES.PROXIMITY,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  light: CONST.WALL_SENSE_TYPES.NONE,
+  type: "source",
+  sight: CONST.EDGE_SENSE_TYPES.DISTANCE,
+  move: CONST.EDGE_SENSE_TYPES.LIMITED,
+  sound: CONST.EDGE_SENSE_TYPES.PROXIMITY,
+  light: CONST.EDGE_SENSE_TYPES.NONE,
+  darkness: CONST.EDGE_SENSE_TYPES.NORMAL,
   id: foundry.utils.randomID(),
   object: someWall,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  direction: CONST.WALL_DIRECTIONS.LEFT,
+  direction: CONST.EDGE_DIRECTIONS.LEFT,
   threshold: {
     attenuation: true,
     sound: 400,
     light: 200,
+    darkness: 100,
     sight: 2000,
   },
   priority: 7,
 });
+
+// `darkness` edges became `type: "source"` in v14
+// @ts-expect-error "darkness" is no longer an Edge type
+new Edge(p, p, { type: "darkness" });
 
 expectTypeOf(edge.a).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(edge.b).toEqualTypeOf<PIXI.Point>();
@@ -51,21 +53,20 @@ expectTypeOf(edge.b).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(edge.id).toEqualTypeOf<string | undefined>();
 if (edge.object) expectTypeOf(edge.object).toEqualTypeOf<PlaceableObject.Any>();
 expectTypeOf(edge.type).toEqualTypeOf<Edge.EdgeTypes>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.direction).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.light).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.move).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.sight).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.sound).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.threshold).toEqualTypeOf<WallDocument.ThresholdData | undefined>();
+expectTypeOf(edge.direction).toEqualTypeOf<CONST.EDGE_DIRECTIONS>();
+expectTypeOf(edge.light).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
+expectTypeOf(edge.darkness).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
+expectTypeOf(edge.move).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
+expectTypeOf(edge.sight).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
+expectTypeOf(edge.sound).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
+expectTypeOf(edge.threshold).toEqualTypeOf<Edge.ThresholdData | null>();
 expectTypeOf(edge.nw).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.se).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.bounds).toEqualTypeOf<PIXI.Rectangle>();
-expectTypeOf(edge.intersections).toEqualTypeOf<Edge.IntersectionEntry[]>();
+expectTypeOf(edge.intersections).toEqualTypeOf<Edge.Intersections>();
+
+declare const levelId: string;
+expectTypeOf(edge.intersections[levelId]).toEqualTypeOf<Edge.IntersectionEntry[] | undefined>();
 
 if (edge.vertexA) expectTypeOf(edge.vertexA).toEqualTypeOf<PolygonVertex>();
 expectTypeOf(edge.vertexB).toEqualTypeOf<PolygonVertex | undefined>();
@@ -76,9 +77,9 @@ expectTypeOf(edge.clone()).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
 declare const edge2: Edge;
 expectTypeOf(edge.getIntersection(edge2)).toEqualTypeOf<foundry.utils.LineIntersection | void>();
 expectTypeOf(edge.applyThreshold("sound", p)).toEqualTypeOf<boolean>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(edge.orientPoint(p)).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
-expectTypeOf(edge.recordIntersections(edge2)).toEqualTypeOf<void>();
-expectTypeOf(edge.removeIntersections()).toEqualTypeOf<void>();
+expectTypeOf(edge.applyThreshold("darkness", p)).toEqualTypeOf<boolean>();
+expectTypeOf(edge.orientPoint(p)).toEqualTypeOf<CONST.EDGE_DIRECTIONS>();
+expectTypeOf(edge.recordIntersections(edge2, levelId)).toEqualTypeOf<void>();
+expectTypeOf(edge.removeIntersections(levelId)).toEqualTypeOf<void>();
 
-expectTypeOf(foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections([edge2])).toEqualTypeOf<void>();
+expectTypeOf(foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections([edge2], levelId)).toEqualTypeOf<void>();

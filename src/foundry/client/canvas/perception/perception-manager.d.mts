@@ -47,8 +47,9 @@ declare namespace PerceptionManager {
 
   interface RENDER_FLAGS {
     /**
-     * Recompute intersections between all registered edges. See {@linkcode foundry.canvas.geometry.edges.CanvasEdges.refresh | CanvasEdges#refresh}.
+     * Recompute intersections between all registered edges.
      * @defaultValue `{}`
+     * @deprecated "The `refreshEdges` flag is now obsolete and no longer requires to be set." (since v14, until v16)
      */
     refreshEdges: RenderFlag<this, "refreshEdges">;
 
@@ -133,18 +134,6 @@ declare namespace PerceptionManager {
      * @defaultValue `{}`
      */
     soundFadeDuration: RenderFlag<this, "soundFadeDuration">;
-
-    /**
-     * @defaultValue `{ propagate: ["refreshOcclusion"], alias: true }`
-     * @deprecated "The `refreshTiles` flag is deprecated in favor of `refreshOcclusion`" (since v12, until v14)
-     */
-    refreshTiles: RenderFlag<this, "refreshTiles">;
-
-    /**
-     * @defaultValue `{ propagate: ["initializeLighting", "initializeVision"], alias: true }`
-     * @deprecated "The `identifyInteriorWalls` flag is now obsolete and has no replacement." (since v12, until v14)
-     */
-    identifyInteriorWalls: RenderFlag<this, "identifyInteriorWalls">;
 
     /**
      * @defaultValue `{ propagate: ["refreshLightSources"] }`

@@ -46,7 +46,6 @@ declare class AudioTimeout<CallbackReturn = undefined> {
    * @param delayMS - A desired delay timing in milliseconds
    * @param options - Additional options which modify timeout behavior
    */
-  // options: not null (destructured)
   constructor(delayMS: number, options?: AudioTimeout.ConstructorOptions<CallbackReturn>);
 
   /**
@@ -91,7 +90,7 @@ declare namespace AudioTimeout {
 
   /** @internal */
   interface _ConstructorOptions<Return = undefined> {
-    /** @defaultValue `game.audio.music` */
+    /** @defaultValue {@linkcode game.audio.music} */
     context: AudioContext;
 
     callback: () => Return;

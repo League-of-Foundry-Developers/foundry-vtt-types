@@ -28,9 +28,12 @@ describe("AbstractMultiSelectElementTests", () => {
   test("Selection and choices", () => {
     expectTypeOf(mse.select("foo")).toBeVoid();
     expectTypeOf(mse.unselect("foo")).toBeVoid();
+    expectTypeOf(mse.disableOption("foo")).toBeVoid();
+    expectTypeOf(mse.disableOption("foo", false)).toBeVoid();
 
     expectTypeOf(mse["_options"]).toEqualTypeOf<Array<HTMLOptGroupElement | HTMLOptionElement>>();
     expectTypeOf(mse["_choices"]).toEqualTypeOf<Record<string, string>>();
+    expectTypeOf(mse["_disabledOptions"]).toEqualTypeOf<Set<string>>();
   });
 });
 
@@ -75,8 +78,19 @@ describe("HTMLMultiCheckboxElement Tests", () => {
   test("Construction", () => {
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
     new elements.HTMLMultiCheckboxElement();
-    // HTMLMultiCheckboxElement doesn't have its own `.create` in 13.351, proper creation is only available via `createMultiSelectInput`
-    // tests for which can be found in `tests/client/applications/forms/fields.mjs`
+    expectTypeOf(
+      elements.HTMLMultiCheckboxElement.create({
+        name: "myCheckboxen",
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      }),
+    ).toEqualTypeOf<elements.HTMLMultiCheckboxElement>();
+    // `create` overrides `type`, so passing one is an error
+    // @ts-expect-error `type` is omitted from this `create`'s config
+    elements.HTMLMultiCheckboxElement.create({ name: "myCheckboxen", type: "checkboxes", options: [] });
+    // thorough testing of the `MultiSelectInputConfig` interface is in the `client/applications/forms/fields.mjs` tests
   });
 
   const mce = foundry.applications.fields.createMultiSelectInput({

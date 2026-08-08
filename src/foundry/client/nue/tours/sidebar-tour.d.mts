@@ -5,15 +5,15 @@ import type Tour from "../tour.mjs";
  * A Tour subclass for the Sidebar Tour
  */
 declare class SidebarTour extends Tour {
-  /** @privateRemarks Fake type override */
+  // fake type override
   constructor(config: SidebarTour.Config, options?: Tour.ConstructorOptions);
 
-  /** @privateRemarks Fake type override */
+  // fake type override
   override config: SidebarTour.Config;
 
   override start(): Promise<void>;
 
-  /** @privateRemarks Fake type override */
+  // fake type override
   static override fromJSON(filepath: string): Promise<SidebarTour.Any>;
 
   protected override _preStep(): Promise<void>;
@@ -27,7 +27,7 @@ declare namespace SidebarTour {
   interface _Step {
     /**
      * Activates a particular sidebar tab. Usable in {@linkcode SidebarTour} instances.
-     * @remarks {@linkcode SidebarTour._preStep | SidebarTour#_preStep} does `await ui[this.currentStep.sidebarTab]?.activate();`
+     * @remarks {@linkcode SidebarTour._preStep | SidebarTour#_preStep} does `await ui[this.currentStep.sidebarTab]?.activate();`.
      */
     sidebarTab: keyof typeof ui;
   }

@@ -317,17 +317,26 @@ declare namespace ApplicationV2 {
 
     /** Re-render the window controls menu? */
     controls: boolean;
+
+    /** The ID of an existing detached window to render into. */
+    windowId?: string | undefined;
+
+    /**
+     * Whether the application should render inside the main application, or in a separate, detached window.
+     * Pass false to attach to the main application, or true to detach into a new window.
+     */
+    detached?: boolean | undefined;
   }
 
   interface ClosingOptions {
     /** Whether to animate the close, or perform it instantaneously */
-    animate: boolean;
+    animate?: boolean | undefined;
 
     /** Whether the application was closed via keypress. */
-    closeKey: boolean;
+    closeKey?: boolean | undefined;
 
     /** Is the application being closed because a form was submitted? */
-    submitted: boolean;
+    submitted?: boolean | undefined;
   }
 
   type ActionTarget = HTMLElement & { dataset: { action: string } };
@@ -373,13 +382,14 @@ declare namespace ApplicationV2 {
   }
 
   interface Window {
-    header?: HTMLElement | undefined;
-    resize?: HTMLElement | undefined;
+    windowId: string | undefined;
+    header: HTMLElement | undefined;
+    resize: HTMLElement | undefined;
     title: HTMLHeadingElement | undefined;
     icon: HTMLElement | undefined;
     close: HTMLButtonElement | undefined;
     controls: HTMLButtonElement | undefined;
-    controlsDropdown: HTMLDivElement | undefined;
+    content: HTMLElement | undefined;
     onDrag: (event: PointerEvent) => void;
     onResize: (event: PointerEvent) => void;
     pointerStartPosition: ApplicationV2.Position | undefined;
@@ -425,15 +435,6 @@ declare namespace ApplicationV2 {
 
     /** @defaultValue `false` */
     disabled?: boolean | undefined;
-  }
-
-  interface ToggleControlOptions {
-    /**
-     * Animate the controls toggling.
-     * @defaultValue `true`
-     * @remarks `null` equivalent to `false`
-     */
-    animate?: boolean | null | undefined;
   }
 
   interface ChangeTabOptions extends InexactPartial<{
@@ -497,7 +498,6 @@ declare class ApplicationV2<
    * @param options - Options used to configure the Application instance
    *                  (default: `{}`)
    */
-  // not: null
   constructor(options?: DeepPartial<Configuration>);
 
   /**
@@ -615,6 +615,16 @@ declare class ApplicationV2<
   get hasFrame(): boolean;
 
   /**
+   * The child Applications registered under this one via {@linkcode ApplicationV2.renderChild | #renderChild}.
+   */
+  get children(): Map<string, ApplicationV2.Any>;
+
+  /**
+   * The parent Application of this Application, if registered via {@linkcode ApplicationV2.renderChild | #renderChild}.
+   */
+  get parent(): ApplicationV2.Any | null;
+
+  /**
    * Iterate over the inheritance chain of this Application.
    * The chain includes this Application itself and all parents until the base application is encountered.
    */
@@ -639,7 +649,6 @@ declare class ApplicationV2<
    *                  (default: `{}`)
    * @returns A Promise which resolves to the rendered Application instance
    */
-  // not: null
   render(options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -648,7 +657,6 @@ declare class ApplicationV2<
    * @param _options - Legacy options for backwards-compatibility with the original ApplicationV1#render signature.
    *                   (default: `{}`)
    */
-  // not: null
   render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
 
   /**
@@ -675,6 +683,13 @@ declare class ApplicationV2<
    * @param group - The ID of a tabs group
    */
   protected _getTabsConfig(group: string): ApplicationV2.TabsConfiguration | null;
+
+  /**
+   * Return an array of header button config entries to render into the Application frame.
+   * Subclasses may override this method to add, remove, or replace frame header buttons.
+   * @param options - Options which configure application rendering behavior.
+   */
+  protected _getFrameButtons(options: DeepPartial<RenderOptions>): ApplicationV2.HeaderControlsEntry[];
 
   /**
    * Configure the array of header control menu options
@@ -726,17 +741,20 @@ declare class ApplicationV2<
    * Insert the application HTML element into the DOM.
    * Subclasses may override this method to customize how the application is inserted.
    * @param element - The element to insert
-   * @returns The inserted element
+   * @param options - Render options.
+   * @privateRemarks Asynchronous at runtime, but widened to `MaybePromise<void>` so synchronous overrides like
+   * {@linkcode MainMenu._insertElement | MainMenu#_insertElement} remain assignable.
    */
-  protected _insertElement(element: HTMLElement): void;
+  protected _insertElement(element: HTMLElement, options?: DeepPartial<RenderOptions>): MaybePromise<void>;
 
   /**
    * Close the Application, removing it from the DOM.
    * @param options - Options which modify how the application is closed.
    * @returns A Promise which resolves to the closed Application instance
+   * @privateRemarks The base always resolves to `Promise<this>`;
+   * `void` is for subclasses that conditionally skip closing, like `PlaceableDirectory#close`.
    */
-  // not: null
-  close(options?: DeepPartial<ApplicationV2.ClosingOptions>): Promise<this>;
+  close(options?: ApplicationV2.ClosingOptions): Promise<this | void>;
 
   /**
    * Remove the application HTML element from the DOM.
@@ -748,7 +766,7 @@ declare class ApplicationV2<
   /**
    * Remove elements from the DOM and trigger garbage collection as part of application closure.
    */
-  protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
+  protected _tearDown(options: ApplicationV2.ClosingOptions): void;
 
   /**
    * Update the Application element position using provided data which is merged with the prior position.
@@ -765,16 +783,57 @@ declare class ApplicationV2<
   protected _updatePosition(position: ApplicationV2.Position): ApplicationV2.Position;
 
   /**
-   * Toggle display of the Application controls menu.
-   * Only applicable to window Applications.
-   * @param expanded - Set the controls visibility to a specific state.
-   *                   Otherwise, the visible state is toggled from its current value.
-   *                   `null` is same as undefined
-   * @param options  - Options to configure the toggling behavior
-   * @returns A Promise which resolves once the control expansion animation is complete
+   * Re-fit an application to its content following a change in its natural size.
+   * @param positionUpdate - Position data forwarded to {@linkcode ApplicationV2.setPosition | #setPosition}
+   *                          (default: `{}`)
    */
-  // not: null
-  toggleControls(expanded?: boolean | null, options?: ApplicationV2.ToggleControlOptions): Promise<void>;
+  protected _refit(positionUpdate?: DeepPartial<ApplicationV2.Position>): void;
+
+  /**
+   * Re-attach a detached application to the main workspace.
+   * If this application was previously a child and was manually detached, breaking its parent link, this method first
+   * attempts to re-join the prior parent's window before falling back to the main workspace.
+   * @param options - Render options.
+   *                  (default: `{}`)
+   */
+  attachWindow(options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  /**
+   * Detach an application from the main workspace, and render it in a separate browser window.
+   * If this application is a registered child, detaching it breaks the parent link and gives it its own window.
+   * @param options - Render options.
+   *                  (default: `{}`)
+   */
+  detachWindow(options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  /**
+   * Render another Application as a child of this one.
+   * The child is rendered in the same window as this application and moves with it when it is detached or
+   * re-attached. Closing this application will also close the child.
+   * If the child was previously registered under a different parent, that link is replaced.
+   * @param app     - The child application to render.
+   * @param options - Render options passed to the child's render method.
+   *                  (default: `{}`)
+   * @returns A Promise which resolves to the rendered child Application.
+   */
+  renderChild<App extends ApplicationV2.Any>(
+    app: App,
+    options?: DeepPartial<ApplicationV2.RenderOptionsOf<App>>,
+  ): Promise<App>;
+
+  /**
+   * Whether this Application is permitted to re-attach to the main workspace.
+   * Managed children (those with an active parent) cannot re-attach independently; their parent controls placement.
+   * @remarks TODO: The internal normalized `window.detach`, `window.attach`, and `window.host` render options are not
+   * otherwise typed here yet.
+   */
+  protected _canAttach(): boolean;
+
+  /**
+   * Whether this Application is permitted to detach from the main workspace.
+   * Managed children (those with an active parent) may detach to break the parent link and claim their own window.
+   */
+  protected _canDetach(): boolean;
 
   /**
    * Minimize the Application, collapsing it to a minimal header.
@@ -800,7 +859,6 @@ declare class ApplicationV2<
    * @param options - Additional options which affect tab navigation
    *                  (default: `{}`)
    */
-  // not: null
   changeTab(tab: string, group: string, options?: ApplicationV2.ChangeTabOptions): void;
 
   /**
@@ -822,7 +880,6 @@ declare class ApplicationV2<
    * @param options - Options which configure event handling
    * @returns A promise which resoles once the handler is complete if async is true
    */
-  // not: null
   protected _doEvent<HandlerArgs extends AnyArray, Async extends boolean | undefined = false>(
     handler: (...args: HandlerArgs) => Async extends true ? Promise<void> : void,
     options?: InexactPartial<ApplicationV2.DoEventOptions<HandlerArgs, Async>>,
@@ -883,21 +940,41 @@ declare class ApplicationV2<
    * Actions performed after closing the Application.
    * Post-close steps are not awaited by the close process.
    * @param options - Provided render options
+   * @privateRemarks Typed `MaybePromise<void>` rather than `void` so that async overrides such as
+   * {@linkcode BasePlaceableHUD._onClose | BasePlaceableHUD#_onClose} fit the base signature. As the
+   * doc above notes, post-close steps are never awaited, so this only accommodates async overrides —
+   * it doesn't imply the return value is consumed.
    */
-  protected _onClose(options: DeepPartial<RenderOptions>): void;
+  protected _onClose(options: DeepPartial<RenderOptions>): MaybePromise<void>;
 
   /**
    * Actions performed before the Application is re-positioned.
    * Pre-position steps are not awaited because setPosition is synchronous.
-   * @param options - Provided render options
+   * @param position - The requested application position
    */
-  protected _prePosition(options: DeepPartial<RenderOptions>): void;
+  protected _prePosition(position: ApplicationV2.Position): void;
 
   /**
    * Actions performed after the Application is re-positioned.
-   * @param options - Provided render options
+   * @param position - The requested application position
    */
-  protected _onPosition(options: DeepPartial<RenderOptions>): void;
+  protected _onPosition(position: ApplicationV2.Position): void;
+
+  /**
+   * Actions performed after the Application has been re-attached to the main workspace.
+   * Registered child Applications are re-attached automatically after this method returns.
+   * @param from - The Application's former host document. This document's window may have been closed.
+   * @param to   - The main workspace document.
+   */
+  protected _onAttach(from: Document, to: Document): void;
+
+  /**
+   * Actions performed after the Application has been detached from the main workspace.
+   * Registered child Applications are moved into the same detached window automatically after this method returns.
+   * @param from - The main workspace document.
+   * @param to   - The Application's new host document.
+   */
+  protected _onDetach(from: Document, to: Document): void;
 
   /**
    * Attach event listeners to the Application frame.
@@ -929,8 +1006,12 @@ declare class ApplicationV2<
    * Handle changes to an input element within the form.
    * @param formConfig - The form configuration for which this handler is bound
    * @param event      - The form submission event
+   * @privateRemarks Typed `MaybePromise<void>` rather than `void` so that async overrides such as
+   * {@linkcode GridConfig._onChangeForm | GridConfig#_onChangeForm} fit the base signature. The handler
+   * is invoked fire-and-forget from the `change` listener, so this only accommodates async overrides —
+   * it doesn't imply the return value is consumed.
    */
-  protected _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+  protected _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
 
   /**
    * Parse a CSS style rule into a number of pixels which apply to that dimension.

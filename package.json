@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@league-of-foundry-developers/foundry-vtt-types",
-  "version": "14.364.0",
+  "version": "14.365.0",
   "description": "TypeScript type definitions for Foundry VTT",
   "keywords": [
     "foundry",
@@ -187,7 +187,7 @@
     "lint-staged": "^17.0.2",
     "normalize-url": "^9.0.0",
     "npm-run-all2": "^9.0.0",
-    "oxfmt": "^0.60.0",
+    "oxfmt": "^0.62.0",
     "patch-package": "^8.0.1",
     "pathe": "^2.0.3",
     "playwright": "^1.60.0",
