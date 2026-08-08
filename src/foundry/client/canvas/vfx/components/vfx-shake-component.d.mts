@@ -6,8 +6,8 @@ import fields = foundry.data.fields;
 
 /**
  * A component that applies a canvas shake effect to a target PIXI display object using the
- * `CanvasShakeEffect` API. Primarily intended for camera shakes (`canvas.stage`) but can also
- * target individual canvas layers or groups.
+ * {@linkcode foundry.canvas.animation.CanvasShakeEffect} API. Primarily intended for camera shakes
+ * (`canvas.stage`) but can also target individual canvas layers or groups.
  *
  * @example A screen shake on impact
  * ```js
