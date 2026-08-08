@@ -334,7 +334,7 @@ declare abstract class BaseShapeData<
 
   /**
    * The index of this shape within the array of shapes in its parent.
-   * See `foundry.data.fields.ShapesField`.
+   * See {@linkcode foundry.data.fields.ShapesField | ShapesField}.
    * @internal
    */
   _index: number | undefined;
