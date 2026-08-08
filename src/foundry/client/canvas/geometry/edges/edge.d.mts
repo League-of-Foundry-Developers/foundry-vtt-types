@@ -47,43 +47,45 @@ declare class Edge {
 
   /**
    * The direction of effect for the edge.
-   * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
+   * @defaultValue {@linkcode CONST.EDGE_DIRECTIONS.BOTH}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  direction: CONST.WALL_DIRECTIONS;
+  direction: CONST.EDGE_DIRECTIONS;
 
   /**
    * How this edge restricts light.
-   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  light: CONST.WALL_SENSE_TYPES;
+  light: CONST.EDGE_SENSE_TYPES;
+
+  /**
+   * How this edge restricts darkness.
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
+   */
+  darkness: CONST.EDGE_SENSE_TYPES;
 
   /**
    * How this edge restricts movement.
-   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  move: CONST.WALL_SENSE_TYPES;
+  move: CONST.EDGE_SENSE_TYPES;
 
   /**
    * How this edge restricts sight.
-   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  sight: CONST.WALL_SENSE_TYPES;
+  sight: CONST.EDGE_SENSE_TYPES;
 
   /**
    * How this edge restricts sound.
-   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  sound: CONST.WALL_SENSE_TYPES;
+  sound: CONST.EDGE_SENSE_TYPES;
 
   /**
    * Specialized threshold data for this edge.
+   * @defaultValue `null`
    */
-  threshold: WallDocument.ThresholdData | undefined;
+  threshold: Edge.ThresholdData | null;
 
   /**
    * A source priority for this edge. Typically zero unless this edge was contributed by a high-priority source.
@@ -107,9 +109,10 @@ declare class Edge {
   bounds: PIXI.Rectangle;
 
   /**
-   * Record other edges which this one intersects with.
+   * Record other edges which this one intersects with by level.
+   * @defaultValue `{}`
    */
-  intersections: Edge.IntersectionEntry[];
+  intersections: Edge.Intersections;
 
   /**
    * A PolygonVertex instance.
@@ -128,7 +131,7 @@ declare class Edge {
   /**
    * Is this edge limited for a particular type?
    */
-  isLimited(type: CONST.WALL_RESTRICTION_TYPES): boolean;
+  isLimited(type: CONST.EDGE_RESTRICTION_TYPES): boolean;
 
   /**
    * Create a copy of the Edge which can be safely mutated.
@@ -154,28 +157,30 @@ declare class Edge {
   /**
    * Determine the orientation of this Edge with respect to a reference point.
    * @param point - Some reference point, relative to which orientation is determined
-   * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left,
+   * @returns An orientation in {@linkcode CONST.EDGE_DIRECTIONS} which indicates whether the Point is left,
    * right, or collinear (both) with the Edge
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
+  orientPoint(point: Canvas.Point): CONST.EDGE_DIRECTIONS;
 
   /**
    * Identify intersections between a provided iterable of edges.
    * @param edges - An iterable of edges
+   * @param level - The ID of the Level the edges are in
    */
-  static identifyEdgeIntersections(edges: Iterable<Edge>): void;
+  static identifyEdgeIntersections(edges: Iterable<Edge>, level: string): void;
 
   /**
    * Record the intersections between two edges.
    * @param other - Another edge to test and record
+   * @param level - The ID of the Level the edges are in
    */
-  recordIntersections(other: Edge): void;
+  recordIntersections(other: Edge, level: string): void;
 
   /**
    * Remove intersections of this edge with all other edges.
+   * @param level - The ID of the Level the edges are in
    */
-  removeIntersections(): void;
+  removeIntersections(level: string): void;
 }
 
 declare namespace Edge {
@@ -204,44 +209,45 @@ declare namespace Edge {
 
     /**
      * How this edge restricts light
-     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+     * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    light: CONST.WALL_SENSE_TYPES;
+    light: CONST.EDGE_SENSE_TYPES;
+
+    /**
+     * How this edge restricts darkness
+     * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
+     */
+    darkness: CONST.EDGE_SENSE_TYPES;
 
     /**
      * How this edge restricts movement
-     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+     * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    move: CONST.WALL_SENSE_TYPES;
+    move: CONST.EDGE_SENSE_TYPES;
 
     /**
      * How this edge restricts sight
-     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+     * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    sight: CONST.WALL_SENSE_TYPES;
+    sight: CONST.EDGE_SENSE_TYPES;
 
     /**
      * How this edge restricts sound
-     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
+     * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    sound: CONST.WALL_SENSE_TYPES;
+    sound: CONST.EDGE_SENSE_TYPES;
 
     /**
      * A direction of effect for the edge
-     * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
+     * @defaultValue {@linkcode CONST.EDGE_DIRECTIONS.BOTH}
      */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    direction: CONST.WALL_DIRECTIONS;
+    direction: CONST.EDGE_DIRECTIONS;
 
     /**
      * Configuration of threshold data for this edge
-     * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
+     * @defaultValue `null`
      */
-    threshold: WallDocument.ThresholdData;
+    threshold: ThresholdData | null;
 
     /**
      * A source priority for this edge. Typically zero unless this edge was contributed by a high-priority source.
@@ -252,13 +258,45 @@ declare namespace Edge {
 
   interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
 
-  type EdgeTypes = "wall" | "darkness" | "light" | "innerBounds" | "outerBounds";
+  type EdgeTypes = "wall" | "source" | "innerBounds" | "outerBounds";
 
-  type AttenuationTypes = Exclude<foundry.CONST.WALL_RESTRICTION_TYPES, "move">;
+  type AttenuationTypes = Exclude<foundry.CONST.EDGE_RESTRICTION_TYPES, "move">;
+
+  /** @internal */
+  interface _ThresholdData {
+    /** Minimum distance in pixels from a light source for which this edge blocks light */
+    light: number;
+
+    /** Minimum distance in pixels from a light source for which this edge blocks darkness */
+    darkness: number;
+
+    /** Minimum distance in pixels from a vision source for which this edge blocks vision */
+    sight: number;
+
+    /** Minimum distance in pixels from a sound source for which this edge blocks sound */
+    sound: number;
+
+    /**
+     * Whether to attenuate the source radius when passing through the edge
+     * @defaultValue `true`
+     */
+    attenuation: boolean;
+  }
+
+  /**
+   * @remarks Distinct from {@linkcode foundry.documents.WallDocument.ThresholdData | WallDocument.ThresholdData},
+   * which has no `darkness` key: an Edge may be contributed by sources other than a Wall.
+   */
+  interface ThresholdData extends InexactPartial<_ThresholdData> {}
 
   interface IntersectionEntry {
     edge: Edge;
     intersection: LineIntersection;
+  }
+
+  /** @remarks Keyed by {@linkcode foundry.documents.Level | Level} ID */
+  interface Intersections {
+    [level: string]: IntersectionEntry[];
   }
 }
 

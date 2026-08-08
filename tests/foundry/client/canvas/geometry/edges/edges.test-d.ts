@@ -2,30 +2,38 @@ import { expectTypeOf } from "vitest";
 
 import CanvasEdges = foundry.canvas.geometry.edges.CanvasEdges;
 import Edge = foundry.canvas.geometry.edges.Edge;
-import Quadtree = foundry.canvas.geometry.Quadtree;
+import Level = foundry.documents.Level;
 
-const myCanvasEdges = new CanvasEdges();
+declare const someLevel: Level;
+const myCanvasEdges = new CanvasEdges(someLevel);
 declare const someEdge: Edge;
 declare const rect: PIXI.Rectangle;
 
-// Calls inside of Canvas
-expectTypeOf(myCanvasEdges.initialize()).toEqualTypeOf<void>();
+// @ts-expect-error CanvasEdges may only be constructed with a Level instance
+new CanvasEdges();
+
+expectTypeOf(myCanvasEdges.level).toEqualTypeOf<Level>();
+
+// Calls inside of Level and Scene
 expectTypeOf(myCanvasEdges.set("foo", someEdge)).toEqualTypeOf<CanvasEdges>();
 expectTypeOf(myCanvasEdges.delete("foo")).toBeBoolean();
-expectTypeOf(myCanvasEdges.clear()).toBeVoid();
-expectTypeOf(myCanvasEdges.refresh()).toEqualTypeOf<void>();
+expectTypeOf(myCanvasEdges.clear()).toEqualTypeOf<CanvasEdges>();
 
-const ctf = (object: Quadtree.Object<Edge>, rect: PIXI.Rectangle) => {
-  if (object.r.x > 5 && rect.width > 10) return true;
-  return false;
-};
+const ctf = (edge: Edge) => edge.type === "wall";
+
 expectTypeOf(myCanvasEdges.getEdges(rect)).toEqualTypeOf<Set<Edge>>();
 expectTypeOf(
-  myCanvasEdges.getEdges(rect, { collisionTest: ctf, includeInnerBounds: true, includeOuterBounds: false }),
+  myCanvasEdges.getEdges(rect, {
+    collisionTest: ctf,
+    collisionTestBounds: true,
+    includeInnerBounds: true,
+    includeOuterBounds: false,
+  }),
 ).toEqualTypeOf<Set<Edge>>();
 expectTypeOf(
   myCanvasEdges.getEdges(rect, {
     collisionTest: undefined,
+    collisionTestBounds: undefined,
     includeInnerBounds: undefined,
     includeOuterBounds: undefined,
   }),
@@ -35,3 +43,9 @@ for (const [key, edge] of myCanvasEdges) {
   expectTypeOf(key).toEqualTypeOf<string>();
   expectTypeOf(edge).toEqualTypeOf<Edge>();
 }
+
+// Deprecated since v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(myCanvasEdges.inititalize()).toEqualTypeOf<void>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(myCanvasEdges.refresh()).toEqualTypeOf<void>();
