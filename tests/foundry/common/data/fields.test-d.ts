@@ -192,12 +192,10 @@ test("toInput/toFormGroup thread the owning field into the `input` callback", ()
   );
 
   // A subclass family (`NumberField`) threads its own field type through too, not just the base.
-  // Value-form assertion: the generic `toEqualTypeOf<typeof numberField>()` trips vitest's own
-  // constraint machinery on `NumberField`'s more complex instantiation, though the narrowing is identical.
   const numberField = new fields.NumberField();
   numberField.toInput({
     input: (field) => {
-      expectTypeOf(field).toEqualTypeOf(numberField);
+      expectTypeOf(field).toEqualTypeOf<typeof numberField>();
       return document.createElement("input");
     },
   });

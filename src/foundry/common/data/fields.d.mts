@@ -17,6 +17,7 @@ import type {
   AnyMutableObject,
   ConcreteKeys,
   MaybeArray,
+  ToMethod,
 } from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -1113,14 +1114,11 @@ declare namespace DataField {
    * documented return, which forwards this callback's result and whose consumers (e.g.
    * {@linkcode foundry.applications.fields.createFormGroup | createFormGroup}) handle arrays.
    *
-   * Encoded as an indexed method (not an arrow) so `CurrentField` is checked bivariantly: threaded
-   * through `ToInputConfig` into `toInput(config?: …<this>)`, an arrow's contravariant `field` param
-   * would flip variance against `validate(options?: ValidateOptions<this>)` and make fields fail
-   * `extends DataField.Any` (same reason as {@linkcode DataField.ValidatorFunction}).
+   * A method for bivariance, necessary for `field` to be overridden covariantly in subclasses.
    */
-  type CustomFormInput<CurrentField extends DataField.Any = DataField.Any> = {
-    customFormInput(field: CurrentField, config: FormInputConfig): HTMLElement | HTMLElement[] | HTMLCollection;
-  }["customFormInput"];
+  type CustomFormInput<CurrentField extends DataField.Any = DataField.Any> = ToMethod<
+    (field: CurrentField, config: FormInputConfig) => HTMLElement | HTMLElement[] | HTMLCollection
+  >;
 
   /**
    * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
