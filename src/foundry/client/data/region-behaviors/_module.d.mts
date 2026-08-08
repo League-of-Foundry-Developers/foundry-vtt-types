@@ -4,6 +4,7 @@
 
 export { default as RegionBehaviorType } from "./base.mjs";
 export { default as AdjustDarknessLevelRegionBehaviorType } from "./adjust-darkness-level.mjs";
+export { default as ApplyActiveEffectRegionBehaviorType } from "./apply-active-effect.mjs";
 export { default as DisplayScrollingTextRegionBehaviorType } from "./display-scrolling-text.mjs";
 export { default as ExecuteMacroRegionBehaviorType } from "./execute-macro.mjs";
 export { default as ExecuteScriptRegionBehaviorType } from "./execute-script.mjs";

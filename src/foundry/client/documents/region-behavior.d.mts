@@ -850,6 +850,7 @@ declare namespace RegionBehavior {
 
   interface CoreBehaviors {
     adjustDarknessLevel: typeof foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType;
+    applyActiveEffect: typeof foundry.data.regionBehaviors.ApplyActiveEffectRegionBehaviorType;
     displayScrollingText: typeof foundry.data.regionBehaviors.DisplayScrollingTextRegionBehaviorType;
     executeMacro: typeof foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType;
     executeScript: typeof foundry.data.regionBehaviors.ExecuteScriptRegionBehaviorType;

@@ -6572,11 +6572,14 @@ declare namespace TypedSchemaField {
   };
 
   type ToConfiguredTypes<Types extends TypedSchemaField.Types> = {
-    [K in keyof Types]:
-      | (Types[K] extends ValidDataSchema ? SchemaField<Types[K]> : never)
-      | (Types[K] extends SchemaField.Any ? Types[K] : never)
-      | (Types[K] extends DataModel.AnyConstructor ? EmbeddedDataField<Types[K]> : never);
+    [K in keyof Types]: _ToConfiguredType<Types[K]>;
   };
+
+  /** @internal */
+  type _ToConfiguredType<Type> =
+    | (Type extends ValidDataSchema ? SchemaField<Type> : never)
+    | (Type extends SchemaField.Any ? Type : never)
+    | (Type extends DataModel.AnyConstructor ? EmbeddedDataField<Type> : never);
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type ConfiguredTypes = {
