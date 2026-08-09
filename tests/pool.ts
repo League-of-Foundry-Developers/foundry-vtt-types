@@ -85,6 +85,11 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
   });
 
   const server = await createServer({
+    // Vitest crawls all imports from the entrypoint but expects the entrypoint to be an index.html
+    // whereas tests are the real entrypoint here.
+    optimizeDeps: {
+      entries: ["tests/**/*.test.ts", "tests/tester.ts"],
+    },
     server: {
       port: await getPort(), // Random port for Hyrum's law (also to be less confusing if someone happens to running Vite).
       cors: {
