@@ -89,6 +89,27 @@ describe("ParticleGenerator tests", () => {
       },
     });
 
+    new ParticleGenerator({
+      area: {
+        x: 0,
+        y: 0,
+        radiusX: 10,
+        radiusY: 20,
+        shape: undefined,
+        holeScale: undefined,
+        minAngle: undefined,
+        maxAngle: undefined,
+        shapeRotation: undefined,
+        rotation: undefined,
+        affectRotation: undefined,
+      },
+      blur: { intensity: 2, quality: undefined },
+    });
+
+    new ParticleGenerator({ area: { points: [], shape: undefined } });
+    new ParticleGenerator({ area: { path: [], shape: undefined } });
+    new ParticleGenerator({ blur: { enabled: true, intensity: 2, quality: undefined } });
+
     // deprecated since v14:
     new ParticleGenerator({
       perFrame: 5,
@@ -233,6 +254,14 @@ describe("ParticleGenerator tests", () => {
     expectTypeOf(particle.maxAlpha).toBeNumber();
     expectTypeOf(particle.rotationSpeed).toBeNumber();
     expectTypeOf(particle.movementSpeed).toEqualTypeOf<PIXI.Point>();
+
+    particle._baseSpeed = undefined;
+    particle._movementDirectionX = undefined;
+    particle._movementDirectionY = undefined;
+    particle._movementDriftX = undefined;
+    particle._movementDriftY = undefined;
+    particle._velocityFunctionBounceX = undefined;
+    particle._velocityFunctionBounceY = undefined;
   });
 
   test("Deprecated", () => {

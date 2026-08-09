@@ -1426,21 +1426,21 @@ declare namespace ParticleGenerator {
     | { x: number; y: number; radius: number | number[] }
     | { x: number; y: number; innerRadius: number; outerRadius: number }
     | { from: Point; to: Point }
-    | { points: PointList; shape?: "points" }
-    | { path: PolylineDefinition; shape?: "path" | "polyline" }
+    | { points: PointList; shape?: "points" | undefined }
+    | { path: PolylineDefinition; shape?: "path" | "polyline" | undefined }
     | { points: PolylineDefinition; shape: "polyline" }
     | {
         x: number;
         y: number;
         radiusX: number;
         radiusY: number;
-        shape?: "ellipse";
-        holeScale?: number;
-        minAngle?: number;
-        maxAngle?: number;
-        shapeRotation?: number;
-        rotation?: number;
-        affectRotation?: boolean;
+        shape?: "ellipse" | undefined;
+        holeScale?: number | undefined;
+        minAngle?: number | undefined;
+        maxAngle?: number | undefined;
+        shapeRotation?: number | undefined;
+        rotation?: number | undefined;
+        affectRotation?: boolean | undefined;
       };
 
   /** @internal */
@@ -1682,8 +1682,8 @@ declare namespace ParticleGenerator {
 
   type BlurOptions =
     | number
-    | { intensity: number; quality?: number }
-    | { enabled: boolean; intensity: number; quality?: number }
+    | { intensity: number; quality?: number | undefined }
+    | { enabled: boolean; intensity: number; quality?: number | undefined }
     | null;
 
   interface ResolvedBlurOptions {
@@ -2090,16 +2090,16 @@ declare namespace ParticleGenerator {
     maxAlpha: number;
     _baseScale: number;
     _baseTint: number;
-    _baseSpeed?: number;
+    _baseSpeed?: number | undefined;
     _baseRotationSpeed: number;
     rotationSpeed: number;
     movementSpeed: PIXI.Point;
-    _movementDirectionX?: number;
-    _movementDirectionY?: number;
-    _movementDriftX?: number;
-    _movementDriftY?: number;
-    _velocityFunctionBounceX?: number;
-    _velocityFunctionBounceY?: number;
+    _movementDirectionX?: number | undefined;
+    _movementDirectionY?: number | undefined;
+    _movementDriftX?: number | undefined;
+    _movementDriftY?: number | undefined;
+    _velocityFunctionBounceX?: number | undefined;
+    _velocityFunctionBounceY?: number | undefined;
   }
 }
 
