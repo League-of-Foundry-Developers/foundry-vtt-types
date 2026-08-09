@@ -1,4 +1,4 @@
-import type { Coalesce, FixedInstanceType, Identity } from "#utils";
+import type { Coalesce, FixedInstanceType, Identity, MaybePromise } from "#utils";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
@@ -16,21 +16,21 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   constructor(
     container: HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement>[],
-    options: ContextMenu.ConstructorOptions<false>,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
   /**
    * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
+   * Because the jQuery option provided to the ContextMenu constructor was undefined, your callbacks will receive jQuery objects.
    * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
    * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
    */
   constructor(
     element: HTMLElement | JQuery,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement | JQuery>[],
-    options?: Omit<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery"> & { jQuery?: false | undefined },
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options?: ContextMenu.DeprecatedConstructorOptions<UsesJQuery>,
   );
 
   /**
@@ -95,6 +95,13 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   get fixed(): boolean;
 
   /**
+   * For fixed context menus, control whether the menu is positioned relative to the target or to the mouse cursor.
+   * Non-fixed context menus are always positioned relative to the target.
+   * @defaultValue `"cursor"`
+   */
+  get relative(): "target" | "cursor";
+
+  /**
    * The parent HTML element to which the context menu is attached
    */
   get target(): HTMLElement;
@@ -127,6 +134,12 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   protected _preRender(target: HTMLElement, options?: ContextMenu.RenderOptions): Promise<void>;
 
   /**
+   * Called before the menu's entries are rendered.
+   * @param options - (default: `{}`)
+   */
+  protected _preRenderEntries(options?: ContextMenu.RenderOptions): Promise<void>;
+
+  /**
    * Render the Context Menu by iterating over the menuItems it contains
    * Check the visibility of each menu item, and only render ones which are allowed by the item's logical condition
    * Attach a click handler to each item which is rendered
@@ -140,6 +153,13 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @param options - (default: `{}`)
    */
   protected _onRender(options?: ContextMenu.RenderOptions): Promise<void>;
+
+  /**
+   * Called after the context menu has finished rendering its entries.
+   * @param menu    - The rendered menu.
+   * @param options - (default: `{}`)
+   */
+  protected _onRenderEntries(menu: HTMLMenuElement, options?: ContextMenu.RenderOptions): Promise<void>;
 
   /**
    * Set the position of the context menu, taking into consideration whether the menu should expand upward or downward
@@ -166,9 +186,10 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * Local listeners which apply to each ContextMenu instance which is created.
-   * @param html - The context menu element.
+   * @param html    - The context menu element.
+   * @param options - (default: `{}`)
    */
-  activateListeners(html: HTMLElement): void;
+  activateListeners(html: HTMLElement, options?: ContextMenu.RenderOptions): void;
 
   /**
    * Handle context menu activation.
@@ -177,9 +198,11 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   protected _onActivate(event: PointerEvent): Promise<void>;
 
   /**
-   * Global listeners which apply once only to the document.
+   * Bind global context menu listeners to a given document.
+   * @param document - The document.
+   * @param options  - (default: `{}`)
    */
-  static eventListeners(): void;
+  static activateListeners(document?: Document, options?: ContextMenu.ActivateListenersOptions): void;
 
   /**
    * Retrieve the configured DragDrop implementation
@@ -197,6 +220,12 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @remarks "ContextMenu#menu is deprecated. Please use ContextMenu#element instead."
    */
   get menu(): JQuery;
+
+  /**
+   * @deprecated since v14 until v16
+   * @remarks "ContextMenu.eventListeners is deprecated. Please use ContextMenu.activateListeners instead."
+   */
+  static eventListeners(): void;
 
   #private: true;
 }
@@ -220,12 +249,17 @@ declare namespace ContextMenu {
     /**
      * The context menu label. Can be localized.
      */
-    name: string;
+    label: string;
 
     /**
-     * A string containing an HTML icon element for the menu item
+     * A string containing a className. A full HTML element may also be provided.
      */
-    icon?: string;
+    icon?: string | undefined;
+
+    /**
+     * Additional CSS classes to apply to this menu item.
+     */
+    classes?: string | undefined;
 
     /**
      * An identifier for a group this entry belongs to.
@@ -234,19 +268,48 @@ declare namespace ContextMenu {
     group?: string | null | undefined;
 
     /**
-     * The element that the context menu has been triggered for. Will
-     * either be a jQuery object or an HTMLElement instance, depending
-     * on how the ContextMenu was configured.
+     * The function to call when the menu item is clicked.
+     * @remarks Unlike the deprecated {@linkcode Entry.callback | callback}, the target passed to
+     * `onClick` is always a raw `HTMLElement`, regardless of the menu's `jQuery` configuration.
      */
-    callback: (target: ElementType) => void;
+    onClick?: EntryCallback | undefined;
 
     /**
      * A function to call or boolean value to determine if this entry
      * appears in the menu.
+     */
+    visible?: boolean | Condition<ElementType> | undefined;
+
+    /**
+     * The context menu label. Can be localized.
+     * @deprecated "`ContextMenuEntry#name` is deprecated. Use `ContextMenuEntry#label` instead." (since v14, until v16)
+     */
+    name?: string | undefined;
+
+    /**
+     * The element that the context menu has been triggered for. Will
+     * either be a jQuery object or an HTMLElement instance, depending
+     * on how the ContextMenu was configured.
+     * @deprecated "`ContextMenuEntry#callback` is deprecated. Use `ContextMenuEntry#onClick` instead." (since v14, until v16)
+     */
+    callback?: ((target: ElementType, event: PointerEvent) => void) | undefined;
+
+    /**
+     * A function to call or boolean value to determine if this entry
+     * appears in the menu.
+     * @deprecated "`ContextMenuEntry#condition` is deprecated. Use `ContextMenuEntry#visible` instead." (since v14, until v16)
      * @remarks `null` equivalent to `false`
      */
     condition?: boolean | Condition<ElementType> | null | undefined;
   }
+
+  /**
+   * @param event  - The triggering event.
+   * @param target - The element that the context menu has been triggered for.
+   *
+   * @remarks The result is discarded; an `async` handler is fire-and-forget, never awaited.
+   */
+  type EntryCallback = (event: PointerEvent, target: HTMLElement) => MaybePromise<void>;
 
   /**
    * @param html - The element of the context menu entry.
@@ -317,6 +380,45 @@ declare namespace ContextMenu {
      * @defaultValue `false`
      */
     fixed?: boolean | undefined;
+
+    /**
+     * For fixed context menus, control whether the menu is positioned relative to the target or to the mouse cursor.
+     * Non-fixed context menus are always positioned relative to the target.
+     * @defaultValue `"cursor"`
+     */
+    relative?: "target" | "cursor" | undefined;
+
+    /**
+     * Close the context menu when one of the options is selected.
+     * @defaultValue `true`
+     */
+    closeOnSelect?: boolean | undefined;
+  }
+
+  /**
+   * Options for the deprecated {@linkcode ContextMenu} constructor overload, where `jQuery` may be omitted.
+   *
+   * @remarks Omitting `jQuery` makes callbacks receive jQuery objects and logs a compatibility warning, hence
+   * `IsJQuery` defaulting to `true`.
+   */
+  interface DeprecatedConstructorOptions<IsJQuery extends boolean = true> extends Omit<
+    ConstructorOptions<IsJQuery>,
+    "jQuery"
+  > {
+    /**
+     * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
+     * @defaultValue `true`
+     */
+    jQuery?: IsJQuery | undefined;
+  }
+
+  /** Options for {@linkcode ContextMenu.activateListeners} */
+  interface ActivateListenersOptions {
+    /**
+     * @deprecated for internal use only, distinguishes a call from the deprecated {@linkcode ContextMenu.eventListeners}
+     * @defaultValue `false`
+     */
+    _deprecated?: boolean | undefined;
   }
 
   interface CreateOptions<IsJQuery extends boolean = true> extends ConstructorOptions<IsJQuery> {
