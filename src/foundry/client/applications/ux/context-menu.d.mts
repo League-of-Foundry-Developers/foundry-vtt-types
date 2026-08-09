@@ -206,10 +206,8 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * Retrieve the configured DragDrop implementation
-   * @privateRemarks Widened from {@linkcode ContextMenu.ImplementationClass} so subclasses that narrow the
-   * constructor, like {@linkcode foundry.applications.ux.FilterMenu}, can still override it.
    */
-  static get implementation(): ContextMenu.AnyImplementationClass;
+  static get implementation(): ContextMenu.ImplementationClass;
 
   /**
    * @deprecated since v13 until v15
@@ -246,14 +244,6 @@ declare namespace ContextMenu {
 
   interface ImplementationClass extends Identity<CONFIG["ux"]["ContextMenu"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
-
-  interface AnyImplementation extends AnyContextMenuImplementation {}
-
-  /**
-   * @remarks The widened type {@linkcode ContextMenu.implementation} is declared with. Prefer
-   * {@linkcode ImplementationClass} where the precise constructor signature is wanted.
-   */
-  interface AnyImplementationClass extends Identity<typeof AnyContextMenuImplementation> {}
 
   interface Entry<ElementType extends JQuery | HTMLElement> {
     /**
@@ -427,15 +417,6 @@ declare namespace ContextMenu {
 
 declare abstract class AnyContextMenu extends ContextMenu<boolean> {
   constructor(...args: never);
-}
-
-/**
- * @privateRemarks Not `abstract`, and takes `...args: any[]`, because {@linkcode ContextMenu.implementation}
- * is instantiated directly. Instantiated at `never` because {@linkcode ContextMenu.Entry | Entry} is
- * contravariant in `ElementType`, so only `Entry<never>` is a supertype of every menu's entries.
- */
-declare class AnyContextMenuImplementation extends ContextMenu<never> {
-  constructor(...args: any[]);
 }
 
 export default ContextMenu;

@@ -13,6 +13,18 @@ declare class FilterMenu<UsesJQuery extends boolean = false> extends ContextMenu
    */
   constructor(container: HTMLElement, selector: string, options?: FilterMenu.Options<UsesJQuery>);
 
+  /**
+   * @deprecated This constructor is not valid at runtime and should not be used. It only exists at the type level
+   * so this class satisfies every constructor {@linkcode ContextMenu} declares, which TypeScript requires in
+   * order for `implementation` to be overridden with a narrower return type.
+   */
+  constructor(
+    container: HTMLElement,
+    selector: string | null | undefined,
+    menuItems: ContextMenu.Entry<HTMLElement>[],
+    options: ContextMenu.ConstructorOptions<false>,
+  );
+
   protected override _preRenderEntries(options?: ContextMenu.RenderOptions): Promise<void>;
 
   /**

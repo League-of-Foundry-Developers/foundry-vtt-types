@@ -92,16 +92,8 @@ new ContextMenu(testAppV2.element, ".foobar", [], {
   fixed: true,
 });
 
-// `implementation` is deliberately widened so constructor-narrowing subclasses can override it; it must still
-// construct and still expose the statics.
-expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.AnyImplementationClass>();
+expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.ImplementationClass>();
 expectTypeOf(
   new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false }),
-).toEqualTypeOf<ContextMenu.AnyImplementation>();
+).toExtend<ContextMenu.Implementation>();
 expectTypeOf(ContextMenu.implementation.activateListeners()).toBeVoid();
-
-// The widened companion is instantiated at `never`, not `any`: entries stay readable, and the contravariant
-// `Entry` callbacks accept any element type, which is what lets FilterMenu narrow `implementation`.
-declare const anyImplementation: ContextMenu.AnyImplementation;
-expectTypeOf(anyImplementation.menuItems).toEqualTypeOf<ContextMenu.Entry<never>[]>();
-expectTypeOf(anyImplementation.menuItems[0]?.label).toEqualTypeOf<string | undefined>();
