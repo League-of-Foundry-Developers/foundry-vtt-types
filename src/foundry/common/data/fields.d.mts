@@ -6919,20 +6919,10 @@ declare namespace GridOffsetField {
     k: NumberField<{ required: true; nullable: false; integer: true }>;
   }
 
-  interface Options2D extends SchemaField.Options<Schema2D> {
-    dimensions?: 2 | undefined;
-  }
-
-  interface Options3D extends SchemaField.Options<Schema3D> {
-    dimensions: 3;
-  }
-
-  interface OptionsUnknownDimensions extends SchemaField.Options<Schema2D | Schema3D> {
+  interface Options extends SchemaField.Options<Schema2D | Schema3D> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
-
-  type Options = Options2D | Options3D | OptionsUnknownDimensions;
 
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { dimensions: 2 }>;
 
@@ -7013,20 +7003,10 @@ declare namespace GridOffsetsField {
   interface Any extends AnyGridOffsetsField {}
   interface AnyConstructor extends Identity<typeof AnyGridOffsetsField> {}
 
-  interface Options2D extends ArrayField.Options<GridOffsetField<GridOffsetField.Options2D>> {
-    dimensions?: 2 | undefined;
-  }
-
-  interface Options3D extends ArrayField.Options<GridOffsetField<GridOffsetField.Options3D>> {
-    dimensions: 3;
-  }
-
-  interface OptionsUnknownDimensions extends ArrayField.Options<GridOffsetField.OptionsUnknownDimensions> {
+  interface Options extends ArrayField.Options<GridOffsetField.Options> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
-
-  type Options = Options2D | Options3D | OptionsUnknownDimensions;
 
   type DefaultOptions = SimpleMerge<ArrayField.DefaultOptions, { dimensions: 2 }>;
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
