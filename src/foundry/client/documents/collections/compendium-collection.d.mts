@@ -437,7 +437,6 @@ declare namespace CompendiumCollection {
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
-  // @ts-expect-error this will not error once fields v14 is in
   type SettingField = fields.TypedObjectField<SettingFieldElement, { expandKeys: false }>;
 
   interface SettingData extends fields.TypedObjectField.InitializedType<
