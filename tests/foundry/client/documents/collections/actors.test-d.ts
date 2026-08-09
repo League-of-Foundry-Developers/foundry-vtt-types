@@ -41,43 +41,6 @@ describe("Actors Tests", async () => {
     expectTypeOf(actors.tokens).toEqualTypeOf<Record<string, Actor.Stored>>();
   });
 
-  test("fromCompendium", () => {
-    const actorOrSource: Actor.Stored | Actor.Source = actorSource;
-
-    // no deletions with these options
-    expectTypeOf(
-      actors.fromCompendium(actorOrSource, {
-        clearFolder: false,
-        clearOwnership: false,
-        clearSort: false,
-        clearState: false,
-        keepId: true,
-      }),
-    ).toEqualTypeOf<Actor.Source>();
-
-    // more thorough options testing is in the `WorldCollection` tests
-
-    // default case - all deletions enabled except `folder`
-    expectTypeOf(actors.fromCompendium(actorOrSource)).toEqualTypeOf<
-      Omit<Actor.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(actors.fromCompendium(actorOrSource, {})).toEqualTypeOf<
-      Omit<Actor.Source, "_id" | "sort" | "ownership">
-    >();
-    expectTypeOf(
-      actors.fromCompendium(actorOrSource, {
-        clearFolder: undefined,
-        clearOwnership: undefined,
-        clearSort: undefined,
-        clearState: undefined,
-        keepId: undefined,
-      }),
-    ).toEqualTypeOf<Omit<Actor.Source, "_id" | "sort" | "ownership">>();
-
-    // @ts-expect-error `Actor.Stored`s aren't `Actor.Stored`s
-    actors.fromCompendium(item);
-  });
-
   test("Getting", () => {
     expectTypeOf(actors.get("ID")).toEqualTypeOf<Actor.Stored | undefined>();
     expectTypeOf(actors.get("ID", {})).toEqualTypeOf<Actor.Stored | undefined>();
@@ -128,13 +91,27 @@ describe("Actors Tests", async () => {
     expectTypeOf(actors.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Actor.Stored | undefined>();
   });
 
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await actors.importDocument(actor, {});
+    if (!imported1) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Actor.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await actors.importDocument(actorImpl, {});
+    if (!imported2) throw new Error("Failed to create test Actor via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Actor.Stored<"base">>();
+  });
+
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     actors.set("ID", actorImpl);
     // @ts-expect-error `Item`s are not `Actor`s
     actors.set("ID", item);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(actors.set("ID", actor)).toBeVoid();
+
+    expectTypeOf(actors.set("ID", actor)).toEqualTypeOf<typeof actors>();
 
     expectTypeOf(actors.delete("ID")).toBeBoolean();
   });

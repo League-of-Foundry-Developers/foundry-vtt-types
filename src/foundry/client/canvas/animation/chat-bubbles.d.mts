@@ -1,4 +1,4 @@
-import type { AnyMutableObject, Identity, InexactPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { placeables } from "../_module.d.mts";
 
 /**
@@ -9,16 +9,14 @@ import type { placeables } from "../_module.d.mts";
 declare class ChatBubbles {
   /**
    * The Handlebars template used to render Chat Bubbles.
-   * @defaultValue `"templates/hud/chat-bubble.html"`
+   * @defaultValue `"templates/hud/chat-bubble.hbs"`
    */
   template: string;
 
   /**
-   * Track active Chat Bubbles
-   * @defaultValue `{}`
-   * @remarks This appears to not be wired up to anything as of 13.346
+   * A repository of active chat bubble references by token ID.
    */
-  bubbles: AnyMutableObject;
+  get bubbles(): Record<string, HTMLElement>;
 
   /**
    * A reference to the chat bubbles HTML container in which rendered bubbles should live

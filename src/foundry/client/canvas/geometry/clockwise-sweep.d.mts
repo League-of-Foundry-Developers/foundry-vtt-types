@@ -49,19 +49,26 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    */
   get useInnerBounds(): boolean;
 
+  /**
+   * The edge types and their manner of inclusion for this polygon instance.
+   * @remarks Set during {@linkcode ClockwiseSweepPolygon.initialize | #initialize}
+   */
+  protected _edgeTypes: ClockwiseSweepPolygon.ResolvedEdgeTypes;
+
   override initialize(origin: Canvas.PossiblyElevatedPoint, config: ClockwiseSweepPolygon.Config): void;
 
   /**
    * Determine the edge types and their manner of inclusion for this polygon instance.
    * @param config - Optional polygon config which may include deprecated properties
-   * @remarks The deprecated properties referred to are {@linkcode ClockwiseSweepPolygon.Config.useInnerBounds | useInnerBounds}
-   * and {@linkcode ClockwiseSweepPolygon.Config.includeDarkness | includeDarkness}
+   * @remarks The deprecated properties referred to are {@linkcode ClockwiseSweepPolygon.Config.useInnerBounds | useInnerBounds},
+   * {@linkcode ClockwiseSweepPolygon.Config.includeDarkness | includeDarkness}, and
+   * {@linkcode ClockwiseSweepPolygon.Config.wallDirectionMode | wallDirectionMode}
    */
   protected _determineEdgeTypes(
     type: Edge.EdgeTypes,
     priority: number,
     config?: ClockwiseSweepPolygon.Config,
-  ): ClockwiseSweepPolygon.EdgeTypesConfiguration;
+  ): ClockwiseSweepPolygon.ResolvedEdgeTypes;
 
   clone(): this;
 
@@ -80,7 +87,7 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    * @returns Should the edge be included?
    * @remarks See {@linkcode ClockwiseSweepPolygon.Config.edgeTypes}
    */
-  protected _testEdgeInclusion(edge: Edge, edgeTypes: ClockwiseSweepPolygon.EdgeTypesConfiguration): boolean;
+  protected _testEdgeInclusion(edge: Edge, edgeTypes: ClockwiseSweepPolygon.ResolvedEdgeTypes): boolean;
 
   /**
    * Compute the aggregate bounding box which is the intersection of all boundary shapes.
@@ -152,10 +159,12 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    */
   protected _switchEdge(result: CollisionResult, activeEdges: Set<Edge>): void;
 
-  /** @remarks Does not take the new-as-of-v13 `destination` param from {@linkcode PointSourcePolygon._testCollision | super} (yet?) */
   protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
     ray: Ray,
     mode: Mode,
+    destination: Canvas.ElevatedPoint,
+    tMin: number,
+    tMax: number,
   ): PointSourcePolygon.TestCollision<Mode>;
 
   override visualize(): PIXI.Graphics;
@@ -187,18 +196,23 @@ declare namespace ClockwiseSweepPolygon {
    */
   interface _Config {
     /**
-     * Optional priority when it comes to ignore edges from darkness and light sources
+     * Customize how edge direction of one-way edges is applied
+     * @defaultValue {@linkcode CONST.EDGE_DIRECTION_MODES.NORMAL}
+     */
+    edgeDirectionMode: CONST.EDGE_DIRECTION_MODES;
+
+    /**
+     * Edges with priority less than this priority are ignored
      * @defaultValue `0`
+     * @throws If the provided value is not numeric
      */
     priority: number;
 
     /**
      * Edge types configuration object. This is not required by most polygons and will be inferred based on the polygon type and priority.
      *
-     * How modes are working:
-     * - `0` (no):     The edges of this type are rejected and not processed (equivalent of not having an edgeType.)
-     * - `1` (maybe):  The edges are processed and tested for inclusion.
-     * - `2` (always): The edges are automatically included.
+     * Edge types configured as `false` is equivalent to those edges never being included.
+     * Edge types configured as `true` are included conditionally depending on the type of polygon and the type of edge.
      * @defaultValue {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | this._determineEdgeTypes(config.type, config.priority, config)}
      */
     edgeTypes: EdgeTypesConfiguration;
@@ -218,6 +232,8 @@ declare namespace ClockwiseSweepPolygon {
   interface _InexactConfig {
     /**
      * Deactivate/Activate specific edge types behaviors.
+     * @deprecated "`config.edgeOptions` was deprecated in favor of
+     * {@linkcode ClockwiseSweepPolygon.Config.edgeTypes | config.edgeTypes}." (since v14, until v16)
      */
     edgeOptions: EdgeOptions;
 
@@ -232,6 +248,13 @@ declare namespace ClockwiseSweepPolygon {
      * polygon configuration behaviors." (since v13, until v15)
      */
     includeDarkness: boolean;
+
+    /**
+     * @deprecated "`ClockwiseSweepPolygon#wallDirectionMode` has been deprecated in favor of
+     * {@linkcode ClockwiseSweepPolygon.Config.edgeDirectionMode | ClockwiseSweepPolygon#edgeDirectionMode}."
+     * (since v14, until v16)
+     */
+    wallDirectionMode: CONST.EDGE_DIRECTION_MODES;
   }
 
   interface Config extends PointSourcePolygon.Config, InexactPartial<_Config>, InexactPartial<_InexactConfig> {}
@@ -244,12 +267,31 @@ declare namespace ClockwiseSweepPolygon {
     extends InexactPartial<PointSourcePolygon._TestCollisionOptions<Mode>>, TestCollisionConfig {}
 
   /**
-   * @remarks See {@linkcode Config.edgeTypes}
-   *
-   * @privateRemarks Foundry never sets any keys to `0`, they're simply omitted, then tested for truthiness in
-   * {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | #_testEdgeInclusion}.
+   * Modes:
+   * - Never (`0`): The edges of this type are never included.
+   * - Maybe (`1`): The edges of this type are tested for inclusion.
+   * - Always (`2`): The edges of this type are always included.
    */
-  interface EdgeTypesConfiguration extends InexactPartial<Record<Edge.EdgeTypes, 0 | 1 | 2>> {}
+  interface EdgeConfig {
+    mode: 0 | 1 | 2;
+
+    /** @remarks `-Infinity` for any `mode` other than `1` */
+    priority: number;
+  }
+
+  /**
+   * @remarks The input accepted by {@linkcode Config.edgeTypes}. A `false` entry is equivalent to those edges never
+   * being included; a `true` entry is included conditionally depending on the type of polygon and the type of edge.
+   */
+  interface EdgeTypesConfiguration extends InexactPartial<
+    Record<Edge.EdgeTypes, boolean | InexactPartial<EdgeConfig>>
+  > {}
+
+  /**
+   * @remarks The fully-resolved form produced by {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | #_determineEdgeTypes};
+   * every {@linkcode Edge.EdgeTypes} key is populated, unlike the {@linkcode EdgeTypesConfiguration} input.
+   */
+  interface ResolvedEdgeTypes extends Record<Edge.EdgeTypes, EdgeConfig> {}
 
   /**
    * @privateRemarks Entries are only checked for `===` or `!== false` in {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | ClockwiseSweepPolygon#_determineEdgeTypes},

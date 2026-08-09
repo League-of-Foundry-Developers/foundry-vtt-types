@@ -1,7 +1,8 @@
-import type { GetDataReturnType, MaybePromise, Identity } from "#utils";
+import type { AnyMutableObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type Application from "./application-v1.mjs";
 import type FormApplication from "./form-application-v1.d.mts";
+import type FilePicker from "#client/applications/apps/file-picker.mjs";
 import type { HTMLSecret, TextEditor } from "#client/applications/ux/_module.d.mts";
 
 declare module "#configuration" {
@@ -100,7 +101,7 @@ declare abstract class DocumentSheet<
    * Get the HTML content that a given secret block is embedded in.
    * @param secret - The secret block.
    */
-  protected _getSecretContent(secret: HTMLElement): string;
+  protected _getSecretContent(secret: HTMLElement): string | void;
 
   /**
    * Update the HTML content that a given secret block is embedded in.
@@ -108,7 +109,7 @@ declare abstract class DocumentSheet<
    * @param content - The new content.
    * @returns The updated Document.
    */
-  protected _updateSecret(secret: HTMLElement, content: string): Promise<ConcreteDocument | void>;
+  protected _updateSecret(secret: HTMLElement, content: string): Promise<ConcreteDocument | undefined> | void;
 
   /**
    * Handle requests to configure the default sheet used by this Document
@@ -120,9 +121,9 @@ declare abstract class DocumentSheet<
    * Handle changing a Document's image.
    * @param event - The click event.
    */
-  protected _onEditImage(event: MouseEvent): Promise<void>;
+  protected _onEditImage(event: MouseEvent): Promise<FilePicker>;
 
-  protected override _updateObject(event: Event, formData: object): Promise<unknown>;
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown>;
 }
 
 declare namespace DocumentSheet {

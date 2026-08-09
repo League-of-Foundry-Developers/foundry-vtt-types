@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { GetKey, Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -17,6 +17,12 @@ declare class Items extends WorldCollection<"Item"> {
 
   /** @privateRemarks Fake type override */
   static override get instance(): Items.Implementation;
+
+  // fake type override
+  override importDocument<Doc extends Item.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Item">,
+  ): Items.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -53,6 +59,8 @@ declare namespace Items {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Item"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Item"> {}
+
+  type ImportDocumentReturn<Doc extends Item.Implementation> = Promise<Item.Stored<GetKey<Doc, "type">> | undefined>;
 
   /** @deprecated Replaced by {@linkcode Items.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

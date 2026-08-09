@@ -6,7 +6,7 @@ import type VFXComponent from "../vfx-component.d.mts";
 import fields = foundry.data.fields;
 
 /**
- * A VFX component that creates and manages a {@link foundry.canvas.animation.ParticleGenerator}.
+ * A VFX component that creates and manages a {@linkcode foundry.canvas.animation.ParticleGenerator}.
  * Handles the full lifecycle: loading textures, constructing the generator config, starting and
  * stopping the generator in sync with the VFX timeline.
  *
@@ -178,7 +178,7 @@ declare namespace VFXParticleGeneratorComponent {
     /**
      * Additional ParticleGenerator configuration passed directly to the constructor. Can include orbit, follow,
      * constraints, drift, blur, clip, anchor, callbacks, and any other
-     * {@link foundry.canvas.animation.ParticleGeneratorConfiguration} fields.
+     * {@linkcode foundry.canvas.animation.ParticleGenerator.Configuration} fields.
      * When effects are built directly in code, this can also include a custom batchable `shaderClass` that is
      * compatible with SpriteMesh and whose plugin was already registered.
      * Values here override any explicitly-set schema fields of the same name.

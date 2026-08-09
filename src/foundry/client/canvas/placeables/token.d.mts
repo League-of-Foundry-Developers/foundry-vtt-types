@@ -917,7 +917,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _onHoverIn(event: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onHoverOut(event?: Canvas.Event.Pointer): void;
+  protected override _onHoverOut(event?: Canvas.Event.Pointer | Event, options?: PlaceableObject.HoverOutOptions): void;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 

@@ -1,10 +1,5 @@
-import type { MaybePromise, Identity, ValueOf } from "#utils";
+import type { AnyObject, MaybePromise, Identity, ValueOf } from "#utils";
 import type { DragDrop, SearchFilter, Tabs } from "#client/applications/ux/_module.d.mts";
-
-declare global {
-  const MIN_WINDOW_WIDTH: 200;
-  const MIN_WINDOW_HEIGHT: 50;
-}
 
 declare module "#configuration" {
   namespace Hooks {
@@ -15,7 +10,7 @@ declare module "#configuration" {
 }
 
 /**
- * The standard application window that is rendered for a large variety of UI elements in Foundry VTT.
+ * The legacy application window that is rendered for some UI elements in Foundry VTT.
  * @template Options - the type of the options object
  */
 declare abstract class Application<Options extends Application.Options = Application.Options> {
@@ -32,12 +27,6 @@ declare abstract class Application<Options extends Application.Options = Applica
    * The options provided to this application upon initialization
    */
   options: Options;
-
-  /**
-   * The application ID is a unique incrementing integer which is used to identify every application window
-   * drawn by the VTT
-   */
-  appId: number;
 
   /**
    * An internal reference to the HTML element this application renders
@@ -68,8 +57,9 @@ declare abstract class Application<Options extends Application.Options = Applica
   /**
    * Track whether the Application is currently minimized
    * @defaultValue `false`
+   * @remarks Set to `null` while a minimize or maximize animation is in progress.
    */
-  protected _minimized: boolean;
+  protected _minimized: boolean | null;
 
   /**
    * Track the render state of the Application
@@ -90,19 +80,30 @@ declare abstract class Application<Options extends Application.Options = Applica
    * Track the most recent scroll positions for any vertically scrolling containers
    * @defaultValue `null`
    */
-  protected _scrollPositions: Record<string, number> | null;
+  protected _scrollPositions: Record<string, number[]> | null;
+
+  /**
+   * @defaultValue `false`
+   */
+  static _warnedAppV1: boolean;
+
+  /**
+   * The application ID is a unique incrementing integer which is used to identify every application window
+   * drawn by the VTT
+   */
+  appId: number;
 
   /**
    * The sequence of rendering states that track the Application life-cycle.
    * @see {@linkcode Application.RenderState}
    */
   static RENDER_STATES: Readonly<{
+    ERROR: -3;
     CLOSING: -2;
     CLOSED: -1;
     NONE: 0;
     RENDERING: 1;
     RENDERED: 2;
-    ERROR: 3;
   }>;
 
   /**
@@ -178,7 +179,7 @@ declare abstract class Application<Options extends Application.Options = Applica
   getData(options?: Partial<Options>): MaybePromise<object>;
 
   /**
-   * Render the Application by evaluating it's HTML template against the object of data provided by the getData method
+   * Render the Application by evaluating its HTML template against the object of data provided by the getData method
    * If the Application is rendered as a pop-out window, wrap the contained HTML in an outer frame with window controls
    *
    * @param force   - Add the rendered application to the DOM if it is not already present. If false, the
@@ -213,7 +214,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * @param hookName - The hook being triggered, which formatted with the Application class name
    * @param hookArgs - The arguments passed to the hook calls
    */
-  protected _callHooks(hookName: string | ((className: string) => string), hookArgs?: unknown[]): void;
+  protected _callHooks(hookName: string | ((className: string) => string), ...hookArgs: unknown[]): void;
 
   /**
    * Persist the scroll positions of containers within the app before re-rendering the content
@@ -251,7 +252,7 @@ declare abstract class Application<Options extends Application.Options = Applica
   protected _replaceHTML(element: JQuery, html: JQuery): void;
 
   /**
-   * Customize how a new HTML Application is added and first appears in the DOC
+   * Customize how a new HTML Application is added and first appears in the DOM
    * @param html - The HTML element which is ready to be added to the DOM
    * @internal
    */
@@ -260,13 +261,12 @@ declare abstract class Application<Options extends Application.Options = Applica
   /**
    * Specify the set of config buttons which should appear in the Application header.
    * Buttons should be returned as an Array of objects.
-   * The header buttons which are added to the application can be modified by the getApplicationHeaderButtons hook.
-   * @internal
+   * The header buttons which are added to the application can be modified by the getApplicationV1HeaderButtons hook.
    */
   protected _getHeaderButtons(): Application.HeaderButton[];
 
   /**
-   * Create a {@linkcode ContextMenu} for this Application.
+   * Create a {@linkcode foundry.applications.ux.ContextMenu} for this Application.
    * @param html - The Application's HTML.
    * @internal
    */
@@ -290,19 +290,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * @param options - Options which configure changing the tab
    *                  (default: `{}`)
    */
-  activateTab(
-    tabName: string,
-    options?: {
-      /** A specific named tab group, useful if multiple sets of tabs are present */
-      group?: string;
-
-      /**
-       * Whether to trigger tab-change callback functions
-       * (default: `true`)
-       */
-      triggerCallback?: boolean;
-    },
-  ): void;
+  activateTab(tabName: string, options?: Application.ActivateTabOptions): void;
 
   /**
    * Handle changes to the active tab in a configured Tabs controller
@@ -350,13 +338,22 @@ declare abstract class Application<Options extends Application.Options = Applica
   /**
    * Callback actions which occur when a dragged element is dropped on a target.
    * @param event - The originating DragEvent
+   * @privateRemarks Synchronous at the base; widened to {@linkcode MaybePromise} because
+   * {@linkcode ActorSheet._onDrop | ActorSheet#_onDrop} and
+   * {@linkcode JournalSheet._onDrop | JournalSheet#_onDrop} are `async` overrides.
    */
-  protected _onDrop(event: DragEvent): void;
+  protected _onDrop(event: DragEvent): MaybePromise<unknown>;
 
   /**
    * Bring the application to the top of the rendering stack
    */
   bringToTop(): void;
+
+  /**
+   * A convenience alias for {@linkcode Application.bringToTop | bringToTop} for when operating on an object that is
+   * either an Application or an {@linkcode foundry.applications.api.ApplicationV2 | ApplicationV2}
+   */
+  bringToFront(): void;
 
   /**
    * Close the application and un-register references to it within UI mappings
@@ -404,7 +401,7 @@ declare abstract class Application<Options extends Application.Options = Applica
    * Wait for any images present in the Application to load.
    * @returns A Promise that resolves when all images have loaded.
    */
-  _waitForImages(): Promise<void>;
+  protected _waitForImages(): Promise<void>;
 }
 
 declare namespace Application {
@@ -515,6 +512,17 @@ declare namespace Application {
     filters: Omit<SearchFilter.Configuration, "callback">[];
   }
 
+  interface ActivateTabOptions {
+    /** A specific named tab group, useful if multiple sets of tabs are present */
+    group?: string | undefined;
+
+    /**
+     * Whether to trigger tab-change callback functions
+     * @defaultValue `true`
+     */
+    triggerCallback?: boolean | undefined;
+  }
+
   interface CloseOptions {
     force?: boolean | undefined;
   }
@@ -523,6 +531,7 @@ declare namespace Application {
     label: string;
     class: string;
     icon: string;
+    tooltip?: string | undefined;
     onclick: ((ev: JQuery.ClickEvent) => void) | null;
   }
 
@@ -592,7 +601,7 @@ declare namespace Application {
     /**
      * The data change which motivated the render request
      */
-    renderData?: object | undefined;
+    renderData?: AnyObject | undefined;
   }
 
   /**

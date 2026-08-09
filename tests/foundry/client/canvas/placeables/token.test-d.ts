@@ -487,6 +487,7 @@ expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVo
 expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
 
 expectTypeOf(token["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
 expectTypeOf(token["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_propagateLeftClick"](pointerEvent)).toBeBoolean();
 expectTypeOf(token["_onClickLeft2"](pointerEvent)).toBeVoid();

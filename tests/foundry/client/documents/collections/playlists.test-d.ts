@@ -48,10 +48,8 @@ describe("Playlists Tests", async () => {
     expectTypeOf(playlists.playing).toEqualTypeOf<Playlist.Stored[]>();
     expectTypeOf(playlists.initialize()).toEqualTypeOf<Promise<void>>();
 
-    expectTypeOf(playlists._onChangeScene(scene, scene)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(null, scene)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(scene, null)).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(playlists._onChangeScene(null, null)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(playlists._onChangeScene(scene)).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(playlists._onChangeScene(null)).toEqualTypeOf<Promise<void>>();
   });
 
   test("Getting", () => {
@@ -119,8 +117,8 @@ describe("Playlists Tests", async () => {
     playlists.set("ID", playlistImpl);
     // @ts-expect-error `Actor`s are not `Playlist`s
     playlists.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(playlists.set("ID", playlist)).toBeVoid();
+
+    expectTypeOf(playlists.set("ID", playlist)).toEqualTypeOf<typeof playlists>();
 
     expectTypeOf(playlists.delete("ID")).toBeBoolean();
   });

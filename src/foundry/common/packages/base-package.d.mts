@@ -16,6 +16,9 @@ import type { ReleaseData } from "#common/config.d.mts";
 import type { BaseFolder } from "#common/documents/_module.d.mts";
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+
 /**
  * A custom SchemaField for defining package compatibility versions.
  */
@@ -590,6 +593,8 @@ declare namespace BasePackage {
 
     /**
      * The human-readable compendium name
+     * @remarks As of v14 this will be localized during {@linkcode CompendiumCollection} construction before
+     * being assigned to that pack's {@linkcode CompendiumCollection.metadata | metadata}
      */
     label: StringField<{ required: true; blank: false }>;
 
