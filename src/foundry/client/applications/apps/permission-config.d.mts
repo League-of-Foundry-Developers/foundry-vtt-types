@@ -39,20 +39,33 @@ declare namespace PermissionConfig {
 
   interface PermissionWithRoles extends UserPermission {
     id: string;
-    roles: {
-      name: string;
-      value: boolean;
-      readonly: string;
-    }[];
+    roles: PermissionRole[];
   }
+
+  interface PermissionRole {
+    /** @remarks Of the form `{permissionId}.{roleValue}`; used as the checkbox's form name. */
+    name: string;
+
+    value: boolean;
+
+    /** @remarks `"readonly"` for roles the permission always requires, otherwise `""`. */
+    readonly: string;
+  }
+
+  /** The names of the {@linkcode CONST.USER_ROLES} which can be granted a permission; `"NONE"` never can. */
+  type ConfigurableRole = Exclude<keyof typeof CONST.USER_ROLES, "NONE">;
 
   /**
    * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not
    * inherit context from its parent class.
    */
   interface RenderContext {
-    roles: Record<CONST.USER_ROLES, string>;
+    /** @remarks Keyed by role *name*, not value; each entry is a localization key. */
+    roles: Record<ConfigurableRole, string>;
+
+    /** @remarks Sorted by localized label. */
     permissions: PermissionWithRoles[];
+
     buttons: ApplicationV2.FormFooterButton[];
   }
 

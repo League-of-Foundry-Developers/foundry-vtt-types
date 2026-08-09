@@ -1,6 +1,7 @@
+import type { DeepPartial, Identity } from "#utils";
+import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
-import type { Identity } from "#utils";
 
 import Document = foundry.abstract.Document;
 
@@ -14,7 +15,6 @@ declare module "#configuration" {
 
 /**
  * A generic application for configuring permissions for various Document types.
- * @remarks TODO: Stub
  */
 declare class DocumentOwnershipConfig<
   Document extends Document.Any = Document.Any,
@@ -22,14 +22,77 @@ declare class DocumentOwnershipConfig<
   Configuration extends DocumentOwnershipConfig.Configuration<Document> =
     DocumentOwnershipConfig.Configuration<Document>,
   RenderOptions extends DocumentOwnershipConfig.RenderOptions = DocumentOwnershipConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  override get title(): string;
+
+  /** @throws If the Document is not a Folder and has no ownership data. */
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  #DocumentOwnershipConfig: true;
+}
 
 declare namespace DocumentOwnershipConfig {
   interface Any extends AnyDocumentOwnershipConfig {}
   interface AnyConstructor extends Identity<typeof AnyDocumentOwnershipConfig> {}
 
   interface RenderContext<Document extends Document.Any = Document.Any>
-    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {
+    /**
+     * The ownership level currently applied to users with no explicit entry.
+     * @remarks Falls back to {@linkcode CONST.DOCUMENT_META_OWNERSHIP_LEVELS.DEFAULT} for Folders, which carry
+     * no ownership data of their own.
+     */
+    currentDefault: CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_META_OWNERSHIP_LEVELS;
+
+    instructions: string;
+
+    /** @remarks {@linkcode RenderContext.playerLevels | playerLevels} without its first entry. */
+    defaultLevels: OwnershipLevelChoice[];
+
+    /**
+     * The ownership levels a single user may be assigned.
+     * @remarks Negative (inherited) levels are only offered for embedded Documents.
+     */
+    playerLevels: OwnershipLevelChoice[];
+
+    isFolder: boolean;
+
+    /** @remarks Whether gamemaster users are currently shown; they start hidden. */
+    showGM: boolean;
+
+    /** @remarks Sorted by user name. */
+    users: UserOwnershipContext[];
+
+    buttons: ApplicationV2.FormFooterButton[];
+  }
+
+  interface OwnershipLevelChoice {
+    level: CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_META_OWNERSHIP_LEVELS;
+
+    label: string;
+  }
+
+  interface UserOwnershipContext {
+    user: User.Stored;
+
+    /**
+     * @remarks {@linkcode CONST.DOCUMENT_META_OWNERSHIP_LEVELS.NOCHANGE} for Folders, and `undefined` for a user
+     * with no explicit entry in the Document's ownership.
+     */
+    level: CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_META_OWNERSHIP_LEVELS | undefined;
+
+    isAuthor: boolean;
+  }
 
   interface Configuration<Document extends Document.Any = Document.Any>
     extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Document> {}
