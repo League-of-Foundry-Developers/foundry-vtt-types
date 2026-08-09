@@ -16,21 +16,21 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   constructor(
     container: HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement>[],
-    options: ContextMenu.ConstructorOptions<false>,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
   /**
    * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
+   * Because the jQuery option provided to the ContextMenu constructor was undefined, your callbacks will receive jQuery objects.
    * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
    * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
    */
   constructor(
     element: HTMLElement | JQuery,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement | JQuery>[],
-    options?: Omit<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery"> & { jQuery?: false | undefined },
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options?: ContextMenu.DeprecatedConstructorOptions<UsesJQuery>,
   );
 
   /**
@@ -393,6 +393,23 @@ declare namespace ContextMenu {
      * @defaultValue `true`
      */
     closeOnSelect?: boolean | undefined;
+  }
+
+  /**
+   * Options for the deprecated {@linkcode ContextMenu} constructor overload, where `jQuery` may be omitted.
+   *
+   * @remarks Omitting `jQuery` makes callbacks receive jQuery objects and logs a compatibility warning, hence
+   * `IsJQuery` defaulting to `true`.
+   */
+  interface DeprecatedConstructorOptions<IsJQuery extends boolean = true> extends Omit<
+    ConstructorOptions<IsJQuery>,
+    "jQuery"
+  > {
+    /**
+     * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
+     * @defaultValue `true`
+     */
+    jQuery?: IsJQuery | undefined;
   }
 
   /** Options for {@linkcode ContextMenu.activateListeners} */

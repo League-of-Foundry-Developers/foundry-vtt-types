@@ -21,8 +21,8 @@ declare class FilterMenu<UsesJQuery extends boolean = false> extends ContextMenu
   constructor(
     container: HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement>[],
-    options: ContextMenu.ConstructorOptions<false>,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
   protected override _preRenderEntries(options?: ContextMenu.RenderOptions): Promise<void>;

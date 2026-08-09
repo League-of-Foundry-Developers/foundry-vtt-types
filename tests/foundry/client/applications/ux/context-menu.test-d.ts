@@ -93,7 +93,7 @@ new ContextMenu(testAppV2.element, ".foobar", [], {
 });
 
 expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.ImplementationClass>();
-expectTypeOf(
-  new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false }),
-).toExtend<ContextMenu.Implementation>();
+expectTypeOf(new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false })).toEqualTypeOf<
+  ContextMenu<false>
+>();
 expectTypeOf(ContextMenu.implementation.activateListeners()).toBeVoid();
