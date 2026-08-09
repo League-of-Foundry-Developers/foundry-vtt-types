@@ -1,5 +1,4 @@
 import { describe, expectTypeOf, test } from "vitest";
-import type { AnyMutableObject } from "fvtt-types/utils";
 
 import ChatBubbles = foundry.canvas.animation.ChatBubbles;
 
@@ -14,7 +13,7 @@ describe("ClassName tests", () => {
     expectTypeOf(ChatBubbles["_activateSocketListeners"](socket)).toBeVoid();
 
     expectTypeOf(myCB.template).toBeString();
-    expectTypeOf(myCB.bubbles).toEqualTypeOf<AnyMutableObject>();
+    expectTypeOf(myCB.bubbles).toEqualTypeOf<Record<string, HTMLElement>>();
     expectTypeOf(myCB.element).toEqualTypeOf<HTMLElement>();
 
     expectTypeOf(myCB.broadcast(docOrPlaceable, "Hey!"));
