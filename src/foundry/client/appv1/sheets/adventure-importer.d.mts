@@ -1,4 +1,4 @@
-import type { GetDataReturnType, Identity } from "#utils";
+import type { AnyMutableObject, AnyObject, GetDataReturnType, Identity } from "#utils";
 import type { Application, DocumentSheet } from "../api/_module.d.mts";
 
 declare module "#configuration" {
@@ -26,7 +26,7 @@ declare class AdventureImporter<
    * @defaultValue
    * ```typescript
    * foundry.utils.mergeObject(super.defaultOptions, {
-   *   template: "templates/adventure/importer.html",
+   *   template: "templates/adventure/importer-v1.hbs",
    *   id: "adventure-importer",
    *   classes: ["sheet", "adventure", "adventure-importer"],
    *   width: 800,
@@ -44,20 +44,20 @@ declare class AdventureImporter<
 
   /**
    * Handle toggling the import all checkbox.
-   * @param event - The change event
+   * @param event - The change event.
    */
   protected _onToggleImportAll(event: Event): void;
 
   /**
    * Prepare a list of content types provided by this adventure.
    */
-  protected _getContentList(): { icon: string; label: string; count: number }[];
+  protected _getContentList(): AdventureImporter.ContentListEntry[];
 
   protected override _getHeaderButtons(): Application.HeaderButton[];
 
   protected override _updateObject(
     event: Event,
-    formData: object,
+    formData: AnyMutableObject,
   ): Promise<void | ReturnType<Adventure.Implementation["import"]>>;
 
   /**
@@ -65,19 +65,23 @@ declare class AdventureImporter<
    * {@linkcode _prepareImportData | AdventureImport#_prepareImportData}
    * @remarks This isn't itself deprecated but calls two deprecated methods and will likely be removed with them in v16.
    */
-  _importLegacy(formData: object): Promise<void>;
+  _importLegacy(formData: AnyObject): Promise<void>;
 
   /**
    * @deprecated "`AdventureImporter#_prepareImportData` is deprecated. Please use
    * {@linkcode Adventure.prepareImport Adventure#prepareImport} instead." (since v11, until v16)
    */
-  _prepareImportData(formData: object): Promise<Adventure.ImportData>;
+  _prepareImportData(formData: AnyObject): Promise<Adventure.ImportData>;
 
   /**
    * @deprecated "`AdventureImporter#_importContent` is deprecated. Please use {@linkcode Adventure.importContent | Adventure#importContent}
-   * instead." (since v13, until v16)
+   * instead." (since v11, until v16)
    */
-  _importContent(formData: object): Promise<Adventure.ImportResult>;
+  _importContent(
+    toCreate: Adventure.DocumentDataRecord,
+    toUpdate: Adventure.DocumentDataRecord,
+    documentCount: number,
+  ): Promise<Adventure.ImportResult>;
 }
 
 declare namespace AdventureImporter {
@@ -85,6 +89,13 @@ declare namespace AdventureImporter {
   interface AnyConstructor extends Identity<typeof AnyAdventureImporter> {}
 
   interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
+
+  interface ContentListEntry {
+    icon: string;
+    label: string;
+    count: number;
+    field: keyof typeof foundry.documents.BaseAdventure.contentFields;
+  }
 
   interface Data {
     adventure: Adventure.Implementation;

@@ -83,11 +83,10 @@ declare class PolygonVertex {
 
   /**
    * The maximum restriction imposed by this vertex.
-   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
-   * @remarks Actually initialized to `0` literal, but is meant as a `WALL_SENSE_TYPES`
+   * @defaultValue {@linkcode CONST.EDGE_SENSE_TYPES.NONE}
+   * @remarks Actually initialized to `0` literal, but is meant as an `EDGE_SENSE_TYPES`
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  restriction: CONST.WALL_SENSE_TYPES;
+  restriction: CONST.EDGE_SENSE_TYPES;
 
   /**
    * Record whether this PolygonVertex has been visited in the sweep
@@ -145,7 +144,7 @@ declare class PolygonVertex {
    * @param orientation - The orientation of the edge with respect to the origin
    * @param type        - The restriction type of the polygon being created
    */
-  attachEdge(edge: Edge, orientation: number, type: CONST.WALL_RESTRICTION_TYPES): void;
+  attachEdge(edge: Edge, orientation: number, type: CONST.EDGE_RESTRICTION_TYPES): void;
 
   /**
    * Is this vertex terminal (at the maximum radius)

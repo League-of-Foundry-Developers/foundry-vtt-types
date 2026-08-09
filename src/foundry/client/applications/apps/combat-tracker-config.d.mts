@@ -12,7 +12,6 @@ declare module "#configuration" {
 
 /**
  * The Application responsible for configuring the CombatTracker and its contents.
- * @remarks TODO: Stub
  */
 declare class CombatTrackerConfig<
   RenderContext extends CombatTrackerConfig.RenderContext = CombatTrackerConfig.RenderContext,
@@ -20,6 +19,16 @@ declare class CombatTrackerConfig<
   RenderOptions extends CombatTrackerConfig.RenderOptions = CombatTrackerConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   static override DEFAULT_OPTIONS: CombatTrackerConfig.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  #CombatTrackerConfig: true;
 }
 
 declare namespace CombatTrackerConfig {
@@ -32,6 +41,24 @@ declare namespace CombatTrackerConfig {
    */
   interface RenderContext {
     rootId: string;
+
+    /** @remarks Tracked attribute paths for the Token bar selectors, with `"value"` appended to each bar attribute. */
+    attributeChoices: TokenDocument.TrackedAttributesChoice[];
+
+    /** @remarks `game.user.can("SETTINGS_MODIFY")`; the tracker settings are read-only without it. */
+    canConfigure: boolean;
+
+    combatTheme: foundry.helpers.ClientSettings.SettingConfig;
+
+    fields: foundry.data.CombatConfiguration.ConfigSettingSchema;
+
+    selectedTheme: string;
+
+    settings: Combat.SettingData;
+
+    animationChoices: { value: string; label: string }[];
+
+    buttons: ApplicationV2.FormFooterButton[];
   }
 
   interface Configuration<CombatTrackerConfig extends CombatTrackerConfig.Any = CombatTrackerConfig.Any>
@@ -51,6 +78,8 @@ declare abstract class AnyCombatTrackerConfig extends CombatTrackerConfig<
   CombatTrackerConfig.RenderContext,
   CombatTrackerConfig.Configuration,
   CombatTrackerConfig.RenderOptions
-> {}
+> {
+  constructor(...args: never);
+}
 
 export default CombatTrackerConfig;

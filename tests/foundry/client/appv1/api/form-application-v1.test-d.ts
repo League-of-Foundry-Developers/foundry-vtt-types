@@ -1,6 +1,7 @@
 import { assertType, expectTypeOf, test } from "vitest";
-import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
+import type { AnyObject, GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type TextEditor from "../../../../../src/foundry/client/applications/ux/text-editor.mjs";
+import type FilePicker from "../../../../../src/foundry/client/applications/apps/file-picker.mjs";
 
 import FormApplication = foundry.appv1.api.FormApplication;
 import Application = foundry.appv1.api.Application;
@@ -20,6 +21,27 @@ expectTypeOf(formApplication.render(true)).toEqualTypeOf<
 expectTypeOf(formApplication.form).toEqualTypeOf<HTMLElement | null>();
 expectTypeOf(formApplication.editors).toEqualTypeOf<Record<string, FormApplication.FormApplicationEditor>>();
 expectTypeOf(formApplication.activateEditor("content")).toEqualTypeOf<Promise<TextEditor.EditorInstance>>();
+
+// Subclasses can reach the protected surface whose signatures changed for V14.
+class ProtectedSurface extends FormApplication<{ foo: string }, FormApplication.Options> {
+  protected async _updateObject(): Promise<unknown> {
+    return undefined;
+  }
+
+  testProtected(event: Event): void {
+    // `_onSubmit` returns `false` when the form is not submittable, rather than partial form data.
+    expectTypeOf(this._onSubmit(event)).toEqualTypeOf<Promise<AnyObject | false>>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(this._activateFilePicker(event as PointerEvent)).toEqualTypeOf<Promise<FilePicker>>();
+
+    // `options` is optional and `remove` defaults to `true`.
+    expectTypeOf(this._configureProseMirrorPlugins("content")).toEqualTypeOf<FormApplication.ProseMirrorPlugins>();
+    this._configureProseMirrorPlugins("content", { remove: false });
+  }
+}
+void ProtectedSurface;
+
+expectTypeOf(FormApplication["_customElements"]).toEqualTypeOf<string[]>();
 
 const app = new (class extends FormApplication<{ foo: string }, FormApplication.Options> {
   protected async _updateObject(): Promise<unknown> {

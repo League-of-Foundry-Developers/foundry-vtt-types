@@ -1,5 +1,5 @@
 import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -34,6 +34,8 @@ declare class WorldSettings extends WorldCollection<"Setting"> {
    * @returns The serialized setting string
    */
   getItem(key: string, user?: string | null): string | null;
+
+  // `Setting`s do not have type data, so this collection does not require an `importDocument` fake override
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(

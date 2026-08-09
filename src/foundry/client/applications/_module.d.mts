@@ -1,3 +1,5 @@
+import type DetachedWindowManager from "./detached/window-manager.d.mts";
+
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
@@ -20,6 +22,11 @@ export * as ui from "./ui/_module.mjs";
  * A registry of currently rendered ApplicationV2 instances.
  */
 export const instances: Map<string, foundry.applications.api.ApplicationV2.Any>;
+
+/**
+ * The Detached Window API.
+ */
+export const detached: DetachedWindowManager;
 
 /**
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.

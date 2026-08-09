@@ -174,8 +174,14 @@ expectTypeOf(placeable["_onHoverIn"](pointerEvent)).toEqualTypeOf<boolean | void
 expectTypeOf(placeable["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<boolean | void>();
 expectTypeOf(placeable["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<boolean | void>();
 expectTypeOf(placeable["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toEqualTypeOf<boolean | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent, { updateLegend: false })).toEqualTypeOf<boolean | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent, { updateLegend: undefined })).toEqualTypeOf<boolean | void>();
 
 expectTypeOf(placeable["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onHoverOut"](pointerEvent, {})).toBeVoid();
+expectTypeOf(placeable["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
+expectTypeOf(placeable["_onHoverOut"](pointerEvent, { updateLegend: undefined })).toBeVoid();
+
 expectTypeOf(placeable["_propagateLeftClick"](pointerEvent)).toBeBoolean();
 expectTypeOf(placeable["_onClickLeft"](pointerEvent)).toEqualTypeOf<boolean | void>();
 expectTypeOf(placeable["_onUnclickLeft"](pointerEvent)).toBeVoid();

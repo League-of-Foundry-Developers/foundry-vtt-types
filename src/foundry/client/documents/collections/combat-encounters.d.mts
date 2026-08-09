@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { GetKey, Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -38,8 +38,11 @@ declare class CombatEncounters extends WorldCollection<"Combat"> {
    */
   get viewed(): Combat.Stored | null;
 
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  protected _onDeleteToken(...args: never): never;
+  // fake type override
+  override importDocument<Doc extends Combat.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Combat">,
+  ): CombatEncounters.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -75,6 +78,10 @@ declare namespace CombatEncounters {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Combat"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Combat"> {}
+
+  type ImportDocumentReturn<Doc extends Combat.Implementation> = Promise<
+    Combat.Stored<GetKey<Doc, "type">> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode CombatEncounters.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

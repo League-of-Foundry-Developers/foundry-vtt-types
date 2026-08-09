@@ -576,6 +576,11 @@ export declare const queries: RemoveIndexSignatures<CONFIG.Queries>;
  */
 export declare const cursors: CONFIG.Cursors;
 
+/**
+ * Configure the formula editor.
+ */
+export declare const formulaEditor: CONFIG.FormulaEditor;
+
 declare global {
   namespace CONFIG {
     interface Debug {
@@ -1595,6 +1600,12 @@ declare global {
 
     interface UX {
       /**
+       * @defaultValue {@linkcode foundry.applications.ux.Autocomplete}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.apps.FormulaEditor | FormulaEditor}, among other places.
+       */
+      Autocomplete: typeof foundry.applications.ux.Autocomplete;
+
+      /**
        * @defaultValue {@linkcode foundry.applications.ux.ContextMenu}
        * @privateRemarks Instantiated via `new` in {@linkcode ApplicationV2._createContextMenu | ApplicationV2#_createContextMenu},
        * among other places.
@@ -1619,6 +1630,12 @@ declare global {
        * @privateRemarks Instantiated via `new` in `DocumentSheetV2##onEditImage`, among other places.
        */
       FilePicker: typeof foundry.applications.apps.FilePicker;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.ux.FilterMenu}
+       * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.tabs.PlaceableTab._attachFrameListeners | PlaceableTab#_attachFrameListeners}.
+       */
+      FilterMenu: typeof foundry.applications.ux.FilterMenu;
 
       /**
        * @defaultValue {@linkcode foundry.applications.ux.TextEditor}
@@ -4580,6 +4597,29 @@ declare global {
     interface CursorDescriptor extends InexactPartial<_CursorDescriptor> {
       /** The URL of the cursor image. Must be no larger than 128x128. 32x32 is recommended. */
       url: string;
+    }
+
+    interface FormulaEditor {
+      contexts: FormulaEditor.Contexts;
+    }
+
+    namespace FormulaEditor {
+      /**
+       * The editing contexts a {@linkcode foundry.applications.apps.FormulaEditor | FormulaEditor} can be opened in,
+       * selected by the `context` option. Core registers none; systems and modules add their own.
+       */
+      interface Contexts {
+        [context: Brand<string, "CONFIG.formulaEditor.contexts">]: Context;
+      }
+
+      interface Context {
+        /**
+         * A map of data paths to human-readable labels.
+         * @remarks Optional because {@linkcode foundry.applications.apps.FormulaEditor.context | FormulaEditor#context}
+         * falls back to `{}` when the requested context is not registered, and reads it as `this.#context.labels ?? {}`.
+         */
+        labels?: Record<string, string> | undefined;
+      }
     }
 
     interface TextEditorEngineRenderOptions extends foundry.applications.fields.EditorInputConfig {}

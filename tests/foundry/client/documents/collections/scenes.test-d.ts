@@ -1,6 +1,7 @@
 import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Scenes = foundry.documents.collections.Scenes;
+import Sound = foundry.audio.Sound;
 
 describe("Scenes Tests", async () => {
   const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
@@ -50,12 +51,25 @@ describe("Scenes Tests", async () => {
     expectTypeOf(scenes.current).toEqualTypeOf<Scene.Stored | undefined>();
     expectTypeOf(scenes.viewed).toEqualTypeOf<Scene.Stored | undefined>();
 
-    expectTypeOf(scenes.preload("ID")).toEqualTypeOf<Promise<Array<foundry.audio.Sound | undefined>>>();
-    expectTypeOf(scenes.preload("ID", false)).toEqualTypeOf<Promise<Array<foundry.audio.Sound | undefined>>>();
-    expectTypeOf(scenes.preload("ID", undefined)).toEqualTypeOf<Promise<Array<foundry.audio.Sound | undefined>>>();
-    expectTypeOf(scenes.preload("ID", true)).toEqualTypeOf<Promise<io.Socket>>();
-
     expectTypeOf(Scenes._activateSocketListeners(game.socket!)).toBeVoid();
+  });
+
+  test("preload", () => {
+    expectTypeOf(scenes.preload("ID")).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    expectTypeOf(scenes.preload("ID", undefined)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    expectTypeOf(scenes.preload("ID", { broadcast: true, level: "some level ID" })).toEqualTypeOf<
+      Promise<Array<Sound | undefined>>
+    >();
+    expectTypeOf(scenes.preload("ID", { broadcast: undefined, level: undefined })).toEqualTypeOf<
+      Promise<Array<Sound | undefined>>
+    >();
+
+    // deprecated signature, since v14 until v16:
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(scenes.preload("ID", true)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(scenes.preload("ID", false)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
   });
 
   test("Getting", () => {
@@ -113,8 +127,8 @@ describe("Scenes Tests", async () => {
     scenes.set("ID", sceneImpl);
     // @ts-expect-error `Actor`s are not `Scene`s
     scenes.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(scenes.set("ID", scene)).toBeVoid();
+
+    expectTypeOf(scenes.set("ID", scene)).toEqualTypeOf<typeof scenes>();
 
     expectTypeOf(scenes.delete("ID")).toBeBoolean();
   });
@@ -137,10 +151,10 @@ describe("Scenes Tests", async () => {
 
     // default case - all deletions enabled except `folder`
     expectTypeOf(scenes.fromCompendium(sceneOrSource)).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(scenes.fromCompendium(sceneOrSource, {})).toEqualTypeOf<
-      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
+      Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">
     >();
     expectTypeOf(
       scenes.fromCompendium(sceneOrSource, {
@@ -150,7 +164,7 @@ describe("Scenes Tests", async () => {
         clearState: undefined,
         keepId: undefined,
       }),
-    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">>();
+    ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">>();
 
     // @ts-expect-error `WallDocument.Stored`s aren't `Scene.Stored`s
     scenes.fromCompendium(wallDoc);

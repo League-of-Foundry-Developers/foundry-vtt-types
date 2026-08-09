@@ -99,10 +99,24 @@ describe("Items Tests", async () => {
     items.set("ID", itemImpl);
     // @ts-expect-error `Actor`s are not `Item`s
     items.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(items.set("ID", item)).toBeVoid();
+
+    expectTypeOf(items.set("ID", item)).toEqualTypeOf<typeof items>();
 
     expectTypeOf(items.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await items.importDocument(item, {});
+    if (!imported1) throw new Error("Failed to create test `Item` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Item.Stored>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await items.importDocument(itemImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Item` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Item.Stored<"base">>();
   });
 
   afterAll(async () => {

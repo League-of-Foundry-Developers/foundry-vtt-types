@@ -1,5 +1,6 @@
 import type { DeepPartial, Identity } from "#utils";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type AbstractSidebarTab from "./sidebar-tab.d.mts";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -38,8 +39,16 @@ declare class Sidebar<
 
   /**
    * The currently popped-out sidebar tabs.
+   *
+   * @remarks Keyed by {@linkcode AbstractSidebarTab.tabName | tabName}. Entries are added by
+   * {@linkcode AbstractSidebarTab._onFirstRender} and removed by {@linkcode AbstractSidebarTab._onClose},
+   * so only popped-out tabs appear here.
+   *
+   * @privateRemarks Foundry's `@type` says `Record<string, SidebarTab|AbstractSidebarTab>`, but `SidebarTab`
+   * — the AppV1 sidebar tab — no longer exists in V14, and the only writer stores `this` from
+   * `AbstractSidebarTab`.
    */
-  popouts: Record<string, foundry.applications.sidebar.Sidebar>;
+  popouts: Record<string, AbstractSidebarTab.Any>;
 
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 
@@ -64,10 +73,14 @@ declare class Sidebar<
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
 
+  /**
+   * @remarks On the first render this delegates to the mixin and returns a stub element per part. On
+   * every later render it re-renders the requested tabs itself and resolves to an empty record.
+   */
   protected override _renderHTML(
-    _context: RenderContext,
-    _options: DeepPartial<RenderOptions>,
-  ): Promise<HTMLFormElement>;
+    context: RenderContext,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<Record<string, HTMLElement>>;
 
   protected override _onClickTab(event: PointerEvent): void;
 
@@ -86,6 +99,8 @@ declare class Sidebar<
   /**
    * Toggle the expanded state of the sidebar.
    * @param expanded - Force the expanded state to the provided value, otherwise toggle the state.
+   *
+   * @remarks Calls the `collapseSidebar` hook with the sidebar and the new collapsed state.
    */
   toggleExpanded(expanded?: boolean): void;
 

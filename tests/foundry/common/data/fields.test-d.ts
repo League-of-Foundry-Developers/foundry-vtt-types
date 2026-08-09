@@ -192,12 +192,10 @@ test("toInput/toFormGroup thread the owning field into the `input` callback", ()
   );
 
   // A subclass family (`NumberField`) threads its own field type through too, not just the base.
-  // Value-form assertion: the generic `toEqualTypeOf<typeof numberField>()` trips vitest's own
-  // constraint machinery on `NumberField`'s more complex instantiation, though the narrowing is identical.
   const numberField = new fields.NumberField();
   numberField.toInput({
     input: (field) => {
-      expectTypeOf(field).toEqualTypeOf(numberField);
+      expectTypeOf(field).toEqualTypeOf<typeof numberField>();
       return document.createElement("input");
     },
   });
@@ -465,7 +463,7 @@ test("ShapesField options and concrete shape types", () => {
   const initializedShapes = shapesField.initialize([], null as unknown as foundry.abstract.DataModel.Any);
 
   expectTypeOf(initializedShapes).toEqualTypeOf<
-    fields.ShapesField.InitializedType<fields.ShapesField.DefaultOptions>
+    fields.ShapesField.InitializedType<fields.ShapesField.InitializedElementType, fields.ShapesField.DefaultOptions>
   >();
   expectTypeOf<fields.ShapesField.InitializedElementType>().toExtend<
     | foundry.data.RectangleShapeData
@@ -485,8 +483,14 @@ test("ShapesField options and concrete shape types", () => {
 test("GridOffsetField schemas and string assignments", () => {
   const gridOffset2D = new fields.GridOffsetField();
   const gridOffset3D = new fields.GridOffsetField({ dimensions: 3 });
-  const offset2D = gridOffset2D.clean("1.2");
-  const offset3D = gridOffset3D.clean("1.2.3");
+  const offset2D = gridOffset2D.clean({ i: 1, j: 2 });
+  const offset3D = gridOffset3D.clean({ i: 1, j: 2, k: 3 });
+
+  // @ts-expect-error At runtime this is intended to work fine but CastType has not been implemented yet.
+  gridOffset2D.clean("1.2");
+
+  // @ts-expect-error At runtime this is intended to work fine but CastType has not been implemented yet.
+  gridOffset3D.clean("1.2.3");
 
   expectTypeOf(gridOffset2D.dimensions).toEqualTypeOf<2>();
   expectTypeOf(gridOffset3D.dimensions).toEqualTypeOf<3>();
@@ -516,7 +520,10 @@ test("GridOffsetField nullish options", () => {
 
 test("GridOffsetsField element dimensions", () => {
   const gridOffsets = new fields.GridOffsetsField({ dimensions: 3 });
-  const offsets = gridOffsets.clean(["1.2.3"]);
+  const offsets = gridOffsets.clean([{ i: 1, j: 2, k: 3 }]);
+
+  // @ts-expect-error At runtime this is intended to work fine but CastType has not been implemented yet.
+  gridOffsets.clean(["1.2.3"]);
 
   expectTypeOf(gridOffsets.dimensions).toEqualTypeOf<3>();
   expectTypeOf(offsets).toEqualTypeOf<{ i: number; j: number; k: number }[]>();
@@ -612,9 +619,7 @@ test("protected override method signatures", () => {
       return super._replaceDataRefs(raw, data, options);
     }
 
-    protected override _toInput(
-      config: DataField.ToInputConfig<this, unknown>,
-    ): HTMLElement | HTMLElement[] | HTMLCollection {
+    protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection {
       return super._toInput(config);
     }
   }

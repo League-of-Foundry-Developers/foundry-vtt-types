@@ -626,32 +626,23 @@ declare namespace Game {
    * where we can know which types certain keys refer to due to fvtt-types's configuration interfaces {@linkcode ModuleConfig} and
    * {@linkcode RequiredModules}.
    */
-  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
+  interface ModuleCollection extends Collection<foundry.packages.Module> {
     /**
      * @remarks Gets the module requested for by ID.
      *
      * Go to definition doesn't work here, see {@linkcode ModuleCollectionMethods.get}.
      * @see {@linkcode ModuleConfig} to add custom properties to modules, for example APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
-     * @param id - The module ID to look up
-     *
-     * @privateRemarks The `Methods` hack does not pass through JSDoc, so we have this otherwise unnecessary override here.
+     * @param id      - The module ID to look up
+     * @param options - Additional options that affect how entries are retrieved
      */
-    get: ModuleCollectionMethods["get"];
-  }
-
-  /**
-   * Methods for the {@linkcode ModuleCollection} fake class. Only `#get` needs a type override, the rest is inherited.
-   */
-  interface ModuleCollectionMethods extends Omit<Collection.Methods<foundry.packages.Module>, "get"> {
     get<T extends string, Options extends Collection.GetOptions | undefined = undefined>(
       id: T,
       options?: Options,
-    ): _ModuleCollectionGetReturn<T, Options>;
+    ): ModuleCollectionGetReturn<T, Options>;
   }
 
-  /** @internal */
-  type _ModuleCollectionGetReturn<
+  type ModuleCollectionGetReturn<
     Name extends string,
     Options extends Collection.GetOptions | undefined = undefined,
   > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturn<_MaybeActiveModule<Name>, Options>;
@@ -673,25 +664,18 @@ declare namespace Game {
    * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to return the
    * Foundry-provided {@linkcode WorldCollection}s for their known keys.
    */
-  interface WorldCollectionsCollection extends Collection<WorldCollection.Any, WorldCollectionsCollectionMethods> {
+  interface WorldCollectionsCollection extends Collection<WorldCollection.Any> {
     /**
      * @remarks Returns the appropriate {@linkcode WorldCollection} implementation
      * when passed a key in {@linkcode CONST.WORLD_DOCUMENT_TYPES}.
-     *
-     * Go to definition breaks here, see {@linkcode WorldCollectionsCollectionMethods.get}.
      */
-    get: WorldCollectionsCollectionMethods["get"];
-  }
-
-  interface WorldCollectionsCollectionMethods extends Omit<Collection.Methods<WorldCollection.Any>, "get"> {
     get<Key extends string, Options extends Collection.GetOptions | undefined>(
       key: Key,
       options?: Options,
-    ): _WorldCollectionsCollectionGetReturn<Key, Options>;
+    ): WorldCollectionsCollectionGetReturn<Key, Options>;
   }
 
-  /** @internal */
-  type _WorldCollectionsCollectionGetReturn<
+  type WorldCollectionsCollectionGetReturn<
     Key extends string,
     Options extends Collection.GetOptions | undefined,
   > = Key extends CONST.WORLD_DOCUMENT_TYPES

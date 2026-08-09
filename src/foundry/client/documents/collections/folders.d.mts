@@ -1,5 +1,5 @@
-import type { Identity } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { GetKey, Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
@@ -34,8 +34,11 @@ declare class Folders extends WorldCollection<"Folder"> {
   /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
   override render(force?: boolean, context?: DocumentCollection.RenderOptions): void;
 
-  /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
-  protected _refreshJournalEntrySheets(): never;
+  // fake type override
+  override importDocument<Doc extends Folder.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Folder">,
+  ): Folders.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -74,6 +77,10 @@ declare namespace Folders {
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Folder"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Folder"> {}
+
+  type ImportDocumentReturn<Doc extends Folder.Implementation> = Promise<
+    Folder.Stored<GetKey<Doc, "type">> | undefined
+  >;
 
   /** @deprecated Replaced by {@linkcode Folders.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

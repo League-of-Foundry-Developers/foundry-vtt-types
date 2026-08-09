@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { GetKey, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
@@ -30,14 +30,11 @@ declare class Actors extends WorldCollection<"Actor"> {
   /** @privateRemarks Fake type override */
   static override get instance(): Actors.Implementation;
 
-  /**
-   * @remarks This override doesn't change the type at all, just updates {@link ActiveEffect.origin | `ActiveEffect` origins} if
-   * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
-   */
-  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Actor.Implementation | Actor.Source,
-    options?: Options,
-  ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
+  // fake type override
+  override importDocument<Doc extends Actor.Implementation>(
+    document: Doc,
+    options: WorldCollection.ImportDocumentOptions<"Actor">,
+  ): Actors.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
@@ -75,10 +72,9 @@ declare namespace Actors {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Actor"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Actor"> {}
 
-  interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {
-    /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-    clearPrototypeToken?: never;
-  }
+  interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {}
+
+  type ImportDocumentReturn<Doc extends Actor.Implementation> = Promise<Actor.Stored<GetKey<Doc, "type">> | undefined>;
 
   /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;

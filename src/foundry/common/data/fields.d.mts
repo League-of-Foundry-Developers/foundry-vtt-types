@@ -17,6 +17,8 @@ import type {
   AnyMutableObject,
   ConcreteKeys,
   MaybeArray,
+  ToMethod,
+  Coalesce,
 } from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -435,7 +437,7 @@ declare abstract class DataField<
    * @throws An Error if this DataField subclass does not support input rendering
    * @returns A rendered HTMLElement for the field
    */
-  toInput(config?: DataField.ToInputConfig<this, InitializedType>): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * Render this DataField as an HTML element.
@@ -445,9 +447,7 @@ declare abstract class DataField<
    * @returns A rendered HTMLElement for the field
    * @remarks Would be `abstract` except not all fields are designed to be used in forms
    */
-  protected _toInput(
-    config: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * Render this DataField as a standardized form-group element.
@@ -455,10 +455,7 @@ declare abstract class DataField<
    * @param inputConfig - Input element configuration options passed to DataField#toInput
    * @returns The rendered form group element
    */
-  toFormGroup(
-    groupConfig?: DataField.GroupConfig,
-    inputConfig?: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLDivElement;
+  toFormGroup(groupConfig?: DataField.GroupConfig, inputConfig?: DataField.ToInputConfig<this>): HTMLDivElement;
 
   /**
    * Apply an ActiveEffectChange to this field.
@@ -618,7 +615,8 @@ declare namespace DataField {
   interface AnyConstructor extends Identity<typeof AnyDataField> {}
 
   /** A DataField with unknown inner types. */
-  type Unknown = DataField<any, unknown, unknown, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  type Unknown = DataField<{}, unknown, unknown, unknown>;
 
   namespace Internal {
     interface ElementFieldImplementation<Element extends DataField.Any = DataField.Any> {
@@ -1113,14 +1111,11 @@ declare namespace DataField {
    * documented return, which forwards this callback's result and whose consumers (e.g.
    * {@linkcode foundry.applications.fields.createFormGroup | createFormGroup}) handle arrays.
    *
-   * Encoded as an indexed method (not an arrow) so `CurrentField` is checked bivariantly: threaded
-   * through `ToInputConfig` into `toInput(config?: …<this>)`, an arrow's contravariant `field` param
-   * would flip variance against `validate(options?: ValidateOptions<this>)` and make fields fail
-   * `extends DataField.Any` (same reason as {@linkcode DataField.ValidatorFunction}).
+   * A method for bivariance, necessary for `field` to be overridden covariantly in subclasses.
    */
-  type CustomFormInput<CurrentField extends DataField.Any = DataField.Any> = {
-    customFormInput(field: CurrentField, config: FormInputConfig): HTMLElement | HTMLElement[] | HTMLCollection;
-  }["customFormInput"];
+  type CustomFormInput<CurrentField extends DataField.Any = DataField.Any> = ToMethod<
+    (field: CurrentField, config: FormInputConfig) => HTMLElement | HTMLElement[] | HTMLCollection
+  >;
 
   /**
    * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
@@ -1128,8 +1123,8 @@ declare namespace DataField {
    *
    * Foundry includes `input` in `FormInputConfig`, but it is only used by `DataField#_toInput`, so we move it here instead.
    */
-  interface ToInputConfig<CurrentField extends DataField.Any, InitializedType> extends IntentionalPartial<
-    FormInputConfig<InitializedType>
+  interface ToInputConfig<CurrentField extends DataField.Any> extends IntentionalPartial<
+    FormInputConfig<DataField.InitializedTypeFor<CurrentField>>
   > {
     /**
      * @remarks Used with {@linkcode DataField.toFormGroup | DataField#toFormGroup}/{@linkcode DataField.toInput | #toInput}: if provided,
@@ -1138,17 +1133,22 @@ declare namespace DataField {
     input?: CustomFormInput<CurrentField> | undefined;
   }
 
-  interface ToInputConfigWithOptions<CurrentField extends DataField.Any, InitializedType>
-    extends ToInputConfig<CurrentField, InitializedType>, _SelectInputConfig {}
+  interface ToInputConfigWithOptions<CurrentField extends DataField.Any>
+    extends ToInputConfig<CurrentField>, _SelectInputConfig {}
 
   type AnyChoices = StringField.Choices | NumberField.Choices;
 
-  type ToInputConfigWithChoices<
-    CurrentField extends DataField.Any,
-    InitializedType,
+  type ToInputConfigWithChoices<CurrentField extends NumberField.Any | StringField.Any> = _ToInputConfigWithChoices<
+    CurrentField,
+    CurrentField["options"]["choices"]
+  >;
+
+  /** @internal */
+  type _ToInputConfigWithChoices<
+    CurrentField extends NumberField.Any | StringField.Any,
     Choices extends AnyChoices | undefined,
   > = SimpleMerge<
-    Omit<ToInputConfigWithOptions<CurrentField, InitializedType>, "options">,
+    Omit<ToInputConfigWithOptions<CurrentField>, "options">,
     Choices extends undefined
       ? StringField.PrepareChoiceConfig
       : Omit<StringField.PrepareChoiceConfig, "choices"> & {
@@ -1591,7 +1591,7 @@ declare namespace SchemaField {
      */
     type AssignmentType<
       Fields extends DataSchema,
-      Opts extends Options<Fields> = DefaultOptions,
+      Opts extends DataField.Options.Any = DefaultOptions,
       // eslint-disable-next-line @typescript-eslint/no-deprecated
     > = DataField.DerivedAssignmentType<
       // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -1607,7 +1607,7 @@ declare namespace SchemaField {
      */
     type InitializedType<
       Fields extends DataSchema,
-      Opts extends Options<Fields> = DefaultOptions,
+      Opts extends DataField.Options.Any = DefaultOptions,
     > = DataField.DerivedInitializedType<InitializedData<Fields>, MergedOptions<Fields, Opts>>;
 
     /**
@@ -1617,7 +1617,7 @@ declare namespace SchemaField {
      */
     type PersistedType<
       Fields extends DataSchema,
-      Opts extends Options<Fields> = DefaultOptions,
+      Opts extends DataField.Options.Any = DefaultOptions,
     > = DataField.DerivedInitializedType<SourceData<Fields>, MergedOptions<Fields, Opts>>;
   }
 
@@ -1713,9 +1713,9 @@ declare namespace SchemaField {
 
 declare abstract class AnySchemaField extends SchemaField<
   DataSchema,
-  SchemaField.Options<DataSchema>,
+  SchemaField.Options<DataSchema> & object,
   unknown,
-  any,
+  unknown,
   AnyObject | null | undefined
 > {
   constructor(...args: never);
@@ -1762,9 +1762,7 @@ declare class BooleanField<
     options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /** @remarks Returns `value || delta`. `model` and `change` are unused in `BooleanField` */
   protected override _applyChangeAdd(
@@ -1848,7 +1846,7 @@ declare namespace BooleanField {
 }
 
 declare abstract class AnyBooleanField extends BooleanField<
-  BooleanField.Options,
+  BooleanField.Options & object,
   unknown,
   unknown,
   boolean | null | undefined
@@ -1955,31 +1953,23 @@ declare class NumberField<
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
     // TODO(LukeAbby): `Options["Choices"]` is inappropriate as it does not account for `DefaultOptions`.
-    inputConfig?:
-      | NumberField.ToInputConfig<this, InitializedType, Options["choices"]>
-      | NumberField.ToInputConfigWithOptions<this, InitializedType>,
+    inputConfig?: NumberField.ToInputConfig<this> | NumberField.ToInputConfigWithOptions<this>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?: NumberField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    inputConfig?: NumberField.ToInputConfigWithChoices<this>,
   ): HTMLDivElement;
 
   toInput(
-    config?:
-      | NumberField.ToInputConfig<this, InitializedType, Options["choices"]>
-      | NumberField.ToInputConfigWithOptions<this, InitializedType>,
+    config?: NumberField.ToInputConfig<this> | NumberField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
-  toInput(
-    config?: NumberField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: NumberField.ToInputConfigWithChoices<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   protected override _toInput(
-    config:
-      | NumberField.ToInputConfig<this, InitializedType, Options["choices"]>
-      | NumberField.ToInputConfigWithOptions<this, InitializedType>,
+    config: NumberField.ToInputConfig<this> | NumberField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: NumberField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    config: NumberField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
@@ -2124,42 +2114,29 @@ declare namespace NumberField {
   type Choices = BaseChoices | (() => BaseChoices);
 
   /** @internal */
-  type _ToInputConfig<CurrentField extends DataField.Any, InitializedType> = DataField.ToInputConfig<
-    CurrentField,
-    InitializedType
-  > &
+  type _ToInputConfig<CurrentField extends DataField.Any> = DataField.ToInputConfig<CurrentField> &
     InexactPartial<{
       min: number;
       max: number;
       step: number;
     }>;
 
-  type ToInputConfigWithChoices<
-    CurrentField extends DataField.Any,
-    InitializedType,
-    Choices extends NumberField.Choices | undefined,
-  > = SimpleMerge<
-    DataField.ToInputConfigWithChoices<CurrentField, InitializedType, Choices>,
-    _ToInputConfig<CurrentField, InitializedType>
+  type ToInputConfigWithChoices<CurrentField extends NumberField.Any> = SimpleMerge<
+    DataField.ToInputConfigWithChoices<CurrentField>,
+    _ToInputConfig<CurrentField>
   >;
 
-  interface ToInputConfigWithOptions<CurrentField extends DataField.Any, InitializedType>
-    extends
-      DataField.ToInputConfigWithOptions<CurrentField, InitializedType>,
-      _ToInputConfig<CurrentField, InitializedType> {}
+  interface ToInputConfigWithOptions<CurrentField extends DataField.Any>
+    extends DataField.ToInputConfigWithOptions<CurrentField>, _ToInputConfig<CurrentField> {}
 
-  type ToInputConfig<
-    CurrentField extends DataField.Any,
-    InitializedType,
-    Choices extends NumberField.Choices | undefined,
-  > =
-    | _ToInputConfig<CurrentField, InitializedType>
-    | ToInputConfigWithChoices<CurrentField, InitializedType, Choices>
-    | ToInputConfigWithOptions<CurrentField, InitializedType>;
+  type ToInputConfig<CurrentField extends NumberField.Any> =
+    | _ToInputConfig<CurrentField>
+    | ToInputConfigWithChoices<CurrentField>
+    | ToInputConfigWithOptions<CurrentField>;
 }
 
 declare abstract class AnyNumberField extends NumberField<
-  NumberField.Options,
+  NumberField.Options & object,
   unknown,
   unknown,
   number | null | undefined
@@ -2267,30 +2244,26 @@ declare class StringField<
   static _prepareChoiceConfig(config: StringField.PrepareChoiceConfig): void;
 
   protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    config: DataField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?:
-      | DataField.ToInputConfig<this, InitializedType>
-      | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    inputConfig?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    inputConfig?: DataField.ToInputConfigWithChoices<this>,
   ): HTMLDivElement;
 
   toInput(
-    config?: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
-  toInput(
-    config?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: DataField.ToInputConfigWithChoices<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   /**
    * @remarks Calls super with `strict: false`, then throws if `strict` (default `true`) and any
@@ -2464,7 +2437,7 @@ declare namespace StringField {
 }
 
 declare abstract class AnyStringField extends StringField<
-  StringField.Options<unknown>,
+  StringField.Options<unknown> & object,
   unknown,
   unknown,
   string | null | undefined
@@ -2604,7 +2577,7 @@ declare namespace ObjectField {
 }
 
 declare abstract class AnyObjectField extends ObjectField<
-  DataField.Options<AnyMutableObject>,
+  DataField.Options<AnyMutableObject> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -2772,7 +2745,7 @@ declare namespace TypedObjectField {
 
 declare abstract class AnyTypedObjectField extends TypedObjectField<
   DataField.Any,
-  TypedObjectField.Options<AnyObject>,
+  TypedObjectField.Options<AnyObject> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -2832,6 +2805,9 @@ declare class ArrayField<
    * @throws If provided a `max` that is lower than `min` (default `0`)
    */
   constructor(element: ElementFieldType, options?: Options, context?: DataField.ConstructionContext);
+
+  /** @internal */
+  " __fvtt_types_element_field_type": ElementFieldType;
 
   /** @internal */
   " __fvtt_types_get_field_element": ArrayFieldElement<ElementFieldType>;
@@ -3128,7 +3104,7 @@ declare namespace ArrayField {
 
 declare abstract class AnyArrayField extends ArrayField<
   DataField.Any | Document.AnyConstructor,
-  ArrayField.AnyOptions,
+  ArrayField.AnyOptions & object,
   unknown,
   unknown,
   unknown,
@@ -3192,9 +3168,7 @@ declare class SetField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 
-  protected override _toInput(
-    config: SetField.ToInputConfig<this, ElementFieldType, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: SetField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   override toObject(value: InitializedType): PersistedType;
 
@@ -3231,14 +3205,9 @@ declare class SetField<
     change: ActiveEffect.ChangeData,
   ): InitializedType;
 
-  toFormGroup(
-    groupConfig?: DataField.GroupConfig,
-    inputConfig?: SetField.ToInputConfig<this, ElementFieldType, InitializedType>,
-  ): HTMLDivElement;
+  toFormGroup(groupConfig?: DataField.GroupConfig, inputConfig?: SetField.ToInputConfig<this>): HTMLDivElement;
 
-  toInput(
-    config?: SetField.ToInputConfig<this, ElementFieldType, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: SetField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 /**
@@ -3311,7 +3280,7 @@ declare namespace DataModelSchemaField {
 
 declare abstract class AnyDataModelSchemaField extends DataModelSchemaField<
   DataModel.AnyConstructor,
-  DataModelSchemaField.Options<DataModel.AnyConstructor>,
+  DataModelSchemaField.Options<DataModel.AnyConstructor> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -3389,23 +3358,20 @@ declare namespace SetField {
     ArrayField._EffectiveOptions<MergedOptions<Opts>>
   >;
 
-  type ToInputConfig<
-    CurrentField extends DataField.Any,
-    ElementFieldType extends DataField.Any,
-    InitializedType,
-  > = ElementFieldType extends {
-    readonly choices: readonly string[];
+  type ToInputConfig<CurrentField extends SetField.Any> = CurrentField extends {
+    " __fvtt_types_element_field_type": {
+      readonly choices: readonly string[];
+    };
   }
     ? // If the field has `choices` then you _must_ provide options for `createMultiSelectInput`.
-      DataField.ToInputConfig<CurrentField, InitializedType> & MultiSelectInputConfig
+      DataField.ToInputConfig<CurrentField> & MultiSelectInputConfig
     : // Otherwise it's optional to provide.
-        | DataField.ToInputConfig<CurrentField, InitializedType>
-        | (DataField.ToInputConfig<CurrentField, InitializedType> & MultiSelectInputConfig);
+        DataField.ToInputConfig<CurrentField> | (DataField.ToInputConfig<CurrentField> & MultiSelectInputConfig);
 }
 
 declare abstract class AnySetField extends SetField<
   DataField.Any,
-  SetField.AnyOptions,
+  SetField.AnyOptions & object,
   unknown,
   unknown,
   unknown,
@@ -3524,7 +3490,7 @@ declare namespace EmbeddedDataField {
 
 declare abstract class AnyEmbeddedDataField extends EmbeddedDataField<
   DataModel.AnyConstructor,
-  EmbeddedDataField.Options<DataModel.AnyConstructor>,
+  EmbeddedDataField.Options<DataModel.AnyConstructor> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -3554,7 +3520,7 @@ declare class EmbeddedCollectionField<
   const ElementFieldType extends Document.AnyConstructor,
   // TODO(LukeAbby): See if `ParentDataModel` can be made redundant by automatically inferring.
   const ParentDataModel extends Document.Any,
-  const Options extends EmbeddedCollectionField.Options<any> = EmbeddedCollectionField.DefaultOptions,
+  const Options extends EmbeddedCollectionField.Options<AssignmentElementType> = EmbeddedCollectionField.DefaultOptions,
   const AssignmentElementType extends AnyMutableObject = // eslint-disable-next-line @typescript-eslint/no-deprecated
     EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType extends Document.Internal.Instance.Any =
@@ -3651,7 +3617,7 @@ declare class EmbeddedCollectionField<
     value: AnyMutableObject,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
-  ): ReturnType<this["schema"]["clean"]>;
+  ): InitializedElementType;
 
   protected override _validateRecursive(
     value: InitializedType,
@@ -3841,7 +3807,7 @@ declare namespace EmbeddedCollectionField {
 declare abstract class AnyEmbeddedCollectionField extends EmbeddedCollectionField<
   Document.AnyConstructor,
   Document.Any,
-  EmbeddedCollectionField.Options<AnyMutableObject>,
+  EmbeddedCollectionField.Options<AnyMutableObject> & object,
   AnyMutableObject,
   Document.Internal.Instance.Any,
   unknown,
@@ -3873,7 +3839,8 @@ declare abstract class AnyEmbeddedCollectionField extends EmbeddedCollectionFiel
 declare class EmbeddedCollectionDeltaField<
   const ElementFieldType extends Document.AnyConstructor,
   const ParentDataModel extends Document.Any,
-  const Options extends EmbeddedCollectionDeltaField.Options<any> = EmbeddedCollectionDeltaField.DefaultOptions,
+  const Options extends EmbeddedCollectionDeltaField.Options<AssignmentElementType> =
+    EmbeddedCollectionDeltaField.DefaultOptions,
   const AssignmentElementType extends AnyMutableObject = // eslint-disable-next-line @typescript-eslint/no-deprecated
     EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
   const InitializedElementType extends Document.Internal.Instance.Any =
@@ -3910,7 +3877,7 @@ declare class EmbeddedCollectionDeltaField<
     value: AnyMutableObject,
     options?: DataField.CleanOptions,
     _state?: DataField.UpdateState,
-  ): ReturnType<this["schema"]["clean"]>;
+  ): InitializedElementType;
 
   protected override _validateRecursive(
     value: InitializedType,
@@ -4043,7 +4010,7 @@ declare namespace EmbeddedCollectionDeltaField {
 declare abstract class AnyEmbeddedCollectionDeltaField extends EmbeddedCollectionDeltaField<
   Document.AnyConstructor,
   Document.Any,
-  EmbeddedCollectionDeltaField.Options<AnyMutableObject>,
+  EmbeddedCollectionDeltaField.Options<AnyMutableObject> & object,
   AnyMutableObject,
   Document.Internal.Instance.Any,
   unknown,
@@ -4183,7 +4150,7 @@ declare namespace EmbeddedDocumentField {
 
 declare abstract class AnyEmbeddedDocumentField extends EmbeddedDocumentField<
   Document.AnyConstructor,
-  EmbeddedDocumentField.Options<Document.AnyConstructor>,
+  EmbeddedDocumentField.Options<Document.AnyConstructor> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -4288,7 +4255,7 @@ declare namespace DocumentIdField {
 }
 
 declare abstract class AnyDocumentIdField extends DocumentIdField<
-  DocumentIdField.Options,
+  DocumentIdField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -4340,34 +4307,26 @@ declare class DocumentUUIDField<
     options?: DataField.ValidateOptions<this> | null,
   ): boolean | DataModelValidationFailure | void;
   protected override _toInput(
-    config:
-      | DocumentUUIDField.RootToInputConfig<this, InitializedType>
-      | DocumentUUIDField.ToInputConfigWithOptions<this, InitializedType>,
+    config: DocumentUUIDField.RootToInputConfig<this> | DocumentUUIDField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: DocumentUUIDField.ToInputConfigWithChoices<this, InitializedType>,
+    config: DocumentUUIDField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?:
-      | DocumentUUIDField.RootToInputConfig<this, InitializedType>
-      | DocumentUUIDField.ToInputConfigWithOptions<this, InitializedType>,
+    inputConfig?: DocumentUUIDField.RootToInputConfig<this> | DocumentUUIDField.ToInputConfigWithOptions<this>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?: DocumentUUIDField.ToInputConfigWithChoices<this, InitializedType>,
+    inputConfig?: DocumentUUIDField.ToInputConfigWithChoices<this>,
   ): HTMLDivElement;
 
   toInput(
-    config?:
-      | DocumentUUIDField.RootToInputConfig<this, InitializedType>
-      | DocumentUUIDField.ToInputConfigWithOptions<this, InitializedType>,
+    config?: DocumentUUIDField.RootToInputConfig<this> | DocumentUUIDField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
-  toInput(
-    config?: DocumentUUIDField.ToInputConfigWithChoices<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: DocumentUUIDField.ToInputConfigWithChoices<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace DocumentUUIDField {
@@ -4426,32 +4385,32 @@ declare namespace DocumentUUIDField {
     MergedOptions<Options>
   >;
 
-  interface RootToInputConfig<CurrentField extends DataField.Any, InitializedType> extends Omit<
-    DataField.ToInputConfig<CurrentField, InitializedType>,
+  interface RootToInputConfig<CurrentField extends DataField.Any> extends Omit<
+    DataField.ToInputConfig<CurrentField>,
     "type" | "single"
   > {}
 
   /** @internal */
   type _Choices = Omit<_SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
 
-  interface ToInputConfigWithOptions<CurrentField extends DataField.Any, InitializedType>
-    extends RootToInputConfig<CurrentField, InitializedType>, _SelectInputConfig {}
-  interface ToInputConfigWithChoices<CurrentField extends DataField.Any, InitializedType> extends SimpleMerge<
-    RootToInputConfig<CurrentField, InitializedType>,
+  interface ToInputConfigWithOptions<CurrentField extends DataField.Any>
+    extends RootToInputConfig<CurrentField>, _SelectInputConfig {}
+  interface ToInputConfigWithChoices<CurrentField extends DataField.Any> extends SimpleMerge<
+    RootToInputConfig<CurrentField>,
     _Choices
   > {}
 
   /**
    * @remarks `DocumentUUIDField#_toInput` writes `Object.assign(config, {type: this.type, single: true});` which is why they have been removed as options.
    */
-  type ToInputConfig<CurrentField extends DataField.Any, InitializedType> =
-    | RootToInputConfig<CurrentField, InitializedType>
-    | ToInputConfigWithOptions<CurrentField, InitializedType>
-    | ToInputConfigWithChoices<CurrentField, InitializedType>;
+  type ToInputConfig<CurrentField extends DataField.Any> =
+    | RootToInputConfig<CurrentField>
+    | ToInputConfigWithOptions<CurrentField>
+    | ToInputConfigWithChoices<CurrentField>;
 }
 
 declare abstract class AnyDocumentUUIDField extends DocumentUUIDField<
-  DocumentUUIDField.Options,
+  DocumentUUIDField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -4523,10 +4482,10 @@ declare class ForeignDocumentField<
    * Allows blank if this field is not `required` or is `nullable`.
    */
   protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    config: DataField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
@@ -4595,7 +4554,7 @@ declare namespace ForeignDocumentField {
 
 declare abstract class AnyForeignDocumentField extends ForeignDocumentField<
   Document.AnyConstructor,
-  ForeignDocumentField.Options,
+  ForeignDocumentField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -4648,9 +4607,7 @@ declare class ColorField<
     options?: DataField.ValidateOptions<this>,
   ): boolean | DataModelValidationFailure | void;
 
-  protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace ColorField {
@@ -4706,7 +4663,7 @@ declare namespace ColorField {
 }
 
 declare abstract class AnyColorField extends ColorField<
-  StringField.Options,
+  StringField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -4787,9 +4744,7 @@ declare class FilePathField<
    * {@linkcode FilePathField.categories | categories}, then returns a
    * {@linkcode foundry.applications.elements.HTMLFilePickerElement | HTMLFilePickerElement}
    */
-  protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace FilePathField {
@@ -4866,7 +4821,7 @@ declare namespace FilePathField {
 }
 
 declare abstract class AnyFilePathField extends FilePathField<
-  FilePathField.Options,
+  FilePathField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -4978,7 +4933,7 @@ declare namespace AngleField {
 }
 
 declare abstract class AnyAngleField extends AngleField<
-  AngleField.Options,
+  AngleField.Options & object,
   unknown,
   unknown,
   number | null | undefined
@@ -5074,7 +5029,7 @@ declare namespace AlphaField {
 }
 
 declare abstract class AnyAlphaField extends AlphaField<
-  NumberField.Options,
+  NumberField.Options & object,
   unknown,
   unknown,
   number | null | undefined
@@ -5098,9 +5053,7 @@ declare class HueField<
   protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks Returns a {@linkcode foundry.applications.elements.HTMLHueSelectorSlider | HTMLHueSelectorSlider} */
-  protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace HueField {
@@ -5122,7 +5075,12 @@ declare namespace HueField {
   >;
 }
 
-declare abstract class AnyHueField extends HueField<HueField.Options, unknown, unknown, number | null | undefined> {
+declare abstract class AnyHueField extends HueField<
+  NumberField.Options & object,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -5199,7 +5157,7 @@ declare namespace DocumentAuthorField {
 
 declare abstract class AnyDocumentAuthorField extends DocumentAuthorField<
   Document.AnyConstructor,
-  DocumentAuthorField.Options,
+  DocumentAuthorField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -5300,7 +5258,7 @@ declare namespace DocumentOwnershipField {
 }
 
 declare abstract class AnyDocumentOwnershipField extends DocumentOwnershipField<
-  DocumentOwnershipField.Options,
+  DocumentOwnershipField.Options & object,
   unknown,
   unknown,
   Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined
@@ -5374,28 +5332,24 @@ declare class JSONField<
   // These verbose overloads are because otherwise there would be a misleading errors about `choices` being required without mentioning `options` or vice versa.
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?:
-      | DataField.ToInputConfig<this, InitializedType>
-      | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    inputConfig?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: DataField.GroupConfig,
-    inputConfig?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    inputConfig?: DataField.ToInputConfigWithChoices<this>,
   ): HTMLDivElement;
 
   toInput(
-    config?: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
-  toInput(
-    config?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: DataField.ToInputConfigWithChoices<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // TODO: these now return and take CodeMirror related types
   protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    config: DataField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
@@ -5453,7 +5407,7 @@ declare namespace JSONField {
 }
 
 declare abstract class AnyJSONField extends JSONField<
-  StringField.Options,
+  StringField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -5497,9 +5451,7 @@ declare class AnyField extends DataField<AnyField.Options, unknown, unknown, unk
   ): boolean | DataModelValidationFailure | void;
 
   /** @remarks Throws unless `serializable`; defaults `config.elementType` to `"code-mirror"` */
-  protected override _toInput(
-    config: DataField.ToInputConfig<this, unknown>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(config: DataField.ToInputConfig<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 declare namespace AnyField {
@@ -5565,28 +5517,24 @@ declare class HTMLField<
   /** @remarks Sets `groupConfig.stacked ??= inputConfig.elementType !== "input"` before calling super */
   toFormGroup(
     groupConfig?: HTMLField.GroupConfig,
-    inputConfig?:
-      | DataField.ToInputConfig<this, InitializedType>
-      | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    inputConfig?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLDivElement;
   toFormGroup(
     groupConfig?: HTMLField.GroupConfig,
-    inputConfig?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    inputConfig?: DataField.ToInputConfigWithChoices<this>,
   ): HTMLDivElement;
 
   toInput(
-    config?: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config?: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
-  toInput(
-    config?: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
-  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  toInput(config?: DataField.ToInputConfigWithChoices<this>): HTMLElement | HTMLElement[] | HTMLCollection;
 
   // TODO: handle config.elementType ??= "prose-mirror"
   protected override _toInput(
-    config: DataField.ToInputConfig<this, InitializedType> | DataField.ToInputConfigWithOptions<this, InitializedType>,
+    config: DataField.ToInputConfig<this> | DataField.ToInputConfigWithOptions<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
   protected override _toInput(
-    config: DataField.ToInputConfigWithChoices<this, InitializedType, Options["choices"]>,
+    config: DataField.ToInputConfigWithChoices<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
@@ -5635,7 +5583,7 @@ declare namespace HTMLField {
 }
 
 declare abstract class AnyHTMLField extends HTMLField<
-  StringField.Options,
+  StringField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -5723,7 +5671,7 @@ declare namespace IntegerSortField {
 }
 
 declare abstract class AnyIntegerSortField extends IntegerSortField<
-  NumberField.Options,
+  NumberField.Options & object,
   unknown,
   unknown,
   number | null | undefined
@@ -5821,7 +5769,7 @@ declare namespace DocumentFlagsField {
 declare abstract class AnyDocumentFlagsField extends DocumentFlagsField<
   Document.Type,
   AnyObject,
-  DocumentFlagsField.Options
+  DocumentFlagsField.Options & object
 > {
   constructor(...args: never);
 }
@@ -6075,7 +6023,7 @@ declare namespace DocumentStatsField {
 }
 
 declare abstract class AnyDocumentStatsField extends DocumentStatsField<
-  DocumentStatsField.Options,
+  DocumentStatsField.Options & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -6174,7 +6122,7 @@ declare namespace DocumentTypeField {
 
 declare abstract class AnyDocumentTypeField extends DocumentTypeField<
   Document.AnyConstructor,
-  DocumentTypeField.Options,
+  DocumentTypeField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -6431,7 +6379,7 @@ declare namespace TypeDataField {
 
 declare abstract class AnyTypeDataField extends TypeDataField<
   Document.SystemConstructor,
-  TypeDataField.Options<Document.SystemConstructor>,
+  TypeDataField.Options<Document.SystemConstructor> & object,
   unknown,
   unknown,
   AnyObject | null | undefined
@@ -6638,7 +6586,7 @@ declare namespace TypedSchemaField {
 
 declare abstract class AnyTypedSchemaField extends TypedSchemaField<
   TypedSchemaField.Types,
-  TypedSchemaField.Options<TypedSchemaField.Types>,
+  TypedSchemaField.Options<TypedSchemaField.Types> & object,
   unknown,
   unknown,
   unknown
@@ -6692,11 +6640,11 @@ declare class JavaScriptField<
   /** @remarks Sets `groupConfig.stacked ??= true` then forwards to super */
   override toFormGroup(
     groupConfig?: JavaScriptField.GroupConfig,
-    inputConfig?: JavaScriptField.ToInputConfig<this, InitializedType>,
+    inputConfig?: JavaScriptField.ToInputConfig<this>,
   ): HTMLDivElement;
 
   protected override _toInput(
-    config: JavaScriptField.ToInputConfig<this, InitializedType>,
+    config: JavaScriptField.ToInputConfig<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
@@ -6728,14 +6676,14 @@ declare namespace JavaScriptField {
     stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 
-  interface ToInputConfig<CurrentField extends DataField.Any, InitializedType> extends SimpleMerge<
-    DataField.ToInputConfig<CurrentField, InitializedType>,
+  interface ToInputConfig<CurrentField extends DataField.Any> extends SimpleMerge<
+    DataField.ToInputConfig<CurrentField>,
     TextAreaInputConfig
   > {}
 }
 
 declare abstract class AnyJavaScriptField extends JavaScriptField<
-  JavaScriptField.Options,
+  JavaScriptField.Options & object,
   unknown,
   unknown,
   string | null | undefined
@@ -6744,18 +6692,28 @@ declare abstract class AnyJavaScriptField extends JavaScriptField<
 }
 
 declare class SceneLevelsSetField<
+  const ElementFieldType extends DataField.Any = SceneLevelsSetField.Element,
   const Options extends SceneLevelsSetField.AnyOptions = SceneLevelsSetField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = SetField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = SetField.InitializedType<InitializedElementType, Options>,
+  const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  const PersistedType extends PersistedElementType[] | null | undefined = SetField.PersistedType<
+    PersistedElementType,
+    Options
+  >,
 > extends SetField<
-  SceneLevelsSetField.Element,
+  ElementFieldType,
   Options,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  ArrayField.AssignmentElementType<SceneLevelsSetField.Element>,
-  ArrayField.InitializedElementType<SceneLevelsSetField.Element>,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  SceneLevelsSetField.AssignmentType<ArrayField.AssignmentElementType<SceneLevelsSetField.Element>, Options>,
-  SceneLevelsSetField.InitializedType<ArrayField.InitializedElementType<SceneLevelsSetField.Element>, Options>,
-  ArrayField.PersistedElementType<SceneLevelsSetField.Element>,
-  SceneLevelsSetField.PersistedType<ArrayField.PersistedElementType<SceneLevelsSetField.Element>, Options>
+  AssignmentElementType,
+  InitializedElementType,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
 > {
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
@@ -6830,13 +6788,40 @@ declare namespace SceneLevelsSetField {
   >;
 }
 
-declare abstract class AnySceneLevelsSetField extends SceneLevelsSetField<SceneLevelsSetField.AnyOptions> {
+declare abstract class AnySceneLevelsSetField extends SceneLevelsSetField<
+  DataField.Any,
+  SceneLevelsSetField.AnyOptions & object,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
-declare class ShapesField<const Options extends ShapesField.Options = ShapesField.DefaultOptions> extends ArrayField<
+declare class ShapesField<
+  const Options extends ShapesField.Options = ShapesField.DefaultOptions,
+  const AssignmentElementType = ShapesField.AssignmentElementType,
+  const InitializedElementType = ShapesField.InitializedElementType,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = ShapesField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = ShapesField.InitializedType<InitializedElementType, Options>,
+  const PersistedElementType = ShapesField.PersistedElementType,
+  const PersistedType extends PersistedElementType[] | null | undefined = ShapesField.PersistedType<
+    PersistedElementType,
+    Options
+  >,
+> extends ArrayField<
   ShapesField.ElementField,
-  Options
+  Options,
+  AssignmentElementType,
+  InitializedElementType,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
 > {
   /**
    * @param options - Options which configure the behavior of the field
@@ -6845,10 +6830,10 @@ declare class ShapesField<const Options extends ShapesField.Options = ShapesFiel
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   override initialize(
-    value: ShapesField.PersistedType<Options>,
+    value: PersistedType,
     model: DataModel.Any,
     options?: DataField.InitializeOptions,
-  ): ShapesField.InitializedType<Options>;
+  ): InitializedType;
 }
 
 declare namespace ShapesField {
@@ -6867,12 +6852,26 @@ declare namespace ShapesField {
 
   /** @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData} for more details. */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Opts extends Options> = ArrayField.AssignmentType<AssignmentElementType, Opts>;
-  type InitializedType<Opts extends Options> = ArrayField.InitializedType<InitializedElementType, Opts>;
-  type PersistedType<Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
+  type AssignmentType<AssignmentElementType, Opts extends Options> = ArrayField.AssignmentType<
+    AssignmentElementType,
+    Opts
+  >;
+  type InitializedType<InitializedElementType, Opts extends Options> = ArrayField.InitializedType<
+    InitializedElementType,
+    Opts
+  >;
+  type PersistedType<PersistedElementType, Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
 }
 
-declare abstract class AnyShapesField extends ShapesField<ShapesField.Options> {
+declare abstract class AnyShapesField extends ShapesField<
+  ShapesField.Options & object,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6881,13 +6880,18 @@ declare abstract class AnyShapesField extends ShapesField<ShapesField.Options> {
  */
 declare class GridOffsetField<
   const Options extends GridOffsetField.Options = GridOffsetField.DefaultOptions,
-> extends SchemaField<
-  GridOffsetField.Schema<Options>,
-  Options & SchemaField.Options<GridOffsetField.Schema<Options>>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  GridOffsetField.AssignmentType<Options>,
-  GridOffsetField.InitializedType<Options>,
-  GridOffsetField.PersistedType<Options>
+  const AssignmentType = GridOffsetField.AssignmentType<Options>,
+  const InitializedType = GridOffsetField.InitializedType<Options>,
+  const PersistedType extends AnyObject | null | undefined = GridOffsetField.PersistedType<Options>,
+> extends SchemaField<
+  GridOffsetField.FieldsFor<Options>,
+  // Note(LukeAbby): This is an unpleasant workaround for the fact that tsc can't tell `Options` is
+  // already guaranteed to descend from `SchemaField.Options<GridOffsetField.FieldsFor<Options>`.
+  Extract<Options, SchemaField.Options<GridOffsetField.FieldsFor<Options>>>,
+  AssignmentType,
+  InitializedType,
+  PersistedType
 > {
   /**
    * @param options - Options which configure the behavior of the field
@@ -6900,10 +6904,7 @@ declare class GridOffsetField<
 
   protected static override get _defaults(): GridOffsetField.DefaultOptions;
 
-  protected override _cast(
-    value: unknown,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-  ): Exclude<GridOffsetField.AssignmentType<Options>, string>;
+  protected override _cast(value: unknown): AssignmentType;
 }
 
 declare namespace GridOffsetField {
@@ -6921,7 +6922,7 @@ declare namespace GridOffsetField {
     k: NumberField<{ required: true; nullable: false; integer: true }>;
   }
 
-  interface Options extends SchemaField.Options<DataSchema> {
+  interface Options extends SchemaField.Options<Schema2D | Schema3D> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
@@ -6929,33 +6930,33 @@ declare namespace GridOffsetField {
   type DefaultOptions = SimpleMerge<SchemaField.DefaultOptions, { dimensions: 2 }>;
 
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
-  type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
-  type SchemaForDimensions<Dimension extends 2 | 3> = Dimension extends 3 ? Schema3D : Schema2D;
-  type Schema<Opts extends Options> = SchemaForDimensions<Dimensions<Opts>>;
+  type Dimensions<Opts extends Options> = Coalesce<MergedOptions<Opts>["dimensions"], 2>;
+  type FieldsFor<Opts extends Options> = _FieldsFor<Dimensions<Opts>>;
+
+  /** @internal */
+  type _FieldsFor<Dimensions extends 2 | 3> = Dimensions extends 2 ? Schema2D : Schema3D;
 
   /** @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData} for more details. */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Opts extends Options> = DataField.DerivedAssignmentType<
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    SchemaField.AssignmentData<Schema<Opts>> | string,
+  type AssignmentType<Opts extends Options> = SchemaField.Internal.AssignmentType<FieldsFor<Opts>, Opts>;
+
+  type InitializedType<Opts extends Options> = SchemaField.Internal.InitializedType<
+    FieldsFor<Opts>,
     MergedOptions<Opts>
   >;
 
-  type InitializedType<Opts extends Options> = DataField.DerivedInitializedType<
-    SchemaField.InitializedData<Schema<Opts>>,
-    MergedOptions<Opts>
-  >;
-
-  type PersistedType<Opts extends Options> = DataField.DerivedInitializedType<
-    SchemaField.SourceData<Schema<Opts>>,
-    MergedOptions<Opts>
-  >;
+  type PersistedType<Opts extends Options> = SchemaField.Internal.PersistedType<FieldsFor<Opts>, MergedOptions<Opts>>;
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type AnyAssignment = string | SchemaField.AssignmentData<Schema2D> | SchemaField.AssignmentData<Schema3D>;
 }
 
-declare abstract class AnyGridOffsetField extends GridOffsetField<GridOffsetField.Options> {
+declare abstract class AnyGridOffsetField extends GridOffsetField<
+  GridOffsetField.Options & object,
+  unknown,
+  unknown,
+  AnyObject | null | undefined
+> {
   constructor(...args: never);
 }
 
@@ -6964,7 +6965,27 @@ declare abstract class AnyGridOffsetField extends GridOffsetField<GridOffsetFiel
  */
 declare class GridOffsetsField<
   const Options extends GridOffsetsField.Options = GridOffsetsField.DefaultOptions,
-> extends ArrayField<GridOffsetsField.ElementField<Options>, Options> {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentElementType = GridOffsetsField.AssignmentElementType<Options>,
+  const InitializedElementType = GridOffsetsField.InitializedElementType<Options>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = GridOffsetsField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = GridOffsetsField.InitializedType<InitializedElementType, Options>,
+  const PersistedElementType = GridOffsetsField.PersistedElementType<Options>,
+  const PersistedType extends PersistedElementType[] | null | undefined = GridOffsetsField.PersistedType<
+    PersistedElementType,
+    Options
+  >,
+> extends ArrayField<
+  GridOffsetsField.ElementFor<Options>,
+  Options,
+  AssignmentElementType,
+  InitializedElementType,
+  AssignmentType,
+  InitializedType,
+  PersistedElementType,
+  PersistedType
+> {
   /**
    * @param options - Options which configure the behavior of the field
    * @param context - Additional context which describes the field
@@ -6977,7 +6998,7 @@ declare class GridOffsetsField<
   protected static override get _defaults(): GridOffsetsField.DefaultOptions;
 
   protected override _toInput(
-    config: GridOffsetsField.ToInputConfig<this, Options>,
+    config: GridOffsetsField.ToInputConfig<this>,
   ): HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
@@ -6985,7 +7006,7 @@ declare namespace GridOffsetsField {
   interface Any extends AnyGridOffsetsField {}
   interface AnyConstructor extends Identity<typeof AnyGridOffsetsField> {}
 
-  interface Options extends ArrayField.Options<GridOffsetField.AnyAssignment> {
+  interface Options extends ArrayField.Options<GridOffsetField.Options> {
     /** @defaultValue `2` */
     dimensions?: 2 | 3 | undefined;
   }
@@ -6993,21 +7014,57 @@ declare namespace GridOffsetsField {
   type DefaultOptions = SimpleMerge<ArrayField.DefaultOptions, { dimensions: 2 }>;
   type MergedOptions<Opts extends Options> = SimpleMerge<DefaultOptions, Opts>;
   type Dimensions<Opts extends Options> = Exclude<MergedOptions<Opts>["dimensions"], undefined>;
-  type ElementField<Opts extends Options> = GridOffsetField<{
+
+  type ElementFor<Opts extends Options> = GridOffsetField<{
     dimensions: NullishCoalesce<GetKey<Opts, "dimensions", undefined>, 2>;
   }>;
-  type InitializedType<Opts extends Options> = ArrayField.InitializedType<
-    ArrayField.InitializedElementType<ElementField<Opts>>,
+
+  /**
+   * A type to infer the assignment element type of an ArrayField from its ElementFieldType.
+   * @template ElementFieldType - the DataField type of the elements in the ArrayField
+   *
+   * @deprecated AssignmentData is being phased out. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentElementType<Opts extends Options> = ArrayField.AssignmentElementType<ElementFor<Opts>>;
+  type InitializedElementType<Opts extends Options> = ArrayField.InitializedElementType<ElementFor<Opts>>;
+
+  /**
+   * A shorthand for the assignment type of an ArrayField class.
+   * @template AssignmentElementType - the assignment type of the elements of the ArrayField
+   * @template Opts                  - the options that override the default options
+   *
+   * @deprecated AssignmentData is being phased out. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<AssignmentElementType, Opts extends Options> = ArrayField.AssignmentType<
+    AssignmentElementType,
     Opts
   >;
 
-  type ToInputConfig<
-    CurrentField extends DataField.Any,
-    Opts extends Options = DefaultOptions,
-  > = DataField.ToInputConfig<CurrentField, InitializedType<Opts>>;
+  type InitializedType<InitializedElementType, Opts extends Options> = ArrayField.InitializedType<
+    InitializedElementType,
+    Opts
+  >;
+
+  type PersistedElementType<Opts extends Options> = ArrayField.PersistedElementType<ElementFor<Opts>>;
+
+  type PersistedType<PersistedElementType, Opts extends Options> = ArrayField.PersistedType<PersistedElementType, Opts>;
+
+  type ToInputConfig<CurrentField extends DataField.Any> = DataField.ToInputConfig<CurrentField>;
 }
 
-declare abstract class AnyGridOffsetsField extends GridOffsetsField<GridOffsetsField.Options> {
+declare abstract class AnyGridOffsetsField extends GridOffsetsField<
+  GridOffsetsField.Options & object,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown,
+  unknown[] | null | undefined
+> {
   constructor(...args: never);
 }
 
