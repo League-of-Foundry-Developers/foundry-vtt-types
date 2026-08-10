@@ -8,6 +8,7 @@ import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import HandlebarsApplicationMixin = foundry.applications.api.HandlebarsApplicationMixin;
 import FormDataExtended = foundry.applications.ux.FormDataExtended;
 import TokenConfig = foundry.applications.sheets.TokenConfig;
+import CombatConfiguration = foundry.data.CombatConfiguration;
 import PrototypeToken = foundry.data.PrototypeToken;
 
 class CustomTokenApplication extends TokenApplicationMixin(ApplicationV2) {}
@@ -132,7 +133,7 @@ expectTypeOf(resources.barAttributes).toEqualTypeOf<TokenDocument.TrackedAttribu
 // `undefined` for a PrototypeToken, which does not implement `getBarAttribute`.
 expectTypeOf(resources.bar1).toEqualTypeOf<TokenDocument.GetBarAttributeReturn | undefined>();
 expectTypeOf(resources.bar2).toEqualTypeOf<TokenDocument.GetBarAttributeReturn | undefined>();
-expectTypeOf(resources.turnMarkerAnimations).toEqualTypeOf<{ value: string; label: string }[]>();
+expectTypeOf(resources.turnMarkerAnimations).toEqualTypeOf<CombatConfiguration.TurnMarkerAnimationChoice[]>();
 
 /* Render context */
 

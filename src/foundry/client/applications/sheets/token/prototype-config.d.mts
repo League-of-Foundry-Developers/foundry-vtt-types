@@ -107,7 +107,7 @@ declare namespace PrototypeTokenConfig {
   type InputOptions<Configuration extends PrototypeTokenConfig.Configuration> = DeepPartial<
     Omit<Configuration, "prototype">
   > & {
-    prototype: Configuration["prototype"];
+    prototype: PrototypeToken;
   };
 
   interface RenderContext extends TokenApplicationMixin.RenderContext<PrototypeToken>, ApplicationV2.RenderContext {

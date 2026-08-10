@@ -62,6 +62,9 @@ expectTypeOf(sheet["_processFormData"](null, form, formData)).toEqualTypeOf<Toke
 /* Configuration */
 
 expectTypeOf<PrototypeTokenConfig.Configuration["prototype"]>().toEqualTypeOf<PrototypeToken>();
+expectTypeOf<
+  PrototypeTokenConfig.InputOptions<PrototypeTokenConfig.Configuration>["prototype"]
+>().toEqualTypeOf<PrototypeToken>();
 
 /* Render context */
 

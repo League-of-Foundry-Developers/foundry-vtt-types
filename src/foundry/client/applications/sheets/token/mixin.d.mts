@@ -323,7 +323,7 @@ declare namespace TokenApplicationMixin {
     /** @remarks The value of {@linkcode TokenApplication.TURN_MARKER_MODES}. */
     turnMarkerModes: Record<CONST.TOKEN_TURN_MARKER_MODES, string>;
 
-    turnMarkerAnimations: CombatConfiguration["turnMarkerAnimations"];
+    turnMarkerAnimations: CombatConfiguration.TurnMarkerAnimationChoice[];
   }
 
   /**
