@@ -15,7 +15,7 @@ describe("DocumentCollection Tests", async () => {
     }
   }
 
-  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+  const docsToCleanUp = new Set<Document.AnyStored>();
 
   const actor = await Actor.implementation.create({ name: "DocumentCollection Test Actor", type: "base" });
   if (!actor) throw new Error("Failed to create test Actor.");
@@ -87,8 +87,9 @@ describe("DocumentCollection Tests", async () => {
   const dc = new TestItemCollection([itemSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = dc;
-    const _class: Collection.AnyConstructor = DocumentCollection;
+    expectTypeOf(dc).toExtend<Collection.Any>();
+    expectTypeOf(DocumentCollection).toExtend<Collection.AnyConstructor>();
+    expect(dc).toBeInstanceOf(Collection);
   });
 
   test("Miscellaneous", () => {
@@ -206,26 +207,8 @@ describe("DocumentCollection Tests", async () => {
   });
 
   test("Importing", async () => {
-    // @ts-expect-error importDocument will throw if not passed an object for `options`, because it lacks a signature default.
-    expect(async () => await dc.importDocument(itemImpl)).toThrow();
-
-    // DC has these methods widened for subclassing purposes
-
-    const imported1 = await dc.importDocument(itemImpl, {});
-    if (!imported1) throw new Error("Failed to import test document");
-    docsToCleanUp.add(imported1);
-    expectTypeOf(imported1).toEqualTypeOf<Document.AnyStored>();
-
-    const imported2 = await dc.importDocument(item, {});
-    if (!imported2) throw new Error("Failed to import test document");
-    docsToCleanUp.add(imported2);
-    expectTypeOf(imported2).toEqualTypeOf<Document.AnyStored>();
-
-    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
-    expect(() => dc["_prepareImportDocument"](itemImpl)).toThrow();
-
-    expectTypeOf(dc["_prepareImportDocument"](itemImpl, {})).toEqualTypeOf<object>();
-    expectTypeOf(dc["_prepareImportDocument"](item, {})).toEqualTypeOf<object>();
+    // DC has widened `#importDocument` and `#_prepareImportDocument` for subclassing purposes, including a `never`ed `options`.
+    // As such, calling these methods on `DocumentCollection` without overrides isn't useful. Tested in subclasses.
   });
 
   test("updateAll", () => {

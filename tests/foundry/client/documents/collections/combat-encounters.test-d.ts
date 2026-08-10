@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import CombatEncounters = foundry.documents.collections.CombatEncounters;
 
@@ -36,10 +36,15 @@ describe("CombatEncounters Tests", async () => {
   const encounters = new CombatEncounters([combatSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = encounters;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = encounters;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = encounters;
+    expectTypeOf(encounters).toExtend<Collection.Any>();
+    expectTypeOf(CombatEncounters).toExtend<Collection.AnyConstructor>();
+    expect(encounters).toBeInstanceOf(Collection);
+    expectTypeOf(encounters).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(CombatEncounters).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(encounters).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(encounters).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(CombatEncounters).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(encounters).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

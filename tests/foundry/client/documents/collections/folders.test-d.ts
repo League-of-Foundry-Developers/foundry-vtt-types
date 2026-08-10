@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Folders = foundry.documents.collections.Folders;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
@@ -43,10 +43,15 @@ describe("Folders Tests", async () => {
   const folders = new Folders([folderSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = folders;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = folders;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = folders;
+    expectTypeOf(folders).toExtend<Collection.Any>();
+    expectTypeOf(Folders).toExtend<Collection.AnyConstructor>();
+    expect(folders).toBeInstanceOf(Collection);
+    expectTypeOf(folders).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Folders).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(folders).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(folders).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Folders).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(folders).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

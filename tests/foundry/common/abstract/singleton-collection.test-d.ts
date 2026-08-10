@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import SingletonEmbeddedCollection = foundry.abstract.SingletonEmbeddedCollection;
 
@@ -46,8 +46,12 @@ describe("SingletonEmbeddedCollection Tests", async () => {
   ]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = sec;
-    const _ec: foundry.abstract.EmbeddedCollection.Any = sec;
+    expectTypeOf(sec).toExtend<Collection.Any>();
+    expectTypeOf(SingletonEmbeddedCollection).toExtend<Collection.AnyConstructor>();
+    expect(sec).toBeInstanceOf(Collection);
+    expectTypeOf(sec).toExtend<foundry.abstract.EmbeddedCollection.Any>();
+    expectTypeOf(SingletonEmbeddedCollection).toExtend<foundry.abstract.EmbeddedCollection.AnyConstructor>();
+    expect(sec).toBeInstanceOf(foundry.abstract.EmbeddedCollection);
   });
 
   test("Getting", () => {

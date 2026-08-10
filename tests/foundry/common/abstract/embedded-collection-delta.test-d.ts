@@ -1,4 +1,4 @@
-import { afterAll, test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 
 import EmbeddedCollectionDelta = foundry.abstract.EmbeddedCollectionDelta;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
@@ -64,8 +64,12 @@ describe("EmbeddedCollectionDelta Tests", async () => {
   ]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = itemCollOnDelta;
-    const _ec: EmbeddedCollection.Any = itemCollOnDelta;
+    expectTypeOf(itemCollOnDelta).toExtend<Collection.Any>();
+    expectTypeOf(EmbeddedCollectionDelta).toExtend<Collection.AnyConstructor>();
+    expect(itemCollOnDelta).toBeInstanceOf(Collection);
+    expectTypeOf(itemCollOnDelta).toExtend<EmbeddedCollection.Any>();
+    expectTypeOf(EmbeddedCollectionDelta).toExtend<EmbeddedCollection.AnyConstructor>();
+    expect(itemCollOnDelta).toBeInstanceOf(EmbeddedCollection);
   });
 
   test("Collection getters", () => {

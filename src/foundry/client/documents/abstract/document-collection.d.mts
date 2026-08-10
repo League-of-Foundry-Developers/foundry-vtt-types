@@ -150,13 +150,11 @@ declare abstract class DocumentCollection<
    * @privateRemarks The `document` param and the return have been widened to `Document.Any` to support
    * {@link CompendiumCollection.importDocument | `CompendiumCollection`'s override}, which has conditional handling for `Folder`s.
    * It is re-narrowed in {@link WorldCollection.importDocument | a fake type override} in `WorldCollection`.
+   *
+   * The `options` param has been `never`ed to allow both the above and also the addition of a generic in subclasses. It is also covered by
+   * fake type overrides
    */
-  importDocument(
-    document: Document.Any,
-    options:
-      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
-      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
-  ): Promise<Document.AnyStored | undefined>;
+  importDocument(document: Document.Any, options: never): Promise<Document.AnyStored | undefined>;
 
   /**
    * Translate a provided Document into data ready for import into this collection.
@@ -172,12 +170,7 @@ declare abstract class DocumentCollection<
    * The return could be narrowed to `CreateData` or `Source` but neither {@linkcode ClientDocument.ToCompendiumReturnType} nor
    * {@linkcode WorldCollection.FromCompendiumReturnType} directly extend either.
    */
-  protected _prepareImportDocument(
-    document: Document.Any,
-    options:
-      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
-      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
-  ): object;
+  protected _prepareImportDocument(document: Document.Any, options: never): object;
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.

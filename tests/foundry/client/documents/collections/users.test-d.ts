@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 import Users = foundry.documents.collections.Users;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
@@ -27,10 +27,15 @@ describe("Users Tests", () => {
   const users = new Users([userCreateData]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = users;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = users;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = users;
+    expectTypeOf(users).toExtend<Collection.Any>();
+    expectTypeOf(Users).toExtend<Collection.AnyConstructor>();
+    expect(users).toBeInstanceOf(Collection);
+    expectTypeOf(users).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Users).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(users).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(users).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Users).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(users).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

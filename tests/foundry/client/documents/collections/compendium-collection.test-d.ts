@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 import type { EmptyObject, AnyMutableObject, IntentionalPartial } from "fvtt-types/utils";
 
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -145,9 +145,12 @@ describe("CompendiumCollection Tests", async () => {
   compendiaToCleanUp.add(actorPack);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = actorPack;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = actorPack;
+    expectTypeOf(actorPack).toExtend<Collection.Any>();
+    expectTypeOf(CompendiumCollection).toExtend<Collection.AnyConstructor>();
+    expect(actorPack).toBeInstanceOf(Collection);
+    expectTypeOf(actorPack).toExtend<DocumentCollection.Any>();
+    expectTypeOf(CompendiumCollection).toExtend<DocumentCollection.AnyConstructor>();
+    expect(actorPack).toBeInstanceOf(DocumentCollection);
   });
 
   test("Other Compendium management", () => {

@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import RollTables = foundry.documents.collections.RollTables;
 
@@ -36,10 +36,15 @@ describe("RollTables Tests", async () => {
   const tables = new RollTables([tableSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = tables;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = tables;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = tables;
+    expectTypeOf(tables).toExtend<Collection.Any>();
+    expectTypeOf(RollTables).toExtend<Collection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(Collection);
+    expectTypeOf(tables).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(RollTables).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(tables).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(RollTables).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

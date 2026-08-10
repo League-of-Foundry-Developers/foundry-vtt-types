@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import ChatMessages = foundry.documents.collections.ChatMessages;
 
@@ -36,10 +36,15 @@ describe("ChatMessages Tests", async () => {
   const messages = new ChatMessages([messageSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = messages;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = messages;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = messages;
+    expectTypeOf(messages).toExtend<Collection.Any>();
+    expectTypeOf(ChatMessages).toExtend<Collection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(Collection);
+    expectTypeOf(messages).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(ChatMessages).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(messages).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(ChatMessages).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

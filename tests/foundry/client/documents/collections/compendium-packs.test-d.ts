@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 import CompendiumPacks = foundry.documents.collections.CompendiumPacks;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -22,7 +22,9 @@ describe("CompendiumPacks Tests", () => {
   const packs = new CompendiumPacks(packsData);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = packs;
+    expectTypeOf(packs).toExtend<Collection.Any>();
+    expectTypeOf(CompendiumPacks).toExtend<Collection.AnyConstructor>();
+    expect(packs).toBeInstanceOf(Collection);
   });
 
   test("Miscellaneous", () => {

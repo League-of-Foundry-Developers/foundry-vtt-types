@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Macros = foundry.documents.collections.Macros;
 
@@ -41,10 +41,15 @@ describe("Macros Tests", async () => {
   const macros = new Macros([macroSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = macros;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = macros;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = macros;
+    expectTypeOf(macros).toExtend<Collection.Any>();
+    expectTypeOf(Macros).toExtend<Collection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(Collection);
+    expectTypeOf(macros).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Macros).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(macros).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Macros).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

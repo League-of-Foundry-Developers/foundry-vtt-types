@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import FogExplorations = foundry.documents.collections.FogExplorations;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
@@ -37,10 +37,15 @@ describe("FogExplorations Tests", async () => {
   const fogs = new FogExplorations([fogSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = fogs;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = fogs;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = fogs;
+    expectTypeOf(fogs).toExtend<Collection.Any>();
+    expectTypeOf(FogExplorations).toExtend<Collection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(Collection);
+    expectTypeOf(fogs).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(FogExplorations).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(fogs).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(FogExplorations).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

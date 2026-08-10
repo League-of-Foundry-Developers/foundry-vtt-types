@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Journal = foundry.documents.collections.Journal;
 
@@ -36,10 +36,15 @@ describe("Journal Tests", async () => {
   const journals = new Journal([jeSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = journals;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = journals;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = journals;
+    expectTypeOf(journals).toExtend<Collection.Any>();
+    expectTypeOf(Journal).toExtend<Collection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(Collection);
+    expectTypeOf(journals).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Journal).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(journals).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Journal).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {

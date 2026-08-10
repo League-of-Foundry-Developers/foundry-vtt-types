@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -51,6 +51,15 @@ describe("CompendiumFolderCollection Tests", async () => {
 
   // actorPackFolders
   const apf = new CompendiumFolderCollection(actorPack, [folderSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(apf).toExtend<Collection.Any>();
+    expectTypeOf(CompendiumFolderCollection).toExtend<Collection.AnyConstructor>();
+    expect(apf).toBeInstanceOf(Collection);
+    expectTypeOf(apf).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(CompendiumFolderCollection).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(apf).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(apf.pack).toEqualTypeOf<CompendiumCollection<"Actor">>();

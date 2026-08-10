@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Playlists = foundry.documents.collections.Playlists;
 
@@ -40,10 +40,15 @@ describe("Playlists Tests", async () => {
   const playlists = new Playlists([playlistSource]);
 
   test("Inheritance", () => {
-    const _collection: Collection.Any = playlists;
-    // @ts-expect-error Currently broken
-    const _dc: foundry.documents.abstract.DocumentCollection.Any = playlists;
-    const _wc: foundry.documents.abstract.WorldCollection.Any = playlists;
+    expectTypeOf(playlists).toExtend<Collection.Any>();
+    expectTypeOf(Playlists).toExtend<Collection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(Collection);
+    expectTypeOf(playlists).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Playlists).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(playlists).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Playlists).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
   });
 
   test("Miscellaneous", () => {
