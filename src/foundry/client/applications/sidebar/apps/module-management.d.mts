@@ -126,7 +126,7 @@ declare namespace ModuleManagement {
     hasStyles: boolean;
 
     /** The relationship entry naming the active system, when the module declares one. */
-    systemOnly?: Module.Source["relationships"]["systems"][number] | undefined;
+    systemOnly?: Module.SystemSource | undefined;
 
     systemTag: string;
 

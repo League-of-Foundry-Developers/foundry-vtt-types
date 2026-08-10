@@ -184,6 +184,10 @@ declare namespace RelatedPackage {
   }
 
   interface Data extends SchemaField.InitializedData<Schema> {}
+
+  interface Source<PackageType extends CONST.PACKAGE_TYPES | undefined = undefined> extends SchemaField.SourceData<
+    Schema<PackageType>
+  > {}
 }
 
 export { RelatedPackage };

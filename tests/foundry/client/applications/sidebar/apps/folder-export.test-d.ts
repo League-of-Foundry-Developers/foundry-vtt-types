@@ -13,5 +13,4 @@ declare const options: DeepPartial<FolderExport.RenderOptions>;
 
 expectTypeOf(folderExport["_onRender"](context, options)).toEqualTypeOf<Promise<void>>();
 
-// Not parameterized by the concrete application: `DialogV2.Button` is invariant in it.
-expectTypeOf<FolderExport.Configuration["buttons"]>().toEqualTypeOf<DialogV2.Button<DialogV2.Any>[]>();
+expectTypeOf<FolderExport.Configuration["buttons"]>().toEqualTypeOf<DialogV2.Button<FolderExport.Any>[]>();

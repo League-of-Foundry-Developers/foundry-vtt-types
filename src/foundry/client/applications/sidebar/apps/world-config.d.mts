@@ -54,9 +54,9 @@ declare namespace WorldConfig {
   interface AnyConstructor extends Identity<typeof AnyWorldConfig> {}
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
-    source: World["_source"];
+    source: World.Source;
 
-    fields: World["schema"]["fields"];
+    fields: World.Schema;
 
     rootId: string;
 

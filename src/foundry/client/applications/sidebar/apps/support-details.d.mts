@@ -1,6 +1,7 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, IntentionalPartial } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
+import ClientIssues = foundry.helpers.ClientIssues;
 
 declare module "#configuration" {
   namespace Hooks {
@@ -72,11 +73,44 @@ declare namespace SupportDetails {
   interface AnyConstructor extends Identity<typeof AnySupportDetails> {}
 
   /**
-   * @privateRemarks Empty because SupportDetails adds nothing to the shared render context. Its `report`,
-   * `documentIssues`, `moduleIssues`, `clientIssues` and `tabClasses` additions are made by `_preparePartContext`
-   * and so reach only the part each belongs to.
+   * @remarks Every added member comes from
+   * {@linkcode SupportDetails._preparePartContext | #_preparePartContext}, which only sets the members the
+   * part being rendered consumes, so they are all `IntentionalPartial`ed.
    */
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface RenderContext
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      ApplicationV2.RenderContext,
+      IntentionalPartial<PreparePartContext> {}
+
+  /** @remarks Added by {@linkcode SupportDetails._preparePartContext | #_preparePartContext} */
+  interface PreparePartContext {
+    /** @remarks Only added when the part being rendered is also a tab of the `sheet` group. */
+    tab: ApplicationV2.Tab;
+
+    /** @remarks Added for the `support` part; regenerated on every render of that part. */
+    report: SupportReportData;
+
+    /** @remarks Added for the `documents` part. */
+    documentIssues: DocumentValidationErrors[];
+
+    /** @remarks Added for the `modules` part. */
+    moduleIssues: ModuleIssueGroup[];
+
+    /** @remarks Added for the `client` part. */
+    clientIssues: ClientIssue[];
+
+    /** @remarks Added for the `tabs` part. */
+    tabClasses: string;
+  }
+
+  /** An entry of {@linkcode PreparePartContext.clientIssues}. */
+  interface ClientIssue {
+    severity: ClientIssues.Severity;
+
+    /** @remarks Localized, unlike {@linkcode ClientIssues.UsabilityIssue.message}. */
+    message: string;
+  }
 
   interface Configuration<SupportDetails extends SupportDetails.Any = SupportDetails.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<SupportDetails> {}

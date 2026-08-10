@@ -35,16 +35,16 @@ declare namespace FolderExport {
 
   interface RenderContext extends DialogV2.RenderContext {}
 
-  /**
-   * @privateRemarks Not parameterized by the concrete application, unlike its siblings: `DialogV2.Button`'s
-   * callback is invariant in that type, so a `Configuration<FolderExport>` is not assignable to the
-   * `Configuration<DialogV2.Any>` the base demands.
-   */
-  interface Configuration extends DialogV2.Configuration {}
+  interface Configuration<
+    FolderExport extends FolderExport.Any = FolderExport.Any,
+  > extends DialogV2.Configuration<FolderExport> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
-  type DefaultOptions = DeepPartial<Configuration> & object;
+  type DefaultOptions<FolderExport extends FolderExport.Any = FolderExport.Any> = DeepPartial<
+    Configuration<FolderExport>
+  > &
+    object;
 
   interface RenderOptions extends DialogV2.RenderOptions {}
 }
