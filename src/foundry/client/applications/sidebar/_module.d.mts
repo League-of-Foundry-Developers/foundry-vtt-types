@@ -3,6 +3,7 @@
 // While `.mts` could work, to avoid `import/no-unresolved` from erroring `.mjs` is used.
 
 export * as apps from "./apps/_module.mjs";
+export * as filters from "./filters/_module.mjs";
 export * as tabs from "./tabs/_module.mjs";
 export { default as Sidebar } from "./sidebar.mjs";
 export { default as AbstractSidebarTab } from "./sidebar-tab.mjs";
