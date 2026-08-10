@@ -90,6 +90,11 @@ expectTypeOf<PlaylistDirectory.RenderContext["currentlyPlaying"]>().toEqualTypeO
   PlaylistDirectory.CurrentlyPlayingContext | undefined
 >();
 expectTypeOf<PlaylistDirectory.RenderContext["tree"]>().toEqualTypeOf<PlaylistDirectory.TreeContext | undefined>();
+expectTypeOf<PlaylistDirectory.PreparePartContext["controls"]>().toEqualTypeOf<PlaylistDirectory.ControlsContext>();
+expectTypeOf<
+  PlaylistDirectory.PreparePartContext["currentlyPlaying"]
+>().toEqualTypeOf<PlaylistDirectory.CurrentlyPlayingContext>();
+expectTypeOf<PlaylistDirectory.PreparePartContext["tree"]>().toEqualTypeOf<PlaylistDirectory.TreeContext>();
 
 // The root tree node carries no folder.
 expectTypeOf<PlaylistDirectory.TreeContext["folder"]>().toEqualTypeOf<Folder.Stored | null>();

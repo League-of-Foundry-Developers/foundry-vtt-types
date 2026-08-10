@@ -110,6 +110,7 @@ expectTypeOf<ChatLog.History["pending"]>().toBeString();
 
 // Added by the input part.
 expectTypeOf<ChatLog.RenderContext["isAtBottom"]>().toEqualTypeOf<boolean | undefined>();
+expectTypeOf<ChatLog.PreparePartContext["isAtBottom"]>().toBeBoolean();
 
 // Deprecated since v14, until v16.
 // eslint-disable-next-line @typescript-eslint/no-deprecated

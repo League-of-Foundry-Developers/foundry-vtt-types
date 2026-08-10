@@ -84,9 +84,12 @@ expectTypeOf<CombatTracker.RenderContext["combats"]>().toEqualTypeOf<CombatTrack
 expectTypeOf<CombatTracker.RenderContext["previousId"]>().toEqualTypeOf<string | undefined>();
 expectTypeOf<CombatTracker.RenderContext["nextId"]>().toEqualTypeOf<string | undefined>();
 expectTypeOf<CombatTracker.RenderContext["linked"]>().toEqualTypeOf<boolean | undefined>();
+expectTypeOf<CombatTracker.PreparePartContext["combat"]>().toEqualTypeOf<Combat.Stored | null>();
+expectTypeOf<CombatTracker.PreparePartContext["linked"]>().toBeBoolean();
 
 // Written by the tracker part, and only when an encounter is viewed.
 expectTypeOf<CombatTracker.RenderContext["turns"]>().toEqualTypeOf<CombatTracker.TurnContext[] | undefined>();
+expectTypeOf<CombatTracker.PreparePartContext["turns"]>().toEqualTypeOf<CombatTracker.TurnContext[] | undefined>();
 
 // A number when the turn context is built, a fixed-precision string by the time the part renders.
 expectTypeOf<CombatTracker.TurnContext["initiative"]>().toEqualTypeOf<number | string | null>();

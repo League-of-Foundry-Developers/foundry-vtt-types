@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
+import type { AnyObject, DeepPartial, Identity, IntentionalPartial, MaybePromise } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type ContextMenu from "../../ux/context-menu.d.mts";
@@ -451,7 +451,11 @@ declare namespace CompendiumDirectory {
     folder: string | null;
   }
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {
+  interface RenderContext
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      AbstractSidebarTab.RenderContext,
+      IntentionalPartial<PreparePartContext> {
     folderIcon: string;
 
     label: string;
@@ -464,29 +468,39 @@ declare namespace CompendiumDirectory {
     documentName: string;
 
     sidebarIcon: string;
+  }
 
-    /** @privateRemarks Added by the directory part. */
-    canCreateEntry?: boolean | undefined;
+  /** Members added by {@linkcode CompendiumDirectory._preparePartContext | #_preparePartContext}. */
+  interface PreparePartContext {
+    /** @remarks Added for the directory part. */
+    canCreateEntry: boolean;
 
-    canCreateFolder?: boolean | undefined;
+    /** @remarks Added for the directory part. */
+    canCreateFolder: boolean;
 
-    entryPartial?: string | undefined;
+    /** @remarks Added for the directory part. */
+    entryPartial: string;
 
-    folderPartial?: string | undefined;
+    /** @remarks Added for the directory part. */
+    folderPartial: string;
 
-    /** Pack render context, keyed by collection ID. */
-    packContext?: Record<string, PackContext> | undefined;
+    /** @remarks Added for the directory part. */
+    packContext: Record<string, PackContext>;
 
-    maxFolderDepth?: number | undefined;
+    /** @remarks Added for the directory part. */
+    maxFolderDepth: number;
 
-    tree?: CompendiumPacks["tree"] | undefined;
+    /** @remarks Added for the directory part. */
+    tree: CompendiumPacks["tree"];
 
-    /** @privateRemarks Added by the header part. */
-    filtersActive?: number | undefined;
+    /** @remarks Added for the header part. */
+    filtersActive: number;
 
-    searchMode?: SearchModeContext | undefined;
+    /** @remarks Added for the header part. */
+    searchMode: SearchModeContext;
 
-    sortMode?: SortModeContext | undefined;
+    /** @remarks Added for the header part. */
+    sortMode: SortModeContext;
   }
 
   interface Configuration<CompendiumDirectory extends CompendiumDirectory.Any = CompendiumDirectory.Any>

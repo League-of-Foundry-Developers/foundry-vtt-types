@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
+import type { AnyObject, DeepPartial, Identity, IntentionalPartial, MaybePromise } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type ContextMenu from "../../ux/context-menu.d.mts";
@@ -345,48 +345,53 @@ declare namespace CombatTracker {
     render?: boolean | undefined;
   }
 
-  /**
-   * @remarks Part-specific members are absent until their part is prepared.
-   */
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {
-    /** @privateRemarks Added by the header and footer parts. */
-    combat?: Combat.Stored | null | undefined;
+  interface RenderContext
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      AbstractSidebarTab.RenderContext,
+      IntentionalPartial<PreparePartContext> {}
 
-    hasCombat?: boolean | undefined;
+  /** Members added by {@linkcode CombatTracker._preparePartContext | #_preparePartContext}. */
+  interface PreparePartContext {
+    /** @remarks Added for the header and footer parts. */
+    combat: Combat.Stored | null;
+
+    /** @remarks Added for the header and footer parts. */
+    hasCombat: boolean;
 
     /** The encounter before the viewed one, absent when it is the first. */
-    previousId?: string | undefined;
+    previousId: string | undefined;
 
     /** The encounter after the viewed one, absent when it is the last. */
-    nextId?: string | undefined;
+    nextId: string | undefined;
 
-    combats?: CombatEntry[] | undefined;
+    combats: CombatEntry[];
 
     /** Whether the current user may advance the turn or round. */
-    control?: boolean | undefined;
+    control: boolean;
 
-    css?: string | undefined;
+    css: string;
 
     /** The viewed encounter's one-based position, or `0` when none is viewed. */
-    currentIndex?: number | undefined;
+    currentIndex: number;
 
     /** Whether to render the switcher as a cycler rather than as tabs, which it does past seven encounters. */
-    displayCycle?: boolean | undefined;
+    displayCycle: boolean;
 
-    initiativeIcon?: string | undefined;
+    initiativeIcon: string;
 
     /**
      * Whether the viewed encounter is bound to a scene.
      *
      * @remarks `true` when no encounter is viewed, since the check compares an absent scene against `null`.
      */
-    linked?: boolean | undefined;
+    linked: boolean;
 
-    /** @privateRemarks Added by the tracker part when an encounter is viewed. */
-    turns?: TurnContext[] | undefined;
+    /** @remarks Added for the tracker part when an encounter is viewed. */
+    turns: TurnContext[] | undefined;
 
     /** Whether any combatant's initiative has a fractional part. */
-    hasDecimals?: boolean | undefined;
+    hasDecimals: boolean | undefined;
   }
 
   interface Configuration<CombatTracker extends CombatTracker.Any = CombatTracker.Any>

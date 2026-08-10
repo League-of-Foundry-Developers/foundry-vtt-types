@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepPartial, Identity, MaybePromise } from "#utils";
+import type { AnyMutableObject, DeepPartial, Identity, IntentionalPartial, MaybePromise } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type ContextMenu from "../../ux/context-menu.d.mts";
@@ -497,9 +497,16 @@ declare namespace ChatLog {
     message?: string | undefined;
   }
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {
-    /** @privateRemarks Added by the input part. */
-    isAtBottom?: boolean | undefined;
+  interface RenderContext
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      AbstractSidebarTab.RenderContext,
+      IntentionalPartial<PreparePartContext> {}
+
+  /** Members added by {@linkcode ChatLog._preparePartContext | #_preparePartContext}. */
+  interface PreparePartContext {
+    /** @remarks Added for the input part. */
+    isAtBottom: boolean;
   }
 
   interface Configuration<ChatLog extends ChatLog.Any = ChatLog.Any>

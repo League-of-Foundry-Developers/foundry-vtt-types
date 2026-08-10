@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, DeepPartial, Identity } from "#utils";
+import type { AnyMutableObject, AnyObject, DeepPartial, Identity, IntentionalPartial } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type HTMLRangePickerElement from "../../elements/range-picker.d.mts";
@@ -443,18 +443,18 @@ declare namespace PlaylistDirectory {
     caret: string;
   }
 
-  /**
-   * @privateRemarks Members are part-specific and therefore optional despite Foundry's typedef.
-   */
-  interface RenderContext extends DocumentDirectory.RenderContext {
-    /** Volume control context. */
-    controls?: ControlsContext | undefined;
+  interface RenderContext extends DocumentDirectory.RenderContext, IntentionalPartial<PreparePartContext> {}
 
-    /** Currently playing context. */
-    currentlyPlaying?: CurrentlyPlayingContext | undefined;
+  /** Members added by {@linkcode PlaylistDirectory._preparePartContext | #_preparePartContext}. */
+  interface PreparePartContext {
+    /** @remarks Added for the controls part. */
+    controls: ControlsContext;
 
-    /** Render context for the directory tree. */
-    tree?: TreeContext | undefined;
+    /** @remarks Added for the playing part. */
+    currentlyPlaying: CurrentlyPlayingContext;
+
+    /** @remarks Added for the directory part. */
+    tree: TreeContext;
   }
 
   /**

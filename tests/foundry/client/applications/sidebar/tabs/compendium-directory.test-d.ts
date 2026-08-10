@@ -117,12 +117,14 @@ expectTypeOf<CompendiumDirectory.RenderContext["packContext"]>().toEqualTypeOf<
   Record<string, CompendiumDirectory.PackContext> | undefined
 >();
 expectTypeOf<CompendiumDirectory.RenderContext["tree"]>().toEqualTypeOf<CompendiumPacks["tree"] | undefined>();
+expectTypeOf<CompendiumDirectory.PreparePartContext["tree"]>().toEqualTypeOf<CompendiumPacks["tree"]>();
 
 // Added by the header part.
 expectTypeOf<CompendiumDirectory.RenderContext["searchMode"]>().toEqualTypeOf<
   CompendiumDirectory.SearchModeContext | undefined
 >();
 expectTypeOf<CompendiumDirectory.RenderContext["filtersActive"]>().toEqualTypeOf<number | undefined>();
+expectTypeOf<CompendiumDirectory.PreparePartContext["filtersActive"]>().toBeNumber();
 
 // `0` rather than `false` while no filter is active — the runtime returns the filter count directly.
 expectTypeOf<CompendiumDirectory.PackContext["hidden"]>().toEqualTypeOf<boolean | 0>();
