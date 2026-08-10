@@ -42,7 +42,7 @@ declare namespace JournalEntryPageImageSheet {
     src: JournalEntryPage.Implementation["src"];
 
     /** @remarks The page's image caption. */
-    caption: JournalEntryPage.Implementation["image"]["caption"];
+    caption: JournalEntryPage.ImageSource["caption"];
 
     srcInput: SourceInput;
   }

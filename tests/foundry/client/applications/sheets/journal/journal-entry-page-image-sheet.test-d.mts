@@ -23,7 +23,7 @@ expectTypeOf(sheet["_prepareContext"](prepareContextOptions)).toEqualTypeOf<
 
 expectTypeOf<JournalEntryPageImageSheet.RenderContext["src"]>().toEqualTypeOf<JournalEntryPage.Implementation["src"]>();
 expectTypeOf<JournalEntryPageImageSheet.RenderContext["caption"]>().toEqualTypeOf<
-  JournalEntryPage.Implementation["image"]["caption"]
+  JournalEntryPage.ImageSource["caption"]
 >();
 expectTypeOf<
   JournalEntryPageImageSheet.RenderContext["srcInput"]
