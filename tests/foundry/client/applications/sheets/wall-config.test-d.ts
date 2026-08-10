@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import PlaceableConfig = foundry.applications.sheets.PlaceableConfig;
@@ -16,7 +15,7 @@ declare const context: WallConfig.RenderContext;
 expectTypeOf(context.coordinates).toBeString();
 expectTypeOf(context.thresholdFields).toEqualTypeOf<WallConfig.ThresholdField[]>();
 expectTypeOf(context.thresholdFields[0]!.name).toEqualTypeOf<WallConfig.SenseType>();
-expectTypeOf(context.animation).toEqualTypeOf<AnyObject>();
+expectTypeOf(context.animation).toEqualTypeOf<WallDocument.AnimationSource>();
 expectTypeOf(context.animationDirections).toEqualTypeOf<WallConfig.AnimationDirectionChoice[]>();
 expectTypeOf(context.animationFieldsetClass).toBeString();
 expectTypeOf(context.buttons).toEqualTypeOf<ApplicationV2.FormFooterButton[]>();
