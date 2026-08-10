@@ -13,6 +13,7 @@ import type {
   MaybePromise,
   NullishCoalesce,
   SimpleMerge,
+  ToMethod,
 } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 
@@ -358,11 +359,9 @@ declare namespace DialogV2 {
     callback?: ButtonCallback<Dialog> | undefined;
   }
 
-  type ButtonCallback<Dialog extends DialogV2.Any = DialogV2.Any> = (
-    event: PointerEvent | SubmitEvent,
-    button: HTMLButtonElement,
-    dialog: Dialog,
-  ) => MaybePromise<unknown>;
+  type ButtonCallback<Dialog extends DialogV2.Any = DialogV2.Any> = ToMethod<
+    (event: PointerEvent | SubmitEvent, button: HTMLButtonElement, dialog: Dialog) => MaybePromise<unknown>
+  >;
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
@@ -408,10 +407,9 @@ declare namespace DialogV2 {
 
   type CloseCallback = (event: Event, dialog: DialogV2.Any) => unknown;
 
-  type SubmitCallback<Result, Dialog extends DialogV2.Any = DialogV2.Any> = (
-    result: Result,
-    dialog: Dialog,
-  ) => Promise<void>;
+  type SubmitCallback<Result, Dialog extends DialogV2.Any = DialogV2.Any> = ToMethod<
+    (result: Result, dialog: Dialog) => Promise<void>
+  >;
 
   interface WaitOptions<Dialog extends DialogV2.Any = DialogV2.Any> extends DeepInexactPartial<Configuration<Dialog>> {
     /**
