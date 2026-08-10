@@ -25,15 +25,6 @@ declare class PlaceablePalette {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__RenderContext]: {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__Configuration]: {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__RenderOptions]: {};
-
   // Mixin override.
   static DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
