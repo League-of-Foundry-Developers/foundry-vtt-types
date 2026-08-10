@@ -695,18 +695,18 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
-  interface GlobalLightSchema extends fields.DataSchema {
+  /** The light schema fields shared with a Scene's global light configuration. */
+  type GlobalLightSchemaFields = Pick<
+    LightData.Schema,
+    "alpha" | "color" | "coloration" | "saturation" | "contrast" | "shadows" | "darkness"
+  >;
+
+  interface GlobalLightSchema extends fields.DataSchema, GlobalLightSchemaFields {
     /**
      * Is the global light enabled?
      * @defaultValue `false`
      */
     enabled: fields.BooleanField<{ required: true; initial: false }>;
-
-    /**
-     * @see {@linkcode LightData.Schema.alpha}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    alpha: LightData.Schema["alpha"];
 
     /**
      * Is the global light in bright mode?
@@ -716,47 +716,11 @@ declare namespace Scene {
     bright: fields.BooleanField<{ required: true; initial: false }>;
 
     /**
-     * @see {@linkcode LightData.Schema.color}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    color: LightData.Schema["color"];
-
-    /**
-     * @see {@linkcode LightData.Schema.coloration}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    coloration: LightData.Schema["coloration"];
-
-    /**
      * The luminosity applied in the shader
      * @defaultValue `0`
      * @remarks Doesn't pull from the {@linkcode LightData} schema, unlike its siblings, as it has a different `initial`
      */
     luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
-
-    /**
-     * @see {@linkcode LightData.Schema.saturation}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    saturation: LightData.Schema["saturation"];
-
-    /**
-     * @see {@linkcode LightData.Schema.contrast}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    contrast: LightData.Schema["contrast"];
-
-    /**
-     * @see {@linkcode LightData.Schema.shadows}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    shadows: LightData.Schema["shadows"];
-
-    /**
-     * @see {@linkcode LightData.Schema.darkness}
-     * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-     */
-    darkness: LightData.Schema["darkness"];
   }
 
   interface GlobalLightSource extends fields.SchemaField.SourceData<GlobalLightSchema> {}
