@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type HandlebarsApplicationMixin from "./handlebars-application.d.mts";
 
@@ -51,8 +51,12 @@ declare abstract class CategoryBrowser<
 
   /**
    * Prepare the structure of category data which is rendered in this configuration form.
+   *
+   * @privateRemarks Asynchronous on the base, but every V14 implementation builds its categories
+   * synchronously; widened to {@linkcode MaybePromise} because `_prepareContext` awaits the result, so
+   * either kind of override is safe.
    */
-  protected abstract _prepareCategoryData(): Promise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
+  protected abstract _prepareCategoryData(): MaybePromise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
 
   /**
    * An optional method to make a potentially long-running request to load category data: a temporary message will be

@@ -11,22 +11,73 @@ declare module "#configuration" {
 }
 
 /**
- * @remarks TODO: Stub
+ * The application responsible for configuring methods of DiceTerm resolution.
  */
 declare class DiceConfig<
   RenderContext extends DiceConfig.RenderContext = DiceConfig.RenderContext,
   Configuration extends DiceConfig.Configuration = DiceConfig.Configuration,
   RenderOptions extends DiceConfig.RenderOptions = DiceConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
   static override DEFAULT_OPTIONS: DiceConfig.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * Dice Configuration setting name.
+   *
+   * @deprecated "DiceConfig.SETTING is deprecated: use Roll.DICE_CONFIGURATION_SETTING instead." (since v13 until v15)
+   */
+  static get SETTING(): typeof foundry.dice.Roll.DICE_CONFIGURATION_SETTING;
+
+  /**
+   * Register setting and menu.
+   */
+  static registerSetting(): void;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  static #DiceConfig: true;
 }
 
 declare namespace DiceConfig {
   interface Any extends AnyDiceConfig {}
   interface AnyConstructor extends Identity<typeof AnyDiceConfig> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface MethodContext {
+    value: string;
+    label: string;
+  }
+
+  interface DenominationContext {
+    label: string;
+
+    icon: string;
+
+    denomination: string;
+
+    /** @remarks The empty string when this denomination follows the default method. */
+    method: string;
+  }
+
+  /**
+   * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not
+   * inherit context from its parent class.
+   */
+  interface RenderContext {
+    /**
+     * @remarks The manual method is omitted for a user without the `MANUAL_ROLLS` permission — by
+     * deleting it from {@linkcode CONFIG.Dice.fulfillment}, so it stays gone for the rest of the session.
+     */
+    methods: MethodContext[];
+
+    defaultMethod: string;
+
+    dice: DenominationContext[];
+
+    buttons: ApplicationV2.FormFooterButton[];
+  }
 
   interface Configuration<DiceConfig extends DiceConfig.Any = DiceConfig.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<DiceConfig> {}
@@ -46,4 +97,5 @@ declare abstract class AnyDiceConfig extends DiceConfig<
 > {
   constructor(...args: never);
 }
+
 export default DiceConfig;
