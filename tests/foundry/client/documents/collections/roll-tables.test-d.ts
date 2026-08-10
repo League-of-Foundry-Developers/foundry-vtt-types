@@ -105,8 +105,8 @@ describe("RollTables Tests", async () => {
     tables.set("ID", tableImpl);
     // @ts-expect-error `Actor`s are not `RollTable`s
     tables.set("ID", actor);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(tables.set("ID", table)).toBeVoid();
+
+    expectTypeOf(tables.set("ID", table)).toEqualTypeOf<typeof tables>();
 
     expectTypeOf(tables.delete("ID")).toBeBoolean();
   });

@@ -62,25 +62,27 @@ describe("Collection Tests", () => {
   test("Searching", () => {
     expectTypeOf(c.filter(isString)).toEqualTypeOf<string[]>();
     expectTypeOf(
-      c.filter((each, i, collection) => {
+      c.filter((entry, i, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
         expectTypeOf(i).toBeNumber();
         expectTypeOf(collection).toEqualTypeOf<typeof c>();
-        return typeof each === "string";
+        return typeof entry === "string";
       }),
     ).toEqualTypeOf<Array<string>>();
 
     expectTypeOf(c.find(isString)).toEqualTypeOf<string | undefined>();
     expectTypeOf(
-      c.find((each, i, collection) => {
+      c.find((entry, i, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
         expectTypeOf(i).toBeNumber();
         expectTypeOf(collection).toEqualTypeOf<typeof c>();
-        return typeof each === "string";
+        return typeof entry === "string";
       }),
     ).toEqualTypeOf<string | undefined>();
 
     const cn = new Collection<string | null>();
-    expectTypeOf(cn.filter((each) => typeof each === "string")).toEqualTypeOf<Array<string>>();
-    expectTypeOf(cn.find((each) => typeof each === "string")).toEqualTypeOf<string | undefined>();
+    expectTypeOf(cn.filter((entry) => typeof entry === "string")).toEqualTypeOf<Array<string>>();
+    expectTypeOf(cn.find((entry) => typeof entry === "string")).toEqualTypeOf<string | undefined>();
 
     expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
     expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
@@ -92,27 +94,48 @@ describe("Collection Tests", () => {
     }
 
     expectTypeOf(
-      c.forEach((e) => {
-        expectTypeOf(e).toEqualTypeOf<CollectionValue>();
+      c.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
+        expectTypeOf(index).toBeNumber();
       }),
     ).toBeVoid();
 
-    expectTypeOf(c.some((e) => !!e)).toBeBoolean();
+    expectTypeOf(
+      c.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof c>();
+        return !!entry;
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      c.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof c>();
+        return typeof entry === "string";
+      }),
+    ).toBeBoolean();
   });
 
   test("Transforms", () => {
     expectTypeOf(
-      c.map((e) => {
-        if (!e) return "null";
-        switch (typeof e) {
+      c.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<CollectionValue>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof c>();
+
+        if (!entry) return "null";
+        switch (typeof entry) {
           case "number":
             return "5";
           case "object":
-            return `${e.foo}`;
+            return `${entry.foo}`;
           case "boolean":
             return "true";
           case "string":
-            return e;
+            return entry;
         }
       }),
     ).toEqualTypeOf<string[]>();
@@ -126,7 +149,11 @@ describe("Collection Tests", () => {
     const initial: Reduced = {};
 
     expectTypeOf(
-      c.reduce((acc, curr) => {
+      c.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<CollectionValue>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<Collection<CollectionValue>>();
+
         if (!curr) return acc;
         switch (typeof curr) {
           case "number":
@@ -145,6 +172,7 @@ describe("Collection Tests", () => {
             acc.strings ??= 0;
             acc.strings++;
         }
+
         return acc;
       }, initial),
     ).toEqualTypeOf<Reduced>();

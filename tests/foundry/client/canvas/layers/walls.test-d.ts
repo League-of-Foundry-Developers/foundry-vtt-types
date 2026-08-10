@@ -73,11 +73,12 @@ describe("WallsLayer Tests", () => {
   });
 
   test("Deprecated", () => {
-    // Deprecated since v12 until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.initialize()).toBeVoid();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.identifyInteriorWalls()).toBeVoid();
+    // `initialize` and `identifyInteriorWalls` were removed in v14 (deprecated since v12, until v14)
+    // @ts-expect-error removed in v14
+    layer.initialize;
+    // @ts-expect-error removed in v14
+    layer.identifyInteriorWalls;
+
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(layer.identifyWallIntersections()).toBeVoid();
   });

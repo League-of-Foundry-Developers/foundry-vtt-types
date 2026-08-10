@@ -58,7 +58,7 @@ expectTypeOf(directory["_createDroppedFolderContent"](folder, folder)).toEqualTy
   Promise<Folder.Implementation[]>
 >();
 expectTypeOf(directory["_createDroppedFolderDocuments"](folder, [actor])).toEqualTypeOf<Promise<void>>();
-// Synchronous at runtime, despite Foundry's `@returns {Promise<…>}`; the caller awaits it, so the
+// Synchronous at runtime, despite Foundry's `@returns {Promise<...>}`; the caller awaits it, so the
 // declaration stays wide enough for an async override.
 expectTypeOf(directory["_organizeDroppedFoldersAndDocuments"](folder)).toEqualTypeOf<
   MaybePromise<DocumentDirectory.OrganizedDroppedFolder<Actor.ImplementationClass>>

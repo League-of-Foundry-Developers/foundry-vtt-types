@@ -10,7 +10,7 @@ import type {
   SimpleMerge,
 } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { Game } from "#client/_module.d.mts";
@@ -33,7 +33,7 @@ import type ClientDocumentMixin from "#client/documents/abstract/client-document
 
 /**
  * A collection of Document objects contained within a specific compendium pack.
- * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
+ * Each Compendium pack has its own associated instance of the `CompendiumCollection` class which contains its contents.
  *
  * @see {@linkcode Game.packs | Game#packs}
  */
@@ -43,17 +43,14 @@ declare class CompendiumCollection<
   /** @param metadata - The compendium metadata, an object provided by {@linkcode Game.data | game.data} */
   constructor(metadata: CompendiumCollection.ConstructorMetadata<DocumentName>);
 
-  /** The compendium metadata which defines the compendium content and location */
+  /** The compendium metadata, which defines the compendium content and location */
   metadata: CompendiumCollection.Metadata<DocumentName>;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: Collection<CompendiumCollection.IndexEntry<DocumentName>>;
 
-  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  _flush: never;
-
   /**
-   * The amount of time that Document instances within this CompendiumCollection are held in memory.
+   * The amount of time that `Document` instances within this `CompendiumCollection` are held in memory.
    * Accessing the contents of the Compendium pack extends the duration of this lifetime.
    * @defaultValue `300`
    */
@@ -65,7 +62,7 @@ declare class CompendiumCollection<
   static CONFIG_SETTING: "compendiumConfiguration";
 
   /**
-   * The DataField definition for the configuration Setting
+   * The `DataField` definition for the configuration Setting
    */
   static CONFIG_FIELD: CompendiumCollection.SettingField;
 
@@ -74,12 +71,13 @@ declare class CompendiumCollection<
 
   /**
    * The banner image for this Compendium pack, or the default image for the pack type if no image is set.
-   * @remarks `undefined` in the metadata gets converted to `CONFIG[this.metadata.type]?.compendiumBanner`, which might, itself, be `undefined`
+   * @remarks `undefined` in the metadata gets converted to `CONFIG[this.metadata.type]?.compendiumBanner`,
+   * which might, itself, be `undefined`.
    */
   get banner(): string | null | undefined;
 
   /**
-   * A reference to the Application class which provides an interface to interact with this compendium content.
+   * A reference to the `Application` class which provides an interface to interact with this compendium content.
    * @defaultValue {@linkcode foundry.applications.sidebar.apps.Compendium}
    */
   applicationClass: Application.AnyConstructor | ApplicationV2.AnyConstructor;
@@ -104,7 +102,7 @@ declare class CompendiumCollection<
    * Assign this CompendiumCollection to be organized within a specific Folder.
    * @param folder - The desired Folder within the World or `null` to clear the folder
    * @returns A promise which resolves once the transaction is complete
-   * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode foundry.Game.folders | game.folders}
+   * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode game.folders}.
    */
   setFolder(folder: Folder.Stored<"Compendium"> | string | null): Promise<void>;
 
@@ -147,6 +145,23 @@ declare class CompendiumCollection<
    * Has this Compendium pack been fully indexed?
    */
   get indexed(): boolean;
+
+  // just calls `this.#flush()` before forwarding to `super`
+  override get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
+    id: string,
+    options?: Options,
+  ): DocumentCollection.GetReturn<DocumentName, Options>;
+
+  /**
+   * @remarks In addition to `#flush`ing, this forwards to {@linkcode CompendiumFolderCollection.set | CompendiumFolderCollection#set} if
+   * passed a folder. In that case, in reality, this method will return that class, not the `CompendiumCollection` is belongs to. We are
+   * blatantly lying about this here, because accurately typing that requires ugly hacks. If this inconveniences you, please let us know
+   * on discord.
+   */
+  override set(id: string, document: Document.StoredForName<DocumentName> | Folder.Stored<DocumentName>): this;
+
+  // also deletes the index entry
+  override delete(id: string): boolean;
 
   /**
    * @remarks Since all documents will get flushed at the end of the cache timer anyway, this doesn't clear documents with currently
@@ -216,18 +231,15 @@ declare class CompendiumCollection<
     options?: CompendiumCollection.TestUserPermissionOptions,
   ): boolean;
 
-  /**
-   * Import a Document into this Compendium Collection.
-   * @param document - The existing Document you wish to import
-   * @param options  - Additional options which modify how the data is imported.
-   * See {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} (default: `{}`)
-   * @returns The imported Document instance
-   * @remarks Takes either the primary document type of this compendium or a `Folder` of the appropriate type.
-   */
-  importDocument<Doc extends CompendiumCollection.DocOrFolder<DocumentName>>(
+  override importDocument<Doc extends CompendiumCollection.DocOrFolder<DocumentName>>(
     document: Doc,
-    options?: ClientDocument.ToCompendiumOptions,
+    options?: CompendiumCollection.ImportDocumentOptions<Doc["documentName"]>,
   ): Promise<CompendiumCollection.ImportDocumentReturn<Doc> | undefined>;
+
+  protected override _prepareImportDocument<
+    Doc extends CompendiumCollection.DocOrFolder<DocumentName>,
+    Options extends CompendiumCollection.ImportDocumentOptions<DocumentName>,
+  >(document: Doc, options?: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
 
   /**
    * Import a Folder into this Compendium Collection.
@@ -425,14 +437,14 @@ declare namespace CompendiumCollection {
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
-  type SettingField = fields.TypedObjectField<SettingFieldElement>;
+  type SettingField = fields.TypedObjectField<SettingFieldElement, { expandKeys: false }>;
 
   interface SettingData extends fields.TypedObjectField.InitializedType<
     SettingFieldElement,
     fields.TypedObjectField.DefaultOptions
   > {}
 
-  /** @remarks Currently (13.351) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
+  /** @remarks Currently (14.365) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
   type OwnershipData = NonNullable<SettingData["ownership"]>;
 
   /**
@@ -504,6 +516,9 @@ declare namespace CompendiumCollection {
     _id: string;
     uuid: string;
   } & DeepPartial<Omit<Document.SourceForName<Type>, "_id" | "uuid">>;
+
+  type ImportDocumentOptions<Name extends Document.CompendiumType | "Folder"> =
+    DocumentCollection.ImportToCompendiumOptions<Name>;
 
   type ImportDocumentReturn<Doc extends DocOrFolder<CompendiumCollection.DocumentName>> =
     Doc extends Folder.Implementation
@@ -708,12 +723,6 @@ declare namespace CompendiumCollection {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }
   >;
-
-  /** @deprecated Use {@linkcode CompendiumCollection.StoredConfiguration} instead. This type will be removed in v14. */
-  type WorldCompendiumPackConfiguration = CompendiumCollection.StoredConfiguration;
-
-  /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. This type will be removed in v14. */
-  type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
 }
 
 export default CompendiumCollection;

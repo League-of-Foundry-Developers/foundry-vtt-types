@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { MaybePromise } from "fvtt-types/utils";
 
 import ContextMenu = foundry.applications.ux.ContextMenu;
 import JournalSheet = foundry.appv1.sheets.JournalSheet;
@@ -17,9 +18,11 @@ declare const pointerEvent: PointerEvent;
 const menu = ContextMenu.create(testAppV1, testAppV1.element, ".foobar", []);
 expectTypeOf(menu.fixed).toBeBoolean();
 expectTypeOf(menu.menuItems[0]?.label).toEqualTypeOf<string | undefined>();
-expectTypeOf(menu.menuItems[0]?.onClick?.(pointerEvent, htmlElement)).toEqualTypeOf<unknown>();
+// `onClick` returns `MaybePromise<void>`: Foundry never awaits it, but its own handlers are often `async`.
+expectTypeOf(menu.menuItems[0]?.onClick).toEqualTypeOf<ContextMenu.EntryCallback | undefined>();
+expectTypeOf<ContextMenu.EntryCallback>().returns.toEqualTypeOf<MaybePromise<void>>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(menu.menuItems[0]?.callback?.(jquery, pointerEvent)).toEqualTypeOf<unknown>();
+expectTypeOf(menu.menuItems[0]?.callback?.(jquery, pointerEvent)).toBeVoid();
 // @ts-expect-error Callback for jQuery: true takes JQuery
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 menu.menuItems[0]?.callback?.(htmlElement, pointerEvent);
@@ -41,6 +44,16 @@ const entries: ContextMenu.Entry<HTMLElement>[] = [
     },
   },
   { label: "Minimal Entry" },
+  // Foundry's own idiom, e.g. sidebar/apps/compendium.mjs. Plain `void` here trips
+  // `no-misused-promises` under strictTypeChecked, so this doubles as a lint regression guard.
+  {
+    label: "Async Action",
+    onClick: async (event, target) => {
+      expectTypeOf(event).toEqualTypeOf<PointerEvent>();
+      expectTypeOf(target).toEqualTypeOf<HTMLElement>();
+      await Promise.resolve();
+    },
+  },
 ];
 new ContextMenu(testAppV2.element, ".foobar", entries, { jQuery: false, fixed: true });
 
@@ -79,10 +92,8 @@ new ContextMenu(testAppV2.element, ".foobar", [], {
   fixed: true,
 });
 
-// `implementation` is deliberately widened so constructor-narrowing subclasses can override it; it must still
-// construct and still expose the statics.
-expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.AnyImplementationClass>();
-expectTypeOf(
-  new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false }),
-).toEqualTypeOf<ContextMenu.AnyImplementation>();
+expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.ImplementationClass>();
+expectTypeOf(new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false })).toEqualTypeOf<
+  ContextMenu<false>
+>();
 expectTypeOf(ContextMenu.implementation.activateListeners()).toBeVoid();

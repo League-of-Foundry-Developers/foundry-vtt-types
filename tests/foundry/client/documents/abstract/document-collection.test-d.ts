@@ -1,4 +1,4 @@
-import { afterAll, test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
@@ -7,6 +7,8 @@ import Document = foundry.abstract.Document;
 describe("DocumentCollection Tests", async () => {
   // DocumentCollection is abstract
   class TestItemCollection extends DocumentCollection<"Item"> {
+    static override documentName = "Item" as const;
+
     // necessary type override, normally handled by WorldCollection
     override search(search: DocumentCollection.SearchOptions): Item.Stored[] {
       return super.search(search) as Item.Stored[];
@@ -87,7 +89,7 @@ describe("DocumentCollection Tests", async () => {
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
-    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<Document.Type | undefined>();
+    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<"Item">();
     expectTypeOf(dc._source).toEqualTypeOf<Item.Source[]>();
 
     expectTypeOf(dc.createDocument(itemSource)).toEqualTypeOf<Item.Implementation>();
@@ -165,8 +167,7 @@ describe("DocumentCollection Tests", async () => {
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     dc.set("ID", itemImpl);
-    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(dc.set("ID", item)).toBeVoid();
+    expectTypeOf(dc.set("ID", item)).toEqualTypeOf<typeof dc>();
 
     expectTypeOf(dc.delete("ID")).toBeBoolean();
   });
@@ -199,6 +200,29 @@ describe("DocumentCollection Tests", async () => {
     >();
   });
 
+  test("Importing", async () => {
+    // @ts-expect-error importDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(async () => await dc.importDocument(itemImpl));
+
+    // DC has these methods widened for subclassing purposes
+
+    const imported1 = await dc.importDocument(itemImpl, {});
+    if (!imported1) throw new Error("Failed to import test document");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Document.AnyStored>();
+
+    const imported2 = await dc.importDocument(item, {});
+    if (!imported2) throw new Error("Failed to import test document");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Document.AnyStored>();
+
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => dc["_prepareImportDocument"](itemImpl)).toThrow();
+
+    expectTypeOf(dc["_prepareImportDocument"](itemImpl, {})).toEqualTypeOf<object>();
+    expectTypeOf(dc["_prepareImportDocument"](item, {})).toEqualTypeOf<object>();
+  });
+
   test("updateAll", () => {
     expectTypeOf(dc.updateAll({ img: "some/path.webp" })).toEqualTypeOf<Promise<Item.Stored[]>>();
     expectTypeOf(dc.updateAll((item) => ({ name: item.name + " 2" }))).toEqualTypeOf<Promise<Item.Stored[]>>();
@@ -220,10 +244,73 @@ describe("DocumentCollection Tests", async () => {
 
   test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
-    dc._onModifyContents("update", [item], [itemUpdateData], onSceneUpdateOperation);
+    expect(() => dc._onModifyContents("update", [item], [itemUpdateData], onSceneUpdateOperation)).toThrow();
+
     expectTypeOf(dc._onModifyContents("create", [item], [itemCreateData], onItemCreateOperation, user)).toBeVoid();
     expectTypeOf(dc._onModifyContents("update", [item], [itemUpdateData], onItemUpdateOperation, user)).toBeVoid();
     expectTypeOf(dc._onModifyContents("delete", [item], ["XXXXXITEMIDXXXXX"], onItemDeleteOperation, user)).toBeVoid();
+  });
+
+  test("Callback methods", () => {
+    expectTypeOf(
+      dc.find((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      dc.filter((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    );
+
+    expectTypeOf(
+      dc.forEach((entry, index) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+      }),
+    ).toBeVoid();
+
+    expectTypeOf(
+      dc.map((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return entry.documentName;
+      }),
+    ).toEqualTypeOf<"Item"[]>;
+
+    expectTypeOf(
+      dc.reduce((acc, curr, index, collection) => {
+        expectTypeOf(curr).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return acc + index;
+      }, 0),
+    ).toBeNumber();
+
+    expectTypeOf(
+      dc.some((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(
+      dc.every((entry, index, collection) => {
+        expectTypeOf(entry).toEqualTypeOf<Item.Stored>();
+        expectTypeOf(index).toBeNumber();
+        expectTypeOf(collection).toEqualTypeOf<typeof dc>();
+        return !!(index % 2);
+      }),
+    ).toBeBoolean();
   });
 
   afterAll(async () => {

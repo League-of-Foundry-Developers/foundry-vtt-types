@@ -29,8 +29,8 @@ declare class Autocomplete {
   /**
    * Move the current auto-complete selection.
    * @param increment - The number of entries to advance the selection. A negative number moves up, and a
-   *                     positive number moves down.
-   *                     (default: `0`)
+   *                    positive number moves down.
+   *                    (default: `0`)
    * @throws If no menu is currently active; see {@linkcode Autocomplete.element | #element}.
    */
   select(increment?: number): void;
@@ -59,8 +59,16 @@ declare class Autocomplete {
 }
 
 declare namespace Autocomplete {
-  interface Any extends AnyAutocomplete {}
-  interface AnyConstructor extends Identity<typeof AnyAutocomplete> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyAutocomplete {}
+    interface AnyConstructor extends Identity<typeof AnyAutocomplete> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.ux.Autocomplete> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -68,7 +76,6 @@ declare namespace Autocomplete {
   /**
    * @param identifier - The identifier of the entry that was selected.
    * @param label      - The label of the entry that was selected.
-   * @param options    -
    */
   type Callback = (identifier: string, label: string, options?: CallbackOptions) => void;
 

@@ -21,6 +21,9 @@ expectTypeOf(app.closing).toEqualTypeOf<boolean>();
 expectTypeOf(app.title).toEqualTypeOf<string>();
 
 expectTypeOf(app.bringToTop()).toEqualTypeOf<void>();
+expectTypeOf(app.bringToFront()).toEqualTypeOf<void>();
+expectTypeOf(Application.RENDER_STATES.ERROR).toEqualTypeOf<-3>();
+expectTypeOf(Application._warnedAppV1).toEqualTypeOf<boolean>();
 expectTypeOf(app.getData()).toEqualTypeOf<MaybePromise<object>>();
 expectTypeOf(app.options).toEqualTypeOf<Application.Options>();
 expectTypeOf(app.close({ force: false })).toEqualTypeOf<Promise<void>>();

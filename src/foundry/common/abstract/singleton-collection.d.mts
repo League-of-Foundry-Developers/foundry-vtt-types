@@ -30,6 +30,8 @@ declare class SingletonEmbeddedCollection<
   protected override _set(key: string, value: ContainedDocument): void;
 
   protected override _delete(key: string): void;
+
+  override manages(id: string): boolean;
 }
 
 declare namespace SingletonEmbeddedCollection {

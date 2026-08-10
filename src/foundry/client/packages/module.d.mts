@@ -122,7 +122,7 @@ declare namespace Module {
   /** @remarks An entry of this Module's `relationships.systems`, in source form. */
   type SystemSource = RelatedPackage.Source<"system">;
 
-  type GetReturn<ID extends string> = foundry.Game._ModuleCollectionGetReturn<ID>;
+  type GetReturn<ID extends string> = foundry.Game.ModuleCollectionGetReturn<ID>;
 }
 
 export default Module;

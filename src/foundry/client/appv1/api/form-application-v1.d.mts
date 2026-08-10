@@ -1,4 +1,4 @@
-import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
+import type { AnyMutableObject, AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
@@ -17,7 +17,7 @@ declare module "#configuration" {
  *
  * A few critical assumptions:
  * 1) This application is used to only edit one object at a time
- * 2) The template used contains one (and only one) HTML form as it's outer-most element
+ * 2) The template used contains one (and only one) HTML form as it's outermost element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
  *
  * @template Options        - the type of the options object
@@ -60,10 +60,13 @@ declare abstract class FormApplication<
   /**
    * An array of custom element tag names that should be listened to for changes.
    */
-  protected static _customElements: string[];
+  protected static get _customElements(): string[];
 
   /**
-   * Assign the default options which are supported by the entity edit sheet.
+   * Assign the default options which are supported by the document edit sheet.
+   * In addition to the default options object supported by the parent Application class, the Form Application
+   * supports the following additional keys and values:
+   *
    * @returns The default options for this FormApplication class
    * @see {@linkcode Application.defaultOptions}
    * @defaultValue
@@ -118,11 +121,13 @@ declare abstract class FormApplication<
    * @param preventRender - Prevent the application from re-rendering as a result of form submission
    *                        (default: `false`)
    * @returns A promise which resolves to the validated update data
+   * @remarks Returns `false` without submitting when the application has not been rendered, is not editable, or is
+   * already mid-submission.
    */
   protected _onSubmit(
     event: Event,
     { updateData, preventClose, preventRender }?: FormApplication.OnSubmitOptions,
-  ): Promise<Partial<AnyObject>>;
+  ): Promise<AnyObject | false>;
 
   /**
    * Get an object of update data used to update the form's target object
@@ -138,7 +143,7 @@ declare abstract class FormApplication<
    * Do not preventDefault in this handler as other interactions on the form may also be occurring.
    * @param event - The initial change event
    */
-  protected _onChangeInput(event: JQuery.ChangeEvent): Promise<void | object>;
+  protected _onChangeInput(event: JQuery.ChangeEvent): Promise<AnyObject | false | void>;
 
   /**
    * Handle the change of a color picker input which enters it's chosen value into a related input field
@@ -158,7 +163,7 @@ declare abstract class FormApplication<
    * @param formData - The object of validated form data with which to update the object
    * @returns A Promise which resolves once the update operation has completed
    */
-  protected abstract _updateObject(event: Event, formData?: object): Promise<unknown>;
+  protected abstract _updateObject(event: Event, formData?: AnyMutableObject): Promise<unknown>;
 
   /**
    * Activate a named text editor.
@@ -193,14 +198,8 @@ declare abstract class FormApplication<
    */
   protected _configureProseMirrorPlugins(
     name: string,
-    options: {
-      /** Whether the editor should destroy itself on save. */
-      remove: boolean;
-    },
-  ): {
-    menu: ReturnType<(typeof ProseMirrorMenu)["build"]>;
-    keyMaps: ReturnType<(typeof ProseMirrorKeyMaps)["build"]>;
-  };
+    options?: FormApplication.ConfigureProseMirrorPluginsOptions,
+  ): FormApplication.ProseMirrorPlugins;
 
   /**
    * @param options - (default: `{}`)
@@ -216,24 +215,27 @@ declare abstract class FormApplication<
   submit(options?: FormApplication.OnSubmitOptions): Promise<this>;
 
   /**
-   * @deprecated since v12, will be removed in v14
+   * @deprecated "`FormApplication#filepickers` is deprecated and replaced by the `<file-picker>` HTML element"
+   * (since v12, until v16)
    */
   get filepickers(): FilePicker[];
 
   /**
-   * @deprecated since v12, will be removed in v14
+   * @deprecated "`FormApplication#_activateFilePicker` is deprecated without replacement" (since v12, until v16)
    */
-  protected _activateFilePicker(event: PointerEvent): void;
+  protected _activateFilePicker(event: PointerEvent): Promise<FilePicker>;
 
   /**
-   * @deprecated since v12, will be removed in v14
+   * @deprecated "`FormApplication#_getFilePickerOptions` is deprecated without replacement" (since v12, until v16)
    */
   protected _getFilePickerOptions(event: PointerEvent): FilePicker.Configuration;
 
   /**
-   * @deprecated since v12, will be removed in v14
+   * @deprecated since v12, will be removed in v16
    */
   protected _onSelectFile(selection: string, filePicker: FilePicker): void;
+
+  #FormApplication: true;
 }
 
 declare namespace FormApplication {
@@ -296,9 +298,22 @@ declare namespace FormApplication {
     submit?: boolean;
   }
 
+  interface ConfigureProseMirrorPluginsOptions {
+    /**
+     * Whether the editor should destroy itself on save.
+     * @defaultValue `true`
+     */
+    remove?: boolean | undefined;
+  }
+
+  interface ProseMirrorPlugins {
+    menu: ReturnType<(typeof ProseMirrorMenu)["build"]>;
+    keyMaps: ReturnType<(typeof ProseMirrorKeyMaps)["build"]>;
+  }
+
   interface FormApplicationEditor {
     target: string;
-    button: HTMLElement;
+    button: HTMLElement | null;
     hasButton: boolean;
     instance: TextEditor.EditorInstance | null;
     mce: TextEditor.EditorInstance | null;

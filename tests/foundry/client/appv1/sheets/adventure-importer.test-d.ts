@@ -15,3 +15,13 @@ expectTypeOf(adventureImporter.render(true)).toEqualTypeOf<AdventureImporter>();
 
 expectTypeOf(adventureImporter.adventure).toEqualTypeOf<Adventure.Implementation>();
 expectTypeOf(adventureImporter.isEditable).toEqualTypeOf<boolean>();
+
+// V14 forwards the three fields of `Adventure.ImportData` individually.
+declare const importData: Adventure.ImportData;
+expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  adventureImporter._importContent(importData.toCreate, importData.toUpdate, importData.documentCount),
+).toEqualTypeOf<Promise<Adventure.ImportResult>>();
+
+declare const contentList: AdventureImporter.ContentListEntry;
+expectTypeOf(contentList.field).toEqualTypeOf<keyof typeof foundry.documents.BaseAdventure.contentFields>();

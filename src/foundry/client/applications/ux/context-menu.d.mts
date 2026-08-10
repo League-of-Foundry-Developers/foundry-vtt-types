@@ -1,4 +1,4 @@
-import type { Coalesce, FixedInstanceType, Identity } from "#utils";
+import type { Coalesce, FixedInstanceType, Identity, MaybePromise } from "#utils";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
@@ -16,21 +16,21 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   constructor(
     container: HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement>[],
-    options: ContextMenu.ConstructorOptions<false>,
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options: ContextMenu.ConstructorOptions<UsesJQuery>,
   );
 
   /**
    * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
+   * Because the jQuery option provided to the ContextMenu constructor was undefined, your callbacks will receive jQuery objects.
    * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
    * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
    */
   constructor(
     element: HTMLElement | JQuery,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<HTMLElement | JQuery>[],
-    options?: Omit<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery"> & { jQuery?: false | undefined },
+    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
+    options?: ContextMenu.DeprecatedConstructorOptions<UsesJQuery>,
   );
 
   /**
@@ -206,10 +206,8 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
 
   /**
    * Retrieve the configured DragDrop implementation
-   * @privateRemarks Widened from {@linkcode ContextMenu.ImplementationClass} so subclasses that narrow the
-   * constructor, like {@linkcode foundry.applications.ux.FilterMenu}, can still override it.
    */
-  static get implementation(): ContextMenu.AnyImplementationClass;
+  static get implementation(): ContextMenu.ImplementationClass;
 
   /**
    * @deprecated since v13 until v15
@@ -246,14 +244,6 @@ declare namespace ContextMenu {
 
   interface ImplementationClass extends Identity<CONFIG["ux"]["ContextMenu"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
-
-  interface AnyImplementation extends AnyContextMenuImplementation {}
-
-  /**
-   * @remarks The widened type {@linkcode ContextMenu.implementation} is declared with. Prefer
-   * {@linkcode ImplementationClass} where the precise constructor signature is wanted.
-   */
-  interface AnyImplementationClass extends Identity<typeof AnyContextMenuImplementation> {}
 
   interface Entry<ElementType extends JQuery | HTMLElement> {
     /**
@@ -302,7 +292,7 @@ declare namespace ContextMenu {
      * on how the ContextMenu was configured.
      * @deprecated "`ContextMenuEntry#callback` is deprecated. Use `ContextMenuEntry#onClick` instead." (since v14, until v16)
      */
-    callback?: ((target: ElementType, event: PointerEvent) => unknown) | undefined;
+    callback?: ((target: ElementType, event: PointerEvent) => void) | undefined;
 
     /**
      * A function to call or boolean value to determine if this entry
@@ -316,8 +306,10 @@ declare namespace ContextMenu {
   /**
    * @param event  - The triggering event.
    * @param target - The element that the context menu has been triggered for.
+   *
+   * @remarks The result is discarded; an `async` handler is fire-and-forget, never awaited.
    */
-  type EntryCallback = (event: PointerEvent, target: HTMLElement) => unknown;
+  type EntryCallback = (event: PointerEvent, target: HTMLElement) => MaybePromise<void>;
 
   /**
    * @param html - The element of the context menu entry.
@@ -403,6 +395,23 @@ declare namespace ContextMenu {
     closeOnSelect?: boolean | undefined;
   }
 
+  /**
+   * Options for the deprecated {@linkcode ContextMenu} constructor overload, where `jQuery` may be omitted.
+   *
+   * @remarks Omitting `jQuery` makes callbacks receive jQuery objects and logs a compatibility warning, hence
+   * `IsJQuery` defaulting to `true`.
+   */
+  interface DeprecatedConstructorOptions<IsJQuery extends boolean = true> extends Omit<
+    ConstructorOptions<IsJQuery>,
+    "jQuery"
+  > {
+    /**
+     * If true, callbacks will be passed jQuery objects instead of HTMLElement instances
+     * @defaultValue `true`
+     */
+    jQuery?: IsJQuery | undefined;
+  }
+
   /** Options for {@linkcode ContextMenu.activateListeners} */
   interface ActivateListenersOptions {
     /**
@@ -425,18 +434,6 @@ declare namespace ContextMenu {
 
 declare abstract class AnyContextMenu extends ContextMenu<boolean> {
   constructor(...args: never);
-}
-
-/**
- * @privateRemarks Unlike {@linkcode AnyContextMenu}, this is not `abstract` and takes `...args: any[]`, because
- * {@linkcode ContextMenu.implementation} is instantiated directly and so must stay `new`-able. `menuItems` is
- * `any` because it's mutable, and therefore invariant, in `UsesJQuery`, leaving `ContextMenu<true>` and
- * `ContextMenu<false>` with no common supertype.
- */
-declare class AnyContextMenuImplementation extends ContextMenu<boolean> {
-  constructor(...args: any[]);
-
-  override menuItems: any;
 }
 
 export default ContextMenu;

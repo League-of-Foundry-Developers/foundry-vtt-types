@@ -1,5 +1,11 @@
 import type { Edge, PolygonVertex } from "./edges/_module.d.mts";
-import type { ClockwiseSweepPolygon, PointSourcePolygon, Ray, Quadtree } from "./_module.mjs";
+import type {
+  ClockwiseSweepPolygon,
+  ElevatedSurfaceExposureGenerator,
+  PointSourcePolygon,
+  Ray,
+  Quadtree,
+} from "./_module.mjs";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // After seeing that none of these types add anything or are even exported a
@@ -15,11 +21,21 @@ type ClipperPoint = PIXI.Polygon.ClipperPoint;
 
 type EdgeType = Edge.EdgeTypes;
 
+type EdgeThresholdData = Edge.ThresholdData;
+
+type EdgeCreationOptions = Edge.ConstructorOptions;
+
 type EdgeOptions = ClockwiseSweepPolygon.EdgeOptions;
 
 type PointSourcePolygonType = PointSourcePolygon.PolygonType;
 
 type PointSourcePolygonConfig = PointSourcePolygon.Config;
+
+type ElevatedSurfaceExposureOptions = ElevatedSurfaceExposureGenerator.Options;
+
+type ClockwiseSweepEdgeConfig = ClockwiseSweepPolygon.EdgeConfig;
+
+type _ClockwiseSweepPolygonConfig = ClockwiseSweepPolygon._Config;
 
 type ClockwiseSweepPolygonConfig = ClockwiseSweepPolygon.Config;
 
