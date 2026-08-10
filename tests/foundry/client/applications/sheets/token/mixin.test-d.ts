@@ -29,6 +29,7 @@ expectTypeOf(TokenConfig.TOKEN_SHAPES).toEqualTypeOf<Record<CONST.TOKEN_SHAPES, 
 
 expectTypeOf(sheet.isPrototype).toBeBoolean();
 expectTypeOf(sheet.actor).toEqualTypeOf<Actor.Implementation | null>();
+expectTypeOf(sheet["_fields"]).toEqualTypeOf<TokenDocument.Schema>();
 
 declare const renderOptions: DeepPartial<TokenConfig.RenderOptions>;
 declare const renderContext: TokenConfig.RenderContext;

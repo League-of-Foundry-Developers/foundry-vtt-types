@@ -10,6 +10,8 @@ import PrototypeTokenConfig = foundry.applications.sheets.PrototypeTokenConfig;
 import PrototypeToken = foundry.data.PrototypeToken;
 
 declare const sheet: PrototypeTokenConfig;
+
+expectTypeOf(sheet["_fields"]).toEqualTypeOf<PrototypeToken.Schema>();
 declare const prototype: PrototypeToken;
 
 expectTypeOf(PrototypeTokenConfig.DEFAULT_OPTIONS).toEqualTypeOf<PrototypeTokenConfig.DefaultOptions>();

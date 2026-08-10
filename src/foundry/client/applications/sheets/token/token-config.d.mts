@@ -31,7 +31,7 @@ declare class TokenConfig<
 
   override get actor(): Actor.Implementation | null;
 
-  protected override get _fields(): TokenDocument.Implementation["schema"]["fields"];
+  protected override get _fields(): TokenDocument.Schema;
 
   override get isVisible(): boolean;
 

@@ -117,7 +117,7 @@ declare namespace PrototypeTokenConfig {
     /** @remarks The same value as {@linkcode RenderContext.document | context.document}. */
     model: PrototypeToken;
 
-    source: PrototypeToken["_source"];
+    source: PrototypeToken.Source;
 
     rootId: string;
 

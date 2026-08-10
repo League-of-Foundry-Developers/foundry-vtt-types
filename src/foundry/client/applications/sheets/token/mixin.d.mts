@@ -1,6 +1,6 @@
 import type HandlebarsApplicationMixin from "#client/applications/api/handlebars-application.mjs";
 import type { PrototypeToken } from "#common/data/data.mjs";
-import type { FixedInstanceType, IntentionalPartial, Mixin, RemoveIndexSignatures } from "#utils";
+import type { FixedInstanceType, GetKey, IntentionalPartial, Mixin, RemoveIndexSignatures } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type FormDataExtended from "../../ux/form-data-extended.d.mts";
 import type { HTMLMultiCheckboxElement } from "../../elements/multi-select.d.mts";
@@ -22,15 +22,6 @@ import type CombatConfiguration from "#client/data/combat-config.d.mts";
 declare class TokenApplication {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__RenderContext]: {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__Configuration]: {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  readonly [ApplicationV2.Internal.__RenderOptions]: {};
 
   // Mixin override.
   static DEFAULT_OPTIONS: ApplicationV2.DefaultOptions;
@@ -90,7 +81,7 @@ declare class TokenApplication {
    *
    * @throws If the mixed class does not implement this getter.
    */
-  protected get _fields(): DataSchema;
+  protected get _fields(): TokenApplicationMixin.FieldsFor<TokenApplicationMixin.Token>;
 
   /**
    * Prepare data to be displayed in the Identity tab.
@@ -165,6 +156,13 @@ declare namespace TokenApplicationMixin {
 
   type Token = TokenDocument.Implementation | PrototypeToken;
 
+  /** @remarks The schema fields of whichever DataModel a Token application configures. */
+  type FieldsFor<ConcreteToken extends TokenApplicationMixin.Token> = GetKey<
+    ConcreteToken,
+    " __fvtt_types_internal_schema",
+    DataSchema
+  >;
+
   /**
    * @remarks The tab members are `IntentionalPartial`ed because each is only set for the one part that consumes it.
    */
@@ -174,7 +172,7 @@ declare namespace TokenApplicationMixin {
     tabClasses: string;
 
     /** @remarks The value of {@linkcode TokenApplication._fields | #_fields}. */
-    fields: ConcreteToken["schema"]["fields"];
+    fields: TokenApplicationMixin.FieldsFor<ConcreteToken>;
 
     isPrototype: boolean;
 
