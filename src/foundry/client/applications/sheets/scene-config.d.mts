@@ -184,7 +184,7 @@ declare namespace SceneConfig {
     levels: LevelContext[];
 
     /** @remarks Added for the `levels` and `visibility` parts. */
-    globalLight: Scene.Source["environment"]["globalLight"];
+    globalLight: Scene.GlobalLightSource;
 
     /** @remarks Added for the `levels` and `visibility` parts. */
     fogFields: Scene.FogSchema;
@@ -199,10 +199,10 @@ declare namespace SceneConfig {
     fog: FogContext;
 
     /** @remarks Added for the `environment` part. */
-    baseFields: Scene.EnvironmentSchema["base"]["fields"];
+    baseFields: Scene.BaseEnvironmentSchema;
 
     /** @remarks Added for the `environment` part. */
-    darkFields: Scene.EnvironmentSchema["dark"]["fields"];
+    darkFields: Scene.DarkEnvironmentSchema;
 
     /** @remarks Added for the `environment` part. */
     baseHueDisabled: boolean;

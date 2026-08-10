@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity, RemoveIndexSignatures } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -69,9 +69,7 @@ declare namespace AmbientLightConfig {
      * @remarks {@linkcode CONFIG.Canvas.darknessAnimations} when {@linkcode RenderContext.isDarkness | isDarkness},
      * otherwise {@linkcode CONFIG.Canvas.lightAnimations}.
      */
-    lightAnimations:
-      | RemoveIndexSignatures<CONFIG.Canvas.LightAnimations>
-      | RemoveIndexSignatures<CONFIG.Canvas.DarknessAnimations>;
+    lightAnimations: typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
     buttons: ApplicationV2.FormFooterButton[];
   }

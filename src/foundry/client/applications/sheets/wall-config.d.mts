@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity, InterfaceToObject, RemoveIndexSignatures } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -56,18 +56,16 @@ declare namespace WallConfig {
     /**
      * @remarks The Wall's door animation source data, falling back to the cleaned default of the `animation` field.
      */
-    // FIXME: `foundry.documents.BaseWall.Source["animation"]` once the Wall schema is migrated to V14, which
-    // added the `animation` field.
-    animation: AnyObject;
+    animation: WallDocument.AnimationSource;
 
     animationDirections: AnimationDirectionChoice[];
 
-    animationTypes: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorAnimations>>;
+    animationTypes: typeof CONFIG.Wall.animationTypes;
 
     /** @remarks `""` when the door animation fieldset should be shown, `"hidden"` otherwise. */
     animationFieldsetClass: string;
 
-    doorSounds: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorSounds>>;
+    doorSounds: typeof CONFIG.Wall.doorSounds;
 
     buttons: ApplicationV2.FormFooterButton[];
   }

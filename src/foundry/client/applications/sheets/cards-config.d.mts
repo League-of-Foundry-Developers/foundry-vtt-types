@@ -94,7 +94,7 @@ declare namespace CardsConfig {
     cards: Card.Implementation[];
 
     /** @remarks Added for the `cards` part. */
-    cardTypes: (typeof CONFIG)["Card"]["typeLabels"];
+    cardTypes: typeof CONFIG.Card.typeLabels;
 
     /** @remarks Added for the `cards` part; `"fa-random"` while shuffled, `"fa-arrow-up-1-9"` otherwise. */
     sortModeIcon: string;

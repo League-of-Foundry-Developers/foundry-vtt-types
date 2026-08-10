@@ -235,6 +235,8 @@ declare namespace WallDocument {
   /** @remarks See {@linkcode foundry.canvas.containers.DoorMesh.AnimationConfiguration} */
   interface AnimationData extends fields.SchemaField.InitializedData<AnimationSchema> {}
 
+  interface AnimationSource extends fields.SchemaField.SourceData<AnimationSchema> {}
+
   /**
    * The schema for {@linkcode WallDocument}. This is the source of truth for how a `WallDocument` document
    * must be structured.
