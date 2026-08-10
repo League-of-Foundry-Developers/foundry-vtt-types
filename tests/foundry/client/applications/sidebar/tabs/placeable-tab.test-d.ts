@@ -15,16 +15,12 @@ expectTypeOf(PlaceableTab.FILTER_CLASS).toEqualTypeOf<PlaceableFilter.AnyConstru
 expectTypeOf(PlaceableTab.DIRECTORY_PARTIAL).toBeString();
 expectTypeOf(PlaceableTab.ENTRY_PARTIAL).toBeString();
 
-expectTypeOf(tab.collectionName).toEqualTypeOf<
-  foundry.canvas.placeables.PlaceableObject.AnyCanvasDocument["collectionName"]
->();
+expectTypeOf(tab.collectionName).toEqualTypeOf<PlaceableTab.CollectionName>();
 expectTypeOf(tab.documentClass).toEqualTypeOf<PlaceableTab.PlaceableDocumentClass>();
 expectTypeOf(tab.layer).toEqualTypeOf<foundry.canvas.layers.PlaceablesLayer.Any | undefined>();
 expectTypeOf(tab.schema).toEqualTypeOf<foundry.data.fields.SchemaField.Any>();
 
-expectTypeOf(tab.options.collectionName).toEqualTypeOf<
-  foundry.canvas.placeables.PlaceableObject.AnyCanvasDocument["collectionName"]
->();
+expectTypeOf(tab.options.collectionName).toEqualTypeOf<PlaceableTab.CollectionName>();
 expectTypeOf(tab.options.directory).toEqualTypeOf<foundry.applications.sidebar.tabs.PlaceableDirectory.Any>();
 
 declare const object: foundry.canvas.placeables.PlaceableObject.Any;
@@ -64,6 +60,16 @@ expectTypeOf(renderContext.filters).toEqualTypeOf<PlaceableTab.FilterButton[] | 
 expectTypeOf(renderContext.hasLevels).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(renderContext.labels).toEqualTypeOf<PlaceableTab.SearchLabels | undefined>();
 expectTypeOf(renderContext.state).toEqualTypeOf<PlaceableTab.FilterStateContext | undefined>();
+
+declare const partContext: PlaceableTab.PreparePartContext;
+expectTypeOf(partContext.entries).toEqualTypeOf<PlaceableTab.EntryContext[] | undefined>();
+expectTypeOf(partContext.directoryPartial).toEqualTypeOf<string | undefined>();
+expectTypeOf(partContext.entryPartial).toEqualTypeOf<string | undefined>();
+expectTypeOf(partContext.canCreate).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(partContext.filters).toEqualTypeOf<PlaceableTab.FilterButton[] | undefined>();
+expectTypeOf(partContext.hasLevels).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(partContext.labels).toEqualTypeOf<PlaceableTab.SearchLabels | undefined>();
+expectTypeOf(partContext.state).toEqualTypeOf<PlaceableTab.FilterStateContext | undefined>();
 
 class CustomPlaceableTab extends PlaceableTab {
   protected override _getEntryLabel(entry: PlaceableTab.PlaceableDocument): string {

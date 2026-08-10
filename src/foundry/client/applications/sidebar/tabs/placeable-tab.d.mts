@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepPartial, Identity } from "#utils";
+import type { AnyMutableObject, DeepPartial, Identity, IntentionalPartial } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type ContextMenu from "../../ux/context-menu.d.mts";
@@ -61,7 +61,7 @@ declare class PlaceableTab<
   /**
    * The Scene's collection whose contents are shown in this tab.
    */
-  get collectionName(): PlaceableObject.AnyCanvasDocument["collectionName"];
+  get collectionName(): PlaceableTab.CollectionName;
 
   /**
    * The Document class of the entries shown in this tab.
@@ -320,9 +320,12 @@ declare namespace PlaceableTab {
   type InputOptions<Configuration extends PlaceableTab.Configuration> = DeepPartial<
     Omit<Configuration, "collectionName" | "directory">
   > & {
-    collectionName: Configuration["collectionName"];
-    directory: Configuration["directory"];
+    collectionName: CollectionName;
+    directory: PlaceableDirectory.Any;
   };
+
+  /** A Scene collection that can be displayed in a placeable sidebar tab. */
+  type CollectionName = PlaceableObject.AnyCanvasDocument["collectionName"];
 
   /** Any of the embedded Documents a placeable tab can list. */
   type PlaceableDocument = Document.ImplementationFor<Document.PlaceableType>;
@@ -415,34 +418,43 @@ declare namespace PlaceableTab {
     filteredByLevel: boolean;
   }
 
-  /**
-   * @remarks Every member below the shared context is written by the part that needs it, so each is
-   * optional; a subclass overriding only one of `_prepareDirectoryContext` / `_prepareSearchContext`
-   * is not obliged to produce the other's members.
-   */
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
-    directoryPartial?: string | undefined;
+  interface RenderContext
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      ApplicationV2.RenderContext,
+      IntentionalPartial<PreparePartContext> {}
 
-    entryPartial?: string | undefined;
+  /** Members added by {@linkcode PlaceableTab._preparePartContext | #_preparePartContext}. */
+  interface PreparePartContext {
+    /** @remarks Added for the directory part. */
+    directoryPartial: string | undefined;
 
-    entries?: EntryContext[] | undefined;
+    /** @remarks Added for the directory part. */
+    entryPartial: string | undefined;
 
-    /** @remarks Only Regions can be created from the sidebar. */
-    canCreate?: boolean | undefined;
+    /** @remarks Added for the directory part. */
+    entries: EntryContext[] | undefined;
 
-    filters?: FilterButton[] | undefined;
+    /** @remarks Added for the directory part; only Regions can be created from the sidebar. */
+    canCreate: boolean | undefined;
 
-    hasLevels?: boolean | undefined;
+    /** @remarks Added for the search part. */
+    filters: FilterButton[] | undefined;
 
-    labels?: SearchLabels | undefined;
+    /** @remarks Added for the search part. */
+    hasLevels: boolean | undefined;
 
-    state?: FilterStateContext | undefined;
+    /** @remarks Added for the search part. */
+    labels: SearchLabels | undefined;
+
+    /** @remarks Added for the search part. */
+    state: FilterStateContext | undefined;
   }
 
   interface Configuration<PlaceableTab extends PlaceableTab.Any = PlaceableTab.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<PlaceableTab> {
     /** The name of the Scene collection represented in this tab. */
-    collectionName: PlaceableObject.AnyCanvasDocument["collectionName"];
+    collectionName: CollectionName;
 
     /** The parent directory this tab is part of. */
     directory: PlaceableDirectory.Any;
