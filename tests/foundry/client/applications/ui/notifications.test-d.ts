@@ -22,7 +22,11 @@ expectTypeOf(notifications.notify("Hello world", "error", { console: false })).t
   Notifications.Notification<"error">
 >();
 
-expectTypeOf(notifications.notify({ message: "Hello world" })).toEqualTypeOf<Notifications.Notification<"info">>();
+expectTypeOf(notifications.notify(new Error("Hello world"))).toEqualTypeOf<Notifications.Notification<"info">>();
+
+// @ts-expect-error Foundry stringifies an arbitrary object, but it is not accepted here; pass `obj.toString()`.
+notifications.notify({ message: "Hello world" });
+
 expectTypeOf(notifications.info("Hello world")).toEqualTypeOf<Notifications.Notification<"info">>();
 expectTypeOf(notifications.info("Hello world", { localize: true })).toEqualTypeOf<Notifications.Notification<"info">>();
 expectTypeOf(notifications.info("Hello world", { permanent: true })).toEqualTypeOf<

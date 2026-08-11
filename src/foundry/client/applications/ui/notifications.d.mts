@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, Coalesce, Identity } from "#utils";
+import type { Brand, Coalesce, Identity } from "#utils";
 
 /**
  * A common framework for displaying notifications to the client.
@@ -49,9 +49,10 @@ declare class Notifications {
    * @param options   - Additional options which affect the notification
    *                    (default: `{}`)
    * @returns The registered notification
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   notify<T extends Notifications.Type | undefined = undefined>(
-    message: string | Error | AnyObject,
+    message: string | Error,
     type?: T,
     options?: Notifications.NotifyOptions,
   ): Notifications.Notification<Coalesce<T, "info">>;
@@ -62,8 +63,9 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
-  info(message: string | Error | AnyObject, options?: Notifications.NotifyOptions): Notifications.Notification<"info">;
+  info(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"info">;
 
   /**
    * Display a notification with the "warning" type.
@@ -71,11 +73,9 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
-  warn(
-    message: string | Error | AnyObject,
-    options?: Notifications.NotifyOptions,
-  ): Notifications.Notification<"warning">;
+  warn(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"warning">;
 
   /**
    * Display a notification with the "error" type.
@@ -83,11 +83,9 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
-  error(
-    message: string | Error | AnyObject,
-    options?: Notifications.NotifyOptions,
-  ): Notifications.Notification<"error">;
+  error(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"error">;
 
   /**
    * Display a notification with the "success" type.
@@ -95,11 +93,9 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
-  success(
-    message: string | Error | AnyObject,
-    options?: Notifications.NotifyOptions,
-  ): Notifications.Notification<"success">;
+  success(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"success">;
 
   /**
    * Update the progress of the notification.
@@ -160,12 +156,12 @@ declare namespace Notifications {
     element?: HTMLLIElement | undefined;
 
     /**
-     * @privateRemarks Foundry documents this as optional, but the runtime always sets it.
+     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
      */
     remove: () => void;
 
     /**
-     * @privateRemarks Foundry documents this as optional, but the runtime always sets it.
+     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
      */
     update: (update?: Notifications.UpdateOptions) => void;
   }
