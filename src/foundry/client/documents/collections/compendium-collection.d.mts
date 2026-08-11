@@ -239,7 +239,7 @@ declare class CompendiumCollection<
   protected override _prepareImportDocument<
     Doc extends CompendiumCollection.DocOrFolder<DocumentName>,
     Options extends CompendiumCollection.ImportDocumentOptions<DocumentName>,
-  >(document: Doc, options?: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
+  >(document: Doc, options: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
 
   /**
    * Import a Folder into this Compendium Collection.

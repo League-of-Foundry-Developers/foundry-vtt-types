@@ -130,6 +130,41 @@ describe("FogExplorations Tests", async () => {
     expectTypeOf(fogs.delete("ID")).toBeBoolean();
   });
 
+  test("importDocument fake override", async () => {
+    // `FogExploration`s don't have subtypes
+    const imported1 = await fogs.importDocument(fog, {});
+    if (!imported1) throw new Error("Failed to create test FogExploration via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<FogExploration.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => fogs["_prepareImportDocument"](fog)).toThrow();
+
+    expectTypeOf(fogs["_prepareImportDocument"](fogImpl, {})).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(fogs["_prepareImportDocument"](fog, { keepId: true })).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(fogs["_prepareImportDocument"](fogImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      fogs["_prepareImportDocument"](fogImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "FogExploration", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

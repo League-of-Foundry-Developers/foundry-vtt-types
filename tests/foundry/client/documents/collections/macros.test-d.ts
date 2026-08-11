@@ -167,6 +167,33 @@ describe("Macros Tests", async () => {
     expectTypeOf(imported2).toEqualTypeOf<Macro.Stored<"script">>();
   });
 
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => macros["_prepareImportDocument"](macro)).toThrow();
+
+    expectTypeOf(macros["_prepareImportDocument"](macroImpl, {})).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(macros["_prepareImportDocument"](macro, { keepId: true })).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(macros["_prepareImportDocument"](macroImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      macros["_prepareImportDocument"](macroImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Macro", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

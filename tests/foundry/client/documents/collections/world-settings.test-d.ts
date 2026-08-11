@@ -122,6 +122,41 @@ describe("WorldSettings Tests", async () => {
     expectTypeOf(settings.delete("ID")).toBeBoolean();
   });
 
+  test("importDocument fake override", async () => {
+    // `Setting`s don't have subtypes
+    const imported1 = await settings.importDocument(setting, {});
+    if (!imported1) throw new Error("Failed to create test `Setting` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Setting.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => settings["_prepareImportDocument"](setting)).toThrow();
+
+    expectTypeOf(settings["_prepareImportDocument"](settingImpl, {})).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(settings["_prepareImportDocument"](setting, { keepId: true })).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(settings["_prepareImportDocument"](settingImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      settings["_prepareImportDocument"](settingImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Setting", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

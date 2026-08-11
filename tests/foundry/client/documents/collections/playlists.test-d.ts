@@ -135,6 +135,41 @@ describe("Playlists Tests", async () => {
     expectTypeOf(playlists.delete("ID")).toBeBoolean();
   });
 
+  test("importDocument fake override", async () => {
+    // `Playlist`s don't have subtypes
+    const imported1 = await playlists.importDocument(playlist, {});
+    if (!imported1) throw new Error("Failed to create test `Playlist` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Playlist.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => playlists["_prepareImportDocument"](playlist)).toThrow();
+
+    expectTypeOf(playlists["_prepareImportDocument"](playlistImpl, {})).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(playlists["_prepareImportDocument"](playlist, { keepId: true })).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(playlists["_prepareImportDocument"](playlistImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      playlists["_prepareImportDocument"](playlistImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Playlist", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

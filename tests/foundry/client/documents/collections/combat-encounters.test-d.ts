@@ -128,6 +128,33 @@ describe("CombatEncounters Tests", async () => {
     expectTypeOf(imported2).toEqualTypeOf<Combat.Stored<"base">>();
   });
 
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => encounters["_prepareImportDocument"](combat)).toThrow();
+
+    expectTypeOf(encounters["_prepareImportDocument"](combatImpl, {})).toEqualTypeOf<
+      Omit<Combat.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(encounters["_prepareImportDocument"](combat, { keepId: true })).toEqualTypeOf<
+      Omit<Combat.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(encounters["_prepareImportDocument"](combatImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Combat.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      encounters["_prepareImportDocument"](combatImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Combat", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Combat.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
     encounters.set("ID", combatImpl);

@@ -123,6 +123,41 @@ describe("RollTables Tests", async () => {
     expectTypeOf(tables.delete("ID")).toBeBoolean();
   });
 
+  test("importDocument fake override", async () => {
+    // `RollTable`s don't have subtypes
+    const imported1 = await tables.importDocument(table, {});
+    if (!imported1) throw new Error("Failed to create test `RollTable` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<RollTable.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => tables["_prepareImportDocument"](table)).toThrow();
+
+    expectTypeOf(tables["_prepareImportDocument"](tableImpl, {})).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(tables["_prepareImportDocument"](table, { keepId: true })).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(tables["_prepareImportDocument"](tableImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      tables["_prepareImportDocument"](tableImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "RollTable", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

@@ -19,8 +19,14 @@ declare class CompendiumFolderCollection<
   /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
+  // fake type override
+  override importDocument(
+    document: Folder.OfType<DocumentName> | Folder.Stored<DocumentName>,
+    options: DocumentCollection.ImportToCompendiumOptions<"Folder">,
+  ): Promise<Folder.Stored<DocumentName> | undefined>;
+
   protected override _prepareImportDocument<Options extends DocumentCollection.ImportToCompendiumOptions<"Folder">>(
-    document: Folder.OfType<DocumentName>,
+    document: Folder.OfType<DocumentName> | Folder.Stored<DocumentName>,
     options: Options,
   ): ClientDocument.ToCompendiumReturnType<"Folder", Options>;
 

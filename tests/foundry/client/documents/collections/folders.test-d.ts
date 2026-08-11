@@ -143,6 +143,33 @@ describe("Folders Tests", async () => {
     expectTypeOf(imported2).toEqualTypeOf<Folder.Stored<"Actor">>();
   });
 
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => folders["_prepareImportDocument"](folder)).toThrow();
+
+    expectTypeOf(folders["_prepareImportDocument"](folderImpl, {})).toEqualTypeOf<
+      Omit<Folder.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(folders["_prepareImportDocument"](folder, { keepId: true })).toEqualTypeOf<
+      Omit<Folder.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(folders["_prepareImportDocument"](folderImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Folder.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      folders["_prepareImportDocument"](folderImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Folder", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Folder.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

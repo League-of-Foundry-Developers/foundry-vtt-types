@@ -149,6 +149,33 @@ describe("ChatMessages Tests", async () => {
     expectTypeOf(imported2).toEqualTypeOf<ChatMessage.Stored<"base">>();
   });
 
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => messages["_prepareImportDocument"](message)).toThrow();
+
+    expectTypeOf(messages["_prepareImportDocument"](messageImpl, {})).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(messages["_prepareImportDocument"](message, { keepId: true })).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(messages["_prepareImportDocument"](messageImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      messages["_prepareImportDocument"](messageImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "ChatMessage", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
   });

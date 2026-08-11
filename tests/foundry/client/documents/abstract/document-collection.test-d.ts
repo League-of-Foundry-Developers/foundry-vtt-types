@@ -3,6 +3,7 @@ import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
 import Document = foundry.abstract.Document;
+import WorldCollection = foundry.documents.abstract.WorldCollection;
 
 describe("DocumentCollection Tests", async () => {
   // DocumentCollection is abstract
@@ -12,6 +13,19 @@ describe("DocumentCollection Tests", async () => {
     // necessary type override, normally handled by WorldCollection
     override search(search: DocumentCollection.SearchOptions): Item.Stored[] {
       return super.search(search) as Item.Stored[];
+    }
+
+    // necessary type override, normally handled by WorldCollection
+    override importDocument(doc: Item.Implementation, options: DocumentCollection.ImportFromCompendiumOptions<"Item">) {
+      return Item.implementation.create(this._prepareImportDocument(doc, options));
+    }
+
+    // necessary type override, normally handled by WorldCollection
+    protected override _prepareImportDocument<Options extends WorldCollection.ImportDocumentOptions<"Item">>(
+      doc: Item.Implementation,
+      options: Options,
+    ): WorldCollection.FromCompendiumReturnType<"Item", Options> {
+      return game.items!.fromCompendium(doc, options);
     }
   }
 

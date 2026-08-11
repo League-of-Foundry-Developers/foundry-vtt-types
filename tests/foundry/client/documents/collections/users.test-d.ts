@@ -1,16 +1,22 @@
-import { describe, expect, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Users = foundry.documents.collections.Users;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
 
 declare const userCreateData: User.CreateData;
-declare const userSource: User.Source;
-declare const stack: User.Stored;
-declare const userImpl: User.Implementation;
 declare const actor: Actor.Stored;
 declare const wallCreateData: WallDocument.CreateData;
 
-describe("Users Tests", () => {
+describe("Users Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+
+  const user = await User.implementation.create({ name: "Somebody" });
+  if (!user) throw new Error("Failed to create test Setting");
+  docsToCleanUp.add(user);
+
+  const userImpl = new User.implementation({ name: "Somebody Else" });
+  const userSource = user.toObject();
+
   const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
   const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
   const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
@@ -110,8 +116,47 @@ describe("Users Tests", () => {
     // @ts-expect-error `Actor`s are not `User`s
     users.set("ID", actor);
 
-    expectTypeOf(users.set("ID", stack)).toEqualTypeOf<typeof users>();
+    expectTypeOf(users.set("ID", user)).toEqualTypeOf<typeof users>();
 
     expectTypeOf(users.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `User`s don't have subtypes
+    const imported1 = await users.importDocument(user, {});
+    if (!imported1) throw new Error("Failed to create test `User` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<User.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => users["_prepareImportDocument"](user)).toThrow();
+
+    expectTypeOf(users["_prepareImportDocument"](userImpl, {})).toEqualTypeOf<
+      Omit<User.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(users["_prepareImportDocument"](user, { keepId: true })).toEqualTypeOf<
+      Omit<User.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(users["_prepareImportDocument"](userImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<User.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      users["_prepareImportDocument"](userImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "User", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<User.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });
