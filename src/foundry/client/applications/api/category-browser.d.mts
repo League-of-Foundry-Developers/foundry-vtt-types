@@ -52,9 +52,9 @@ declare abstract class CategoryBrowser<
   /**
    * Prepare the structure of category data which is rendered in this configuration form.
    *
-   * @privateRemarks Asynchronous on the base, but every V14 implementation builds its categories
-   * synchronously; widened to {@linkcode MaybePromise} because `_prepareContext` awaits the result, so
-   * either kind of override is safe.
+   * @privateRemarks Asynchronous on the base, but {@linkcode foundry.applications.sidebar.apps.ControlsConfig} and
+   * {@linkcode foundry.applications.sidebar.apps.ToursManagement} both build their categories synchronously; widened
+   * to {@linkcode MaybePromise} because `_prepareContext` awaits the result, so either kind of override is safe.
    */
   protected abstract _prepareCategoryData(): MaybePromise<Record<string, CategoryBrowser.CategoryData<Entry>>>;
 
