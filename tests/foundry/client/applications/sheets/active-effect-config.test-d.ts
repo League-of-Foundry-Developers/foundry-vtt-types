@@ -21,6 +21,17 @@ expectTypeOf(context.expiryEvents).toEqualTypeOf<Record<string, string> | undefi
 expectTypeOf(context.changes).toEqualTypeOf<string[] | undefined>();
 expectTypeOf(context.start).toEqualTypeOf<ActiveEffectConfig.StartContext | null | undefined>();
 
+declare const changeContext: ActiveEffectConfig.RenderChangeContext;
+expectTypeOf(changeContext.changeType).toEqualTypeOf<ActiveEffect.ChangeTypeConfig | undefined>();
+
+declare const startContext: ActiveEffectConfig.StartContext;
+expectTypeOf(startContext.initiative).toEqualTypeOf<number | null>();
+expectTypeOf(startContext.round).toEqualTypeOf<number | null>();
+expectTypeOf(startContext.turn).toEqualTypeOf<number | null>();
+expectTypeOf(startContext.time).toEqualTypeOf<string>();
+expectTypeOf(startContext.combat).toEqualTypeOf<Combat.Implementation | null>();
+expectTypeOf(startContext.combatant).toEqualTypeOf<Combatant.Implementation | null>();
+expectTypeOf(startContext.combatantInitiative).toEqualTypeOf<number | string>();
 class CustomActiveEffectConfig extends ActiveEffectConfig {
   protected override _renderChange(renderContext: ActiveEffectConfig.RenderChangeContext): Promise<string> {
     return super._renderChange(renderContext);

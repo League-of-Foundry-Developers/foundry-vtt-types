@@ -151,7 +151,12 @@ declare namespace ActiveEffectConfig {
 
   /** The context passed to {@linkcode ActiveEffectConfig._renderChange | ActiveEffectConfig#_renderChange}. */
   interface RenderChangeContext {
-    /** A copy of the change from the Effect's source array */
+    /**
+     * A copy of the change from the Effect's source array
+     *
+     * @remarks Mutated in place: a non-string `value` is JSON-stringified, and `keyPath`, `typePath`,
+     * `valuePath`, `phasePath` and `priorityPath` are added.
+     */
     change: ActiveEffect.ChangeData;
 
     /** The change object's index in the array */
@@ -165,15 +170,30 @@ declare namespace ActiveEffectConfig {
 
     /** All change types and their localized labels */
     changeTypes: Record<string, string>;
+
+    /**
+     * @remarks Set by {@linkcode ActiveEffectConfig._renderChange | #_renderChange} rather than passed in;
+     * `undefined` for an unregistered change type.
+     */
+    changeType?: ActiveEffect.ChangeTypeConfig | undefined;
   }
 
   /**
    * The display context prepared by
    * {@linkcode ActiveEffectConfig._prepareStartContext | ActiveEffectConfig#_prepareStartContext}.
+   *
+   * @remarks Spreads the effect's `_source.start`, overwriting its `combat`, `combatant` and `time`.
    */
-  // FIXME: This also spreads the effect's `_source.start` members; add them once the ActiveEffect schema is
-  // migrated to V14, which introduced the `start` field.
   interface StartContext {
+    /** The Combatant's initiative roll at the time the Effect first started */
+    initiative: number | null;
+
+    /** The round of the Combat when the Effect first started */
+    round: number | null;
+
+    /** The turn of the Combat when the Effect first started */
+    turn: number | null;
+
     /** @remarks The elapsed world time since the effect started, formatted with the `"ago"` calendar format. */
     time: string;
 
