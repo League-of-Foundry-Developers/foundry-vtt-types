@@ -946,7 +946,7 @@ declare namespace BasePackage {
 
   interface LogOptions extends InexactPartial<_Installed>, InexactPartial<LogCompatibilityWarningOptions> {}
 
-  interface MigrateDataOptions extends InexactPartial<_Installed> {}
+  interface MigrateDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
 
   interface CleanDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
 

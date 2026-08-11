@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import DataModel = foundry.abstract.DataModel;
 import fields = foundry.data.fields;
 
 declare const myItem: foundry.documents.BaseItem;
@@ -29,3 +30,69 @@ class _GenericDataModel<Schema extends SchemaWithIndexSignatures> extends foundr
     this[Symbol("symbol")];
   }
 }
+
+interface TestSchema extends fields.DataSchema {
+  name: fields.StringField;
+}
+
+class _V14DataModelTest extends DataModel<TestSchema, null> {
+  protected static override _preCleanData(
+    data: object,
+    options: fields.DataField.CleanOptions,
+    _state: fields.DataField.UpdateState,
+  ): void {
+    super._preCleanData(data, options, _state);
+  }
+
+  protected static override _cleanData(
+    data: object,
+    options: fields.DataField.CleanOptions,
+    _state: fields.DataField.UpdateState,
+  ): void {
+    super._cleanData(data, options, _state);
+  }
+
+  protected override _getInnerModel(
+    field: fields.DataField.Any,
+    element?: DataModel.GetInnerModelElement,
+    options?: fields.DataField.CleanOptions,
+  ): DataModel.Any | null {
+    return super._getInnerModel(field, element, options);
+  }
+
+  protected override _initializationOrder(): Generator<[string, fields.DataField.Any], void, undefined> {
+    return super._initializationOrder();
+  }
+
+  protected override _preUpdateSource(
+    changes: object,
+    options: DataModel.UpdateOptions,
+    _state: fields.DataField.UpdateState,
+  ): void {
+    super._preUpdateSource(changes, options, _state);
+  }
+
+  protected override _updateDiff(
+    copy: object,
+    changes: object,
+    options: DataModel.UpdateOptions,
+    _state: fields.DataField.UpdateState,
+  ): object {
+    return super._updateDiff(copy, changes, options, _state);
+  }
+
+  protected override _updateCommit(
+    copy: object,
+    diff: object,
+    options: DataModel.UpdateOptions,
+    _state: fields.DataField.UpdateState,
+  ): void {
+    super._updateCommit(copy, diff, options, _state);
+  }
+}
+
+declare const v14DataModel: _V14DataModelTest;
+
+expectTypeOf(v14DataModel.getFieldForProperty("name")).toEqualTypeOf<fields.DataField.Unknown | undefined>();
+expectTypeOf(v14DataModel.getFieldForProperty(["name"])).toEqualTypeOf<fields.DataField.Unknown | undefined>();
+expectTypeOf(_V14DataModelTest.cleanData({}, {}, { creation: true })).toEqualTypeOf<object>();
