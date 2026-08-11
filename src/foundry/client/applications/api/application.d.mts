@@ -6,6 +6,7 @@ import type {
   MaybePromise,
   ValueOf,
   AnyArray,
+  FixedInstanceType,
   Identity,
   ToMethod,
 } from "#utils";
@@ -265,8 +266,25 @@ declare namespace ApplicationV2 {
     /** The action name triggered by clicking the control button */
     action: string;
 
-    /** Is the control button visible for the current client? */
+    /**
+     * Is the control button visible for the current client?
+     * @remarks Unlike {@linkcode ContextMenu.Entry.visible}, a function here receives no arguments — header controls
+     * are filtered with `control.visible.call(this)`.
+     */
     visible?: boolean | (() => boolean) | undefined;
+
+    /** Additional CSS classes to apply to this entry when it is rendered as a context menu item. */
+    classes?: string | undefined;
+
+    /** An identifier for a group this entry belongs to when it is rendered as a context menu item. */
+    group?: string | undefined;
+
+    /**
+     * The function to call when the control is clicked.
+     * @remarks Foundry calls this with both arguments when the control is rendered into the header's context menu, but
+     * with only the event when it is rendered as a header button, so `target` is not reliably present.
+     */
+    onClick?: ContextMenu.EntryCallback | undefined;
 
     /**
      * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.
@@ -699,7 +717,12 @@ declare class ApplicationV2<
   /**
    * Iterate over header control buttons, filtering for controls which are visible for the current client.
    */
-  protected _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
+  protected _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
+
+  /**
+   * Generate context menu entries based on the header control specification.
+   */
+  protected _headerControlContextEntries(): Generator<ContextMenu.Entry<HTMLElement>, void, undefined>;
 
   /**
    * Render an HTMLElement for the Application.
@@ -729,6 +752,13 @@ declare class ApplicationV2<
    * @param options - Options which configure application rendering behavior
    */
   protected _renderFrame(options: DeepPartial<RenderOptions>): Promise<HTMLElement>;
+
+  /**
+   * Render buttons that are inserted directly into the frame header. Header controls should be preferred over frame
+   * buttons, which should be used sparingly.
+   * @param options - Options which configure application rendering behavior.
+   */
+  protected _renderFrameButtons(options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Render a header control button.
@@ -1018,12 +1048,19 @@ declare class ApplicationV2<
   protected _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
 
   /**
+   * Iterate over the instances of this Application.
+   * @privateRemarks Foundry documents `Generator<typeof this>`, but the runtime yields instances, not the class.
+   * The `this` parameter is what makes `MyApplication.instances()` yield `MyApplication`.
+   */
+  static instances<T extends ApplicationV2.AnyConstructor>(this: T): Generator<FixedInstanceType<T>, void, undefined>;
+
+  /**
    * Parse a CSS style rule into a number of pixels which apply to that dimension.
    * @param style           - The CSS style rule
    * @param parentDimension - The relevant dimension of the parent element
    * @returns The parsed style dimension in pixels
    */
-  static parseCSSDimensions(style: string, parentDimension: number): number | undefined;
+  static parseCSSDimension(style: string, parentDimension: number): number | undefined;
 
   /**
    * Wait for a CSS transition to complete for an element.
@@ -1051,12 +1088,6 @@ declare class ApplicationV2<
    * @param element - The element.
    */
   static waitForImages(element: HTMLElement): Promise<void>;
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"ApplicationV2#bringToTop is not a valid function and redirects to ApplicationV2#bringToFront. This shim will be removed in v14."`
-   */
-  bringToTop(): void;
 }
 
 declare abstract class AnyApplicationV2 extends ApplicationV2<
