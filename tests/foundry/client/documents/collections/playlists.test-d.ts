@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Playlists = foundry.documents.collections.Playlists;
 
@@ -38,6 +38,18 @@ describe("Playlists Tests", async () => {
   });
 
   const playlists = new Playlists([playlistSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(playlists).toExtend<Collection.Any>();
+    expectTypeOf(Playlists).toExtend<Collection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(Collection);
+    expectTypeOf(playlists).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Playlists).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(playlists).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Playlists).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(playlists).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Playlists.documentName).toEqualTypeOf<"Playlist">();
@@ -121,6 +133,41 @@ describe("Playlists Tests", async () => {
     expectTypeOf(playlists.set("ID", playlist)).toEqualTypeOf<typeof playlists>();
 
     expectTypeOf(playlists.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `Playlist`s don't have subtypes
+    const imported1 = await playlists.importDocument(playlist, {});
+    if (!imported1) throw new Error("Failed to create test `Playlist` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Playlist.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => playlists["_prepareImportDocument"](playlist)).toThrow();
+
+    expectTypeOf(playlists["_prepareImportDocument"](playlistImpl, {})).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(playlists["_prepareImportDocument"](playlist, { keepId: true })).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(playlists["_prepareImportDocument"](playlistImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      playlists["_prepareImportDocument"](playlistImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Playlist", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Playlist.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

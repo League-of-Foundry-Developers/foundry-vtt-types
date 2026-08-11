@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Scenes = foundry.documents.collections.Scenes;
 import Sound = foundry.audio.Sound;
@@ -40,6 +40,18 @@ describe("Scenes Tests", async () => {
   });
 
   const scenes = new Scenes([sceneSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(scenes).toExtend<Collection.Any>();
+    expectTypeOf(Scenes).toExtend<Collection.AnyConstructor>();
+    expect(scenes).toBeInstanceOf(Collection);
+    expectTypeOf(scenes).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Scenes).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(scenes).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(scenes).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Scenes).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(scenes).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Scenes.documentName).toEqualTypeOf<"Scene">();
@@ -168,6 +180,41 @@ describe("Scenes Tests", async () => {
 
     // @ts-expect-error `WallDocument.Stored`s aren't `Scene.Stored`s
     scenes.fromCompendium(wallDoc);
+  });
+
+  test("importDocument fake override", async () => {
+    // `Scene`s don't have subtypes
+    const imported1 = await scenes.importDocument(scene, {});
+    if (!imported1) throw new Error("Failed to create test `Scene` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Scene.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => scenes["_prepareImportDocument"](scene)).toThrow();
+
+    expectTypeOf(scenes["_prepareImportDocument"](sceneImpl, {})).toEqualTypeOf<
+      Omit<Scene.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(scenes["_prepareImportDocument"](scene, { keepId: true })).toEqualTypeOf<
+      Omit<Scene.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(scenes["_prepareImportDocument"](sceneImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Scene.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      scenes["_prepareImportDocument"](sceneImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Scene", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Scene.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {
