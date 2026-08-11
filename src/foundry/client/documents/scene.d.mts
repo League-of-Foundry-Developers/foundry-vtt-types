@@ -695,13 +695,16 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
-  /** The light schema fields shared with a Scene's global light configuration. */
-  type GlobalLightSchemaFields = Pick<
+  /**
+   * The light schema fields shared with a Scene's global light configuration.
+   * @internal
+   */
+  interface _GlobalLightSchemaFields extends Pick<
     LightData.Schema,
     "alpha" | "color" | "coloration" | "saturation" | "contrast" | "shadows" | "darkness"
-  >;
+  > {}
 
-  interface GlobalLightSchema extends fields.DataSchema, GlobalLightSchemaFields {
+  interface GlobalLightSchema extends fields.DataSchema, _GlobalLightSchemaFields {
     /**
      * Is the global light enabled?
      * @defaultValue `false`
