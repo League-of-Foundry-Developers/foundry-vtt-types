@@ -50,9 +50,9 @@ declare namespace ActiveEffectTypeDataModel {
    * An ActiveEffect schema from before V14 which does not define its own changes field.
    * This compatibility path is temporary for Prototype 3.
    */
-  interface LegacySchema extends fields.DataSchema {
+  type LegacySchema = fields.DataSchema & {
     changes?: never;
-  }
+  };
 
   /** The minimum schema for a class which defines its own ActiveEffect changes. */
   interface MinimalSchema extends fields.DataSchema {
