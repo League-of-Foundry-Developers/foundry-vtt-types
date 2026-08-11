@@ -167,16 +167,18 @@ declare namespace PlaceablePaletteMixin {
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration {
+  interface _Configuration {
     /**
      * Initial data to populate the dialog with, overriding the user's previous choices, if any.
      */
     initialData: AnyObject;
   }
 
-  type DefaultOptions = DeepPartial<Configuration> & PlaceableConfig.DefaultOptions;
+  interface Configuration extends ApplicationV2.Configuration, _Configuration {}
 
-  interface RenderOptions {
+  type DefaultOptions = DeepPartial<_Configuration> & PlaceableConfig.DefaultOptions;
+
+  interface _RenderOptions {
     /**
      * Reset the palette's stored data to the given preset.
      */
@@ -187,6 +189,8 @@ declare namespace PlaceablePaletteMixin {
      */
     preservePlacement?: boolean | undefined;
   }
+
+  interface RenderOptions extends ApplicationV2.RenderOptions, _RenderOptions {}
 }
 
 export default PlaceablePaletteMixin;

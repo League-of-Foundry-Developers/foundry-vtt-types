@@ -75,9 +75,9 @@ declare namespace NotePalette {
     partId: string;
   }
 
-  interface Configuration extends NoteConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends NoteConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends NoteConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends NoteConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyNotePalette extends NotePalette<

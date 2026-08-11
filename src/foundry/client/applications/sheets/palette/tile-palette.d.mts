@@ -90,9 +90,9 @@ declare namespace TilePalette {
     isForeground: boolean;
   }
 
-  interface Configuration extends TileConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends TileConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends TileConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends TileConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyTilePalette extends TilePalette<

@@ -97,9 +97,9 @@ declare namespace DrawingPalette {
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration extends DrawingConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends DrawingConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends DrawingConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends DrawingConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyDrawingPalette extends DrawingPalette<

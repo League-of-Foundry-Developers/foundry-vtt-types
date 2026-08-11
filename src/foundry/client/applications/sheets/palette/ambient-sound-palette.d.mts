@@ -74,9 +74,9 @@ declare namespace AmbientSoundPalette {
     partId: string;
   }
 
-  interface Configuration extends AmbientSoundConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends AmbientSoundConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends AmbientSoundConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends AmbientSoundConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyAmbientSoundPalette extends AmbientSoundPalette<

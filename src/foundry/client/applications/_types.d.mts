@@ -1,4 +1,5 @@
 import type ApplicationV2 from "./api/application.d.mts";
+import type PlaceablePaletteMixin from "./sheets/palette/placeable-palette-mixin.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -34,3 +35,7 @@ type ApplicationTab = ApplicationV2.Tab;
 type FormNode = ApplicationV2.FormNode;
 
 type FormFooterButton = ApplicationV2.FormFooterButton;
+
+type PlaceablePaletteConfiguration = PlaceablePaletteMixin.Configuration;
+
+type PlaceablePaletteRenderOptions = PlaceablePaletteMixin.RenderOptions;

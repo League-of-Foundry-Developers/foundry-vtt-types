@@ -39,10 +39,12 @@ expectTypeOf<PlaceablePaletteMixin.AnyMixedConstructor["COMMIT_TOOL"]>().toEqual
 
 declare const config: PlaceablePaletteMixin.Configuration;
 expectTypeOf(config.initialData).toEqualTypeOf<AnyObject>();
+expectTypeOf<PlaceablePaletteMixin.Configuration>().toExtend<ApplicationV2.Configuration>();
 
 declare const renderOptions: PlaceablePaletteMixin.RenderOptions;
 expectTypeOf(renderOptions.preset).toEqualTypeOf<AnyObject | undefined>();
 expectTypeOf(renderOptions.preservePlacement).toEqualTypeOf<boolean | undefined>();
+expectTypeOf<PlaceablePaletteMixin.RenderOptions>().toExtend<ApplicationV2.RenderOptions>();
 
 declare const context: PlaceablePaletteMixin.RenderContext;
 expectTypeOf(context.rootId).toBeString();
@@ -104,8 +106,8 @@ declare class TokenPaletteConfig<
 
 declare namespace TokenPalette {
   interface RenderContext extends TokenPaletteConfig.RenderContext, PlaceablePaletteMixin.RenderContext {}
-  interface Configuration extends TokenPaletteConfig.Configuration, PlaceablePaletteMixin.Configuration {}
-  interface RenderOptions extends TokenPaletteConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface Configuration extends TokenPaletteConfig.Configuration, PlaceablePaletteMixin._Configuration {}
+  interface RenderOptions extends TokenPaletteConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 class TokenPalette extends PlaceablePaletteMixin(TokenPaletteConfig)<

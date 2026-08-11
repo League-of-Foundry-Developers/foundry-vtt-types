@@ -72,9 +72,9 @@ declare namespace WallPalette {
 
   interface RenderContext extends WallConfig.RenderContext, PlaceablePaletteMixin.RenderContext {}
 
-  interface Configuration extends WallConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends WallConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends WallConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends WallConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyWallPalette extends WallPalette<

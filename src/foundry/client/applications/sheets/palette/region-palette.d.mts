@@ -112,9 +112,9 @@ declare namespace RegionPalette {
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration extends RegionConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends RegionConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends RegionConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends RegionConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyRegionPalette extends RegionPalette<

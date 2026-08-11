@@ -75,9 +75,9 @@ declare namespace AmbientLightPalette {
     partId: string;
   }
 
-  interface Configuration extends AmbientLightConfig.Configuration, PlaceablePaletteMixin.Configuration {}
+  interface Configuration extends AmbientLightConfig.Configuration, PlaceablePaletteMixin._Configuration {}
 
-  interface RenderOptions extends AmbientLightConfig.RenderOptions, PlaceablePaletteMixin.RenderOptions {}
+  interface RenderOptions extends AmbientLightConfig.RenderOptions, PlaceablePaletteMixin._RenderOptions {}
 }
 
 declare abstract class AnyAmbientLightPalette extends AmbientLightPalette<
