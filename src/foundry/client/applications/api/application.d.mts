@@ -281,10 +281,10 @@ declare namespace ApplicationV2 {
 
     /**
      * The function to call when the control is clicked.
-     * @remarks Foundry calls this with both arguments when the control is rendered into the header's context menu, but
-     * with only the event when it is rendered as a header button, so `target` is not reliably present.
+     * @remarks `target` is only passed when the control is rendered into the header's context menu, not when it is
+     * rendered as a header button.
      */
-    onClick?: ContextMenu.EntryCallback | undefined;
+    onClick?: ((event: PointerEvent, target?: HTMLElement) => MaybePromise<void>) | undefined;
 
     /**
      * A key or value in CONST.DOCUMENT_OWNERSHIP_LEVELS that restricts visibility of this option for the current user.

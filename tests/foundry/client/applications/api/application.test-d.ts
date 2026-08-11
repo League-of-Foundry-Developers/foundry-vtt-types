@@ -157,3 +157,9 @@ expectTypeOf(applicationV2["_headerControlContextEntries"]()).toEqualTypeOf<
   Generator<foundry.applications.ux.ContextMenu.Entry<HTMLElement>, void, undefined>
 >();
 expectTypeOf(applicationV2["_renderFrameButtons"]({})).toEqualTypeOf<Promise<void>>();
+
+// `target` is only passed when the control is rendered into the header's context menu, so it is
+// optional here even though `ContextMenu.EntryCallback` requires it.
+expectTypeOf<NonNullable<foundry.applications.api.ApplicationV2.HeaderControlsEntry["onClick"]>>()
+  .parameter(1)
+  .toEqualTypeOf<HTMLElement | undefined>();
