@@ -41,8 +41,7 @@ declare global {
 
     /**
      * Test whether every element in this Set satisfies a certain test criterion.
-     * @see {@linkcode Array.every | Array#every}
-     * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
+     * @param test - The test criterion to apply.
      * @returns Does every element in the set satisfy the test criterion?
      */
     every<S extends T>(/** @immediate */ test: (value: T, index: number, set: Set<T>) => value is S): this is Set<S>;
@@ -51,7 +50,7 @@ declare global {
     /**
      * Filter this set to create a subset of elements which satisfy a certain test criterion.
      * @see {@linkcode Array.filter | Array#filter}
-     * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being filtered.
+     * @param test - The test criterion to apply.
      * @returns A new Set containing only elements which satisfy the test criterion.
      */
     filter<F extends T>(/** @immediate */ test: (value: T, index: number, set: Set<T>) => value is F): Set<F>;
@@ -60,7 +59,7 @@ declare global {
     /**
      * Find the first element in this set which satisfies a certain test criterion.
      * @see {@linkcode Array.find | Array#find}
-     * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being searched.
+     * @param test - The test criterion to apply.
      * @returns The first element in the set which satisfies the test criterion, or undefined.
      */
     find<F extends T>(/** @immediate */ test: (value: T, index: number, set: Set<T>) => value is F): F | undefined;
@@ -69,15 +68,15 @@ declare global {
     /**
      * Create a new Set where every element is modified by a provided transformation function.
      * @see {@linkcode Array.map | Array#map}
-     * @param transform - The transformation function to apply.Positional arguments are the value, the index of iteration, and the set being transformed.
+     * @param transform - The transformation function to apply.
      * @returns A new Set of equal size containing transformed elements.
      */
     map<V>(/** @immediate */ transform: (value: T, index: number, set: Set<T>) => V): Set<V>;
 
     /**
-     * Create a new Set with elements that are filtered and transformed by a provided reducer function.
+     * Create a new value with elements that are filtered and transformed by a provided reducer function.
      * @see {@linkcode Array.reduce | Array#reduce}
-     * @param reducer - A reducer function applied to each value. Positional arguments are the accumulator, the value, the index of iteration, and the set being reduced.
+     * @param reducer - A reducer function applied to each value.
      * @param initial - The initial value of the returned accumulator.
      * @returns The final value of the accumulator.
      */
@@ -86,7 +85,7 @@ declare global {
     /**
      * Test whether any element in this Set satisfies a certain test criterion.
      * @see {@linkcode Array.some | Array#some}
-     * @param test - The test criterion to apply. Positional arguments are the value, the index of iteration, and the set being tested.
+     * @param test - The test criterion to apply.
      * @returns Does any element in the set satisfy the test criterion?
      */
     some(/** @immediate */ test: (value: T, index: number, set: Set<T>) => boolean): boolean;
