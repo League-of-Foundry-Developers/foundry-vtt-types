@@ -8,6 +8,8 @@ declare namespace ApplyActiveEffectRegionBehaviorType {
     /** The Active Effects that are applied to Token within the Region. */
     effects: fields.SetField<fields.DocumentUUIDField<{ type: "ActiveEffect"; nullable: false }>>;
   }
+
+  type OnUpdateData = DeepPartial<TypeDataModel.ParentAssignmentType<Schema, RegionBehavior.Implementation>>;
 }
 
 /**
@@ -41,14 +43,13 @@ declare class ApplyActiveEffectRegionBehaviorType extends RegionBehaviorType<App
    * changed.
    */
   protected override _onUpdate(
-    changed: DeepPartial<
-      TypeDataModel.ParentAssignmentType<ApplyActiveEffectRegionBehaviorType.Schema, RegionBehavior.Implementation>
-    >,
+    changed: ApplyActiveEffectRegionBehaviorType.OnUpdateData,
     options: Document.Database.OnUpdateOptionsForName<"RegionBehavior">,
     userId: string,
   ): void;
 
   #ApplyActiveEffectRegionBehaviorType: true;
+  static #ApplyActiveEffectRegionBehaviorTypeStatic: true;
 }
 
 export default ApplyActiveEffectRegionBehaviorType;

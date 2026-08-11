@@ -271,6 +271,8 @@ declare abstract class BaseActiveEffect<
   ): ActiveEffect.Implementation;
 
   static override fromJSON(json: string): ActiveEffect.Implementation;
+
+  static #BaseActiveEffect: true;
 }
 
 export default BaseActiveEffect;

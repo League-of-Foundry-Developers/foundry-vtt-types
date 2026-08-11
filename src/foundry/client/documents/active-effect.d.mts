@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "#configuration";
-import type { AnyMutableObject, AnyObject, Identity, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { AnyMutableObject, AnyObject, Identity, InterfaceToObject, MaybeArray, MaybePromise, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseCombat, BaseCombatant, BaseFolder } from "#common/documents/_module.d.mts";
@@ -83,9 +83,7 @@ declare namespace ActiveEffect {
    * in {@linkcode CONFIG.ActiveEffect.dataModels}.
    */
   interface CoreTypes {
-    // Note(instantiation expression): pins the construct signature to the class' default `Schema` so that
-    // `Document.Internal._CoreSystemFor` infers `ActiveEffectTypeDataModel<Schema>` rather than the
-    // constraint-instantiated `ActiveEffectTypeDataModel<DataSchema>`.
+    /** @privateRemarks The instantiation expression preserves the default schema during model inference. */
     base: typeof foundry.data.ActiveEffectTypeDataModel<foundry.data.ActiveEffectTypeDataModel.Schema>;
   }
 
@@ -1212,12 +1210,13 @@ declare namespace ActiveEffect {
    * @param change    - The change data
    * @param options   - Additional options to configure the change application.
    * @returns A Promise resolving to either a record of Actor-data overrides made or void
+   * @remarks Foundry does not observe the return value; returned Promises are neither awaited nor handled.
    */
   type ChangeHandler = (
     targetDoc: ChangeTarget,
     change: ChangeData,
     options?: ApplyChangeFieldOptions,
-  ) => Promise<AnyMutableObject | void>;
+  ) => MaybePromise<AnyMutableObject | void>;
 
   /**
    * A function to render a stringified HTMLLIElement in the changes tab of {@linkcode ActiveEffectConfig}
@@ -1272,6 +1271,11 @@ declare namespace ActiveEffect {
   interface ApplyChangeFieldOptions extends ApplyChangeOptions {
     /** The field: if not supplied, it will be retrieved from the supplied Document. */
     field?: fields.DataField.Any | undefined;
+  }
+
+  interface ApplyChangeFieldOptionsFor<Field extends fields.DataField.Any | undefined> extends ApplyChangeOptions {
+    /** The field: if not supplied, it will be retrieved from the supplied Document. */
+    field?: Field | undefined;
   }
 
   /** Contextual information for use in an expiry-event determination. */
@@ -1481,6 +1485,11 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     context?: ActiveEffect.PrepareDurationContext,
   ): ActiveEffect.Duration;
 
+  override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
+    pack?: foundry.documents.collections.CompendiumCollection.Any | null,
+    options?: Options,
+  ): ClientDocument.ToCompendiumReturnType<"ActiveEffect", Options>;
+
   /**
    * Determine whether a change from this ActiveEffect should be applied during the current phase. Systems and modules
    * may override this method to introduce additional conditions under which a change is applied.
@@ -1515,7 +1524,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   static applyChangeField<Field extends fields.DataField.Any | undefined = undefined>(
     targetDoc: ActiveEffect.ChangeTarget,
     change: ActiveEffect.ChangeData,
-    options?: ActiveEffect.ApplyChangeFieldOptions & { field?: Field },
+    options?: ActiveEffect.ApplyChangeFieldOptionsFor<Field>,
   ): ActiveEffect.ApplyFieldReturn<Field>;
 
   /**
@@ -1867,7 +1876,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  #ActiveEffect: true;
+  static #ActiveEffect: true;
 }
 
 export default ActiveEffect;
