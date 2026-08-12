@@ -7,6 +7,7 @@ import type {
   PoolRollParseNode,
   RollParseArg,
   RollParseNode,
+  RollParseOffset,
   StringParseNode,
 } from "./_types.d.mts";
 
@@ -47,55 +48,66 @@ declare class RollParser {
 
   /**
    * Handle a dice term.
-   * @param number - The number of dice.
-   * @param faces - The number of die faces or a string denomination like "c" or "f".
+   * @param number    - The number of dice.
+   * @param faces     - The number of die faces or a string denomination like "c" or "f".
    * @param modifiers - The matched modifiers string.
-   * @param flavor - Associated flavor text.
-   * @param formula - The original matched text.
-   * @returns
-   * @internal
+   * @param flavor    - Associated flavor text.
+   * @param formula   - The original matched text.
+   * @param offset    - The position of the matched term in the formula string.
+   *
+   * @privateRemarks The grammar's `Constant` rule yields a plain number, not a `NumericRollParseNode`, and `faces` is
+   *   not optional there, so Foundry's `@param` types for both are wrong.
    */
   protected _onDiceTerm(
-    number: NumericRollParseNode | ParentheticalRollParseNode | null,
-    faces: string | NumericRollParseNode | ParentheticalRollParseNode | null,
+    number: number | ParentheticalRollParseNode | null,
+    faces: string | number | ParentheticalRollParseNode,
     modifiers: string | null,
     flavor: string | null,
     formula: string,
+    offset: RollParseOffset,
   ): DiceRollParseNode;
 
   /**
    * Handle a numeric term.
    * @param number - The number.
    * @param flavor - Associated flavor text.
-   * @internal
+   * @param offset - The position of the matched term in the formula string.
+   *
+   * @remarks `flavor` is `null` unless the term is annotated, as in `5[fire]`.
+   * @privateRemarks Foundry's `@param` says `string`; the grammar's optional `Flavor` rule yields `null`.
    */
-  protected _onNumericTerm(number: number, flavor: string): NumericRollParseNode;
+  protected _onNumericTerm(number: number, flavor: string | null, offset: RollParseOffset): NumericRollParseNode;
 
   /**
    * Handle a math term.
-   * @param fn - The Math function.
-   * @param head - The first term.
-   * @param tail - Zero or more additional terms.
-   * @param flavor - Associated flavor text.
+   * @param fn      - The Math function.
+   * @param head    - The first term.
+   * @param tail    - Zero or more additional terms.
+   * @param flavor  - Associated flavor text.
    * @param formula - The original matched text.
-   * @internal
+   * @param offset  - The position of the matched term in the formula string.
+   *
+   * @remarks `head` is `null` for a call with no arguments, as in `min()`;
+   * and `flavor` is `null` unless the term is annotated, as in `max(1,2)[cold]`.
+   * @privateRemarks Foundry's `@param` tags for both say non-nullable.
    */
   protected _onFunctionTerm(
     fn: string,
-    head: RollParseNode,
+    head: RollParseNode | null,
     tail: RollParseNode[],
-    flavor: string,
+    flavor: string | null,
     formula: string,
+    offset: RollParseOffset,
   ): FunctionRollParseNode;
 
   /**
    * Handle a pool term.
-   * @param head - The first term.
-   * @param tail - Zero or more additional terms.
+   * @param head      - The first term.
+   * @param tail      - Zero or more additional terms.
    * @param modifiers - The matched modifiers string.
-   * @param flavor - Associated flavor text.
-   * @param formula - The original matched text.
-   * @internal
+   * @param flavor    - Associated flavor text.
+   * @param formula   - The original matched text.
+   * @param offset    - The position of the matched term in the formula string.
    */
   protected _onPoolTerm(
     head: RollParseNode,
@@ -103,23 +115,30 @@ declare class RollParser {
     modifiers: string | null,
     flavor: string | null,
     formula: string,
+    offset: RollParseOffset,
   ): PoolRollParseNode;
 
   /**
    * Handle a parenthetical.
-   * @param term - The inner term.
-   * @param flavor - Associated flavor text.
+   * @param term    - The inner term.
+   * @param flavor  - Associated flavor text.
    * @param formula - The original matched text.
-   * @internal
+   * @param offset  - The position of the matched term in the formula string.
    */
-  protected _onParenthetical(term: RollParseNode, flavor: string | null, formula: string): ParentheticalRollParseNode;
+  protected _onParenthetical(
+    term: RollParseNode,
+    flavor: string | null,
+    formula: string,
+    offset: RollParseOffset,
+  ): ParentheticalRollParseNode;
 
   /**
    * Handle some string that failed to be classified.
-   * @param term - The term.
+   * @param term   - The term.
    * @param flavor - Associated flavor text.
+   * @param offset - The position of the matched term in the formula string.
    */
-  protected _onStringTerm(term: string, flavor: string | null): StringParseNode;
+  protected _onStringTerm(term: string, flavor: string | null, offset: RollParseOffset): StringParseNode;
 
   /**
    * Collapse multiple additive operators into a single one.
