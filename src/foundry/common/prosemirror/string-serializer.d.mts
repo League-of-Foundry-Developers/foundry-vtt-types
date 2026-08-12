@@ -1,5 +1,5 @@
-import type { InexactPartial } from "#utils";
-import type { DOMOutputSpec, Fragment, Mark, Schema } from "prosemirror-model";
+import type { DOMOutputSpec, Fragment, Mark, Node, Schema } from "prosemirror-model";
+import type StringNode from "../utils/string-node.d.mts";
 
 /**
  * A class responsible for serializing a ProseMirror document into a string of HTML.
@@ -20,7 +20,7 @@ declare class StringSerializer {
   /**
    * Create a StringNode from a ProseMirror DOMOutputSpec.
    * @param spec   - The specification.
-   * @param inline - Whether this is a block or inline node. (default: `true`)
+   * @param inline - Whether this is a block or inline node.
    * @returns An object describing the outer node, and a reference to the child node where content should be appended, if applicable.
    * @remarks `inline` gets passed to `new StringNode`, where it has a default of `true`
    */
@@ -29,21 +29,22 @@ declare class StringSerializer {
   /**
    * Serialize a ProseMirror fragment into an HTML string.
    * @param fragment - The ProseMirror fragment, a collection of ProseMirror nodes.
-   * @param target   - The target to append to. Not required for the top-level invocation. (default: `new StringNode()`)
+   * @param target   - The target to append to. Not required for the top-level invocation.
    * @returns A DOM tree representation as a StringNode.
    */
-  serializeFragment(fragment: Fragment, target?: StringNode): StringNode;
+  serializeFragment(fragment: Fragment, target?: undefined): StringNode;
+  serializeFragment<Target extends StringNode.Any>(fragment: Fragment, target: Target): Target;
 
   /**
    * Convert a ProseMirror node representation to a StringNode.
    * @param node - The ProseMirror node.
    */
-  protected _toStringNode(node: Node): StringNode;
+  protected _toStringNode(node: Node): StringNode.Any;
 
   /**
    * Convert a ProseMirror mark representation to a StringNode.
    * @param mark   - The ProseMirror mark.
-   * @param inline - Does the mark appear in an inline context? (default: `true`)
+   * @param inline - Does the mark appear in an inline context?
    * @remarks `inline` gets passed to {@linkcode _specToStringNode}, which forwards to `new StringNode`, where it has a default of `true`
    */
   protected _serializeMark(mark: Mark, inline?: boolean): StringSerializer.SpecToStringNodeReturn;
@@ -67,73 +68,9 @@ declare namespace StringSerializer {
   type MarkOutput = (mark: Mark, inline: boolean) => DOMOutputSpec;
 
   interface SpecToStringNodeReturn {
-    outer: StringNode;
-    content?: StringNode | undefined;
+    outer: StringNode.Any;
+    content?: StringNode.Any | undefined;
   }
 }
 
-/**
- * A class that behaves like a lightweight DOM node, allowing children to be appended. Serializes to an HTML string.
- */
-declare class StringNode {
-  /**
-   * @param tag    - The tag name. If none is provided, this node's children will not be wrapped in an outer tag.
-   * @param attrs  - The tag attributes. (default: `{}`)
-   * @param inline - Whether the node appears inline or as a block. (default: `true`)
-   */
-  constructor(tag?: string, attrs?: Record<string, string>, inline?: boolean);
-
-  /**
-   * The tag name.
-   * @remarks `defineProperty`'d at construction, `writable: false`
-   */
-  readonly tag: string | undefined;
-
-  /**
-   * The tag attributes.
-   * @remarks `defineProperty`'d at construction, `writable: false`
-   */
-  readonly attrs: Record<string, string> | undefined;
-
-  /**
-   * Whether the node appears inline or as a block.
-   */
-  get inline(): boolean;
-
-  /**
-   * Append a child to this string node.
-   * @param child - The child node or string.
-   * @throws If attempting to append a child to a void element.
-   */
-  appendChild(child: StringNode | string): void;
-
-  /**
-   * Serialize the StringNode structure into a single string.
-   * @param spaces - The number of spaces to use for indentation (maximum 10). If this value is a string,
-   * that string is used as indentation instead (or the first 10 characters if it is longer). (default: `0`)
-   */
-  toString(spaces?: string | number, options?: StringNode.ToStringOptions): string;
-
-  #StringNode: true;
-}
-
-declare namespace StringNode {
-  /** @internal */
-  interface _ToStringOptions {
-    /**
-     * @internal
-     * @defaultValue `0`
-     */
-    _depth: number;
-
-    /**
-     * @internal
-     * @defaultValue `false`
-     */
-    _inlineParent: boolean;
-  }
-
-  interface ToStringOptions extends InexactPartial<_ToStringOptions> {}
-}
-
-export { StringSerializer as default, StringNode };
+export default StringSerializer;

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { Schema, DOMParser, DOMSerializer, NodeSpec, MarkSpec } from "prosemirror-model";
+import type { Schema, DOMSerializer, NodeSpec, MarkSpec } from "prosemirror-model";
 import type { Step } from "prosemirror-transform";
 import type { EditorView } from "prosemirror-view";
 import { keymap } from "prosemirror-keymap";
@@ -15,9 +15,9 @@ import * as transform from "prosemirror-transform";
 import * as list from "prosemirror-schema-list";
 import * as chat from "../../../../src/foundry/common/prosemirror/chat/_module.mts";
 import DisclosureWidget from "../../../../src/foundry/common/prosemirror/schema/disclosure.mts";
+import DOMParser from "../../../../src/foundry/common/prosemirror/dom-parser.mts";
 import type { nodes, marks } from "../../../../src/foundry/common/prosemirror/schema.d.mts";
 
-// Import necessary as this is otherwise inaccessible.
 import type { parseHTMLString, serializeHTMLString } from "../../../../src/foundry/common/prosemirror/util.d.mts";
 
 expectTypeOf(foundry.prosemirror.commands).toEqualTypeOf<typeof commands>();

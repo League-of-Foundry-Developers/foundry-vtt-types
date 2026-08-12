@@ -5,7 +5,7 @@ import type ProseMirrorMenu from "../menu.d.mts";
  * A ProseMirror menu implementation specialized for the chat editor.
  */
 declare class ChatMenuPlugin extends ProseMirrorMenu {
-  static key: PluginKey;
+  static override key: PluginKey;
 
   override render(): this;
 
@@ -15,6 +15,8 @@ declare class ChatMenuPlugin extends ProseMirrorMenu {
    * Spawn a dialog for editing the message's source HTML.
    */
   protected _editSource(): void;
+
+  #ChatMenuPlugin: true;
 }
 
 export default ChatMenuPlugin;

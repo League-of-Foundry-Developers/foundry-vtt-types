@@ -1,5 +1,5 @@
 import type { Schema } from "prosemirror-model";
-import type { Plugin } from "prosemirror-state";
+import type { Plugin, PluginKey } from "prosemirror-state";
 
 declare abstract class ProseMirrorPlugin {
   /**
@@ -10,19 +10,25 @@ declare abstract class ProseMirrorPlugin {
   constructor(schema: Schema);
 
   /**
-   * The schema to build the plugin against.
-   * @remarks `defineProperty`'d in construction, and without the property existing prior, it defaults to `writable: false`
+   * The ProseMirror schema to build the plugin against.
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly schema: Schema;
 
   /**
    * Build the plugin.
-   * @param schema - The ProseMirror schema to build the plugin against.
+   * @param schema  - The ProseMirror schema to build the plugin against.
    * @param options - Additional options to pass to the plugin.
    * @abstract
-   * @remarks Throws if not overridden
+   * @throws If not overridden.
    */
   static build(schema: Schema, options: never): Plugin;
+
+  /**
+   * A unique key for this plugin that can be used to identify a plugin instance in any given editor.
+   */
+  static get key(): PluginKey;
 }
 
 export default ProseMirrorPlugin;
