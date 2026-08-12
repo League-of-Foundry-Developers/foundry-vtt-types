@@ -19,6 +19,7 @@ import type {
   MaybeArray,
   ToMethod,
   Coalesce,
+  UnionToIntersection,
 } from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -1509,23 +1510,7 @@ declare namespace SchemaField {
   /** @internal */
   type _AddUpdateKeys<T> = PrettifyType<
     {
-      // The usage of `ForcedReplacement.CreateReturn<T[K]>` over `ForcedReplacement<T[K]>` is the
-      // most ergonomic option because even though it means the types disallows
-      // `new foundry.data.operators.ForcedReplacement(...)` in some places Foundry accepts.
-      //
-      // This is because hooks and other places consuming an `UpdateData` almost certainly want
-      // `ForcedReplacement.CreateReturn<T[K]>` which is guaranteed post-cleaning. This version
-      // adds a proxy such that `forcedReplacement.prop` gives the updated value instead of
-      // requiring `forcedReplacement.get().prop`.
-      //
-      // Besides it's not a major loss to disallow `new foundry.data.operators.ForcedReplacement(...)`
-      // because the expected way to make updates uses the `_replace` global which already calls
-      // `create`. Bifurcating the type to support `new foundry.data.operators.ForcedReplacement(...)`
-      // in the input is therefore deemed unnecessary.
-      [K in keyof T]:
-        | T[K]
-        | foundry.data.operators.ForcedDeletion
-        | foundry.data.operators.ForcedReplacement.CreateReturn<T[K]>;
+      [K in keyof T]: _UpdateValue<T[K]>;
     } & {
       [K in keyof T as K extends string ? (T[K] extends undefined ? `-=${K}` : never) : never]?: null;
     } & {
@@ -1534,6 +1519,29 @@ declare namespace SchemaField {
       [K in keyof T as K extends string ? `==${K}` : never]?: T[K];
     }
   >;
+
+  /**
+   * The usage of `ForcedReplacement.CreateReturn<T[K]>` over `ForcedReplacement<T[K]>` is the
+   * most ergonomic option because even though it means the types disallows
+   * `new foundry.data.operators.ForcedReplacement(...)` in some places Foundry accepts.
+   *
+   * This is because hooks and other places consuming an `UpdateData` almost certainly want
+   * `ForcedReplacement.CreateReturn<T[K]>` which is guaranteed post-cleaning. This version
+   * adds a proxy such that `forcedReplacement.prop` gives the updated value instead of
+   * requiring `forcedReplacement.get().prop`.
+   *
+   * Besides it's not a major loss to disallow `new foundry.data.operators.ForcedReplacement(...)`
+   * because the expected way to make updates uses the `_replace` global which already calls
+   * `create`. Bifurcating the type to support `new foundry.data.operators.ForcedReplacement(...)`
+   * in the input is therefore deemed unnecessary.
+   *
+   * @internal
+   */
+  type _UpdateValue<T> =
+    | T
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    | (foundry.data.operators.ForcedDeletion & UnionToIntersection<T extends object ? { [K in keyof T]?: never } : {}>)
+    | foundry.data.operators.ForcedReplacement.CreateReturn<T>;
 
   /**
    * Gets the initialized version of a schema. This means a

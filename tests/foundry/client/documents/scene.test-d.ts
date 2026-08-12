@@ -56,7 +56,7 @@ class MySceneDocumentSubclass extends Scene {
         for (const d of changes) {
           expectTypeOf(d.name).toEqualTypeOf<
             | foundry.data.operators.ForcedDeletion
-            | foundry.data.operators.ForcedReplacement<string | null | undefined>
+            | foundry.data.operators.ForcedReplacement.CreateReturn<string | null | undefined>
             | string
             | null
             | undefined

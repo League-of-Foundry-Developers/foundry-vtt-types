@@ -95,8 +95,9 @@ declare namespace ForcedReplacement {
   interface Any extends AnyForcedReplacement {}
   interface AnyConstructor extends Identity<typeof AnyForcedReplacement> {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- we want it to collapse on intersection
-  type CreateReturn<Value> = ForcedReplacement<Value> & (Value extends object ? Value : {});
+  type CreateReturn<Value> =
+    | (Value extends object ? ForcedReplacement<Value> & Value : never)
+    | ([Exclude<Value, object>] extends [never] ? never : ForcedReplacement<Exclude<Value, object>>);
 
   interface ReconstructionObject<Value> extends DataFieldOperator.ReconstructionObject<Value> {
     [OPERATOR_IDENTIFIER]: "ForcedReplacement";
