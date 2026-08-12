@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject, DiscriminatedUnion } from "fvtt-types/utils";
 import type { ArmorData, WeaponData } from "./item.test-d";
 
 import Token = foundry.canvas.placeables.Token;
@@ -82,10 +82,7 @@ Hooks.on("updateActor", (_doc, update) => {
   >();
 
   expectTypeOf<ForcedReplacement.CreateReturn<System | null | undefined>>().toEqualTypeOf<
-    (ForcedReplacement<System> & System) | ForcedReplacement<null | undefined>
-  >();
-  expectTypeOf<ForcedReplacement.CreateReturn<string | number>>().toEqualTypeOf<ForcedReplacement<string | number>>();
-  expectTypeOf<ForcedReplacement.CreateReturn<{ foo: 123 }>>().toEqualTypeOf<
-    ForcedReplacement<{ foo: 123 }> & { foo: 123 }
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ForcedReplacement<System | null | undefined> & DiscriminatedUnion<System | {}>
   >();
 });

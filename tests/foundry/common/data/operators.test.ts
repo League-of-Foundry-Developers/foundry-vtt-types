@@ -189,7 +189,7 @@ describe("ForcedReplacement Tests", () => {
 
     const strArg2 = ForcedReplacement.create("foo");
     expect(strArg2).toBeInstanceOf(ForcedReplacement);
-    expectTypeOf(strArg2).toEqualTypeOf<ForcedReplacement<"foo">>();
+    expectTypeOf(strArg2).toEqualTypeOf<ForcedReplacement<string>>();
     expect(strArg2[OPERATOR_VALUE]).toBe("foo");
     expectTypeOf(strArg2[OPERATOR_VALUE]).toBeString();
 

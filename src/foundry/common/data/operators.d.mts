@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DiscriminatedUnion, Identity, NonObject } from "#utils";
 
 /**
  * A symbol used to reference the operator value which ensures it does not collide with a proxied key of that value.
@@ -95,9 +95,9 @@ declare namespace ForcedReplacement {
   interface Any extends AnyForcedReplacement {}
   interface AnyConstructor extends Identity<typeof AnyForcedReplacement> {}
 
-  type CreateReturn<Value> =
-    | (Value extends object ? ForcedReplacement<Value> & Value : never)
-    | ([Exclude<Value, object>] extends [never] ? never : ForcedReplacement<Exclude<Value, object>>);
+  type CreateReturn<Value> = ForcedReplacement<Value> &
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    DiscriminatedUnion<Value extends NonObject ? {} : Value & {}>;
 
   interface ReconstructionObject<Value> extends DataFieldOperator.ReconstructionObject<Value> {
     [OPERATOR_IDENTIFIER]: "ForcedReplacement";
