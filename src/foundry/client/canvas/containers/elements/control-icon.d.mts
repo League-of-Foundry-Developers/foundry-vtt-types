@@ -8,6 +8,12 @@ import { PreciseText } from "#client/canvas/containers/_module.mjs";
 declare class ControlIcon extends RenderFlagsMixin<typeof PIXI.Container>(PIXI.Container) {
   constructor(options?: ControlIcon.Options);
 
+  /**
+   * @deprecated "Passing null for tint to the ControlIcon constructor is deprecated. Pass 0xFFFFFF or undefined
+   * instead." (since v14, until v16)
+   */
+  constructor(options: ControlIcon.DeprecatedConstructorOptions);
+
   /** @defaultValue `"INTERFACE"` */
   static override RENDER_FLAG_PRIORITY: RenderFlags.Priority;
 
@@ -121,9 +127,8 @@ declare namespace ControlIcon {
     /**
      * The icon tint
      * @defaultValue `0xFFFFFF`
-     * @remarks Passing `null` is deprecated since v14 and will be removed in v16. Pass `0xFFFFFF` or `undefined` instead.
      */
-    tint?: PIXI.ColorSource | null | undefined;
+    tint?: PIXI.ColorSource | undefined;
 
     /**
      * The border color
@@ -136,6 +141,16 @@ declare namespace ControlIcon {
      * @defaultValue `0`
      */
     elevation?: number | undefined;
+  }
+
+  /**
+   * Options for the deprecated {@linkcode ControlIcon} constructor overload, where `tint` may be `null`.
+   *
+   * @remarks A `null` tint logs a compatibility warning and is replaced with `0xFFFFFF`, the default.
+   */
+  interface DeprecatedConstructorOptions extends Omit<Options, "tint"> {
+    /** The icon tint */
+    tint: null;
   }
 
   /** @deprecated since v14 */

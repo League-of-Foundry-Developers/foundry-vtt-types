@@ -17,7 +17,6 @@ describe("ControlIcon tests", () => {
       size: 64,
       tint: [0.2, 0.3, 0.4],
     });
-    new ControlIcon({ tint: null });
   });
 
   const controlIcon = new ControlIcon();
@@ -64,6 +63,11 @@ describe("ControlIcon tests", () => {
   });
 
   test("Deprecated compatibility surface", () => {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    new ControlIcon({ tint: null });
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    new ControlIcon({ texture: "path/to/image.webp", size: 64, tint: null });
+
     expectTypeOf(
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       controlIcon.refresh({
