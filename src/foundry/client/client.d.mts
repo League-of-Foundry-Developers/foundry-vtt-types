@@ -1517,6 +1517,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode PrimaryParticleEffect} which is now namespaced under {@linkcode foundry.canvas.primary.PrimaryParticleEffect}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
 
   /**

@@ -38,22 +38,18 @@ describe("PrimaryCanvasObjectMixin tests", () => {
     expectTypeOf(myPCO.zIndex).toBeNumber();
     myPCO.zIndex = 20; // Setter
 
+    expectTypeOf(myPCO.inPrimary).toBeBoolean();
+    expectTypeOf(myPCO["_primaryIndex"]).toBeNumber();
     expectTypeOf(myPCO["_onAdded"](primaryCanvasGroup)).toBeVoid();
     expectTypeOf(myPCO["_onAdded"](primaryCanvasContainer)).toBeVoid();
+    expectTypeOf(myPCO["_onAddedPrimary"]()).toBeVoid();
     expectTypeOf(myPCO["_onRemoved"](primaryCanvasGroup)).toBeVoid();
     expectTypeOf(myPCO["_onRemoved"](primaryCanvasContainer)).toBeVoid();
+    expectTypeOf(myPCO["_onRemovedPrimary"]()).toBeVoid();
+    expectTypeOf(myPCO["_onElevationChange"]()).toBeVoid();
 
     expectTypeOf(myPCO.shouldRenderDepth).toBeBoolean();
 
     expectTypeOf(myPCO.renderDepthData(renderer)).toEqualTypeOf<void>();
-  });
-
-  test("Deprecated", () => {
-    // deprecated since v12, until v14
-
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPCO.document).toEqualTypeOf<foundry.canvas.placeables.PlaceableObject.AnyCanvasDocument | null>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPCO.updateBounds()).toBeVoid();
   });
 });
