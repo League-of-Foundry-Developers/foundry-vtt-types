@@ -1,24 +1,10 @@
 import { describe, expectTypeOf, test } from "vitest";
 
-import CanvasTransformMixin = foundry.canvas.primary.CanvasTransformMixin;
 import PrimaryCanvasObjectMixin = foundry.canvas.primary.PrimaryCanvasObjectMixin;
 
 declare const renderer: PIXI.Renderer;
 declare const primaryCanvasGroup: foundry.canvas.groups.PrimaryCanvasGroup;
 declare const primaryCanvasContainer: foundry.canvas.primary.PrimaryCanvasContainer;
-
-describe("CanvasTransformMixin tests", () => {
-  const myCT = new (CanvasTransformMixin(PIXI.Container))();
-  test("Miscellaneous", () => {
-    expectTypeOf(myCT.canvasBounds).toEqualTypeOf<PIXI.Rectangle>();
-    expectTypeOf(myCT["_canvasBounds"]).toEqualTypeOf<PIXI.Bounds>();
-    expectTypeOf(myCT["_canvasBoundsID"]).toBeNumber();
-    expectTypeOf(myCT.updateCanvasTransform()).toBeVoid;
-    expectTypeOf(myCT["_onCanvasTransformUpdate"]()).toBeVoid();
-    expectTypeOf(myCT["_onCanvasBoundsUpdate"]()).toBeVoid();
-    expectTypeOf(myCT.containsCanvasPoint({ x: 1000, y: 1000 })).toEqualTypeOf<boolean>();
-  });
-});
 
 describe("PrimaryCanvasObjectMixin tests", () => {
   const myPCO = new (PrimaryCanvasObjectMixin(PIXI.Container))();
