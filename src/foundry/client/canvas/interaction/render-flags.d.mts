@@ -151,7 +151,8 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
 declare namespace RenderFlags {
   type Key<Flags extends object> = Extract<ConcreteKeys<Flags>, string>;
 
-  type Cleared<Flags extends object> = Partial<Record<Key<Flags>, true>>;
+  /** @remarks Core only ever produces `true`. */
+  type Cleared<Flags extends object> = Partial<Record<Key<Flags>, boolean>>;
 
   type Changes<Flags extends object> = Partial<Record<Key<Flags>, boolean | null | undefined>>;
 

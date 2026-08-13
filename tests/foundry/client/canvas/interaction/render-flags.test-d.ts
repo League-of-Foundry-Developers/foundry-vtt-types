@@ -29,7 +29,7 @@ describe("RenderFlags tests", () => {
     expectTypeOf(renderFlags.has("someFlag")).toBeBoolean();
     expectTypeOf(renderFlags.delete("someFlag")).toBeBoolean();
     expectTypeOf(renderFlags.set({ someFlag: true, otherFlag: null })).toBeVoid();
-    expectTypeOf(renderFlags.clear()).toEqualTypeOf<Partial<Record<"someFlag" | "otherFlag", true>>>();
+    expectTypeOf(renderFlags.clear()).toEqualTypeOf<Partial<Record<"someFlag" | "otherFlag", boolean>>>();
 
     renderFlags.add("someFlag");
 
@@ -62,7 +62,7 @@ declare const declaredFlags: RenderFlags<DeclaredFlags>;
 
 describe("RenderFlags from a subclass RENDER_FLAGS interface", () => {
   test("Flags", () => {
-    expectTypeOf(declaredFlags.clear()).toEqualTypeOf<Partial<Record<"redraw" | "refresh", true>>>();
+    expectTypeOf(declaredFlags.clear()).toEqualTypeOf<Partial<Record<"redraw" | "refresh", boolean>>>();
     expectTypeOf(declaredFlags.handle("redraw")).toBeBoolean();
     expectTypeOf(declaredFlags.set({ redraw: true, refresh: null })).toBeVoid();
 
