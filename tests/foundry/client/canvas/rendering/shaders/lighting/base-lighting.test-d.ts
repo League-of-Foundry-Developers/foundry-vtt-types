@@ -12,6 +12,3 @@ expectTypeOf(AdaptiveLightingShader.getShaderTechniques("background")).toEqualTy
 expectTypeOf((myALS = AdaptiveLightingShader.create())).toEqualTypeOf<AdaptiveLightingShader>();
 
 expectTypeOf(myALS.update()).toEqualTypeOf<void>();
-// deprecated since 12 until 14 but a second instance test was desired
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myALS.getDarknessPenalty(0.8, -0.2)).toEqualTypeOf<number>();

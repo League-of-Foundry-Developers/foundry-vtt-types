@@ -6,7 +6,7 @@ import type AdaptiveIlluminationShader from "../illumination-lighting.mjs";
  * Sunburst animation illumination shader
  */
 declare class SunburstIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace SunburstIlluminationShader {
@@ -18,7 +18,7 @@ declare namespace SunburstIlluminationShader {
  * Sunburst animation coloration shader
  */
 declare class SunburstColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace SunburstColorationShader {

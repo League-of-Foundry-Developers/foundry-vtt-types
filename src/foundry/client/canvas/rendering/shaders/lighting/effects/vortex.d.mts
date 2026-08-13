@@ -11,7 +11,7 @@ declare class VortexColorationShader extends AdaptiveColorationShader {
    */
   static override forceDefaultColor: boolean;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace VortexColorationShader {
@@ -23,7 +23,7 @@ declare namespace VortexColorationShader {
  * Vortex animation coloration shader
  */
 declare class VortexIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace VortexIlluminationShader {

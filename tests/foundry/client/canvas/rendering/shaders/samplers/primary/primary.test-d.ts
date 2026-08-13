@@ -13,16 +13,16 @@ declare const someTex: PIXI.Texture;
 
 expectTypeOf(PrimaryBaseSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
 expectTypeOf(PrimaryBaseSamplerShader.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(PrimaryBaseSamplerShader.fragmentShader).toEqualTypeOf<string>();
 expectTypeOf(PrimaryBaseSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
   PrimaryBaseSamplerShader["_packInterleavedGeometry"](
     {
       _texture: someTex,
-      elevation: 0,
+      occlusionElevation: 0,
       fadeOcclusion: 0,
       indices: someU16Array,
       radialOcclusion: 0,
+      surfaceOcclusion: 0,
       uvs: someF32Array,
       vertexData: someF32Array,
       visionOcclusion: 0,

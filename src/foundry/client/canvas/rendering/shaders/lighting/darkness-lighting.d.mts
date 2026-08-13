@@ -20,7 +20,7 @@ declare class AdaptiveDarknessShader extends AdaptiveLightingShader {
    * @defaultValue
    * ```js
    * {
-   *   intensity: 5, // overwritten by LightData.cleanData().intensity in a subsequent static init block
+   *   intensity: 5,
    *   color: Color.from("#8651d5").rgb,
    *   screenDimensions: [1, 1],
    *   time: 0,
@@ -44,7 +44,7 @@ declare class AdaptiveDarknessShader extends AdaptiveLightingShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Shader final
@@ -59,9 +59,9 @@ declare class AdaptiveDarknessShader extends AdaptiveLightingShader {
   /**
    * Memory allocations for the Adaptive Background Shader
    */
-  static SHADER_HEADER: string;
+  static get SHADER_HEADER(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace AdaptiveDarknessShader {

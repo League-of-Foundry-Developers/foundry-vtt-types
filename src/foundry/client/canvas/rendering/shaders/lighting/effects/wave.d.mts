@@ -6,7 +6,7 @@ import type AdaptiveColorationShader from "../coloration-lighting.mjs";
  * Wave animation illumination shader
  */
 declare class WaveIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace WaveIlluminationShader {
@@ -18,7 +18,7 @@ declare namespace WaveIlluminationShader {
  * Wave animation coloration shader
  */
 declare class WaveColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace WaveColorationShader {

@@ -15,6 +15,7 @@ declare class VisibilityFilter extends AbstractBaseMaskFilter {
    * {
    *    exploredColor: [1, 1, 1],
    *    unexploredColor: [0, 0, 0],
+   *    backgroundColor: [0, 0, 0],
    *    screenDimensions: [1, 1],
    *    visionTexture: null,
    *    primaryTexture: null,
@@ -24,17 +25,18 @@ declare class VisibilityFilter extends AbstractBaseMaskFilter {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
+  // fake type override
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms,
+    uniforms?: AbstractBaseShader.Uniforms,
     options?: VisibilityFilter.FragmentShaderOptions,
   ): FixedInstanceType<ThisType>;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader(options: VisibilityFilter.FragmentShaderOptions): string;
+  protected static override _createFragmentShader(options: VisibilityFilter.FragmentShaderOptions): string;
 
   /**
    * Set the blur strength
@@ -42,7 +44,8 @@ declare class VisibilityFilter extends AbstractBaseMaskFilter {
    */
   set blur(value: number);
 
-  get blur(): number;
+  /** @remarks Returns `undefined` if canvas blur was disabled when this filter was constructed. */
+  get blur(): number | undefined;
 
   override apply(
     filterManager: PIXI.FilterSystem,

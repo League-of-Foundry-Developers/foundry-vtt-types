@@ -13,16 +13,18 @@ declare const someTex: PIXI.Texture;
 
 expectTypeOf(DepthSamplerShader.pausable).toEqualTypeOf<boolean>();
 expectTypeOf(DepthSamplerShader.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(DepthSamplerShader.fragmentShader).toEqualTypeOf<string>();
 expectTypeOf(DepthSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
   DepthSamplerShader["_packInterleavedGeometry"](
     {
       _texture: someTex,
-      elevation: 0,
+      depthElevation: 0,
+      occlusionElevation: 0,
       fadeOcclusion: 0,
       indices: someU16Array,
       radialOcclusion: 0,
+      restrictionState: 0,
+      surfaceOcclusion: 0,
       textureAlphaThreshold: 0,
       uvs: someF32Array,
       vertexData: someF32Array,

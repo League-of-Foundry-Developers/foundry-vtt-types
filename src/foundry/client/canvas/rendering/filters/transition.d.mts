@@ -42,6 +42,8 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
    * ```js
    * {
    *   tintAlpha: [1, 1, 1, 1],
+   *   opaque: 0,
+   *   backgroundColor: [0, 0, 0, 1],
    *   targetTexture: null,
    *   progress: 0,
    *   rotation: 0,
@@ -53,11 +55,11 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   override apply(
     filterManager: PIXI.FilterSystem,
@@ -67,6 +69,7 @@ declare class TextureTransitionFilter extends AbstractBaseFilter {
   ): void;
 
   #TextureTransitionFilter: true;
+  static #TextureTransitionFilterStatic: true;
 }
 
 declare namespace TextureTransitionFilter {
