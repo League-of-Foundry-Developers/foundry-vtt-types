@@ -151,8 +151,10 @@ declare class BaseShader {
    */
   static GLSL1_COMPATIBILITY_FRAGMENT: string;
 
+  /** @ignore */
   protected static _fragmentShaderCompatibility(options?: AnyObject): string | undefined;
 
+  /** @ignore */
   protected static _vertexShaderCompatibility(options?: AnyObject): string | undefined;
 
   /**
