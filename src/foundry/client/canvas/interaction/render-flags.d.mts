@@ -25,7 +25,7 @@ declare class RenderFlagObject {
    * The ticker priority when RenderFlags of this class are handled.
    * Valid values are OBJECTS or PERCEPTION.
    * @defaultValue `"OBJECTS"`
-   * @remarks Must match a key of {@linkcode Canvas.pendingRenderFlags}
+   * @remarks `"INTERFACE"` is also valid. The value must match a key of {@linkcode Canvas.pendingRenderFlags}.
    */
   static RENDER_FLAG_PRIORITY: RenderFlags.Priority;
 
@@ -63,9 +63,7 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
    * The deprecation message is auto-generated unless message is passed with the options.
    * By default the message is logged only once.
    */
-  deprecated: {
-    message: string;
-  } & LogCompatibilityWarningOptions;
+  deprecated: RenderFlag.Deprecated;
 
   alias: boolean;
 }>;
@@ -79,6 +77,10 @@ declare interface RenderFlag<out Flags extends object, Key extends keyof Flags> 
 
 declare namespace RenderFlag {
   interface Any extends _RenderFlag<string> {}
+
+  interface Deprecated extends LogCompatibilityWarningOptions {
+    message?: string | undefined;
+  }
 }
 
 /**
@@ -90,7 +92,7 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
    * @param flags  - An object which defines the flags which are supported for tracking
    * @param config - Optional configuration
    */
-  constructor(flags: Flags, config?: RenderFlags.Config);
+  constructor(flags?: Flags, config?: RenderFlags.Config);
 
   /** @remarks `defineProperty`'d at construction with `enumerable: false, writable: false` and the value frozen. */
   readonly flags: Readonly<Flags>;
@@ -108,36 +110,58 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
    * The update priority when these render flags are applied.
    * Valid options are `"OBJECTS"` or `"PERCEPTION"`.
    *
-   * @remarks `defineProperty`'d at construction with `enumerable: false, writable: false`
+   * @remarks `"INTERFACE"` is also valid; `canvas.pendingRenderFlags` has a queue under that key too.
+   * `defineProperty`'d at construction with `enumerable: false, writable: false`.
    */
   readonly priority: RenderFlags.Priority;
+
+  // An unregistered flag throws in `RenderFlags##set`, so `Set<string>`'s key is narrowed to this instance's flags.
+
+  // fake type override
+  override add(value: RenderFlags.Key<Flags>): this;
+
+  // fake type override
+  override delete(value: RenderFlags.Key<Flags>): boolean;
+
+  // fake type override
+  override has(value: RenderFlags.Key<Flags>): boolean;
 
   /**
    * @returns The flags which were previously set that have been cleared.
    */
-  clear(): Record<string, boolean>;
+  override clear(): RenderFlags.Cleared<Flags>;
 
   /**
    * Allow for handling one single flag at a time.
    * This function returns whether the flag needs to be handled and removes it from the pending set.
+   * @privateRemarks Foundry types `flag` as `string`; narrowed to the flags this instance was constructed with.
    */
-  handle(flag: string): boolean;
+  handle(flag: RenderFlags.Key<Flags>): boolean;
 
   /**
    * Activate certain flags, also toggling propagation and reset behaviors
    * @remarks Flags are only set if `true`, nullish values are discarded
+   * @privateRemarks Key narrowed to this instance's flags; value widened to the nullish values core passes.
    */
-  set(changes: Record<string, boolean | undefined | null>): void;
+  set(changes: RenderFlags.Changes<Flags>): void;
+
+  #RenderFlags: true;
 }
 
 declare namespace RenderFlags {
+  type Key<Flags extends object> = Extract<ConcreteKeys<Flags>, string>;
+
+  type Cleared<Flags extends object> = Partial<Record<Key<Flags>, true>>;
+
+  type Changes<Flags extends object> = Partial<Record<Key<Flags>, boolean | null | undefined>>;
+
   type ValidateFlags<Flags extends object> = {
     [K in keyof Flags]: MakeConform<Flags[K], _RenderFlag<Extract<Exclude<keyof Flags, K>, string>>>;
   };
 
   interface Config {
     /** The object which owns this RenderFlags instance */
-    object?: RenderFlagObject;
+    object?: RenderFlagObject | undefined;
 
     /**
      * The ticker priority at which these render flags are handled

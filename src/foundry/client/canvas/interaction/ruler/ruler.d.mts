@@ -1,7 +1,8 @@
-import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
+import type { DeepReadonly, FixedInstanceType, Identity, InexactPartial } from "#utils";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { BaseRuler } from "../_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * The default implementation of the Ruler.
@@ -33,7 +34,7 @@ declare class Ruler extends BaseRuler {
    * @remarks `Ruler##renderWaypointLabels` always starts by passing an empty object for `state`, but the parameter itself has no default
    */
   protected _getWaypointLabelContext(
-    waypoint: Ruler.Waypoint,
+    waypoint: DeepReadonly<Ruler.Waypoint>,
     state: Ruler.WaypointContextState,
   ): Ruler.WaypointContext | void;
 
@@ -41,17 +42,17 @@ declare class Ruler extends BaseRuler {
    * Get the style of the waypoint at the given waypoint.
    * @param waypoint - The waypoint
    * @returns The radius, color, and alpha of the waypoint
-   * @remarks `waypoint` is unused in core's implementation as of 13.346
+   * @remarks `waypoint` is unused in core's implementation as of 14.365
    */
-  protected _getWaypointStyle(waypoint: Ruler.Waypoint): Ruler.WaypointStyle;
+  protected _getWaypointStyle(waypoint: DeepReadonly<Ruler.Waypoint>): Ruler.WaypointStyle;
 
   /**
    * Get the style of the segment from the previous to the given waypoint.
    * @param waypoint - The waypoint
    * @returns The line width, color, and alpha of the segment
-   * @remarks `waypoint` is unused in core's implementation as of 13.346
+   * @remarks `waypoint` is unused in core's implementation as of 14.365
    */
-  protected _getSegmentStyle(waypoint: Ruler.Waypoint): Ruler.SegmentStyle;
+  protected _getSegmentStyle(waypoint: DeepReadonly<Ruler.Waypoint>): Ruler.SegmentStyle;
 
   /**
    * @deprecated "`Ruler#color` is deprecated. Use {@linkcode Ruler.user | Ruler#user#color} instead." (since v13, until v15)
@@ -80,7 +81,7 @@ declare namespace Ruler {
     interface AnyConstructor extends Identity<typeof AnyRuler> {}
   }
 
-  interface ImplementationClass extends Identity<CONFIG["Canvas"]["rulerClass"]> {}
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.rulerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface ConfigureOutlineReturn {
@@ -111,10 +112,10 @@ declare namespace Ruler {
     measurement: BaseGrid.MeasurePathResultWaypoint;
 
     /** The previous waypoint, if any. */
-    previous: Waypoint;
+    previous: Waypoint | null;
 
     /** The next waypoint, if any. */
-    next: Waypoint;
+    next: Waypoint | null;
   }
 
   /**
@@ -123,22 +124,32 @@ declare namespace Ruler {
    */
   interface WaypointContextState {
     /**
+     * @remarks Set `true` when the first waypoint is processed; until then,
+     * {@linkcode hasElevation} and {@linkcode previousElevation} are seeded rather than updated
+     */
+    initialized?: boolean | undefined;
+
+    /**
      * @remarks Gets set `true` the first time a waypoint has non-`0` elevation and remains `true` from then on, within
      * the context of a single `##renderWaypointLabels` call
      */
     hasElevation?: boolean | undefined;
+
+    /** @remarks The elevation of the previously processed waypoint, rounded to the nearest `0.01` */
+    previousElevation?: number | undefined;
+  }
+
+  interface WaypointAction {
+    icon: string;
   }
 
   interface WaypointContext {
-    action: string;
+    action: WaypointAction;
     cssClass: string;
     secret: boolean;
     units: string;
     uiScale: number;
-    position: {
-      x: number;
-      y: number;
-    };
+    position: Canvas.Point;
     distance: SegmentDistance;
     elevation: ElevationContext;
   }
@@ -157,7 +168,7 @@ declare namespace Ruler {
   }
 
   interface ElevationContext extends InexactPartial<_DeltaString> {
-    total: number;
+    total: string;
     icon: string;
     hidden: boolean;
   }

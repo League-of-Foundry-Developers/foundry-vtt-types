@@ -21,12 +21,31 @@ describe("RenderFlagsMixin tests", () => {
 
 describe("RenderFlags tests", () => {
   test("Flags", () => {
-    new RenderFlags(validFlags);
+    new RenderFlags();
+    const renderFlags = new RenderFlags(validFlags, { object: undefined, priority: "INTERFACE" });
+
+    expectTypeOf(renderFlags.priority).toEqualTypeOf<"OBJECTS" | "INTERFACE" | "PERCEPTION">();
+    expectTypeOf(renderFlags.handle("someFlag")).toBeBoolean();
+    expectTypeOf(renderFlags.has("someFlag")).toBeBoolean();
+    expectTypeOf(renderFlags.delete("someFlag")).toBeBoolean();
+    expectTypeOf(renderFlags.set({ someFlag: true, otherFlag: null })).toBeVoid();
+    expectTypeOf(renderFlags.clear()).toEqualTypeOf<Partial<Record<"someFlag" | "otherFlag", true>>>();
+
+    renderFlags.add("someFlag");
+
+    // @ts-expect-error "nonexistant" is not a registered flag.
+    renderFlags.handle("nonexistant");
+    // @ts-expect-error "nonexistant" is not a registered flag.
+    renderFlags.set({ nonexistant: true });
+    // @ts-expect-error "nonexistant" is not a registered flag.
+    renderFlags.add("nonexistant");
 
     // @ts-expect-error "nonexistant" is not a valid flag.
     new RenderFlags({ someFlag: { propagate: ["nonexistant"] }, otherFlag: {} });
 
     // @ts-expect-error a flag that propagates to itself doesn't make any sense.
     new RenderFlags({ selfReferential: { propagate: ["selfReferential"] } });
+
+    new RenderFlags({ deprecatedFlag: { deprecated: { since: 14, until: 16 } } });
   });
 });

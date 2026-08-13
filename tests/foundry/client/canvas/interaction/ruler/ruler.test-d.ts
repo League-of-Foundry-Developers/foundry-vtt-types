@@ -97,8 +97,18 @@ describe("Ruler tests", () => {
 
     expectTypeOf(ruler["_getWaypointLabelContext"](waypoint, {})).toEqualTypeOf<Ruler.WaypointContext | void>();
     expectTypeOf(
-      ruler["_getWaypointLabelContext"](waypoint, { hasElevation: true }),
+      ruler["_getWaypointLabelContext"](waypoint, {
+        initialized: true,
+        hasElevation: true,
+        previousElevation: 10,
+      }),
     ).toEqualTypeOf<Ruler.WaypointContext | void>();
+
+    expectTypeOf<Ruler.Waypoint["previous"]>().toEqualTypeOf<Ruler.Waypoint | null>();
+    expectTypeOf<Ruler.Waypoint["next"]>().toEqualTypeOf<Ruler.Waypoint | null>();
+    expectTypeOf<Ruler.WaypointContext["action"]>().toEqualTypeOf<{ icon: string }>();
+    expectTypeOf<Ruler.WaypointContext["position"]>().toEqualTypeOf<Canvas.Point>();
+    expectTypeOf<Ruler.ElevationContext["total"]>().toBeString();
 
     expectTypeOf(ruler["_getWaypointStyle"](waypoint)).toEqualTypeOf<Ruler.WaypointStyle>();
     expectTypeOf(ruler["_getSegmentStyle"](waypoint)).toEqualTypeOf<Ruler.SegmentStyle>();
