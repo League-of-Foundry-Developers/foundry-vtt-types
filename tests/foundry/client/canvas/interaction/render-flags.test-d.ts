@@ -49,3 +49,28 @@ describe("RenderFlags tests", () => {
     new RenderFlags({ deprecatedFlag: { deprecated: { since: 14, until: 16 } } });
   });
 });
+
+// The shape a subclass declares its `RENDER_FLAGS` in: the `string` index signature inherited from
+// `RenderFlagsMixin.RENDER_FLAGS` is not a flag, so it takes no part in validation or key narrowing.
+interface DeclaredFlags extends RenderFlagsMixin.RENDER_FLAGS {
+  redraw: foundry.canvas.interaction.RenderFlag<this, "redraw">;
+
+  refresh: foundry.canvas.interaction.RenderFlag<this, "refresh">;
+}
+
+declare const declaredFlags: RenderFlags<DeclaredFlags>;
+
+describe("RenderFlags from a subclass RENDER_FLAGS interface", () => {
+  test("Flags", () => {
+    expectTypeOf(declaredFlags.clear()).toEqualTypeOf<Partial<Record<"redraw" | "refresh", true>>>();
+    expectTypeOf(declaredFlags.handle("redraw")).toBeBoolean();
+    expectTypeOf(declaredFlags.set({ redraw: true, refresh: null })).toBeVoid();
+
+    declaredFlags.add("refresh");
+
+    // @ts-expect-error "nonexistant" is not a registered flag.
+    declaredFlags.handle("nonexistant");
+    // @ts-expect-error "nonexistant" is not a registered flag.
+    declaredFlags.set({ nonexistant: true });
+  });
+});

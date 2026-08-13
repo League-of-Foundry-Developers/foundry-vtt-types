@@ -155,8 +155,12 @@ declare namespace RenderFlags {
 
   type Changes<Flags extends object> = Partial<Record<Key<Flags>, boolean | null | undefined>>;
 
+  /**
+   * @privateRemarks The `string` index signature inherited from {@linkcode RenderFlagsMixin.RENDER_FLAGS} is not a
+   * flag, and validating it would demand `_RenderFlag<never>`; only the flags a subclass actually declares take part.
+   */
   type ValidateFlags<Flags extends object> = {
-    [K in keyof Flags]: MakeConform<Flags[K], _RenderFlag<Extract<Exclude<keyof Flags, K>, string>>>;
+    [K in ConcreteKeys<Flags>]: MakeConform<Flags[K], _RenderFlag<Extract<Exclude<ConcreteKeys<Flags>, K>, string>>>;
   };
 
   interface Config {

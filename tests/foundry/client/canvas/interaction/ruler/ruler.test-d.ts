@@ -27,6 +27,13 @@ describe("BaseRuler tests", () => {
     >();
     expectTypeOf(Ruler.canMeasure).toBeBoolean();
 
+    expectTypeOf(ruler.renderFlags).toEqualTypeOf<foundry.canvas.interaction.RenderFlags<Ruler.RENDER_FLAGS>>();
+    expectTypeOf(ruler.renderFlags.clear()).toEqualTypeOf<Partial<Record<"refresh", true>>>();
+    expectTypeOf(ruler.renderFlags.set({ refresh: true })).toBeVoid();
+
+    // @ts-expect-error An unregistered flag throws at runtime.
+    ruler.renderFlags.set({ redraw: true });
+
     expectTypeOf(ruler.user).toEqualTypeOf<User.Stored>();
     expectTypeOf(ruler.active).toBeBoolean();
     expectTypeOf(ruler.visible).toBeBoolean();
