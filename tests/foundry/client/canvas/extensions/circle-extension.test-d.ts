@@ -21,7 +21,9 @@ expectTypeOf(circle.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(circle.pointIsOn(somePoint)).toEqualTypeOf<boolean>();
 expectTypeOf(circle.pointIsOn(somePoint, 10e-6)).toEqualTypeOf<boolean>();
 
-expectTypeOf(circle.segmentIntersections(somePoint, { x: 50, y: 50 })).toEqualTypeOf<[Canvas.Point?, Canvas.Point?]>();
+expectTypeOf(
+  circle.segmentIntersections(somePoint, { x: 50, y: 50 }),
+).toEqualTypeOf<foundry.utils.LineCircleIntersectionPoints>();
 expectTypeOf(circle.pointAtAngle(Math.PI / 3)).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(circle.pointsBetween({ x: 100, y: 72 }, somePoint)).toEqualTypeOf<Canvas.Point[]>();
@@ -95,8 +97,12 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-// @ts-expect-error Can't pass `density` or `scalingFactor` on the WAC branch
-circle.intersectPolygon(somePoly, { weilerAtherton: true, density: 7, scalingFactor: CONST.CLIPPER_SCALING_FACTOR });
+// `density` is read on the WAC branch too: `combine` forwards its rest options to `Circle#pointsBetween`
+expectTypeOf(circle.intersectPolygon(somePoly, { density: 7 })).toEqualTypeOf<PIXI.Polygon>();
+expectTypeOf(circle.intersectPolygon(somePoly, { weilerAtherton: true, density: 7 })).toEqualTypeOf<PIXI.Polygon>();
+
+// @ts-expect-error Can't pass `scalingFactor` on the WAC branch
+circle.intersectPolygon(somePoly, { weilerAtherton: true, scalingFactor: CONST.CLIPPER_SCALING_FACTOR });
 
 expectTypeOf(
   circle.intersectPolygon(somePoly, {
@@ -114,18 +120,18 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-expectTypeOf(circle.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon>();
+expectTypeOf(circle.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(
   circle.intersectClipper(clipperPoints, {
     clipType: ClipperLib.ClipType.ctDifference,
     density: 17,
     scalingFactor: CONST.CLIPPER_SCALING_FACTOR,
   }),
-).toEqualTypeOf<PIXI.Polygon>();
+).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(
   circle.intersectClipper(clipperPoints, {
     clipType: undefined,
     density: undefined,
     scalingFactor: undefined,
   }),
-).toEqualTypeOf<PIXI.Polygon>();
+).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
