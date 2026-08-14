@@ -22,6 +22,11 @@ expectTypeOf(notifications.notify("Hello world", "error", { console: false })).t
   Notifications.Notification<"error">
 >();
 
+expectTypeOf(notifications.notify(new Error("Hello world"))).toEqualTypeOf<Notifications.Notification<"info">>();
+
+// @ts-expect-error Foundry stringifies an arbitrary object, but it is not accepted here; pass `obj.toString()`.
+notifications.notify({ message: "Hello world" });
+
 expectTypeOf(notifications.info("Hello world")).toEqualTypeOf<Notifications.Notification<"info">>();
 expectTypeOf(notifications.info("Hello world", { localize: true })).toEqualTypeOf<Notifications.Notification<"info">>();
 expectTypeOf(notifications.info("Hello world", { permanent: true })).toEqualTypeOf<
@@ -64,11 +69,10 @@ expectTypeOf(notifications.success("Hello world", { console: false })).toEqualTy
 
 const myNotification = notifications.notify("Hello World");
 
-// @ts-expect-error The returned object is meant to be read-only
-myNotification.id = 5;
-
 notifications.update(myNotification, { pct: 50 });
+notifications.update(myNotification);
 notifications.update(myNotification.id, { message: "Living on a Prayer" });
+myNotification.update();
 
 notifications.remove(myNotification);
 notifications.remove(myNotification.id);
