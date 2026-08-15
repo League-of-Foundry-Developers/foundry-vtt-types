@@ -1,7 +1,7 @@
 import type { EditorView } from "prosemirror-view";
 import type { Plugin } from "prosemirror-state";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { Schema } from "prosemirror-model";
+import type { Node, Schema } from "prosemirror-model";
 import type { AnyObject } from "#utils";
 
 export default ProseMirrorClickHandler;
@@ -12,8 +12,6 @@ export default ProseMirrorClickHandler;
 declare class ProseMirrorClickHandler extends ProseMirrorPlugin {
   /** @remarks `options` is unused */
   static override build(schema: Schema, options?: AnyObject): Plugin;
-
-  /* -------------------------------------------- */
 
   /**
    * Handle a click on the editor.
@@ -29,7 +27,7 @@ declare class ProseMirrorClickHandler extends ProseMirrorPlugin {
   protected _onClick(
     view: EditorView,
     pos: number,
-    node: globalThis.Node,
+    node: Node,
     nodePos: number,
     event: PointerEvent,
     direct: boolean,

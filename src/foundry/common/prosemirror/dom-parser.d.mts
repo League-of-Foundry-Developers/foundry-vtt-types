@@ -4,7 +4,9 @@ import type { FixedInstanceType } from "#utils";
 declare class DOMParser extends BaseDOMParser {
   override parse(dom: FixedInstanceType<typeof window.Node>, options?: ParseOptions): Node;
 
-  static override fromSchema(schema: Schema): BaseDOMParser;
+  static override fromSchema(schema: Schema): DOMParser;
+
+  #DOMParser: true;
 }
 
 export default DOMParser;

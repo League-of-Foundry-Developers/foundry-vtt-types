@@ -1,18 +1,18 @@
-import { Schema } from "prosemirror-model";
+import type { Schema } from "prosemirror-model";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import { EditorState, Plugin } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
+import type { EditorState, Plugin, PluginKey, PluginSpec } from "prosemirror-state";
+import type { EditorView } from "prosemirror-view";
 import type { AnyObject } from "#utils";
 
 /**
  * A class responsible for handling the display of automated link recommendations when a user highlights text in a
  * ProseMirror editor.
- * @remarks This class is never exported or available directly, {@linkcode ProseMirrorHighlightMatchesPlugin.build} creates a
- * plugin to return by passing a `view` options property that will instantiate one of these.
+ * @privateRemarks This models an unexported runtime class whose type is exposed as
+ * {@linkcode ProseMirrorHighlightMatchesPlugin.PossibleMatchesTooltip}.
  */
 declare class _PossibleMatchesTooltip {
   /**
-   * @param view - The editor view
+   * @param view - The editor view.
    */
   constructor(view: EditorView);
 
@@ -21,21 +21,14 @@ declare class _PossibleMatchesTooltip {
    */
   tooltip: HTMLElement | undefined;
 
-  update(view: EditorView, lastState: EditorState): Promise<void>;
+  /**
+   * Update the tooltip based on changes to the selected text.
+   * @param view      - The editor view.
+   * @param lastState - The previous state of the document.
+   */
+  update(view: EditorView, lastState: EditorState | null): Promise<void>;
 
-  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
-  _createTooltip(position: never, text: never, options: never): never;
-
-  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
-  _updateTooltip(html: never): never;
-
-  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
-  _deactivateTooltip(): never;
-
-  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
-  _findMatches(text: never): never;
-
-  #PossibleMatchesTooltip;
+  #PossibleMatchesTooltip: true;
 }
 
 /**
@@ -45,24 +38,27 @@ declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
   /**
    * @param schema  - The ProseMirror schema.
    * @param options - Additional options to configure the plugin's behaviour.
-   * @remarks Foundry types the options as {@linkcode ProseMirrorMenu.ConstructionOptions},
-   * but they're unused other than being stored in `this.options`. Suspected copy & paste error.
+   * @privateRemarks Foundry documents `ProseMirrorMenuOptions`, but at runtime only stores the object.
    */
   constructor(schema: Schema, options?: AnyObject);
 
+  options: AnyObject;
+
   /** @remarks `options` is unused */
-  static override build(
-    schema: Schema,
-    options?: AnyObject,
-  ): Plugin<ProseMirrorHighlightMatchesPlugin.HighlightMatchesPluginSpec>;
+  static override build(schema: Schema, options?: AnyObject): ProseMirrorHighlightMatchesPlugin.HighlightMatchesPlugin;
 }
 
 declare namespace ProseMirrorHighlightMatchesPlugin {
   interface PossibleMatchesTooltip extends _PossibleMatchesTooltip {}
 
-  interface HighlightMatchesPluginSpec {
+  interface HighlightMatchesPluginSpec extends PluginSpec<undefined> {
+    key: PluginKey<undefined>;
     view(editorView: EditorView): PossibleMatchesTooltip;
     isHighlightMatchesPlugin: true;
+  }
+
+  interface HighlightMatchesPlugin extends Plugin<undefined> {
+    readonly spec: HighlightMatchesPluginSpec;
   }
 }
 
