@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybeArray } from "#utils";
 import type { DataField, SchemaField, DataSchema } from "#common/data/fields.d.mts";
 import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
 
@@ -204,6 +204,13 @@ declare abstract class DataModel<
   static LOCALIZATION_PREFIXES: string[];
 
   /**
+   * Traverse the data model instance, obtaining the DataField definition for a field of a particular property.
+   * @param key - A property key like ["abilities", "strength"] or "abilities.strength"
+   * @returns The corresponding DataField definition for that field, or undefined
+   */
+  getFieldForProperty(key: MaybeArray<string>): DataField.Unknown | undefined;
+
+  /**
    * Initialize the source data for a new `DataModel` instance.
    * One-time migrations and initial cleaning operations are applied to the source data.
    * @param data    - The candidate source data from which the model will be constructed
@@ -221,17 +228,59 @@ declare abstract class DataModel<
    * Clean a data source object to conform to a specific provided schema.
    * @param source  - The source data object
    * @param options - Additional options which are passed to field cleaning methods
+   * @param _state  - Internal options used during cleaning recursion
    * @returns The cleaned source data, which is the same object as the `source` argument
    * @privateRemarks `object` is used because {@linkcode CreateData} isn't assignable to {@linkcode AnyMutableObject}, which would otherwise
    * be used here for both
    */
-  static cleanData(source?: object, options?: DataField.CleanOptions): object;
+  static cleanData(source?: object, options?: DataField.CleanOptions, _state?: DataField.UpdateState): object;
+
+  /**
+   * Apply preliminary model-specific cleaning rules or alter cleaning options or initial state.
+   * Subclass models may implement this function to configure the cleaning workflow.
+   * Any mutations to data, options, or _state parameters are performed inplace.
+   * @param data    - The provided input data for cleaning
+   * @param options - Options which define how cleaning should be performed
+   * @param _state  - The data cleaning state
+   */
+  protected static _preCleanData(data: object, options: DataField.CleanOptions, _state: DataField.UpdateState): void;
+
+  /**
+   * Apply final custom model-specific cleaning rules after data schema fields are cleaned.
+   * Subclass models can implement this function as an ideal place to apply custom imputation or cleaning.
+   * Cleaning must be done in-place rather than returning a different object.
+   * @param data    - The provided input data for cleaning
+   * @param options - Options which define how cleaning was performed
+   * @param _state  - The data cleaning state
+   * @returns The original data object, with cleaning performed inplace
+   */
+  protected static _cleanData(data: object, options: DataField.CleanOptions, _state: DataField.UpdateState): void;
+
+  /**
+   * Resolve a previously-initialized embedded DataModel that corresponds to an element being cleaned. Called during
+   * recursive data cleaning when a parent field contains EmbeddedDataField elements, or a single nested DataModel
+   * field (such as a TypeDataField), in order to propagate the inner DataModel into _state.model for the recursive
+   * clean operation. A single (non-collection) inner model resolves to itself; collection elements are matched by
+   * stable _id when one is present, otherwise by positional index.
+   *
+   * Subclasses may override when data preparation reshapes the field property in a way that the default cannot
+   * interpret, for example wrapping the container in a non-iterable type or replacing it with a derived view.
+   * @param field   - The schema field being recursed into.
+   * @param element - The element being processed
+   * @param options - The cleaning options in effect for the operation.
+   * @returns The corresponding previously-initialized inner DataModel, or null.
+   */
+  protected _getInnerModel(
+    field: DataField.Any,
+    element?: DataModel.GetInnerModelElement,
+    options?: DataField.CleanOptions,
+  ): DataModel.Any | null;
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
    * @yields {@linkcode DataField}
    */
-  protected static _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
+  protected _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.
@@ -304,6 +353,49 @@ declare abstract class DataModel<
   ): SchemaField.UpdateData<Schema>;
 
   /**
+   * Prepare the state object that is transacted through an updateSource operation.
+   * @param changes - New values which should be applied to the data model
+   * @param options - Options which determine how the new data is merged
+   * @param _state  - Data model update state
+   */
+  protected _preUpdateSource(
+    changes: SchemaField.UpdateData<Schema>,
+    options: DataModel.UpdateOptions,
+    _state: DataField.UpdateState,
+  ): void;
+
+  /**
+   * Perform the first step of the DataModel#_updateSource workflow which applies changes to a copy of model source
+   * data and records the resulting diff.
+   * @param copy    - A mutable copy of model source data
+   * @param changes - New values which should be applied to the data model
+   * @param options - Options which determine how the new data is merged
+   * @param _state  - Data cleaning state
+   * @returns The resulting difference applied to source data
+   * @throws A failure if the proposed change is invalid
+   */
+  protected _updateDiff(
+    copy: SchemaField.SourceData<Schema>,
+    changes: SchemaField.UpdateData<Schema>,
+    options: DataModel.UpdateOptions,
+    _state: DataField.UpdateState,
+  ): SchemaField.UpdateData<Schema>;
+
+  /**
+   * Perform the second step of the DataModel#_updateSource workflow which applies the prepared diff to the model.
+   * @param copy    - The prepared copy of source data with changes applied
+   * @param diff    - The differential changes that were applied to source
+   * @param options - Options which determine how the new data is merged
+   * @param _state  - Data cleaning state which might include instructions for final commit
+   */
+  protected _updateCommit(
+    copy: SchemaField.SourceData<Schema>,
+    diff: SchemaField.UpdateData<Schema>,
+    options: DataModel.UpdateOptions,
+    _state: DataField.UpdateState,
+  ): void;
+
+  /**
    * Copy and transform the `DataModel` into a plain object.
    * Draw the values of the extracted object from the data source (by default) otherwise from its transformed values.
    * @param source - Draw values from the underlying data source rather than transformed values (default: `true`)
@@ -361,24 +453,26 @@ declare abstract class DataModel<
   static fromJSON(json: string): DataModel.Any;
 
   /**
-   * Migrate candidate source data for this `DataModel` which may require initial cleaning or transformations.
-   * @param source - The candidate source data from which the model will be constructed
+   * Wrap data migration in a try/catch which attempts it safely
+   * @param source  - The candidate source data from which the model will be constructed
+   * @param options - Additional options for how the field is cleaned
    * @returns Migrated source data, which is the same object as the `source` argument
    * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
    * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
    * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
-  static migrateData(source: object): object;
+  static migrateDataSafe(source: object, options?: DataField.CleanOptions): object;
 
   /**
-   * Wrap data migration in a try/catch which attempts it safely
-   * @param source - The candidate source data from which the model will be constructed
+   * Migrate candidate source data for this `DataModel` which may require initial cleaning or transformations.
+   * @param source  - The candidate source data from which the model will be constructed
+   * @param options - Additional options for how the field is cleaned
    * @returns Migrated source data, which is the same object as the `source` argument
    * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
    * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
    * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    */
-  static migrateDataSafe(source: object): object;
+  static migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to
@@ -388,6 +482,11 @@ declare abstract class DataModel<
    * @returns Data with added backwards-compatible properties, which is the same object as the `data` argument
    */
   static shimData(data: object, options?: DataModel.ShimDataOptions): object;
+
+  /**
+   * @deprecated since v14
+   */
+  static _initializationOrder(): never;
 }
 
 declare namespace DataModel {
@@ -567,6 +666,15 @@ declare namespace DataModel {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtraConstructionOptions extends object = {},
   > = _ConstructionContext<ExtraConstructionOptions>;
+
+  /** @see {@linkcode DataModel._getInnerModel} */
+  interface GetInnerModelElement {
+    /** The cleaned candidate value for the element being processed. */
+    value?: unknown;
+
+    /** The positional index of the element within a container, if applicable. */
+    index?: number | undefined;
+  }
 
   /** @internal */
   interface _UpdateOptions {

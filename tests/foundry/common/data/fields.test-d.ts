@@ -469,13 +469,25 @@ test("ShapesField options and concrete shape types", () => {
     | foundry.data.RectangleShapeData
     | foundry.data.CircleShapeData
     | foundry.data.EllipseShapeData
+    | foundry.data.EmanationShapeData
+    | foundry.data.ConeShapeData
+    | foundry.data.RingShapeData
+    | foundry.data.LineShapeData
     | foundry.data.PolygonShapeData
+    | foundry.data.TokenShapeData
+    | foundry.data.GridShapeData
   >();
   expectTypeOf<
     | foundry.data.RectangleShapeData
     | foundry.data.CircleShapeData
     | foundry.data.EllipseShapeData
+    | foundry.data.EmanationShapeData
+    | foundry.data.ConeShapeData
+    | foundry.data.RingShapeData
+    | foundry.data.LineShapeData
     | foundry.data.PolygonShapeData
+    | foundry.data.TokenShapeData
+    | foundry.data.GridShapeData
   >().toExtend<fields.ShapesField.InitializedElementType>();
   expectTypeOf<fields.ShapesField.InitializedElementType["_index"]>().toEqualTypeOf<number | undefined>();
 });

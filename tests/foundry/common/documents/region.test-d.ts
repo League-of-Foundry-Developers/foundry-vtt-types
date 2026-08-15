@@ -103,7 +103,13 @@ expectTypeOf(myRegion.shapes).toEqualTypeOf<
     | ({ type: "rectangle" } & foundry.data.RectangleShapeData)
     | ({ type: "circle" } & foundry.data.CircleShapeData)
     | ({ type: "ellipse" } & foundry.data.EllipseShapeData)
+    | ({ type: "emanation" } & foundry.data.EmanationShapeData)
+    | ({ type: "cone" } & foundry.data.ConeShapeData)
+    | ({ type: "ring" } & foundry.data.RingShapeData)
+    | ({ type: "line" } & foundry.data.LineShapeData)
     | ({ type: "polygon" } & foundry.data.PolygonShapeData)
+    | ({ type: "token" } & foundry.data.TokenShapeData)
+    | ({ type: "grid" } & foundry.data.GridShapeData)
   >
 >();
 expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
