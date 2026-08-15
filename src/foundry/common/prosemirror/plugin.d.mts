@@ -21,6 +21,7 @@ declare abstract class ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema to build the plugin against.
    * @param options - Additional options to pass to the plugin.
    * @abstract
+   * @remarks
    * @throws If not overridden.
    */
   static build(schema: Schema, options: never): Plugin;

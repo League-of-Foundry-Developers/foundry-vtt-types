@@ -21,6 +21,7 @@ declare abstract class SchemaDefinition {
   /**
    * Schema attributes.
    * @abstract
+   * @remarks
    * @throws If not overridden.
    */
   static get attrs(): Record<string, AttributeSpec>;
@@ -30,6 +31,7 @@ declare abstract class SchemaDefinition {
    * @param el - The HTML element.
    * @returns Returns false if the HTML element is not appropriate for this schema node, otherwise returns its attributes.
    * @abstract
+   * @remarks
    * @throws If not overridden.
    */
   static getAttrs(el: HTMLElement): SchemaDefinition.GetAttrsReturn;
@@ -38,6 +40,7 @@ declare abstract class SchemaDefinition {
    * Convert a ProseMirror Node back into an HTML element.
    * @param node - The ProseMirror node.
    * @abstract
+   * @remarks
    * @throws If not overridden.
    */
   static toDOM(node: Node): SchemaDefinition.DOMOutputSpecUnion;

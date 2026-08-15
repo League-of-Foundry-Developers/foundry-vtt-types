@@ -32,6 +32,12 @@ expectTypeOf(stringSerializer.serializeFragment(fragment)).toEqualTypeOf<StringN
 declare const target: StringNode.Any;
 expectTypeOf(stringSerializer.serializeFragment(fragment, target)).toEqualTypeOf<StringNode.Any>();
 
+declare const tagged: StringNode<"div">;
+expectTypeOf(stringSerializer.serializeFragment(fragment, tagged)).toEqualTypeOf<StringNode<"div">>();
+
+declare const maybeTarget: StringNode<"div"> | undefined;
+expectTypeOf(stringSerializer.serializeFragment(fragment, maybeTarget)).toExtend<StringNode.Any>();
+
 declare const node: Node;
 expectTypeOf(stringSerializer["_toStringNode"](node)).toEqualTypeOf<StringNode.Any>();
 

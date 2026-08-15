@@ -1,3 +1,4 @@
+import type { Coalesce } from "#utils";
 import type { DOMOutputSpec, Fragment, Mark, Node, Schema } from "prosemirror-model";
 import type StringNode from "../utils/string-node.d.mts";
 
@@ -29,11 +30,13 @@ declare class StringSerializer {
   /**
    * Serialize a ProseMirror fragment into an HTML string.
    * @param fragment - The ProseMirror fragment, a collection of ProseMirror nodes.
-   * @param target   - The target to append to. Not required for the top-level invocation.
+   * @param target   - The target to append to. Not required for the top-level invocation. (default: `new StringNode()`)
    * @returns A DOM tree representation as a StringNode.
    */
-  serializeFragment(fragment: Fragment, target?: undefined): StringNode;
-  serializeFragment<Target extends StringNode.Any>(fragment: Fragment, target: Target): Target;
+  serializeFragment<Target extends StringNode.Any | undefined = undefined>(
+    fragment: Fragment,
+    target?: Target,
+  ): Coalesce<Target, StringNode>;
 
   /**
    * Convert a ProseMirror node representation to a StringNode.
