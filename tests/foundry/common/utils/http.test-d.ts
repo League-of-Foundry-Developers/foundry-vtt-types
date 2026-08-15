@@ -48,6 +48,13 @@ expectTypeOf(
 // @ts-expect-error `allowStatus` is not accepted here
 fu.fetchJsonWithTimeout("/", partialRequestInit, { allowStatus: [404] });
 
+// `allowStatus` is the only difference between the two options interfaces
+expectTypeOf<fu.FetchWithTimeoutOptions["allowStatus"]>().toEqualTypeOf<number[] | undefined>();
+expectTypeOf<keyof fu.FetchJSONWithTimeoutOptions>().toEqualTypeOf<"timeoutMs" | "onTimeout">();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf<fu.TimeoutOptions>().toEqualTypeOf<fu.FetchJSONWithTimeoutOptions>();
+
 expectTypeOf(fu.srcExists("some/path/to/img.png")).toEqualTypeOf<Promise<boolean>>();
 
 const httpError = new fu.HttpError("File Not Found", 404, "boooooooo");
