@@ -250,10 +250,18 @@ declare abstract class DiceTerm extends RollTerm {
    * Construct a term of this type given a matched regular expression array.
    * @param match - The matched regular expression array
    * @returns The constructed term
+   * @remarks
+   * @throws If the matched denomination is not registered to {@linkcode CONFIG.Dice.terms} as a
+   * {@linkcode DiceTerm} subclass
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
 
-  /** Construct a DiceTerm from parser information. */
+  /**
+   * Construct a DiceTerm from parser information.
+   * @remarks
+   * @throws If the node's denomination is not registered to {@linkcode CONFIG.Dice.terms} as a
+   * {@linkcode DiceTerm} subclass
+   */
   static override fromParseNode(node: DiceRollParseNode): DiceTerm;
 
   /* -------------------------------------------- */

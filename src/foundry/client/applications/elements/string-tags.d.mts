@@ -10,7 +10,7 @@ import type { InexactPartial } from "#utils";
  * A custom HTML element which allows for arbitrary assignment of a set of string tags.
  * This element may be used directly or subclassed to impose additional validation or functionality.
  *
- * @remarks When creating via markup, values can be set either as attribute or as the `innerText` of the element; see
+ * @remarks When creating via markup, values can be set either as attribute or as the `textContent` of the element; see
  * {@linkcode HTMLStringTagsElement._initializeTags | #_initializeTags} for examples.
  *
  * @privateRemarks Unlike {@linkcode HTMLDocumentTagsElement}, there's no `single` option here, so no method ever returns/takes
@@ -52,10 +52,10 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<string[] | 
   override set value(value: string[] | Set<string>);
 
   /**
-   * Initialize innerText or an initial value attribute of the element as a comma-separated list of currently assigned
+   * Initialize textContent or an initial value attribute of the element as a comma-separated list of currently assigned
    * string tags.
    * @remarks In practice this will always be passed a value by the constructor, but when instantiated by the DOM it'll receive `undefined`,
-   * and for all non-array values it falls back to the `value` attribute, or `this.innerText` if there isn't one.
+   * and for all non-array values it falls back to the `value` attribute, or `this.textContent` if there isn't one.
    *
    * @example
    * Attribute
@@ -64,7 +64,7 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<string[] | 
    * ```
    *
    * @example
-   * `innerText`
+   * `textContent`
    * ```html
    * <string-tags>tag-one,tag two,TagThree</string-tags>
    * ```

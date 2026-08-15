@@ -4,6 +4,7 @@ import formFields = foundry.applications.fields;
 import dataFields = foundry.data.fields;
 import HTMLMultiSelectElement = foundry.applications.elements.HTMLMultiSelectElement;
 import HTMLMultiCheckboxElement = foundry.applications.elements.HTMLMultiCheckboxElement;
+import HTMLAutocompleteTagsElement = foundry.applications.elements.HTMLAutocompleteTagsElement;
 import { type FormSelectOption, setInputAttributes } from "#client/applications/forms/fields.mjs";
 
 const {
@@ -198,9 +199,12 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     // return type depends on `type`
     expectTypeOf(createMultiSelectInput({ ...config, type: undefined })).toEqualTypeOf<HTMLMultiSelectElement>();
     expectTypeOf(createMultiSelectInput({ ...config, type: "multi" })).toEqualTypeOf<HTMLMultiSelectElement>();
-    // "single" makes no sense here, but all that matters is `=== "checkboxes"` or not
+    // "single" makes no sense here, but any type other than "autocomplete" or "checkboxes" falls through
     expectTypeOf(createMultiSelectInput({ ...config, type: "single" })).toEqualTypeOf<HTMLMultiSelectElement>();
     expectTypeOf(createMultiSelectInput({ ...config, type: "checkboxes" })).toEqualTypeOf<HTMLMultiCheckboxElement>();
+    expectTypeOf(
+      createMultiSelectInput({ ...config, type: "autocomplete" }),
+    ).toEqualTypeOf<HTMLAutocompleteTagsElement>();
 
     // `value` takes primitives or iterables of `string | number`
     expectTypeOf(createMultiSelectInput({ ...config, value: 2 })).toEqualTypeOf<HTMLMultiSelectElement>();

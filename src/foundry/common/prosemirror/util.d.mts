@@ -1,6 +1,6 @@
-import type { Node, Schema, Slice } from "prosemirror-model";
-import type { StringNode } from "./string-serializer.d.mts";
+import type { Fragment, Node, Schema, Slice } from "prosemirror-model";
 import type { InexactPartial } from "#utils";
+import type StringNode from "../utils/string-node.d.mts";
 
 /**
  * Use the DOM and ProseMirror's DOMParser to construct a ProseMirror document state from an HTML string. This cannot be
@@ -17,7 +17,7 @@ export declare function parseHTMLString(htmlString: string, schema?: Schema): No
  * @param doc     - The ProseMirror document.
  * @param options - Additional options to configure serialization behavior.
  */
-declare function serializeHTMLString(doc: Node, options?: serializeHTMLString.Options): string;
+declare function serializeHTMLString(doc: Node | Fragment, options?: serializeHTMLString.Options): string;
 
 declare namespace serializeHTMLString {
   /**

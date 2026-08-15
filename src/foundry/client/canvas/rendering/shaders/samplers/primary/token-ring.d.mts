@@ -12,6 +12,11 @@ declare class TokenRingSamplerShader extends PrimaryBaseSamplerShader {
    */
   static override classPluginName: string;
 
+  /**
+   * @defaultValue `false`
+   */
+  static override pausable: false;
+
   static override batchGeometry: typeof PIXI.BatchGeometry;
 
   /**

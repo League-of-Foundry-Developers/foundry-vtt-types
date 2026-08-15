@@ -19,21 +19,21 @@ declare class AdaptiveColorationShader extends AdaptiveLightingShader {
   /**
    * Memory allocations for the Adaptive Coloration Shader
    */
-  static SHADER_HEADER: string;
+  static get SHADER_HEADER(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
    * ```js
    * {
-   *   technique: 1,     // overwritten by LightData.cleanData().coloration in a subsequent static init block
-   *   contrast: 0,      // overwritten by LightData.cleanData().contrast in a subsequent static init block
-   *   shadows: 0,       // overwritten by LightData.cleanData().shadows in a subsequent static init block
-   *   saturation: 0,    // overwritten by LightData.cleanData().saturation in a subsequent static init block
+   *   technique: 1,
+   *   contrast: 0,
+   *   shadows: 0,
+   *   saturation: 0,
    *   colorationAlpha: 1,
-   *   intensity: 5,     // overwritten by LightData.cleanData().intensity in a subsequent static init block
-   *   attenuation: 0.5, // overwritten by LightData.cleanData().attenuation in a subsequent static init block
+   *   intensity: 5,
+   *   attenuation: 0.5,
    *   ratio: 0.5,
    *   color: [1, 1, 1],
    *   time: 0,
@@ -56,7 +56,7 @@ declare class AdaptiveColorationShader extends AdaptiveLightingShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Flag whether the coloration shader is currently required.

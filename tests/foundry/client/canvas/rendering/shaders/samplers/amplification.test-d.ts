@@ -8,7 +8,8 @@ expectTypeOf(myASS).toEqualTypeOf<AmplificationSamplerShader>();
 
 expectTypeOf(AmplificationSamplerShader.defaultUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();
 expectTypeOf(AmplificationSamplerShader.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(AmplificationSamplerShader.fragmentShader).toEqualTypeOf<string>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(AmplificationSamplerShader.fragmentShader()).toEqualTypeOf<string>();
 expectTypeOf(AmplificationSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
 expectTypeOf(myASS.paused).toEqualTypeOf<boolean>;
 expectTypeOf(myASS.pluginName).toEqualTypeOf<string | null>();

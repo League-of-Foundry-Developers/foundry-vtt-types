@@ -10,7 +10,7 @@ declare class BaselineIlluminationSamplerShader extends BaseSamplerShader {
    */
   static override classPluginName: string | null;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -23,7 +23,7 @@ declare class BaselineIlluminationSamplerShader extends BaseSamplerShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
 }

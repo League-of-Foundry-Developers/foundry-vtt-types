@@ -22,7 +22,6 @@ declare abstract class Ping extends PIXI.Container {
    */
   protected _color: Color;
 
-  /** @remarks Passing `options: boolean` is disallowed, as the body does `options.children = true` */
   override destroy(options?: PIXI.IDestroyOptions): void;
 
   /**
@@ -49,7 +48,7 @@ declare namespace Ping {
   type ConfiguredStyles = keyof RemoveIndexSignatures<typeof CONFIG.Canvas.pings.styles>;
 
   /** @internal */
-  interface _ConstructorOptions {
+  interface _ConstructorOptionsBase {
     /**
      * The duration of the animation in milliseconds.
      * @defaultValue `900`
@@ -68,18 +67,21 @@ declare namespace Ping {
     size: number;
 
     /**
-     * The color of the ping graphic.
-     * @defaultValue `"#ff6400"`
-     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
-     */
-    color: Color.Source;
-
-    /**
      * The name for the ping animation to pass to {@linkcode CanvasAnimation.animate}.
      *
      * See {@linkcode CanvasAnimation.AnimateOptions.name}
      */
     name: PropertyKey | undefined;
+  }
+
+  /** @internal */
+  interface _ConstructorOptions extends _ConstructorOptionsBase {
+    /**
+     * The color of the ping graphic.
+     * @defaultValue `"#ff6400"`
+     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
+     */
+    color: Color.Source;
   }
 
   /** @privateRemarks Some properties can't be `undefined`, so `IntentionalPartial`. */

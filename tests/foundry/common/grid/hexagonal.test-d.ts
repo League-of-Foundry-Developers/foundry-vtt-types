@@ -429,6 +429,8 @@ describe("HexagonalGrid Tests", () => {
 
     expectTypeOf(grid.getCircle(point2D, 30)).toEqualTypeOf<Canvas.Point[]>();
 
+    expectTypeOf(grid.getEllipse(point2D, 30, 50, 45)).toEqualTypeOf<Canvas.Point[]>();
+
     expectTypeOf(grid.calculateDimensions(2000, 3000, 0.25)).toEqualTypeOf<BaseGrid.Dimensions>();
   });
 
@@ -497,43 +499,3 @@ describe("HexagonalGrid Tests", () => {
     expectTypeOf(HexagonalGrid.cubeDistance(cube2D, cube2D)).toBeNumber();
   });
 });
-// declare const config: foundry.grid.HexagonalGrid.Configuration;
-
-// const grid = new foundry.grid.HexagonalGrid(config);
-
-// expectTypeOf(grid.columns).toEqualTypeOf<boolean>();
-// expectTypeOf(grid.even).toEqualTypeOf<boolean>();
-
-// declare const coords: foundry.grid.HexagonalGrid.Coordinates;
-// declare const p: Canvas.Point;
-// declare const bounds: Canvas.Rectangle;
-// expectTypeOf(grid.getOffset(coords)).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset>();
-// expectTypeOf(grid.getOffsetRange(bounds)).toEqualTypeOf<foundry.grid.HexagonalGrid.OffsetRange>();
-// expectTypeOf(grid.getAdjacentOffsets(coords)).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset[]>();
-// expectTypeOf(grid.testAdjacency(coords, coords)).toEqualTypeOf<boolean>();
-// expectTypeOf(grid.getShiftedOffset(coords, 1)).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset>();
-// expectTypeOf(grid.getShiftedPoint(p, 1)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.getCube(coords)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-// expectTypeOf(grid.getAdjacentCubes(coords)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube[]>();
-// expectTypeOf(grid.getShiftedCube(coords, 1)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-// expectTypeOf(grid.getTopLeftPoint(coords)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.getCenterPoint(coords)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.getShape()).toEqualTypeOf<Canvas.Point[]>();
-// expectTypeOf(grid.getVertices(coords)).toEqualTypeOf<Canvas.Point[]>();
-
-// declare const behavior: foundry.grid.HexagonalGrid.SnappingBehavior;
-// declare const cube: foundry.grid.HexagonalGrid.Cube2D;
-// declare const offset: foundry.grid.HexagonalGrid.Offset;
-
-// expectTypeOf(grid.getSnappedPoint(p, behavior)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.calculateDimensions(1, 2, 3)).toEqualTypeOf<foundry.grid.HexagonalGrid.Dimensions>();
-// expectTypeOf(grid.getDirectPath([coords])).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset[]>();
-// expectTypeOf(grid.getTranslatedPoint(p, 1, 1)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.getCircle(p, 1)).toEqualTypeOf<Canvas.Point[]>();
-// expectTypeOf(grid.pointToCube(p)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-// expectTypeOf(grid.cubeToPoint(cube)).toEqualTypeOf<Canvas.Point>();
-// expectTypeOf(grid.offsetToCube(offset)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-// expectTypeOf(grid.cubeToOffset(cube)).toEqualTypeOf<foundry.grid.HexagonalGrid.Offset>();
-
-// expectTypeOf(foundry.grid.HexagonalGrid.cubeRound(cube)).toEqualTypeOf<foundry.grid.HexagonalGrid.Cube>();
-// expectTypeOf(foundry.grid.HexagonalGrid.cubeDistance(cube, cube)).toEqualTypeOf<number>();

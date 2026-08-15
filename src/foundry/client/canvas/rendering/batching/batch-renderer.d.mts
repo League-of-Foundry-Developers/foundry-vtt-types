@@ -73,6 +73,8 @@ declare class BatchRenderer extends PIXI.BatchRenderer {
    * @returns True if the plugin exists, false otherwise.
    */
   static hasPlugin(name: string): boolean;
+
+  #BatchRenderer: true;
 }
 
 declare namespace BatchRenderer {

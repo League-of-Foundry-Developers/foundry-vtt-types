@@ -10,10 +10,11 @@ declare class MyWeatherShader extends AbstractWeatherShader<{
 const AWS = MyWeatherShader;
 let myAWS;
 
-expectTypeOf(AWS.fragmentShader).toEqualTypeOf<string | AbstractBaseShader.FragmentShaderFunction>();
-expectTypeOf(AWS.createProgram()).toEqualTypeOf<PIXI.Program>();
-expectTypeOf(AWS.vertexShader).toEqualTypeOf<string>();
 expectTypeOf((myAWS = AWS.create())).toEqualTypeOf<AbstractWeatherShader>();
+
+expectTypeOf(AWS.defaultUniforms).toEqualTypeOf<AbstractWeatherShader.CommonUniforms>();
+expectTypeOf(AWS.commonUniforms).toEqualTypeOf<AbstractWeatherShader.CommonUniforms>();
+expectTypeOf(AWS["_createVertexShader"]()).toEqualTypeOf<string>();
 
 expectTypeOf(myAWS.speed).toEqualTypeOf<number>();
 expectTypeOf(myAWS["_preRender"]).toEqualTypeOf<AbstractBaseShader.PreRenderFunction>();

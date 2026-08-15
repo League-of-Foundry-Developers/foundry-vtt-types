@@ -44,8 +44,12 @@ for (const [key, edge] of myCanvasEdges) {
   expectTypeOf(edge).toEqualTypeOf<Edge>();
 }
 
+expectTypeOf(myCanvasEdges.identifyIntersections()).toEqualTypeOf<void>();
+
 // Deprecated since v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myCanvasEdges.inititalize()).toEqualTypeOf<void>();
+expectTypeOf(myCanvasEdges.inititalize()).toEqualTypeOf<never>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(myCanvasEdges.initialize()).toEqualTypeOf<void>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myCanvasEdges.refresh()).toEqualTypeOf<void>();

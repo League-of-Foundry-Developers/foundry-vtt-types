@@ -43,6 +43,12 @@ expectTypeOf(navContext.scenes.levels).toEqualTypeOf<
   foundry.applications.ui.SceneNavigation.LevelContext[] | null | undefined
 >();
 
+// Each scene carries its status icons rather than a precomputed class string.
+declare const scene: foundry.applications.ui.SceneNavigation.SceneContext;
+expectTypeOf(scene.icons).toEqualTypeOf<foundry.applications.ui.SceneNavigation.SceneIcon[]>();
+expectTypeOf(scene.icons[0]!.class).toEqualTypeOf<string>();
+expectTypeOf(scene.icons[0]!.tooltip).toEqualTypeOf<string>();
+
 declare const level: foundry.applications.ui.SceneNavigation.LevelContext;
 expectTypeOf(level.sceneId).toEqualTypeOf<string>();
 expectTypeOf(level.users).toEqualTypeOf<foundry.applications.ui.SceneNavigation.UserPipContext[] | undefined>();

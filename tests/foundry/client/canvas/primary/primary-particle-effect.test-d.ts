@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { describe, expectTypeOf, test } from "vitest";
 
 import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
@@ -25,6 +26,7 @@ describe("PrimaryParticleEffect tests", () => {
 
     expectTypeOf(myPPE.initialize(emitterConfig)).toBeVoid();
     expectTypeOf(myPPE.initialize(emitterConfig, true)).toBeVoid();
+    expectTypeOf(myPPE.initialize()).toBeVoid();
   });
 
   test("Interaction", () => {

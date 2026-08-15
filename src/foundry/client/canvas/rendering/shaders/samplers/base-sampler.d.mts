@@ -89,19 +89,19 @@ declare class BaseSamplerShader extends AbstractBaseShader {
    */
   static get ADJUSTMENTS(): string;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * Batch default vertex
    */
-  static batchVertexShader: string;
+  static get batchVertexShader(): string;
 
   /**
    * Batch default fragment
    */
-  static batchFragmentShader: string;
+  static get batchFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -112,7 +112,7 @@ declare class BaseSamplerShader extends AbstractBaseShader {
    * };
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Batch geometry associated with this sampler.

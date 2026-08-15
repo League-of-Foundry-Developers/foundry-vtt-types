@@ -9,8 +9,11 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.prosemirror.Plugin>();
 
 new ProseMirrorKeyMaps(schema);
-new ProseMirrorKeyMaps(schema, { onSave: undefined });
-const keymaps = new ProseMirrorKeyMaps(schema, { onSave: () => console.warn("saved!") });
+new ProseMirrorKeyMaps(schema, { joinDoubleBreak: undefined, onSave: undefined });
+const keymaps = new ProseMirrorKeyMaps(schema, {
+  joinDoubleBreak: false,
+  onSave: () => console.warn("saved!"),
+});
 
 if (keymaps.onSave) expectTypeOf(keymaps.onSave()).toEqualTypeOf<void>();
 

@@ -21,9 +21,8 @@ declare class InvitationLinks<
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
-   * @remarks The context is {@linkcode Game.data | game.data.addresses} itself, annotated in place with the
-   * connectivity members before being returned, so preparing it mutates the game data. When `remote` is
-   * `undefined` — an IPv6 setup — that annotation is skipped and the addresses are returned unchanged.
+   * @remarks The context is a shallow copy of {@linkcode Game.data | game.data.addresses}, extended with the
+   * connectivity members.
    */
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
@@ -46,15 +45,11 @@ declare namespace InvitationLinks {
     /** Whether the public address responded, or `null` while the check is outstanding. */
     remoteIsAccessible: boolean | null;
 
-    /**
-     * A CSS class describing the connection state.
-     *
-     * @remarks Omitted, along with every member below it, when `remote` is `undefined`.
-     */
-    remoteClass?: string | undefined;
+    /** A CSS class describing the connection state. */
+    remoteClass: string;
 
     /** A localized tooltip describing the connection state. */
-    remoteTitle?: string | undefined;
+    remoteTitle: string;
 
     /** Set when the connectivity check has not resolved. */
     failedCheck?: boolean | undefined;
