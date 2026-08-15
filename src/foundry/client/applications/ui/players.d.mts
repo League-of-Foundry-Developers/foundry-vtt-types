@@ -23,18 +23,6 @@ declare class Players<
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
-   * How often latency is refreshed.
-   * @defaultValue `60 * 1000`
-   */
-  static REFRESH_LATENCY_FREQUENCY_MS: number;
-
-  /**
-   * A threshold of time in milliseconds after which a player is considered idle if they have no observed activity.
-   * @defaultValue `5 * 60 * 1000`
-   */
-  static IDLE_THRESHOLD_MS: number;
-
-  /**
    * Is the application currently expanded?
    */
   get expanded(): boolean;
@@ -71,19 +59,27 @@ declare class Players<
   refreshLatency(): void;
 
   /**
+   * Show in the interface whether a given User is idle.
+   * @param row - The User's row in the application DOM
+   * @internal
+   */
+  _onChangeIdleStatus(user: User.Stored, row?: HTMLLIElement): void;
+
+  /**
    * Update the display which reports average framerate.
    * @param options - Options which customize FPS reporting (default: `{}`)
    */
   refreshFPS({ deactivate }?: Players.RefreshFPSOptions): void;
 
   /**
-   * Toggle the expanded state of scene navigation.
+   * Toggle the expanded state of the players list.
    * @param expanded - Force the expanded state to the provided value, otherwise toggle the state.
    */
   toggleExpanded(expanded?: boolean): void;
 
   /**
    * Get the set of ContextMenu options which should be applied to each User in the Players UI.
+   * @returns The Array of context options passed to the ContextMenu instance
    */
   protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
 

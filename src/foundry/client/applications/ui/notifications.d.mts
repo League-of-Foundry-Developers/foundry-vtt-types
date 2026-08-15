@@ -1,4 +1,4 @@
-import type { Brand, Coalesce } from "#utils";
+import type { Brand, Coalesce, Identity } from "#utils";
 
 /**
  * A common framework for displaying notifications to the client.
@@ -34,20 +34,22 @@ declare class Notifications {
   static MAX_ACTIVE: number;
 
   /**
-   * The maximum number of active notifications.
+   * Notification lifetime in milliseconds.
    * @defaultValue `5000`
    */
   static LIFETIME_MS: number;
 
   /**
    * Push a new notification into the queue
-   * @param message   - The content of the notification message
+   * @param message   - The content of the notification message. A passed object should have a
+   *                    meaningful override of the `toString` method. If the object is an
+   *                    `Error` and console logging is requested, the stack trace will be included.
    * @param type      - The type of notification, "info", "warning", and "error" are supported
    *                    (default: `"info"`)
    * @param options   - Additional options which affect the notification
    *                    (default: `{}`)
-   * @returns The ID of the notification (positive integer)
-   * @remarks `type` and `options` use parameter defaults so `null` causes an error
+   * @returns The registered notification
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   notify<T extends Notifications.Type | undefined = undefined>(
     message: string | Error,
@@ -56,26 +58,32 @@ declare class Notifications {
   ): Notifications.Notification<Coalesce<T, "info">>;
 
   /**
-   * Display a notification with the "info" type
-   * @param message - The content of the notification message
+   * Display a notification with the "info" type.
+   * @param message - The content of the info message
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
+   * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   info(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"info">;
 
   /**
-   * Display a notification with the "warning" type
-   * @param message - The content of the notification message
+   * Display a notification with the "warning" type.
+   * @param message - The content of the warning message
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
+   * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   warn(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"warning">;
 
   /**
-   * Display a notification with the "error" type
-   * @param message - The content of the notification message
+   * Display a notification with the "error" type.
+   * @param message - The content of the error message
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
+   * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   error(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"error">;
 
@@ -84,6 +92,8 @@ declare class Notifications {
    * @param message - The content of the success message
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
+   * @see {@link notify}
+   * @remarks Foundry accepts arbitrary objects at runtime, but callers should stringify them explicitly.
    */
   success(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"success">;
 
@@ -92,20 +102,19 @@ declare class Notifications {
    * @param notification - A Notification or ID to update
    * @param update       - An incremental progress update
    */
-  update(notification: Notifications.Notification | Notifications.ID, update: Notifications.UpdateOptions): void;
+  update(notification: Notifications.Notification | Notifications.ID, update?: Notifications.UpdateOptions): void;
 
   /**
    * Remove the notification linked to the ID.
-   * @param id - The Notification or ID to remove
+   * @param notification - The Notification or ID to remove
    */
-  remove(id: Notifications.Notification | Notifications.ID): void;
+  remove(notification: Notifications.Notification | Notifications.ID): void;
 
   /**
    * Does the notification linked to the ID exist?.
    * @param notification - The Notification or ID to remove
-   * @remarks Foundry writing "The Notification or ID to remove" is likely unintentional.
    */
-  has(id: Notifications.Notification | Notifications.ID): boolean;
+  has(notification: Notifications.Notification | Notifications.ID): boolean;
 
   /**
    * Clear all notifications.
@@ -115,13 +124,9 @@ declare class Notifications {
   #Notifications: true;
 }
 
-declare abstract class AnyNotifications extends Notifications {
-  constructor(arg0: never, ...args: never[]);
-}
-
 declare namespace Notifications {
-  type Any = AnyNotifications;
-  type AnyConstructor = typeof AnyNotifications;
+  interface Any extends AnyNotifications {}
+  interface AnyConstructor extends Identity<typeof AnyNotifications> {}
 
   type Type = "info" | "warning" | "error" | "success";
 
@@ -151,14 +156,14 @@ declare namespace Notifications {
     element?: HTMLLIElement | undefined;
 
     /**
-     * @remarks Foundry claims this is required but always sets it in practice.
+     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
      */
     remove: () => void;
 
     /**
-     * @remarks Foundry claims this is required but always sets it in practice.
+     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
      */
-    update: (update: Notifications.UpdateOptions) => void;
+    update: (update?: Notifications.UpdateOptions) => void;
   }
 
   interface FormatOptions {
@@ -221,10 +226,14 @@ declare namespace Notifications {
 
     /**
      * An update to the completion percentage
-     * @remarks Only allows numbers in the range `[0, 1]`
+     * @remarks On `[0, 1]`, and only applied to a notification created with `{progress: true}`.
      */
     pct?: number | undefined;
   }
+}
+
+declare abstract class AnyNotifications extends Notifications {
+  constructor(...args: never);
 }
 
 export default Notifications;

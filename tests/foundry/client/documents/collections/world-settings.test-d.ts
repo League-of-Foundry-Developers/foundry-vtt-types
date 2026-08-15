@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import WorldSettings = foundry.documents.collections.WorldSettings;
 
@@ -31,6 +31,18 @@ describe("WorldSettings Tests", async () => {
   });
 
   const settings = new WorldSettings([settingSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(settings).toExtend<Collection.Any>();
+    expectTypeOf(WorldSettings).toExtend<Collection.AnyConstructor>();
+    expect(settings).toBeInstanceOf(Collection);
+    expectTypeOf(settings).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(WorldSettings).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(settings).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(settings).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(WorldSettings).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(settings).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(WorldSettings.documentName).toEqualTypeOf<"Setting">();
@@ -108,6 +120,41 @@ describe("WorldSettings Tests", async () => {
     expectTypeOf(settings.set("ID", setting)).toEqualTypeOf<typeof settings>();
 
     expectTypeOf(settings.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `Setting`s don't have subtypes
+    const imported1 = await settings.importDocument(setting, {});
+    if (!imported1) throw new Error("Failed to create test `Setting` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Setting.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => settings["_prepareImportDocument"](setting)).toThrow();
+
+    expectTypeOf(settings["_prepareImportDocument"](settingImpl, {})).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(settings["_prepareImportDocument"](setting, { keepId: true })).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(settings["_prepareImportDocument"](settingImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      settings["_prepareImportDocument"](settingImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Setting", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Setting.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

@@ -3,6 +3,7 @@ import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
 import Document = foundry.abstract.Document;
+import WorldCollection = foundry.documents.abstract.WorldCollection;
 
 describe("DocumentCollection Tests", async () => {
   // DocumentCollection is abstract
@@ -13,9 +14,22 @@ describe("DocumentCollection Tests", async () => {
     override search(search: DocumentCollection.SearchOptions): Item.Stored[] {
       return super.search(search) as Item.Stored[];
     }
+
+    // necessary type override, normally handled by WorldCollection
+    override importDocument(doc: Item.Implementation, options: DocumentCollection.ImportFromCompendiumOptions<"Item">) {
+      return Item.implementation.create(this._prepareImportDocument(doc, options));
+    }
+
+    // necessary type override, normally handled by WorldCollection
+    protected override _prepareImportDocument<Options extends WorldCollection.ImportDocumentOptions<"Item">>(
+      doc: Item.Implementation,
+      options: Options,
+    ): WorldCollection.FromCompendiumReturnType<"Item", Options> {
+      return game.items!.fromCompendium(doc, options);
+    }
   }
 
-  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+  const docsToCleanUp = new Set<Document.AnyStored>();
 
   const actor = await Actor.implementation.create({ name: "DocumentCollection Test Actor", type: "base" });
   if (!actor) throw new Error("Failed to create test Actor.");
@@ -85,6 +99,12 @@ describe("DocumentCollection Tests", async () => {
   });
 
   const dc = new TestItemCollection([itemSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(dc).toExtend<Collection.Any>();
+    expectTypeOf(DocumentCollection).toExtend<Collection.AnyConstructor>();
+    expect(dc).toBeInstanceOf(Collection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
@@ -201,26 +221,8 @@ describe("DocumentCollection Tests", async () => {
   });
 
   test("Importing", async () => {
-    // @ts-expect-error importDocument will throw if not passed an object for `options`, because it lacks a signature default.
-    expect(async () => await dc.importDocument(itemImpl));
-
-    // DC has these methods widened for subclassing purposes
-
-    const imported1 = await dc.importDocument(itemImpl, {});
-    if (!imported1) throw new Error("Failed to import test document");
-    docsToCleanUp.add(imported1);
-    expectTypeOf(imported1).toEqualTypeOf<Document.AnyStored>();
-
-    const imported2 = await dc.importDocument(item, {});
-    if (!imported2) throw new Error("Failed to import test document");
-    docsToCleanUp.add(imported2);
-    expectTypeOf(imported2).toEqualTypeOf<Document.AnyStored>();
-
-    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
-    expect(() => dc["_prepareImportDocument"](itemImpl)).toThrow();
-
-    expectTypeOf(dc["_prepareImportDocument"](itemImpl, {})).toEqualTypeOf<object>();
-    expectTypeOf(dc["_prepareImportDocument"](item, {})).toEqualTypeOf<object>();
+    // DC has widened `#importDocument` and `#_prepareImportDocument` for subclassing purposes, including a `never`ed `options`.
+    // As such, calling these methods on `DocumentCollection` without overrides isn't useful. Tested in subclasses.
   });
 
   test("updateAll", () => {
@@ -259,7 +261,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Item.Stored | undefined>();
 
     expectTypeOf(
       dc.filter((entry, index, collection) => {
@@ -268,7 +270,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Item.Stored[]>();
 
     expectTypeOf(
       dc.forEach((entry, index) => {
@@ -284,7 +286,7 @@ describe("DocumentCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof dc>();
         return entry.documentName;
       }),
-    ).toEqualTypeOf<"Item"[]>;
+    ).toEqualTypeOf<"Item"[]>();
 
     expectTypeOf(
       dc.reduce((acc, curr, index, collection) => {

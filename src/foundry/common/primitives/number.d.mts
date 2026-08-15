@@ -28,10 +28,9 @@ declare global {
     paddedString(digits: number): string;
 
     /**
-     * Return a locally formatted string prefaced by the explicit sign of the number (+) or (-). Use of this method is
-     * intended for display purposes only.
-     * @returns The signed number as a locally formatted string
-     * @remarks Uses `−` (`U+2212 Minus Sign`) instead of a regular ASCII `-`
+     * Return a locally formatted string prefaced by the explicit sign of the number (+) or (-).
+     * @returns The signed (except in case of zero) number as a locally formatted string
+     * @remarks Formatted with `useGrouping: false` via an `Intl.NumberFormat` cached from `game.i18n.lang`.
      */
     signedString(): string;
 
@@ -90,6 +89,6 @@ declare global {
      * @param n - The value to convert; typically a string, but may already be a number.
      * @returns The number that the string represents, or NaN if no number could be determined.
      */
-    fromString(n: string | number): Number;
+    fromString(n: string | number): number;
   }
 }
