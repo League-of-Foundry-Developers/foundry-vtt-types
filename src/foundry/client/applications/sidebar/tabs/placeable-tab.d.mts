@@ -319,10 +319,8 @@ declare namespace PlaceableTab {
   /** The options accepted by the {@linkcode PlaceableTab} constructor; both members below are required. */
   type InputOptions<Configuration extends PlaceableTab.Configuration> = DeepPartial<
     Omit<Configuration, "collectionName" | "directory">
-  > & {
-    collectionName: CollectionName;
-    directory: PlaceableDirectory.Any;
-  };
+  > &
+    Pick<Configuration, "collectionName" | "directory">;
 
   /** A Scene collection that can be displayed in a placeable sidebar tab. */
   type CollectionName = PlaceableObject.AnyCanvasDocument["collectionName"];

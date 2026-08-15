@@ -13,9 +13,10 @@ expectTypeOf(RegionTab.ENTRY_PARTIAL).toBeString();
 expectTypeOf(RegionTab.FILTER_CLASS).toEqualTypeOf<RegionFilter.AnyConstructor>();
 
 expectTypeOf(tab._filterState).toEqualTypeOf<RegionTab.FilterState>();
-expectTypeOf(tab._filterState.behaviorType).toEqualTypeOf<
+expectTypeOf<RegionTab.BehaviorType>().toEqualTypeOf<
   Exclude<RegionBehavior.SubType, typeof CONST.BASE_DOCUMENT_TYPE> | ""
 >();
+expectTypeOf(tab._filterState.behaviorType).toEqualTypeOf<RegionTab.BehaviorType>();
 
 declare const entry: RegionTab.EntryContext;
 expectTypeOf(entry.isVisible).toEqualTypeOf<boolean | undefined>();

@@ -55,13 +55,14 @@ declare namespace RegionTab {
   interface Any extends AnyRegionTab {}
   interface AnyConstructor extends Identity<typeof AnyRegionTab> {}
 
+  /** A RegionBehavior type entries may be filtered by; the empty string is unfiltered. */
+  type BehaviorType = Exclude<RegionBehavior.SubType, typeof CONST.BASE_DOCUMENT_TYPE> | "";
+
   interface FilterState extends PlaceableTab.FilterState {
     /**
-     * The RegionBehavior type entries must contain; the empty string is unfiltered.
-     *
      * @defaultValue `""`
      */
-    behaviorType: Exclude<RegionBehavior.SubType, typeof CONST.BASE_DOCUMENT_TYPE> | "";
+    behaviorType: BehaviorType;
   }
 
   /**
