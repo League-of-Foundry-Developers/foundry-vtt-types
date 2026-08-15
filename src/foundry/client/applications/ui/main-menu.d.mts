@@ -76,7 +76,7 @@ declare namespace MainMenu {
     label: string;
     icon: string;
     enabled: boolean | (() => boolean);
-    onClick: (ev: PointerEvent) => void;
+    onClick: (this: MainMenu.Any, event: PointerEvent) => void;
   }
 }
 

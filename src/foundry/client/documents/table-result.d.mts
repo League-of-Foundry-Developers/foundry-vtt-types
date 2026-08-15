@@ -185,8 +185,9 @@ declare namespace TableResult {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends TableResult.SubType = TableResult.SubType> extends fields.SchemaField
-    .CreateData<Schema> {
+  interface CreateData<
+    SubType extends TableResult.SubType = TableResult.SubType,
+  > extends fields.SchemaField.CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 

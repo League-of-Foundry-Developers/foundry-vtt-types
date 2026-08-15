@@ -77,7 +77,7 @@ declare class ImagePopout<
    * @internal
    * @remarks Despite having a parameter default, `options` is required to have at least valid `image` and `title` properties
    */
-  static _handleShareImage(options: ImagePopout.HandleShareImageOptions): ImagePopout.Any;
+  static _handleShareImage(config: ImagePopout.HandleShareImageOptions): ImagePopout.Any;
 
   #ImagePopout: true;
 }
@@ -127,12 +127,8 @@ declare namespace ImagePopout {
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
-  /**
-   * The interface for sending with a `"shareImage"` socket event. Only `users` is allowed to be `| undefined`
-   * because it isn't sent over the socket, where the other properties all are, where `undefined` values get
-   * pruned.
-   */
-  interface ShareImageConfig {
+  /** @internal */
+  interface _ShareImageConfig {
     /** The image URL to share. */
     image: string;
 
@@ -147,7 +143,14 @@ declare namespace ImagePopout {
 
     /** If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter. */
     showTitle?: boolean;
+  }
 
+  /**
+   * The interface for sending with a `"shareImage"` socket event. Only `users` is allowed to be `| undefined`
+   * because it isn't sent over the socket, where the other properties all are, where `undefined` values get
+   * pruned.
+   */
+  interface ShareImageConfig extends _ShareImageConfig {
     /** A list of user IDs to show the image to. */
     users?: string[] | undefined;
   }
@@ -156,13 +159,15 @@ declare namespace ImagePopout {
   interface ShareImageOptions extends InexactPartial<ShareImageConfig> {}
 
   /** Options for {@linkcode ImagePopout._handleShareImage}. `users` gets dropped from the socket return. */
-  interface HandleShareImageOptions extends Omit<ShareImageConfig, "users"> {}
+  interface HandleShareImageOptions extends _ShareImageConfig {}
 }
 
 declare abstract class AnyImagePopout extends ImagePopout<
   ImagePopout.RenderContext,
   ImagePopout.Configuration,
   ImagePopout.RenderOptions
-> {}
+> {
+  constructor(...args: never);
+}
 
 export default ImagePopout;
