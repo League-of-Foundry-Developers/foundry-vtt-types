@@ -65,7 +65,7 @@ class _V14DataModelTest extends DataModel<TestSchema, null> {
   }
 
   protected override _preUpdateSource(
-    changes: object,
+    changes: fields.SchemaField.UpdateData<TestSchema>,
     options: DataModel.UpdateOptions,
     _state: fields.DataField.UpdateState,
   ): void {
@@ -73,17 +73,17 @@ class _V14DataModelTest extends DataModel<TestSchema, null> {
   }
 
   protected override _updateDiff(
-    copy: object,
-    changes: object,
+    copy: fields.SchemaField.SourceData<TestSchema>,
+    changes: fields.SchemaField.UpdateData<TestSchema>,
     options: DataModel.UpdateOptions,
     _state: fields.DataField.UpdateState,
-  ): object {
+  ): fields.SchemaField.UpdateData<TestSchema> {
     return super._updateDiff(copy, changes, options, _state);
   }
 
   protected override _updateCommit(
-    copy: object,
-    diff: object,
+    copy: fields.SchemaField.SourceData<TestSchema>,
+    diff: fields.SchemaField.UpdateData<TestSchema>,
     options: DataModel.UpdateOptions,
     _state: fields.DataField.UpdateState,
   ): void {

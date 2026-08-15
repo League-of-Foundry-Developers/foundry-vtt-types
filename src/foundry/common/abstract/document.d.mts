@@ -423,11 +423,11 @@ declare abstract class Document<
    * @remarks Requires full replacement of system data if the document type changes.
    */
   protected override _updateDiff(
-    copy: object,
-    changes: object,
+    copy: SchemaField.SourceData<Schema>,
+    changes: SchemaField.UpdateData<Schema>,
     options: DataModel.UpdateOptions,
     _state: DataField.UpdateState,
-  ): object;
+  ): SchemaField.UpdateData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.

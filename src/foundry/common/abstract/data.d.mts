@@ -358,7 +358,11 @@ declare abstract class DataModel<
    * @param options - Options which determine how the new data is merged
    * @param _state  - Data model update state
    */
-  protected _preUpdateSource(changes: object, options: DataModel.UpdateOptions, _state: DataField.UpdateState): void;
+  protected _preUpdateSource(
+    changes: SchemaField.UpdateData<Schema>,
+    options: DataModel.UpdateOptions,
+    _state: DataField.UpdateState,
+  ): void;
 
   /**
    * Perform the first step of the DataModel#_updateSource workflow which applies changes to a copy of model source
@@ -371,11 +375,11 @@ declare abstract class DataModel<
    * @throws A failure if the proposed change is invalid
    */
   protected _updateDiff(
-    copy: object,
-    changes: object,
+    copy: SchemaField.SourceData<Schema>,
+    changes: SchemaField.UpdateData<Schema>,
     options: DataModel.UpdateOptions,
     _state: DataField.UpdateState,
-  ): object;
+  ): SchemaField.UpdateData<Schema>;
 
   /**
    * Perform the second step of the DataModel#_updateSource workflow which applies the prepared diff to the model.
@@ -385,8 +389,8 @@ declare abstract class DataModel<
    * @param _state  - Data cleaning state which might include instructions for final commit
    */
   protected _updateCommit(
-    copy: object,
-    diff: object,
+    copy: SchemaField.SourceData<Schema>,
+    diff: SchemaField.UpdateData<Schema>,
     options: DataModel.UpdateOptions,
     _state: DataField.UpdateState,
   ): void;

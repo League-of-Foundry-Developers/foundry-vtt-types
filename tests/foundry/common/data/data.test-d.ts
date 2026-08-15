@@ -85,6 +85,27 @@ declare const myGridShape: foundry.data.GridShapeData;
 expectTypeOf(myGridShape.type).toEqualTypeOf<"grid">();
 expectTypeOf(myGridShape.origin).toEqualTypeOf<{ x: number; y: number } | null>();
 
+// Every `BaseShapeData` subclass takes a `Schema` parameter so a system can extend one with its own
+// fields and still have the instance side see them. Without it the subclass would be stuck with the
+// core schema.
+declare namespace MyEllipseShapeData {
+  interface Schema extends foundry.data.EllipseShapeData.Schema {
+    glow: foundry.data.fields.BooleanField;
+  }
+}
+
+declare class MyEllipseShapeData extends foundry.data.EllipseShapeData<MyEllipseShapeData.Schema> {}
+
+declare const myCustomEllipse: MyEllipseShapeData;
+
+// The added field is visible...
+expectTypeOf(myCustomEllipse.glow).toBeBoolean();
+
+// ...and so are the ones inherited from `EllipseShapeData` and `BaseShapeData`.
+expectTypeOf(myCustomEllipse.gridBased).toBeBoolean();
+expectTypeOf(myCustomEllipse.type).toEqualTypeOf<"ellipse">();
+expectTypeOf(myCustomEllipse.hole).toBeBoolean();
+
 /******************************************************************/
 
 type TextureDataTestSchema = DataModel.SchemaOfClass<typeof TextureDataTestModel>;

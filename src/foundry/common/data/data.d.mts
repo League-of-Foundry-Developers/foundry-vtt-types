@@ -429,7 +429,9 @@ declare namespace RectangleShapeData {
 /**
  * The data model for a rectangle shape.
  */
-declare class RectangleShapeData extends BaseShapeData<RectangleShapeData.Schema> {
+declare class RectangleShapeData<
+  Schema extends RectangleShapeData.Schema = RectangleShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.rectangle", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -500,7 +502,9 @@ declare namespace CircleShapeData {
 /**
  * The data model for a circle shape.
  */
-declare class CircleShapeData extends BaseShapeData<CircleShapeData.Schema> {
+declare class CircleShapeData<
+  Schema extends CircleShapeData.Schema = CircleShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.circle", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -583,7 +587,9 @@ declare namespace EllipseShapeData {
 /**
  * The data model for an ellipse shape.
  */
-declare class EllipseShapeData extends BaseShapeData<EllipseShapeData.Schema> {
+declare class EllipseShapeData<
+  Schema extends EllipseShapeData.Schema = EllipseShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.ellipse", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -647,7 +653,9 @@ declare namespace EmanationShapeData {
 /**
  * The data model for an emanation shape.
  */
-declare class EmanationShapeData extends BaseShapeData<EmanationShapeData.Schema> {
+declare class EmanationShapeData<
+  Schema extends EmanationShapeData.Schema = EmanationShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.emanation", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -744,7 +752,7 @@ declare namespace ConeShapeData {
 /**
  * The data model for a cone shape.
  */
-declare class ConeShapeData extends BaseShapeData<ConeShapeData.Schema> {
+declare class ConeShapeData<Schema extends ConeShapeData.Schema = ConeShapeData.Schema> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.cone", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -827,7 +835,7 @@ declare namespace RingShapeData {
 /**
  * The data model for a ring shape.
  */
-declare class RingShapeData extends BaseShapeData<RingShapeData.Schema> {
+declare class RingShapeData<Schema extends RingShapeData.Schema = RingShapeData.Schema> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.ring", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -907,7 +915,7 @@ declare namespace LineShapeData {
 /**
  * The data model for a line shape.
  */
-declare class LineShapeData extends BaseShapeData<LineShapeData.Schema> {
+declare class LineShapeData<Schema extends LineShapeData.Schema = LineShapeData.Schema> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.line", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -972,7 +980,9 @@ declare namespace PolygonShapeData {
 /**
  * The data model for a polygon shape.
  */
-declare class PolygonShapeData extends BaseShapeData<PolygonShapeData.Schema> {
+declare class PolygonShapeData<
+  Schema extends PolygonShapeData.Schema = PolygonShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.polygon", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -1047,7 +1057,9 @@ declare namespace TokenShapeData {
 /**
  * The data model for a token shape.
  */
-declare class TokenShapeData extends BaseShapeData<TokenShapeData.Schema> {
+declare class TokenShapeData<
+  Schema extends TokenShapeData.Schema = TokenShapeData.Schema,
+> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.token", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
@@ -1107,7 +1119,7 @@ declare namespace GridShapeData {
 /**
  * The data model for a shape that is the union of grid spaces.
  */
-declare class GridShapeData extends BaseShapeData<GridShapeData.Schema> {
+declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.Schema> extends BaseShapeData<Schema> {
   /** @defaultValue `["SHAPE.TYPES.grid", "SHAPE.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
