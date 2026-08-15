@@ -13,7 +13,7 @@ declare class ProseMirrorInputRules extends ProseMirrorPlugin {
    * @param schema  - The ProseMirror schema to build the plugin against.
    * @param options - Additional options to pass to the plugin.
    */
-  static build(schema: Schema, options?: ProseMirrorInputRules.BuildOptions): Plugin;
+  static override build(schema: Schema, options?: ProseMirrorInputRules.BuildOptions): Plugin;
 
   /**
    * Build input rules for node types present in the schema.
@@ -21,6 +21,8 @@ declare class ProseMirrorInputRules extends ProseMirrorPlugin {
   buildRules(): InputRule[];
 
   #ProseMirrorInputRules: true;
+
+  static #ProseMirrorInputRulesStatic: true;
 }
 
 declare namespace ProseMirrorInputRules {
@@ -31,7 +33,7 @@ declare namespace ProseMirrorInputRules {
      * The resulting heading level for a heading rule is equal to the number of leading hashes minus this number.
      * @defaultValue `0`
      */
-    minHeadingLevel?: number;
+    minHeadingLevel: number;
   }
 
   interface BuildOptions extends InexactPartial<_BuildOptions> {}

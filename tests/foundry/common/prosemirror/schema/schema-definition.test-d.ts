@@ -9,5 +9,5 @@ declare const el: HTMLElement;
 expectTypeOf(SchemaDefinition.getAttrs(el)).toEqualTypeOf<SchemaDefinition.GetAttrsReturn>();
 
 declare const node: Node;
-expectTypeOf(SchemaDefinition.toDOM(node)).toEqualTypeOf<SchemaDefinition.DOMOutputSpecTuple>();
+expectTypeOf(SchemaDefinition.toDOM(node)).toEqualTypeOf<SchemaDefinition.DOMOutputSpecUnion>();
 expectTypeOf(SchemaDefinition.make()).toEqualTypeOf<NodeSpec | MarkSpec>();

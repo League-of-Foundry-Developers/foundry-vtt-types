@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 import { Schema } from "prosemirror-model";
-import { Plugin } from "prosemirror-state";
+import { Plugin, PluginKey } from "prosemirror-state";
 import type { AnyObject } from "fvtt-types/utils";
 
 declare const schema: foundry.prosemirror.Schema;
@@ -14,3 +14,4 @@ const plugin = new MyPlugin(schema);
 expectTypeOf(plugin.schema).toEqualTypeOf<Schema>();
 
 expectTypeOf(MyPlugin.build(schema, {})).toEqualTypeOf<Plugin>();
+expectTypeOf(MyPlugin.key).toEqualTypeOf<PluginKey>();

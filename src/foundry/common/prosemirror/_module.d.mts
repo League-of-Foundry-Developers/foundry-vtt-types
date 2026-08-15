@@ -14,7 +14,6 @@ import ProseMirrorKeyMaps from "./keymaps.mjs";
 import ProseMirrorMenu from "./menu.mjs";
 import ProseMirrorDropDown from "./dropdown.mjs";
 import "./extensions.mjs";
-import * as collab from "prosemirror-collab";
 import { Step } from "prosemirror-transform";
 import { parseHTMLString, serializeHTMLString } from "./util.mjs";
 // A const is being imported here. It can't be `import type`.
@@ -39,8 +38,23 @@ interface Dom {
   serializeString: typeof serializeHTMLString;
 }
 
-declare const plugins: Plugins;
+export * as collab from "prosemirror-collab";
+export * as commands from "prosemirror-commands";
+export * as transform from "prosemirror-transform";
+export * as list from "prosemirror-schema-list";
+export * as tables from "@massifrg/prosemirror-tables-sections";
+export * as input from "prosemirror-inputrules";
+export * as state from "prosemirror-state";
+
+export * as types from "./_types.mjs";
+
 declare const nodeViews: NodeViews;
+
+interface NodeViews {
+  details: typeof DisclosureWidget.view;
+}
+
+declare const plugins: Plugins;
 
 interface Plugins {
   ProseMirrorPlugin: typeof ProseMirrorPlugin;
@@ -60,20 +74,6 @@ interface Plugins {
   history: typeof history;
   keymap: typeof keymap;
 }
-
-interface NodeViews {
-  details: typeof DisclosureWidget.view;
-  [nodeName: string]: unknown;
-}
-
-export * as commands from "prosemirror-commands";
-export * as transform from "prosemirror-transform";
-export * as list from "prosemirror-schema-list";
-export * as tables from "@massifrg/prosemirror-tables-sections";
-export * as input from "prosemirror-inputrules";
-export * as state from "prosemirror-state";
-
-export * as types from "./_types.mjs";
 
 export {
   AllSelection,
@@ -97,7 +97,6 @@ export {
   ProseMirrorKeyMaps,
   ProseMirrorMenu,
   ProseMirrorDropDown,
-  collab,
   plugins,
   nodeViews,
   defaultSchema,
