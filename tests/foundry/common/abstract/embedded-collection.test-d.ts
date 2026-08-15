@@ -1,4 +1,4 @@
-import { afterAll, test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import Document = foundry.abstract.Document;
@@ -81,6 +81,12 @@ describe("EmbeddedCollection Tests", async () => {
   });
 
   const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, [itemSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(ec).toExtend<Collection.Any>();
+    expectTypeOf(EmbeddedCollection).toExtend<Collection.AnyConstructor>();
+    expect(ec).toBeInstanceOf(Collection);
+  });
 
   test("Initialization", () => {
     expectTypeOf(ec["_initialized"]).toBeBoolean();

@@ -239,7 +239,7 @@ declare class CompendiumCollection<
   protected override _prepareImportDocument<
     Doc extends CompendiumCollection.DocOrFolder<DocumentName>,
     Options extends CompendiumCollection.ImportDocumentOptions<DocumentName>,
-  >(document: Doc, options?: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
+  >(document: Doc, options: Options): ClientDocument.ToCompendiumReturnType<Doc["documentName"], Options>;
 
   /**
    * Import a Folder into this Compendium Collection.
@@ -714,11 +714,9 @@ declare namespace CompendiumCollection {
     {
       [K in keyof T]?: _Queryify<T[K]>;
     } & {
-      [K in keyof T as K extends string
-        ? IsComparable<T[K]> extends true
-          ? `${K}__in`
-          : never
-        : never]?: ReadonlyArray<T[K]>;
+      [
+        K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__in` : never) : never
+      ]?: ReadonlyArray<T[K]>;
     } & {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }

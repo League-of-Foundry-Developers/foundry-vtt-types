@@ -363,22 +363,10 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param data    - The data object which provides replacements
    * @param options - Options which modify formula replacement
    */
-  static replaceFormulaData<D extends Record<string, unknown>>(
+  static replaceFormulaData<D extends AnyObject>(
     formula: string,
     data: D,
-    options?: {
-      /**
-       * The value that should be assigned to any unmatched keys.
-       * If null, the unmatched key is left as-is.
-       */
-      missing?: string;
-
-      /**
-       * Display a warning notification when encountering an un-matched key.
-       * (default: `false`)
-       */
-      warn?: boolean;
-    },
+    options?: Roll.ReplaceFormulaDataOptions,
   ): string;
 
   /**
@@ -401,10 +389,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    *                       (default: `{}`)
    * @returns A classified RollTerm instance
    */
-  static _classifyStringTerm(
-    term: string,
-    options?: Roll.ClassifyStringTermOptions, // not: null (destructured)
-  ): RollTerm;
+  static _classifyStringTerm(term: string, options?: Roll.ClassifyStringTermOptions): RollTerm;
 
   /* -------------------------------------------- */
   /*  Chat Messages                               */
@@ -452,14 +437,9 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    *                      (default: `{}`)
    * @param options     - Additional options which modify the created message.
    *                      (default: `{}`)
-   * @param rollMode    - The template roll mode to use for the message from CONFIG.Dice.rollModes
-   * @param create      - Whether to automatically create the chat message, or only return the
-   *                      prepared chatData object.
-   *                      (default: `true`)
-   * @returns A promise which resolves to the created ChatMessage entity, if create is true
-   *          or the Object of prepared chatData otherwise.
+   * @returns A promise which resolves to the created ChatMessage document if create is
+   * true, or the Object of prepared chatData otherwise.
    */
-  // options: not null (destructured)
   toMessage<const Create extends boolean | null | undefined = undefined>(
     messageData?: Roll.MessageData | null,
     options?: Roll.ToMessageOptions<Create>,
@@ -535,6 +515,15 @@ declare class Roll<D extends AnyObject = EmptyObject> {
     terms: RollTerm[],
     options?: Roll.Options,
   ): FixedInstanceType<T>;
+
+  /**
+   * Map a legacy rollMode into a message mode string.
+   *
+   * @deprecated since v14
+   */
+  static _mapLegacyRollMode(rollMode: string): string;
+
+  static #Roll: true;
 }
 
 declare namespace Roll {
@@ -629,6 +618,27 @@ declare namespace Roll {
 
   interface ClassifyStringTermOptions extends InexactPartial<_ClassifyStringTermOptions> {}
 
+  interface ReplaceFormulaDataOptions {
+    /**
+     * The value that should be assigned to any unmatched keys. If undefined, the
+     * unmatched key is left as-is.
+     */
+    missing?: string | undefined;
+
+    /**
+     * Display a warning notification when encountering an unmatched key.
+     * @defaultValue `false`
+     */
+    warn?: boolean | undefined;
+
+    /**
+     * If new expressions are found after replacing "\@" expressions, perform
+     * replacement again (recursion limit of 3).
+     * @defaultValue `false`
+     */
+    recursive?: boolean | undefined;
+  }
+
   /** @internal */
   // TODO(LukeAbby): When shims are added then `"user"` should also be added here #3065. Specifically `user` should be added as partial.
   //
@@ -659,8 +669,15 @@ declare namespace Roll {
 
   interface ToMessageOptions<Create extends boolean | null | undefined> {
     /**
-     * The template roll mode to use for the message from CONFIG.Dice.rollModes
-     * @remarks "roll" equivalent to explicit undefined
+     * A message visibility mode to apply to the resulting message.
+     */
+    // TODO: Type as a key of `CONFIG.ChatMessage.modes` once that registry replaces `CONFIG.Dice.rollModes` in
+    // `config.d.mts`; `chat-message.d.mts` still models the v13 `applyRollMode` surface.
+    messageMode?: string | undefined;
+
+    /**
+     * @deprecated "The rollMode option of Roll#toMessage is deprecated in favor of messageMode, a string value in
+     * CONFIG.ChatMessage.modes" (since v14, until v16)
      */
     rollMode?: ChatMessage.PassableRollMode | null | undefined;
 

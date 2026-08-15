@@ -820,12 +820,12 @@ declare namespace Game {
     userId: string;
     world: foundry.packages.World["_source"];
   } & {
-    [DocumentType in
-      // TODO: the Exclude is to replace the now-removed `CONST.DOCUMENT_TYPES`, this has been stopgapped with the old value and should be replaced eventually.
-      | Exclude<CONST.WORLD_DOCUMENT_TYPES | CONST.COMPENDIUM_DOCUMENT_TYPES, "Setting" | "FogExploration">
-      | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
-      Document.ImplementationClassFor<DocumentType>
-    >["_source"][];
+    [
+      DocumentType in
+        // TODO: the Exclude is to replace the now-removed `CONST.DOCUMENT_TYPES`, this has been stopgapped with the old value and should be replaced eventually.
+        | Exclude<CONST.WORLD_DOCUMENT_TYPES | CONST.COMPENDIUM_DOCUMENT_TYPES, "Setting" | "FogExploration">
+        | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]
+    ]?: FixedInstanceType<Document.ImplementationClassFor<DocumentType>>["_source"][];
   };
 
   interface Data extends _Data {}

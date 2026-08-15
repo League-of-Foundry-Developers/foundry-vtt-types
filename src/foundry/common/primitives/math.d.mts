@@ -26,16 +26,6 @@ declare global {
     clamp(num: number, min: number, max: number): number;
 
     /**
-     * Bound a number between some minimum and maximum value, inclusively
-     * @param num - The current value
-     * @param min - The minimum allowed value
-     * @param max - The maximum allowed value
-     * @returns The clamped number
-     * @deprecated "Math.clamped is deprecated in favor of {@linkcode Math.clamp}." (since v12, until v14)
-     */
-    clamped(num: number, min: number, max: number): number;
-
-    /**
      * Linear interpolation function
      * @param a - An initial value when weight is 0.
      * @param b - A terminal value when weight is 1.
@@ -45,6 +35,21 @@ declare global {
     mix(a: number, b: number, w: number): number;
 
     /**
+     * Returns the number adjacent to `x` in the direction of `y`.
+     */
+    nextAfter(x: number, y: number): number;
+
+    /**
+     * Returns the number adjacent to `x` in the direction of -Infinity.
+     */
+    nextDown(x: number): number;
+
+    /**
+     * Returns the number adjacent to `x` in the direction of +Infinity.
+     */
+    nextUp(x: number): number;
+
+    /**
      * Transform an angle in degrees to be bounded within the domain [0, 360)
      * @param degrees - An angle in degrees
      * @returns The same angle on the range [0, 360)
@@ -52,30 +57,11 @@ declare global {
     normalizeDegrees(degrees: number): number;
 
     /**
-     * Transform an angle in degrees to be bounded within the domain [0, 360]
-     * @param degrees - An angle in degrees
-     * @param base    - The base angle to normalize to, either 0 for [0, 360) or 360 for (0, 360]
-     * @returns The same angle on the range [0, 360) or (0, 360]
-     * @deprecated "`Math.normalizeDegrees(degrees, base)` is deprecated." (since v12, until v14)
-     * @remarks Despite the parameter description, passing *any* non-`undefined` value for `base` changes behaviour.
-     * This is accurate to the behaviour in v11 and earlier, it's unclear why this wasn't originally a boolean.
-     */
-    normalizeDegrees(degrees: number, base: number): number;
-
-    /**
      * Transform an angle in radians to be bounded within the domain [-PI, PI]
      * @param radians - An angle in degrees
      * @returns The same angle on the range [-PI, PI]
      */
     normalizeRadians(radians: number): number;
-
-    /**
-     * Round a floating point number to a certain number of decimal places
-     * @param number - A floating point number
-     * @param places - An integer number of decimal places
-     * @deprecated "`Math.roundDecimals` is deprecated." (since v12, until v14)
-     */
-    roundDecimals(number: number, places: number): number;
 
     /**
      * Transform an angle in radians to a number in degrees
@@ -92,22 +78,22 @@ declare global {
     toRadians(angle: number): number;
 
     /**
-     * Get an oscillation between lVal and hVal according to t
-     * @param  minVal - The minimal value of the oscillation.
-     * @param  maxVal - The maximum value of the oscillation.
-     * @param  t      - The time value.
-     * @param  p      - The period (must be nonzero). (default: `1`)
-     * @param  fn     - The optional math function to use for oscillation.  Its period must be 2π (default: `Math.cos`)
-     * @returns The oscillation according to t. `((maxVal - minVal) * (fn(2π * t / p) + 1) / 2) + minVal`
+     * Returns the value of the oscillation between `a` and `b` at time `t`.
+     * @param a - The minimum value of the oscillation
+     * @param b - The maximum value of the oscillation
+     * @param t - The time
+     * @param p - The period (must be nonzero) (default: `1`)
+     * @param f - The periodic function (its period must be 2π) (default: `Math.cos`)
+     * @returns `((b - a) * (f(2π * t / p) + 1) / 2) + a`
      */
     oscillation(
-      minVal: number,
-      maxVal: number,
+      a: number,
+      b: number,
       t: number,
       p?: number,
 
       /** @immediate */
-      fn?: (radians: number) => number,
+      f?: (x: number) => number,
     ): number;
   }
 }

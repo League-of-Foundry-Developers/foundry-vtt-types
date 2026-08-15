@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import SingletonEmbeddedCollection = foundry.abstract.SingletonEmbeddedCollection;
 
@@ -44,6 +44,15 @@ describe("SingletonEmbeddedCollection Tests", async () => {
   const sec = new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [
     deltaSource,
   ]);
+
+  test("Inheritance", () => {
+    expectTypeOf(sec).toExtend<Collection.Any>();
+    expectTypeOf(SingletonEmbeddedCollection).toExtend<Collection.AnyConstructor>();
+    expect(sec).toBeInstanceOf(Collection);
+    expectTypeOf(sec).toExtend<foundry.abstract.EmbeddedCollection.Any>();
+    expectTypeOf(SingletonEmbeddedCollection).toExtend<foundry.abstract.EmbeddedCollection.AnyConstructor>();
+    expect(sec).toBeInstanceOf(foundry.abstract.EmbeddedCollection);
+  });
 
   test("Getting", () => {
     expectTypeOf(sec.get("ID")).toEqualTypeOf<ActorDelta.Stored | undefined>();

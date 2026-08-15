@@ -132,4 +132,34 @@ expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<string[]>();
 expectTypeOf(ApplicationV2.inheritanceChain()).toEqualTypeOf<
   Generator<foundry.applications.api.ApplicationV2.AnyConstructor, void, undefined>
 >();
-expectTypeOf(ApplicationV2.parseCSSDimensions("", 1)).toEqualTypeOf<number | undefined>();
+expectTypeOf(ApplicationV2.parseCSSDimension("", 1)).toEqualTypeOf<number | undefined>();
+// Called on the base class the `this` parameter resolves through the constraint, so the yielded instance is the
+// companion's instantiation rather than the bare `ApplicationV2` alias. Spelled out rather than asserted loosely.
+expectTypeOf(ApplicationV2.instances()).toEqualTypeOf<
+  Generator<
+    ApplicationV2<object, ApplicationV2.Configuration<ApplicationV2.Any>, ApplicationV2.RenderOptions>,
+    void,
+    undefined
+  >
+>();
+
+// `instances` is polymorphic: a subclass yields itself, not the base.
+test("static instances is polymorphic", () => {
+  class _InstancesApp extends ApplicationV2 {}
+
+  expectTypeOf(_InstancesApp.instances()).toEqualTypeOf<Generator<_InstancesApp, void, undefined>>();
+});
+
+expectTypeOf(applicationV2["_headerControlButtons"]()).toEqualTypeOf<
+  Generator<foundry.applications.api.ApplicationV2.HeaderControlsEntry, void, undefined>
+>();
+expectTypeOf(applicationV2["_headerControlContextEntries"]()).toEqualTypeOf<
+  Generator<foundry.applications.ux.ContextMenu.Entry<HTMLElement>, void, undefined>
+>();
+expectTypeOf(applicationV2["_renderFrameButtons"]({})).toEqualTypeOf<Promise<void>>();
+
+// `target` is only passed when the control is rendered into the header's context menu, so it is
+// optional here even though `ContextMenu.EntryCallback` requires it.
+expectTypeOf<NonNullable<foundry.applications.api.ApplicationV2.HeaderControlsEntry["onClick"]>>()
+  .parameter(1)
+  .toEqualTypeOf<HTMLElement | undefined>();

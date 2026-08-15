@@ -25,8 +25,7 @@ declare class RollResolver<
   // Fake override.
   static override DEFAULT_OPTIONS: RollResolver.DefaultOptions;
 
-  // a placeholder private method to help subclassing
-  #rollResolver: true;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * A collection of fulfillable dice terms.
@@ -37,7 +36,6 @@ declare class RollResolver<
    * The roll being resolved.
    */
   get roll(): Roll;
-  #roll: Roll;
 
   /**
    * Identify any terms in this Roll that should be fulfilled externally, and prompt the user to do so.
@@ -53,6 +51,17 @@ declare class RollResolver<
    * @returns               Whether the result was consumed.
    */
   registerResult(method: string, denomination: string, result: number): boolean;
+
+  override close(options?: ApplicationV2.ClosingOptions): Promise<this | void>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _onSubmitForm(
+    formConfig: ApplicationV2.FormConfiguration,
+    event: Event | SubmitEvent,
+  ): Promise<void>;
 
   /**
    * Handle prompting for a single extra result from a term.
@@ -71,10 +80,13 @@ declare class RollResolver<
    * @param event     - The originating form submission event.
    * @param form      - The form element that was submitted.
    * @param formData  - Processed data for the submitted form.
+   * @remarks {@linkcode RollResolver.close | RollResolver#close} passes `null` for both `event` and
+   * `form` when it flushes the form on an early close.
    */
-  static _fulfillRoll(
-    event: SubmitEvent,
-    form: HTMLFormElement,
+  protected static _fulfillRoll(
+    this: RollResolver.Any,
+    event: SubmitEvent | null,
+    form: HTMLFormElement | null,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void>;
 
@@ -88,19 +100,25 @@ declare class RollResolver<
   /**
    * Check if all rolls have been fulfilled.
    */
-  _checkDone(): void;
+  protected _checkDone(): void;
 
   /**
    * Toggle the state of the submit button.
    * @param enabled  - Whether the button is enabled.
    */
-  _toggleSubmission(enabled: boolean): void;
+  protected _toggleSubmission(enabled: boolean): void;
+
+  #RollResolver: true;
 }
 
 declare namespace RollResolver {
   interface Any extends AnyRollResolver {}
   interface AnyConstructor extends Identity<typeof AnyRollResolver> {}
 
+  /**
+   * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not
+   * inherit context from its parent class.
+   */
   interface RenderContext {
     formula: string;
     groups: Record<string, Group>;
@@ -127,15 +145,27 @@ declare namespace RollResolver {
 
   interface Result {
     denomination: string;
-    faces: number | undefined;
     id: string;
     method: string;
-    icon: string;
+
+    /** @remarks `undefined` when the denomination has no {@linkcode CONFIG.Dice.fulfillment} entry. */
+    icon: string | undefined;
+
     exploded: boolean | undefined;
     rerolled: boolean | undefined;
     isNew: boolean | undefined;
-    // Note(LukeAbby): The logic here is a bit suspicious.
-    value: string | number;
+
+    /** @remarks `""` for a result that has not been rolled yet. */
+    value: number | "";
+
+    minValue: number;
+
+    /**
+     * @remarks `undefined` when the term's faces are a complex expression that has not been
+     * evaluated, as {@linkcode foundry.dice.terms.DiceTerm.faces | DiceTerm#faces} is then `undefined`.
+     */
+    maxValue: number | undefined;
+
     readonly: boolean;
     disabled: boolean;
   }

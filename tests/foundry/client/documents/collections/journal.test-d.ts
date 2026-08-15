@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Journal = foundry.documents.collections.Journal;
 
@@ -34,6 +34,18 @@ describe("Journal Tests", async () => {
   });
 
   const journals = new Journal([jeSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(journals).toExtend<Collection.Any>();
+    expectTypeOf(Journal).toExtend<Collection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(Collection);
+    expectTypeOf(journals).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Journal).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(journals).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Journal).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(journals).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Journal.documentName).toEqualTypeOf<"JournalEntry">();
@@ -172,6 +184,41 @@ describe("Journal Tests", async () => {
     expectTypeOf(journals.set("ID", je)).toEqualTypeOf<typeof journals>();
 
     expectTypeOf(journals.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `JournalEntry`s don't have subtypes
+    const imported1 = await journals.importDocument(je, {});
+    if (!imported1) throw new Error("Failed to create test `JournalEntry` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<JournalEntry.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => journals["_prepareImportDocument"](je)).toThrow();
+
+    expectTypeOf(journals["_prepareImportDocument"](jeImpl, {})).toEqualTypeOf<
+      Omit<JournalEntry.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(journals["_prepareImportDocument"](je, { keepId: true })).toEqualTypeOf<
+      Omit<JournalEntry.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(journals["_prepareImportDocument"](jeImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<JournalEntry.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      journals["_prepareImportDocument"](jeImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "JournalEntry", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<JournalEntry.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {
