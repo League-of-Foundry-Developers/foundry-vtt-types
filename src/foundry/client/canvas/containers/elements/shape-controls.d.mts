@@ -9,6 +9,8 @@ import type { BaseShapeData } from "#common/data/_module.d.mts";
 /**
  * Controls for a shape.
  */
+// Note(LukeAbby): The generic parameter being required to be provided is due to
+// https://github.com/microsoft/TypeScript/issues/61633
 declare class ShapeControls<
   DocumentClass extends Document.Any,
   ObjectClass extends PlaceableObject.Any,

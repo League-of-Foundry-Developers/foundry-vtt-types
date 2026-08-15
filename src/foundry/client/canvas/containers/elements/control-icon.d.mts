@@ -5,6 +5,8 @@ import { PreciseText } from "#client/canvas/containers/_module.mjs";
 /**
  * A generic helper for drawing a standard Control Icon.
  */
+// Note(LukeAbby): The generic parameter being required to be provided is due to
+// https://github.com/microsoft/TypeScript/issues/61633
 declare class ControlIcon extends RenderFlagsMixin<typeof PIXI.Container>(PIXI.Container) {
   constructor(options?: ControlIcon.Options);
 
