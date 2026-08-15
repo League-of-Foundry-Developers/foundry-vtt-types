@@ -35,7 +35,10 @@ expectTypeOf(ShapeControls.RENDER_FLAGS.refresh).toEqualTypeOf<
   foundry.canvas.interaction.RenderFlag<ShapeControls.RENDER_FLAGS, "refresh">
 >();
 expectTypeOf(controls.renderFlags).toEqualTypeOf<foundry.canvas.interaction.RenderFlags<ShapeControls.RENDER_FLAGS>>();
-expectTypeOf(controls.renderFlags.clear()).toEqualTypeOf<Partial<Record<"redraw" | "refresh", true>>>();
+expectTypeOf(controls.renderFlags.clear()).toEqualTypeOf<{
+  redraw?: boolean | undefined;
+  refresh?: boolean | undefined;
+}>();
 controls.renderFlags.set({ redraw: true, refresh: null });
 
 // @ts-expect-error An unregistered flag throws at runtime.

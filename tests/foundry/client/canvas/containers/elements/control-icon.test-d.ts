@@ -29,7 +29,10 @@ describe("ControlIcon tests", () => {
     expectTypeOf(controlIcon.renderFlags).toEqualTypeOf<
       foundry.canvas.interaction.RenderFlags<ControlIcon.RENDER_FLAGS>
     >();
-    expectTypeOf(controlIcon.renderFlags.clear()).toEqualTypeOf<Partial<Record<"redraw" | "refresh", true>>>();
+    expectTypeOf(controlIcon.renderFlags.clear()).toEqualTypeOf<{
+      redraw?: boolean | undefined;
+      refresh?: boolean | undefined;
+    }>();
     controlIcon.renderFlags.set({ redraw: true, refresh: undefined });
     expectTypeOf(controlIcon.renderFlags.handle("refresh")).toBeBoolean();
 
