@@ -71,6 +71,9 @@ expectTypeOf(roll.toMessage()).toEqualTypeOf<Promise<ChatMessage.Implementation 
 expectTypeOf(roll.toMessage({}, { create: true })).toEqualTypeOf<Promise<ChatMessage.Implementation | undefined>>();
 expectTypeOf(roll.toMessage({}, { create: false })).toEqualTypeOf<Promise<ChatMessage.CreateData>>();
 expectTypeOf(roll.toMessage({}, { create: null })).toEqualTypeOf<Promise<ChatMessage.CreateData>>();
+expectTypeOf(roll.toMessage({}, { messageMode: "blind" })).toEqualTypeOf<
+  Promise<ChatMessage.Implementation | undefined>
+>();
 expectTypeOf(roll.toMessage({}, { create: testBool })).toEqualTypeOf<
   Promise<ChatMessage.Implementation | undefined | ChatMessage.CreateData>
 >();
@@ -98,6 +101,12 @@ expectTypeOf(Roll.parse("", {})).toEqualTypeOf<foundry.dice.terms.RollTerm[]>();
 declare const rpn: foundry.dice.types.RollParseNode;
 expectTypeOf(Roll.instantiateAST(rpn)).toEqualTypeOf<foundry.dice.terms.RollTerm[]>();
 expectTypeOf(Roll.replaceFormulaData("", {})).toEqualTypeOf<string>();
+expectTypeOf(Roll.replaceFormulaData("@foo", { foo: "@bar", bar: 1 }, { recursive: true })).toEqualTypeOf<string>();
+expectTypeOf<Roll.ReplaceFormulaDataOptions>().toEqualTypeOf<{
+  missing?: string | undefined;
+  warn?: boolean | undefined;
+  recursive?: boolean | undefined;
+}>();
 expectTypeOf(Roll.validate("")).toEqualTypeOf<boolean>();
 expectTypeOf(Roll.identifyFulfillableTerms([])).toEqualTypeOf<foundry.dice.terms.DiceTerm[]>();
 expectTypeOf(Roll._classifyStringTerm("")).toEqualTypeOf<foundry.dice.terms.RollTerm>();
@@ -115,6 +124,9 @@ expectTypeOf(Roll.fromTerms([])).toEqualTypeOf<Roll<AnyObject>>();
 expectTypeOf(CustomRoll.fromData(d)).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
 expectTypeOf(CustomRoll.fromJSON("")).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
 expectTypeOf(CustomRoll.fromTerms([])).toEqualTypeOf<CustomRoll<Record<string, unknown>>>();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- v14 exposes this compatibility helper as deprecated.
+expectTypeOf(Roll._mapLegacyRollMode("gmroll")).toEqualTypeOf<string>();
 
 CONFIG.Dice.rolls = [CustomRoll, Roll];
 const rollCls = CONFIG.Dice.rolls[0];

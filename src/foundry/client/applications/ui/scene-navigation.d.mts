@@ -39,6 +39,7 @@ declare class SceneNavigation<
 
   /**
    * Get the set of ContextMenu options which should be applied for Scenes in the menu.
+   * @returns The Array of context options passed to the ContextMenu instance
    */
   protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
 
@@ -60,7 +61,6 @@ declare class SceneNavigation<
 
   /**
    * @deprecated "{@linkcode SceneNavigation.displayProgressBar} is deprecated in favor of {@linkcode Notifications#notify} using the `{progress: true}` option" (since v13, until v15)
-   * @ignore
    */
   static displayProgressBar({ label, pct }?: SceneNavigation.DisplayProgressBarOptions): void;
 
@@ -72,8 +72,68 @@ declare namespace SceneNavigation {
   interface Any extends AnySceneNavigation {}
   interface AnyConstructor extends Identity<typeof AnySceneNavigation> {}
 
-  interface PreparedScene {
+  /**
+   * @remarks A user shown as a pip on a scene or level entry. `color` is a CSS string, but `border`
+   * is the {@linkcode Color} itself.
+   */
+  interface UserPipContext {
+    name: string;
+
+    /** @remarks The first character of the user's name. */
+    letter: string;
+
+    color: string;
+
+    border: Color;
+  }
+
+  interface SceneContext {
     id: string;
+
+    active: boolean;
+
+    isView: boolean;
+
+    navOrder: number;
+
+    /** @remarks The scene's `navName`, falling back to its `name`. */
+    name: string;
+
+    /** @remarks The scene's `name` when a GM is viewing a scene that has a `navName`, otherwise blank. */
+    tooltip: string;
+
+    /** @remarks Absent when no active user is viewing this scene. */
+    users?: UserPipContext[] | undefined;
+
+    cssClass: string;
+  }
+
+  interface LevelContext {
+    id: string;
+
+    sceneId: string;
+
+    name: string;
+
+    css: string;
+
+    /** @remarks Absent when no active user is viewing this level. */
+    users?: UserPipContext[] | undefined;
+  }
+
+  interface ScenesContext {
+    inactive: SceneContext[];
+
+    active: SceneContext[];
+
+    /** @remarks Only set when one of the navigable scenes is the currently viewed one. */
+    viewed?: SceneContext | undefined;
+
+    /**
+     * @remarks Only set when one of the navigable scenes is the currently viewed one, and `null`
+     * when that scene has fewer than two available levels.
+     */
+    levels?: LevelContext[] | null | undefined;
   }
 
   /**
@@ -81,10 +141,8 @@ declare namespace SceneNavigation {
    * inherit context from its parent class.
    */
   interface RenderContext {
-    scenes: {
-      inactive: PreparedScene[];
-      active: PreparedScene[];
-    };
+    scenes: ScenesContext;
+
     canExpand: number;
   }
 
@@ -103,7 +161,12 @@ declare namespace SceneNavigation {
   > &
     object;
 
-  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
+  interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {
+    /**
+     * @remarks Scrolls the active level into view after rendering.
+     */
+    scrollToActiveLevel?: boolean | undefined;
+  }
 }
 
 declare abstract class AnySceneNavigation extends SceneNavigation<
