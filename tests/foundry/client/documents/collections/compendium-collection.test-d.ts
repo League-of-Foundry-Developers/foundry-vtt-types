@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 import type { EmptyObject, AnyMutableObject, IntentionalPartial } from "fvtt-types/utils";
 
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -20,7 +20,7 @@ describe("CompendiumCollection Tests", async () => {
   if (!actor) throw new Error("Failed to create test Actor.");
   docsToCleanUp.add(actor);
 
-  const tempActor = new Actor.implementation({ name: "CompendiumCollection Test Actor", type: "base" });
+  const actorImpl = new Actor.implementation({ name: "CompendiumCollection Test Actor", type: "base" });
 
   const folder = await Folder.implementation.create({ name: "CompendiumCollection Test Folder", type: "Item" });
   if (!folder) throw new Error("Failed to create test Actor.");
@@ -136,10 +136,22 @@ describe("CompendiumCollection Tests", async () => {
     const testPack2 = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
     compendiaToCleanUp.add(testPack2);
     expectTypeOf(testPack2).toEqualTypeOf<CompendiumCollection<"Actor">>();
+
+    // maintaining assignability down the chain
+    // const _dc: DocumentCollection.Any = testPack1
   });
 
   const actorPack = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
   compendiaToCleanUp.add(actorPack);
+
+  test("Inheritance", () => {
+    expectTypeOf(actorPack).toExtend<Collection.Any>();
+    expectTypeOf(CompendiumCollection).toExtend<Collection.AnyConstructor>();
+    expect(actorPack).toBeInstanceOf(Collection);
+    expectTypeOf(actorPack).toExtend<DocumentCollection.Any>();
+    expectTypeOf(CompendiumCollection).toExtend<DocumentCollection.AnyConstructor>();
+    expect(actorPack).toBeInstanceOf(DocumentCollection);
+  });
 
   test("Other Compendium management", () => {
     expectTypeOf(actorPack.deleteCompendium()).toEqualTypeOf<Promise<typeof actorPack>>();
@@ -293,7 +305,7 @@ describe("CompendiumCollection Tests", async () => {
     actorPack.importDocument(folderCompendium);
 
     expectTypeOf(actorPack.importDocument(actor)).toEqualTypeOf<Promise<Actor.Stored | undefined>>();
-    expectTypeOf(actorPack.importDocument(tempActor)).toEqualTypeOf<Promise<Actor.Stored | undefined>>();
+    expectTypeOf(actorPack.importDocument(actorImpl)).toEqualTypeOf<Promise<Actor.Stored | undefined>>();
     expectTypeOf(actorPack.importDocument(folderActor)).toEqualTypeOf<Promise<Folder.Stored<"Actor"> | undefined>>();
     expectTypeOf(actorPack.importDocument(tempFolderActor)).toEqualTypeOf<
       Promise<Folder.Stored<"Actor"> | undefined>
@@ -334,6 +346,33 @@ describe("CompendiumCollection Tests", async () => {
     expectTypeOf(actorPack.importFolders([folderActor], {})).toEqualTypeOf<Promise<void>>();
     expectTypeOf(actorPack.importFolders([folderActor], { importParents: true })).toEqualTypeOf<Promise<void>>();
     expectTypeOf(actorPack.importFolders([folderActor], { importParents: undefined })).toEqualTypeOf<Promise<void>>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => actorPack["_prepareImportDocument"](actor)).toThrow();
+
+    // TODO: update when `ClientDocument.ToCompendiumReturnType` works
+
+    // expectTypeOf(actorPack["_prepareImportDocument"](actorImpl, {})).toEqualTypeOf<Omit<Actor.Source, "_id">>();
+
+    // // testing the FromCompendiumReturnType
+    // expectTypeOf(actorPack["_prepareImportDocument"](actor, { keepId: true })).toEqualTypeOf<
+    //   Omit<Actor.Source, "sort" | "navOrder" | "active">
+    // >();
+    // expectTypeOf(actorPack["_prepareImportDocument"](actorImpl, { clearFolder: true })).toEqualTypeOf<
+    //   Omit<Actor.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    // >();
+
+    // also testing CreateDocumentsOperation
+    // expectTypeOf(
+    //   actorPack["_prepareImportDocument"](actorImpl, {
+    //     clearFolder: true,
+    //     noHook: false,
+    //     renderSheet: true,
+    //     documentName: "Actor", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+    //   }),
+    // ).toEqualTypeOf<Omit<Actor.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   test("Importing to world/Exporting from compendium", async () => {
@@ -429,7 +468,7 @@ describe("CompendiumCollection Tests", async () => {
 
   test("Setting and Deleting", () => {
     // @ts-expect-error `DocumentCollection`s only contain stored documents
-    actorPack.set("ID", tempActor);
+    actorPack.set("ID", actorImpl);
     expectTypeOf(actorPack.set("ID", actor)).toEqualTypeOf<typeof actorPack>();
 
     expectTypeOf(actorPack.delete("ID")).toBeBoolean();
@@ -443,7 +482,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Actor.Stored | undefined>;
 
     expectTypeOf(
       actorPack.filter((entry, index, collection) => {
@@ -452,7 +491,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return !!(index % 2);
       }),
-    );
+    ).toEqualTypeOf<Actor.Stored[]>();
 
     expectTypeOf(
       actorPack.forEach((entry, index) => {
@@ -468,7 +507,7 @@ describe("CompendiumCollection Tests", async () => {
         expectTypeOf(collection).toEqualTypeOf<typeof actorPack>();
         return entry.documentName;
       }),
-    ).toEqualTypeOf<"Actor"[]>;
+    ).toEqualTypeOf<"Actor"[]>();
 
     expectTypeOf(
       actorPack.reduce((acc, curr, index, collection) => {

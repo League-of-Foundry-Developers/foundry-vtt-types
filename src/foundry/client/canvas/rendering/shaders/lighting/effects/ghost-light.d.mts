@@ -6,7 +6,7 @@ import type AdaptiveIlluminationShader from "../illumination-lighting.mjs";
  * Ghost light animation illumination shader
  */
 declare class GhostLightIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace GhostLightIlluminationShader {
@@ -18,7 +18,7 @@ declare namespace GhostLightIlluminationShader {
  * Ghost light animation coloration shader
  */
 declare class GhostLightColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace GhostLightColorationShader {

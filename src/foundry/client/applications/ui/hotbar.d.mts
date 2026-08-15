@@ -2,6 +2,7 @@ import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type Document from "#common/abstract/document.d.mts";
+import type Notifications from "./notifications.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -33,8 +34,9 @@ declare class Hotbar<
 
   /**
    * The currently rendered macro data.
+   * @remarks `undefined` until the first render, as `_prepareContext` is what populates it.
    */
-  get slots(): Hotbar.SlotData[];
+  get slots(): Hotbar.SlotData[] | undefined;
 
   /**
    * Whether the hotbar is locked.
@@ -54,6 +56,7 @@ declare class Hotbar<
 
   /**
    * Get the set of ContextMenu options which should be applied for Macros in the hotbar.
+   * @returns The Array of context options passed to the ContextMenu instance
    */
   protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
 
@@ -80,7 +83,7 @@ declare class Hotbar<
    * A reusable helper that can be used for toggling display of a document sheet.
    * @param uuid - The Document UUID to display
    */
-  static toggleDocumentSheet(uuid: string): Promise<void>;
+  static toggleDocumentSheet(uuid: string): Promise<void | Notifications.Notification<"warning">>;
 
   /**
    * Update hotbar display based on viewport size.
@@ -91,30 +94,30 @@ declare class Hotbar<
   /**
    * Create a Macro which rolls a RollTable when executed
    * @param table - The RollTable document
+   * @remarks Returns `undefined` if creation is prevented.
    */
-  protected _createRollTableRollMacro(table: Document.Any): Promise<Macro.Implementation>;
+  protected _createRollTableRollMacro(table: RollTable.Implementation): Promise<Macro.Implementation | undefined>;
 
   /**
    * Create a Macro document which can be used to toggle display of a Journal Entry.
    * @param doc - A Document which should be toggled
+   * @remarks Returns `undefined` if creation is prevented.
    */
-  protected _createDocumentSheetToggle(doc: Document.Any): Promise<Macro.Implementation>;
+  protected _createDocumentSheetToggle(doc: Document.Any): Promise<Macro.Implementation | undefined>;
 
   /**
    * @deprecated "{@linkcode Hotbar#macros} is deprecated in favor of {@linkcode Hotbar#slots}." (since v13, until v15)
-   * @ignore
+   * @remarks `undefined` until the first render, as `_prepareContext` is what populates it.
    */
-  get macros(): Hotbar.SlotData[];
+  get macros(): Hotbar.SlotData[] | undefined;
 
   /**
    * @deprecated "{@linkcode Hotbar#collapse} is no longer a supported feature." (since v13, until v15)
-   * @ignore
    */
   collapse(): void;
 
   /**
    * @deprecated "{@linkcode Hotbar#expand} is no longer a supported feature." (since v13, until v15)
-   * @ignore
    */
   expand(): void;
 

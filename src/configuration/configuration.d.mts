@@ -1,7 +1,7 @@
 import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type * as documents from "./documents.d.mts";
-import type { DefaultSheetsConfig } from "#client/applications/settings/menus/_module.d.mts";
+import type { DefaultSheetsConfig, UIConfig } from "#client/applications/settings/menus/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Game = foundry.Game;
@@ -327,6 +327,14 @@ export interface SettingConfig {
   "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
   "core.diceConfiguration": Record<string, string>;
   "core.disableResolutionScaling": boolean;
+
+  /**
+   * @remarks Registered under
+   * {@linkcode foundry.applications.settings.menus.FontConfig.SETTING | FontConfig.SETTING}, as just
+   * `type: Object`; the keys are font family names.
+   */
+  "core.fonts": Record<string, CONFIG.Font.FamilyDefinition>;
+
   "core.fontSize": number;
   "core.fpsMeter": boolean;
   "core.globalAmbientVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
@@ -396,6 +404,10 @@ export interface SettingConfig {
 
   "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
   "core.tokenDragPreview": boolean;
+
+  /** @remarks The schema is {@linkcode UIConfig.schema}, which is also what the submenu edits. */
+  "core.uiConfig": UIConfig.SettingField;
+
   "core.visionAnimation": boolean;
 }
 

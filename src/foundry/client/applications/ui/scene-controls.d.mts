@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { AnyObject, DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -20,7 +20,7 @@ declare class SceneControls<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   static override DEFAULT_OPTIONS: SceneControls.DefaultOptions;
 
-  static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   static override readonly emittedEvents: string[];
 
@@ -43,7 +43,12 @@ declare class SceneControls<
   /**
    * The currently active tool in the control palette.
    */
-  get tool(): SceneControls.Tool;
+  get tool(): SceneControls.Tool | null;
+
+  /**
+   * Global palette state.
+   */
+  get paletteOpen(): boolean;
 
   /**
    * Activate a new control layer or tool.
@@ -67,12 +72,18 @@ declare class SceneControls<
    */
   _updateNotesIcon(): void;
 
+  /**
+   * Update the active state of the preset pips.
+   * @internal
+   */
+  _updatePresetPips(): void;
+
   override setPosition(position?: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position | void;
 
   /**
    * Reusable toolclip items.
    */
-  static COMMON_TOOLCLIP_ITEMS: Record<string, SceneControls.ToolclipItem>;
+  static COMMON_TOOLCLIP_ITEMS: Record<string, SceneControls.CommonToolclipItem>;
 
   /**
    * A helper function used to prepare an array of toolclip items.
@@ -82,24 +93,28 @@ declare class SceneControls<
   ): SceneControls.ToolclipConfigurationItem[];
 
   /**
-   * @deprecated "{@linkcode SceneControls#activeControl} is deprecated in favor of {@linkcode SceneControls#control#name}" (since v13, until v15)
-   * @ignore
+   * Toggle the tool palette for the active tool.
+   * @param toggle - Whether to toggle it on or off.
    */
-  get activeControl(): void;
+  togglePlaceablePalette(toggle?: boolean): Promise<void>;
+
+  /**
+   * @deprecated "{@linkcode SceneControls#activeControl} is deprecated in favor of {@linkcode SceneControls#control#name}" (since v13, until v15)
+   */
+  get activeControl(): string;
 
   /**
    * @deprecated "{@linkcode SceneControls#activeTool} is deprecated in favor of {@linkcode SceneControls#tool#name}" (since v13, until v15)
-   * @ignore
    */
-  get activeTool(): void;
+  get activeTool(): string | null | undefined;
 
   /**
    * @deprecated "{@linkcode SceneControls#initialize} is deprecated in favor of {@linkcode SceneControls#render} with `{controls, tool}` passed as render options." (since v13, until v15)
-   * @ignore
    */
-  initialize({ layer, tool }: { layer?: string | undefined; tool?: string | undefined }): Promise<void>;
+  initialize(options?: SceneControls.InitializeOptions): Promise<this>;
 
-  #sceneControls: true;
+  static #SceneControlsStatic: true;
+  #SceneControls: true;
 }
 
 declare namespace SceneControls {
@@ -111,8 +126,49 @@ declare namespace SceneControls {
    * inherit context from its parent class.
    */
   interface RenderContext {
-    controls: Control[];
-    tools: Tool[];
+    controls: ControlContext[];
+
+    tools: ToolContext[];
+
+    /** @remarks Whether the active tool of the active control is named `"select"`. */
+    isSelect: boolean;
+
+    /** @remarks Assigned by `_preRender` and consumed by `_onRender`. */
+    activationChange: ActivationChange;
+  }
+
+  /** @remarks A {@linkcode Control} decorated by `_prepareContext` for rendering. */
+  interface ControlContext extends Control {
+    /** @remarks Whether this is the currently active control. */
+    active: boolean;
+  }
+
+  /**
+   * @remarks A {@linkcode Tool} decorated by `_prepareContext` for rendering. The tools are deep
+   * cloned first, so these additions do not reach the {@linkcode SceneControls.controls} record.
+   */
+  interface ToolContext extends Tool {
+    cssClass: string;
+
+    showToolclip: boolean;
+
+    /** @remarks Only set for a button tool with `createData`, while a palette class is available. */
+    pip?: boolean | undefined;
+  }
+
+  /**
+   * The data structure provided to the {@linkcode Control.onChange | SceneControl#onChange} callback.
+   */
+  interface ActivationChange {
+    event: Event;
+
+    /** @remarks `null` when the active control did not change. */
+    controlChange: string | null;
+
+    /** @remarks `null` when the active tool did not change. */
+    toolChange: string | null;
+
+    toggleChanges: Record<string, boolean>;
   }
 
   /**
@@ -144,15 +200,19 @@ declare namespace SceneControls {
      */
     visible?: boolean | undefined;
 
-    tools: Record<string, Tool>;
+    /** @remarks The `canvas` property name of the {@linkcode foundry.canvas.layers.PlaceablesLayer} this control set drives. */
+    layer?: string | undefined;
 
-    activeTool: string;
+    /** @remarks Defaulted to `{}` by `#prepareControls` when absent. */
+    tools?: Record<string, Tool> | undefined;
+
+    activeTool?: string | undefined;
 
     /** A callback invoked when control set is activated or deactivated */
     onChange?: ((event: Event, active: boolean) => void) | undefined;
 
-    /** A callback invoked when the active tool changes */
-    onToolChange?: ((event: Event, tool: Tool) => void) | undefined;
+    /** A callback invoked when a tool is activated or deactivated */
+    onToolChange?: ((event: Event, tool: Tool, active: boolean) => void) | undefined;
   }
 
   /**
@@ -199,6 +259,31 @@ declare namespace SceneControls {
      */
     button?: boolean | undefined;
 
+    /**
+     * Does this tool allow interaction with placeables?
+     */
+    interaction?: boolean | undefined;
+
+    /**
+     * Does this tool allow placeables to be controlled?
+     */
+    control?: boolean | undefined;
+
+    /**
+     * Does this tool create placeables?
+     */
+    creation?: boolean | undefined;
+
+    /**
+     * Default creation data
+     */
+    createData?: AnyObject | undefined;
+
+    /**
+     * The data of the shape this tool creates
+     */
+    shapeData?: AnyObject | undefined;
+
     /** A callback invoked when the tool is activated or deactivated */
     onChange?: ((event: Event, active: boolean) => void) | undefined;
 
@@ -219,26 +304,28 @@ declare namespace SceneControls {
 
   interface ToolclipConfigurationItem {
     /** A plain paragraph of content for this item. */
-    paragraph: string;
+    paragraph?: string | undefined;
 
     /** A heading for the item. */
-    heading: string;
+    heading?: string | undefined;
 
     /** Content for the item. */
-    content: string;
+    content?: string | undefined;
 
     /** If the item is a single key reference, use this instead of content. */
-    reference: string;
+    reference?: string | undefined;
   }
 
-  interface ToolclipItem {
+  interface CommonToolclipItem {
     heading: string;
-    reference: string;
+
+    content?: string | undefined;
+
+    reference?: string | undefined;
   }
 
-  interface Configuration<
-    SceneControls extends SceneControls.Any = SceneControls.Any,
-  > extends ApplicationV2.Configuration<SceneControls> {}
+  interface Configuration<SceneControls extends SceneControls.Any = SceneControls.Any>
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<SceneControls> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
@@ -247,29 +334,35 @@ declare namespace SceneControls {
   > &
     object;
 
-  interface RenderOptions extends ApplicationV2.RenderOptions, HandlebarsApplicationMixin.RenderOptions {
+  interface _ActivateOptions {
     /** An event which prompted a re-render */
-    event: Event;
-
-    /** Re-prepare the possible list of controls */
-    reset: boolean;
+    event?: Event | undefined;
 
     /** The control set to activate. If undefined, the current control set remains active */
-    control: string;
+    control?: string | undefined;
 
     /** A specific tool to activate. If undefined the current tool or default tool for the control set becomes active */
-    tool: string;
+    tool?: string | undefined;
 
     /** Changes to apply to toggles within the control set */
-    toggles: Record<string, boolean>;
+    toggles?: Record<string, boolean> | undefined;
+  }
+
+  interface RenderOptions
+    extends ApplicationV2.RenderOptions, HandlebarsApplicationMixin.RenderOptions, _ActivateOptions {
+    /** Re-prepare the possible list of controls */
+    reset?: boolean | undefined;
   }
 
   type EmittedEvents = [...ApplicationV2.EmittedEvents, "activate"];
 
-  interface ActivateOptions extends Pick<
-    DeepPartial<SceneControls.RenderOptions>,
-    "event" | "control" | "tool" | "toggles"
-  > {}
+  interface ActivateOptions extends _ActivateOptions {}
+
+  interface InitializeOptions {
+    layer?: string | undefined;
+
+    tool?: string | undefined;
+  }
 }
 
 declare abstract class AnySceneControls extends SceneControls<

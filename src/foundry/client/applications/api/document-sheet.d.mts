@@ -47,12 +47,12 @@ declare namespace DocumentSheetV2 {
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */
-    viewPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    viewPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */
-    editPermission: typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+    editPermission: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
     /**
      * Can this sheet class be used to create a new Document?
@@ -60,9 +60,19 @@ declare namespace DocumentSheetV2 {
     canCreate: boolean;
 
     /**
+     * Can the Document be imported into the World from a Compendium Collection?
+     */
+    canImport: boolean;
+
+    /**
      * Allow sheet configuration as a header button
      */
     sheetConfig: boolean;
+
+    /**
+     * Allow ownership configuration as a header button
+     */
+    ownershipConfig: boolean;
   }
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
@@ -140,7 +150,7 @@ declare class DocumentSheetV2<
   // TODO(LukeAbby): This needs to be updated to use `DocumentSheetV2.InputOptions` but that breaks subclassing right now
   protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
-  protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
+  protected override _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
 
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 
@@ -156,7 +166,7 @@ declare class DocumentSheetV2<
    */
   protected _toggleDisabled(disabled: boolean): void;
 
-  protected override _canRender(options: DeepPartial<RenderOptions>): false | void;
+  protected override _canRender(options: DeepPartial<RenderOptions>): boolean | void;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

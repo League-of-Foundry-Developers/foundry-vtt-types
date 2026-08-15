@@ -1,12 +1,32 @@
+export interface RollParseOffset {
+  /** The start position of the matched term in the formula string. */
+  start: number;
+
+  /** The end position of the matched term in the formula string. */
+  end: number;
+}
+
 export interface RollParseNode {
   /** The class name for this node. */
   class: string;
 
-  /** The original matched text for this node. */
-  formula: string;
+  /**
+   * The original matched text for this node.
+   *
+   * @remarks Absent from string terms and from the nodes `RollParser.toAST` synthesizes.
+   * @privateRemarks Redeclared as required on the concrete nodes that always carry it.
+   */
+  formula?: string | undefined;
+
+  /**
+   * The position of the matched term in the formula string.
+   *
+   * @remarks Absent from expression tree and synthesized operator nodes.
+   */
+  offset?: RollParseOffset | undefined;
 }
 
-export interface RollParseTreeNode {
+export interface RollParseTreeNode extends RollParseNode {
   /** The binary operator. */
   operator: string;
 
@@ -15,9 +35,12 @@ export interface RollParseTreeNode {
 }
 
 export interface FlavorRollParseNode extends RollParseNode {
+  /** The position of the matched term in the formula string. */
+  offset: RollParseOffset;
+
   options: {
     /** Flavor text associated with the node. */
-    flavour: string;
+    flavor: string | null;
   };
 }
 
@@ -27,11 +50,17 @@ export interface ModifiersRollParseNode extends FlavorRollParseNode {
 }
 
 export interface NumericRollParseNode extends FlavorRollParseNode {
+  /** The original matched text for this node. */
+  formula: string;
+
   /** The number. */
   number: number;
 }
 
 export interface FunctionRollParseNode extends FlavorRollParseNode {
+  /** The original matched text for this node. */
+  formula: string;
+
   /** The function name. */
   fn: string;
 
@@ -40,13 +69,19 @@ export interface FunctionRollParseNode extends FlavorRollParseNode {
 }
 
 export interface PoolRollParseNode extends ModifiersRollParseNode {
+  /** The original matched text for this node. */
+  formula: string;
+
   /** The pool terms. */
   terms: RollParseNode[];
 }
 
 export interface ParentheticalRollParseNode extends FlavorRollParseNode {
+  /** The original matched text for this node. */
+  formula: string;
+
   /** The inner parenthetical term. */
-  term: string;
+  term: RollParseNode;
 }
 
 export interface StringParseNode extends FlavorRollParseNode {
@@ -55,8 +90,16 @@ export interface StringParseNode extends FlavorRollParseNode {
 }
 
 export interface DiceRollParseNode extends ModifiersRollParseNode {
-  /** The number of dice. */
-  number: number | ParentheticalRollParseNode;
+  /** The original matched text for this node. */
+  formula: string;
+
+  /**
+   * The number of dice.
+   *
+   * @remarks `null` when the number of dice is omitted.
+   * @privateRemarks Foundry's typedef omits `null`.
+   */
+  number: number | ParentheticalRollParseNode | null;
 
   /** The number of faces or a string denomination like "c" or "f" */
   faces: string | number | ParentheticalRollParseNode;

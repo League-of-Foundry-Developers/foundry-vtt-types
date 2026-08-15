@@ -28,7 +28,9 @@ expectTypeOf(rect.center).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(rect.pointIsOn(somePoint)).toBeBoolean();
 expectTypeOf(rect._getEdgeZone(somePoint)).toEqualTypeOf<PIXI.Rectangle.CS_ZONES>();
 expectTypeOf(rect.pointsBetween({ x: 40, y: 30 }, { x: 200, y: 300 })).toEqualTypeOf<Canvas.Point[]>();
-expectTypeOf(rect.segmentIntersections(somePoint, { x: 400, y: 200 })).toEqualTypeOf<Canvas.Point[]>();
+expectTypeOf(rect.segmentIntersections(somePoint, { x: 400, y: 200 })).toEqualTypeOf<
+  foundry.utils.LineIntersection[]
+>();
 expectTypeOf(rect.intersection(otherRect)).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(rect.toPolygon()).toEqualTypeOf<PIXI.Polygon>();
 expectTypeOf(rect.leftEdge).toEqualTypeOf<PIXI.Rectangle.Edge>();
@@ -83,12 +85,12 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-expectTypeOf(rect.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon.ClipperPoint[]>();
+expectTypeOf(rect.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(
   rect.intersectClipper(clipperPoints, { clipType: ClipperLib.ClipType.ctDifference, scalingFactor: 3 }),
-).toEqualTypeOf<PIXI.Polygon.ClipperPoint[]>();
+).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(rect.intersectClipper(clipperPoints, { clipType: undefined, scalingFactor: undefined })).toEqualTypeOf<
-  PIXI.Polygon.ClipperPoint[]
+  PIXI.Polygon.ClipperPath[]
 >();
 
 expectTypeOf(rect.overlaps(otherRect)).toEqualTypeOf<boolean>();

@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Macros = foundry.documents.collections.Macros;
 
@@ -39,6 +39,18 @@ describe("Macros Tests", async () => {
   });
 
   const macros = new Macros([macroSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(macros).toExtend<Collection.Any>();
+    expectTypeOf(Macros).toExtend<Collection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(Collection);
+    expectTypeOf(macros).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Macros).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(macros).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Macros).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(macros).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Macros.documentName).toEqualTypeOf<"Macro">();
@@ -153,6 +165,33 @@ describe("Macros Tests", async () => {
     if (!imported2) throw new Error("Failed to create test `Macro` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Macro.Stored<"script">>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => macros["_prepareImportDocument"](macro)).toThrow();
+
+    expectTypeOf(macros["_prepareImportDocument"](macroImpl, {})).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(macros["_prepareImportDocument"](macro, { keepId: true })).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(macros["_prepareImportDocument"](macroImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      macros["_prepareImportDocument"](macroImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Macro", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Macro.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

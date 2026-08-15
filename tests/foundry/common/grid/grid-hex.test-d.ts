@@ -18,12 +18,6 @@ describe("GridHex Tests", () => {
     // @ts-expect-error Passing coordinates and a grid is required
     new GridHex();
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated -- deprecated construction signature
-    new GridHex({ row: 5, col: 6 }, grid);
-
-    // eslint-disable-next-line @typescript-eslint/no-deprecated -- deprecated construction signature
-    new GridHex(cube2D, hexGridHelpers.fullConfig);
-
     // valid constructions
     new GridHex(point2D, grid);
     new GridHex(offset2D, grid);
@@ -42,7 +36,9 @@ describe("GridHex Tests", () => {
 
   test("Methods", () => {
     expectTypeOf(gridHex.getNeighbors()).toEqualTypeOf<GridHex[]>();
-    expectTypeOf(gridHex.shiftCube(1, 2, 3)).toEqualTypeOf<GridHex>();
+    expectTypeOf(gridHex.shiftCube(1, 2, -3)).toEqualTypeOf<GridHex>();
+    expectTypeOf(gridHex.shiftCube(1, 2)).toEqualTypeOf<GridHex>();
+    expectTypeOf(gridHex.shiftCube(undefined, 2, -3)).toEqualTypeOf<GridHex>();
     expectTypeOf(gridHex.equals(gridHex)).toEqualTypeOf<boolean>();
   });
 });

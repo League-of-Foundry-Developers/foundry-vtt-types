@@ -97,8 +97,8 @@ export function disabled(value: unknown): string;
 export function concat(...values: string[]): Handlebars.SafeString;
 
 /**
- * Construct an editor element for rich text editing.
- * @param content - The content to display and edit
+ * Construct an editor element for rich text editing with ProseMirror.
+ * @param content - The content to display and edit.
  *
  * @example
  * ```hbs
@@ -148,7 +148,7 @@ export function localize(value: string, options: LocalizeOptions): string;
  * {{formatNumber undefined decimals=0 sign=true}} <!-- NaN -->
  * ```
  */
-export function numberFormat(value: string | number, options: NumberFormatOptions): string;
+export function numberFormat(value: string | number, options: NumberFormatOptions): Handlebars.SafeString;
 
 /**
  * Render a form input field of type number with value appropriately rounded to step size.
@@ -158,12 +158,12 @@ export function numberFormat(value: string | number, options: NumberFormatOption
  * {{numberInput value name="numberField" step=1 min=0 max=10}}
  * ```
  */
-export function numberInput(value: string, options: NumberInputOptions): Handlebars.SafeString;
+export function numberInput(value: number, options: NumberInputOptions): Handlebars.SafeString;
 
 /**
  * Create an object from a sequence of `key=value` pairs.
  */
-export function object(options: Handlebars.HelperOptions): Record<string, unknown>;
+export function object(options: ObjectOptions): Record<string, unknown>;
 
 /**
  * A helper to create a set of radio checkbox input elements in a named set.
@@ -296,47 +296,14 @@ export function formGroup<Field extends foundry.data.fields.DataField.Any>(
 ): Handlebars.SafeString;
 
 /**
- * @deprecated since v12, will be removed in v14
+ * @deprecated "The \{\{filePicker\}\} Handlebars helper is deprecated and replaced by use of the \<file-picker\> custom HTML element" (since v12, until v16)
  */
 export function filePicker(options: FilePickerOptions): Handlebars.SafeString | string;
 
 /**
- * @deprecated since v12, will be removed in v14
- */
-export function colorPicker(options: ColorPickerOptions): Handlebars.SafeString;
-
-/**
- * @deprecated since v12, will be removed in v14
- */
-export function select(selected: string, options: SelectOptions): string;
-
-/**
- * @deprecated since v13, will be removed in v15
- * @remarks "The \{\{rangePicker\}\} Handlebars helper is deprecated and replaced by use of the <range-picker> custom HTML element"
+ * @deprecated "The \{\{rangePicker\}\} Handlebars helper is deprecated and replaced by use of the \<range-picker\> custom HTML element" (since v13, until v15)
  */
 export function rangePicker(options: RangePickerOptions): Handlebars.SafeString;
-
-/**
- * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
- */
-export interface ColorPickerOptions extends InexactPartial<Handlebars.HelperOptions> {
-  hash: {
-    /**
-     * The name of the field to create
-     */
-    name?: string | undefined;
-
-    /**
-     * The current color value
-     */
-    value?: string | undefined;
-
-    /**
-     * A default color string if a value is not provided
-     */
-    default?: string | undefined;
-  };
-}
 
 /**
  * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
@@ -393,6 +360,15 @@ export interface FilePickerOptions extends InexactPartial<Handlebars.HelperOptio
      */
     target: string;
   };
+}
+
+/**
+ * @remarks Despite extending {@linkcode Handlebars.HelperOptions}, the function does not use the non-hash
+ * options. Registered as a subexpression helper, so Handlebars supplies no `fn` or `inverse`.
+ */
+export interface ObjectOptions extends InexactPartial<Handlebars.HelperOptions> {
+  /** @remarks The `key=value` pairs the helper collects into the returned object. */
+  hash: Record<string, unknown>;
 }
 
 /**
@@ -486,11 +462,6 @@ export interface RangePickerOptions extends InexactPartial<Handlebars.HelperOpti
     step?: number | undefined;
   };
 }
-
-/**
- * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
- */
-export interface SelectOptions extends InexactPartial<Handlebars.HelperOptions> {}
 
 /**
  * @remarks Despite extending {@linkcode Handlebars.HelperOptions}, the function does not use the non-hash options

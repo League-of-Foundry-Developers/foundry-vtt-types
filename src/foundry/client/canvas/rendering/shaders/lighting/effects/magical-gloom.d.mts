@@ -5,7 +5,7 @@ import type AdaptiveDarknessShader from "../darkness-lighting.mjs";
  * Creates a gloomy ring of pure darkness.
  */
 declare class MagicalGloomDarknessShader extends AdaptiveDarknessShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace MagicalGloomDarknessShader {

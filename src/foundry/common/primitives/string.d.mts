@@ -23,6 +23,12 @@ declare global {
     titleCase<S extends string>(this: S): Titlecase<S>;
 
     /**
+     * Strip diacritics from a string, converting accented characters to their base equivalents.
+     * For example, "Bônus de Força" becomes "Bonus de Forca".
+     */
+    stripDiacritics(): string;
+
+    /**
      * Strip any <script> tags which were included within a provided string
      */
     stripScripts(): string;

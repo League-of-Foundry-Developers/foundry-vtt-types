@@ -42,6 +42,11 @@ describe("PrimarySpriteMesh tests", () => {
     expectTypeOf(myPSM["_batchData"]).toEqualTypeOf<PrimarySpriteMesh.BatchData>();
     expectTypeOf(myPSM["_textureAlphaData"]).toEqualTypeOf<TextureLoader.TextureAlphaData | null | undefined>();
     expectTypeOf(myPSM.textureAlphaThreshold).toBeNumber();
+    expectTypeOf(myPSM["_depthElevation"]).toBeNumber();
+    expectTypeOf(myPSM["_occlusionElevation"]).toBeNumber();
+    expectTypeOf(myPSM["_batchData"].depthElevation).toEqualTypeOf<number | undefined>();
+    expectTypeOf(myPSM["_batchData"].occlusionElevation).toEqualTypeOf<number | undefined>();
+    expectTypeOf(myPSM["_batchData"].surfaceOcclusion).toEqualTypeOf<number | undefined>();
     expectTypeOf(myPSM.setShaderClass(PrimaryBaseSamplerShader)).toEqualTypeOf<void>();
 
     expectTypeOf(myPSM.renderDepthData(someRenderer)).toBeVoid();
@@ -70,16 +75,5 @@ describe("PrimarySpriteMesh tests", () => {
 
     expectTypeOf(myPSM.containsPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();
     expectTypeOf(myPSM.containsPoint({ x: 500, y: 500 }, 0.2)).toEqualTypeOf<boolean>();
-  });
-
-  test("Deprecated", () => {
-    // deprecated since v12, until v14
-
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPSM.getPixelAlpha(500, 500)).toEqualTypeOf<number>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPSM._getAlphaBounds()).toEqualTypeOf<PIXI.Rectangle>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPSM._getTextureCoordinate(250, 250)).toEqualTypeOf<PIXI.IPointData>();
   });
 });

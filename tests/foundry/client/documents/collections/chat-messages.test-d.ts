@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import ChatMessages = foundry.documents.collections.ChatMessages;
 
@@ -34,6 +34,18 @@ describe("ChatMessages Tests", async () => {
   });
 
   const messages = new ChatMessages([messageSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(messages).toExtend<Collection.Any>();
+    expectTypeOf(ChatMessages).toExtend<Collection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(Collection);
+    expectTypeOf(messages).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(ChatMessages).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(messages).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(ChatMessages).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(messages).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(ChatMessages.documentName).toEqualTypeOf<"ChatMessage">();
@@ -135,6 +147,33 @@ describe("ChatMessages Tests", async () => {
     if (!imported2) throw new Error("Failed to create test `ChatMessage` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<ChatMessage.Stored<"base">>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => messages["_prepareImportDocument"](message)).toThrow();
+
+    expectTypeOf(messages["_prepareImportDocument"](messageImpl, {})).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(messages["_prepareImportDocument"](message, { keepId: true })).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(messages["_prepareImportDocument"](messageImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      messages["_prepareImportDocument"](messageImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "ChatMessage", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<ChatMessage.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

@@ -195,7 +195,7 @@ declare abstract class Document<
    */
   static override get schema(): SchemaField.Any;
 
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
+  protected override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -388,6 +388,12 @@ declare abstract class Document<
     data?: Document.CanUserModifyData<DocumentName, Action>,
   ): boolean;
 
+  protected static override _preCleanData(
+    data: object,
+    options: DataField.CleanOptions,
+    _state: DataField.UpdateState,
+  ): void;
+
   /**
    * Clone a document, creating a new document by combining current data with provided overrides.
    * The cloned document is ephemeral and not yet saved to the database.
@@ -411,6 +417,17 @@ declare abstract class Document<
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
   override toObject(source?: boolean): SchemaField.SourceData<Schema>;
+
+  /**
+   * @throws If `changes.type` differs from `copy.type` and `changes.system` is not a `ForcedReplacement` operator.
+   * @remarks Requires full replacement of system data if the document type changes.
+   */
+  protected override _updateDiff(
+    copy: SchemaField.SourceData<Schema>,
+    changes: SchemaField.UpdateData<Schema>,
+    options: DataModel.UpdateOptions,
+    _state: DataField.UpdateState,
+  ): SchemaField.UpdateData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -1116,7 +1133,6 @@ declare namespace Document {
     ? ConfiguredSubTypeOf<"Actor">
     : // ESLint doesn't know that `DataModelConfig` and `SourceConfig` are meant to be declaration merged into.
       // Therefore it hastily thinks the results are always `never`.
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-duplicate-type-constituents
       string & (keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>);
 
   type SubTypesOf<Name extends Document.Type> = Name extends "ActorDelta"
@@ -2192,6 +2208,14 @@ declare namespace Document {
      * @defaultValue `false`
      */
     addSource: boolean;
+
+    /**
+     * Discard invalid embedded documents from the source. Not to be confused with `dropInvalidEmbedded`, which
+     * does not discard the invalid embedded documents but just prevents the document from being considered invalid
+     * and drops invalid embedded documents during preparation.
+     * @defaultValue `false`
+     */
+    discardInvalidEmbedded: boolean;
   }
 
   /**
@@ -2239,6 +2263,7 @@ declare namespace Document {
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly hasTypeData?: boolean;
+    readonly baseTypeAllowed?: boolean;
     readonly indexed: boolean;
     readonly compendiumIndexFields: readonly string[];
     readonly preserveOnImport: readonly string[];

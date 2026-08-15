@@ -186,6 +186,10 @@ declare namespace RelatedPackage {
   }
 
   interface Data extends SchemaField.InitializedData<Schema> {}
+
+  interface Source<PackageType extends CONST.PACKAGE_TYPES | undefined = undefined> extends SchemaField.SourceData<
+    Schema<PackageType>
+  > {}
 }
 
 export { RelatedPackage };
@@ -364,6 +368,15 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
    * @privateRemarks Defined at construction by simple assignment.
    */
   tags: string[];
+
+  /**
+   * The package's full compatibility history from the package index, as an ordered array of non-overlapping segments.
+   * Provided so that a client can determine which core version to downgrade or upgrade to when no released version
+   * supports the current core.
+   * @defaultValue `[]`
+   * @privateRemarks Defined at construction by simple assignment.
+   */
+  compatibilityList: BasePackage.CompatibilitySegment[];
 
   /**
    * A flag which tracks if this package has files stored in the persistent storage folder
@@ -852,10 +865,43 @@ declare namespace BasePackage {
     tags: string[];
 
     /**
+     * The package's full compatibility history from the package index, as an ordered array of non-overlapping segments.
+     * @defaultValue `[]`
+     */
+    compatibilityList: CompatibilitySegment[];
+
+    /**
      * A flag which tracks if this package has files stored in the persistent storage folder
      * @defaultValue `false`
      */
     hasStorage: boolean;
+  }
+
+  interface CompatibilitySegment {
+    /**
+     * The first core version covered, inclusive.
+     */
+    from: string;
+
+    /**
+     * The last core version covered, inclusive. Null means an open-ended claim.
+     */
+    to: string | null;
+
+    /**
+     * The highest core build in the segment verified as compatible, or null.
+     */
+    verified: string | null;
+
+    /**
+     * The best package version to install for cores in this segment.
+     */
+    version: string;
+
+    /**
+     * The manifest URL that installs that version.
+     */
+    manifest: string;
   }
 
   /**
@@ -942,7 +988,7 @@ declare namespace BasePackage {
 
   interface LogOptions extends InexactPartial<_Installed>, InexactPartial<LogCompatibilityWarningOptions> {}
 
-  interface MigrateDataOptions extends InexactPartial<_Installed> {}
+  interface MigrateDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
 
   interface CleanDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
 

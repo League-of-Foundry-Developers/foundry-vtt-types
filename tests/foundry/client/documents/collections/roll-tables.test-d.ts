@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import RollTables = foundry.documents.collections.RollTables;
 
@@ -34,6 +34,18 @@ describe("RollTables Tests", async () => {
   });
 
   const tables = new RollTables([tableSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(tables).toExtend<Collection.Any>();
+    expectTypeOf(RollTables).toExtend<Collection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(Collection);
+    expectTypeOf(tables).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(RollTables).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(tables).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(RollTables).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(tables).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(RollTables.documentName).toEqualTypeOf<"RollTable">();
@@ -109,6 +121,41 @@ describe("RollTables Tests", async () => {
     expectTypeOf(tables.set("ID", table)).toEqualTypeOf<typeof tables>();
 
     expectTypeOf(tables.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `RollTable`s don't have subtypes
+    const imported1 = await tables.importDocument(table, {});
+    if (!imported1) throw new Error("Failed to create test `RollTable` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<RollTable.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => tables["_prepareImportDocument"](table)).toThrow();
+
+    expectTypeOf(tables["_prepareImportDocument"](tableImpl, {})).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(tables["_prepareImportDocument"](table, { keepId: true })).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(tables["_prepareImportDocument"](tableImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      tables["_prepareImportDocument"](tableImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "RollTable", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<RollTable.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

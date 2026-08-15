@@ -14,9 +14,9 @@ declare class ColorationVisionShader extends AdaptiveVisionShader {
   /**
    * Memory allocations for the Adaptive Coloration Shader
    */
-  static SHADER_HEADER: string;
+  static get SHADER_HEADER(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -46,7 +46,7 @@ declare class ColorationVisionShader extends AdaptiveVisionShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Flag whether the coloration shader is currently required.
