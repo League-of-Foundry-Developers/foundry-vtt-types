@@ -78,6 +78,10 @@ expectTypeOf(renderContext.rootId).toBeString();
 expectTypeOf(renderContext.gridUnits).toBeString();
 expectTypeOf(renderContext.fields).toEqualTypeOf<PrototypeToken["schema"]["fields"]>();
 
+// Merged in for the `appearance` part, alongside the mixin's own tab members.
+expectTypeOf(renderContext.imagePreview).toEqualTypeOf<PrototypeTokenConfig.ImagePreviewContext | undefined>();
+expectTypeOf(renderContext.shapes).toEqualTypeOf<Record<CONST.TOKEN_SHAPES, string> | undefined>();
+
 /* Image preview */
 
 declare const appearance: PrototypeTokenConfig.AppearanceTabContext;

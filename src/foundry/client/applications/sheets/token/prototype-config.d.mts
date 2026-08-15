@@ -123,6 +123,12 @@ declare namespace PrototypeTokenConfig {
 
     /** @remarks The localization of `"MEASUREMENT.GridUnits"`. */
     gridUnits: string;
+
+    /**
+     * @remarks Merged in for the `appearance` part, on top of the mixin's tab members; see
+     * {@linkcode AppearanceTabContext.imagePreview}.
+     */
+    imagePreview?: ImagePreviewContext | undefined;
   }
 
   /** @remarks Added for the `appearance` part. */
