@@ -722,7 +722,7 @@ export type IsObject<T> = T extends NonObject
     ? false
     : true;
 
-export type NonObject = string | number | boolean | bigint | symbol | null | undefined;
+export type NonObject = string | number | boolean | bigint | symbol | null | undefined | void;
 
 /**
  * A simple, non-recursive merge type.
