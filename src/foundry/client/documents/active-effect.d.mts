@@ -231,9 +231,8 @@ declare namespace ActiveEffect {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<
-    SubType extends ActiveEffect.SubType = ActiveEffect.SubType,
-  > extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -1255,6 +1254,14 @@ declare namespace ActiveEffect {
   interface ShouldApplyChangeOptions {
     /** The application phase currently being evaluated. */
     phase?: ChangePhase | undefined;
+
+    /**
+     * Replacement data to be used as part of the change's application
+     * @remarks What {@linkcode ActiveEffect.getReplacementData | ActiveEffect#getReplacementData} returned for this
+     * effect, which {@linkcode Actor.applyActiveEffects | Actor#applyActiveEffects} then forwards to
+     * {@linkcode ActiveEffect.applyChange | ActiveEffect.applyChange}.
+     */
+    replacementData?: AnyObject | undefined;
   }
 
   /** Options affecting the change application. */
@@ -1496,9 +1503,16 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * may override this method to introduce additional conditions under which a change is applied.
    * @param change  - The change being considered.
    * @param options - Options which affect whether the change is applied.
-   * @returns Whether the change should be applied during this phase.
+   * @returns Should the change be applied during this phase (or at all)?
    */
   shouldApplyChange(change: ActiveEffect.ChangeData, options?: ActiveEffect.ShouldApplyChangeOptions): boolean;
+
+  /**
+   * Acquire replacement data for use in the application of this effect's changes.
+   * @param baseData - Base data sourced from elsewhere (by default from `Actor#getRollData`)
+   * @returns Data used to resolve `"@"` expressions in string {@linkcode ActiveEffect.ChangeData | ChangeData} values
+   */
+  getReplacementData(baseData: AnyObject): AnyObject;
 
   /**
    * Apply this ActiveEffect to a target Document.

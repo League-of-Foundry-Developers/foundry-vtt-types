@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, MaybePromise } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, MaybePromise } from "fvtt-types/utils";
 import { database, testID } from "../../../utils.ts";
 import * as itemHelpers from "./item.test-d.ts";
 
@@ -734,6 +734,13 @@ const effect = new ActiveEffect.implementation({ name: "My effect" });
 expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 
 expectTypeOf(effect.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"ActiveEffect", undefined>>();
+
+expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, { phase: "initial", replacementData: { str: 10 } })).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, { phase: undefined, replacementData: undefined })).toBeBoolean();
+
+expectTypeOf(effect.getReplacementData({ str: 10 })).toEqualTypeOf<AnyObject>();
 
 expectTypeOf(effect.actor).toEqualTypeOf<Actor.Implementation | null>();
 // @ts-expect-error Only getter, no setter
