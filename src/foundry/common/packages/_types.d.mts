@@ -13,6 +13,8 @@ export {};
 
 type PackageAuthorData = foundry.packages.BasePackage.AuthorData;
 
+type PackageCompatibilitySegment = foundry.packages.BasePackage.CompatibilitySegment;
+
 type CompendiumArtFlag = foundry.packages.BasePackage.Flags.CompendiumArtFlag;
 
 type PackageFlagsData = foundry.packages.BasePackage.Flags.Core;

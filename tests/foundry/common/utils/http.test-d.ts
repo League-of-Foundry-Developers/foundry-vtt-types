@@ -23,8 +23,10 @@ expectTypeOf(
   fu.fetchWithTimeout("/", partialRequestInit, {
     onTimeout: undefined,
     timeoutMs: undefined,
+    allowStatus: undefined,
   }),
 ).toEqualTypeOf<Promise<Response>>();
+expectTypeOf(fu.fetchWithTimeout("/", partialRequestInit, { allowStatus: [404] })).toEqualTypeOf<Promise<Response>>();
 
 expectTypeOf(fu.fetchJsonWithTimeout("/")).toEqualTypeOf<Promise<unknown>>();
 expectTypeOf(fu.fetchJsonWithTimeout("/", {})).toEqualTypeOf<Promise<unknown>>();
@@ -42,6 +44,9 @@ expectTypeOf(
     timeoutMs: undefined,
   }),
 ).toEqualTypeOf<Promise<unknown>>();
+// `fetchJsonWithTimeout` forwards only `timeoutMs` and `onTimeout`
+// @ts-expect-error `allowStatus` is not accepted here
+fu.fetchJsonWithTimeout("/", partialRequestInit, { allowStatus: [404] });
 
 expectTypeOf(fu.srcExists("some/path/to/img.png")).toEqualTypeOf<Promise<boolean>>();
 

@@ -153,10 +153,8 @@ declare class CompendiumCollection<
   ): DocumentCollection.GetReturn<DocumentName, Options>;
 
   /**
-   * @remarks In addition to `#flush`ing, this forwards to {@linkcode CompendiumFolderCollection.set | CompendiumFolderCollection#set} if
-   * passed a folder. In that case, in reality, this method will return that class, not the `CompendiumCollection` is belongs to. We are
-   * blatantly lying about this here, because accurately typing that requires ugly hacks. If this inconveniences you, please let us know
-   * on discord.
+   * @remarks A folder is stored in the pack's {@linkcode CompendiumCollection.folders | #folders} collection and returns
+   * early, so neither `#flush` nor {@linkcode CompendiumCollection.indexDocument | #indexDocument} runs for it.
    */
   override set(id: string, document: Document.StoredForName<DocumentName> | Folder.Stored<DocumentName>): this;
 
@@ -321,6 +319,7 @@ declare class CompendiumCollection<
    * @returns A Promise which resolves once the setting is updated
    * @remarks Passing explicit `undefined` for any key of `configuration` will remove it from the stored config, reverting to default
    * handling for that property.
+   * @throws If the current user is not a GM with `OWNER` level on this pack.
    */
   configure(configuration?: CompendiumCollection.Configuration): Promise<void>;
 
@@ -714,9 +713,11 @@ declare namespace CompendiumCollection {
     {
       [K in keyof T]?: _Queryify<T[K]>;
     } & {
-      [
-        K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__in` : never) : never
-      ]?: ReadonlyArray<T[K]>;
+      [K in keyof T as K extends string
+        ? IsComparable<T[K]> extends true
+          ? `${K}__in`
+          : never
+        : never]?: ReadonlyArray<T[K]>;
     } & {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }

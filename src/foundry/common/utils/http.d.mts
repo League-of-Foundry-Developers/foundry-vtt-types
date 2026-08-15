@@ -8,7 +8,11 @@ import type { InexactPartial } from "#utils";
  * @param options - Additional Options (default: `{}`)
  * @throws HttpError
  */
-export declare function fetchWithTimeout(url: string, data?: RequestInit, options?: TimeoutOptions): Promise<Response>;
+export declare function fetchWithTimeout(
+  url: string,
+  data?: RequestInit,
+  options?: FetchWithTimeoutOptions,
+): Promise<Response>;
 
 /**
  * A small wrapper that automatically asks for JSON with a Timeout
@@ -38,6 +42,17 @@ interface _TimeoutOptions {
 }
 
 interface TimeoutOptions extends InexactPartial<_TimeoutOptions> {}
+
+/** @internal */
+interface _FetchWithTimeoutOptions extends _TimeoutOptions {
+  /**
+   * Non-OK status codes to return rather than throw.
+   * @defaultValue `[]`
+   */
+  allowStatus: number[];
+}
+
+interface FetchWithTimeoutOptions extends InexactPartial<_FetchWithTimeoutOptions> {}
 
 /**
  * Test whether a file source exists by performing a HEAD request against it
