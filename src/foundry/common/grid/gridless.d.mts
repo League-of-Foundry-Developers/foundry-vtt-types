@@ -78,10 +78,15 @@ declare class GridlessGrid extends BaseGrid {
   override getCone(origin: Canvas.Point, radius: number, direction: number, angle: number): Canvas.Point[];
 
   /**
-   * @remarks Unlike every sibling shape method, the runtime writes each coordinate as a separate element, so the
-   * returned array is a flat `[x0, y0, x1, y1, ...]` of length `2n` rather than `n` points.
+   * @remarks Unlike every sibling shape method, the implementation only returns a flat `[x0, y0, x1, y1, ...]`
+   * array of length `2n`, rather than `n` points.
    */
-  override getEllipse(center: Canvas.Point, radiusX: number, radiusY: number, rotation: number): number[];
+  override getEllipse(
+    center: Canvas.Point,
+    radiusX: number,
+    radiusY: number,
+    rotation: number,
+  ): Canvas.Point[] | number[];
 }
 
 declare namespace GridlessGrid {}
