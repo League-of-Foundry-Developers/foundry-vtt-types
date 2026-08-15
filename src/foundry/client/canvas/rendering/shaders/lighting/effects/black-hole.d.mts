@@ -5,7 +5,7 @@ import type AdaptiveDarknessShader from "../darkness-lighting.mjs";
  * Black Hole animation illumination shader
  */
 declare class BlackHoleDarknessShader extends AdaptiveDarknessShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace BlackHoleDarknessShader {

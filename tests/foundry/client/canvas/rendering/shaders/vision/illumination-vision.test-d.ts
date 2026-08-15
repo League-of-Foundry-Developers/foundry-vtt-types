@@ -6,7 +6,6 @@ import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 const IVS = IlluminationVisionShader;
 let myIVS;
 
-expectTypeOf(IVS.fragmentShader).toEqualTypeOf<string>();
 expectTypeOf(IVS.ADJUSTMENTS).toEqualTypeOf<string>();
 expectTypeOf((myIVS = IVS.create())).toEqualTypeOf<IlluminationVisionShader>();
 

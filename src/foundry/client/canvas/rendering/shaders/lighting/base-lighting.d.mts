@@ -40,7 +40,7 @@ declare class AdaptiveLightingShader extends AbstractBaseShader {
   /**
    * Common uniforms shared by fragment shaders.
    */
-  static FRAGMENT_UNIFORMS: string;
+  static get FRAGMENT_UNIFORMS(): string;
 
   /**
    * Common functions used by the fragment shaders.
@@ -50,7 +50,7 @@ declare class AdaptiveLightingShader extends AbstractBaseShader {
 
   static override CONSTANTS: string;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
   /**
    * Construct adaptive shader according to shader type
@@ -135,17 +135,6 @@ declare class AdaptiveLightingShader extends AbstractBaseShader {
    * @privateRemarks This type would have at least the `id` keys Branded if not for subclasses overriding the entries
    */
   static SHADER_TECHNIQUES: Record<string, AdaptiveLightingShader.ShaderTechnique>;
-
-  /**
-   * Determine the correct penalty to apply for a given darkness level and luminosity
-   * @param darknessLevel - The current darkness level on [0,1]
-   * @param luminosity    - The light source luminosity on [-1,1]
-   * @returns 0
-   * @deprecated since v12, until v14
-   * @remarks AdaptiveLightingShader#getDarknessPenalty is deprecated without replacement.
-   * The darkness penalty is no longer applied on light and vision sources.
-   */
-  getDarknessPenalty(darknessLevel: number, luminosity: number): number;
 }
 
 declare namespace AdaptiveLightingShader {

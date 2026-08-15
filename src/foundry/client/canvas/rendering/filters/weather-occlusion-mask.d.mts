@@ -13,9 +13,9 @@ declare class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
    */
   elevation: number;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -26,7 +26,7 @@ declare class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
    *   occlusionTexture: null,
    *   reverseOcclusion: false,
    *   occlusionWeights: [0, 0, 1, 0],
-   *   seTerrain: false,
+   *   useTerrain: false,
    *   terrainTexture: null,
    *   reverseTerrain: false,
    *   terrainWeights: [1, 0, 0, 0],
@@ -36,7 +36,7 @@ declare class WeatherOcclusionMaskFilter extends AbstractBaseMaskFilter {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   override apply(
     filterManager: PIXI.FilterSystem,

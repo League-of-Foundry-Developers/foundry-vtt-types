@@ -5,7 +5,7 @@ import type { AbstractBaseFilter } from "./_module.d.mts";
  * A minimalist filter (just used for blending)
  */
 declare class VoidFilter extends AbstractBaseFilter {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace VoidFilter {

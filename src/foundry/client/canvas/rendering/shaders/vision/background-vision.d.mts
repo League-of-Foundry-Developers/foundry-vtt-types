@@ -10,9 +10,9 @@ declare class BackgroundVisionShader extends AdaptiveVisionShader {
   /**
    * Memory allocations for the Adaptive Background Shader
    */
-  static SHADER_HEADER: string;
+  static get SHADER_HEADER(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -46,7 +46,7 @@ declare class BackgroundVisionShader extends AdaptiveVisionShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Flag whether the background shader is currently required.
