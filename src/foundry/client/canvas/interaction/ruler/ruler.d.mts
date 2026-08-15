@@ -1,4 +1,4 @@
-import type { DeepReadonly, FixedInstanceType, Identity, InexactPartial } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial } from "#utils";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { BaseRuler } from "../_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
@@ -34,7 +34,7 @@ declare class Ruler extends BaseRuler {
    * @remarks `Ruler##renderWaypointLabels` always starts by passing an empty object for `state`, but the parameter itself has no default
    */
   protected _getWaypointLabelContext(
-    waypoint: DeepReadonly<Ruler.Waypoint>,
+    waypoint: Ruler.Waypoint,
     state: Ruler.WaypointContextState,
   ): Ruler.WaypointContext | void;
 
@@ -44,7 +44,7 @@ declare class Ruler extends BaseRuler {
    * @returns The radius, color, and alpha of the waypoint
    * @remarks `waypoint` is unused in core's implementation as of 14.365
    */
-  protected _getWaypointStyle(waypoint: DeepReadonly<Ruler.Waypoint>): Ruler.WaypointStyle;
+  protected _getWaypointStyle(waypoint: Ruler.Waypoint): Ruler.WaypointStyle;
 
   /**
    * Get the style of the segment from the previous to the given waypoint.
@@ -52,7 +52,7 @@ declare class Ruler extends BaseRuler {
    * @returns The line width, color, and alpha of the segment
    * @remarks `waypoint` is unused in core's implementation as of 14.365
    */
-  protected _getSegmentStyle(waypoint: DeepReadonly<Ruler.Waypoint>): Ruler.SegmentStyle;
+  protected _getSegmentStyle(waypoint: Ruler.Waypoint): Ruler.SegmentStyle;
 
   /**
    * @deprecated "`Ruler#color` is deprecated. Use {@linkcode Ruler.user | Ruler#user#color} instead." (since v13, until v15)
