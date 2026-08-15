@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepPartial, Identity, IntentionalPartial, MaybePromise } from "#utils";
+import type { AnyMutableObject, DeepPartial, Identity, IntentionalPartial, MaybePromise, ToMethod } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type ContextMenu from "../../ux/context-menu.d.mts";
@@ -369,13 +369,15 @@ declare namespace ChatLog {
    *
    * @privateRemarks Built-in handlers may return synchronously despite Foundry's `Promise<false|void>` typedef.
    */
-  type ChatCommandCallback = (
-    this: ChatLog.Any,
-    command: string,
-    match: ParseMatch,
-    chatData: AnyMutableObject,
-    createOptions: AnyMutableObject,
-  ) => MaybePromise<false | void>;
+  type ChatCommandCallback<ChatLog extends ChatLog.Any = ChatLog.Any> = ToMethod<
+    (
+      this: ChatLog,
+      command: string,
+      match: ParseMatch,
+      chatData: AnyMutableObject,
+      createOptions: AnyMutableObject,
+    ) => MaybePromise<false | void>
+  >;
 
   /**
    * @remarks Multi-line commands retain unmatched lines as `null`.

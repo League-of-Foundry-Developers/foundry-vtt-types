@@ -27,9 +27,6 @@ declare class CardsDirectory<
   // Fake override.
   override get collection(): foundry.documents.collections.CardStacks.Implementation;
 
-  /**
-   * @remarks Only a GM who can clone the stack sees the inherited "Duplicate" entry.
-   */
   protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[];
 }
 
