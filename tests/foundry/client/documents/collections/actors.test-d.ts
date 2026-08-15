@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Actors = foundry.documents.collections.Actors;
 
@@ -31,6 +31,18 @@ describe("Actors Tests", async () => {
   });
 
   const actors = new Actors([actorSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(actors).toExtend<Collection.Any>();
+    expectTypeOf(Actors).toExtend<Collection.AnyConstructor>();
+    expect(actors).toBeInstanceOf(Collection);
+    expectTypeOf(actors).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Actors).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(actors).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(actors).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Actors).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(actors).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Actors.documentName).toEqualTypeOf<"Actor">();
@@ -94,15 +106,42 @@ describe("Actors Tests", async () => {
   test("importDocument fake override", async () => {
     // Passing a doc with no subtype data gets back a `Stored` without any either
     const imported1 = await actors.importDocument(actor, {});
-    if (!imported1) throw new Error("Failed to create test Actor via `#importDocument`");
+    if (!imported1) throw new Error("Failed to create test `Actor` via `#importDocument`");
     docsToCleanUp.add(imported1);
     expectTypeOf(imported1).toEqualTypeOf<Actor.Stored>();
 
     // Passing a doc with subtype info preserves it
     const imported2 = await actors.importDocument(actorImpl, {});
-    if (!imported2) throw new Error("Failed to create test Actor via `#importDocument`");
+    if (!imported2) throw new Error("Failed to create test `Actor` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Actor.Stored<"base">>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => actors["_prepareImportDocument"](actor)).toThrow();
+
+    expectTypeOf(actors["_prepareImportDocument"](actorImpl, {})).toEqualTypeOf<
+      Omit<Actor.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(actors["_prepareImportDocument"](actor, { keepId: true })).toEqualTypeOf<
+      Omit<Actor.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(actors["_prepareImportDocument"](actorImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Actor.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      actors["_prepareImportDocument"](actorImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Actor", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Actor.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   test("Setting and Deleting", () => {

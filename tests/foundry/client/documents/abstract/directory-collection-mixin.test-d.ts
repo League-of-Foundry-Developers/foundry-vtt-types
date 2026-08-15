@@ -3,6 +3,7 @@ import { test, describe, expectTypeOf } from "vitest";
 import DirectoryCollectionMixin = foundry.documents.abstract.DirectoryCollectionMixin;
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
+import WorldCollection = foundry.documents.abstract.WorldCollection;
 import Document = foundry.abstract.Document;
 
 describe("DirectoryCollectionMixin Tests", () => {
@@ -13,6 +14,22 @@ describe("DirectoryCollectionMixin Tests", () => {
      */
     protected override _getVisibleTreeContents() {
       return this.contents;
+    }
+
+    // necessary type override, normally handled by WorldCollection
+    override importDocument(
+      doc: Actor.Implementation,
+      options: DocumentCollection.ImportFromCompendiumOptions<"Actor">,
+    ) {
+      return Actor.implementation.create(this._prepareImportDocument(doc, options));
+    }
+
+    // necessary type override, normally handled by WorldCollection
+    protected override _prepareImportDocument<Options extends WorldCollection.ImportDocumentOptions<"Actor">>(
+      doc: Actor.Implementation,
+      options: Options,
+    ): WorldCollection.FromCompendiumReturnType<"Actor", Options> {
+      return game.actors!.fromCompendium(doc, options);
     }
   }
   class DCMTestCompendia extends DirectoryCollectionMixin(Collection)<CompendiumCollection.Any> {}

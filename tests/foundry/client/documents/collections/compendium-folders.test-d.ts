@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -15,11 +15,14 @@ describe("CompendiumFolderCollection Tests", async () => {
   const compendiaToCleanUp = new Set<CompendiumCollection.Any>();
   const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-  const folder = await Folder.implementation.create({ name: "CompendiumFolderCollection Test Folder", type: "Item" });
+  const folder = (await Folder.implementation.create({
+    name: "CompendiumFolderCollection Test Folder",
+    type: "Actor",
+  })) as Folder.Stored<"Actor"> | undefined; // cast required for subtype
   if (!folder) throw new Error("Failed to create test Actor.");
   docsToCleanUp.add(folder);
 
-  const folderImpl = new Folder.implementation({ name: "CompendiumFolderCollection Test Folder", type: "Item" });
+  const folderImpl = new Folder.implementation({ name: "CompendiumFolderCollection Test Folder", type: "Actor" });
   const folderSource = folder.toObject();
 
   const actorPack = await CompendiumCollection.createCompendium({
@@ -51,6 +54,15 @@ describe("CompendiumFolderCollection Tests", async () => {
 
   // actorPackFolders
   const apf = new CompendiumFolderCollection(actorPack, [folderSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(apf).toExtend<Collection.Any>();
+    expectTypeOf(CompendiumFolderCollection).toExtend<Collection.AnyConstructor>();
+    expect(apf).toBeInstanceOf(Collection);
+    expectTypeOf(apf).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(CompendiumFolderCollection).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(apf).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(apf.pack).toEqualTypeOf<CompendiumCollection<"Actor">>();
@@ -119,13 +131,29 @@ describe("CompendiumFolderCollection Tests", async () => {
     expectTypeOf(apf.delete("ID")).toBeBoolean();
   });
 
+  test("importDocument fake type override", async () => {
+    // Passing a doc with no subtype data gets back a `Stored` without any either
+    const imported1 = await apf.importDocument(folder, {});
+    if (!imported1) throw new Error("Failed to create test `Actor` via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<Folder.Stored<"Actor">>();
+
+    // Passing a doc with subtype info preserves it
+    const imported2 = await apf.importDocument(folderImpl, {});
+    if (!imported2) throw new Error("Failed to create test `Actor` via `#importDocument`");
+    docsToCleanUp.add(imported2);
+    expectTypeOf(imported2).toEqualTypeOf<Folder.Stored<"Actor">>();
+  });
+
   test("_prepareImportDocument", () => {
-    expectTypeOf(itemPack.folders["_prepareImportDocument"](folderImpl, {})).toEqualTypeOf<
+    expectTypeOf(apf["_prepareImportDocument"](folder, {})).toEqualTypeOf<
       ClientDocument.ToCompendiumReturnType<"Folder", undefined>
     >();
-    expectTypeOf(
-      itemPack.folders["_prepareImportDocument"](folderImpl, { clearSort: false, noHook: true }),
-    ).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Folder", { clearSort: false; noHook: true }>>();
+
+    // TODO: non-tautological tests for ToCompendiumReturnType
+    expectTypeOf(apf["_prepareImportDocument"](folderImpl, { clearSort: false, noHook: true })).toEqualTypeOf<
+      ClientDocument.ToCompendiumReturnType<"Folder", { clearSort: false; noHook: true }>
+    >();
   });
 
   test("updateAll", () => {

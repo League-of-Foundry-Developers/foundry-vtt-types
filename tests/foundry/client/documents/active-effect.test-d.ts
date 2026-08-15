@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject, MaybePromise } from "fvtt-types/utils";
 import { database, testID } from "../../../utils.ts";
 import * as itemHelpers from "./item.test-d.ts";
 
@@ -566,6 +566,11 @@ expectTypeOf(ActiveEffect.EXPIRY_EVENTS["some.module.event"]).toEqualTypeOf<stri
 
 expectTypeOf(ActiveEffect.registry).toEqualTypeOf<foundry.helpers.ActiveEffectRegistry>();
 
+const synchronousChangeHandler: ActiveEffect.ChangeHandler = () => {};
+const asynchronousChangeHandler: ActiveEffect.ChangeHandler = async () => ({});
+expectTypeOf(synchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
+expectTypeOf(asynchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
+
 expectTypeOf(ActiveEffect.fromStatusEffect("flying")).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 expectTypeOf(ActiveEffect.fromStatusEffect("flying", {})).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 expectTypeOf(ActiveEffect.fromStatusEffect("flying", aeContext)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
@@ -728,6 +733,15 @@ expectTypeOf(
 const effect = new ActiveEffect.implementation({ name: "My effect" });
 expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 
+expectTypeOf(effect.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"ActiveEffect", undefined>>();
+
+expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, { phase: "initial", replacementData: { str: 10 } })).toBeBoolean();
+expectTypeOf(effect.shouldApplyChange(change, { phase: undefined, replacementData: undefined })).toBeBoolean();
+
+expectTypeOf(effect.getReplacementData({ str: 10 })).toEqualTypeOf<AnyObject>();
+
 expectTypeOf(effect.actor).toEqualTypeOf<Actor.Implementation | null>();
 // @ts-expect-error Only getter, no setter
 effect.actor = null;
@@ -783,7 +797,7 @@ expectTypeOf(effect.duration.secondsRemaining).toEqualTypeOf<number | undefined>
 expectTypeOf(effect.duration.label).toBeString();
 
 expectTypeOf(effect.start).toEqualTypeOf<ActiveEffect.StartData | null>();
-expectTypeOf(effect.showIcon).toEqualTypeOf<CONST.ACTIVE_EFFECT_SHOW_ICON>();
+expectTypeOf(effect.showIcon).toEqualTypeOf<number>();
 expectTypeOf(effect.origin).toEqualTypeOf<string | null>();
 expectTypeOf(effect.folder).toEqualTypeOf<Folder.Stored | null>();
 

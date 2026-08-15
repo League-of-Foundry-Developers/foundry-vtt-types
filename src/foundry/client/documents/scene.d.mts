@@ -1651,7 +1651,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   /**
    * Set this scene as the current view
-   * @remarks If `canvas.loading`, returns a `ui.notifications.warn`, thence the `| number` in the return type
+   * @remarks Returns a warning notification when the canvas is already loading.
    */
   view(): Promise<this | Notifications.Notification<"warning">>;
 

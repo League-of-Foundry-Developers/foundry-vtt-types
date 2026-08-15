@@ -14,8 +14,11 @@ declare class ChatInputPlugin extends ProseMirrorPlugin {
    */
   constructor(schema: Schema, chat?: ChatLog);
 
-  /** The ChatLog instance this plugin belongs to. */
-  get chat(): ChatLog;
+  /**
+   * The ChatLog instance this plugin belongs to.
+   * @privateRemarks This is `undefined` when {@linkcode build} is called without a `chat` option.
+   */
+  get chat(): ChatLog | undefined;
 
   /**
    * Build the plugin.
@@ -29,8 +32,13 @@ declare class ChatInputPlugin extends ProseMirrorPlugin {
    * @param transactions - The transactions.
    * @param oldState     - The editor state before.
    * @param newState     - The editor state after.
+   * @privateRemarks ProseMirror's `appendTransaction` callback provides this array as readonly.
    */
-  protected _inspectTransactions(transactions: Transaction[], oldState: EditorState, newState: EditorState): void;
+  protected _inspectTransactions(
+    transactions: readonly Transaction[],
+    oldState: EditorState,
+    newState: EditorState,
+  ): void;
 
   /**
    * Handle keydown events.
@@ -52,6 +60,8 @@ declare class ChatInputPlugin extends ProseMirrorPlugin {
    * @param meta    - Any metadata to append to the transaction.
    */
   setMessage(view: EditorView, message: string, meta?: unknown): void;
+
+  #ChatInputPlugin: true;
 }
 
 declare namespace ChatInputPlugin {

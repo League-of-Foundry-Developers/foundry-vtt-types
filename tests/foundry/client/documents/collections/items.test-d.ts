@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import Items = foundry.documents.collections.Items;
 
@@ -40,6 +40,18 @@ describe("Items Tests", async () => {
   });
 
   const items = new Items([itemSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(items).toExtend<Collection.Any>();
+    expectTypeOf(Items).toExtend<Collection.AnyConstructor>();
+    expect(items).toBeInstanceOf(Collection);
+    expectTypeOf(items).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(Items).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(items).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(items).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(Items).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(items).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(Items.documentName).toEqualTypeOf<"Item">();
@@ -117,6 +129,33 @@ describe("Items Tests", async () => {
     if (!imported2) throw new Error("Failed to create test `Item` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Item.Stored<"base">>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => items["_prepareImportDocument"](item)).toThrow();
+
+    expectTypeOf(items["_prepareImportDocument"](itemImpl, {})).toEqualTypeOf<
+      Omit<Item.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(items["_prepareImportDocument"](item, { keepId: true })).toEqualTypeOf<
+      Omit<Item.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(items["_prepareImportDocument"](itemImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Item.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      items["_prepareImportDocument"](itemImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Item", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Item.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

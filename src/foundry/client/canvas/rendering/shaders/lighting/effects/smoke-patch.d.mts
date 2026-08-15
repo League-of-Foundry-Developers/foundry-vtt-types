@@ -6,7 +6,7 @@ import type AdaptiveIlluminationShader from "../illumination-lighting.mjs";
  * A patch of smoke
  */
 declare class SmokePatchColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace SmokePatchColorationShader {
@@ -18,7 +18,7 @@ declare namespace SmokePatchColorationShader {
  * A patch of smoke
  */
 declare class SmokePatchIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace SmokePatchIlluminationShader {

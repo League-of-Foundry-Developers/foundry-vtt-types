@@ -10,7 +10,7 @@ declare class EnergyFieldColorationShader extends AdaptiveColorationShader {
    */
   static override forceDefaultColor: boolean;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace EnergyFieldColorationShader {

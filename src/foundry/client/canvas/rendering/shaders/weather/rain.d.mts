@@ -19,9 +19,9 @@ declare class RainShader<
    * }
    * ```
    */
-  static override defaultUniforms: RainShader.DefaultUniforms;
+  static override get defaultUniforms(): RainShader.DefaultUniforms;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace RainShader {

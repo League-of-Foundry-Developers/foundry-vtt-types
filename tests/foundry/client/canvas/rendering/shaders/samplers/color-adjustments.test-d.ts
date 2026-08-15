@@ -9,7 +9,6 @@ expectTypeOf(myCASS).toEqualTypeOf<ColorAdjustmentsSamplerShader>();
 
 expectTypeOf(ColorAdjustmentsSamplerShader.defaultUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();
 expectTypeOf(ColorAdjustmentsSamplerShader.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(ColorAdjustmentsSamplerShader.fragmentShader).toEqualTypeOf<string>();
 expectTypeOf(ColorAdjustmentsSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
 
 expectTypeOf(myCASS.paused).toEqualTypeOf<boolean>();

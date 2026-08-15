@@ -173,7 +173,7 @@ expectTypeOf(fullTestAE.start?.initiative).toEqualTypeOf<number | null | undefin
 expectTypeOf(fullTestAE.start?.time).toEqualTypeOf<number | undefined>();
 expectTypeOf(fullTestAE.transfer).toBeBoolean();
 expectTypeOf(fullTestAE.statuses).toEqualTypeOf<Set<string>>();
-expectTypeOf(fullTestAE.showIcon).toEqualTypeOf<CONST.ACTIVE_EFFECT_SHOW_ICON>();
+expectTypeOf(fullTestAE.showIcon).toEqualTypeOf<number>();
 expectTypeOf(fullTestAE.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(fullTestAE.sort).toBeNumber();
 expectTypeOf(fullTestAE.flags).toEqualTypeOf<

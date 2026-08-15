@@ -18,6 +18,7 @@ declare class PrimaryGraphics extends PrimaryCanvasObjectMixin(PIXI.smooth.Smoot
   override containsCanvasPoint(point: PIXI.IPointData): boolean;
 
   #PrimaryGraphics: true;
+  static #PrimaryGraphicsStatic: true;
 }
 
 declare namespace PrimaryGraphics {

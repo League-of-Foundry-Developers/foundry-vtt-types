@@ -76,50 +76,19 @@ declare class GridlessGrid extends BaseGrid {
   override getCircle(center: Canvas.Point, radius: number): Canvas.Point[];
 
   override getCone(origin: Canvas.Point, radius: number, direction: number, angle: number): Canvas.Point[];
-}
-
-declare namespace GridlessGrid {
-  /** @deprecated Use {@linkcode BaseGrid.Configuration} instead. This warning will be removed in v14. */
-  type Configuration = BaseGrid.Configuration;
-
-  /** @deprecated Use {@linkcode BaseGrid.Offset2D} or {@linkcode BaseGrid.Offset3D} as appropriate. This warning will be removed in v14. */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type Offset = BaseGrid.Offset;
-
-  /** @deprecated Use {@linkcode BaseGrid.OffsetRange} instead. This warning will be removed in v14. */
-  type OffsetRange = BaseGrid.OffsetRange;
 
   /**
-   * @deprecated Use {@linkcode BaseGrid.Coordinates2D} or {@linkcode BaseGrid.Coordinates3D} as appropriate.
-   * This warning will be removed in v14.
+   * @remarks Unlike every sibling shape method, the implementation only returns a flat `[x0, y0, x1, y1, ...]`
+   * array of length `2n`, rather than `n` points.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type Coordinates = Offset | Canvas.PossiblyElevatedPoint;
-
-  /** @deprecated Use {@linkcode BaseGrid.SnappingBehavior} instead. This warning will be removed in v14. */
-  type SnappingBehavior = BaseGrid.SnappingBehavior;
-
-  /**
-   * @deprecated Use {@linkcode BaseGrid.Waypoint}`<`{@linkcode BaseGrid.Coordinates2D}`>`/`<`{@linkcode BaseGrid.Coordinates3D}`>`
-   * instead as appropriate. This warning will be removed in v14.
-   */
-  type MeasurePathWaypoint = BaseGrid.Waypoint<BaseGrid.Coordinates2D | BaseGrid.Coordinates3D>;
-
-  /** @deprecated Use {@linkcode BaseGrid.MeasurePathResultWaypoint} instead. This warning will be removed in v14. */
-  type MeasurePathResultWaypoint = BaseGrid.MeasurePathResultWaypoint;
-
-  /** @deprecated Use {@linkcode BaseGrid.MeasurePathResultSegment} instead. This warning will be removed in v14. */
-  type MeasurePathResultSegment = BaseGrid.MeasurePathResultSegment;
-
-  /** @deprecated Use {@linkcode BaseGrid.MeasurePathResult} instead. This warning will be removed in v14. */
-  type MeasurePathResult = BaseGrid.MeasurePathResult;
-
-  /** @deprecated Use {@linkcode BaseGrid.CostFunction} with an appropriate coordinate type instead. This warning will be removed in v14. */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
-
-  /** @deprecated Use {@linkcode BaseGrid.Dimensions} instead. This warning will be removed in v14. */
-  type Dimensions = BaseGrid.Dimensions;
+  override getEllipse(
+    center: Canvas.Point,
+    radiusX: number,
+    radiusY: number,
+    rotation: number,
+  ): Canvas.Point[] | number[];
 }
+
+declare namespace GridlessGrid {}
 
 export default GridlessGrid;

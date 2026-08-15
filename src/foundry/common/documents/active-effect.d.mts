@@ -271,6 +271,8 @@ declare abstract class BaseActiveEffect<
   ): ActiveEffect.Implementation;
 
   static override fromJSON(json: string): ActiveEffect.Implementation;
+
+  static #BaseActiveEffect: true;
 }
 
 export default BaseActiveEffect;
@@ -283,7 +285,7 @@ declare namespace BaseActiveEffect {
   export import ConstructorArgs = ActiveEffect.ConstructorArgs;
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;
-  export import CoreTypes = ActiveEffect.CoreTypes;
+  export import CoreEffects = ActiveEffect.CoreEffects;
   export import SubType = ActiveEffect.SubType;
   export import ConfiguredSubType = ActiveEffect.ConfiguredSubType;
   export import Known = ActiveEffect.Known;

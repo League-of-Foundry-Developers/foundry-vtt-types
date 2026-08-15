@@ -7,8 +7,9 @@ expectTypeOf(myVF).toEqualTypeOf<VisibilityFilter>();
 
 declare const someFilterSystem: PIXI.FilterSystem;
 
-expectTypeOf(VisibilityFilter.fragmentShader({ persistentVision: true })).toEqualTypeOf<string>();
-expectTypeOf(VisibilityFilter.vertexShader).toEqualTypeOf<string>();
+expectTypeOf(VisibilityFilter.create(undefined, { persistentVision: true })).toEqualTypeOf<VisibilityFilter>();
+expectTypeOf(VisibilityFilter["_createVertexShader"]()).toEqualTypeOf<string>();
+expectTypeOf(VisibilityFilter["_createFragmentShader"]({ persistentVision: true })).toEqualTypeOf<string>();
 
 expectTypeOf(myVF.calculateMatrix(someFilterSystem)).toEqualTypeOf<void>();
-expectTypeOf(myVF.blur).toEqualTypeOf<number>();
+expectTypeOf(myVF.blur).toEqualTypeOf<number | undefined>();

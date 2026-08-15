@@ -1,16 +1,16 @@
 import type { Identity } from "#utils";
 import type { IDestroyOptions } from "pixi.js";
-import type { CanvasTransformMixin } from "./primary-canvas-object.d.mts";
+import type CanvasTransformMixin from "./canvas-transform-mixin.d.mts";
 
 /**
  * A configurable particle effect meant to be used in the PrimaryCanvasGroup.
  * You must provide a full configuration object.
+ * @deprecated The foundry.canvas.primary.PrimaryParticleEffect class is deprecated in favor of the newer
+ * foundry.canvas.animation.ParticleGenerator API. Support for this class will be removed in Version 16. (since v14, until v16)
  * @remarks "full configuration object" meaning something valid for passing to the {@linkcode PIXI.particles.Emitter} constructor.
  * Any properties optional on the {@linkcode PIXI.particles.EmitterConfigV3 | EmitterConfigV3} interface remain optional.
  * The {@linkcode PIXI.particles.EmitterConfigV3.autoUpdate | autoUpdate} and {@linkcode PIXI.particles.EmitterConfigV3.emit | emit}
  * properties are forced `true` and `false`, respectively, before the emitter is created.
- *
- * This class is entirely unused as of 13.346
  */
 declare class PrimaryParticleEffect extends CanvasTransformMixin(PIXI.Container) {
   constructor(config: PIXI.particles.EmitterConfigV3);
@@ -41,7 +41,7 @@ declare class PrimaryParticleEffect extends CanvasTransformMixin(PIXI.Container)
    * @param config - Optional config object.
    * @param play   - Should we play immediately? False by default. (default: `false`)
    */
-  initialize(config: PIXI.particles.EmitterConfigV3, play?: boolean): void;
+  initialize(config?: PIXI.particles.EmitterConfigV3, play?: boolean): void;
 
   /**
    * Begin animation for the configured emitter.
@@ -61,8 +61,10 @@ declare namespace PrimaryParticleEffect {
   interface AnyConstructor extends Identity<typeof AnyPrimaryParticleEffect> {}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export default PrimaryParticleEffect;
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare abstract class AnyPrimaryParticleEffect extends PrimaryParticleEffect {
   constructor(...args: never);
 }

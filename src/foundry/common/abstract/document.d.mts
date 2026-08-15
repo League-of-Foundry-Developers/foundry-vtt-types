@@ -1116,7 +1116,6 @@ declare namespace Document {
     ? ConfiguredSubTypeOf<"Actor">
     : // ESLint doesn't know that `DataModelConfig` and `SourceConfig` are meant to be declaration merged into.
       // Therefore it hastily thinks the results are always `never`.
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-duplicate-type-constituents
       string & (keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>);
 
   type SubTypesOf<Name extends Document.Type> = Name extends "ActorDelta"
@@ -1303,7 +1302,7 @@ declare namespace Document {
    * @internal
    */
   interface _CoreTypeModels {
-    ActiveEffect: ActiveEffect.CoreTypes;
+    ActiveEffect: ActiveEffect.CoreEffects;
     RegionBehavior: RegionBehavior.CoreBehaviors;
   }
 
@@ -1317,13 +1316,17 @@ declare namespace Document {
     ActiveEffect: foundry.data.ActiveEffectTypeDataModel.RegistrableClass;
   }
 
-  /** @internal */
+  /**
+   * `DataModelConfig` accepts arbitrary declaration merges, so constrained Document models are
+   * sanitized before their `system` shapes become consumer-visible.
+   * @internal
+   */
   type _ConstrainModels<Name extends WithSystem, Models> =
-    GetKey<_ModelConstraints, Name, unknown> extends infer Constraint
-      ? {
-          [K in keyof Models]: unknown extends Constraint ? Models[K] : _ConstrainModel<Models[K], Constraint>;
-        }
-      : never;
+    unknown extends GetKey<_ModelConstraints, Name, unknown>
+      ? Models
+      : {
+          [K in keyof Models]: _ConstrainModel<Models[K], GetKey<_ModelConstraints, Name, unknown>>;
+        };
 
   /** @internal */
   type _ConstrainModel<Model, Constraint> = Model extends { defineSchema(): infer Schema extends DataSchema }
@@ -1411,18 +1414,24 @@ declare namespace Document {
       // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
       Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
 
+    /** @internal */
+    // Note(123499): The `EmptyObject` defaults matter: `GetKey`'s `never` fallback would distribute over the naked
+    // conditional in `_CoreSystemFor`, collapsing unregistered subtypes to `never` instead of `EmptyObject`.
+    type _CoreModelFor<Name extends Document.WithSubTypes, SubType extends Document.CoreTypesForName<Name>> = GetKey<
+      GetKey<_CoreTypeModels, Name, EmptyObject>,
+      SubType,
+      EmptyObject
+    >;
+
     /**
      * The `system` a core subtype has before any `DataModelConfig` entry is layered over it, read from
      * the core models Foundry itself registers in `CONFIG` (see {@linkcode Document._CoreTypeModels}).
      * Core subtypes without a registered model have no system data of their own.
      * @internal
      */
-    // Note(LukeAbby): The `EmptyObject` defaults matter: `GetKey`'s `never` fallback would distribute over
-    // the naked conditional below, collapsing unregistered subtypes to `never` instead of `EmptyObject`.
     type _CoreSystemFor<Name extends Document.WithSubTypes, SubType extends Document.CoreTypesForName<Name>> =
-      GetKey<GetKey<_CoreTypeModels, Name, EmptyObject>, SubType, EmptyObject> extends infer Model extends
-        abstract new (...args: never) => DataModel.Any
-        ? FixedInstanceType<Model>
+      _CoreModelFor<Name, SubType> extends abstract new (...args: never) => DataModel.Any
+        ? FixedInstanceType<_CoreModelFor<Name, SubType>>
         : EmptyObject;
 
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.

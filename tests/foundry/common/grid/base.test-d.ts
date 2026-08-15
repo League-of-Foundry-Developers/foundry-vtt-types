@@ -27,7 +27,11 @@ describe("BaseGrid Tests", () => {
   });
 
   test("Non-abstract methods", () => {
+    expectTypeOf(baseGrid.getRectangle({ x: 50, y: 50 }, 3, 4, { x: 0.5, y: 0.5 }, 30)).toEqualTypeOf<Canvas.Point[]>();
+    expectTypeOf(baseGrid.getLine({ x: 50, y: 50 }, 5, 1, 270)).toEqualTypeOf<Canvas.Point[]>();
     expectTypeOf(baseGrid.getCone({ x: 50, y: 50 }, 5, 270, 60)).toEqualTypeOf<Canvas.Point[]>();
+    expectTypeOf(baseGrid.getEllipse({ x: 50, y: 50 }, 3, 5, 45)).toEqualTypeOf<Canvas.Point[] | number[]>();
+    expectTypeOf(baseGrid.getRing({ x: 50, y: 50 }, 5, 1, 2)).toEqualTypeOf<BaseGrid.Ring>();
 
     // measurePath not tested here due to complexity and having fake overrides in every subclass
   });

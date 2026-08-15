@@ -7,7 +7,8 @@ const autocomplete = new Autocomplete({
   onSelect: (identifier, label, options) => {
     expectTypeOf(identifier).toBeString();
     expectTypeOf(label).toBeString();
-    expectTypeOf(options).toEqualTypeOf<Autocomplete.CallbackOptions | undefined>();
+    expectTypeOf(options).toEqualTypeOf<Autocomplete.CallbackOptions>();
+    expectTypeOf(options.prefix).toBeString();
   },
 });
 
@@ -21,8 +22,14 @@ expectTypeOf(autocomplete.select(-1)).toBeVoid();
 declare const target: HTMLElement;
 expectTypeOf(autocomplete.activate(target, [{ identifier: "a", label: "A" }])).toBeVoid();
 expectTypeOf(
-  autocomplete.activate(target, [{ identifier: "a", label: "A" }], { prefix: "a", position: { top: 0 } }),
+  autocomplete.activate(target, [{ identifier: "a", label: "A", disabled: true }], {
+    prefix: "a",
+    position: { top: 0 },
+  }),
 ).toBeVoid();
+
+declare const entry: Autocomplete.Entry;
+expectTypeOf(entry.disabled).toEqualTypeOf<boolean | undefined>();
 
 expectTypeOf(Autocomplete.activateListeners()).toBeVoid();
 expectTypeOf(Autocomplete.implementation).toEqualTypeOf<Autocomplete.ImplementationClass>();

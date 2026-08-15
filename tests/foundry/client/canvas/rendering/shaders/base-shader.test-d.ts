@@ -1,8 +1,22 @@
 import { expectTypeOf } from "vitest";
 
+import type { AnyObject } from "#utils";
+
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
-class TestShader extends AbstractBaseShader {}
+class TestShader extends AbstractBaseShader {
+  protected static override _createVertexShader(): string {
+    return "";
+  }
+
+  protected static override _createFragmentShader(): string {
+    return "";
+  }
+
+  protected override _configure(options?: AnyObject): void {
+    void options;
+  }
+}
 
 // BaseShaderMixin tests
 expectTypeOf(TestShader.CONSTANTS).toBeString();
@@ -50,7 +64,23 @@ const testShaderInstance = TestShader.create({
   time: 0,
   intensity: 5,
 });
+expectTypeOf(TestShader.create(undefined, { custom: true })).toEqualTypeOf<TestShader>();
 testShaderInstance.uniforms["darkness"] = false;
 
 // @ts-expect-error string is not a valid UniformValue
 TestShader.create({ foo: "bar" });
+
+expectTypeOf(TestShader["_createVertexShader"]()).toEqualTypeOf<string>();
+expectTypeOf(TestShader["_createFragmentShader"]()).toEqualTypeOf<string>();
+expectTypeOf(testShaderInstance["_configure"]({ custom: true })).toEqualTypeOf<void>();
+expectTypeOf(testShaderInstance.reset()).toEqualTypeOf<void>();
+
+// The mixin never defines these; only classes that still carry the deprecated form have them.
+/* eslint-disable @typescript-eslint/no-deprecated */
+expectTypeOf(AbstractBaseShader.fragmentShader).toEqualTypeOf<
+  foundry.canvas.rendering.mixins.BaseShaderMixin.ShaderSource | undefined
+>();
+expectTypeOf(AbstractBaseShader.vertexShader).toEqualTypeOf<
+  foundry.canvas.rendering.mixins.BaseShaderMixin.ShaderSource | undefined
+>();
+/* eslint-enable @typescript-eslint/no-deprecated */

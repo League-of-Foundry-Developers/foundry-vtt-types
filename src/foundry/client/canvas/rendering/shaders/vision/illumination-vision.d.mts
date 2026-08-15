@@ -17,15 +17,15 @@ declare class IlluminationVisionShader extends AdaptiveVisionShader {
   /**
    * Memory allocations for the Adaptive Illumination Shader
    */
-  static SHADER_HEADER: string;
+  static get SHADER_HEADER(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
    * ```js
    * {
-   *   technique: LightData.cleanData().initial,
+   *   technique: 1,
    *   attenuation: 0,
    *   exposure: 0,
    *   saturation: 0,
@@ -52,7 +52,7 @@ declare class IlluminationVisionShader extends AdaptiveVisionShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 }
 
 declare namespace IlluminationVisionShader {

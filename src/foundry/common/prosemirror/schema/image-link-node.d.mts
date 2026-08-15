@@ -24,8 +24,11 @@ declare class ImageLinkNode extends SchemaDefinition {
    * @param pos   - The position in the ProseMirror document that the click occurred at.
    * @param event - The click event.
    * @param node  - The Node instance.
+   * @remarks Really does unconditionally return `true`, return type is per Foundry
    */
-  static onClick(view: EditorView, pos: number, event: PointerEvent, node: Node): boolean;
+  static onClick(view: EditorView, pos: number, event: PointerEvent, node: Node): boolean | void;
+
+  static #ImageLinkNode: true;
 }
 
 declare namespace ImageLinkNode {

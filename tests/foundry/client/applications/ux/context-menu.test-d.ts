@@ -92,6 +92,18 @@ new ContextMenu(testAppV2.element, ".foobar", [], {
   fixed: true,
 });
 
+// `_onClickItem` is protected, so subclasses can intercept item clicks.
+class CustomContextMenu extends ContextMenu<false> {
+  protected override _onClickItem(event: PointerEvent, options?: ContextMenu.RenderOptions): void {
+    expectTypeOf(event).toEqualTypeOf<PointerEvent>();
+    expectTypeOf(options).toEqualTypeOf<ContextMenu.RenderOptions | undefined>();
+    super._onClickItem(event, options);
+  }
+}
+expectTypeOf(
+  new CustomContextMenu(testAppV2.element, ".foobar", entries, { jQuery: false }),
+).toEqualTypeOf<CustomContextMenu>();
+
 expectTypeOf(ContextMenu.implementation).toEqualTypeOf<ContextMenu.ImplementationClass>();
 expectTypeOf(new ContextMenu.implementation(testAppV2.element, ".foobar", entries, { jQuery: false })).toEqualTypeOf<
   ContextMenu<false>

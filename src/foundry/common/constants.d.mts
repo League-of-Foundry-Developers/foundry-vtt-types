@@ -21,6 +21,21 @@ export declare const WEBSITE_URL: "https://foundryvtt.com";
 export declare const WEBSITE_API_URL: "https://api.foundryvtt.com";
 
 /**
+ * The static, public package index artifact.
+ */
+export declare const PACKAGE_INDEX_URL: "https://r2.foundryvtt.com/package-api-public/index-latest.json";
+
+/**
+ * A fallback location for the package index, which will typically redirect to the above URL.
+ */
+export declare const PACKAGE_INDEX_FALLBACK_URL: "https://foundryvtt.com/_api/packages/index/";
+
+/**
+ * The endpoint for checking user entitlements.
+ */
+export declare const PACKAGE_OWNED_URL: "https://api.foundryvtt.com/_api/packages/entitlements/";
+
+/**
  * An ASCII greeting displayed to the client
  */
 export const ASCII = `_______________________________________________________________
@@ -740,7 +755,7 @@ export type GRID_SNAPPING_MODES = Brand<number, "constants.GRID_SNAPPING_MODES">
 /**
  * A list of supported setup URL names
  */
-export declare const SETUP_VIEWS: readonly ["auth", "license", "setup", "players", "join", "create", "update"];
+export declare const SETUP_VIEWS: readonly ["auth", "license", "setup", "players", "join", "create", "update", "quit"];
 export type SETUP_VIEWS = ValueOf<typeof SETUP_VIEWS>;
 
 /**
@@ -2018,6 +2033,16 @@ export declare const TIMEOUTS: Readonly<{
    * The specific timeout for loading the list of packages from the foundryvtt.com API.
    */
   PACKAGE_REPOSITORY: 10000;
+
+  /**
+   * The specific timeout for retrieving the package index directly from the CDN.
+   */
+  PACKAGE_INDEX: 3000;
+
+  /**
+   * The specific timeout for retrieving the detail object of a single package.
+   */
+  PACKAGE_DETAILS: 2000;
 
   /**
    * The specific timeout for the IP address lookup service.

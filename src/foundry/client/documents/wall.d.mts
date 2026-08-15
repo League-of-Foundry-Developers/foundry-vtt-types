@@ -1018,6 +1018,17 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    */
   constructor(data: WallDocument.CreateData, context?: WallDocument.ConstructionContext);
 
+  /**
+   * A Wall cannot be hidden in the same sense as other canvas Documents, though Walls in general (excluding non-secret
+   * doors) are not visible to players.
+   */
+  readonly hidden: false;
+
+  /**
+   * A Wall cannot be locked.
+   */
+  readonly locked: false;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.

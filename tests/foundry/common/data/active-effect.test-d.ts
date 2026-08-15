@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { GetKey } from "fvtt-types/utils";
 
 import ActiveEffectTypeDataModel = foundry.data.ActiveEffectTypeDataModel;
 import Document = foundry.abstract.Document;
@@ -26,7 +27,7 @@ expectTypeOf(baseEffect.system).toEqualTypeOf<ActiveEffectTypeDataModel>();
 expectTypeOf(baseEffect.system.changes).toEqualTypeOf<typeof model.changes>();
 
 // ...and it is what `CONFIG.ActiveEffect.dataModels.base` is typed as. The config entry carries the
-// class' construct signature pinned at its default `Schema` (see `ActiveEffect.CoreTypes`), so compare
+// class' construct signature pinned at its default `Schema` (see `ActiveEffect.CoreEffects`), so compare
 // at the instance level rather than against the raw generic constructor.
 expectTypeOf(new CONFIG.ActiveEffect.dataModels.base()).toEqualTypeOf<ActiveEffectTypeDataModel>();
 expectTypeOf(CONFIG.ActiveEffect.dataModels.base.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
@@ -41,6 +42,21 @@ interface ConformingSchema extends ActiveEffectTypeDataModel.MinimalSchema {
 }
 
 declare class _ConformingModel extends ActiveEffectTypeDataModel<ConformingSchema> {}
+
+// `ForeignDocumentField` inherits from `StringField` for serialization but holds documents; the concrete
+// field constraint rejects it.
+interface DocumentTypedChangeSchema extends fields.DataSchema {
+  type: fields.ForeignDocumentField<typeof foundry.documents.BaseActiveEffect>;
+  phase: fields.StringField<{ required: true; blank: false; initial: "initial" }>;
+  priority: fields.NumberField;
+}
+
+interface DocumentTypedSchema extends fields.DataSchema {
+  changes: fields.ArrayField<fields.SchemaField<DocumentTypedChangeSchema>>;
+}
+
+// @ts-expect-error `type` must be the core string field, not merely something descended from `StringField`.
+declare class _DocumentTypedModel extends ActiveEffectTypeDataModel<DocumentTypedSchema> {}
 
 interface MissingPhaseChangeSchema extends fields.DataSchema {
   type: fields.StringField;
@@ -71,6 +87,28 @@ interface MissingChangesSchema extends fields.DataSchema {
 }
 
 declare class _MissingChangesModel extends ActiveEffectTypeDataModel<MissingChangesSchema> {}
+
+expectTypeOf<ConformingSchema>().not.toExtend<ActiveEffectTypeDataModel.LegacySchema>();
+expectTypeOf<MissingChangesSchema>().toExtend<ActiveEffectTypeDataModel.LegacySchema>();
+
+// Constructing a model whose schema omits `changes` hits the deprecated overload.
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+new _MissingChangesModel();
+
+// A model which defines its own `changes` is not deprecated to construct.
+new _ConformingModel();
+
+// `tsc` cannot see which overload is deprecated, but it can see that the trailing one stays usable:
+// `ConstructorParameters` reads the last overload, so making it conditional resolves it to `never` for
+// conforming models and breaks generic construction, without changing any deprecation behavior.
+declare function construct<T extends abstract new (...args: never) => unknown>(
+  cls: T,
+  ...args: ConstructorParameters<T>
+): InstanceType<T>;
+
+construct(_ConformingModel, { enabled: true });
+expectTypeOf<ConstructorParameters<typeof _ConformingModel>>().not.toEqualTypeOf<never>();
+expectTypeOf<ConstructorParameters<typeof _MissingChangesModel>>().not.toEqualTypeOf<never>();
 
 interface TypedChangeSchema extends ActiveEffectTypeDataModel.MinimalChangeSchema {
   value: fields.StringField;
@@ -132,9 +170,20 @@ expectTypeOf<typeof _ConformingRegistrableModel>().toExtend<ActiveEffectTypeData
 expectTypeOf<typeof _TypedRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 expectTypeOf<typeof _NonConformingModel>().not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 
+// `defineSchema` alone is not enough — a registrable model must actually be a `TypeDataModel`.
+declare const _schemaShapedObject: { defineSchema(): ConformingSchema };
+expectTypeOf(_schemaShapedObject).not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+
 type CompatibilityModels = Document._ConstrainModels<"ActiveEffect", { testCompatibility: typeof _CompatibilityModel }>;
 expectTypeOf<CompatibilityModels["testCompatibility"]>().toEqualTypeOf<typeof _CompatibilityModel>();
-expectTypeOf<ActiveEffect._ChangesFor<_CompatibilityModel>>().toEqualTypeOf<ActiveEffect.ChangeData[]>();
+
+// A Document with no entry in `_ModelConstraints` is passed through untouched, optional modifiers included.
+type UnconstrainedModels = Document._ConstrainModels<"Actor", { a: typeof _CompatibilityModel; b?: undefined }>;
+expectTypeOf<UnconstrainedModels>().toEqualTypeOf<{ a: typeof _CompatibilityModel; b?: undefined }>();
+// A model which declares no `changes` falls back to `ChangeData[]`, the shape the runtime patches in.
+expectTypeOf<GetKey<_CompatibilityModel, "changes", ActiveEffect.ChangeData[]>>().toEqualTypeOf<
+  ActiveEffect.ChangeData[]
+>();
 
 declare global {
   namespace CONFIG.ActiveEffect {

@@ -130,7 +130,7 @@ declare class ClientSettings {
    *   label: "Settings Menu Label",      // The text label used in the button
    *   hint: "A description of what will occur in the submenu dialog.",
    *   icon: "fa-solid fa-bars",               // A Font Awesome icon used in the submenu button
-   *   type: MySubmenuApplicationClass,   // A FormApplication subclass which should be created
+   *   type: MySubmenuApplicationClass,   // An ApplicationV2 subclass which should be created
    *   restricted: true                   // Restrict this submenu to gamemaster only?
    * });
    * ```

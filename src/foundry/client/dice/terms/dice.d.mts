@@ -147,14 +147,6 @@ declare abstract class DiceTerm extends RollTerm {
   protected _roll(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<number | undefined>;
 
   /**
-   * Invoke the configured fulfillment handler for this term to produce a result value.
-   * @param options -Options forwarded to the fulfillment method handler.
-   * @returns Returns a Promise that resolves to the fulfilled number, or undefined if it could
-   *          not be fulfilled.
-   */
-  #invokeFulfillmentHandler(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<number | undefined>;
-
-  /**
    * Maps a randomly-generated value in the interval [0, 1) to a face value on the die.
    * @param randomUniform - A value to map. Must be in the interval [0, 1).
    * @returns The face value.
@@ -230,7 +222,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: DiceTerm.ApplyCountOptions, // not: null (destructured)
+    options?: DiceTerm.ApplyCountOptions,
   ): void;
 
   /**
@@ -240,7 +232,7 @@ declare abstract class DiceTerm extends RollTerm {
     results: DiceTerm.Result[],
     comparison: string,
     target: number,
-    options?: DiceTerm.ApplyDeductOptions, // not: null (destructured)
+    options?: DiceTerm.ApplyDeductOptions,
   ): void;
 
   /* -------------------------------------------- */
@@ -252,19 +244,24 @@ declare abstract class DiceTerm extends RollTerm {
    * @param expression - The expression to parse
    * @param options - Additional options which customize the match
    */
-  static matchTerm(
-    expression: string,
-    options?: DiceTerm.MatchTermOptions, // not: null (destructured)
-  ): RegExpMatchArray | null;
+  static matchTerm(expression: string, options?: DiceTerm.MatchTermOptions): RegExpMatchArray | null;
 
   /**
    * Construct a term of this type given a matched regular expression array.
    * @param match - The matched regular expression array
    * @returns The constructed term
+   * @remarks
+   * @throws If the matched denomination is not registered to {@linkcode CONFIG.Dice.terms} as a
+   * {@linkcode DiceTerm} subclass
    */
   static fromMatch(match: RegExpMatchArray): DiceTerm;
 
-  /** Construct a DiceTerm from parser information. */
+  /**
+   * Construct a DiceTerm from parser information.
+   * @remarks
+   * @throws If the node's denomination is not registered to {@linkcode CONFIG.Dice.terms} as a
+   * {@linkcode DiceTerm} subclass
+   */
   static override fromParseNode(node: DiceRollParseNode): DiceTerm;
 
   /* -------------------------------------------- */
@@ -277,6 +274,9 @@ declare abstract class DiceTerm extends RollTerm {
   ): FixedInstanceType<T>;
 
   override toJSON(): Record<string, unknown>;
+
+  #DiceTerm: true;
+  static #DiceTermStatic: true;
 }
 
 declare namespace DiceTerm {

@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { DataModel } from "../abstract/_module.d.mts";
 import type TypeDataModel from "../abstract/type-data.d.mts";
 
 import fields = foundry.data.fields;
@@ -14,6 +15,18 @@ declare class ActiveEffectTypeDataModel<
   Schema extends ActiveEffectTypeDataModel.MinimalSchema | ActiveEffectTypeDataModel.LegacySchema =
     ActiveEffectTypeDataModel.Schema,
 > extends TypeDataModel<Schema, ActiveEffect.Implementation> {
+  constructor(
+    ...args: Schema extends ActiveEffectTypeDataModel.LegacySchema
+      ? never
+      : DataModel.ConstructorArgs<Schema, ActiveEffect.Implementation>
+  );
+
+  /**
+   * @deprecated ActiveEffect system models that omit their own `changes` field are deprecated; define one
+   * via {@linkcode ActiveEffectTypeDataModel.MinimalChangesField}. This warning will be removed in v16.
+   */
+  constructor(...args: DataModel.ConstructorArgs<Schema, ActiveEffect.Implementation>);
+
   static override defineSchema(): ActiveEffectTypeDataModel.Schema;
 
   static #ActiveEffectTypeDataModel: true;
@@ -24,57 +37,13 @@ declare namespace ActiveEffectTypeDataModel {
   interface AnyConstructor extends Identity<typeof AnyActiveEffectTypeDataModel> {}
 
   /**
-   * The change fields every ActiveEffect system model must preserve. A system can override the changes
-   * SchemaField but must preserve definitions for type, phase, and priority.
+   * @remarks A system can override the changes `ArrayField` and add fields to its element, but these three
+   * fields are fixed.
    * @throws Via `Game#verifyActiveEffectModels` during setup if a registered model omits any of these.
+   * @privateRemarks Pinned to the core field types because field-class inheritance does not imply value-type
+   * compatibility.
    */
   interface MinimalChangeSchema extends fields.DataSchema {
-    type: fields.StringField.Any;
-    phase: fields.StringField.Any;
-    priority: fields.NumberField.Any;
-  }
-
-  /**
-   * A per-type changes element. Each of its types must itself define the minimal change fields.
-   */
-  interface MinimalTypedChangesField extends fields.TypedSchemaField.Any {
-    types: Record<string, fields.SchemaField<MinimalChangeSchema>>;
-  }
-
-  /** The `changes` field a system model which defines one must declare. */
-  interface MinimalChangesField extends fields.ArrayField.Any {
-    element: fields.SchemaField<MinimalChangeSchema> | MinimalTypedChangesField;
-  }
-
-  /**
-   * An ActiveEffect schema from before V14 which does not define its own changes field.
-   * This compatibility path is temporary for Prototype 3.
-   */
-  type LegacySchema = fields.DataSchema & {
-    changes?: never;
-  };
-
-  /** The minimum schema for a class which defines its own ActiveEffect changes. */
-  interface MinimalSchema extends fields.DataSchema {
-    changes: MinimalChangesField;
-  }
-
-  /**
-   * The static shape a class which defines its own ActiveEffect changes must have.
-   * Structural rather than `typeof ActiveEffectTypeDataModel` because a valid model may extend
-   * {@linkcode TypeDataModel} directly.
-   */
-  interface RegistrableClass {
-    defineSchema(): MinimalSchema;
-  }
-
-  interface ChangeSchema extends MinimalChangeSchema {
-    /**
-     * The attribute path in the Actor or Item data which the change modifies
-     * @defaultValue `""`
-     */
-    key: fields.StringField<{ required: true }>;
-
     /**
      * The modification type of this change
      * @defaultValue `"add"`
@@ -82,15 +51,6 @@ declare namespace ActiveEffectTypeDataModel {
      * alpha-numeric substrings or of the form `"custom.{number}"`, and be at least three characters long
      */
     type: fields.StringField<{ required: true; blank: false; initial: "add" }>;
-
-    /**
-     * The value of the change effect
-     * @defaultValue `""`
-     *
-     * @privateRemarks Constructed with `{required: true, nullable: true, serializable: true, initial: ""}`,
-     * but `AnyField` does not model options; its value types remain `unknown`.
-     */
-    value: fields.AnyField;
 
     /**
      * The application phase under which this change is applied. Each phase is its own priority group; that is,
@@ -109,6 +69,56 @@ declare namespace ActiveEffectTypeDataModel {
     priority: fields.NumberField;
   }
 
+  /**
+   * Each type of a typed changes element must define the minimal change fields.
+   */
+  interface MinimalTypedChangesField extends fields.TypedSchemaField.Any {
+    types: Record<string, fields.SchemaField<MinimalChangeSchema>>;
+  }
+
+  /** The `changes` field a system model which defines one must declare. */
+  interface MinimalChangesField extends fields.ArrayField.Any {
+    element: fields.SchemaField<MinimalChangeSchema> | MinimalTypedChangesField;
+  }
+
+  /**
+   * An ActiveEffect schema from before V14 which does not define its own changes field. This
+   * compatibility path is temporary for Prototype 3.
+   */
+  type LegacySchema = fields.DataSchema & {
+    changes?: never;
+  };
+
+  /** The minimum schema for a class which defines its own ActiveEffect changes. */
+  interface MinimalSchema extends fields.DataSchema {
+    changes: MinimalChangesField;
+  }
+
+  /**
+   * Refines {@linkcode TypeDataModel} rather than `typeof ActiveEffectTypeDataModel` so valid
+   * models may extend {@linkcode TypeDataModel} directly while constraining the `defineSchema` return.
+   */
+  interface RegistrableClass extends Identity<
+    Omit<typeof _RegistrableActiveEffectTypeDataModel, "prototype"> & TypeDataModel.AnyConstructor
+  > {}
+
+  interface ChangeSchema extends MinimalChangeSchema {
+    /**
+     * The attribute path in the Actor or Item data which the change modifies
+     * @defaultValue `""`
+     */
+    key: fields.StringField<{ required: true }>;
+
+    /**
+     * The value of the change effect
+     * @defaultValue `""`
+     *
+     * @privateRemarks Constructed with `{required: true, nullable: true, serializable: true, initial: ""}`,
+     * but `AnyField` does not model options; its value types remain `unknown`.
+     */
+    value: fields.AnyField;
+  }
+
   interface Schema extends fields.DataSchema {
     changes: fields.ArrayField<fields.SchemaField<ChangeSchema>>;
   }
@@ -116,6 +126,13 @@ declare namespace ActiveEffectTypeDataModel {
 
 declare abstract class AnyActiveEffectTypeDataModel extends ActiveEffectTypeDataModel<any> {
   constructor(...args: never);
+}
+
+declare class _RegistrableActiveEffectTypeDataModel extends TypeDataModel<
+  ActiveEffectTypeDataModel.MinimalSchema,
+  ActiveEffect.Implementation
+> {
+  static override defineSchema(): ActiveEffectTypeDataModel.MinimalSchema;
 }
 
 export default ActiveEffectTypeDataModel;

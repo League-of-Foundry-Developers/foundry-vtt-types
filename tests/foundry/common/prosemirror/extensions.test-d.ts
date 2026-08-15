@@ -9,3 +9,5 @@ expectTypeOf(pos.hasAncestor(other)).toEqualTypeOf<boolean>();
 expectTypeOf(
   pos.hasAncestor(other, { href: { default: null }, foo: new PIXI.Matrix(), bar: NaN }),
 ).toEqualTypeOf<boolean>();
+expectTypeOf(pos.isFirstNode).toEqualTypeOf<boolean>();
+expectTypeOf(pos.isLastNode).toEqualTypeOf<boolean>();

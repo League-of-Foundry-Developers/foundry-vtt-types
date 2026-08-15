@@ -1,6 +1,8 @@
-import type { InexactPartial } from "#utils";
 import type ProseMirrorMenu from "./menu.d.mts";
 
+/**
+ * A class responsible for creating a drop-down.
+ */
 declare class ProseMirrorDropDown {
   /**
    * A class responsible for rendering a menu drop-down.
@@ -11,15 +13,27 @@ declare class ProseMirrorDropDown {
 
   /**
    * The default title for this drop-down.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly title: string;
 
   /**
    * The items configured for this drop-down.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly items: ProseMirrorDropDown.Entry[];
+
+  /**
+   * An associated menu that this item collapses under.
+   */
+  get menu(): string | undefined;
+
+  /**
+   * The relative importance of this entry.
+   */
+  get weight(): number | undefined;
 
   /**
    * Attach event listeners.
@@ -35,9 +49,9 @@ declare class ProseMirrorDropDown {
 
   /**
    * Recurse through the menu structure and apply a function to each item in it.
-   * @param fn - The function to call on each item. Return false to prevent iterating over any further items.
+   * @param fn - The function to call on each item. Return `false` to prevent iterating over any further items.
    */
-  forEachItem(/** @immediate */ fn: (entry: ProseMirrorDropDown.Entry) => boolean): void;
+  forEachItem(/** @immediate */ fn: (entry: ProseMirrorDropDown.Entry) => boolean | void): void;
 
   /**
    * Render a list of drop-down menu items.
@@ -57,19 +71,22 @@ declare class ProseMirrorDropDown {
 }
 
 declare namespace ProseMirrorDropDown {
-  /** @internal */
-  interface _ConstructionOptions {
+  interface ConstructionOptions {
     /** The menu CSS class name. Required if providing an action. */
-    cssClass: string;
+    cssClass?: string | undefined;
 
     /** Use an icon for the dropdown rather than a text label. */
-    icon: string;
+    icon?: string | undefined;
+
+    /** An associated menu that this item collapses under. */
+    menu?: string | undefined;
 
     /** A callback to fire when a menu item is clicked. */
-    onAction: (event: MouseEvent) => void;
-  }
+    onAction?: ((event: MouseEvent) => void) | undefined;
 
-  interface ConstructionOptions extends InexactPartial<_ConstructionOptions> {}
+    /** The relative importance of an entry. Entries with lower weight collapse first. */
+    weight?: number | undefined;
+  }
 
   interface Entry extends ProseMirrorMenu.Item {
     /** Any child entries. */

@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
 
 import AbstractWeatherShader = foundry.canvas.rendering.shaders.AbstractWeatherShader;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 import WeatherEffects = foundry.canvas.layers.WeatherEffects;
 import WeatherShaderEffect = foundry.canvas.rendering.shaders.WeatherShaderEffect;
@@ -44,6 +46,7 @@ expectTypeOf(layer.suppression).toEqualTypeOf<PIXI.Container | undefined>();
 
 expectTypeOf(layer.options.name).toEqualTypeOf<"effects">();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.effects).toEqualTypeOf<Map<string, (ParticleEffect | WeatherShaderEffect)[]>>();
 expectTypeOf(layer.terrainMaskConfig).toEqualTypeOf<WeatherEffects.MaskConfiguration | undefined>();
 expectTypeOf(layer.occlusionMaskConfig).toEqualTypeOf<WeatherEffects.MaskConfiguration | undefined>();
@@ -58,7 +61,9 @@ expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<WeatherEffects>>();
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare class SomeParticleEffect extends ParticleEffect {}
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare class SomeLeavesEffect extends AutumnLeavesWeatherEffect {}
 declare class SomeWeatherShaderEffect extends WeatherShaderEffect {}
 

@@ -263,16 +263,10 @@ declare namespace CameraViews {
     /** Nameplate CSS classes. */
     css: string;
 
-    /**
-     * Whether to show player names on nameplates.
-     * @privateRemarks Foundry's typedef says `string`; the runtime assigns the result of a comparison.
-     */
+    /** Whether to show player names on nameplates. */
     playerName: boolean;
 
-    /**
-     * Whether to show character names on nameplates.
-     * @privateRemarks Foundry's typedef says `string`; the runtime assigns the result of a comparison.
-     */
+    /** Whether to show character names on nameplates. */
     charname: boolean;
   }
 

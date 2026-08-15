@@ -1,5 +1,5 @@
 ---
-name: Checks
+name: CI
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -10,6 +10,11 @@ on: # yamllint disable-line rule:truthy
       - opened
       - synchronize
   merge_group:
+  release:
+    types:
+      - created
+
+permissions: {}
 
 env:
   node_version: 26
@@ -117,7 +122,7 @@ jobs:
 
   publishPrerelease:
     name: Publish prerelease
-    if: (github.event_name == 'push' || github.event_name == 'merge_group') && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - typecheck
       - lint
@@ -132,15 +137,6 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
-      - name: Cache Node.js modules
-        uses: actions/cache@v6
-        with:
-          path: .npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-      - run: npm ci --cache .npm --prefer-offline
       - name: Set version
         run: |-
           echo "VERSION=$(npm pkg get version | tr -d '"')-beta.$(date +%Y%m%d%H%M%S)" >>"$GITHUB_ENV"
@@ -148,12 +144,32 @@ jobs:
         run: |-
           npm version --git-tag-version false "$VERSION"
           npm publish --provenance --ignore-scripts --tag prerelease
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish fvtt-types
         run: |-
           jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
           npm version --allow-same-version --git-tag-version false "$VERSION"
           npm publish --provenance --ignore-scripts --tag prerelease
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.FVTT_NPM_TOKEN }}
+
+  publishRelease:
+    name: Publish release
+    if: github.event_name == 'release'
+    needs:
+      - typecheck
+      - lint
+      - test
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js ${{ env.node_version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.node_version }}
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish @league-of-foundry-developers/foundry-vtt-types
+        run: npm publish --provenance --ignore-scripts
+      - name: Publish fvtt-types
+        run: |-
+          jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
+          npm publish --provenance --ignore-scripts

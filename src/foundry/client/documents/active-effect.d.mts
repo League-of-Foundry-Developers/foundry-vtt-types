@@ -1,5 +1,14 @@
 import type { ConfiguredActiveEffect } from "#configuration";
-import type { AnyMutableObject, AnyObject, Identity, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type {
+  AnyMutableObject,
+  AnyObject,
+  GetKey,
+  Identity,
+  InterfaceToObject,
+  MaybeArray,
+  MaybePromise,
+  Merge,
+} from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseCombat, BaseCombatant, BaseFolder } from "#common/documents/_module.d.mts";
@@ -82,10 +91,8 @@ declare namespace ActiveEffect {
    * The subtypes for which Foundry itself registers a {@linkcode foundry.data.ActiveEffectTypeDataModel}
    * in {@linkcode CONFIG.ActiveEffect.dataModels}.
    */
-  interface CoreTypes {
-    // Note(instantiation expression): pins the construct signature to the class' default `Schema` so that
-    // `Document.Internal._CoreSystemFor` infers `ActiveEffectTypeDataModel<Schema>` rather than the
-    // constraint-instantiated `ActiveEffectTypeDataModel<DataSchema>`.
+  interface CoreEffects {
+    /** @privateRemarks The instantiation expression preserves the default schema during model inference. */
     base: typeof foundry.data.ActiveEffectTypeDataModel<foundry.data.ActiveEffectTypeDataModel.Schema>;
   }
 
@@ -144,12 +151,7 @@ declare namespace ActiveEffect {
    * Falls back to {@linkcode ActiveEffect.ChangeData}[] for a model that declares no `changes` — the
    * runtime patches one into such a model's schema via `Game##verifyActiveEffectModels` during setup.
    */
-  // Note: a plain conditional rather than `GetKey` — `GetKey`'s exact-type gadgets are invariant in `T`,
-  // which would fail the `out SubType` variance check on the class when used in the `changes` getter.
-  type ChangesOfType<Type extends SubType = SubType> = _ChangesFor<SystemOfType<Type>>;
-
-  /** @internal */
-  type _ChangesFor<System> = System extends { readonly changes: infer Changes } ? Changes : ChangeData[];
+  type ChangesOfType<Type extends SubType = SubType> = GetKey<SystemOfType<Type>, "changes", ChangeData[]>;
 
   /**
    * @internal
@@ -233,8 +235,9 @@ declare namespace ActiveEffect {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends fields.SchemaField
-    .CreateData<Schema> {
+  interface CreateData<
+    SubType extends ActiveEffect.SubType = ActiveEffect.SubType,
+  > extends fields.SchemaField.CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -368,17 +371,12 @@ declare namespace ActiveEffect {
      * Should this ActiveEffect's image be prominently displayed as an icon alongside Tokens, Combatants, etc.?
      * @defaultValue {@linkcode CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL}
      */
-    showIcon: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: typeof CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL;
-      },
-      // Note(LukeAbby): This will always need an override since `choices` doesn't narrow `NumberField`.
-      CONST.ACTIVE_EFFECT_SHOW_ICON | null | undefined,
-      CONST.ACTIVE_EFFECT_SHOW_ICON,
-      CONST.ACTIVE_EFFECT_SHOW_ICON
-    >;
+    showIcon: fields.NumberField<{
+      required: true;
+      nullable: false;
+      choices: CONST.ACTIVE_EFFECT_SHOW_ICON[];
+      initial: typeof CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL;
+    }>;
 
     /**
      * The `_id` of a {@linkcode Folder} which contains this ActiveEffect
@@ -1212,12 +1210,13 @@ declare namespace ActiveEffect {
    * @param change    - The change data
    * @param options   - Additional options to configure the change application.
    * @returns A Promise resolving to either a record of Actor-data overrides made or void
+   * @remarks Foundry does not observe the return value; returned Promises are neither awaited nor handled.
    */
   type ChangeHandler = (
     targetDoc: ChangeTarget,
     change: ChangeData,
     options?: ApplyChangeFieldOptions,
-  ) => Promise<AnyMutableObject | void>;
+  ) => MaybePromise<AnyMutableObject | void>;
 
   /**
    * A function to render a stringified HTMLLIElement in the changes tab of {@linkcode ActiveEffectConfig}
@@ -1255,6 +1254,14 @@ declare namespace ActiveEffect {
   interface ShouldApplyChangeOptions {
     /** The application phase currently being evaluated. */
     phase?: ChangePhase | undefined;
+
+    /**
+     * Replacement data to be used as part of the change's application
+     * @remarks What {@linkcode ActiveEffect.getReplacementData | ActiveEffect#getReplacementData} returned for this
+     * effect, which {@linkcode Actor.applyActiveEffects | Actor#applyActiveEffects} then forwards to
+     * {@linkcode ActiveEffect.applyChange | ActiveEffect.applyChange}.
+     */
+    replacementData?: AnyObject | undefined;
   }
 
   /** Options affecting the change application. */
@@ -1272,6 +1279,11 @@ declare namespace ActiveEffect {
   interface ApplyChangeFieldOptions extends ApplyChangeOptions {
     /** The field: if not supplied, it will be retrieved from the supplied Document. */
     field?: fields.DataField.Any | undefined;
+  }
+
+  interface ApplyChangeFieldOptionsFor<Field extends fields.DataField.Any | undefined> extends ApplyChangeOptions {
+    /** The field: if not supplied, it will be retrieved from the supplied Document. */
+    field?: Field | undefined;
   }
 
   /** Contextual information for use in an expiry-event determination. */
@@ -1481,14 +1493,26 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     context?: ActiveEffect.PrepareDurationContext,
   ): ActiveEffect.Duration;
 
+  override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
+    pack?: foundry.documents.collections.CompendiumCollection.Any | null,
+    options?: Options,
+  ): ClientDocument.ToCompendiumReturnType<"ActiveEffect", Options>;
+
   /**
    * Determine whether a change from this ActiveEffect should be applied during the current phase. Systems and modules
    * may override this method to introduce additional conditions under which a change is applied.
    * @param change  - The change being considered.
    * @param options - Options which affect whether the change is applied.
-   * @returns Whether the change should be applied during this phase.
+   * @returns Should the change be applied during this phase (or at all)?
    */
   shouldApplyChange(change: ActiveEffect.ChangeData, options?: ActiveEffect.ShouldApplyChangeOptions): boolean;
+
+  /**
+   * Acquire replacement data for use in the application of this effect's changes.
+   * @param baseData - Base data sourced from elsewhere (by default from `Actor#getRollData`)
+   * @returns Data used to resolve `"@"` expressions in string {@linkcode ActiveEffect.ChangeData | ChangeData} values
+   */
+  getReplacementData(baseData: AnyObject): AnyObject;
 
   /**
    * Apply this ActiveEffect to a target Document.
@@ -1515,7 +1539,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   static applyChangeField<Field extends fields.DataField.Any | undefined = undefined>(
     targetDoc: ActiveEffect.ChangeTarget,
     change: ActiveEffect.ChangeData,
-    options?: ActiveEffect.ApplyChangeFieldOptions & { field?: Field },
+    options?: ActiveEffect.ApplyChangeFieldOptionsFor<Field>,
   ): ActiveEffect.ApplyFieldReturn<Field>;
 
   /**
@@ -1867,7 +1891,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  #ActiveEffect: true;
+  static #ActiveEffect: true;
 }
 
 export default ActiveEffect;

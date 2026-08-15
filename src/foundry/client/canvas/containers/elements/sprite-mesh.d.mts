@@ -130,6 +130,15 @@ declare class SpriteMesh extends PIXI.Container {
    */
   protected _tintAlphaDirty: boolean;
 
+  /** True if this mesh drew its own content during the current renderer pass. */
+  get renderedThisPass(): boolean;
+
+  /** True if this mesh was visited by the renderer during the current pass. */
+  get visitedThisPass(): boolean;
+
+  /** True if the mesh was culld (visited but not drawn) during the current pass. */
+  get culledThisPass(): boolean;
+
   /**
    * The shader bound to this mesh.
    */
@@ -295,6 +304,8 @@ declare class SpriteMesh extends PIXI.Container {
    * This is used to ensure that the true width and height of a trimmed texture is respected.
    */
   calculateTrimmedVertices(): void;
+
+  protected override _renderWithCulling(renderer: PIXI.Renderer): void;
 
   protected override _render(renderer: PIXI.Renderer): void;
 

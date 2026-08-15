@@ -44,18 +44,18 @@ declare class GlowOverlayFilter extends AbstractBaseFilter {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Dynamically create the fragment shader used for filters of this type.
    */
-  static createFragmentShader(quality: number, distance: number): string;
+  protected static override _createFragmentShader(quality: number, distance: number): string;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
   static override create<ThisType extends AbstractBaseFilter.AnyConstructor>(
     this: ThisType,
-    initialUniforms?: AbstractBaseShader.Uniforms,
+    uniforms?: AbstractBaseShader.Uniforms,
   ): FixedInstanceType<ThisType>;
 
   override apply(

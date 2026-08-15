@@ -1,4 +1,4 @@
-import { afterAll, test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 
 import WorldCollection = foundry.documents.abstract.WorldCollection;
 // Collection is a blessed global so doesn't need to be imported
@@ -57,6 +57,15 @@ describe("WorldCollection Tests", async () => {
   const wac = new TestActorsWorldCollection([actorSource]);
   const wic = new TestItemsWorldCollection([itemSource]);
   const wuc = new TestUsersWorldCollection([userSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(wac).toExtend<Collection.Any>();
+    expectTypeOf(TestActorsWorldCollection).toExtend<Collection.AnyConstructor>();
+    expect(wic).toBeInstanceOf(Collection);
+    expectTypeOf(wuc).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(TestScenesWorldCollection).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(wac).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(wac.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
@@ -209,6 +218,8 @@ describe("WorldCollection Tests", async () => {
       }),
     ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder">>();
   });
+
+  // importDocument and _prepareImportDocument are tested in subclasses
 
   test("Sheets", () => {
     // Thorough tests of the options for these methods are in the DocumentSheetConfig tests

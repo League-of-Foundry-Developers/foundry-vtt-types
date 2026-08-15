@@ -10,9 +10,10 @@ declare class AmplificationSamplerShader extends ColorAdjustmentsSamplerShader {
    */
   static override classPluginName: string | null;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader: string;
+  /** @deprecated `fragmentShader` getter is deprecated in favor of `_createFragmentShader`. (since v14, until v16) */
+  static fragmentShader(): string;
 
   /**
    * @defaultValue
@@ -27,7 +28,7 @@ declare class AmplificationSamplerShader extends ColorAdjustmentsSamplerShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Brightness controls the luminosity.

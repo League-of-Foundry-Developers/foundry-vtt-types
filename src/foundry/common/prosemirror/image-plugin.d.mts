@@ -17,7 +17,8 @@ declare class ProseMirrorImagePlugin<Doc extends Document.Any> extends ProseMirr
 
   /**
    * The related Document to store extracted base64 images for.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly document: Doc;
 
