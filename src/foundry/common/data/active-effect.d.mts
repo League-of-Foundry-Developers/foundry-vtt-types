@@ -15,15 +15,16 @@ declare class ActiveEffectTypeDataModel<
   Schema extends ActiveEffectTypeDataModel.MinimalSchema | ActiveEffectTypeDataModel.LegacySchema =
     ActiveEffectTypeDataModel.Schema,
 > extends TypeDataModel<Schema, ActiveEffect.Implementation> {
+  constructor(
+    ...args: Schema extends ActiveEffectTypeDataModel.LegacySchema
+      ? never
+      : DataModel.ConstructorArgs<Schema, ActiveEffect.Implementation>
+  );
+
   /**
    * @deprecated ActiveEffect system models that omit their own `changes` field are deprecated; define one
    * via {@linkcode ActiveEffectTypeDataModel.MinimalChangesField}. This warning will be removed in v16.
    */
-  constructor(
-    ...args: Schema extends ActiveEffectTypeDataModel.LegacySchema
-      ? DataModel.ConstructorArgs<Schema, ActiveEffect.Implementation>
-      : never
-  );
   constructor(...args: DataModel.ConstructorArgs<Schema, ActiveEffect.Implementation>);
 
   static override defineSchema(): ActiveEffectTypeDataModel.Schema;
@@ -97,9 +98,9 @@ declare namespace ActiveEffectTypeDataModel {
    * Refines {@linkcode TypeDataModel} rather than `typeof ActiveEffectTypeDataModel` so valid
    * models may extend {@linkcode TypeDataModel} directly while constraining the `defineSchema` return.
    */
-  interface RegistrableClass extends TypeDataModel.AnyConstructor {
-    defineSchema(): MinimalSchema;
-  }
+  interface RegistrableClass extends Identity<
+    Omit<typeof _RegistrableActiveEffectTypeDataModel, "prototype"> & TypeDataModel.AnyConstructor
+  > {}
 
   interface ChangeSchema extends MinimalChangeSchema {
     /**
@@ -125,6 +126,13 @@ declare namespace ActiveEffectTypeDataModel {
 
 declare abstract class AnyActiveEffectTypeDataModel extends ActiveEffectTypeDataModel<any> {
   constructor(...args: never);
+}
+
+declare class _RegistrableActiveEffectTypeDataModel extends TypeDataModel<
+  ActiveEffectTypeDataModel.MinimalSchema,
+  ActiveEffect.Implementation
+> {
+  static override defineSchema(): ActiveEffectTypeDataModel.MinimalSchema;
 }
 
 export default ActiveEffectTypeDataModel;

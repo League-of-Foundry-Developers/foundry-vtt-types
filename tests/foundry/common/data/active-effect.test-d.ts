@@ -88,12 +88,27 @@ interface MissingChangesSchema extends fields.DataSchema {
 
 declare class _MissingChangesModel extends ActiveEffectTypeDataModel<MissingChangesSchema> {}
 
+expectTypeOf<ConformingSchema>().not.toExtend<ActiveEffectTypeDataModel.LegacySchema>();
+expectTypeOf<MissingChangesSchema>().toExtend<ActiveEffectTypeDataModel.LegacySchema>();
+
 // Constructing a model whose schema omits `changes` hits the deprecated overload.
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 new _MissingChangesModel();
 
 // A model which defines its own `changes` is not deprecated to construct.
 new _ConformingModel();
+
+// `tsc` cannot see which overload is deprecated, but it can see that the trailing one stays usable:
+// `ConstructorParameters` reads the last overload, so making it conditional resolves it to `never` for
+// conforming models and breaks generic construction, without changing any deprecation behavior.
+declare function construct<T extends abstract new (...args: never) => unknown>(
+  cls: T,
+  ...args: ConstructorParameters<T>
+): InstanceType<T>;
+
+construct(_ConformingModel, { enabled: true });
+expectTypeOf<ConstructorParameters<typeof _ConformingModel>>().not.toEqualTypeOf<never>();
+expectTypeOf<ConstructorParameters<typeof _MissingChangesModel>>().not.toEqualTypeOf<never>();
 
 interface TypedChangeSchema extends ActiveEffectTypeDataModel.MinimalChangeSchema {
   value: fields.StringField;
