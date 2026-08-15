@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 
 import FogExplorations = foundry.documents.collections.FogExplorations;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
@@ -35,6 +35,18 @@ describe("FogExplorations Tests", async () => {
   });
 
   const fogs = new FogExplorations([fogSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(fogs).toExtend<Collection.Any>();
+    expectTypeOf(FogExplorations).toExtend<Collection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(Collection);
+    expectTypeOf(fogs).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(FogExplorations).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(fogs).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(FogExplorations).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(fogs).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(FogExplorations.documentName).toEqualTypeOf<"FogExploration">();
@@ -116,6 +128,41 @@ describe("FogExplorations Tests", async () => {
     expectTypeOf(fogs.set("ID", fog)).toEqualTypeOf<typeof fogs>();
 
     expectTypeOf(fogs.delete("ID")).toBeBoolean();
+  });
+
+  test("importDocument fake override", async () => {
+    // `FogExploration`s don't have subtypes
+    const imported1 = await fogs.importDocument(fog, {});
+    if (!imported1) throw new Error("Failed to create test FogExploration via `#importDocument`");
+    docsToCleanUp.add(imported1);
+    expectTypeOf(imported1).toEqualTypeOf<FogExploration.Stored>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => fogs["_prepareImportDocument"](fog)).toThrow();
+
+    expectTypeOf(fogs["_prepareImportDocument"](fogImpl, {})).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(fogs["_prepareImportDocument"](fog, { keepId: true })).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(fogs["_prepareImportDocument"](fogImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      fogs["_prepareImportDocument"](fogImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "FogExploration", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<FogExploration.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

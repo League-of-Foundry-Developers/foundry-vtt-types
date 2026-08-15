@@ -5,7 +5,7 @@ import type AbstractFormInputElement from "./form-element.d.mts";
 /**
  * A custom HTMLElement used to render a set of associated Documents referenced by UUID.'
  *
- * @remarks When creating via markup, values can be set either as attribute or as the `innerText` of the element; see
+ * @remarks When creating via markup, values can be set either as attribute or as the `textContent` of the element; see
  * {@linkcode HTMLDocumentTagsElement._initializeTags | #_initializeTags} for examples.
  *
  * @privateRemarks This value type needs to cover all the weird edge cases in this element:
@@ -59,11 +59,11 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   set max(value);
 
   /**
-   * Initialize innerText or an initial value attribute of the element as a serialized JSON array.
+   * Initialize textContent or an initial value attribute of the element as a serialized JSON array.
    * @remarks In practice this will always be passed a value by the constructor, which is why
    * {@linkcode HTMLDocumentTagsElement.Config.value} is required, but when instantiated by the DOM
    * it'll receive `undefined`, and for all  non-array values it falls back to the `value` attribute,
-   * or `this.innerText` if there isn't one.
+   * or `this.textContent` if there isn't one.
    *
    * @example
    * Attribute
@@ -72,7 +72,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
    * ```
    *
    * @example
-   * `innerText`
+   * `textContent`
    * ```html
    * <document-tags>UUID1,UUID2,UUID3</document-tags>
    * ```
@@ -124,7 +124,7 @@ declare namespace HTMLDocumentTagsElement {
      * An array of Document UUIDs to initialize the element with.
      *
      * @remarks Foundry marks this optional, but that's only valid if it's being instantiated via tags in the dom, and can have its initial
-     * value set by attributes/innerText. This isn't super relevant with the protected constructor, though.
+     * value set by attributes/textContent. This isn't super relevant with the protected constructor, though.
      *
      * @privateRemarks This is much narrower than either the {@link HTMLDocumentTagsElement | class}'s type param or
      * {@link HTMLDocumentTagsElement.Config.value | the config's `value` type}, because it gets passed directly to

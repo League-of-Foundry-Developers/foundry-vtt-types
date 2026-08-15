@@ -31,10 +31,7 @@ describe("Number Tests", () => {
     expectTypeOf(Number.isNumeric(false)).toBeBoolean();
     expectTypeOf(Number.isNumeric(7)).toBeBoolean();
 
-    // it does actually `return Number(n)`
-    // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    expectTypeOf(Number.fromString(7)).toEqualTypeOf<Number>();
-    // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    expectTypeOf(Number.fromString("42")).toEqualTypeOf<Number>();
+    expectTypeOf(Number.fromString(7)).toEqualTypeOf<number>();
+    expectTypeOf(Number.fromString("42")).toEqualTypeOf<number>();
   });
 });

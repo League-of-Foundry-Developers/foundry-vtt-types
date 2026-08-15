@@ -57,6 +57,8 @@ expectTypeOf(myCanvas.recenter({ x: 100, y: 100, scale: 1 })).toEqualTypeOf<Prom
 
 if (myCanvas.pendingRenderFlags) {
   myCanvas.pendingRenderFlags.OBJECTS.add(myCanvas.perception);
+  myCanvas.pendingRenderFlags.INTERFACE.add(myCanvas.perception);
+  myCanvas.pendingRenderFlags.PERCEPTION.add(myCanvas.perception);
 }
 
 expectTypeOf(myCanvas.hidden).toEqualTypeOf<HiddenCanvasGroup | undefined>();

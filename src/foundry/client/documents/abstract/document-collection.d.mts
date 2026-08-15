@@ -25,7 +25,7 @@ declare abstract class DocumentCollection<
   constructor(data?: Document.SourceForName<DocumentName>[]);
 
   /**
-   * The source data array from which the Documents in the `WorldCollection` are created
+   * The source data array from which the Documents in `WorldCollection`s are created.
    * @remarks Defined in the class body but set via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
    *
@@ -150,13 +150,11 @@ declare abstract class DocumentCollection<
    * @privateRemarks The `document` param and the return have been widened to `Document.Any` to support
    * {@link CompendiumCollection.importDocument | `CompendiumCollection`'s override}, which has conditional handling for `Folder`s.
    * It is re-narrowed in {@link WorldCollection.importDocument | a fake type override} in `WorldCollection`.
+   *
+   * The `options` param has been `never`ed to allow both the above and also the addition of a generic in subclasses. It is also covered by
+   * the overrides mentioned above. This has been made `abstract` to enforce sound subclassing.
    */
-  importDocument(
-    document: Document.Any,
-    options:
-      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
-      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
-  ): Promise<Document.AnyStored | undefined>;
+  abstract importDocument(document: Document.Any, options: never): Promise<Document.AnyStored | undefined>;
 
   /**
    * Translate a provided Document into data ready for import into this collection.
@@ -168,16 +166,14 @@ declare abstract class DocumentCollection<
    * {@link CompendiumCollection.importDocument | `CompendiumCollection`'s override}, which has conditional handling for `Folder`s.
    * It is re-narrowed in {@link WorldCollection.importDocument | a fake type override} in `WorldCollection`.
    *
+   * The `options` param has been `never`ed to allow both the above and also the addition of a generic in subclasses. It is also covered by
+   * the overrides mentioned above. This has been made `abstract` to enforce sound subclassing.
+   *
    * The implementation in `DocumentCollection` just directly calls {@linkcode Document.toObject | #toObject}.
    * The return could be narrowed to `CreateData` or `Source` but neither {@linkcode ClientDocument.ToCompendiumReturnType} nor
    * {@linkcode WorldCollection.FromCompendiumReturnType} directly extend either.
    */
-  protected _prepareImportDocument(
-    document: Document.Any,
-    options:
-      | DocumentCollection.ImportToCompendiumOptions<DocumentName>
-      | DocumentCollection.ImportFromCompendiumOptions<DocumentName>,
-  ): object;
+  protected abstract _prepareImportDocument(document: Document.Any, options: never): object;
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.
@@ -345,6 +341,6 @@ declare namespace DocumentCollection {
 
 export default DocumentCollection;
 
-declare class AnyDocumentCollection extends DocumentCollection<Document.Type, Collection.Methods.Any> {
+declare abstract class AnyDocumentCollection extends DocumentCollection<Document.Type, Collection.Methods.Any> {
   constructor(...args: never);
 }

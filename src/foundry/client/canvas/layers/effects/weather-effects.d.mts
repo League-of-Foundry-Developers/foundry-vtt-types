@@ -61,6 +61,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   /**
    * Array of weather effects linked to this weather container.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   effects: Map<string, Array<ParticleEffect | WeatherShaderEffect>>;
 
   /**
@@ -280,6 +281,7 @@ declare namespace WeatherEffects {
     id: string;
 
     /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     effectClass: typeof ParticleEffect;
 
     /**
@@ -293,6 +295,7 @@ declare namespace WeatherEffects {
     id: string;
 
     /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     effectClass: typeof AutumnLeavesWeatherEffect;
 
     /**

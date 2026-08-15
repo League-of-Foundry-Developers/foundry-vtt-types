@@ -198,6 +198,13 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   protected _onActivate(event: PointerEvent): Promise<void>;
 
   /**
+   * Handle click events on context menu items.
+   * @param event   - The click event
+   * @param options - (default: `{}`)
+   */
+  protected _onClickItem(event: PointerEvent, options?: ContextMenu.RenderOptions): void;
+
+  /**
    * Bind global context menu listeners to a given document.
    * @param document - The document.
    * @param options  - (default: `{}`)

@@ -3,7 +3,7 @@ import type { AbstractBaseFilter, AbstractBaseMaskFilter } from "./_module.d.mts
 import type { AbstractBaseShader } from "../shaders/_module.mjs";
 
 declare class VisionMaskFilter extends AbstractBaseMaskFilter {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -20,8 +20,14 @@ declare class VisionMaskFilter extends AbstractBaseMaskFilter {
   ): FixedInstanceType<ThisType>;
 
   /**
-   * @remarks This is set as a property all the way up in PIXI.Filter, however Foundry has it
-   * as a getter, with a no-op setter. It's still like this in 13.345.
+   * Is this filter currently suppressed?
+   * @defaultValue `false`
+   */
+  suppressed: boolean;
+
+  /**
+   * This filter is enabled if and only if it is not suppressed and `canvas.visibility.visible` is true.
+   * This property cannot be set. Set {@link VisionMaskFilter#suppressed} to disable this filter.
    */
   override readonly enabled: boolean;
 }

@@ -13,3 +13,4 @@ export { default as ProseMirrorEditor } from "./prosemirror-editor.mjs";
 export { default as SearchFilter } from "./search-filter.mjs";
 export { default as Tabs } from "./tabs.mjs";
 export { default as TextEditor } from "./text-editor.mjs";
+export * as types from "./_types.mjs";

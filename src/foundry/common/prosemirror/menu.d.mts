@@ -1,5 +1,5 @@
 import type { Attrs, MarkType, NodeType, Schema } from "prosemirror-model";
-import type { Plugin } from "prosemirror-state";
+import type { EditorState, Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import type ProseMirrorKeyMaps from "./keymaps.d.mts";
 import type ProseMirrorPlugin from "./plugin.d.mts";
@@ -19,19 +19,22 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * The editor view.
-   * @remarks `defineProperty`'d in construction, and without the property existing prior, defaults to `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly view: EditorView;
 
   /**
    * The items configured for this menu.
-   * @remarks `defineProperty`'d in construction, and without the property existing prior, defaults to `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly items: ProseMirrorMenu.Item[];
 
   /**
    * The ID of the menu element in the DOM.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly id: `prosemirror-menu-${string}`;
 
@@ -47,8 +50,8 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * The dropdowns configured for this menu.
-   * @remarks `defineProperty`'d in {@linkcode _createDropDowns}, which is called during construction,
-   * and without the property existing prior, it defaults to `writable: false`
+   *
+   * @privateRemarks Defined by {@linkcode _createDropDowns} during construction with `writable: false`.
    */
   readonly dropdowns: ProseMirrorDropDown[];
 
@@ -77,11 +80,6 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
    * @remarks Both parameters are unused
    */
   update(view?: EditorView, prevState?: EditorView): void;
-
-  /**
-   * Called when the view is destroyed or receives a state with different plugins.
-   */
-  destroy(): void;
 
   /**
    * Instantiate the ProseMirrorDropDown instances and configure them with the defined menu items.
@@ -126,6 +124,11 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   protected _onAction(event: MouseEvent): void;
 
   /**
+   * Handle collapsing various menu items to accommodate the menu's available width.
+   */
+  protected _onResize(entries: ResizeObserverEntry[]): void;
+
+  /**
    * Wrap the editor view element and inject our template ready to be rendered into.
    */
   protected _wrapEditor(): void;
@@ -138,8 +141,25 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
 
   /**
    * Global listeners for the drop-down menu.
+   * @param document - The document to bind to.
    */
-  static eventListeners(): void;
+  static activateListeners(document?: Document | null, options?: ProseMirrorMenu.ActivateListenersOptions): void;
+
+  /**
+   * Clear a specific mark from the selection.
+   * @param markType - The mark to remove.
+   */
+  protected _clearMark(markType: MarkType): void;
+
+  /**
+   * Display a prompt for font color.
+   */
+  protected _fontColorPrompt(): Promise<void>;
+
+  /**
+   * Display a prompt for a custom font size.
+   */
+  protected _fontSizePrompt(): Promise<void>;
 
   /**
    * Display the insert image prompt.
@@ -176,6 +196,21 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   protected _clearFormatting(): void;
 
   /**
+   * Place the given insert into the ProseMirror Document.
+   * @param state    - The editor state.
+   * @param dispatch - Dispatch changes to the editor state.
+   * @param view     - The editor view.
+   * @param html     - The insert's markup.
+   */
+  protected _placeInsert(
+    state: EditorState,
+    dispatch: ProseMirrorKeyMaps.DispatchFunction,
+    view: EditorView,
+    html: string,
+    options?: ProseMirrorMenu.PlaceInsertOptions,
+  ): void;
+
+  /**
    * Toggle link recommendations
    */
   protected _toggleMatches(): Promise<void>;
@@ -193,11 +228,32 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   ): void;
 
   /**
+   * Toggle a mark in the selection. Unlike the built-in toggleMark command, this will check for exact attribute
+   * matches to determine toggling behavior.
+   * @param markType - The mark to apply.
+   * @param attrs    - The mark's attributes.
+   */
+  protected _toggleMark(markType: MarkType, attrs?: Attrs | null): void;
+
+  /**
    * Toggle the given selection by wrapping it in a given text block, or reverting to a paragraph block.
    * @param node    - The type of node being interacted with.
    * @param options - Additional options to configure behaviour.
    */
   protected _toggleTextBlock(node: NodeType, options?: ProseMirrorMenu.ToggleTextBlockOptions): void;
+
+  /**
+   * Get the visible element from its action.
+   * @param action - The action.
+   * @remarks Returns `null` if no rendered menu element is configured for the action.
+   */
+  protected getActionElement(action: string): HTMLElement | null;
+
+  /**
+   * @deprecated "ProseMirrorMenu.eventListeners is deprecated. Please use ProseMirrorMenu.activateListeners instead."
+   * (since v14, until v16)
+   */
+  static eventListeners(): void;
 
   #ProseMirrorMenu: true;
 }
@@ -225,6 +281,10 @@ declare namespace ProseMirrorMenu {
 
   interface ConstructionOptions extends InexactPartial<_ConstructionOptions> {}
 
+  interface ActivateListenersOptions {
+    _deprecated?: boolean | undefined;
+  }
+
   /** @internal */
   interface _ShowDialogOptions {
     /**
@@ -236,10 +296,15 @@ declare namespace ProseMirrorMenu {
 
   interface ShowDialogOptions extends InexactPartial<_ShowDialogOptions> {}
 
+  interface PlaceInsertOptions {
+    /** Whether the insert contains inline content, otherwise block content is assumed. */
+    inline?: boolean | undefined;
+  }
+
   /** @internal */
   interface _Attrs {
     /** Attributes for the node. */
-    attrs: Attrs;
+    attrs: Attrs | null;
   }
 
   interface ToggleBlockOptions extends InexactPartial<_Attrs> {}
@@ -266,13 +331,39 @@ declare namespace ProseMirrorMenu {
     /** An object of attributes for the node or mark. */
     attrs: Attrs;
 
+    /**
+     * Entries with the same group number will be grouped together in the drop-down.
+     * Lower-numbered groups appear higher in the list.
+     */
+    group: number;
+
     /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
     priority: number;
 
-    /** The command to run when the menu item is clicked. */
-    cmd: ProseMirrorKeyMaps.Command;
+    /**
+     * The relative importance of an entry. Lower-weight entries are collapsed under
+     * menus before higher-weight entries when the viewport is constrained. Entries
+     * with no weight are never collapsed.
+     */
+    weight: number;
 
-    /** Whether the current item is active under the given selection or cursor. (default: `false`) */
+    /**
+     * An associated menu item that this entry collapses under. When this entry is
+     * visible, its associated menu item is hidden.
+     */
+    menu: string;
+
+    scope: MENU_ITEM_SCOPES;
+
+    cssClass: string;
+
+    /** The command to run when the menu item is clicked. */
+    cmd: Command;
+
+    /**
+     * Whether the current item is active under the given selection or cursor.
+     * @defaultValue `false`
+     */
     active: boolean;
   }
 
@@ -285,10 +376,18 @@ declare namespace ProseMirrorMenu {
   }
 
   /**
+   * @param state    - The current editor state.
+   * @param dispatch - A function to dispatch a transaction.
+   * @param view     - Escape-hatch for when the command needs to interact directly with the UI.
+   * @privateRemarks The menu discards the return value.
+   */
+  type Command = (state: EditorState, dispatch: ProseMirrorKeyMaps.DispatchFunction, view: EditorView) => void;
+
+  /**
    * @param node  - The node to wrap the selection in.
    * @param attrs - Attributes for the node.
    */
-  type ToggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => ProseMirrorKeyMaps.Command;
+  type ToggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => Command;
 }
 
 export default ProseMirrorMenu;

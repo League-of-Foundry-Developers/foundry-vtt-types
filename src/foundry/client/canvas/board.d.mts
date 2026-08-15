@@ -1122,6 +1122,7 @@ declare namespace Canvas {
 
   interface PendingRenderFlags {
     OBJECTS: Set<RenderFlagsMixin.AnyMixed>;
+    INTERFACE: Set<RenderFlagsMixin.AnyMixed>;
     PERCEPTION: Set<RenderFlagsMixin.AnyMixed>;
   }
 }

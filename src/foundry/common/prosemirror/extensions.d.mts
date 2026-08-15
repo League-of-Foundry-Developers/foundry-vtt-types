@@ -11,5 +11,11 @@ declare module "prosemirror-model" {
      * parameter that has a default of `null`
      */
     hasAncestor(other: NodeType, attrs?: Attrs | null): boolean;
+
+    /** Determine if this position is in the first node of the Document. */
+    readonly isFirstNode: boolean;
+
+    /** Determine if this position is in the last node of the Document. */
+    readonly isLastNode: boolean;
   }
 }

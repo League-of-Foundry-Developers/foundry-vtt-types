@@ -48,28 +48,7 @@ declare namespace AbstractDarknessLevelRegionShader {
  * Render the RegionMesh with darkness level adjustments.
  */
 declare class AdjustDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
-  /**
-   * @defaultValue
-   * ```
-   *  `
-   *   precision ${PIXI.settings.PRECISION_FRAGMENT} float;
-   *
-   *   uniform sampler2D depthTexture;
-   *   uniform float darknessLevel;
-   *   uniform float top;
-   *   uniform float bottom;
-   *   uniform vec4 tintAlpha;
-   *   varying vec2 vScreenCoord;
-   *
-   *   void main() {
-   *     vec2 depthColor = texture2D(depthTexture, vScreenCoord).rg;
-   *     float depth = step(depthColor.g, top) * step(bottom, (254.5 / 255.0) - depthColor.r);
-   *     gl_FragColor = vec4(darknessLevel, 0.0, 0.0, 1.0) * tintAlpha * depth;
-   *   }
-   *  `
-   * ```
-   */
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -94,27 +73,7 @@ declare namespace AdjustDarknessLevelRegionShader {
  * Render the RegionMesh with darkness level adjustments.
  */
 declare class IlluminationDarknessLevelRegionShader extends AbstractDarknessLevelRegionShader {
-  /**
-   * @defaultValue
-   * ```
-   *  `
-   *   precision ${PIXI.settings.PRECISION_FRAGMENT} float;
-   *
-   *   uniform sampler2D depthTexture;
-   *   uniform float top;
-   *   uniform float bottom;
-   *   uniform vec4 tintAlpha;
-   *   varying vec2 vScreenCoord;
-   *
-   *   void main() {
-   *     vec2 depthColor = texture2D(depthTexture, vScreenCoord).rg;
-   *     float depth = step(depthColor.g, top) * step(bottom, (254.5 / 255.0) - depthColor.r);
-   *     gl_FragColor = vec4(1.0) * tintAlpha * depth;
-   *   }
-   *  `
-   * ```
-   */
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace IlluminationDarknessLevelRegionShader {

@@ -26,4 +26,24 @@ describe("DefaultSheetsConfig Tests", async () => {
 
     expectTypeOf(DefaultSheetsConfig.registerSetting()).toBeVoid();
   });
+
+  test("DEFAULT_OPTIONS", () => {
+    expectTypeOf(DefaultSheetsConfig.DEFAULT_OPTIONS).toEqualTypeOf<DefaultSheetsConfig.DefaultOptions>();
+  });
+
+  test("Entry", () => {
+    // The runtime pushes an id/name/label/value/choices record; there is no `field`.
+    const entry: DefaultSheetsConfig.Entry = {
+      id: "Actor-character",
+      name: "Actor.character",
+      label: "Character",
+      value: "",
+      choices: {},
+    };
+    expectTypeOf(entry.id).toBeString();
+    expectTypeOf(entry.name).toBeString();
+    expectTypeOf(entry.label).toBeString();
+    expectTypeOf(entry.value).toBeString();
+    expectTypeOf(entry.choices).toEqualTypeOf<Record<string, string>>();
+  });
 });

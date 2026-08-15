@@ -72,9 +72,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
     options: WorldCollection.ImportDocumentOptions<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName> | undefined>;
 
-  protected override _prepareImportDocument<
-    Options extends WorldCollection.ImportDocumentOptions<DocumentName> | undefined = undefined,
-  >(
+  protected override _prepareImportDocument<Options extends WorldCollection.ImportDocumentOptions<DocumentName>>(
     document: Document.ImplementationFor<DocumentName>,
     options: Options,
   ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
@@ -257,14 +255,7 @@ declare namespace WorldCollection {
     | (true extends GetKey<Options, "keepId", undefined> ? never : "_id")
   >;
 
-  /**
-   * As of v14, {@linkcode WorldCollection.importFromCompendium | WorldCollection#importFromCompendium} forwards to
-   * {@linkcode WorldCollection.importDocument | #importDocument}, which passes the same options object to both
-   * {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} (via
-   * {@linkcode WorldCollection._prepareImportDocument | #_prepareImportDocument}) and {@linkcode Document.create}.
-   */
-  type ImportDocumentOptions<Name extends Document.WorldType> = FromCompendiumOptions &
-    Document.Database.CreateDocumentsOperationForName<Name>;
+  type ImportDocumentOptions<Name extends Document.WorldType> = DocumentCollection.ImportFromCompendiumOptions<Name>;
 
   type Pack<DocumentName extends Document.WorldType> = DocumentName extends CompendiumCollection.DocumentName
     ? CompendiumCollection<DocumentName>

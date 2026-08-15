@@ -36,10 +36,13 @@ declare class OccludableSamplerShader extends BaseSamplerShader {
    *   occlusionElevation: 0,
    *   fadeOcclusion: 0,
    *   radialOcclusion: 0,
-   *   visionOcclusion: 0
+   *   visionOcclusion: 0,
+   *   surfaceOcclusion: 0
    * }
    * ```
    */
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
+
   static override batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction;
 
   protected static override _preRenderBatch: BatchRenderer.PreRenderBatchFunction;
@@ -66,21 +69,19 @@ declare class OccludableSamplerShader extends BaseSamplerShader {
    */
   protected static _batchFragmentShader: string;
 
-  static override get vertexShader(): string;
+  protected static override _createVertexShader(): string;
 
   /**
    * The vertex shader source. Subclasses can override it.
    */
   protected static _vertexShader: string;
 
-  static override get fragmentShader(): string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * The fragment shader source. Subclasses can override it.
    */
   protected static _fragmentShader: string;
-
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
 
@@ -93,12 +94,13 @@ declare namespace OccludableSamplerShader {
 
   /** @privateRemarks Unlike `DepthSamplerShader`, this class uses every `IBatchableElement` key */
   interface OccludableBatchData extends PIXI.IBatchableElement {
-    elevation: number;
     unoccludedAlpha: number;
     occludedAlpha: number;
+    occlusionElevation: number;
     fadeOcclusion: number;
     radialOcclusion: number;
     visionOcclusion: number;
+    surfaceOcclusion: number;
   }
 }
 

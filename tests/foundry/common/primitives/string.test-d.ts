@@ -14,6 +14,8 @@ describe("String Tests", () => {
   });
 
   test("Transforms", () => {
+    expectTypeOf("Bônus de Força".stripDiacritics()).toEqualTypeOf<string>();
+
     expectTypeOf("FOO BAR".stripScripts()).toEqualTypeOf<string>();
 
     expectTypeOf("FOO BAR".slugify()).toEqualTypeOf<string>();

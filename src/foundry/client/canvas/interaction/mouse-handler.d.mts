@@ -271,6 +271,9 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * Reset the mouse manager.
    */
   reset(options?: MouseInteractionManager.ResetOptions): void;
+
+  #MouseInteractionManager: true;
+  static #MouseInteractionManagerStatic: true;
 }
 
 declare namespace MouseInteractionManager {

@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, expect, test } from "vitest";
 
 import CardStacks = foundry.documents.collections.CardStacks;
 
@@ -31,6 +31,18 @@ describe("CardStacks Tests", async () => {
   });
 
   const stacks = new CardStacks([cardsSource]);
+
+  test("Inheritance", () => {
+    expectTypeOf(stacks).toExtend<Collection.Any>();
+    expectTypeOf(CardStacks).toExtend<Collection.AnyConstructor>();
+    expect(stacks).toBeInstanceOf(Collection);
+    expectTypeOf(stacks).toExtend<foundry.documents.abstract.DocumentCollection.Any>();
+    expectTypeOf(CardStacks).toExtend<foundry.documents.abstract.DocumentCollection.AnyConstructor>();
+    expect(stacks).toBeInstanceOf(foundry.documents.abstract.DocumentCollection);
+    expectTypeOf(stacks).toExtend<foundry.documents.abstract.WorldCollection.Any>();
+    expectTypeOf(CardStacks).toExtend<foundry.documents.abstract.WorldCollection.AnyConstructor>();
+    expect(stacks).toBeInstanceOf(foundry.documents.abstract.WorldCollection);
+  });
 
   test("Miscellaneous", () => {
     expectTypeOf(CardStacks.documentName).toEqualTypeOf<"Cards">();
@@ -112,6 +124,33 @@ describe("CardStacks Tests", async () => {
     if (!imported2) throw new Error("Failed to create test `Cards` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Cards.Stored<"deck">>();
+  });
+
+  test("_prepareImportDocument", () => {
+    // @ts-expect-error _prepareImportDocument will throw if not passed an object for `options`, because it lacks a signature default.
+    expect(() => stacks["_prepareImportDocument"](stack)).toThrow();
+
+    expectTypeOf(stacks["_prepareImportDocument"](cardsImpl, {})).toEqualTypeOf<
+      Omit<Cards.Source, "sort" | "navOrder" | "active" | "_id">
+    >();
+
+    // testing the FromCompendiumReturnType
+    expectTypeOf(stacks["_prepareImportDocument"](stack, { keepId: true })).toEqualTypeOf<
+      Omit<Cards.Source, "sort" | "navOrder" | "active">
+    >();
+    expectTypeOf(stacks["_prepareImportDocument"](cardsImpl, { clearFolder: true })).toEqualTypeOf<
+      Omit<Cards.Source, "sort" | "navOrder" | "active" | "_id" | "folder">
+    >();
+
+    // also testing CreateDocumentsOperation
+    expectTypeOf(
+      stacks["_prepareImportDocument"](cardsImpl, {
+        clearFolder: true,
+        noHook: false,
+        renderSheet: true,
+        documentName: "Cards", // This should error until we update db ops, but excess properties are not being errored on here for some reason
+      }),
+    ).toEqualTypeOf<Omit<Cards.Source, "sort" | "navOrder" | "active" | "_id" | "folder">>();
   });
 
   afterAll(async () => {

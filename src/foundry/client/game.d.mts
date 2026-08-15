@@ -1,5 +1,13 @@
 import type { Socket } from "socket.io-client";
-import type { ValueOf, FixedInstanceType, InitializationHook, InitializedOn, EmptyObject, GetKey } from "#utils";
+import type {
+  ValueOf,
+  FixedInstanceType,
+  InitializationHook,
+  InitializedOn,
+  EmptyObject,
+  GetKey,
+  DeepPartial,
+} from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -8,6 +16,7 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 import Module = foundry.packages.Module;
+import UIConfig = foundry.applications.settings.menus.UIConfig;
 
 // Must be called with all hooks in a union.
 // Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.
@@ -501,9 +510,19 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   logOut(): void;
 
   /**
+   * Configure the user interface.
+   *
+   * @remarks Called with no argument to re-apply the stored `core.uiConfig` setting, which is what the
+   * `prefers-color-scheme` listener does.
+   */
+  configureUI(config?: DeepPartial<UIConfig.GameUIConfiguration>): void;
+
+  /**
    * Scale the base font size according to the user's settings.
    * @param index - Optionally supply a font size index to use, otherwise use the user's setting.
    *                Available font sizes, starting at index 1, are: 8, 10, 12, 14, 16, 18, 20, 24, 28, and 32.
+   *
+   * @deprecated "Game#scaleFonts is deprecated in favor of Game#configureUI" (since v13 until v15)
    */
   scaleFonts(index?: number): void;
 
@@ -801,12 +820,12 @@ declare namespace Game {
     userId: string;
     world: foundry.packages.World["_source"];
   } & {
-    [DocumentType in
-      // TODO: the Exclude is to replace the now-removed `CONST.DOCUMENT_TYPES`, this has been stopgapped with the old value and should be replaced eventually.
-      | Exclude<CONST.WORLD_DOCUMENT_TYPES | CONST.COMPENDIUM_DOCUMENT_TYPES, "Setting" | "FogExploration">
-      | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]]?: FixedInstanceType<
-      Document.ImplementationClassFor<DocumentType>
-    >["_source"][];
+    [
+      DocumentType in
+        // TODO: the Exclude is to replace the now-removed `CONST.DOCUMENT_TYPES`, this has been stopgapped with the old value and should be replaced eventually.
+        | Exclude<CONST.WORLD_DOCUMENT_TYPES | CONST.COMPENDIUM_DOCUMENT_TYPES, "Setting" | "FogExploration">
+        | "Setting" as Document.ImplementationClassFor<DocumentType>["metadata"]["collection"]
+    ]?: FixedInstanceType<Document.ImplementationClassFor<DocumentType>>["_source"][];
   };
 
   interface Data extends _Data {}

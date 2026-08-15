@@ -1,4 +1,5 @@
-import type { DOMOutputSpec, MarkSpec, NodeSpec } from "prosemirror-model";
+import type { MarkSpec, NodeSpec } from "prosemirror-model";
+import type { InexactPartial } from "#utils";
 
 /**
  * A class responsible for injecting attribute capture logic into the ProseMirror schema.
@@ -11,7 +12,25 @@ declare class AttributeCapture {
    * on an element and preserve them when re-serialized back into the DOM.
    * @param spec - The schema specification
    */
-  attributeCapture(spec: NodeSpec | MarkSpec): DOMOutputSpec;
+  attributeCapture(spec: NodeSpec | MarkSpec): void;
+
+  /**
+   * Capture all allowable attributes present on an HTML element and store them in an object for preservation in the
+   * schema.
+   * @param el      - The element.
+   * @param managed - An object containing the attributes, styles, and classes that are managed by the ProseMirror node
+   * and should not be preserved.
+   * @internal
+   */
+  _captureAttributes(el: HTMLElement, managed?: AttributeCapture.ManagedAttributes): Record<string, string>;
+
+  /**
+   * Capture all classes present on an HTML element.
+   * @param el      - The element.
+   * @param managed - An object containing the classes that are managed by the ProseMirror node and should not be preserved.
+   * @internal
+   */
+  _captureClasses(el: HTMLElement, managed?: AttributeCapture.ManagedAttributes): string;
 
   #AttributeCapture: true;
 }
@@ -35,6 +54,8 @@ declare namespace AttributeCapture {
     /** A list of managed class names. */
     classes: string[];
   }
+
+  interface ManagedAttributes extends InexactPartial<ManagedAttributesSpec> {}
 }
 
 export default AttributeCapture;

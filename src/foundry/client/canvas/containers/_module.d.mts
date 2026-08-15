@@ -19,6 +19,9 @@ export { default as PreciseText } from "./elements/precise-text.mjs";
 export { default as QuadMesh } from "./elements/quad-mesh.mjs";
 export { default as ResizeHandle } from "./elements/resize-handle.mjs";
 export { default as SpriteMesh } from "./elements/sprite-mesh.mjs";
+export * from "./elements/shape-controls.mjs";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as ParticleEffect } from "./elements/particles/particle-effect.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as AutumnLeavesWeatherEffect } from "./elements/particles/leaves.mjs";

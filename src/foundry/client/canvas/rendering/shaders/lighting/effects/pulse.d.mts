@@ -7,7 +7,7 @@ import type AbstractBaseShader from "../../base-shader.mjs";
  * Pulse animation illumination shader
  */
 declare class PulseIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace PulseIlluminationShader {
@@ -19,7 +19,7 @@ declare namespace PulseIlluminationShader {
  * Pulse animation coloration shader
  */
 declare class PulseColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue

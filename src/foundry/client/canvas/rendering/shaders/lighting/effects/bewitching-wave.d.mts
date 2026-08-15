@@ -6,7 +6,7 @@ import type AdaptiveIlluminationShader from "../illumination-lighting.mjs";
  * Bewitching Wave animation illumination shader
  */
 declare class BewitchingWaveIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace BewitchingWaveColorationShader {
@@ -18,7 +18,7 @@ declare namespace BewitchingWaveColorationShader {
  * Bewitching Wave animation coloration shader
  */
 declare class BewitchingWaveColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace BewitchingWaveIlluminationShader {

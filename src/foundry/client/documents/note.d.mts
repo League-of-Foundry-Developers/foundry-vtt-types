@@ -901,6 +901,11 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   ): Promise<NoteDocument.CreateDialogReturn<Options>>;
 
   /**
+   * A Note is never hidden.
+   */
+  readonly hidden: false;
+
+  /**
    * The associated JournalEntry which is referenced by this Note
    */
   get entry(): JournalEntry.Stored | undefined;

@@ -5,7 +5,7 @@ import type { AbstractBaseShader, BackgroundVisionShader, ColorationVisionShader
  * Shader specialized in wave like senses (tremorsenses)
  */
 declare class WaveBackgroundVisionShader extends BackgroundVisionShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -16,7 +16,7 @@ declare class WaveBackgroundVisionShader extends BackgroundVisionShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   override get isRequired(): boolean;
 }
@@ -30,7 +30,7 @@ declare namespace WaveBackgroundVisionShader {
  * The wave vision shader, used to create waves emanations (ex: tremorsense)
  */
 declare class WaveColorationVisionShader extends ColorationVisionShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -41,7 +41,7 @@ declare class WaveColorationVisionShader extends ColorationVisionShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   override get isRequired(): boolean;
 }

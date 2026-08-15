@@ -9,7 +9,7 @@ import type {
 
 /**
  * Wrapper for a web worker meant to convert a pixel buffer to the specified image format
- * and quality and return a base64 image
+ * and quality and return a base64 image.
  */
 declare class TextureCompressor extends foundry.helpers.AsyncWorker {
   /**
@@ -38,6 +38,7 @@ declare class TextureCompressor extends foundry.helpers.AsyncWorker {
    * @param width  - Buffered image width.
    * @param height - Buffered image height.
    * @remarks If the texture buffer is unchanged, returns only a `Result` object, not a `[Result, ArrayBufferLike[]]]` tuple
+   * @throws If `options.out` is provided and holds fewer than `buffer.length * 4` bytes
    */
   expandBufferRedToBufferRGBA(
     buffer: Uint8ClampedArray,
@@ -47,11 +48,12 @@ declare class TextureCompressor extends foundry.helpers.AsyncWorker {
   ): Promise<TextureCompressor.BufferOperationReturnOrResult<ProcessBufferRedToBufferRGBAResult>>;
 
   /**
-   * Expand a buffer in RED format to a buffer in RGBA format.
+   * Reduce a buffer in RGBA format to a buffer in RED format.
    * @param buffer - Buffer used to create the image data.
    * @param width  - Buffered image width.
    * @param height - Buffered image height.
    * @remarks If the texture buffer is unchanged, returns only a `Result` object, not a `[Result, ArrayBufferLike[]]]` tuple
+   * @throws If `options.out` is provided and holds fewer than `buffer.length / 4` bytes
    */
   reduceBufferRGBAToBufferRED(
     buffer: Uint8ClampedArray,
@@ -63,6 +65,9 @@ declare class TextureCompressor extends foundry.helpers.AsyncWorker {
   /**
    * Copy a buffer.
    * @param buffer - Buffer used to create the image data.
+   * @remarks Returns only a `Result` object unless it reaches the worker, which needs
+   * `config.controlHash: true` and no `options.hash`
+   * @throws If `options.out` is provided and holds fewer than `buffer.length` bytes
    */
   copyBuffer(
     buffer: Uint8ClampedArray,
@@ -97,7 +102,7 @@ declare namespace TextureCompressor {
     loadPrimitives: boolean;
 
     /**
-     * Do we need to control the hash?
+     * Should use control hash?
      * @defaultValue `false`
      */
     controlHash: boolean;
@@ -115,24 +120,27 @@ declare namespace TextureCompressor {
     debug: boolean;
   }
 
-  /** @internal */
-  interface _Out {
-    /** The output buffer to write the reduced pixels to. May be detached. */
-    out: ArrayBuffer;
-  }
-
   interface CompressBufferBase64Options extends InexactPartial<_CommonOptions> {}
 
-  interface ExpandBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
+  interface ExpandBufferOptions extends InexactPartial<_CommonOptions> {
+    /** The output buffer to write the expanded pixels to. May be detached. */
+    out?: ArrayBuffer | undefined;
+  }
 
-  interface ReduceBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
+  interface ReduceBufferOptions extends InexactPartial<_CommonOptions> {
+    /** The output buffer to write the reduced pixels to. May be detached. */
+    out?: ArrayBuffer | undefined;
+  }
 
-  interface CopyBufferOptions extends InexactPartial<_CommonOptions>, InexactPartial<_Out> {}
+  interface CopyBufferOptions extends InexactPartial<_CommonOptions> {
+    /** The output buffer to copy the pixels to. May be detached. */
+    out?: ArrayBuffer | undefined;
+  }
 
   /**
    * @remarks As of v13, {@linkcode TextureCompressor.compressBufferBase64 | TextureCompressor#compressBufferBase64},
    * {@linkcode TextureCompressor.expandBufferRedToBufferRGBA | #expandBufferRedToBufferRGBA},
-   * {@linkcode TextureCompressor.reduceBufferRGBAToBufferRED | #reduceBufferRGBAToBufferRed},
+   * {@linkcode TextureCompressor.reduceBufferRGBAToBufferRED | #reduceBufferRGBAToBufferRED},
    * and {@linkcode TextureCompressor.copyBuffer | #copyBuffer} will all return simply
    * their ResultType if the TextureCompressor instance was constructed with `config.controlHash: true`,
    * and the relevant texture buffer is unchanged from the last time the operation in question was performed

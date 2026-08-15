@@ -1,4 +1,5 @@
 import type { GetKey, InexactPartial } from "#utils";
+import type HTMLAutocompleteTagsElement from "#client/applications/elements/autocomplete-tags.d.mts";
 import type {
   HTMLMultiSelectElement,
   HTMLMultiCheckboxElement,
@@ -80,8 +81,13 @@ export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
 
   /**
    * An HTML element or collection of elements which provide the inputs for the group
+   *
+   * @privateRemarks Foundry types this as `HTMLElement|HTMLCollection`, but `HTMLElement[]` has
+   * been added to match {@linkcode foundry.data.fields.DataField.toInput | DataField#toInput}'s
+   * documented return (whose result is the canonical value for this property), and
+   * {@linkcode createFormGroup} explicitly normalizes arrays
    */
-  input: HTMLElement | HTMLCollection;
+  input: HTMLElement | HTMLElement[] | HTMLCollection;
 }
 
 interface _FormInputConfig<FormInputValue = unknown> {
@@ -216,12 +222,12 @@ export type SelectOptionsValue = string | number | Iterable<string | number>;
 interface _MultiSelectInputConfig {
   /**
    * Customize the type of select that is created
-   * @remarks This is only checked for `=== "checkboxes"`. If true, a {@linkcode HTMLMultiCheckboxElement} is returned; all other values
-   * lead to a {@linkcode HTMLMultiSelectElement}.
+   * @remarks `"autocomplete"` returns a {@linkcode HTMLAutocompleteTagsElement} and `"checkboxes"` a
+   * {@linkcode HTMLMultiCheckboxElement}; all other values lead to a {@linkcode HTMLMultiSelectElement}.
    *
    * @privateRemarks Foundry puts this in {@linkcode _SelectInputConfig}, but it's only used by {@linkcode createMultiSelectInput}
    */
-  type: "single" | "multi" | "checkboxes";
+  type: "single" | "multi" | "checkboxes" | "autocomplete";
 }
 
 /** @remarks See {@linkcode SelectOptionsValue} */
@@ -232,20 +238,21 @@ export interface MultiSelectInputConfig
     Omit<_SelectInputConfig, "blank"> {}
 
 /**
- * {@linkcode createMultiSelectInput}'s returned element is only dependent on whether {@linkcode MultiSelectInputConfig.type | config.type}
- * is `"checkboxes"` or not.
+ * {@linkcode createMultiSelectInput}'s returned element is only dependent on {@linkcode MultiSelectInputConfig.type | config.type}.
  */
 export type MultiSelectInputReturn<Config extends MultiSelectInputConfig> = _MultiSelectInputReturn<
   GetKey<Config, "type", undefined>
 >;
 
 /** @internal */
-type _MultiSelectInputReturn<Type extends MultiSelectInputConfig["type"]> = Type extends "checkboxes"
-  ? HTMLMultiCheckboxElement
-  : HTMLMultiSelectElement;
+type _MultiSelectInputReturn<Type extends MultiSelectInputConfig["type"]> = Type extends "autocomplete"
+  ? HTMLAutocompleteTagsElement
+  : Type extends "checkboxes"
+    ? HTMLMultiCheckboxElement
+    : HTMLMultiSelectElement;
 
 /**
- * Create a `<multi-select>` or `<multi-checkbox>` element for fields supporting multiple choices.
+ * Create a `<multi-select>`, `<multi-checkbox>`, or `<autocomplete-tags>` element for fields supporting multiple choices.
  */
 export function createMultiSelectInput<Config extends MultiSelectInputConfig>(
   config: Config,

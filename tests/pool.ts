@@ -85,6 +85,11 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
   });
 
   const server = await createServer({
+    // Vitest crawls all imports from the entrypoint but expects the entrypoint to be an index.html
+    // whereas tests are the real entrypoint here.
+    optimizeDeps: {
+      entries: ["tests/**/*.test.ts", "tests/tester.ts"],
+    },
     server: {
       port: await getPort(), // Random port for Hyrum's law (also to be less confusing if someone happens to running Vite).
       cors: {
@@ -350,8 +355,8 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
     throw new Error(`Expected to be redirected to /join but got pathname ${pageUrl.pathname}`);
   }
 
-  await page.selectOption("[name=userid]", "Test User");
-  await page.click("[name=join]");
+  await page.fill("[name=username]", "Test User", { strict: true });
+  await page.click("button[name=join]", { strict: true });
   await page.waitForURL("/game");
   await page.waitForFunction(() => typeof game !== "undefined" && game.ready);
 

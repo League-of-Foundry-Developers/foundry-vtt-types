@@ -3,8 +3,6 @@ import type { AttributeSpec, Node, NodeSpec } from "prosemirror-model";
 import type { EditorView } from "prosemirror-view";
 import type SchemaDefinition from "../../../../../src/foundry/common/prosemirror/schema/schema-definition.d.mts";
 
-// Import necessary as this is otherwise inaccessible.
-
 import ImageLinkNode from "../../../../../src/foundry/common/prosemirror/schema/image-link-node.mjs";
 
 new ImageLinkNode();
@@ -21,4 +19,4 @@ expectTypeOf(ImageLinkNode.make()).toEqualTypeOf<NodeSpec>();
 
 declare const view: EditorView;
 declare const event: PointerEvent;
-expectTypeOf(ImageLinkNode.onClick(view, 3, event, node)).toEqualTypeOf<boolean>();
+expectTypeOf(ImageLinkNode.onClick(view, 3, event, node)).toEqualTypeOf<boolean | void>();

@@ -16,6 +16,7 @@ import type { SchemaField } from "../data/fields.d.mts";
 import type { DataModel } from "./data.d.mts";
 import type Document from "./document.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -358,6 +359,12 @@ declare abstract class TypeDataModel<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null>;
+
+  /**
+   * Specific callback actions to take when the embedded HTML for this Document has been added to the DOM.
+   * @param element - The embedded document HTML
+   */
+  onEmbed(element: HTMLDocumentEmbedElement): void;
 
   /* -------------------------------------------- */
   /*  Database Operations                         */
