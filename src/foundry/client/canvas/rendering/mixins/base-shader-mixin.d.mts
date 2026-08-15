@@ -1,9 +1,48 @@
-import type { FixedInstanceType, Mixin } from "#utils";
+import type { AnyObject, FixedInstanceType, Mixin } from "#utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class BaseShader {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
+
+  /**
+   * The default uniform values for the shader.
+   * A subclass of BaseShaderMixin must implement the defaultUniforms static getter.
+   */
+  static get defaultUniforms(): AnyObject;
+
+  /**
+   * Handle creation of the vertex shader string for this class.
+   * If this method is not provided, PIXI will assign a default vertex for this shader.
+   * @param options - Configuration options passed at creation time.
+   * @remarks Returns `undefined` when this class does not provide a vertex shader, allowing PIXI to use its default.
+   */
+  protected static _createVertexShader(options?: AnyObject): string | undefined;
+
+  /**
+   * Handle creation of the fragment shader string for this class.
+   * If this method is not provided, PIXI will assign a default fragment for this shader.
+   * @param options - Configuration options passed at creation time.
+   * @remarks Returns `undefined` when this class does not provide a fragment shader, allowing PIXI to use its default.
+   * @privateRemarks Uncallable; variadic so subclasses can declare their own parameters, including
+   * `GlowOverlayFilter`'s `(quality, distance)`.
+   */
+  protected static _createFragmentShader(...options: never): string | undefined;
+
+  /**
+   * A factory method for creating the shader using its defined default values.
+   * @param uniforms - An object of uniform values which override the class {@link defaultUniforms}.
+   * @param options  - Optional configuration parameters which may influence shader creation or initialization.
+   * @abstract
+   */
+  static create(uniforms?: AnyObject, options?: AnyObject): BaseShader;
+
+  /**
+   * A one time initialization performed on creation.
+   * Subclasses may override to perform custom configuration of uniforms or state.
+   * @param options - Configuration options provided at creation time.
+   */
+  protected _configure(options?: AnyObject): void;
 
   /**
    * Useful constant values computed at compile time
@@ -111,6 +150,24 @@ declare class BaseShader {
    * Enables GLSL 1.0 backwards compatibility in GLSL 3.00 ES fragment shaders.
    */
   static GLSL1_COMPATIBILITY_FRAGMENT: string;
+
+  /** @ignore */
+  protected static _fragmentShaderCompatibility(options?: AnyObject): string | undefined;
+
+  /** @ignore */
+  protected static _vertexShaderCompatibility(options?: AnyObject): string | undefined;
+
+  /**
+   * @remarks Absent unless a class still declares it; its presence is what selects the compatibility path.
+   * @deprecated `fragmentShader` getter is deprecated in favor of {@linkcode _createFragmentShader}. (since v14, until v16)
+   */
+  static fragmentShader?: BaseShaderMixin.ShaderSource | undefined;
+
+  /**
+   * @remarks Absent unless a class still declares it; its presence is what selects the compatibility path.
+   * @deprecated `vertexShader` getter is deprecated in favor of {@linkcode _createVertexShader}. (since v14, until v16)
+   */
+  static vertexShader?: BaseShaderMixin.ShaderSource | undefined;
 }
 
 /**
@@ -127,6 +184,8 @@ declare namespace BaseShaderMixin {
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Shader.AnyConstructor | PIXI.Filter.AnyConstructor;
+
+  type ShaderSource = string | ((options?: AnyObject) => string);
 
   type WaveTrigFunction = "cos" | "sin" | "tan";
 }

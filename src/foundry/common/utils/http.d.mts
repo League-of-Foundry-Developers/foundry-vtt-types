@@ -8,7 +8,11 @@ import type { InexactPartial } from "#utils";
  * @param options - Additional Options (default: `{}`)
  * @throws HttpError
  */
-export declare function fetchWithTimeout(url: string, data?: RequestInit, options?: TimeoutOptions): Promise<Response>;
+export declare function fetchWithTimeout(
+  url: string,
+  data?: RequestInit,
+  options?: FetchWithTimeoutOptions,
+): Promise<Response>;
 
 /**
  * A small wrapper that automatically asks for JSON with a Timeout
@@ -19,11 +23,11 @@ export declare function fetchWithTimeout(url: string, data?: RequestInit, option
 export declare function fetchJsonWithTimeout(
   url: string,
   data?: RequestInit,
-  options?: TimeoutOptions,
+  options?: FetchJSONWithTimeoutOptions,
 ): Promise<unknown>;
 
 /** @internal */
-interface _TimeoutOptions {
+interface _FetchJSONWithTimeoutOptions {
   /**
    * How long to wait for a Response before cleanly aborting. If null, no timeout is applied
    * @defaultValue `30000`
@@ -37,7 +41,24 @@ interface _TimeoutOptions {
   onTimeout: () => void;
 }
 
-interface TimeoutOptions extends InexactPartial<_TimeoutOptions> {}
+export interface FetchJSONWithTimeoutOptions extends InexactPartial<_FetchJSONWithTimeoutOptions> {}
+
+/**
+ * @deprecated {@linkcode fetchWithTimeout} and {@linkcode fetchJsonWithTimeout} no longer take the same options.
+ * Use {@linkcode FetchWithTimeoutOptions} or {@linkcode FetchJSONWithTimeoutOptions}.
+ */
+export interface TimeoutOptions extends FetchJSONWithTimeoutOptions {}
+
+/** @internal */
+interface _FetchWithTimeoutOptions extends _FetchJSONWithTimeoutOptions {
+  /**
+   * Non-OK status codes to return rather than throw.
+   * @defaultValue `[]`
+   */
+  allowStatus: number[];
+}
+
+export interface FetchWithTimeoutOptions extends InexactPartial<_FetchWithTimeoutOptions> {}
 
 /**
  * Test whether a file source exists by performing a HEAD request against it

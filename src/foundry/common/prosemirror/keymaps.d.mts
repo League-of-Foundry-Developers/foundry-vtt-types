@@ -9,13 +9,14 @@ import type ProseMirrorPlugin from "./plugin.d.mts";
 declare class ProseMirrorKeyMaps extends ProseMirrorPlugin {
   /**
    * @param schema  - The ProseMirror schema to build keymaps for.
-   * @param options - Additional options to configure the plugin's behaviour.
+   * @param options - Additional options to configure the plugin's behavior.
    */
   constructor(schema: Schema, options?: ProseMirrorKeyMaps.Options);
 
   /**
    * A function to call when Ctrl+S is pressed.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly onSave: (() => void) | undefined;
 
@@ -34,6 +35,9 @@ declare namespace ProseMirrorKeyMaps {
   interface Options {
     /** A function to call when Ctrl+S is pressed. */
     onSave?: (() => void) | undefined;
+
+    /** If a double line-break is detected, join it into a paragraph instead. */
+    joinDoubleBreak?: boolean | undefined;
   }
 
   /**

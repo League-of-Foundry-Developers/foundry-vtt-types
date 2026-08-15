@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "./tsconfig.json",
+  // `eslint.config.js` is skipped because typescript-eslint's declarations do not compile under TypeScript 7.
+  // See https://github.com/typescript-eslint/typescript-eslint/issues/10940
+  "exclude": ["src/index-lenient.d.mts", "tests", "cvise", "eslint.config.js"]
+}

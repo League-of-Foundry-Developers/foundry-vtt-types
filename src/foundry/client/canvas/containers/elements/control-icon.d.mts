@@ -1,105 +1,170 @@
 import type { Identity, InexactPartial } from "#utils";
+import { RenderFlagsMixin, type RenderFlag, type RenderFlags } from "#client/canvas/interaction/_module.mjs";
 import { PreciseText } from "#client/canvas/containers/_module.mjs";
 
 /**
- * A generic helper for drawing a standard Control Icon
+ * A generic helper for drawing a standard Control Icon.
  */
-declare class ControlIcon extends PIXI.Container {
+// Note(LukeAbby): The generic parameter being required to be provided is due to
+// https://github.com/microsoft/TypeScript/issues/61633
+declare class ControlIcon extends RenderFlagsMixin<typeof PIXI.Container>(PIXI.Container) {
+  constructor(options?: ControlIcon.Options);
+
   /**
-   * @remarks
-   * - Despite being an `={}` param, `options` is required (specifically its `texture` property)
-   * - Foundry adds a `...args` rest param after `options` and calls `super(...args)`, but `new PIXI.Container()` takes no arguments
+   * @deprecated "Passing null for tint to the ControlIcon constructor is deprecated. Pass 0xFFFFFF or undefined
+   * instead." (since v14, until v16)
    */
-  constructor(options: ControlIcon.Options);
+  constructor(options: ControlIcon.DeprecatedConstructorOptions);
 
-  iconSrc: string;
+  /** @defaultValue `"INTERFACE"` */
+  static override RENDER_FLAG_PRIORITY: RenderFlags.Priority;
 
-  size: number;
+  static override RENDER_FLAGS: ControlIcon.RENDER_FLAGS;
 
-  rect: [number, number, number, number];
+  // fake type override
+  override renderFlags: RenderFlags<ControlIcon.RENDER_FLAGS>;
 
-  borderColor: number;
+  /** The (URL of the) icon texture used by this control icon. */
+  get texture(): PIXI.Texture | string;
 
-  /**
-   * The color of the icon tint, if any
-   */
-  tintColor: number | null;
+  set texture(value: PIXI.Texture | string);
 
-  /** @defaultValue `"static"` */
-  override eventMode: PIXI.EventMode;
+  /** The size of the control icon. */
+  get size(): number;
 
-  /** @defaultValue `false` */
-  override interactiveChildren: boolean;
-
-  override hitArea: PIXI.Rectangle;
-
-  /** @defaultValue `"pointer"` */
-  override cursor: string;
-
-  bg: PIXI.Graphics;
-
-  icon: PIXI.Sprite;
-
-  border: PIXI.Graphics;
-
-  tooltip: PreciseText;
+  set size(value: number);
 
   /**
-   * The elevation of the `ControlIcon`, which is displayed in its tooltip text.
-   * @remarks
-   * @throws If passed `NaN` or `+`/`-Infinity`
+   * The elevation of the control icon, which is displayed in its tooltip text.
+   * @throws If assigned anything other than a finite number.
    */
   get elevation(): number;
 
-  set elevation(value);
+  set elevation(value: number);
 
-  /**
-   * Initial drawing of the `ControlIcon`
-   */
+  /** The background of this control icon. */
+  bg: PIXI.Graphics;
+
+  /** The border of this control icon. */
+  border: PIXI.Graphics;
+
+  /** The icon of this control icon. */
+  icon: PIXI.Sprite;
+
+  /** The tooltip of this control icon. */
+  tooltip: PreciseText;
+
+  override applyRenderFlags(): void;
+
+  /** Draw the visualization of this control icon. */
   draw(): Promise<this>;
 
+  /** Draw this control icon. */
+  protected _draw(): Promise<void>;
+
+  /** Clear this control icon. */
+  protected _clear(): void;
+
+  /** Refresh the visualization of this control icon. */
+  protected _refresh(): void;
+
+  /** Refresh the visualization of this control icon. */
+  refresh(): void;
+
   /**
-   * Incremental refresh for `ControlIcon` appearance.
+   * @deprecated "ControlIcon#refresh(options) has been deprecated. Set ControlIcon#visible,
+   * ControlIcon#icon#tint, and ControlIcon#border#tint instead." (since v14, until v16)
    */
-  refresh(options?: ControlIcon.RefreshOptions): this;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  refresh(options: ControlIcon.RefreshOptions): this;
+
+  override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+  /** @deprecated "ControlIcon#rect has been deprecated in favor of ControlIcon#size." (since v14, until v16) */
+  get rect(): [number, number, number, number];
+
+  /**
+   * @deprecated "ControlIcon#tintColor has been deprecated in favor of ControlIcon#icon.tint." (since v14, until v16)
+   */
+  get tintColor(): PIXI.ColorSource;
+
+  /**
+   * @deprecated "ControlIcon#borderColor has been deprecated in favor of ControlIcon#border.tint." (since v14, until v16)
+   */
+  get borderColor(): PIXI.ColorSource;
+
+  /** @deprecated "ControlIcon#iconSrc has been deprecated in favor of ControlIcon#texture." (since v14, until v16) */
+  get iconSrc(): PIXI.Texture | string;
+
+  set iconSrc(value: PIXI.Texture | string);
+
+  #ControlIcon: true;
 }
 
 declare namespace ControlIcon {
   interface Any extends AnyControlIcon {}
   interface AnyConstructor extends Identity<typeof AnyControlIcon> {}
 
-  /** @internal */
-  interface _Options {
-    /** @defaultValue `40` */
-    size: number;
+  interface RENDER_FLAGS extends RenderFlagsMixin.RENDER_FLAGS {
+    /** @defaultValue `{ propagate: ["refresh"] }` */
+    redraw: RenderFlag<this, "redraw">;
 
-    /** @defaultValue `0xFF5500` */
-    borderColor: number;
+    /** @defaultValue `{}` */
+    refresh: RenderFlag<this, "refresh">;
+  }
+
+  interface Options {
+    /**
+     * The (URL of the) icon texture
+     * @defaultValue {@linkcode PIXI.Texture.EMPTY}
+     */
+    texture?: PIXI.Texture | string | undefined;
 
     /**
-     * @defaultValue `null`
-     * @remarks The default value of `null` is equivalent to `0xFFFFFF`, or effectively no tint
+     * The size of the icon
+     * @defaultValue `40`
      */
-    tint: number | null;
+    size?: number | undefined;
 
-    /** @defaultValue `number` */
-    elevation: number;
+    /**
+     * The icon tint
+     * @defaultValue `0xFFFFFF`
+     */
+    tint?: PIXI.ColorSource | undefined;
+
+    /**
+     * The border color
+     * @defaultValue {@linkcode CONFIG.Canvas.dispositionColors | CONFIG.Canvas.dispositionColors.CONTROLLED}
+     */
+    borderColor?: PIXI.ColorSource | undefined;
+
+    /**
+     * The elevation
+     * @defaultValue `0`
+     */
+    elevation?: number | undefined;
   }
 
-  interface Options extends InexactPartial<_Options> {
-    /** A source string for the icon's texture */
-    texture: string;
+  /**
+   * Options for the deprecated {@linkcode ControlIcon} constructor overload, where `tint` may be `null`.
+   *
+   * @remarks A `null` tint logs a compatibility warning and is replaced with `0xFFFFFF`, the default.
+   */
+  interface DeprecatedConstructorOptions extends Omit<Options, "tint"> {
+    /** The icon tint */
+    tint: null;
   }
+
+  /** @deprecated since v14 */
+  interface RefreshOptions extends InexactPartial<_RefreshOptions> {}
 
   /** @internal */
   interface _RefreshOptions {
     visible: boolean;
-    iconColor: number;
-    borderColor: number;
+    iconColor: PIXI.ColorSource | null;
+    borderColor: PIXI.ColorSource;
     borderVisible: boolean;
   }
-
-  interface RefreshOptions extends InexactPartial<_RefreshOptions> {}
 }
 
 export default ControlIcon;

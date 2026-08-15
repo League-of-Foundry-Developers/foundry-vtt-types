@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
 
-import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
 import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
+import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
+
+expectTypeOf(TokenRingSamplerShader.pausable).toEqualTypeOf<false>();
 
 const myTRSS = TokenRingSamplerShader.create();
 expectTypeOf(myTRSS).toEqualTypeOf<TokenRingSamplerShader>();
@@ -15,7 +17,6 @@ declare const someRing: TokenRing;
 
 expectTypeOf(TokenRingSamplerShader.nullUvs).toEqualTypeOf<Float32Array>();
 expectTypeOf(TokenRingSamplerShader.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(TokenRingSamplerShader["_batchFragmentShader"]).toEqualTypeOf<string>();
 expectTypeOf(TokenRingSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
 expectTypeOf(
   TokenRingSamplerShader["_packInterleavedGeometry"](
@@ -26,10 +27,11 @@ expectTypeOf(
         },
       },
       _texture: someTex,
-      elevation: 0,
+      occlusionElevation: 0,
       fadeOcclusion: 0,
       indices: someU16Array,
       radialOcclusion: 0,
+      surfaceOcclusion: 0,
       uvs: someF32Array,
       vertexData: someF32Array,
       visionOcclusion: 0,

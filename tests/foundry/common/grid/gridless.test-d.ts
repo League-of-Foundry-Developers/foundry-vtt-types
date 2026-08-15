@@ -314,6 +314,8 @@ describe("HexagonalGrid Tests", () => {
 
     expectTypeOf(grid.getCircle(point2D, 30)).toEqualTypeOf<Canvas.Point[]>();
 
+    expectTypeOf(grid.getEllipse(point2D, 30, 50, 45)).toEqualTypeOf<Canvas.Point[] | number[]>();
+
     expectTypeOf(grid.calculateDimensions(2000, 3000, 0.25)).toEqualTypeOf<BaseGrid.Dimensions>();
   });
 });

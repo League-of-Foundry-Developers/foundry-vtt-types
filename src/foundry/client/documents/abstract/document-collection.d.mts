@@ -25,7 +25,7 @@ declare abstract class DocumentCollection<
   constructor(data?: Document.SourceForName<DocumentName>[]);
 
   /**
-   * The source data array from which the Documents in the `WorldCollection` are created
+   * The source data array from which the Documents in `WorldCollection`s are created.
    * @remarks Defined in the class body but set via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
    *

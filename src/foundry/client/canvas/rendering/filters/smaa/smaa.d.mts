@@ -8,17 +8,13 @@ import type { Brand, Identity, InexactPartial } from "#utils";
  */
 declare class SMAAFilter extends PIXI.Filter {
   /**
-   * @param config - The config
-   * @remarks The one place Foundry makes one of these it passes no config
-   * @privateRemarks Foundry references `SMAAFilter.PRESETS.DEFAULT` as the default values for `config`,
-   * but that key does not exist in 12.331 or 11.315, and appears to just be a docs error.
+   * @param config - The configuration options.
    */
-  // config: not null (destructured)
   constructor(config?: SMAAFilter.ConstructorOptions);
 
   /**
    * The presets.
-   * @remarks Unused as of 13.344
+   * @remarks Not used by Foundry's 14.365
    */
   static get PRESETS(): SMAAFilter.Presets;
 
@@ -31,6 +27,7 @@ declare class SMAAFilter extends PIXI.Filter {
   ): void;
 
   #SMAAFilter: true;
+  static #SMAAFilterStatic: true;
 }
 
 declare namespace SMAAFilter {
@@ -96,7 +93,6 @@ declare namespace SMAAFilter {
      * 0.1 is a reasonable value, and allows to catch
      * most visible edges. 0.05 is a rather overkill value, that allows to catch 'em all.
      * @defaultValue `0.1`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     threshold: number;
 
@@ -106,7 +102,6 @@ declare namespace SMAAFilter {
      * on the fact that, if there is too much contrast in a direction, that will hide perceptually contrast
      * in the other neighbors.
      * @defaultValue `2.0`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     localContrastAdaptionFactor: number;
 
@@ -117,7 +112,6 @@ declare namespace SMAAFilter {
      *
      * Range: [0, 112].
      * @defaultValue `16`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     maxSearchSteps: number;
 
@@ -127,7 +121,6 @@ declare namespace SMAAFilter {
      *
      * Range: [0, 20].
      * @defaultValue `8`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     maxSearchStepsDiag: number;
 
@@ -136,21 +129,18 @@ declare namespace SMAAFilter {
      *
      * Range: [0, 100].
      * @defaultValue `25`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     cornerRounding: number;
 
     /**
      * Is diagonal detection disabled?
      * @defaultValue `false`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     disableDiagDetection: boolean;
 
     /**
      * Is corner detection disabled?
      * @defaultValue `false`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     disableCornerDetection: boolean;
   }

@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 const doc = new NoteDocument.implementation();
 
+expectTypeOf(doc.hidden).toEqualTypeOf<false>();
 expectTypeOf(doc.page).toEqualTypeOf<JournalEntryPage.Stored | undefined>();
 expectTypeOf(doc.label).toEqualTypeOf<string>();
 expectTypeOf(doc.entry).toEqualTypeOf<JournalEntry.Stored | undefined>();

@@ -15,9 +15,9 @@ declare class SnowShader<
    * }
    * ```
    */
-  static override defaultUniforms: SnowShader.DefaultUniforms;
+  static override get defaultUniforms(): SnowShader.DefaultUniforms;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace SnowShader {

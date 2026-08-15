@@ -55,11 +55,23 @@ import type {
   DotKeys,
 } from "fvtt-types/utils";
 
+expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
 expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
 
-expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
-
 expectTypeOf<GetKey<{ abc: number }, "abc">>().toEqualTypeOf<number>();
+
+expectTypeOf<GetKey<object, "abc", "default">>().toEqualTypeOf<"default">();
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+expectTypeOf<GetKey<{}, "abc", "default">>().toEqualTypeOf<"default">();
+
+expectTypeOf<GetKey<Record<string, unknown>, "abc", "default">>().toEqualTypeOf<unknown>();
+expectTypeOf<GetKey<any, "abc", "default">>().toEqualTypeOf<any>();
+
+// It would be better if `K` was covariant like `T[K]` is but this seems difficult to achieve.
+interface _GetKeyVariance<out T, K extends PropertyKey, out D> {
+  x: GetKey<T, K, D>;
+}
 
 expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<{ abc?: number }>();
 

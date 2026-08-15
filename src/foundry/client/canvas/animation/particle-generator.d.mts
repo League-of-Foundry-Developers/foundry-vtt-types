@@ -826,8 +826,8 @@ declare class ParticleGenerator {
   /**
    * The internal container which holds all particles.
    * @defaultValue `null`
-   * @remarks Foundry types this as `PrimaryCanvasParticleContainer|null`; that class is new in v14 and not yet
-   * typed in this package.
+   * @privateRemarks Foundry types this as `PrimaryCanvasParticleContainer|null`, but only the primary branch of
+   * `##createInternalContainer` builds one; otherwise a plain `PIXI.Container` is assigned.
    */
   protected _particlesContainer: PIXI.Container | null;
 

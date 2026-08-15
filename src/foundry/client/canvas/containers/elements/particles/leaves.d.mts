@@ -3,7 +3,9 @@ import { ParticleEffect } from "#client/canvas/containers/_module.mjs";
 
 /**
  * A full-screen weather effect which renders gently falling autumn leaves.
+ * @deprecated since v14
  */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare class AutumnLeavesWeatherEffect extends ParticleEffect {
   /**
    * @remarks `options` is completely unused in this subclass, as it gets passed to {@linkcode AutumnLeavesWeatherEffect.getParticleEmitters | #getParticleEmitters},
@@ -24,6 +26,7 @@ declare class AutumnLeavesWeatherEffect extends ParticleEffect {
    * up in {@linkcode AutumnLeavesWeatherEffect.getParticleEmitters | #getParticleEmitters}, but `pos` is not; it is erroneously marked as required
    * in the interface, see https://github.com/pixijs-userland/particle-emitter/issues/219
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   static LEAF_CONFIG: AutumnLeavesWeatherEffect.LeafConfig;
 
   /** @remarks This does not take a config parameter, unlike its parent class; uses {@linkcode AutumnLeavesWeatherEffect.LEAF_CONFIG} instead */
@@ -46,8 +49,10 @@ declare namespace AutumnLeavesWeatherEffect {
       _EmitterConfigOptionalProperties {}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export default AutumnLeavesWeatherEffect;
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare abstract class AnyAutumnLeavesWeatherEffect extends AutumnLeavesWeatherEffect {
   constructor(...args: never);
 }

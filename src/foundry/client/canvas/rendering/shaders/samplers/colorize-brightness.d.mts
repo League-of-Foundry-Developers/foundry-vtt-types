@@ -8,9 +8,9 @@ declare class ColorizeBrightnessShader extends BaseSamplerShader {
   /** @defaultValue `null` */
   static override classPluginName: string | null;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -25,7 +25,7 @@ declare class ColorizeBrightnessShader extends BaseSamplerShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 }
 
 declare namespace ColorizeBrightnessShader {

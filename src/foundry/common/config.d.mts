@@ -3,6 +3,9 @@ import type { fields } from "#client/data/_module.d.mts";
 
 declare namespace ServerSettings {
   interface Schema extends fields.DataSchema {
+    /** @privateRemarks Registered in `defineSchema` but absent from Foundry's `ServerSettings` typedef. */
+    adminUsername: fields.StringField<{ required: true; blank: false; nullable: true; initial: null }>;
+
     /** The server administrator password (obscured) */
     adminPassword: fields.StringField<{ required: true; blank: false; nullable: true; initial: null }>;
 

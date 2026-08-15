@@ -14,7 +14,7 @@ declare class DepthSamplerShader extends BaseSamplerShader {
   static override batchGeometry: BaseSamplerShader.BatchGeometry;
 
   /**
-   * @defaultValue `6`
+   * @defaultValue `7`
    */
   static override batchVertexSize: number;
 
@@ -36,12 +36,13 @@ declare class DepthSamplerShader extends BaseSamplerShader {
    *   fadeOcclusion: 0,
    *   radialOcclusion: 0,
    *   visionOcclusion: 0,
+   *   surfaceOcclusion: 0,
    *   restrictsLight: false,
    *   restrictsWeather: false
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   static override batchDefaultUniforms: BatchRenderer.BatchDefaultUniformsFunction;
 
@@ -69,14 +70,14 @@ declare class DepthSamplerShader extends BaseSamplerShader {
    */
   protected static _batchFragmentShader: string;
 
-  static override get vertexShader(): string;
+  protected static override _createVertexShader(): string;
 
   /**
    * The vertex shader source. Subclasses can override it.
    */
   protected static _vertexShader: string;
 
-  static override get fragmentShader(): string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * The fragment shader source. Subclasses can override it.
@@ -96,11 +97,14 @@ declare namespace DepthSamplerShader {
   type PartialPIXIBatchable = Pick<PIXI.IBatchableElement, "_texture" | "vertexData" | "indices" | "uvs">;
 
   interface DepthBatchData extends PartialPIXIBatchable {
-    elevation: number;
+    restrictionState: number;
     textureAlphaThreshold: number;
+    depthElevation: number;
+    occlusionElevation: number;
     fadeOcclusion: number;
     radialOcclusion: number;
     visionOcclusion: number;
+    surfaceOcclusion: number;
   }
 }
 

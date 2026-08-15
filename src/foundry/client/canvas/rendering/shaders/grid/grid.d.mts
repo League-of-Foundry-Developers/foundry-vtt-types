@@ -65,9 +65,9 @@ declare class GridShader extends AbstractBaseShader {
    */
   static DRAW_GRID_FUNCTION: string;
 
-  static override vertexShader: string;
+  protected static override _createVertexShader(): string;
 
-  static override get fragmentShader(): string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * The fragment shader source. Subclasses can override it.
@@ -92,7 +92,7 @@ declare class GridShader extends AbstractBaseShader {
    * }
    * ```
    */
-  static override defaultUniforms: AbstractBaseShader.Uniforms;
+  static override get defaultUniforms(): AbstractBaseShader.Uniforms;
 
   /**
    * Configure the shader.
@@ -100,6 +100,8 @@ declare class GridShader extends AbstractBaseShader {
   configure(options?: GridShader.ConfigureOptions): void;
 
   protected override _preRender: AbstractBaseShader.PreRenderFunction;
+
+  #GridShader: true;
 }
 
 declare namespace GridShader {

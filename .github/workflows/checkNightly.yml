@@ -32,20 +32,37 @@ jobs:
           npx tsc --version
 
       # Parentheses due to https://github.com/github/vscode-github-actions/issues/60
-      - if: (!cancelled())
-        run: npm run lint
+
+      - name: ESLint (Failing)
+        if: (!cancelled())
+        run: |
+          status=0
+          npm run eslint 2>&1 | tee "$RUNNER_TEMP/eslint.log"; status=${PIPESTATUS[0]}
+          if [ "$status" -eq 0 ]; then
+            echo '::error::ESLint passed. Restore this step to `npm run eslint`.'
+            exit 1
+          fi
+
+          if ! grep -q "typescript-eslint does not support TS" "$RUNNER_TEMP/eslint.log"; then
+            echo "::error::ESLint failed for something other than the typescript-eslint incompatibility."
+            exit 1
+          fi
+
+      - name: Format Check
+        if: (!cancelled())
+        run: npm run oxfmt
 
       - name: Type Check (exactOptionalPropertyTypes = false)
         if: (!cancelled())
-        run: npx tsc --exactOptionalPropertyTypes false
+        run: npx tsc --project tsconfig.nightly.json --exactOptionalPropertyTypes false
 
       - name: Type Check (TS Go)
         if: (!cancelled())
-        run: npx tsgo
+        run: npx tsgo --project tsconfig.nightly.json
 
       - name: Type Check (TS Go, exactOptionalPropertyTypes = false)
         if: (!cancelled())
-        run: npx tsgo --exactOptionalPropertyTypes false
+        run: npx tsgo --project tsconfig.nightly.json --exactOptionalPropertyTypes false
 
       - if: (!cancelled())
         run: npm run test-types

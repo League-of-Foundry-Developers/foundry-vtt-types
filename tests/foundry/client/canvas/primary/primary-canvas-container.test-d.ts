@@ -13,7 +13,18 @@ describe("PrimaryCanvasContainer tests", () => {
     expectTypeOf(myPCC.elevation).toBeNumber();
     myPCC.elevation = 5; // Setter
 
+    expectTypeOf(myPCC.sortLayer).toBeNumber();
+    myPCC.sortLayer = 5; // Setter
+
+    expectTypeOf(myPCC.zIndex).toBeNumber();
+    myPCC.zIndex = 5; // Setter
+
+    expectTypeOf(myPCC.inPrimary).toBeBoolean();
     expectTypeOf(myPCC.shouldRenderDepth).toBeBoolean();
+    expectTypeOf(myPCC["_onAddedPrimary"]()).toBeVoid();
+    expectTypeOf(myPCC["_onRemovedPrimary"]()).toBeVoid();
+    expectTypeOf(myPCC["_onElevationChange"]()).toBeVoid();
+    expectTypeOf(myPCC["_shouldRenderDepth"]()).toBeBoolean();
     expectTypeOf(myPCC.sortChildren()).toBeVoid();
     expectTypeOf(myPCC.updateCanvasTransform()).toBeVoid();
 

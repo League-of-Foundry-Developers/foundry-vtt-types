@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DOMParser as BaseDOMParser, Node, ParseOptions } from "prosemirror-model";
+import type { Node, ParseOptions } from "prosemirror-model";
 import type { FixedInstanceType } from "fvtt-types/utils";
 
 import DOMParser = foundry.prosemirror.DOMParser;
@@ -12,4 +12,4 @@ declare const parseOptions: ParseOptions;
 expectTypeOf(domParser.parse(dom)).toEqualTypeOf<Node>();
 expectTypeOf(domParser.parse(dom, parseOptions)).toEqualTypeOf<Node>();
 
-expectTypeOf(foundry.prosemirror.DOMParser.fromSchema(schema)).toEqualTypeOf<BaseDOMParser>();
+expectTypeOf(foundry.prosemirror.DOMParser.fromSchema(schema)).toEqualTypeOf<DOMParser>();

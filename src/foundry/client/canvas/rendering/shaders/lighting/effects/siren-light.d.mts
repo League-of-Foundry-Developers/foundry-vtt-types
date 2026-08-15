@@ -7,7 +7,7 @@ import type AbstractBaseShader from "../../base-shader.mjs";
  * Siren light animation coloration shader
  */
 declare class SirenColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
@@ -34,7 +34,7 @@ declare namespace SirenColorationShader {
  * Siren light animation illumination shader
  */
 declare class SirenIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue
