@@ -26,27 +26,27 @@ export type ConfiguredModule<Name extends string> = Name extends keyof RequiredM
 export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
 
 /**
- * `GetKey` accesses a property while intentionally ignoring index signatures. This means `GetKey<Record<string, unknown>, "foo">` will return `never`.
+ * `GetKey` accesses a property in the same way you might expect it to occur at runtime.
+ * A normal implementation might be `K extends keyof T ? T[K] : never` or
+ * `T extends { readonly [_ in K]: infer V } ? V : never` but here are five tricky cases normal
+ * implementations fail:
+ * - `T = {}` and `T = object` could easily return `unknown` and must be excluded.
+ * - `T = never` might either distribute out or return `unknown`.
+ * - `T = { prop?: U }` with `exactOptionalPropertyTypes` should return `U | undefined` not `U`.
+ * - `T = { [K: string]: number }` should return `number` or `number | undefined` depending on your noUncheckedIndexedAccess setting.
+ * - `T = { prop: number } | { anotherProp: string }` should return `number | D`.
  */
-// Note(LukeAbby): There are five tricky cases:
-// - `T = {}` and `T = object` could easily return `unknown` and must be excluded.
-// - `T = never` might either distribute out or return `unknown`. The fix here is checking if `any` is assignable to it.
-// - `T = { prop?: U }` with `exactOptionalPropertyTypes` should return `U | undefined` not `U`.
-// - `T` has getters `GetKey` should still access it, this means checking `keyof T` is not helpful.
-export type GetKey<T, K extends PropertyKey, D = never> =
-  (<V>() => V extends object ? 1 : 0) extends <V>() => V extends T ? 1 : 0
-    ? D
-    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      (<V>() => V extends {} ? 1 : 0) extends <V>() => V extends T ? 1 : 0
-      ? D
-      : [any] extends [T] // Handle never
-        ? _GetKey<T, K, D>
-        : D;
-
-// Note(LukeAbby): This uses `infer _V` specifically to avoid index signatures.
-// However it isn't `T extends { readonly [_ in K]?: infer V } ? V : D` as under
-// `exactOptionalPropertyTypes` this would not include `undefined` whereas `T[K]` does.
-type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infer _V } ? T[K] : D;
+export type GetKey<T, K extends PropertyKey, D = never> = [T] extends [never] // Handle never
+  ? D
+  : T extends unknown
+    ? K extends unknown
+      ? [keyof T] extends [never]
+        ? D
+        : T extends { readonly [_ in K]?: infer _V }
+          ? T[K]
+          : D
+      : never
+    : never;
 
 /**
  * `Partial` is usually the wrong type.
