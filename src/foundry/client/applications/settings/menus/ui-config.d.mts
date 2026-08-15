@@ -83,6 +83,7 @@ declare namespace UIConfig {
     uiScale: fields.NumberField<{ required: true; min: 0.5; max: 1.5; step: 0.05; initial: 1 }>;
     fontScale: fields.NumberField<{ required: true; min: 1; max: 10; step: 1; initial: 5 }>;
     colorScheme: fields.SchemaField<ColorSchemeSchema>;
+    chatBackground: fields.BooleanField<{ required: true }>;
     chatNotifications: fields.StringField<{
       required: true;
       blank: false;
@@ -111,6 +112,8 @@ declare namespace UIConfig {
       applications: "" | "dark" | "light";
       interface: "" | "dark" | "light";
     };
+
+    chatBackground: boolean;
 
     chatNotifications: "cards" | "pip";
 

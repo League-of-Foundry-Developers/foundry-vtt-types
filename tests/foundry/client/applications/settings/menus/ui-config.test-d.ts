@@ -9,12 +9,16 @@ const app = new UIConfig();
 expectTypeOf(UIConfig.DEFAULT_OPTIONS).toEqualTypeOf<UIConfig.DefaultOptions>();
 expectTypeOf(UIConfig.schema).toEqualTypeOf<UIConfig.SettingField>();
 expectTypeOf(UIConfig.schema.fields.uiScale).toEqualTypeOf<UIConfig.Schema["uiScale"]>();
+expectTypeOf(UIConfig.schema.fields.chatBackground).toEqualTypeOf<
+  foundry.data.fields.BooleanField<{ required: true }>
+>();
 
 declare const setting: UIConfig.GameUIConfiguration;
 expectTypeOf(setting.uiScale).toEqualTypeOf<number>();
 expectTypeOf(setting.fontScale).toEqualTypeOf<number>();
 expectTypeOf(setting.colorScheme.applications).toEqualTypeOf<"" | "dark" | "light">();
 expectTypeOf(setting.colorScheme.interface).toEqualTypeOf<"" | "dark" | "light">();
+expectTypeOf(setting.chatBackground).toEqualTypeOf<boolean>();
 expectTypeOf(setting.chatNotifications).toEqualTypeOf<"cards" | "pip">();
 expectTypeOf(setting.fade.opacity).toEqualTypeOf<number>();
 
