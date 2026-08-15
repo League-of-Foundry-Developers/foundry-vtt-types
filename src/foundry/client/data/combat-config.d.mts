@@ -77,7 +77,7 @@ declare class CombatConfiguration {
   /**
    * Get all animations and labels as an array of choices suitable for a select element.
    */
-  get turnMarkerAnimations(): { value: string; label: string }[];
+  get turnMarkerAnimations(): CombatConfiguration.TurnMarkerAnimationChoice[];
 
   #CombatConfiguration: true;
 }
@@ -85,6 +85,11 @@ declare class CombatConfiguration {
 declare namespace CombatConfiguration {
   interface Any extends AnyCombatConfiguration {}
   interface AnyConstructor extends Identity<typeof AnyCombatConfiguration> {}
+
+  interface TurnMarkerAnimationChoice {
+    value: string;
+    label: string;
+  }
 
   interface TurnMarkerSchema extends fields.DataSchema {
     enabled: fields.BooleanField<{ required: true; initial: true }>;
