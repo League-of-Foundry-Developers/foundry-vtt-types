@@ -3885,13 +3885,19 @@ declare global {
     }
 
     namespace ActiveEffect {
+      type ChangeType = Brand<string, "CONFIG.ActiveEffect.changeType">;
+
+      type ExpiryEvent = Brand<string, "CONFIG.ActiveEffect.expiryEvent">;
+
+      type Phase = Brand<string, "CONFIG.ActiveEffect.phase">;
+
       /**
        * @remarks Core registers no change types here; the core types live in
        * {@linkcode CONST.ACTIVE_EFFECT_CHANGE_TYPES} and are merged with this map by
        * {@linkcode foundry.documents.ActiveEffect.CHANGE_TYPES | ActiveEffect.CHANGE_TYPES}.
        */
       interface ChangeTypes {
-        [changeType: Brand<string, "CONFIG.ActiveEffect.changeTypes">]: foundry.documents.ActiveEffect.ChangeTypeConfig;
+        [changeType: ChangeType]: foundry.documents.ActiveEffect.ChangeTypeConfig;
       }
 
       /**
@@ -3900,7 +3906,7 @@ declare global {
        * {@linkcode foundry.documents.ActiveEffect.EXPIRY_EVENTS | ActiveEffect.EXPIRY_EVENTS}.
        */
       interface ExpiryEvents {
-        [expiryEvent: Brand<string, "CONFIG.ActiveEffect.expiryEvents">]: string;
+        [expiryEvent: ExpiryEvent]: string;
       }
 
       /**
@@ -3909,7 +3915,7 @@ declare global {
        * {@linkcode foundry.documents.ActiveEffect.CHANGE_PHASES | ActiveEffect.CHANGE_PHASES}.
        */
       interface Phases {
-        [phase: Brand<string, "CONFIG.ActiveEffect.phases">]: foundry.documents.ActiveEffect.ChangePhaseConfig;
+        [phase: Phase]: foundry.documents.ActiveEffect.ChangePhaseConfig;
       }
     }
 

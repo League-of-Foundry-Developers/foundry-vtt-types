@@ -9,7 +9,9 @@ declare namespace ApplyActiveEffectRegionBehaviorType {
     effects: fields.SetField<fields.DocumentUUIDField<{ type: "ActiveEffect"; nullable: false }>>;
   }
 
-  type OnUpdateData = DeepPartial<TypeDataModel.ParentAssignmentType<Schema, RegionBehavior.Implementation>>;
+  interface OnUpdateData extends DeepPartial<
+    TypeDataModel.ParentAssignmentType<Schema, RegionBehavior.Implementation>
+  > {}
 }
 
 /**

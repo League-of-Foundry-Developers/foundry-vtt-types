@@ -1,5 +1,14 @@
 import type { ConfiguredActiveEffect } from "#configuration";
-import type { AnyMutableObject, AnyObject, Identity, InterfaceToObject, MaybeArray, MaybePromise, Merge } from "#utils";
+import type {
+  AnyMutableObject,
+  AnyObject,
+  GetKey,
+  Identity,
+  InterfaceToObject,
+  MaybeArray,
+  MaybePromise,
+  Merge,
+} from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseCombat, BaseCombatant, BaseFolder } from "#common/documents/_module.d.mts";
@@ -82,7 +91,7 @@ declare namespace ActiveEffect {
    * The subtypes for which Foundry itself registers a {@linkcode foundry.data.ActiveEffectTypeDataModel}
    * in {@linkcode CONFIG.ActiveEffect.dataModels}.
    */
-  interface CoreTypes {
+  interface CoreEffects {
     /** @privateRemarks The instantiation expression preserves the default schema during model inference. */
     base: typeof foundry.data.ActiveEffectTypeDataModel<foundry.data.ActiveEffectTypeDataModel.Schema>;
   }
@@ -142,12 +151,7 @@ declare namespace ActiveEffect {
    * Falls back to {@linkcode ActiveEffect.ChangeData}[] for a model that declares no `changes` — the
    * runtime patches one into such a model's schema via `Game##verifyActiveEffectModels` during setup.
    */
-  // Note: a plain conditional rather than `GetKey` — `GetKey`'s exact-type gadgets are invariant in `T`,
-  // which would fail the `out SubType` variance check on the class when used in the `changes` getter.
-  type ChangesOfType<Type extends SubType = SubType> = _ChangesFor<SystemOfType<Type>>;
-
-  /** @internal */
-  type _ChangesFor<System> = System extends { readonly changes: infer Changes } ? Changes : ChangeData[];
+  type ChangesOfType<Type extends SubType = SubType> = GetKey<SystemOfType<Type>, "changes", ChangeData[]>;
 
   /**
    * @internal
@@ -367,17 +371,12 @@ declare namespace ActiveEffect {
      * Should this ActiveEffect's image be prominently displayed as an icon alongside Tokens, Combatants, etc.?
      * @defaultValue {@linkcode CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL}
      */
-    showIcon: fields.NumberField<
-      {
-        required: true;
-        nullable: false;
-        initial: typeof CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL;
-      },
-      // Note(LukeAbby): This will always need an override since `choices` doesn't narrow `NumberField`.
-      CONST.ACTIVE_EFFECT_SHOW_ICON | null | undefined,
-      CONST.ACTIVE_EFFECT_SHOW_ICON,
-      CONST.ACTIVE_EFFECT_SHOW_ICON
-    >;
+    showIcon: fields.NumberField<{
+      required: true;
+      nullable: false;
+      choices: CONST.ACTIVE_EFFECT_SHOW_ICON[];
+      initial: typeof CONST.ACTIVE_EFFECT_SHOW_ICON.CONDITIONAL;
+    }>;
 
     /**
      * The `_id` of a {@linkcode Folder} which contains this ActiveEffect

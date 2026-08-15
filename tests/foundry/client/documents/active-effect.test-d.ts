@@ -797,7 +797,7 @@ expectTypeOf(effect.duration.secondsRemaining).toEqualTypeOf<number | undefined>
 expectTypeOf(effect.duration.label).toBeString();
 
 expectTypeOf(effect.start).toEqualTypeOf<ActiveEffect.StartData | null>();
-expectTypeOf(effect.showIcon).toEqualTypeOf<CONST.ACTIVE_EFFECT_SHOW_ICON>();
+expectTypeOf(effect.showIcon).toEqualTypeOf<number>();
 expectTypeOf(effect.origin).toEqualTypeOf<string | null>();
 expectTypeOf(effect.folder).toEqualTypeOf<Folder.Stored | null>();
 
