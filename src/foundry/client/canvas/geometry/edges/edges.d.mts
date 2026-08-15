@@ -38,10 +38,20 @@ declare class CanvasEdges extends Map<string, Edge> {
   getEdges(rect: PIXI.Rectangle, options?: CanvasEdges.GetEdgesOptions): Set<Edge>;
 
   /**
-   * @deprecated "CanvasEdges#inititalize has been deprecated. Use Scene#initializeEdges instead." (since v14, until v16)
-   * @remarks Foundry misspells this method; it is `inititalize`, not `initialize`.
+   * Identify all edge intersections.
    */
-  inititalize(): void;
+  identifyIntersections(): void;
+
+  /**
+   * @deprecated Renamed to {@linkcode CanvasEdges.initialize | initialize} in v14.366.
+   */
+  inititalize(): never;
+
+  /**
+   * @deprecated "CanvasEdges#inititalize has been deprecated. Use Scene#initializeEdges instead." (since v14, until v16)
+   * @remarks The deprecation warning Foundry logs still names the method `inititalize`, its pre-14.366 spelling.
+   */
+  initialize(): void;
 
   /**
    * @deprecated "CanvasEdges#refresh has been deprecated. CanvasEdges#getEdges computes edge intersections

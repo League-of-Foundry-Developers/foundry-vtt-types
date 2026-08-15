@@ -14,14 +14,16 @@ expectTypeOf(InvitationLinks.PARTS).toEqualTypeOf<Record<string, HandlebarsAppli
 declare const options: DeepPartial<InvitationLinks.RenderOptions> & { isFirstRender: boolean };
 expectTypeOf(links["_prepareContext"](options)).toEqualTypeOf<Promise<InvitationLinks.RenderContext>>();
 
-// The context is `game.data.addresses`, so it carries that shape.
+// The context is a copy of `game.data.addresses`, so it carries that shape.
 expectTypeOf<InvitationLinks.RenderContext["local"]>().toBeString();
 expectTypeOf<InvitationLinks.RenderContext["remote"]>().toEqualTypeOf<string | undefined>();
 expectTypeOf<InvitationLinks.RenderContext["remoteIsAccessible"]>().toEqualTypeOf<boolean | null>();
 
-// Annotated onto it only when a public address exists, so every one of these is optional.
-expectTypeOf<InvitationLinks.RenderContext["remoteClass"]>().toEqualTypeOf<string | undefined>();
-expectTypeOf<InvitationLinks.RenderContext["remoteTitle"]>().toEqualTypeOf<string | undefined>();
+// Every `remoteIsAccessible` value sets these two.
+expectTypeOf<InvitationLinks.RenderContext["remoteClass"]>().toBeString();
+expectTypeOf<InvitationLinks.RenderContext["remoteTitle"]>().toBeString();
+
+// Which branch ran decides whether these are present.
 expectTypeOf<InvitationLinks.RenderContext["failedCheck"]>().toEqualTypeOf<boolean | undefined>();
 expectTypeOf<InvitationLinks.RenderContext["canConnect"]>().toEqualTypeOf<boolean | undefined>();
 expectTypeOf<InvitationLinks.RenderContext["rootId"]>().toEqualTypeOf<string | undefined>();

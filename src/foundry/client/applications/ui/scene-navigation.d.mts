@@ -87,12 +87,26 @@ declare namespace SceneNavigation {
     border: Color;
   }
 
+  interface SceneIcon {
+    /** @remarks Rendered as the Font Awesome suffix in `fa-solid fa-${class}`. */
+    class: string;
+
+    /** @remarks Localized; rendered as the icon's `aria-label`. */
+    tooltip: string;
+  }
+
   interface SceneContext {
     id: string;
 
     active: boolean;
 
     isView: boolean;
+
+    /**
+     * @remarks Foundry adds `eye` while the scene is being viewed, `bullseye` while it is active,
+     * and `eye-slash` when a GM sees a non-active scene players cannot.
+     */
+    icons: SceneIcon[];
 
     navOrder: number;
 
@@ -104,8 +118,6 @@ declare namespace SceneNavigation {
 
     /** @remarks Absent when no active user is viewing this scene. */
     users?: UserPipContext[] | undefined;
-
-    cssClass: string;
   }
 
   interface LevelContext {

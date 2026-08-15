@@ -129,8 +129,8 @@ declare class HTMLMultiSelectElement extends AbstractMultiSelectElement {
    * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput}, overriding
    * {@linkcode MultiSelectInputConfig.type | config.type}, hence its omission here.
    * @privateRemarks Foundry passes `type: "multi-select"`, which isn't one of the values
-   * {@linkcode MultiSelectInputConfig.type} allows. This is harmless, as `createMultiSelectInput` only checks for
-   * `=== "checkboxes"`, but it means the value can't be narrowed to the documented union.
+   * {@linkcode MultiSelectInputConfig.type} allows. This is harmless, as `createMultiSelectInput` falls through to
+   * `<multi-select>` for any unrecognized value, but it means the value can't be narrowed to the documented union.
    */
   static create(config: HTMLMultiSelectElement.Config): HTMLMultiSelectElement;
 

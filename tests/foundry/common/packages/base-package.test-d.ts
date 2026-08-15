@@ -183,3 +183,10 @@ expectTypeOf(basePackage.download).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.protected).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.persistentStorage).toEqualTypeOf<boolean>();
+
+expectTypeOf(basePackage.compatibilityList).toEqualTypeOf<BasePackage.CompatibilitySegment[]>();
+expectTypeOf(basePackage.compatibilityList[0]!.from).toEqualTypeOf<string>();
+expectTypeOf(basePackage.compatibilityList[0]!.to).toEqualTypeOf<string | null>();
+expectTypeOf(basePackage.compatibilityList[0]!.verified).toEqualTypeOf<string | null>();
+expectTypeOf(basePackage.compatibilityList[0]!.version).toEqualTypeOf<string>();
+expectTypeOf(basePackage.compatibilityList[0]!.manifest).toEqualTypeOf<string>();

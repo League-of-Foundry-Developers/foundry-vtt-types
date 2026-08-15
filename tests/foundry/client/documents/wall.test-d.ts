@@ -23,6 +23,9 @@ declare const myWall: WallDocument.Stored;
 
 expectTypeOf(myWall.flags.core?.sheetClass).toEqualTypeOf<string | undefined>();
 
+expectTypeOf(myWall.hidden).toEqualTypeOf<false>();
+expectTypeOf(myWall.locked).toEqualTypeOf<false>();
+
 await WallDocument.create(
   {
     c: [0, 0, 0, 0],

@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { Schema } from "prosemirror-model";
 import type { EditorState, Transaction } from "prosemirror-state";
+import type { RollParseNode, StringParseNode } from "#client/dice/_types.d.mts";
 
 import FormulaEditor = foundry.applications.apps.FormulaEditor;
 
@@ -20,10 +21,18 @@ expectTypeOf(editor.labels).toEqualTypeOf<Record<string, string>>();
 expectTypeOf(editor.options.context).toBeString();
 expectTypeOf(editor.options.formula).toBeString();
 
-// The one protected hook Foundry documents for subclasses.
+// The protected methods Foundry documents for subclasses to override.
 class CustomFormulaEditor extends FormulaEditor {
   protected override _replaceTerms(tr: Transaction, schema: Schema): Transaction {
     return super._replaceTerms(tr, schema);
   }
+
+  protected static override _collectStringTerms(node: RollParseNode, terms?: StringParseNode[]): StringParseNode[] {
+    return super._collectStringTerms(node, terms);
+  }
 }
 void CustomFormulaEditor;
+
+declare const node: RollParseNode;
+expectTypeOf(FormulaEditor["_collectStringTerms"](node)).toEqualTypeOf<StringParseNode[]>();
+expectTypeOf(FormulaEditor["_collectStringTerms"](node, [])).toEqualTypeOf<StringParseNode[]>();

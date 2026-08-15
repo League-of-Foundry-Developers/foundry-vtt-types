@@ -1,5 +1,14 @@
 import { expectTypeOf } from "vitest";
 
+import ServerSettings = foundry.config.ServerSettings;
+
+declare const serverSettings: ServerSettings;
+
+expectTypeOf(serverSettings.adminUsername).toEqualTypeOf<string | null>();
+expectTypeOf<ServerSettings.Source["adminUsername"]>().toEqualTypeOf<string | null>();
+expectTypeOf<ServerSettings.InitializedData["adminUsername"]>().toEqualTypeOf<string | null>();
+expectTypeOf<ServerSettings.CreateData["adminUsername"]>().toEqualTypeOf<string | null | undefined>();
+
 const myRelease = new foundry.config.ReleaseData({
   build: 315,
   // @ts-expect-error "foobar" is not a valid release channel

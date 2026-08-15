@@ -104,13 +104,16 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * Split the movement path into its segments.
    * @param waypoints - The waypoints of movement.
    * @param samples   - The points relative to the waypoints that are tested.
-   *                    Whenever one of them is inside the region, the moved object
-   *                    is considered to be inside the region.
+   *                    Whenever one of them is inside the region with respect to the
+   *                    `tolerance`, the moved object is considered to be inside the region.
+   * @param tolerance - The tolerance of point containment (see `distance` parameter
+   *                    of `PolygonTree#testPoint`). (default: `0`)
    * @returns The movement split into its segments.
    */
   segmentizeMovementPath(
     waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
     samples: Canvas.Point[],
+    tolerance?: number,
   ): RegionDocument.MovementSegment[];
 
   // For type simplicity the following real override(s) are commented out.
