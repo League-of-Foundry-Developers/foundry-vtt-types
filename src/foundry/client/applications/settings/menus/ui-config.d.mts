@@ -99,29 +99,11 @@ declare namespace UIConfig {
   type SettingField = fields.SchemaField<Schema>;
 
   /**
-   * @privateRemarks Spelled out rather than derived from {@linkcode Schema}. Deriving it made
-   * {@linkcode foundry.Game.configureUI | Game#configureUI} pull the schema in through `Game`, and the
-   * fields resolved to their `null` defaults in whichever file asked first.
+   * @remarks Wider than Foundry's `@typedef`, which documents `uiScale` and `fontScale` as plain
+   * `number`: both fields omit `nullable`, which {@linkcode fields.NumberField} defaults to `true`.
+   * {@linkcode foundry.Game.configureUI | Game#configureUI} only defaults them when `undefined`.
    */
-  interface GameUIConfiguration {
-    uiScale: number;
-
-    fontScale: number;
-
-    colorScheme: {
-      applications: "" | "dark" | "light";
-      interface: "" | "dark" | "light";
-    };
-
-    chatBackground: boolean;
-
-    chatNotifications: "cards" | "pip";
-
-    fade: {
-      opacity: number;
-      speed: number;
-    };
-  }
+  interface GameUIConfiguration extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
    * @remarks Foundry's override of `_prepareContext` does not call `super`. Therefore it does not

@@ -14,8 +14,11 @@ expectTypeOf(UIConfig.schema.fields.chatBackground).toEqualTypeOf<
 >();
 
 declare const setting: UIConfig.GameUIConfiguration;
-expectTypeOf(setting.uiScale).toEqualTypeOf<number>();
-expectTypeOf(setting.fontScale).toEqualTypeOf<number>();
+
+// `null` is included because neither field passes `nullable`, and `NumberField` defaults it to `true`.
+// Foundry's own `@typedef` says plain `number`; the schema disagrees with it.
+expectTypeOf(setting.uiScale).toEqualTypeOf<number | null>();
+expectTypeOf(setting.fontScale).toEqualTypeOf<number | null>();
 expectTypeOf(setting.colorScheme.applications).toEqualTypeOf<"" | "dark" | "light">();
 expectTypeOf(setting.colorScheme.interface).toEqualTypeOf<"" | "dark" | "light">();
 expectTypeOf(setting.chatBackground).toEqualTypeOf<boolean>();

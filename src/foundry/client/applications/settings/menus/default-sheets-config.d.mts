@@ -55,9 +55,8 @@ declare namespace DefaultSheetsConfig {
 
   /**
    * All document types with configurable default sheets
-   * @remarks The exceptions here are hard-coded and stored in the `DefaultSheetsConfig.#DOCUMENT_TYPES` private static property.
+   * @remarks The exclusions are hard-coded to mirror the private static `DefaultSheetsConfig.#DOCUMENT_TYPES`.
    */
-  // TODO: Replace this list when Foundry exposes the document types with configurable default sheets.
   type DefaultSheetDocument = Exclude<
     Document.Type,
     "ActorDelta" | "ChatMessage" | "FogExploration" | "JournalEntryCategory" | "Setting"
