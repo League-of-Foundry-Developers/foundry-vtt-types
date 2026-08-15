@@ -41,10 +41,10 @@ type GridMeasurePathResult = BaseGrid.MeasurePathResult;
 
 type GridMeasurePathCostFunction2D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
 
-type GridMeasurePathCostFunction3D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates2D>;
+type GridMeasurePathCostFunction3D = BaseGrid.CostFunction<BaseGrid._AnyCoordinates3D>;
 
 type GridConfiguration = BaseGrid.Configuration;
 
-type SquareGridConfiguration = HexagonalGrid.Configuration;
+type SquareGridConfiguration = SquareGrid.Configuration;
 
-type HexagonalGridConfiguration = SquareGrid.Configuration;
+type HexagonalGridConfiguration = HexagonalGrid.Configuration;
