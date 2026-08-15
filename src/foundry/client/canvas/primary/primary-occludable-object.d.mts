@@ -1,4 +1,5 @@
-import type { FixedInstanceType, InexactPartial, Mixin } from "#utils";
+import type { FixedInstanceType, Mixin } from "#utils";
+import type { DebounceReturn } from "#common/utils/helpers.d.mts";
 import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
@@ -20,10 +21,17 @@ declare class PrimaryOccludableObject {
   occluded: boolean;
 
   /**
-   * The occlusion mode of this occludable object.
+   * The occlusion mode of this occludable object (a union of {@linkcode CONST.OCCLUSION_MODES})
    * @defaultValue {@linkcode CONST.OCCLUSION_MODES.NONE}
    */
   occlusionMode: CONST.OCCLUSION_MODES;
+
+  /**
+   * Do surfaces at the same elevation as this object apply occlusion to this object?
+   * This property only applies to SURFACE occlusion.
+   * @internal
+   */
+  protected _occludedBySameElevationSurfaces: boolean;
 
   /**
    * The unoccluded alpha of this object.
@@ -39,19 +47,21 @@ declare class PrimaryOccludableObject {
 
   /**
    * Fade this object on hover?
+   * @defaultValue `true`
    */
   get hoverFade(): boolean;
 
   set hoverFade(value);
 
   /**
-   * The amount of rendered FADE, RADIAL, and VISION occlusion.
+   * The amount of rendered FADE, RADIAL, VISION, and SURFACE occlusion.
    * @defaultValue
    * ```js
    * {
    *   fade: 0.0,
    *   radial: 0.0,
-   *   vision: 0.0
+   *   vision: 0.0,
+   *   surface: 0.0
    * }
    * ```
    * @internal
@@ -105,51 +115,37 @@ declare class PrimaryOccludableObject {
    */
   get isOccludable(): boolean;
 
+  // Mixin override.
+  get elevation(): number;
+
+  set elevation(value);
+
+  /**
+   * The occlusion elevation of this object.
+   * @internal
+   */
+  protected get _occlusionElevation(): number;
+
   /**
    * Debounce assignment of the PCO occluded state to avoid cases like animated token movement which can rapidly
    * change PCO appearance.
    * Uses a 50ms debounce threshold.
    * Objects which are in the hovered state remain occluded until their hovered state ends.
-   * @remarks Actually the return value of an arrow function passed to {@linkcode foundry.utils.debounce} with a timeout of 50ms
    */
-  debounceSetOcclusion: (occluded: boolean) => boolean;
+  debounceSetOcclusion: DebounceReturn<(occluded: boolean) => void>;
 
-  /**
-   * @remarks Actually an override of {@linkcode foundry.canvas.primary.CanvasTransformMixin.AnyMixed.updateCanvasTransform | CanvasTransformMixin#updateCanvasTransform}
-   */
-  updateCanvasTransform(): void;
+  // Mixin override.
+  updateTransform(): void;
 
-  /**
-   * @remarks Actually an override of {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed._shouldRenderDepth | PrimaryCanvasObjectMixin#_shouldRenderDepth}
-   */
+  // Mixin override.
   protected _shouldRenderDepth(): boolean;
 
   /**
    * Test whether a specific Token occludes this PCO.
-   * Occlusion is tested against 9 points, the center, the four corners-, and the four cardinal directions
-   * @param token   - The Token to test
-   * @param options - Additional options that affect testing
+   * @param token - The Token to test
    * @returns Is the Token occluded by the PCO?
    */
-  testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
-
-  /**
-   * @deprecated "`#roof` is deprecated in favor of more granular options: {@linkcode PrimaryOccludableObject.restrictsLight | #restrictsLight}
-   * and {@linkcode PrimaryOccludableObject.restrictsWeather | #restrictsWeather}" (since v12, until v14)
-   */
-  get roof(): boolean;
-
-  /**
-   * @deprecated "`#roof` is deprecated in favor of more granular options: {@linkcode PrimaryOccludableObject.restrictsLight | #restrictsLight}
-   * and {@linkcode PrimaryOccludableObject.restrictsWeather | #restrictsWeather}" (since v12, until v14)
-   */
-  set roof(enabled);
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`#containsPixel` is deprecated. Use {@linkcode PrimaryOccludableObject.containsCanvasPoint | #containsCanvasPoint} instead."
-   */
-  containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
+  testOcclusion(token: Token.Implementation): boolean;
 
   #PrimaryOccludableObject: true;
 }
@@ -164,18 +160,6 @@ declare namespace PrimaryOccludableObjectMixin {
 
   type BaseClass = PIXI.Container.AnyConstructor;
 
-  /** @internal */
-  interface _TestOcclusionOptions {
-    /**
-     * Test corners of the hit-box in addition to the token center?
-     * @defaultValue `true`
-     */
-    corners: boolean;
-  }
-
-  /** Additional options that affect testing */
-  interface TestOcclusionOptions extends InexactPartial<_TestOcclusionOptions> {}
-
   interface OcclusionState {
     /** The amount of FADE occlusion */
     fade: number;
@@ -185,6 +169,9 @@ declare namespace PrimaryOccludableObjectMixin {
 
     /** The amount of VISION occlusion */
     vision: number;
+
+    /** The amount of SURFACE occlusion */
+    surface: number;
   }
 
   interface HoverFadeState {
