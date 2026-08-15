@@ -59,12 +59,6 @@ declare class FunctionTerm extends RollTerm {
    */
   protected _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
 
-  /**
-   * Parse a function argument from its evaluated Roll instance.
-   * @param roll - The evaluated Roll instance that wraps the argument.
-   */
-  #parseArgument(roll: Roll): string | number;
-
   /* -------------------------------------------- */
   /*  Saving and Loading                          */
   /* -------------------------------------------- */
@@ -76,6 +70,8 @@ declare class FunctionTerm extends RollTerm {
   override toJSON(): Record<string, unknown>;
 
   static override fromParseNode(node: FunctionRollParseNode): RollTerm;
+
+  #FunctionTerm: true;
 }
 
 declare namespace FunctionTerm {

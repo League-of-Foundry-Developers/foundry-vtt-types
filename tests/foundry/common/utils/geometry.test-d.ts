@@ -23,7 +23,8 @@ expectTypeOf(fu.closestPointToSegment(a, b, c)).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(fu.closestPointToPath(a, [b, d], true)).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(fu.closestPointToPath(b, [a, c], false)).toEqualTypeOf<Canvas.Point>();
 
-expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)).toEqualTypeOf<[Canvas.Point?, Canvas.Point?]>();
+expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)).toEqualTypeOf<fu.LineCircleIntersectionPoints>();
+expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)[0]).toEqualTypeOf<fu.CircleIntersection | undefined>();
 
 const points = [
   new PIXI.Point(0, 0),

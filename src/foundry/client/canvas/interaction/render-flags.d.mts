@@ -72,7 +72,7 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
 // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
 // `RenderFlags` is built upon the assumption this is only used in safe ways.
 declare interface RenderFlag<out Flags extends object, Key extends keyof Flags> extends _RenderFlag<
-  Exclude<Extract<ConcreteKeys<Flags>, string>, Key>
+  Exclude<RenderFlags.Key<Flags>, Key>
 > {}
 
 declare namespace RenderFlag {
@@ -149,18 +149,23 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
 }
 
 declare namespace RenderFlags {
-  type Key<Flags extends object> = Extract<ConcreteKeys<Flags>, string>;
+  type Key<Flags extends object> = ConcreteKeys<Flags> & string;
 
-  type Cleared<Flags extends object> = Partial<Record<Key<Flags>, true>>;
+  /** @remarks Core only ever produces `true`. */
+  type Cleared<Flags extends object> = {
+    [Flag in Key<Flags>]?: boolean | undefined;
+  };
 
-  type Changes<Flags extends object> = Partial<Record<Key<Flags>, boolean | null | undefined>>;
+  type Changes<Flags extends object> = {
+    [Flag in Key<Flags>]?: boolean | null | undefined;
+  };
 
   /**
    * @privateRemarks The `string` index signature inherited from {@linkcode RenderFlagsMixin.RENDER_FLAGS} is not a
    * flag, and validating it would demand `_RenderFlag<never>`; only the flags a subclass actually declares take part.
    */
   type ValidateFlags<Flags extends object> = {
-    [K in ConcreteKeys<Flags>]: MakeConform<Flags[K], _RenderFlag<Extract<Exclude<ConcreteKeys<Flags>, K>, string>>>;
+    [K in ConcreteKeys<Flags>]: MakeConform<Flags[K], _RenderFlag<Exclude<Key<Flags>, K>>>;
   };
 
   interface Config {

@@ -18,9 +18,7 @@ declare class TextureLoader {
   static CACHE_TTL: number;
 
   /**
-   * Initialize the basis/ktx2 transcoder for PIXI.Assets
-   * @remarks Foundry provides an `@license` attributing the `pixi-basis-ktx2` package to Kristof Van Der Haeghen.
-   * The full text of the MIT license is omitted here.
+   * Initialize the Basis transcoder for PIXI.Assets.
    */
   static initializeBasisTranscoder(): TextureLoader.InitializeBasisTranscoderReturn;
 
@@ -134,14 +132,12 @@ declare namespace TextureLoader {
   interface Any extends AnyTextureLoader {}
   interface AnyConstructor extends Identity<typeof AnyTextureLoader> {}
 
-  /** @remarks This is effectively [[void, void], [void, void], [void, void]] */
+  /**
+   * @remarks `undefined` when the transcoder has already been initialized; otherwise the result of
+   * {@linkcode TranscoderWorker.loadTranscoder}, which is effectively `[void, void]`.
+   */
   type InitializeBasisTranscoderReturn = Promise<
-    | [
-        Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>>,
-        Awaited<ReturnType<typeof PixiBasisKTX2.KTX2Parser.loadTranscoder>>,
-        Awaited<ReturnType<typeof PixiBasisKTX2.BasisParser.loadTranscoder>>,
-      ]
-    | void
+    Awaited<ReturnType<typeof TranscoderWorker.loadTranscoder>> | undefined
   >;
 
   /** @remarks Differs from {@linkcode loadTexture.Return} in that it includes `PIXI.BaseTexture` in place of `PIXI.Texture` */
