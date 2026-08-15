@@ -197,6 +197,18 @@ declare namespace JournalEntryPage {
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
+  /** The source data specific to image journal entry pages. */
+  interface ImageSource extends fields.SchemaField.SourceData<ImageSchema> {}
+
+  /** The schema specific to image journal entry pages. */
+  interface ImageSchema extends fields.DataSchema {
+    /**
+     * A caption for the image.
+     * @defaultValue `undefined`
+     */
+    caption: fields.StringField<{ required: false; initial: undefined }>;
+  }
+
   /**
    * The data necessary to create a document. Used in places like {@linkcode JournalEntryPage.create}
    * and {@linkcode JournalEntryPage | new JournalEntryPage(...)}.
@@ -305,13 +317,7 @@ declare namespace JournalEntryPage {
     /**
      * Data particular to image journal entry pages.
      */
-    image: fields.SchemaField<{
-      /**
-       * A caption for the image.
-       * @defaultValue `undefined`
-       */
-      caption: fields.StringField<{ required: false; initial: undefined }>;
-    }>;
+    image: fields.SchemaField<ImageSchema>;
 
     /**
      * Data particular to text journal entry pages.
