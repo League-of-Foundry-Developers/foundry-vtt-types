@@ -1,5 +1,8 @@
-import type { Document } from "../foundry/common/abstract/_module.d.mts";
-
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { UUID } from "crypto";
+import type { Expect } from "playwright/test";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
@@ -1031,84 +1034,455 @@ export type Quote<T extends string> = T extends `${string}'${string}` ? `'${Esca
 
 type Escape<T extends string> = T extends `${infer Prefix}'${infer Suffix}` ? `${Prefix}\\'${Escape<Suffix>}` : T;
 
-declare class InvalidUuid<OriginalUuid extends string> {
+export declare class InvalidUuid<
+  OriginalUuid extends string,
+  ExpectedDoc extends Document.Any = __UnsetDocument,
+  RelativeDoc extends Document.Any = __UnsetDocument,
+> {
   #invalidUuid: true;
 
-  message: `The UUID ${Quote<OriginalUuid>} is invalid .`;
+  message: `The UUID ${Quote<OriginalUuid>} is invalid.
+${ExpectedDoc extends __UnsetDocument ? "" : `The expected document type specified by generic was ${Quote<ExpectedDoc["documentName"]>}. `}
+${RelativeDoc extends __UnsetDocument ? "" : `The type of the passed relative document was ${Quote<RelativeDoc["documentName"]>}.`}`;
 }
 
-export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = _MustBeValidUuid<
-  Uuid,
-  Uuid,
-  Type
+export declare class InvalidRelative<
+  OriginalUuid extends string,
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+> extends InvalidUuid<OriginalUuid, ExpectedDoc, RelativeDoc> {
+  #invalidRelative: true;
+}
+
+declare const __Unset: unique symbol;
+
+export type __UnsetDocument = Document.Any & {
+  [__Unset]: true;
+};
+
+type _DecrementArray<T extends unknown[]> = T extends [unknown, ...infer Rest] ? Rest : never;
+
+type _IsNotNull<T> = T extends null ? false : true;
+
+type _PrimaryTypeFor<
+  ExpectedType extends Document.Type,
+  RelativeType extends Document.AncestorsOf<ExpectedType> | ExpectedType = ExpectedType,
+> =
+  | Extract<
+      Document.AncestorsOf<RelativeType> | (RelativeType extends ExpectedType ? never : RelativeType),
+      Document.PrimaryType
+    >
+  | (ExpectedType extends Document.PrimaryType ? (RelativeType extends ExpectedType ? undefined : never) : never);
+
+type _Not<T extends boolean> = T extends true ? false : true;
+
+/** Doubly-distributive type equality checking. Returns `boolean` for mixed agreement. */
+// oxfmt-ignore
+type _DoTypesMatch<ExpectedType extends Document.Type, RelativeType extends Document.Type> =
+  [ExpectedType] extends [RelativeType]
+    ? [RelativeType] extends [ExpectedType]
+      ? true
+      : boolean
+    : RelativeType extends unknown
+      ? ExpectedType extends RelativeType
+        ? true
+        : false
+      : never;
+
+export interface ParsedUUID {
+  originalUuid: string;
+  error: string | null;
+  valid: boolean | undefined;
+  type: Document.Type;
+  collection: Document.ContainingCollection<Document.Type> | undefined;
+  embedded: string[];
+  primaryType: Document.Type | undefined;
+  primaryId: string | undefined;
+  documentType: Document.Type;
+  isCompendium: boolean;
+  isEmbedded: boolean;
+  relative: never[];
+}
+
+type ParseUuid2<
+  UUID extends string,
+  ExpectedDoc extends Document.Any = __UnsetDocument,
+  RelativeDoc extends Document.Any = __UnsetDocument,
+> = UUID extends unknown ? PrettifyType<_ParseUuid2<UUID, ExpectedDoc, RelativeDoc>> : never;
+
+type _ParseUuid2<
+  UUID extends string,
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID = SimpleMerge<
+    ParsedUUID,
+    {
+      originalUuid: UUID;
+      error: null;
+      valid: false;
+      collection: undefined;
+      isCompendium: false;
+      isEmbedded: false;
+      embedded: [];
+      relative: [];
+      primaryType: undefined;
+      primaryId: undefined;
+    }
+  >,
+> = string extends UUID
+  ? _ParseUuidString<
+      ExpectedDoc,
+      RelativeDoc,
+      SimpleMerge<
+        State,
+        {
+          isEmbedded: ExpectedDoc["documentName"] extends Document.NeverEmbeddedType ? false : boolean;
+          isCompendium: boolean;
+        }
+      >
+    >
+  : _ParseUuidParsable<UUID, ExpectedDoc, RelativeDoc, State>;
+
+type _ParseUuidParsable<
+  UUID extends string,
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = UUID extends `Compendium.${string}.${string}.${infer Rest}`
+  ? _ParseUuidParsable<Rest, ExpectedDoc, RelativeDoc, SimpleMerge<State, { isCompendium: true }>> // TODO: support compendium UUID redirects
+  : UUID extends `.${infer Rest}`
+    ? // If there's a leading `.`, we add to the `relative` accumulator array and recurse.
+      _ParseUuidParsable<
+        Rest,
+        ExpectedDoc,
+        RelativeDoc,
+        SimpleMerge<State, { relative: [never, ...State["relative"]] }>
+      >
+    : State["relative"]["length"] extends 0
+      ? // There were never any leading `.`s, so while this might still be a relative uuid, it begins with a type if it's valid
+        RelativeDoc extends __UnsetDocument
+        ? // No relative document provided, so this is either a direct UUID, or this is just the initial parse.
+          _ParseUuidDirect<UUID, ExpectedDoc, State>
+        : _ParseUuidRelative<UUID, ExpectedDoc, RelativeDoc, State>
+      : RelativeDoc extends __UnsetDocument
+        ? // If we have no `RelativeDoc` (like in the initial parse to constrain `relative`), we'll have to make a best guess
+          _ParseUuidRelativeWithoutRelativeDoc<UUID, ExpectedDoc, SimpleMerge<State, { valid: undefined }>>
+        : _ParseUuidRelativeWithRelativeDoc<UUID, RelativeDoc, SimpleMerge<State, { valid: undefined }>>;
+
+type _ParseUuidDirect<
+  UUID extends string,
+  ExpectedDoc extends Document.Any,
+  State extends ParsedUUID,
+  InnerState extends ParsedUUID = _ParseUuidInnerDirect<UUID, State>,
+> = [InnerState["valid"]] extends [false]
+  ? // If the inner parse returns invalid, pass it on
+    InnerState
+  : ExpectedDoc extends __UnsetDocument
+    ? // No expected document to account for
+      _ParseUUIDFinalize<InnerState>
+    : // Make sure the passed ExpectedDoc agrees with the parsed UUID
+      ExpectedDoc["documentName"] extends InnerState["type"]
+      ? _ParseUUIDFinalize<InnerState>
+      : SimpleMerge<
+          _ParseUUIDFinalize<InnerState>,
+          {
+            valid: false;
+            error: `Provided expected document type \`${ExpectedDoc["documentName"]}\` does not match parsed type \`${InnerState["type"]}\` for UUID ${Quote<State["originalUuid"]>}`;
+          }
+        >;
+
+type _ParseUuidRelative<
+  UUID extends string,
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = never;
+
+type _ParseUuidRelativeWithRelativeDoc<
+  UUID extends string,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = UUID extends `${string}.${string}`
+  ? // If the UUID still contains `.`s after having leading `.`s trimmed, then we recurse
+    never
+  : // no `.`s left in the "UUID" means all provided `.`s were leading, and what's left is treated as an ID
+    _ParseIDWithRelative<
+      Document.XParentOf<RelativeDoc["documentName"], _DecrementArray<State["relative"]>["length"]>,
+      RelativeDoc,
+      State
+    >;
+
+type _ParseUuidRelativeWithoutRelativeDoc<
+  UUID extends string,
+  ExpectedDoc extends Document.Any,
+  State extends ParsedUUID,
+> = UUID extends `${string}.${string}`
+  ? // If the UUID still contains `.`s after having leading `.`s trimmed, then we recurse
+    never
+  : ExpectedDoc extends __UnsetDocument
+    ? never
+    : never;
+
+type _ParseUuidString<
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = ExpectedDoc extends __UnsetDocument // this should be prevented by the validator types, but just in case
+  ? SimpleMerge<
+      State,
+      { valid: false; error: "A document type to be expected must be provided with unknown (`string`-typed) UUIDs." }
+    >
+  : _ParseUuidStringExpected<
+      ExpectedDoc,
+      RelativeDoc,
+      SimpleMerge<
+        State,
+        {
+          // we are defining this as the truth in this branch
+          type: ExpectedDoc["documentName"];
+
+          // without a literal UUID to parse, we can't be sure of the actual value here, since even
+          // with a `relative` that relative may itself be embedded and we can't tell.
+          embedded: string[];
+        }
+      >
+    >;
+
+type _ParseUuidStringExpected<
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = RelativeDoc extends __UnsetDocument
+  ? // With an Expected but no Relative, we trust the caller knows what they're doing and the Expected becomes the source of truth.
+    SimpleMerge<
+      State,
+      {
+        valid: true; // this is essentially a lie, we can't be sure
+
+        // Since we have no way of knowing if the UUID specifies a compendium, or whether that
+        // compendium exists in the world or not currently, we can't be narrower than this.
+        collection: Document.ContainingCollection<ExpectedDoc["documentName"]> | undefined;
+
+        // With no relative to muddy things, we trust that if valid, this will be the type.
+        documentType: ExpectedDoc["documentName"];
+
+        primaryType: _PrimaryTypeFor<ExpectedDoc["documentName"]>;
+      }
+    >
+  : // With both Expected and Relative, we have to make sure they agree
+    RelativeDoc["documentName"] extends Document.AncestorsOf<ExpectedDoc["documentName"]> | ExpectedDoc["documentName"]
+    ? _ParseUuidStringExpectedRelative<ExpectedDoc, RelativeDoc, State>
+    : SimpleMerge<
+        State,
+        {
+          valid: false;
+          error: `The provided Relative document is of type \`${RelativeDoc["documentName"]}\`, which is neither identical to nor an ancestor of the provided Expected document's type \`${ExpectedDoc["documentName"]}\`.`;
+        }
+      >;
+
+type _ParseUuidStringExpectedRelative<
+  ExpectedDoc extends Document.Any,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+  PrimaryType extends Document.Type | undefined = _PrimaryTypeFor<
+    ExpectedDoc["documentName"],
+    RelativeDoc["documentName"]
+  >,
+> = SimpleMerge<
+  State,
+  {
+    valid: true; // this is essentially a lie, we can't be sure with `string`s
+
+    // We have no idea if the relative is in a pack or not, but we exclude `undefined` because since it was passed
+    // as a document we know if it *is* in a compendium, that compendium exists in the world currently.
+    collection: Document.ContainingCollection<RelativeDoc["documentName"]>;
+
+    // If the ExpectedDoc and RelativeDoc differ, then RelativeDoc must be an ancestor, and thus ExpectedDoc must be embedded.
+    isEmbedded: _Not<_DoTypesMatch<ExpectedDoc["documentName"], RelativeDoc["documentName"]>>;
+
+    isCompendium: _IsNotNull<RelativeDoc["compendium"]>;
+
+    primaryType: PrimaryType;
+
+    primaryId: PrimaryType extends undefined ? undefined : string;
+
+    // since this is `primaryType ?? type`, it has to be this wide, but will be defined, so no `| undefined`
+    documentType: Coalesce<PrimaryType, ExpectedDoc["documentName"]>;
+  }
 >;
+
+/** This helper would have been inlined if not for the verbosity of what gets passed to `Type` */
+type _ParseIDWithRelative<
+  Type extends Document.Type,
+  RelativeDoc extends Document.Any,
+  State extends ParsedUUID,
+> = SimpleMerge<
+  State,
+  {
+    valid: true;
+    type: Type;
+    primaryType: Type extends Document.PrimaryType
+      ? undefined
+      : Extract<Document.AncestorsOf<Type>, Document.PrimaryType>;
+    documentType: Type;
+    collection: Document.ContainingCollection<Type>;
+    isCompendium: _IsNotNull<RelativeDoc["compendium"]>; // this is currently always `boolean`
+    isEmbedded: RelativeDoc["isEmbedded"]; // this is currently always `boolean`
+    // embedded cannot be guaranteed more accurate than `string[]`
+  }
+>;
+
+type _AddIfEmbedded<State extends ParsedUUID, Type extends Document.Type> = State["isEmbedded"] extends true
+  ? [...State["embedded"], Type, string]
+  : State["embedded"];
+
+export type MustBeValidUuid<Uuid extends string, Type extends Document.Type = Document.Type> = Uuid extends unknown
+  ? _MustBeValidUuid<Uuid, Type>
+  : never;
 
 type _MustBeValidUuid<
   Uuid extends string,
-  OriginalUuid extends string,
   Type extends Document.Type,
   Parsed extends ParsedUUID = ParseUUID<Uuid>,
-> = Parsed["valid"] extends true
-  ? Parsed["type"] extends Type
-    ? OriginalUuid
-    : InvalidUuid<OriginalUuid>
-  : Uuid extends `${string}.${string}`
-    ? InvalidUuid<OriginalUuid>
-    : Document.UUIDFor<Type>;
+> = Parsed["valid"] extends false // false branch first, because we have to allow nebulously-valid (`undefined`) relative UUIDs
+  ? Uuid extends `${string}.${string}`
+    ? InvalidUuid<Uuid>
+    : Document.UuidFor<Type>
+  : Parsed["type"] extends Type
+    ? Uuid
+    : InvalidUuid<Uuid>;
 
-export type GetNameFromUuid<Uuid extends string | InvalidUuid<string>> = Uuid extends string
-  ? _GetNameFromUuid<Uuid>
-  : never;
+export type GetNameFromUuid<
+  Uuid extends string | InvalidUuid<string>,
+> = Uuid extends string ? _GetNameFromUuid<Uuid> : never;
 
-type _GetNameFromUuid<Uuid extends string, Parsed extends ParsedUUID = ParseUUID<Uuid>> = string extends Uuid
-  ? never
-  : Parsed["valid"] extends true
-    ? Parsed["type"]
-    : never;
+type _GetNameFromUuid<
+  Uuid extends string,
+  Parsed extends ParsedUUID = ParseUUID<Uuid>,
+> = string extends Uuid ? never : Parsed["valid"] extends false ? never : Parsed["type"];
 
-export interface ParsedUUID {
-  valid: boolean;
-  type: Document.Type;
-  compendium: boolean;
-  embedded: boolean;
-  primary: Document.Type;
-  relative: boolean;
-}
+export type ParseUUID<UUID extends string> = _ParseUUIDFinalize<_ParseUUID<UUID>>;
 
-export type ParseUUID<UUID extends string> = _ParseUUID<UUID>;
-
+// TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
 type _ParseUUID<
   UUID extends string,
-  State extends ParsedUUID = {
-    valid: false;
-    type: Document.Type;
-    compendium: false;
-    embedded: false;
-    primary: Document.Type;
-    relative: false;
-  },
+  State extends ParsedUUID = SimpleMerge<
+    ParsedUUID,
+    {
+      valid: false;
+      collection: undefined;
+      isCompendium: false;
+      isEmbedded: false;
+      embedded: [];
+      relative: [];
+      primaryType: undefined;
+      primaryId: undefined;
+    }
+  >,
 > = UUID extends `Compendium.${string}.${string}.${infer Rest}`
-  ? _ParseUUID<Rest, SimpleMerge<State, { compendium: true }>>
+  ? _ParseUUID<Rest, SimpleMerge<State, { isCompendium: true }>> // TODO: support compendium UUID redirects
   : UUID extends `.${infer Rest}`
-    ? _ParseUUID<Rest, SimpleMerge<State, { relative: true }>>
-    : // TODO: Add a registry of pseudo-Document type names to allow things like Draw Steel's `Advancement`s
-      UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
-      ? _ParseUUID<Rest, SimpleMerge<State, { embedded: true; primary: _ReplaceTypeIf<State["primary"], ParentType> }>>
-      : UUID extends `${infer FinalType extends Document.Type}.${string}`
-        ? SimpleMerge<
-            State,
-            {
-              valid: true;
-              primary: _ReplaceTypeIf<State["primary"], FinalType>;
-              type: FinalType;
-            }
-          >
-        : SimpleMerge<State, { valid: false }>;
+    ? _ParseUUID<Rest, SimpleMerge<State, { relative: [never, ...State["relative"]] }>>
+    : State["relative"]["length"] extends 0
+      ? _ParseUuidInnerDirect<UUID, State>
+      : // If this is a relative UUID, we cannot guarantee anything, final decision is left up to ParseUuidReturn. The Rest passed here
+        // is guaranteed to have no leading `.`s
+        _ParseUuidInnerRelative<UUID, SimpleMerge<State, { valid: undefined }>>;
 
-type _ReplaceTypeIf<
-  ExistingType extends Document.Type,
-  NewType extends Document.Type,
-> = Document.Type extends ExistingType ? NewType : ExistingType;
+// oxfmt-ignore
+type _ParseUuidInnerRelative<UUID extends string, State extends ParsedUUID> =
+// If the UUID still contains `.` at this point, further processing is required
+  UUID extends `${string}.${string}`
+  ? UUID extends `${string}.${infer MiddleType extends Document.Type}.${string}.${infer Rest}`
+    ? // If this section starts with a non-type, but has more than 2 additional parts, we're not at the end. We don't know the primary
+      // type, but can unconditionally push the type and ID to `embedded`
+      _ParseUuidInnerRelative<Rest, SimpleMerge<State, {
+        isEmbedded: true;
+        embedded: [...State["embedded"], MiddleType, string];
+      }>>
+    : UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
+      ? // If this section starts with a Type, but has additional part sections past the ID, we know this is not the primary type, can
+        // unconditionally add to `embedded`, but still have to keep parsing.
+        _ParseUuidInnerRelative<Rest, SimpleMerge<State, {
+          isEmbedded: true;
+          embedded: [...State["embedded"], ParentType, string];
+        }>>
+      : UUID extends `${infer FinalType extends Document.Type}.${string}`
+        ? SimpleMerge<State, { type: FinalType; }>
+        : // The only way _ParseUuidInnerRelative can definitively declare an invalid UUID is if it contained at least one `.` after
+          // _ParseUuid processing, but the final section does not have a valid type/ID pair.
+          SimpleMerge<State, {valid: false}>
+  : // If no `.`, we assume it's an ID and return the current state for ParseUuidReturn to finish validating.
+    State;
+
+type _y = PrettifyType<
+  _ParseUuidInnerDirect<
+    "Scene.foo.Token.bar.Actor.baz",
+    SimpleMerge<ParsedUUID, { primaryType: undefined; primaryId: undefined; embedded: [] }>
+  >
+>;
+
+type _ParseUuidInnerDirect<
+  UUID extends string,
+  State extends ParsedUUID,
+> = UUID extends `${infer ParentType extends Document.Type}.${string}.${infer Rest}`
+  ? _ParseUuidInnerDirect<
+      Rest,
+      SimpleMerge<
+        State,
+        {
+          isEmbedded: true;
+          // Only add to `embedded` if we're past the primary document layer
+          embedded: _AddIfEmbedded<State, ParentType>;
+          primaryType: Coalesce<State["primaryType"], ParentType>;
+          primaryId: Coalesce<State["primaryId"], string>;
+        }
+      >
+    >
+  : UUID extends `${infer FinalType extends Document.Type}.${string}`
+    ? SimpleMerge<
+        State,
+        {
+          valid: true;
+          type: FinalType;
+          collection: Document.ContainingCollection<FinalType>;
+          embedded: _AddIfEmbedded<State, FinalType>;
+        }
+      >
+    : SimpleMerge<
+        State,
+        {
+          valid: false;
+          error: `Failed to parse fragment ${Quote<UUID>} of UUID ${Quote<State["originalUuid"]>}`;
+        }
+      >;
+
+type _ParseUUIDFinalize<State extends ParsedUUID> = SimpleMerge<
+  State,
+  {
+    collection: CoalesceNever<
+      State["isCompendium"] extends true
+        ? Extract<State["collection"], CompendiumCollection.Any>
+        : Extract<State["collection"], WorldCollection.Any>,
+      undefined
+    >;
+
+    // This property gets set to `primaryType ?? type`. `documentId` is similarly assigned, but we type that as just `string` in any case.
+    documentType: Coalesce<State["primaryType"], State["type"]>;
+
+    // If the UUID points a primary, non-embedded Document, these properties are explicitly set `undefined`, whether in compendium or not.
+    primaryId: State["isEmbedded"] extends true
+      ? State["primaryId"]
+      : State["type"] extends Document.PrimaryType
+        ? undefined
+        : State["primaryId"];
+    primaryType: State["isEmbedded"] extends true
+      ? State["primaryType"]
+      : State["type"] extends Document.PrimaryType
+        ? undefined
+        : State["primaryType"];
+  }
+>;
 
 /**
  * This type is used when you want to use `unknown` in a union. This works because while `T | unknown`

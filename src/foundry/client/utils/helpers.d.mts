@@ -1,4 +1,13 @@
-import type { Coalesce, CoalesceNever, GetNameFromUuid, InexactPartial, MustBeValidUuid } from "#utils";
+import type {
+  Coalesce,
+  GetNameFromUuid,
+  InexactPartial,
+  MustBeValidUuid,
+  ParsedUUID,
+  ParseUUID,
+  __UnsetDocument,
+  ParseUuid2,
+} from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
@@ -25,9 +34,9 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
 export function readTextFromFile(file: File): Promise<string>;
 
 /** @internal */
-interface _FromUuidOptions<Invalid extends boolean | undefined, Name extends Document.Type> {
+interface _FromUuidOptions<Invalid extends boolean | undefined, Relative extends Document.Any | undefined> {
   /** A Document to resolve relative UUIDs against. */
-  relative: AllowedRelativesOf<Name>;
+  relative: Relative;
 
   /**
    * Allow retrieving an invalid Document.
@@ -37,14 +46,9 @@ interface _FromUuidOptions<Invalid extends boolean | undefined, Name extends Doc
 }
 
 export interface FromUuidOptions<
-  Doc extends Document.Any,
-  Uuid extends string,
+  Relative extends Document.Any | undefined,
   Invalid extends boolean | undefined,
-> extends InexactPartial<_FromUuidOptions<Invalid, CoalesceNever<GetNameFromUuid<Uuid>, Doc["documentName"]>>> {}
-
-type AllowedRelativesOf<Name extends Document.Type> = Name extends Document.EmbeddedType | "Actor"
-  ? Document.Embedded.ParentForName<Name>
-  : undefined;
+> extends InexactPartial<_FromUuidOptions<Invalid, Relative>> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid).
@@ -55,12 +59,15 @@ export function fromUuid<
   ConcreteDocument extends Document.Any = __UnsetDocument,
   Invalid extends boolean | undefined = undefined,
   const Uuid extends string = string,
+  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined =
+    | ValidRelativesOf<Uuid, ConcreteDocument>
+    | undefined,
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
-  options?: FromUuidOptions<ConcreteDocument, Uuid, Invalid>,
-): Promise<FromUuidReturn<ConcreteDocument, Uuid, Invalid>>;
+  options?: FromUuidOptions<Relative, Invalid>,
+): Promise<FromUuidReturn<ConcreteDocument, Invalid, Uuid>>;
 
-type FromUuidReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined> =
+type FromUuidReturn<Doc extends Document.Any, Invalid extends boolean | undefined, Uuid extends string> =
   | (__UnsetDocument extends Doc
       ? FromUuid<Uuid, Coalesce<Invalid, false>>
       : _MaybeInvalid<Doc, Coalesce<Invalid, false>>)
@@ -81,8 +88,8 @@ interface _FromUuidSyncOptions {
   strict: boolean;
 }
 
-export interface FromUuidSyncOptions<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined>
-  extends InexactPartial<FromUuidOptions<Doc, Uuid, Invalid>>, InexactPartial<_FromUuidSyncOptions> {}
+export interface FromUuidSyncOptions<Relative extends Document.Any | undefined, Invalid extends boolean | undefined>
+  extends InexactPartial<FromUuidOptions<Relative, Invalid>>, InexactPartial<_FromUuidSyncOptions> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -96,35 +103,76 @@ export function fromUuidSync<
   ConcreteDocument extends Document.Any = __UnsetDocument,
   Invalid extends boolean | undefined = undefined,
   const Uuid extends string = string,
+  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined = undefined,
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
-  options?: FromUuidSyncOptions<ConcreteDocument, Uuid, Invalid>,
-): FromUuidSyncReturn<ConcreteDocument, Uuid, Invalid>;
+  options?: FromUuidSyncOptions<Relative, Invalid>,
+): FromUuidSyncReturn<ConcreteDocument, Invalid, Uuid>;
 
-type FromUuidSyncReturn<Doc extends Document.Any, Uuid extends string, Invalid extends boolean | undefined> =
+type FromUuidSyncReturn<Doc extends Document.Any, Invalid extends boolean | undefined, Uuid extends string> =
   | (__UnsetDocument extends Doc
       ? FromUuid<Uuid, Coalesce<Invalid, false>> | _IndexEntryFor<Uuid>
       : _MaybeInvalid<Doc, Coalesce<Invalid, false>> | _IndexEntryFor<string, Doc["documentName"]>)
   | null;
 
-declare const __Unset: unique symbol;
-
-type __UnsetDocument = Document.Any & {
-  [__Unset]: true;
-};
-
 type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name extends Document.CompendiumType
   ? CompendiumCollection.IndexEntry<Name>
   : never;
 
+type ValidRelativesOf<
+  Uuid extends string,
+  Expected extends Document.Any,
+  Generation extends number | null = null,
+> = Uuid extends unknown ? Document.ImplementationFor<_ValidRelativesOf<Uuid, Expected, Generation>> : never;
+
+type _x = ValidRelativesOf<"ActiveEffect.ARandomIDToTest" | "PlaylistSound.foo", __UnsetDocument, 0>;
+
+type _ValidRelativesOf<
+  Uuid extends string,
+  ExpectedDoc extends Document.Any,
+  Generation extends number | null,
+  Parsed extends ParsedUUID = ParseUuid2<Uuid, ExpectedDoc>,
+> = Generation extends number
+  ? Document.XParentOf<Parsed["type"], Generation>
+  : Parsed["type"] | Document.AncestorsOf<Parsed["type"]>;
+
 declare const AnyDocumentClass: Document.AnyConstructor;
 declare abstract class InvalidUuid extends AnyDocumentClass {}
+declare abstract class RelativeRequired extends AnyDocumentClass {}
 
 type FromUuid<
   Uuid extends string,
   Invalid extends boolean | undefined = undefined,
   Name extends GetNameFromUuid<Uuid> = GetNameFromUuid<Uuid>,
 > = [Name] extends [never] ? InvalidUuid : _MaybeInvalid<Document.StoredForName<Name>, Coalesce<Invalid, false>>;
+
+// type _FromUuid<
+//   Uuid extends string,
+//   Invalid extends boolean | undefined,
+//   RelativeDoc extends Document.Any | undefined,
+//   Parsed extends ParsedUUID = ParseUUID<Uuid>,
+// > = Parsed["relative"]["length"] extends 0
+//   ? Document.Type extends Parsed["type"]
+//     ?
+
+//     _MaybeInvalid<Document.StoredForName<Parsed["type"]>, Coalesce<Invalid, false>>
+//   : RelativeDoc extends undefined
+//     ? // No relative was passed for a relative UUID
+//       RelativeRequired
+//     : _MaybeInvalid<
+//         Document.StoredForName<_GetTypeFromRelative<Parsed["relative"], NonNullable<RelativeDoc>>>,
+//         Coalesce<Invalid, false>
+//       >;
+
+type _GetTypeFromRelative<
+  RelativeCount extends unknown[],
+  RelativeDoc extends Document.Any,
+  Type extends Document.Type = RelativeDoc["documentName"],
+> = RelativeCount extends [unknown, ...infer Rest]
+  ? _GetTypeFromRelative<Rest, NonNullable<RelativeDoc["parent"]>, NonNullable<RelativeDoc["parent"]>["documentName"]>
+  : Type;
+
+type _t = _GetTypeFromRelative<[unknown, unknown, unknown, unknown], ActiveEffect.Stored>;
 
 type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid
   ? string

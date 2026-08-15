@@ -1093,15 +1093,18 @@ declare namespace Document {
 
   /**
    * Documents that require a parent for persisted creation. Most of them do not require
-   * one for temporary construction; only `ActorDelta` does, as of 13.351.
+   * one for temporary construction; only `ActorDelta` does, as of 14.366.
    */
   type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
 
-  /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
+  /** Documents which can only be persisted inside compendia. As of 14.366 this is only `Adventure`. */
   type AlwaysCompendiumType = "Adventure";
 
   /** Documents which can never be found inside compendia. */
   type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
+
+  /** Primary Documents which are never embedded inside other Documents. */
+  type NeverEmbeddedType = Exclude<Document.PrimaryType, Document.EmbeddedType | "Actor">;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1281,12 +1284,54 @@ declare namespace Document {
     > = _CollectionNameForName<Embedded, Name>;
   }
 
-  type WorldCollectionForName<Name extends Document.WorldType> = WorldCollection.ForName<Name>;
+  /**
+   * This type will return the `WorldCollection` a Document is ultimately contained within, even for embedded Documents.
+   * If you need a type limited to *just* the `WorldCollection`s, use {@linkcode WorldCollection.ForName} directly.
+   */
+  type WorldCollectionForName<Name extends Document.Type> = Name extends Document.WorldType
+    ? WorldCollection.ForName<Name>
+    : Name extends Document.EmbeddedType
+      ? WorldCollectionForName<Exclude<Document.ParentForName<Name>, null>["documentName"]>
+      : never;
+
+  /** Given a document name, what top level collection(s) could it be in? */
+  type ContainingCollection<Name extends Document.Type> =
+    | WorldCollectionForName<Name>
+    | CompendiumCollection.ForDocument<Name>;
+
+  type AllowedRelativesOf<Name extends Document.Type> = Name extends Document.EmbeddedType | "Actor"
+    ? Document.Embedded.ParentForName<Name>
+    : never;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
     ChildDocument extends Document.Internal.Instance.Any,
   > = ParentDocument extends Internal.ParentFor<ChildDocument> ? true : false;
+
+  /** For a given Document, return the names of every document that could be a parent, grandparent, great-grandparent, etc. */
+  type AncestorsOf<Name extends Document.Type> = _AncestorsOf<Name>;
+
+  /** @internal */
+  type _AncestorsOf<
+    Name extends Document.Type,
+    ParentNames extends Document.Type = NonNullable<Document.ParentForName<Name>>["documentName"],
+  > = [ParentNames] extends [never] ? never : ParentNames | _AncestorsOf<ParentNames>;
+
+  /** Get possible parent types for the provided Document type, to the specified depth. 0 = itself, 1 = parent, 2 = grandparent, etc. */
+  type XParentOf<Name extends Document.Type, Depth extends number> = _XParentOf<Name, _Accumulate<Depth>>;
+
+  /** @internal */
+  type _XParentOf<Name extends Document.Type, Depth extends unknown[]> = Depth["length"] extends 0
+    ? Name
+    : Depth extends [unknown, ...infer Rest]
+      ? _XParentOf<NonNullable<Document.ParentForName<Name>>["documentName"], Rest>
+      : never;
+
+  // TODO: recursive helper for embedded types, limiting to valid parents
+  type UuidFor<Name extends Document.Type> =
+    | (Name extends Document.WorldType ? `${Name}.${string}` : never)
+    | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
+    | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
 
   type SocketRequest<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketRequest<Action>;
   type SocketResponse<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketResponse<Action>;
@@ -1645,7 +1690,7 @@ declare namespace Document {
        * The uuid of an existing document.
        * At least one of `data` and `uuid` must be set.
        */
-      uuid?: Document.UUIDFor<DocumentType>;
+      uuid?: Document.UuidFor<DocumentType>;
     }
 
     // Like `keyof` but handles properties desirable for flags:
@@ -1806,12 +1851,6 @@ declare namespace Document {
         ]
       : never;
   }
-
-  // TODO: recursive helper for embedded types
-  type UUIDFor<Name extends Document.Type> =
-    | (Name extends Document.WorldType ? `${Name}.${string}` : never)
-    | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
-    | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
 
   /** Any Document, that is a child of the given parent Document. */
   // An empty schema is the most appropriate type due to removing index signatures.
@@ -3732,3 +3771,10 @@ declare namespace Document {
    */
   type ConfiguredCollection<Name extends Document.Type> = Document.Internal.ConfiguredCollection<Name>;
 }
+
+/** @internal */
+type _Accumulate<Depth extends number, Accumulator extends unknown[] = []> = number extends Depth
+  ? never
+  : Accumulator["length"] extends Depth
+    ? Accumulator
+    : _Accumulate<Depth, [unknown, ...Accumulator]>;

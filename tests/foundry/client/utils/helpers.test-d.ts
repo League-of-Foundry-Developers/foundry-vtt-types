@@ -49,6 +49,8 @@ describe("fromUuid Tests", () => {
     expectTypeOf(fromUuid(tokenUUID)).toEqualTypeOf<Promise<TokenDocument.Stored | null>>();
     expectTypeOf(fromUuid(greatGreatGrandchildUUID)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
     expectTypeOf(fromUuid(compendiumGreatGreatGrandchildUUID)).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+    expectTypeOf(fromUuid(relativeItemUUID)).toEqualTypeOf<Promise<Item.Stored | null>>();
+
 
     // relative:
 

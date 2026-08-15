@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, AnyObject, MaybePromise } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import { database, testID } from "../../../utils.ts";
 import * as itemHelpers from "./item.test-d.ts";
 
