@@ -929,6 +929,104 @@ declare global {
 
       /** @defaultValue `100` */
       batchSize: number;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.sidebar.apps.ChatPopout}
+       */
+      popoutClass: typeof foundry.applications.sidebar.apps.ChatPopout;
+
+      /**
+       * Supported chat message visibility modes.
+       */
+      modes: ChatMessage.Modes;
+    }
+
+    namespace ChatMessage {
+      interface Modes {
+        [mode: Brand<string, "CONFIG.ChatMessage.modes">]: ModeConfig;
+
+        /**
+         * Out-of-character messages visible to all players.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.public",
+         *   icon: "fa-solid fa-globe"
+         * }
+         * ```
+         */
+        public: ModeConfig;
+
+        /**
+         * Messages visible between gamemasters and the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.gm",
+         *   icon: "fa-solid fa-user-secret"
+         * }
+         * ```
+         */
+        gm: ModeConfig;
+
+        /**
+         * Messages visible only to gamemasters and not to the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.blind",
+         *   icon: "fa-solid fa-eye-slash"
+         * }
+         * ```
+         */
+        blind: ModeConfig;
+
+        /**
+         * Messages visible only to the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.self",
+         *   icon: "fa-solid fa-user"
+         * }
+         * ```
+         */
+        self: ModeConfig;
+
+        /**
+         * In-character messages visible to all players.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.ic",
+         *   icon: "fa-solid fa-hat-wizard"
+         * }
+         * ```
+         */
+        ic: ModeConfig;
+      }
+
+      interface ModeData extends InexactPartial<foundry.documents.ChatMessage.CreateData> {}
+
+      interface ModeConfig {
+        /** @remarks A localization key. */
+        label: string;
+
+        /** @remarks A Font Awesome class string. */
+        icon: string;
+
+        /**
+         * Replaces the built-in whisper and blindness handling for this mode.
+         *
+         * @privateRemarks Optional at runtime despite Foundry's typedef.
+         */
+        handler?: ((data: ModeData) => void) | undefined;
+      }
     }
 
     interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {

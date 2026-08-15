@@ -149,6 +149,17 @@ declare namespace HTMLProseMirrorElement {
    * Use {@linkcode HTMLProseMirrorElement.Config} instead. This alias will be removed in v15.
    */
   type ProseMirrorInputConfig = Config;
+
+  /**
+   * The `plugins` event fired while an editor's plugins are being configured, so a listener can add to or replace
+   * them before the view is constructed.
+   *
+   * @privateRemarks The runtime class is module-private; only its public event shape is exposed here.
+   */
+  interface ProseMirrorPluginsEvent extends CustomEvent<Record<string, Plugin>> {
+    /** The currently configured plugins. */
+    readonly plugins: Record<string, Plugin>;
+  }
 }
 
 export default HTMLProseMirrorElement;
