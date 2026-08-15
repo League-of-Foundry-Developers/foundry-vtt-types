@@ -13,7 +13,7 @@ import type {
   // ToMethod,
   // MaybeEmpty,
   // PropertiesOfType,
-  // Brand,
+  Brand,
   // PrettifyType,
   // PrettifyTypeDeep,
   // UnionToIntersection,
@@ -28,7 +28,7 @@ import type {
   Titlecase,
   // Merge,
   Override,
-  // IsObject,
+  IsObject,
   // SimpleMerge,
   RequiredProps,
   // Mixin,
@@ -188,7 +188,33 @@ const _d: Override1 = _overridden3;
 const _e: Override3 = _overridden1;
 
 // TODO: Merge
-// TODO: IsObject
+
+expectTypeOf<IsObject<string>>().toEqualTypeOf<false>();
+
+// A more naive type would count a branded string as an object because `string & { brand: 123 }` extends `object`.
+expectTypeOf<IsObject<Brand<string, "foo">>>().toEqualTypeOf<false>();
+expectTypeOf<IsObject<Brand<{ foo: 123 }, "foo">>>().toEqualTypeOf<true>();
+
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+expectTypeOf<IsObject<String>>().toEqualTypeOf<true>();
+
+declare class Class {
+  static foo: number;
+  bar: string;
+}
+
+expectTypeOf<IsObject<typeof Class>>().toEqualTypeOf<false>();
+
+// interface style classes.
+expectTypeOf<IsObject<typeof URL>>().toEqualTypeOf<false>();
+
+// AddEventListenerOptions really is just an object at runtime.
+expectTypeOf<IsObject<AddEventListenerOptions>>().toEqualTypeOf<true>();
+
+// Unfortunately a class instance is completely indistinguishable from an interface. Permissively
+// returns `true`
+expectTypeOf<IsObject<Class>>().toEqualTypeOf<true>();
+
 // TODO: SimpleMerge
 
 // we need to test with `assertType` because the types are not considered equal, even though they are structurally the same

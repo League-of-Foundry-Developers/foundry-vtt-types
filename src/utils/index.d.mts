@@ -716,7 +716,13 @@ interface _Override<T extends object, U extends object> extends U, T, Uses<T>, U
  * type RecordFails = Interface extends Record<string, unknown> ? true : false; // false
  * ```
  */
-export type IsObject<T> = T extends object ? (T extends AnyArray | AnyFunction | AnyConstructor ? false : true) : false;
+export type IsObject<T> = T extends NonObject
+  ? false
+  : T extends AnyArray | AnyFunction | AnyConstructor
+    ? false
+    : true;
+
+export type NonObject = string | number | boolean | bigint | symbol | null | undefined;
 
 /**
  * A simple, non-recursive merge type.

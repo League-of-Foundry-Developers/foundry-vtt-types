@@ -28,6 +28,15 @@ describe("DataFieldOperator Tests", () => {
     // Creation is not tested on the base class as its `.create` returns `.Any`
   });
 
+  test("nested replacement", () => {
+    const replacement = _replace({ foo: 123 });
+
+    // `_replace` unwraps an operator inside of it.
+    const nestedReplacement = _replace(_replace(replacement));
+    expectTypeOf(nestedReplacement).toEqualTypeOf(replacement);
+    expectTypeOf(nestedReplacement.foo).toEqualTypeOf<number>();
+  });
+
   const noArgs = new DataFieldOperator();
   const strArg = new DataFieldOperator("foo");
   const objArg = new DataFieldOperator(obj);
@@ -180,7 +189,7 @@ describe("ForcedReplacement Tests", () => {
 
     const strArg2 = ForcedReplacement.create("foo");
     expect(strArg2).toBeInstanceOf(ForcedReplacement);
-    expectTypeOf(strArg2).toEqualTypeOf<ForcedReplacement<"foo">>();
+    expectTypeOf(strArg2).toEqualTypeOf<ForcedReplacement<string>>();
     expect(strArg2[OPERATOR_VALUE]).toBe("foo");
     expectTypeOf(strArg2[OPERATOR_VALUE]).toBeString();
 

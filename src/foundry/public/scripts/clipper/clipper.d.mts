@@ -11,7 +11,7 @@ declare global {
     let use_lines: boolean;
 
     /**
-     * Adds a Z member to IntPoint. Adds a minor cost to performance.
+     * Adds a Z member to {@linkcode ClipperLib.IntPoint | IntPoint}. Adds a minor cost to performance.
      * @defaultValue `false`
      */
     let use_xyz: boolean;
@@ -63,7 +63,7 @@ declare global {
       protected m_Childs: PolyNode[];
 
       /** @defaultValue `false` */
-      isOpen: boolean;
+      IsOpen: boolean;
 
       IsHoleNode(): boolean;
 
@@ -75,6 +75,8 @@ declare global {
 
       GetNext(): PolyNode | null;
 
+      GetNextSiblingUp(): PolyNode | null;
+
       Childs(): PolyNode[];
 
       Parent(): PolyNode | null;
@@ -83,6 +85,8 @@ declare global {
     }
 
     class PolyTree extends PolyNode {
+      static $baseCtor: typeof PolyNode;
+
       m_AllPolys: PolyNode[];
 
       Clear(): void;
@@ -222,12 +226,12 @@ declare global {
       /** @defaultValue `0` */
       Dx: number;
 
-      /** @defaultValue `PolyType.ptSubject` */
+      /** @defaultValue {@linkcode ClipperLib.PolyType.ptSubject} */
       PolyTyp: PolyType;
 
       /**
        * side only refers to current side of solution poly
-       * @defaultValue `ClipperLib.EdgeSide.esLeft`
+       * @defaultValue {@linkcode ClipperLib.EdgeSide.esLeft}
        */
       Side: EdgeSide;
 
@@ -315,7 +319,7 @@ declare global {
       Next: Maxima | null;
 
       /** @defaultValue `null` */
-      Pref: Maxima | null;
+      Prev: Maxima | null;
     }
 
     /**
@@ -485,7 +489,7 @@ declare global {
 
       DisposeOutRec(index: number): void;
 
-      UpdateEdgeIntoAEL(e: TEdge): void;
+      UpdateEdgeIntoAEL(e: TEdge): TEdge;
 
       SwapPositionsInAEL(edge1: TEdge, edge2: TEdge): void;
 
@@ -493,6 +497,8 @@ declare global {
     }
 
     class Clipper extends ClipperBase {
+      static $baseCtor: typeof ClipperBase;
+
       constructor(
         /**
          * @defaultValue `0`
@@ -507,7 +513,7 @@ declare global {
       /** @defaultValue `[]` */
       protected m_PolyOuts: OutRec[];
 
-      /** @defaultValue `ClipperLib.ClipType.ctIntersection` */
+      /** @defaultValue {@linkcode ClipperLib.ClipType.ctIntersection} */
       protected m_ClipType: ClipType;
 
       /** @defaultValue `null` */
@@ -525,16 +531,16 @@ declare global {
       /** @defaultValue `[]` */
       protected m_IntersectList: IntersectNode[];
 
-      /** @defaultValue `ClipperLib.MyIntersectNodeSort.Compare` */
+      /** @defaultValue {@linkcode ClipperLib.MyIntersectNodeSort.Compare} */
       protected m_IntersectNodeComparer: (node1: IntersectNode, node2: IntersectNode) => 0 | 1 | -1;
 
       /** @defaultValue `false` */
       protected m_ExecuteLocked: boolean;
 
-      /** @defaultValue `ClipperLib.PolyFillType.pftEvenOdd` */
+      /** @defaultValue {@linkcode ClipperLib.PolyFillType.pftEvenOdd} */
       protected m_ClipFillType: PolyFillType;
 
-      /** @defaultValue `ClipperLib.PolyFillType.pftEvenOdd` */
+      /** @defaultValue {@linkcode ClipperLib.PolyFillType.pftEvenOdd} */
       protected m_SubjFillType: PolyFillType;
 
       /** @defaultValue `[]` */
@@ -681,7 +687,7 @@ declare global {
 
       static TopX(edge: TEdge, currentY: number): number;
 
-      IntersectPoint(edge1: TEdge, edge2: TEdge, ip: IntPoint): void;
+      IntersectPoint(edge1: TEdge, edge2: TEdge, ip: IntPoint): boolean | undefined;
 
       ProcessEdgesAtTopOfScanbeam(topY: number): void;
 
@@ -719,14 +725,10 @@ declare global {
 
       GetBounds2(ops: OutPt): IntRect;
 
-      /**
-       * @returns 0 if false, +1 if true, -1 if pt ON polygon boundary
-       */
+      /** @returns 0 if false, +1 if true, -1 if pt ON polygon boundary */
       static PointInPolygon(pt: IntPoint, path: Path): 0 | 1 | -1;
 
-      /**
-       * @returns 0 if false, +1 if true, -1 if pt ON polygon boundary
-       */
+      /** @returns 0 if false, +1 if true, -1 if pt ON polygon boundary */
       PointInPolygon(pt: IntPoint, op: OutPt): 0 | 1 | -1;
 
       Poly2ContainsPoly1(outPt1: OutPt, outPt2: OutPt): boolean;
@@ -751,9 +753,9 @@ declare global {
 
       Area$1(outRec: OutRec): number;
 
-      static SimplifyPolygon(poly: Path, fillType: PolyFillType): void;
+      static SimplifyPolygon(poly: Path, fillType: PolyFillType): Paths;
 
-      static SimplifyPolygons(polys: Paths, fillType: PolyFillType): void;
+      static SimplifyPolygons(polys: Paths, fillType?: PolyFillType): Paths;
 
       static DistanceSqrd(pt1: IntPoint, pt2: IntPoint): number;
 
@@ -783,7 +785,7 @@ declare global {
 
       static OpenPathsFromPolyTree(polytree: PolyTree): Paths;
 
-      ClosedPathsFromPolyTree(polytree: PolyTree): Paths;
+      static ClosedPathsFromPolyTree(polytree: PolyTree): Paths;
 
       static NodeType: Clipper.NodeTypes;
     }
@@ -834,7 +836,7 @@ declare global {
       /** @defaultValue `2` */
       MiterLimit: number;
 
-      /** @defaultValue `ClipperLib.ClipperOffset.def_arc_tolerance` */
+      /** @defaultValue {@linkcode ClipperLib.ClipperOffset.def_arc_tolerance} */
       ArcTolerance: number;
 
       /** @defaultValue `6.28318530717959` */
@@ -860,7 +862,7 @@ declare global {
       Execute(solution: Paths, delta: number): void;
       Execute(solution: PolyTree, delta: number): void;
 
-      OffsetPoint(j: number, k: number, jointype: JoinType): void;
+      OffsetPoint(j: number, k: number, jointype: JoinType): number;
 
       DoSquare(j: number, k: number): void;
 

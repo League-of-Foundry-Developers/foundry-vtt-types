@@ -1,8 +1,10 @@
 import { expectTypeOf, test } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject, DiscriminatedUnion } from "fvtt-types/utils";
 import type { ArmorData, WeaponData } from "./item.test-d";
 
 import Token = foundry.canvas.placeables.Token;
+import ForcedReplacement = foundry.data.operators.ForcedReplacement;
+import ForcedDeletion = foundry.data.operators.ForcedDeletion;
 
 // @ts-expect-error Actor requires name.
 new Actor.implementation();
@@ -56,4 +58,31 @@ test("actor system update", () => {
   actor.update({
     "==system": {},
   });
+});
+
+actor.update({
+  // replacing a simple type isn't terribly useful but supported.
+  type: _replace("character"),
+});
+
+actor.update({
+  type: "character",
+  system: _replace({}),
+});
+
+Hooks.on("updateActor", (_doc, update) => {
+  type System = NonNullable<Actor.CreateData["system"]>;
+
+  expectTypeOf(update.system).toEqualTypeOf<
+    | System
+    | ForcedReplacement.CreateReturn<System | null | undefined>
+    | (ForcedDeletion & { [K in keyof System]?: never })
+    | null
+    | undefined
+  >();
+
+  expectTypeOf<ForcedReplacement.CreateReturn<System | null | undefined>>().toEqualTypeOf<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ForcedReplacement<System | null | undefined> & DiscriminatedUnion<System | {}>
+  >();
 });
