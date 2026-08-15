@@ -30,7 +30,7 @@ export const detached: DetachedWindowManager;
 
 /**
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.
- * @deprecated since v13
+ * @deprecated "You are accessing foundry.applications.parseHTML, which is now found at foundry.utils.parseHTML" (since v13, until v15)
  * @see {@linkcode foundry.utils.parseHTML}
  */
 export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
