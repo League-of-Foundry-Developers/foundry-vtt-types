@@ -24,10 +24,10 @@ declare class BaseShader {
    * If this method is not provided, PIXI will assign a default fragment for this shader.
    * @param options - Configuration options passed at creation time.
    * @remarks Returns `undefined` when this class does not provide a fragment shader, allowing PIXI to use its default.
-   * @privateRemarks A rest parameter so `GlowOverlayFilter` can override this with
-   * `(quality, distance)`; the cost is that it cannot be called with arguments.
+   * @privateRemarks Uncallable; variadic so subclasses can declare their own parameters, including
+   * `GlowOverlayFilter`'s `(quality, distance)`.
    */
-  protected static _createFragmentShader(...options: never[]): string | undefined;
+  protected static _createFragmentShader(...options: never): string | undefined;
 
   /**
    * A factory method for creating the shader using its defined default values.
