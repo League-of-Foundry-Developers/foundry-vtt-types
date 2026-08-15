@@ -3,65 +3,92 @@ import { describe, expectTypeOf, test } from "vitest";
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
+declare const rendererOptions: PIXI.IDestroyOptions;
+
 describe("ControlIcon tests", () => {
   test("Construction", () => {
-    // @ts-expect-error Must pass at least `options.texture`
     new ControlIcon();
     new ControlIcon({ texture: "path/to/image.webp" });
+    new ControlIcon({ texture: PIXI.Texture.EMPTY });
     new ControlIcon({
       texture: "path/to/image.webp",
-      borderColor: 0x00ff00,
+      borderColor: "#00ff00",
       elevation: 20,
       size: 64,
-      tint: 0x373964,
+      tint: [0.2, 0.3, 0.4],
     });
   });
 
-  const myControlIcon = new ControlIcon({
-    texture: "path/to/image.webp",
-    borderColor: 0x00ff00,
-    elevation: 20,
-    size: 64,
-    tint: 0x373964,
+  const controlIcon = new ControlIcon();
+
+  test("Rendering", () => {
+    expectTypeOf(ControlIcon.RENDER_FLAG_PRIORITY).toEqualTypeOf<foundry.canvas.interaction.RenderFlags.Priority>();
+    expectTypeOf(ControlIcon.RENDER_FLAGS.refresh).toEqualTypeOf<
+      foundry.canvas.interaction.RenderFlag<ControlIcon.RENDER_FLAGS, "refresh">
+    >();
+    expectTypeOf(controlIcon.renderFlags).toEqualTypeOf<
+      foundry.canvas.interaction.RenderFlags<ControlIcon.RENDER_FLAGS>
+    >();
+    expectTypeOf(controlIcon.renderFlags.clear()).toEqualTypeOf<{
+      redraw?: boolean | undefined;
+      refresh?: boolean | undefined;
+    }>();
+    controlIcon.renderFlags.set({ redraw: true, refresh: undefined });
+    expectTypeOf(controlIcon.renderFlags.handle("refresh")).toBeBoolean();
+
+    // @ts-expect-error An unregistered flag throws at runtime.
+    controlIcon.renderFlags.set({ refreshShape: true });
+
+    expectTypeOf(controlIcon.applyRenderFlags()).toBeVoid();
+    expectTypeOf(controlIcon.draw()).toEqualTypeOf<Promise<ControlIcon>>();
+    expectTypeOf(controlIcon["_draw"]()).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(controlIcon["_clear"]()).toBeVoid();
+    expectTypeOf(controlIcon["_refresh"]()).toBeVoid();
+    expectTypeOf(controlIcon.refresh()).toBeVoid();
+    expectTypeOf(controlIcon.destroy(rendererOptions)).toBeVoid();
   });
 
-  test("Miscellaneous", () => {
-    expectTypeOf(myControlIcon.iconSrc).toBeString();
-    expectTypeOf(myControlIcon.size).toBeNumber();
-    expectTypeOf(myControlIcon.rect).toEqualTypeOf<[number, number, number, number]>();
-    expectTypeOf(myControlIcon.borderColor).toBeNumber();
-    expectTypeOf(myControlIcon.tintColor).toEqualTypeOf<number | null>();
+  test("Properties", () => {
+    expectTypeOf(controlIcon.texture).toEqualTypeOf<PIXI.Texture | string>();
+    controlIcon.texture = PIXI.Texture.EMPTY;
+    controlIcon.texture = "path/to/image.webp";
 
-    expectTypeOf(myControlIcon.eventMode).toEqualTypeOf<PIXI.EventMode>();
-    expectTypeOf(myControlIcon.interactiveChildren).toBeBoolean();
-    expectTypeOf(myControlIcon.hitArea).toEqualTypeOf<PIXI.Rectangle>();
-    expectTypeOf(myControlIcon.cursor).toBeString();
+    expectTypeOf(controlIcon.size).toBeNumber();
+    controlIcon.size = 64;
 
-    expectTypeOf(myControlIcon.bg).toEqualTypeOf<PIXI.Graphics>();
-    expectTypeOf(myControlIcon.icon).toEqualTypeOf<PIXI.Sprite>();
-    expectTypeOf(myControlIcon.border).toEqualTypeOf<PIXI.Graphics>();
-    expectTypeOf(myControlIcon.tooltip).toEqualTypeOf<PreciseText>();
+    expectTypeOf(controlIcon.elevation).toBeNumber();
+    controlIcon.elevation = 20;
 
-    expectTypeOf(myControlIcon.elevation).toBeNumber();
-    myControlIcon.elevation = 20; // Setter
+    expectTypeOf(controlIcon.bg).toEqualTypeOf<PIXI.Graphics>();
+    expectTypeOf(controlIcon.border).toEqualTypeOf<PIXI.Graphics>();
+    expectTypeOf(controlIcon.icon).toEqualTypeOf<PIXI.Sprite>();
+    expectTypeOf(controlIcon.tooltip).toEqualTypeOf<PreciseText>();
+  });
 
-    expectTypeOf(myControlIcon.draw()).toEqualTypeOf<Promise<ControlIcon>>();
-    expectTypeOf(myControlIcon.refresh()).toEqualTypeOf<ControlIcon>();
+  test("Deprecated compatibility surface", () => {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    new ControlIcon({ tint: null });
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    new ControlIcon({ texture: "path/to/image.webp", size: 64, tint: null });
+
     expectTypeOf(
-      myControlIcon.refresh({
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      controlIcon.refresh({
         visible: true,
-        iconColor: 0xdeadea,
+        iconColor: null,
         borderColor: 0xff0000,
         borderVisible: true,
       }),
     ).toEqualTypeOf<ControlIcon>();
-    expectTypeOf(
-      myControlIcon.refresh({
-        visible: undefined,
-        iconColor: undefined,
-        borderColor: undefined,
-        borderVisible: undefined,
-      }),
-    ).toEqualTypeOf<ControlIcon>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(controlIcon.rect).toEqualTypeOf<[number, number, number, number]>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(controlIcon.tintColor).toEqualTypeOf<PIXI.ColorSource>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(controlIcon.borderColor).toEqualTypeOf<PIXI.ColorSource>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(controlIcon.iconSrc).toEqualTypeOf<PIXI.Texture | string>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    controlIcon.iconSrc = PIXI.Texture.EMPTY;
   });
 });

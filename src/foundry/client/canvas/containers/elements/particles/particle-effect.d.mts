@@ -3,6 +3,9 @@ import { FullCanvasObjectMixin } from "#client/canvas/containers/_module.mjs";
 
 /**
  * An interface for defining particle-based weather effects
+ * @deprecated "The foundry.canvas.containers.ParticleEffect class is deprecated in favor of the newer
+ * foundry.canvas.animation.ParticleGenerator API. Support for this class will be removed in Version 16."
+ * (since v14, until v16)
  */
 declare class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
   /**
@@ -49,8 +52,10 @@ declare namespace ParticleEffect {
   interface AnyConstructor extends Identity<typeof AnyParticleEffect> {}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export default ParticleEffect;
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare abstract class AnyParticleEffect extends ParticleEffect {
   constructor(...args: never);
 }
