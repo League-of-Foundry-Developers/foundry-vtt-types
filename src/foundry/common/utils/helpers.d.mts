@@ -7,6 +7,7 @@ import type {
   DeletableDotKeys,
   InexactPartial,
   NonNullish,
+  NonObject,
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
 
@@ -964,8 +965,6 @@ type RemoveDeletingObjectKeys<T, M extends MergeObjectOptions> = M["performDelet
         : T[K];
     }>
   : T;
-
-type NonObject = number | string | boolean | bigint | symbol | null | undefined;
 
 type MergeObjectProperty<T, U, M extends MergeObjectOptions> = U extends NonObject
   ? U

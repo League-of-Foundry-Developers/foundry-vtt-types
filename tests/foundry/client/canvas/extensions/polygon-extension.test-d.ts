@@ -19,7 +19,7 @@ expectTypeOf(PIXI.Polygon.fromClipperPoints(clipperPoints, { scalingFactor: unde
 
 const myPoly = new PIXI.Polygon([0, 1, 2, 3]);
 
-expectTypeOf(myPoly.isPositive).toBeBoolean();
+expectTypeOf(myPoly.isPositive).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(myPoly._isPositive).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(myPoly.clearCache()).toBeVoid();
 expectTypeOf(myPoly.signedArea()).toBeNumber();
@@ -47,23 +47,24 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
 
-expectTypeOf(myPoly.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon.ClipperPoint[]>();
+expectTypeOf(myPoly.intersectClipper(clipperPoints)).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(
   myPoly.intersectClipper(clipperPoints, {
     clipType: ClipperLib.ClipType.ctXor,
     scalingFactor: 50,
   }),
-).toEqualTypeOf<PIXI.Polygon.ClipperPoint[]>();
+).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 expectTypeOf(
   myPoly.intersectClipper(clipperPoints, {
     clipType: undefined,
     scalingFactor: undefined,
   }),
-).toEqualTypeOf<PIXI.Polygon.ClipperPoint[]>();
+).toEqualTypeOf<PIXI.Polygon.ClipperPath[]>();
 
 expectTypeOf(myPoly.intersectCircle(someCircle)).toEqualTypeOf<PIXI.Polygon>();
 expectTypeOf(
   myPoly.intersectCircle(someCircle, {
+    weilerAtherton: false,
     clipType: ClipperLib.ClipType.ctUnion,
     density: 3,
     scalingFactor: 2,
@@ -71,11 +72,27 @@ expectTypeOf(
 ).toEqualTypeOf<PIXI.Polygon>();
 expectTypeOf(
   myPoly.intersectCircle(someCircle, {
+    weilerAtherton: false,
     clipType: undefined,
     density: undefined,
     scalingFactor: undefined,
   }),
 ).toEqualTypeOf<PIXI.Polygon>();
+
+// weilerAtherton: true is default
+expectTypeOf(
+  myPoly.intersectCircle(someCircle, {
+    canMutate: true,
+    clipType: WeilerAthertonClipper.CLIP_TYPES.INTERSECT,
+  }),
+).toEqualTypeOf<PIXI.Polygon>();
+
+// `density` is read on the WAC branch too: `combine` forwards its rest options to `Circle#pointsBetween`
+expectTypeOf(myPoly.intersectCircle(someCircle, { density: 7 })).toEqualTypeOf<PIXI.Polygon>();
+expectTypeOf(myPoly.intersectCircle(someCircle, { weilerAtherton: true, density: 7 })).toEqualTypeOf<PIXI.Polygon>();
+
+// @ts-expect-error Can't pass `scalingFactor` on the WAC branch
+myPoly.intersectCircle(someCircle, { weilerAtherton: true, scalingFactor: CONST.CLIPPER_SCALING_FACTOR });
 
 expectTypeOf(myPoly.intersectRectangle(someRect)).toEqualTypeOf<PIXI.Polygon>();
 expectTypeOf(

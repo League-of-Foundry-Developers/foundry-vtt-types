@@ -101,6 +101,19 @@ export declare function lineSegmentIntersection(
   epsilon?: number,
 ): LineIntersection | null;
 
+/**
+ * @remarks A point where a segment crosses a circle
+ * @privateRemarks Foundry types these as plain `Point`s, but
+ * {@linkcode quadraticIntersection} builds each one with a `t0`
+ */
+export interface CircleIntersection extends Canvas.Point {
+  /** The vector distance from the initial to the terminal point of the segment */
+  t0: number;
+}
+
+/** @remarks Intersection points: zero, one, or two */
+export type LineCircleIntersectionPoints = [CircleIntersection?, CircleIntersection?];
+
 export interface LineCircleIntersection {
   /** Is point A inside the circle? */
   aInside: boolean;
@@ -118,7 +131,7 @@ export interface LineCircleIntersection {
   tangent: boolean;
 
   /** Intersection points: zero, one, or two */
-  intersections: [Canvas.Point?, Canvas.Point?];
+  intersections: LineCircleIntersectionPoints;
 }
 
 /**
@@ -180,7 +193,7 @@ export declare function quadraticIntersection(
   center: Canvas.Point,
   radius: number,
   epsilon?: number,
-): [Canvas.Point?, Canvas.Point?];
+): LineCircleIntersectionPoints;
 
 declare type Points = Canvas.Point[] | number[];
 

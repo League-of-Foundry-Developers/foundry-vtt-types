@@ -11,7 +11,7 @@ declare class FairyLightColorationShader extends AdaptiveColorationShader {
    */
   static override forceDefaultColor: boolean;
 
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace FairyLightColorationShader {
@@ -23,7 +23,7 @@ declare namespace FairyLightColorationShader {
  * Fairy light animation illumination shader
  */
 declare class FairyLightIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace FairyLightIlluminationShader {

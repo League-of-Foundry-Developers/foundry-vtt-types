@@ -1,18 +1,24 @@
 import type { EmptyObject, InexactPartial } from "#utils";
 
+/**
+ * Some texture formats
+ */
 export declare const FORMATS: {
   RED: typeof PIXI.FORMATS.RED;
   RGBA: typeof PIXI.FORMATS.RGBA;
 };
 
 /** @internal */
-interface _CommonOptionalProperties {
+interface _Debug {
   /**
    * Debug option.
    * @remarks Enables logging via `console.debug`
    */
   debug: boolean;
+}
 
+/** @internal */
+interface _CommonOptionalProperties extends _Debug {
   /** Hash to test. */
   hash: string;
 
@@ -44,6 +50,7 @@ interface _CommonRequiredProperties {
   height: number;
 }
 
+/** @internal */
 interface _Out {
   /** The output buffer. */
   out: ArrayBuffer;
@@ -75,18 +82,26 @@ export interface CopyBufferOptions extends InexactPartial<_CommonOptionalPropert
   buffer: Uint8ClampedArray;
 }
 
-export interface Debug extends InexactPartial<Pick<_CommonOptionalProperties, "debug">> {}
+export interface Debug extends InexactPartial<_Debug> {}
 
 export interface ExpandOrReduceBufferOptions extends Debug, InexactPartial<_Out> {}
 
 /** @internal */
-interface _CommonResultProperties {
+interface _BaseResultProperties {
   buffer: Uint8ClampedArray;
-  out: ArrayBuffer | undefined;
+
+  /** @remarks `undefined` when no `hash` was passed and hashing was not skipped. */
   hash: string | undefined;
 }
 
-export interface ProcessBufferToBase64Result extends Omit<_CommonResultProperties, "out"> {
+/** @internal */
+interface _CommonResultProperties extends _BaseResultProperties {
+  /** @remarks The `out` buffer the operation was given, echoed back so the caller can reclaim it. */
+  out: ArrayBuffer | undefined;
+}
+
+export interface ProcessBufferToBase64Result extends _BaseResultProperties {
+  /** @remarks `undefined` when the buffer's hash matched and compression was skipped. */
   base64img: string | undefined;
 }
 

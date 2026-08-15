@@ -4,6 +4,7 @@
 
 export { default as AbstractFormInputElement } from "./form-element.mjs";
 export { default as AdoptableHTMLElement } from "./adoptable-element.mjs";
+export { default as HTMLAutocompleteTagsElement } from "./autocomplete-tags.mjs";
 export { default as HTMLCodeMirrorElement } from "./codemirror/element.mjs";
 export { default as HTMLColorPickerElement } from "./color-picker.mjs";
 export { default as HTMLDocumentEmbedElement } from "./document-embed.mjs";

@@ -5,7 +5,7 @@ import type AdaptiveDarknessShader from "../darkness-lighting.mjs";
  * Roiling mass illumination shader: intended primarily for darkness
  */
 declare class RoilingDarknessShader extends AdaptiveDarknessShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace RoilingDarknessShader {

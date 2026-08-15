@@ -11,6 +11,7 @@ describe("AlertPing tests", () => {
     // @ts-expect-error Must pass an origin
     new AlertPing();
     new AlertPing({ x: 23, y: 54 });
+    new AlertPing({ x: 23, y: 54 }, { color: undefined });
     new AlertPing(
       { x: 23, y: 54 },
       {

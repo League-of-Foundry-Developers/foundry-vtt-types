@@ -30,7 +30,7 @@ declare class CanvasAnimation {
    *
    * @example Animate Token Position
    * ```javascript
-   * let animation = [
+   * const attributes = [
    *   {
    *     parent: token,
    *     attribute: "x",

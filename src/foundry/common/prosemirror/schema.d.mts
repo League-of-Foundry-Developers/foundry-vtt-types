@@ -149,7 +149,7 @@ interface Marks {
   cite: typeof cite;
 
   /** @remarks See {@linkcode LinkMark.make} */
-  link: NodeSpec;
+  link: MarkSpec;
   em: typeof em;
   strong: typeof strong;
   underline: typeof underline;

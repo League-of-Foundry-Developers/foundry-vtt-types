@@ -31,6 +31,7 @@ declare class Autocomplete {
    * @param increment - The number of entries to advance the selection. A negative number moves up, and a
    *                    positive number moves down.
    *                    (default: `0`)
+   * @remarks Entries marked {@linkcode Autocomplete.Entry.disabled | disabled} are skipped.
    * @throws If no menu is currently active; see {@linkcode Autocomplete.element | #element}.
    */
   select(increment?: number): void;
@@ -77,17 +78,14 @@ declare namespace Autocomplete {
    * @param identifier - The identifier of the entry that was selected.
    * @param label      - The label of the entry that was selected.
    */
-  type Callback = (identifier: string, label: string, options?: CallbackOptions) => void;
+  type Callback = (identifier: string, label: string, options: CallbackOptions) => void;
 
-  /** @internal */
-  interface _CallbackOptions {
+  interface CallbackOptions {
     /**
      * The matched prefix that originally triggered this autocomplete menu.
      */
-    prefix?: string | undefined;
+    prefix: string;
   }
-
-  interface CallbackOptions extends InexactPartial<_CallbackOptions> {}
 
   interface Entry {
     /**
@@ -99,12 +97,17 @@ declare namespace Autocomplete {
      * A human-readable label for the entry.
      */
     label: string;
+
+    /**
+     * Is this entry disabled?
+     */
+    disabled?: boolean | undefined;
   }
 
   /** @internal */
   interface _ConstructorOptions {
     /**
-     * Callback to fire when an entry is selected.
+     * Callback to fire when an entry is selected and committed.
      */
     onSelect?: Callback | undefined;
   }

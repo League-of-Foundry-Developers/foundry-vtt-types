@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { Node, Slice } from "prosemirror-model";
+import type { Fragment, Node, Slice } from "prosemirror-model";
 
 import {
   parseHTMLString,
@@ -17,6 +17,9 @@ expectTypeOf(
   serializeHTMLString(node, { schema: foundry.prosemirror.defaultSchema, spaces: 7 }),
 ).toEqualTypeOf<string>();
 expectTypeOf(serializeHTMLString(node, { schema: undefined, spaces: undefined })).toEqualTypeOf<string>();
+
+declare const fragment: Fragment;
+expectTypeOf(serializeHTMLString(fragment)).toEqualTypeOf<string>();
 
 declare const slice: Slice;
 declare const transformer: transformSlice.SliceTransformer;

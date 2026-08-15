@@ -2,6 +2,7 @@ import type { DeepPartial, Identity } from "#utils";
 import type { Schema } from "prosemirror-model";
 import type { EditorState, Transaction } from "prosemirror-state";
 import type ApplicationV2 from "../api/application.d.mts";
+import type { RollParseNode, StringParseNode } from "#client/dice/_types.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -69,6 +70,13 @@ declare class FormulaEditor<
    * @param schema - The ProseMirror document schema.
    */
   protected _replaceTerms(tr: Transaction, schema: Schema): Transaction;
+
+  /**
+   * Collect every string term in a roll parse tree, in the order that they appear in the formula.
+   * @param node  - The node to search.
+   * @param terms - The terms collected so far. (default: `[]`)
+   */
+  protected static _collectStringTerms(node: RollParseNode, terms?: StringParseNode[]): StringParseNode[];
 
   /**
    * The ProseMirror schema.

@@ -1,5 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 
 describe("ParticleEffect tests", () => {
@@ -18,6 +19,7 @@ describe("ParticleEffect tests", () => {
     ],
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const myEffect = new ParticleEffect(emitterConfig);
 
   test("Miscellaneous", () => {

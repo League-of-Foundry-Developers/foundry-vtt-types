@@ -7,7 +7,7 @@ import type AbstractBaseShader from "../../base-shader.mjs";
  * Allow coloring of illumination
  */
 declare class TorchIlluminationShader extends AdaptiveIlluminationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace TorchIlluminationShader {
@@ -19,7 +19,7 @@ declare namespace TorchIlluminationShader {
  * Torch animation coloration shader
  */
 declare class TorchColorationShader extends AdaptiveColorationShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 
   /**
    * @defaultValue

@@ -16,13 +16,15 @@ declare class ProseMirrorContentLinkPlugin extends ProseMirrorPlugin {
 
   /**
    * The parent document housing this editor.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly document: Document.Any | undefined;
 
   /**
    * Whether to generate links relative to the parent document.
-   * @remarks `defineProperty`'d in construction, explicitly `writable: false`
+   *
+   * @privateRemarks Defined during construction with `writable: false`.
    */
   readonly relativeLinks: boolean;
 

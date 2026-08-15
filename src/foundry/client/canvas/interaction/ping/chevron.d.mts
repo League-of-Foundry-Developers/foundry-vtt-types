@@ -13,27 +13,6 @@ declare class ChevronPing extends Ping {
    */
   constructor(origin: Canvas.Point, options?: Ping.ConstructorOptions);
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _r: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _rInner: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _t14: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _t12: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _t34: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _inner: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _outer: never;
-
   /**
    * The path to the chevron texture.
    * @defaultValue `"icons/pings/chevron.webp"`
@@ -47,14 +26,7 @@ declare class ChevronPing extends Ping {
 
   protected override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData<this>): void;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _drawRings(a: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _loadChevron(): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  _createRings(): never;
+  #ChevronPing: true;
 }
 
 declare namespace ChevronPing {

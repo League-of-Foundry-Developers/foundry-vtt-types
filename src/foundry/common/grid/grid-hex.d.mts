@@ -10,20 +10,10 @@ declare class GridHex {
    * Construct a GridHex instance by providing a hex coordinate.
    * @param coordinates - The coordinates of the hex to construct
    * @param grid        - The hexagonal grid instance to which this hex belongs
+   * @remarks
+   * @throws If the cube coordinates the grid derives from `coordinates` are not integers summing to zero.
    */
   constructor(coordinates: HexagonalGrid.Coordinates2D, grid: HexagonalGrid);
-
-  /**
-   * @deprecated "The coordinates used to construct the `GridHex` class are now a {@linkcode BaseGrid.Offset2D} with format `{i, j}`."
-   * (since v12, until v14)
-   */
-  constructor(coordinates: { row: number; col: number }, grid: HexagonalGrid);
-
-  /**
-   * @deprecated "The `GridHex` class now requires a {@linkcode HexagonalGrid} instance to be passed to its constructor, rather than a
-   * {@linkcode HexagonalGrid.Configuration}" (since v12, until v14)
-   */
-  constructor(coordinates: HexagonalGrid.Coordinates2D, grid: HexagonalGrid.Configuration);
 
   /**
    * The hexagonal grid to which this hex belongs.
@@ -32,13 +22,13 @@ declare class GridHex {
   grid: HexagonalGrid;
 
   /**
-   * The cube coordinate of this hex.
+   * The cube coordinate of this hex
    * @privateRemarks Defined at construction, not in the class body.
    */
   cube: HexagonalGrid.Cube2D;
 
   /**
-   * The offset coordinate of this hex.
+   * The offset coordinate of this hex
    * @privateRemarks Defined at construction, not in the class body.
    */
   offset: BaseGrid.Offset2D;
@@ -56,13 +46,17 @@ declare class GridHex {
   getNeighbors(): GridHex[];
 
   /**
-   * Get a neighboring hex by shifting along cube coordinates
+   * Get a neighboring hex by shifting along cube coordinates.
+   * At least two of (dq, dr, ds) must be passed, an undefined third parameter may be inferred.
+   * If all three are passed, they must sum to zero to represent a valid cube shift.
    * @param dq - A number of hexes to shift along the q axis
    * @param dr - A number of hexes to shift along the r axis
    * @param ds - A number of hexes to shift along the s axis
    * @returns The shifted hex
+   * @remarks
+   * @throws If all three shifts are passed and they do not sum to zero.
    */
-  shiftCube(dq: number, dr: number, ds: number): GridHex;
+  shiftCube(dq?: number, dr?: number, ds?: number): GridHex;
 
   /**
    * Return whether this {@linkcode GridHex} equals the same position as some other `GridHex` instance.

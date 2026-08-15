@@ -52,6 +52,9 @@ describe("SpriteMesh tests", () => {
     expectTypeOf(mySpriteMesh["_tintRGB"]).toBeNumber();
     expectTypeOf(mySpriteMesh["_textureUvs"]).toEqualTypeOf<PIXI.TextureUvs | null>();
     expectTypeOf(mySpriteMesh["_tintAlphaDirty"]).toEqualTypeOf<boolean>();
+    expectTypeOf(mySpriteMesh.renderedThisPass).toBeBoolean();
+    expectTypeOf(mySpriteMesh.visitedThisPass).toBeBoolean();
+    expectTypeOf(mySpriteMesh.culledThisPass).toBeBoolean();
     expectTypeOf(mySpriteMesh["_shader"]).toEqualTypeOf<BaseSamplerShader>();
     expectTypeOf(mySpriteMesh.paddingX).toBeNumber();
     mySpriteMesh.paddingX = 5; // Setter
@@ -101,6 +104,7 @@ describe("SpriteMesh tests", () => {
     expectTypeOf(mySpriteMesh.calculateVertices()).toBeVoid();
     expectTypeOf(mySpriteMesh.calculateTrimmedVertices()).toBeVoid();
 
+    expectTypeOf(mySpriteMesh["_renderWithCulling"](renderer)).toBeVoid();
     expectTypeOf(mySpriteMesh["_render"](renderer)).toBeVoid();
     expectTypeOf(mySpriteMesh["_updateBatchData"]()).toBeVoid();
     expectTypeOf(mySpriteMesh["_calculateBounds"]()).toBeVoid();

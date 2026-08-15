@@ -5,7 +5,7 @@ import type AdaptiveDarknessShader from "../darkness-lighting.mjs";
  * Creates a dense smoke area
  */
 declare class DenseSmokeDarknessShader extends AdaptiveDarknessShader {
-  static override fragmentShader: string;
+  protected static override _createFragmentShader(): string;
 }
 
 declare namespace DenseSmokeDarknessShader {

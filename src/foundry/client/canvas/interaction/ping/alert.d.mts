@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { Identity, IntentionalPartial } from "#utils";
 import type { PulsePing } from "#client/canvas/interaction/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -19,20 +19,17 @@ declare namespace AlertPing {
   interface Any extends AnyAlertPing {}
   interface AnyConstructor extends Identity<typeof AnyAlertPing> {}
 
-  /**
-   * Only exists to change the default value of `color`
-   * @internal
-   */
-  interface _ConstructorOptions {
+  /** @internal */
+  interface _ConstructorOptions extends PulsePing._ConstructorOptionsBase {
     /**
      * The color of the ping graphic.
      * @defaultValue `"#ff0000"`
+     * @remarks Can be `undefined`; the default is provided by destructuring, not `mergeObject`
      */
-    color: Color.Source;
+    color: Color.Source | undefined;
   }
 
-  interface ConstructorOptions
-    extends Omit<PulsePing.ConstructorOptions, "color">, InexactPartial<_ConstructorOptions> {}
+  interface ConstructorOptions extends IntentionalPartial<_ConstructorOptions> {}
 }
 
 export default AlertPing;

@@ -1,4 +1,5 @@
 import type { Identity, InexactPartial, IntentionalPartial, MaybePromise } from "#utils";
+import type RenderFlags from "../render-flags.d.mts";
 import type { RenderFlagsMixin, RenderFlag } from "../render-flags.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PIXI } from "#configuration";
@@ -13,6 +14,9 @@ declare abstract class BaseRuler extends RenderFlagsMixin() {
   constructor(user: User.Stored);
 
   static override RENDER_FLAGS: BaseRuler.RENDER_FLAGS;
+
+  // fake type override
+  override renderFlags: RenderFlags<BaseRuler.RENDER_FLAGS>;
 
   /**
    * Is the Ruler ready to measure?

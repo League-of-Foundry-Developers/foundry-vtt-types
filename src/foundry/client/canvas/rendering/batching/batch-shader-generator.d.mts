@@ -16,6 +16,8 @@ declare class BatchShaderGenerator extends PIXI.BatchShaderGenerator {
   );
 
   override generateShader(maxTextures: number): PIXI.Shader;
+
+  #BatchShaderGenerator: true;
 }
 
 declare namespace BatchShaderGenerator {
