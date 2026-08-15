@@ -98,9 +98,7 @@ declare namespace ActiveEffectTypeDataModel {
    * Refines {@linkcode TypeDataModel} rather than `typeof ActiveEffectTypeDataModel` so valid
    * models may extend {@linkcode TypeDataModel} directly while constraining the `defineSchema` return.
    */
-  interface RegistrableClass extends Identity<
-    Omit<typeof _RegistrableActiveEffectTypeDataModel, "prototype"> & TypeDataModel.AnyConstructor
-  > {}
+  interface RegistrableClass extends Identity<typeof TypeDataModel<MinimalSchema, ActiveEffect.Implementation>> {}
 
   interface ChangeSchema extends MinimalChangeSchema {
     /**
@@ -126,13 +124,6 @@ declare namespace ActiveEffectTypeDataModel {
 
 declare abstract class AnyActiveEffectTypeDataModel extends ActiveEffectTypeDataModel<any> {
   constructor(...args: never);
-}
-
-declare class _RegistrableActiveEffectTypeDataModel extends TypeDataModel<
-  ActiveEffectTypeDataModel.MinimalSchema,
-  ActiveEffect.Implementation
-> {
-  static override defineSchema(): ActiveEffectTypeDataModel.MinimalSchema;
 }
 
 export default ActiveEffectTypeDataModel;
