@@ -21,8 +21,45 @@ declare class CameraViews<
   Configuration extends CameraViews.Configuration = CameraViews.Configuration,
   RenderOptions extends CameraViews.RenderOptions = CameraViews.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "camera-views",
+   *   window: {
+   *     frame: false
+   *   },
+   *   actions: {
+   *     blockAudio: this.prototype._onBlockAudio,
+   *     blockVideo: this.prototype._onBlockVideo,
+   *     configure: this.prototype._onConfigure,
+   *     disableVideo: this.prototype._onDisableVideo,
+   *     hide: this.prototype._onHideUser,
+   *     mutePeers: this.prototype._onMutePeers,
+   *     toggleAudio: this.prototype._onToggleAudio,
+   *     toggleDock: CameraViews.#onToggleDock,
+   *     toggleDocked: CameraViews.#onToggleDocked,
+   *     toggleVideo: this.prototype._onToggleVideo
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CameraViews.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   cameras: {
+   *     template: "templates/apps/av/cameras.hbs",
+   *     scrollable: [".scrollable"]
+   *   },
+   *   controls: {
+   *     template: "templates/apps/av/controls.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

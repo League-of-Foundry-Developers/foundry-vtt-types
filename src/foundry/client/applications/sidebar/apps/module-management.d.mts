@@ -31,9 +31,45 @@ declare class ModuleManagement<
    */
   static readonly SETTING: string;
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "module-management",
+   *   tag: "form",
+   *   window: {
+   *     title: "MODMANAGE.Title",
+   *     icon: "fa-solid fa-cube",
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {width: 680},
+   *   form: {
+   *     handler: this.#onSubmitForm,
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     changeFilter: this.#onChangeFilter,
+   *     deactivateAll: this.#onDeactivateAll,
+   *     toggleExpanded: this.#onToggleExpanded
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ModuleManagement.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     template: "templates/sidebar/apps/module-management.hbs",
+   *     templates: ["templates/setup/parts/package-tags.hbs"],
+   *     root: true
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

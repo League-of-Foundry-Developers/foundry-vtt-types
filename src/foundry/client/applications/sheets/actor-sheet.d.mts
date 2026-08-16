@@ -19,6 +19,48 @@ declare class ActorSheetV2<
   Configuration extends ActorSheetV2.Configuration = ActorSheetV2.Configuration,
   RenderOptions extends ActorSheetV2.RenderOptions = ActorSheetV2.RenderOptions,
 > extends DocumentSheetV2<Actor.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   position: {width: 600},
+   *   window: {
+   *     controls: [
+   *       {
+   *         action: "configureToken",
+   *         icon: "fa-regular fa-circle-user",
+   *         label: "DOCUMENT.Token",
+   *         ownership: "OWNER"
+   *       },
+   *       {
+   *         action: "configurePrototypeToken",
+   *         icon: "fa-solid fa-circle-user",
+   *         label: "TOKEN.TitlePrototype",
+   *         ownership: "OWNER"
+   *       },
+   *       {
+   *         action: "showPortraitArtwork",
+   *         icon: "fa-solid fa-image",
+   *         label: "SIDEBAR.CharArt",
+   *         ownership: "OWNER"
+   *       },
+   *       {
+   *         action: "showTokenArtwork",
+   *         icon: "fa-solid fa-image",
+   *         label: "SIDEBAR.TokenArt",
+   *         ownership: "OWNER"
+   *       }
+   *     ]
+   *   },
+   *   actions: {
+   *     configurePrototypeToken: ActorSheetV2.#onConfigurePrototypeToken,
+   *     configureToken: ActorSheetV2.#onConfigureToken,
+   *     showPortraitArtwork: ActorSheetV2.#onShowPortraitArtwork,
+   *     showTokenArtwork: ActorSheetV2.#onShowTokenArtwork
+   *   }
+   * }
+   * ```
+   */
   static DEFAULT_OPTIONS: ActorSheetV2.DefaultOptions;
 
   /**

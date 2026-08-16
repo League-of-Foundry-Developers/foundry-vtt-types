@@ -26,10 +26,61 @@ declare class ActiveEffectConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["active-effect-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-person-rays"
+   *   },
+   *   position: {width: 560},
+   *   form: {closeOnSubmit: true},
+   *   actions: {
+   *     addChange: ActiveEffectConfig.#onAddChange,
+   *     deleteChange: ActiveEffectConfig.#onDeleteChange
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {template: "templates/sheets/active-effect/header.hbs"},
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   details: {template: "templates/sheets/active-effect/details.hbs", scrollable: [""]},
+   *   duration: {template: "templates/sheets/active-effect/duration.hbs"},
+   *   changes: {
+   *     template: "templates/sheets/active-effect/changes.hbs",
+   *     templates: ["templates/sheets/active-effect/change.hbs"],
+   *     scrollable: ["ol[data-changes]"]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "details", icon: "fa-solid fa-book"},
+   *       {id: "duration", icon: "fa-solid fa-clock"},
+   *       {id: "changes", icon: "fa-solid fa-gears"}
+   *     ],
+   *     initial: "details",
+   *     labelPrefix: "EFFECT.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _attachFrameListeners(): void;

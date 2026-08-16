@@ -27,8 +27,42 @@ declare class DocumentSheetConfig<
   Configuration extends DocumentSheetConfig.Configuration<Document> = DocumentSheetConfig.Configuration<Document>,
   RenderOptions extends DocumentSheetConfig.RenderOptions = DocumentSheetConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "sheet-config-{id}",
+   *   classes: ["sheet-config"],
+   *   sheetConfig: false,
+   *   ownershipConfig: false,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-gear"
+   *   },
+   *   position: {width: 500},
+   *   form: {
+   *     handler: DocumentSheetConfig.#onSubmitForm,
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     classes: ["standard-form"],
+   *     template: "templates/sheets/document-sheet-config.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

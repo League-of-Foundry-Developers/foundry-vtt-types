@@ -15,9 +15,36 @@ declare class InvitationLinks<
   Configuration extends InvitationLinks.Configuration = InvitationLinks.Configuration,
   RenderOptions extends InvitationLinks.RenderOptions = InvitationLinks.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "invitation-links",
+   *   position: {width: 420},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-wifi",
+   *     title: "INVITATIONS.Title"
+   *   },
+   *   actions: {
+   *     copyLink: InvitationLinks.#onCopyLink,
+   *     recheckInternet: InvitationLinks.#onRecheckInternet,
+   *     showLink: InvitationLinks.#onShowLink,
+   *     hideLink: InvitationLinks.#onHideLink
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: InvitationLinks.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/sidebar/apps/invitation-links.hbs", root: true}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

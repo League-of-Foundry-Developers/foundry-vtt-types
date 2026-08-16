@@ -24,10 +24,59 @@ declare class CardConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["card-config"],
+   *   position: {width: 480},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-card-diamond"
+   *   },
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     addFace: CardConfig.#onAddFace,
+   *     deleteFace: CardConfig.#onDeleteFace
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {template: "templates/cards/card/header.hbs"},
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   details: {template: "templates/cards/card/details.hbs"},
+   *   faces: {template: "templates/cards/card/faces.hbs", scrollable: [""]},
+   *   back: {template: "templates/cards/card/back.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "details", icon: "fa-solid fa-memo"},
+   *       {id: "faces", icon: "fa-solid fa-image-portrait"},
+   *       {id: "back", icon: "fa-solid fa-card-heart"}
+   *     ],
+   *     initial: "details",
+   *     labelPrefix: "CARD.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

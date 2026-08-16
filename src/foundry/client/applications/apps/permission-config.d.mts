@@ -23,7 +23,46 @@ declare class PermissionConfig<
   // placeholder private member to help subclassing
   #permissionConfig: true;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "permissions-config",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-shield-keyhole",
+   *     title: "PERMISSION.Title"
+   *   },
+   *   position: {width: 660},
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: PermissionConfig.#onSubmit
+   *   },
+   *   actions: {
+   *     reset: PermissionConfig.#onReset
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PermissionConfig.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   permissions: {
+   *     id: "permissions",
+   *     template: "templates/apps/permission-config.hbs",
+   *     root: true,
+   *     scrollable: [".permissions-list"]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: InterfaceToObject<PermissionConfig.Parts>;
 
   /* -------------------------------------------- */

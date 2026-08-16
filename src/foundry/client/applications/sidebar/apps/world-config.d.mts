@@ -25,9 +25,40 @@ declare class WorldConfig<
    */
   constructor(options: WorldConfig.InputOptions<Configuration>);
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tag: "form",
+   *   id: "world-config",
+   *   window: {
+   *     icon: "fa-solid fa-globe",
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {
+   *     width: 600
+   *   },
+   *   form: {
+   *     handler: WorldConfig.#onSubmit,
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: WorldConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   config: {
+   *     template: "templates/sidebar/apps/world-config.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

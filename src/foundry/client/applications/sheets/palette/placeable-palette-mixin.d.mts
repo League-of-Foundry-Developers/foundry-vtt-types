@@ -25,6 +25,30 @@ declare class PlaceablePalette {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["placeable-palette", "faded-ui"],
+   *   initialData: {},
+   *   position: {
+   *     scale: .8,
+   *     width: 375
+   *   },
+   *   form: {
+   *     closeOnSubmit: false,
+   *     submitOnChange: true
+   *   },
+   *   actions: {
+   *     closeDetails: PlaceablePalette.#onCloseDetails,
+   *     closePalette: PlaceablePalette.#onClosePalette,
+   *     commit: PlaceablePalette.#onCommit,
+   *     reset: PlaceablePalette.#onReset
+   *   },
+   *   preview: false
+   * }
+   * ```
+   */
   // Mixin override.
   static DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 

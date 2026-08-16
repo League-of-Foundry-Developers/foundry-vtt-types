@@ -22,6 +22,28 @@ declare class FormulaEditor<
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   constructor(options?: DeepPartial<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "formula-editor",
+   *   tag: "dialog",
+   *   classes: ["dialog", "formula-editor"],
+   *   window: {
+   *     icon: "fa-solid fa-lambda",
+   *     contentClasses: ["flexcol"],
+   *     resizable: true,
+   *     minimizable: false
+   *   },
+   *   position: {
+   *     width: 400,
+   *     height: 200
+   *   },
+   *   context: "default",
+   *   formula: ""
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: FormulaEditor.DefaultOptions;
 
   /**

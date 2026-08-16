@@ -17,7 +17,15 @@ declare class FolderExport<
   Configuration extends FolderExport.Configuration = FolderExport.Configuration,
   RenderOptions extends FolderExport.RenderOptions = FolderExport.RenderOptions,
 > extends DialogV2<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "folder-export",
+   *   position: {width: 485}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: FolderExport.DefaultOptions;
 
   /**

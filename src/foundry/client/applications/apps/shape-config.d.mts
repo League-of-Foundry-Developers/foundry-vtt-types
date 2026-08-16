@@ -27,8 +27,40 @@ declare class ShapeConfig<
   /** @throws If the provided shape does not have a parent {@linkcode Document}. */
   constructor(options: ShapeConfig.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "{id}",
+   *   classes: ["shape-config"],
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-shapes"
+   *   },
+   *   position: {width: 480},
+   *   form: {
+   *     handler: this.#onSubmitForm,
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ShapeConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     templates: ["templates/apps/shape-config/parts/origin.hbs"]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

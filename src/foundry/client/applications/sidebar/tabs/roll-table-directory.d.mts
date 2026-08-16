@@ -18,7 +18,14 @@ declare class RollTableDirectory<
   Configuration extends RollTableDirectory.Configuration = RollTableDirectory.Configuration,
   RenderOptions extends RollTableDirectory.RenderOptions = RollTableDirectory.RenderOptions,
 > extends DocumentDirectory<RollTable.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "RollTable"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: RollTableDirectory.DefaultOptions;
 
   /** @defaultValue `"tables"` */

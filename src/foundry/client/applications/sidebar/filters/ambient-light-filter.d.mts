@@ -21,8 +21,28 @@ declare class AmbientLightFilter<
   Configuration extends AmbientLightFilter.Configuration = AmbientLightFilter.Configuration,
   RenderOptions extends AmbientLightFilter.RenderOptions = AmbientLightFilter.RenderOptions,
 > extends PlaceableFilter<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "ambient-light-filter"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: AmbientLightFilter.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     root: true,
+   *     classes: ["standard-form"],
+   *     template: "templates/sidebar/filters/ambient-light.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   // Fake override.

@@ -23,8 +23,31 @@ declare class JournalEntryPageMarkdownSheet<
   Configuration extends JournalEntryPageMarkdownSheet.Configuration = JournalEntryPageMarkdownSheet.Configuration,
   RenderOptions extends JournalEntryPageMarkdownSheet.RenderOptions = JournalEntryPageMarkdownSheet.RenderOptions,
 > extends JournalEntryPageCodeMirrorSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     icon: "fa-brands fa-markdown"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     classes: ["flex1", "flexcol"],
+   *     template: "templates/journal/pages/markdown/edit.hbs"
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

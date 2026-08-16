@@ -26,8 +26,39 @@ declare class RegionBehaviorConfig<
 > {
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["region-behavior-config"],
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: undefined // Defined in constructor
+   *   },
+   *   position: {width: 640},
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     template: "templates/generic/form-fields.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

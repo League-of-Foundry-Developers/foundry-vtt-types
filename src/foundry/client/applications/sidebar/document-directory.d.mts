@@ -23,18 +23,56 @@ declare class DocumentDirectory<
   Configuration extends DocumentDirectory.Configuration = DocumentDirectory.Configuration,
   RenderOptions extends DocumentDirectory.RenderOptions = DocumentDirectory.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["directory", "flexcol"],
+   *   collection: null,
+   *   renderUpdateKeys: ["name", "img", "ownership", "sort", "folder"],
+   *   actions: {
+   *     activateEntry: DocumentDirectory.#onClickEntry,
+   *     collapseFolders: DocumentDirectory.#onCollapseFolders,
+   *     createEntry: DocumentDirectory.#onCreateEntry,
+   *     createFolder: DocumentDirectory.#onCreateFolder,
+   *     showIssues: DocumentDirectory.#onShowIssues,
+   *     toggleFolder: DocumentDirectory.#onToggleFolder,
+   *     toggleSearch: DocumentDirectory.#onToggleSearch,
+   *     toggleSort: DocumentDirectory.#onToggleSort
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentDirectory.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/sidebar/directory/header.hbs"
+   *   },
+   *   directory: {
+   *     template: "templates/sidebar/directory/directory.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/sidebar/directory/footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * The path to the template used to render a single entry within the directory.
+   * @defaultValue `"templates/sidebar/partials/document-partial.hbs"`
    */
   protected static _entryPartial: string;
 
   /**
    * The path to the template used to render a single folder within the directory.
+   * @defaultValue `"templates/sidebar/partials/folder-partial.hbs"`
    */
   protected static _folderPartial: string;
 

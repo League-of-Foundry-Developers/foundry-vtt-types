@@ -21,8 +21,28 @@ declare class TileFilter<
   Configuration extends TileFilter.Configuration = TileFilter.Configuration,
   RenderOptions extends TileFilter.RenderOptions = TileFilter.RenderOptions,
 > extends PlaceableFilter<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "tile-filter"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: TileFilter.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     root: true,
+   *     classes: ["standard-form"],
+   *     template: "templates/sidebar/filters/tile.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   // Fake override.

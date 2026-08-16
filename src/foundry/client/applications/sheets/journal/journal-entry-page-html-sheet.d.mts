@@ -23,8 +23,31 @@ declare class JournalEntryPageHTMLSheet<
   Configuration extends JournalEntryPageHTMLSheet.Configuration = JournalEntryPageHTMLSheet.Configuration,
   RenderOptions extends JournalEntryPageHTMLSheet.RenderOptions = JournalEntryPageHTMLSheet.RenderOptions,
 > extends JournalEntryPageCodeMirrorSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     icon: "fa-brands fa-html5"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     classes: ["flex1", "flexcol"],
+   *     template: "templates/journal/pages/html/edit.hbs"
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

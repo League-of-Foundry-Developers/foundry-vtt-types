@@ -23,8 +23,44 @@ declare class DocumentOwnershipConfig<
     DocumentOwnershipConfig.Configuration<Document>,
   RenderOptions extends DocumentOwnershipConfig.RenderOptions = DocumentOwnershipConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["document-ownership"],
+   *   template: "templates/apps/document-ownership.hbs",
+   *   viewPermission: DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-user-lock"
+   *   },
+   *   position: {width: 420},
+   *   form: {
+   *     handler: DocumentOwnershipConfig.#onSubmitForm,
+   *     closeOnSubmit: true
+   *   },
+   *   sheetConfig: false,
+   *   ownershipConfig: false
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   ownership: {
+   *     template: "templates/apps/document-ownership.hbs",
+   *     root: true,
+   *     scrollable: ["menu.scrollable"]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

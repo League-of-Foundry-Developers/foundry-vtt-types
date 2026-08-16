@@ -20,8 +20,37 @@ declare class AmbientSoundConfig<
   Configuration extends AmbientSoundConfig.Configuration = AmbientSoundConfig.Configuration,
   RenderOptions extends AmbientSoundConfig.RenderOptions = AmbientSoundConfig.RenderOptions,
 > extends PlaceableConfig<AmbientSoundDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["ambient-sound-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {width: 560},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   canCreate: true
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     template: "templates/scene/ambient-sound-config.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

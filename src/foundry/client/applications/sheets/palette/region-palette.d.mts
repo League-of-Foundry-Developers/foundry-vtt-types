@@ -24,6 +24,18 @@ declare class RegionPalette<
   Configuration extends RegionPalette.Configuration = RegionPalette.Configuration,
   RenderOptions extends RegionPalette.RenderOptions = RegionPalette.RenderOptions,
 > extends PlaceablePaletteMixin(RegionConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "region-palette",
+   *   initialData: {
+   *     name: "regionPalette",
+   *     ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER }
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -40,8 +52,18 @@ declare class RegionPalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/region/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

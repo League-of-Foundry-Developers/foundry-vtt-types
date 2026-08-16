@@ -24,8 +24,37 @@ declare class MacroConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["macro-config"],
+   *   canCreate: true,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-code",
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 720,
+   *     height: 600
+   *   },
+   *   actions: {execute: MacroConfig.#onExecute},
+   *   form: {closeOnSubmit: true}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/sheets/macro-config.hbs", root: true},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

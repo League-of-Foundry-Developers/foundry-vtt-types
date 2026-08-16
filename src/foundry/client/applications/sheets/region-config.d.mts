@@ -22,10 +22,98 @@ declare class RegionConfig<
   Configuration extends RegionConfig.Configuration = RegionConfig.Configuration,
   RenderOptions extends RegionConfig.RenderOptions = RegionConfig.RenderOptions,
 > extends PlaceableConfig<RegionDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["region-config"],
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-regular fa-game-board"
+   *   },
+   *   position: {width: 500},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     shapeCreateFromWalls: RegionConfig.#onShapeCreateFromWalls,
+   *     shapeToggleHole: RegionConfig.#onShapeToggleHole,
+   *     shapeMoveUp: RegionConfig.#onShapeMoveUp,
+   *     shapeMoveDown: RegionConfig.#onShapeMoveDown,
+   *     shapeEdit: RegionConfig.#onShapeEdit,
+   *     shapeRemove: RegionConfig.#onShapeRemove,
+   *     shapeRemoveAll: RegionConfig.#onShapeRemoveAll,
+   *     behaviorCreate: RegionConfig.#onBehaviorAdd,
+   *     behaviorDelete: RegionConfig.#onBehaviorDelete,
+   *     behaviorEdit: RegionConfig.#onBehaviorEdit,
+   *     behaviorToggle: RegionConfig.#onBehaviorToggle
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {
+   *     template: "templates/generic/tab-navigation.hbs"
+   *   },
+   *   appearance: {
+   *     template: "templates/scene/parts/region-appearance.hbs"
+   *   },
+   *   shapes: {
+   *     template: "templates/scene/parts/region-shapes.hbs",
+   *     templates: [
+   *       "templates/apps/shape-config/parts/origin.hbs",
+   *       "templates/apps/shape-config/circle.hbs",
+   *       "templates/apps/shape-config/cone.hbs",
+   *       "templates/apps/shape-config/ellipse.hbs",
+   *       "templates/apps/shape-config/line.hbs",
+   *       "templates/apps/shape-config/polygon.hbs",
+   *       "templates/apps/shape-config/rectangle.hbs",
+   *       "templates/apps/shape-config/emanation.hbs",
+   *       "templates/apps/shape-config/ring.hbs",
+   *       "templates/apps/shape-config/token.hbs",
+   *       "templates/apps/shape-config/grid.hbs"
+   *     ],
+   *     scrollable: [".scrollable"]
+   *   },
+   *   placement: {
+   *     template: "templates/scene/parts/region-placement.hbs",
+   *     scrollable: [".scrollable"]
+   *   },
+   *   behaviors: {
+   *     template: "templates/scene/parts/region-behaviors.hbs",
+   *     scrollable: [".scrollable"]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "appearance", icon: "fa-solid fa-paint-roller"},
+   *       {id: "shapes", icon: "fa-solid fa-shapes"},
+   *       {id: "placement", icon: "fa-solid fa-location-dot"},
+   *       {id: "behaviors", icon: "fa-solid fa-child-reaching"}
+   *     ],
+   *     initial: "appearance",
+   *     labelPrefix: "REGION.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;

@@ -21,10 +21,66 @@ declare class AmbientLightConfig<
   Configuration extends AmbientLightConfig.Configuration = AmbientLightConfig.Configuration,
   RenderOptions extends AmbientLightConfig.RenderOptions = AmbientLightConfig.RenderOptions,
 > extends PlaceableConfig<AmbientLightDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["ambient-light-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {width: 560},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     reset: this.#onReset
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {
+   *     template: "templates/generic/tab-navigation.hbs"
+   *   },
+   *   basic: {
+   *     template: "templates/scene/parts/light-basic.hbs"
+   *   },
+   *   animation: {
+   *     template: "templates/scene/parts/light-animation.hbs"
+   *   },
+   *   advanced: {
+   *     template: "templates/scene/parts/light-advanced.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "basic", icon: "fa-solid fa-lightbulb"},
+   *       {id: "animation", icon: "fa-solid fa-play"},
+   *       {id: "advanced", icon: "fa-solid fa-gears"}
+   *     ],
+   *     initial: "basic",
+   *     labelPrefix: "AMBIENT_LIGHT.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;

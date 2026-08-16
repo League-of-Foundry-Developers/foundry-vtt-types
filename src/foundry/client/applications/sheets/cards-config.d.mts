@@ -27,6 +27,29 @@ declare class CardsConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["cards-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-cards"
+   *   },
+   *   position: {
+   *     width: 720
+   *   },
+   *   actions: {
+   *     controlCard: CardsConfig.#onControlCard,
+   *     reset: CardsConfig.#onReset,
+   *     pass: CardsConfig.#onPass,
+   *     shuffle: CardsConfig.#onShuffle,
+   *     toggleSort: CardsConfig.#onToggleSort
+   *   },
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
   protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
@@ -131,10 +154,47 @@ declare class CardDeckConfig<
   Configuration extends CardDeckConfig.Configuration = CardDeckConfig.Configuration,
   RenderOptions extends CardDeckConfig.RenderOptions = CardDeckConfig.RenderOptions,
 > extends CardsConfig<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     deal: CardDeckConfig.#onDeal
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {template: "templates/cards/deck/header.hbs"},
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   details: {template: "templates/cards/deck/details.hbs"},
+   *   cards: {template: "templates/cards/deck/cards.hbs", scrollable: ["ol[data-cards]"]},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "details", icon: "fa-solid fa-gears"},
+   *       {id: "cards", icon: "fa-solid fa-id-badge"}
+   *     ],
+   *     initial: "cards",
+   *     labelPrefix: "CARDS.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _preparePartContext(
@@ -183,8 +243,31 @@ declare class CardHandConfig<
   Configuration extends CardHandConfig.Configuration = CardHandConfig.Configuration,
   RenderOptions extends CardHandConfig.RenderOptions = CardHandConfig.RenderOptions,
 > extends CardsConfig<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     draw: CardHandConfig.#onDraw
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   cards: {
+   *     template: "templates/cards/hand-pile.hbs",
+   *     root: true,
+   *     scrollable: ["ol[data-cards]"]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareButtons(): ApplicationV2.FormFooterButton[];
@@ -217,8 +300,37 @@ declare class CardPileConfig<
   Configuration extends CardPileConfig.Configuration = CardPileConfig.Configuration,
   RenderOptions extends CardPileConfig.RenderOptions = CardPileConfig.RenderOptions,
 > extends CardsConfig<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["cards-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-cards"
+   *   },
+   *   position: {
+   *     width: 720
+   *   },
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   cards: {
+   *     template: "templates/cards/hand-pile.hbs",
+   *     root: true,
+   *     scrollable: ["ol[data-cards]"]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareButtons(): ApplicationV2.FormFooterButton[];

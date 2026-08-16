@@ -26,8 +26,33 @@ declare class AdventureImporterV2<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["adventure-importer"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-download"
+   *   },
+   *   position: {width: 920},
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/adventure/importer.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

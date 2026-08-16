@@ -20,6 +20,22 @@ declare class Sidebar<
   Configuration extends Sidebar.Configuration = Sidebar.Configuration,
   RenderOptions extends Sidebar.RenderOptions = Sidebar.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "sidebar",
+   *   tag: "aside",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     toggleState: Sidebar.#onToggleState
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: Sidebar.DefaultOptions;
 
   // TODO: This override of `TABS` is completely unsound subclassing-wise.
@@ -30,6 +46,17 @@ declare class Sidebar<
     primary: string;
   };
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {
+   *     id: "tabs",
+   *     template: "templates/sidebar/tabs.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

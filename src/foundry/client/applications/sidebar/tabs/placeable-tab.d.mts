@@ -33,6 +33,25 @@ declare class PlaceableTab<
    */
   constructor(options: PlaceableTab.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "{id}",
+   *   tag: "section",
+   *   classes: ["placeable-tab", "flexcol"],
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     createEntry: PlaceableTab.#onCreateEntry,
+   *     filterViewed: PlaceableTab.#onFilterViewed,
+   *     openFilter: { handler: PlaceableTab.#onOpenFilter, buttons: [0, 2] }
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableTab.DefaultOptions;
 
   /**
@@ -56,6 +75,18 @@ declare class PlaceableTab<
    */
   static ENTRY_PARTIAL: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   search: { template: "templates/sidebar/tabs/placeable/search.hbs" },
+   *   directory: {
+   *     template: "templates/sidebar/tabs/placeable/directory.hbs",
+   *     scrollable: [""]
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

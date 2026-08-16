@@ -20,8 +20,34 @@ declare class AppV2QuickStartTemplate<
   Configuration extends AppV2QuickStartTemplate.Configuration = AppV2QuickStartTemplate.Configuration,
   RenderOptions extends AppV2QuickStartTemplate.RenderOptions = AppV2QuickStartTemplate.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "appid",
+   *   classes: [],
+   *   tag: "div",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: AppV2QuickStartTemplate.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   part: {
+   *     template: "templates/path/part.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

@@ -18,7 +18,14 @@ declare class CardsDirectory<
   Configuration extends CardsDirectory.Configuration = CardsDirectory.Configuration,
   RenderOptions extends CardsDirectory.RenderOptions = CardsDirectory.RenderOptions,
 > extends DocumentDirectory<Cards.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Cards"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CardsDirectory.DefaultOptions;
 
   /** @defaultValue `"cards"` */

@@ -18,7 +18,14 @@ declare class JournalDirectory<
   Configuration extends JournalDirectory.Configuration = JournalDirectory.Configuration,
   RenderOptions extends JournalDirectory.RenderOptions = JournalDirectory.RenderOptions,
 > extends DocumentDirectory<JournalEntry.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "JournalEntry"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalDirectory.DefaultOptions;
 
   /** @defaultValue `"journal"` */

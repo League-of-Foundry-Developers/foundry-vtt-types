@@ -24,8 +24,43 @@ declare class JournalEntryCategoryConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "journal-category-config-{id}",
+   *   classes: ["journal-category-config"],
+   *   window: {
+   *     icon: "fa-solid fa-chart-tree-map",
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {
+   *     width: 480
+   *   },
+   *   actions: {
+   *     addCategory: JournalEntryCategoryConfig.#onAddCategory,
+   *     removeCategory: JournalEntryCategoryConfig.#onRemoveCategory,
+   *     sortDown: JournalEntryCategoryConfig.#onSort,
+   *     sortUp: JournalEntryCategoryConfig.#onSort
+   *   },
+   *   form: {
+   *     submitOnChange: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     template: "templates/journal/category-config.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

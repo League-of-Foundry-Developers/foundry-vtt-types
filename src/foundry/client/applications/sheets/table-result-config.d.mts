@@ -27,8 +27,33 @@ declare class TableResultConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["table-result-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-table-rows"
+   *   },
+   *   position: {width: 560},
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {template: "templates/sheets/table-result-config.hbs", root: true},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

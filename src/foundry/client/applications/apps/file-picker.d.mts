@@ -20,6 +20,39 @@ declare class FilePicker<
   Configuration extends FilePicker.Configuration = FilePicker.Configuration,
   RenderOptions extends FilePicker.RenderOptions = FilePicker.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "file-picker",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-file-magnifying-glass"
+   *   },
+   *   position: {
+   *     width: 560
+   *   },
+   *   tileSize: false,
+   *   actions: {
+   *     backTraverse: FilePicker.#onBackTraverse,
+   *     makeDirectory: FilePicker.#onMakeDirectory,
+   *     togglePrivacy: FilePicker.#onTogglePrivacy,
+   *     changeDisplayMode: FilePicker.#onChangeDisplayMode,
+   *     pickDirectory: FilePicker.#onPickDirectory,
+   *     pickFile: FilePicker.#onPickFile,
+   *     goToFavorite: FilePicker.#onGoToFavorite,
+   *     setFavorite: FilePicker.#onSetFavorite,
+   *     removeFavorite: FilePicker.#onRemoveFavorite
+   *   },
+   *   form: {
+   *     handler: FilePicker.#onSubmit,
+   *     submitOnChange: false,
+   *     closeOnSubmit: false
+   *   }
+   * }
+   * ```
+   */
   // Fake override.
   static override DEFAULT_OPTIONS: FilePicker.DefaultOptions;
 
@@ -69,8 +102,36 @@ declare class FilePicker<
    */
   activeSource: FilePicker.SourceType;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   subheader: {template: "templates/apps/file-picker/subheader.hbs"},
+   *   body: {template: "templates/apps/file-picker/body.hbs"},
+   *   subfooter: {template: "templates/apps/file-picker/subfooter.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sources: {
+   *     tabs: [
+   *       {id: "data", icon: "fa-solid fa-database"},
+   *       {id: "public", icon: "fa-solid fa-server"},
+   *       {id: "s3", icon: "fa-solid fa-cloud-arrow-up"}
+   *     ],
+   *     initial: "data",
+   *     labelPrefix: "FILES.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

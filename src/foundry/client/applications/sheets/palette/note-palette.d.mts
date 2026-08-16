@@ -23,6 +23,14 @@ declare class NotePalette<
   Configuration extends NotePalette.Configuration = NotePalette.Configuration,
   RenderOptions extends NotePalette.RenderOptions = NotePalette.RenderOptions,
 > extends PlaceablePaletteMixin(NoteConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "note-palette"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -39,8 +47,18 @@ declare class NotePalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/note/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

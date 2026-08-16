@@ -27,7 +27,44 @@ declare class CompendiumArtConfig<
   // placeholder private member to help subclassing
   #compendiumArtConfig: true;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "compendium-art-config",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-palette",
+   *     title: "COMPENDIUM.ART.SETTING.Title"
+   *   },
+   *   position: { width: 600 },
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: CompendiumArtConfig.#onSubmit
+   *   },
+   *   actions: {
+   *     priority: CompendiumArtConfig.#onAdjustPriority
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CompendiumArtConfig.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   priorities: {
+   *     id: "priorities",
+   *     template: "templates/apps/compendium-art-config.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: CompendiumArtConfigParts;
 
   /* -------------------------------------------- */

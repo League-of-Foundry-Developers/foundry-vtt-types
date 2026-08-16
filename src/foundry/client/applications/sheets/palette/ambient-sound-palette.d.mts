@@ -23,6 +23,14 @@ declare class AmbientSoundPalette<
   Configuration extends AmbientSoundPalette.Configuration = AmbientSoundPalette.Configuration,
   RenderOptions extends AmbientSoundPalette.RenderOptions = AmbientSoundPalette.RenderOptions,
 > extends PlaceablePaletteMixin(AmbientSoundConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "ambient-sound-palette"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -39,8 +47,18 @@ declare class AmbientSoundPalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/ambient-sound/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

@@ -26,8 +26,42 @@ declare class PlaceableFilter<
    */
   constructor(tab: PlaceableTab.Any, options?: DeepPartial<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tag: "form",
+   *   classes: ["placeable-filter", "standard-form"],
+   *   window: {
+   *     title: "SIDEBAR.PLACEABLES.Filter.Title",
+   *     icon: "fa-solid fa-filter",
+   *     minimizable: false,
+   *     resizable: false
+   *   },
+   *   position: {
+   *     scale: .8,
+   *     width: 375
+   *   },
+   *   actions: {
+   *     clear: PlaceableFilter.#onClear
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableFilter.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     root: true,
+   *     classes: ["standard-form"],
+   *     template: "templates/sidebar/filters/body.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

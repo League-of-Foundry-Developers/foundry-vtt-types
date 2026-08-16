@@ -18,8 +18,39 @@ declare class CombatTrackerConfig<
   Configuration extends CombatTrackerConfig.Configuration = CombatTrackerConfig.Configuration,
   RenderOptions extends CombatTrackerConfig.RenderOptions = CombatTrackerConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "combat-tracker-config",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-swords",
+   *     title: "COMBAT.Settings"
+   *   },
+   *   position: {width: 480},
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: CombatTrackerConfig.#saveSettings
+   *   },
+   *   actions: {
+   *     previewTheme: CombatTrackerConfig.#onPreviewTheme
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CombatTrackerConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/apps/combat-tracker-config.hbs", scrollable: [""]},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

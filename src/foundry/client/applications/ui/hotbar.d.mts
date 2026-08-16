@@ -24,7 +24,41 @@ declare class Hotbar<
   Configuration extends Hotbar.Configuration = Hotbar.Configuration,
   RenderOptions extends Hotbar.RenderOptions = Hotbar.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "hotbar",
+   *   classes: ["faded-ui", "flexrow"],
+   *   tag: "aside",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     execute: Hotbar.#onExecute,
+   *     lock: Hotbar.#onToggleLock,
+   *     mute: Hotbar.#onToggleMute,
+   *     menu: Hotbar.#onToggleMenu,
+   *     clear: Hotbar.#onClear,
+   *     page: Hotbar.#onPage
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: Hotbar.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   hotbar: {
+   *     root: true,
+   *     template: "templates/ui/hotbar.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

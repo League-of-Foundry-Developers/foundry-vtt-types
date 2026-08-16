@@ -21,6 +21,15 @@ declare class JournalEntryPageTextSheet<
   Configuration extends JournalEntryPageTextSheet.Configuration = JournalEntryPageTextSheet.Configuration,
   RenderOptions extends JournalEntryPageTextSheet.RenderOptions = JournalEntryPageTextSheet.RenderOptions,
 > extends JournalEntryPageHandlebarsSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["text"],
+   *   includeTOC: true
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
   /**

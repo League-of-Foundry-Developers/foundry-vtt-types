@@ -27,10 +27,59 @@ declare class AVConfig<
    */
   webrtc: AVMaster;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tag: "form",
+   *   id: "av-config",
+   *   window: {
+   *     title: "WEBRTC.Title",
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-headset"
+   *   },
+   *   position: {
+   *     width: 480
+   *   },
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: AVConfig.#onSubmit
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: AVConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   general: {template: "templates/settings/menus/av-config/general.hbs"},
+   *   devices: {template: "templates/settings/menus/av-config/devices.hbs"},
+   *   server: {template: "templates/settings/menus/av-config/server.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   main: {
+   *     tabs: [
+   *       {id: "general", icon: "fa-solid fa-gear"},
+   *       {id: "devices", icon: "fa-solid fa-microphone"},
+   *       {id: "server", icon: "fa-solid fa-server"}
+   *     ],
+   *     initial: "general",
+   *     labelPrefix: "WEBRTC.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

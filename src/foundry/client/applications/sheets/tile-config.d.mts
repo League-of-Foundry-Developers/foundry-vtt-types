@@ -20,10 +20,55 @@ declare class TileConfig<
   Configuration extends TileConfig.Configuration = TileConfig.Configuration,
   RenderOptions extends TileConfig.RenderOptions = TileConfig.RenderOptions,
 > extends PlaceableConfig<TileDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["tile-config"],
+   *   canCreate: true,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-cubes"
+   *   },
+   *   position: {width: 480},
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   position: {template: "templates/scene/tile/position.hbs"},
+   *   appearance: {template: "templates/scene/tile/appearance.hbs"},
+   *   overhead: {template: "templates/scene/tile/overhead.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "position", icon: "fa-solid fa-location-dot"},
+   *       {id: "appearance", icon: "fa-solid fa-image"},
+   *       {id: "overhead", icon: "fa-solid fa-house"}
+   *     ],
+   *     initial: "position",
+   *     labelPrefix: "TILE.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   override get title(): string;

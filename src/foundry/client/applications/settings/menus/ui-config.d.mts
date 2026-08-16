@@ -20,8 +20,44 @@ declare class UIConfig<
   Configuration extends UIConfig.Configuration = UIConfig.Configuration,
   RenderOptions extends UIConfig.RenderOptions = UIConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "ui-config",
+   *   tag: "form",
+   *   window: {
+   *     title: "SETTINGS.UI.MENU.name",
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-table-layout"
+   *   },
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: UIConfig.#onSubmit
+   *   },
+   *   position: {width: 540},
+   *   actions: {
+   *     reset: UIConfig.#onReset
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: UIConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     template: "templates/settings/menus/ui-config.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

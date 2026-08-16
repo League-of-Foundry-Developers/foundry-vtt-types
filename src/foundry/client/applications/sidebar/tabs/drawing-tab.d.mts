@@ -17,6 +17,16 @@ declare class DrawingTab<
   Configuration extends DrawingTab.Configuration = DrawingTab.Configuration,
   RenderOptions extends DrawingTab.RenderOptions = DrawingTab.RenderOptions,
 > extends PlaceableTab<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     selectGroup: DrawingTab.#onSelectGroup
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DrawingTab.DefaultOptions;
 
   /**

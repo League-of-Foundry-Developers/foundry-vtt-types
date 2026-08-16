@@ -21,8 +21,28 @@ declare class RegionFilter<
   Configuration extends RegionFilter.Configuration = RegionFilter.Configuration,
   RenderOptions extends RegionFilter.RenderOptions = RegionFilter.RenderOptions,
 > extends PlaceableFilter<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "region-filter"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: RegionFilter.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     root: true,
+   *     classes: ["standard-form"],
+   *     template: "templates/sidebar/filters/region.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   // Fake override.

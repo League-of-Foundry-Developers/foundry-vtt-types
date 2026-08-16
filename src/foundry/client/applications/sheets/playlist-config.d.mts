@@ -24,8 +24,31 @@ declare class PlaylistConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["playlist-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-list-music"
+   *   },
+   *   position: {width: 480},
+   *   form: {closeOnSubmit: true}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {template: "templates/sheets/playlist/playlist-config.hbs", root: true},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

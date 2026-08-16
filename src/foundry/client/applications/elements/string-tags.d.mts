@@ -32,8 +32,27 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<string[] | 
   /** @defaultValue `"string-tags"` */
   static override tagName: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   add: "fa-solid fa-tag",
+   *   remove: "fa-solid fa-xmark"
+   * }
+   * ```
+   */
   static icons: HTMLStringTagsElement.Icons;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   add: "ELEMENTS.TAGS.Add",
+   *   remove: "ELEMENTS.TAGS.Remove",
+   *   placeholder: ""
+   * }
+   * ```
+   */
   static labels: HTMLStringTagsElement.Labels;
 
   /**

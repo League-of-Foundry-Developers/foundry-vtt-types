@@ -21,8 +21,32 @@ declare class WallConfig<
   Configuration extends WallConfig.Configuration = WallConfig.Configuration,
   RenderOptions extends WallConfig.RenderOptions = WallConfig.RenderOptions,
 > extends PlaceableConfig<WallDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["wall-config"],
+   *   position: {width: 480},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-block-brick"
+   *   },
+   *   form: {closeOnSubmit: true},
+   *   actions: {previewSound: WallConfig.#onPreviewSound}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/scene/wall-config.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

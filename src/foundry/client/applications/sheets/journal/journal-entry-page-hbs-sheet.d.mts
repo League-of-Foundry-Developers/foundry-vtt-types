@@ -23,6 +23,18 @@ declare class JournalEntryPageHandlebarsSheet<
 > extends HandlebarsApplicationMixin(JournalEntryPageSheet)<RenderContext, Configuration, RenderOptions> {
   /**
    * Handlebars parts to render in edit mode.
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/journal/parts/page-header.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/journal/parts/page-footer.hbs",
+   *     classes: ["journal-footer", "flexrow"]
+   *   }
+   * }
+   * ```
    */
   static EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 

@@ -18,7 +18,14 @@ declare class ActorDirectory<
   Configuration extends ActorDirectory.Configuration = ActorDirectory.Configuration,
   RenderOptions extends ActorDirectory.RenderOptions = ActorDirectory.RenderOptions,
 > extends DocumentDirectory<Actor.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Actor"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ActorDirectory.DefaultOptions;
 
   /** @defaultValue `"actors"` */

@@ -24,7 +24,17 @@ declare class ChatPopout<
    */
   constructor(options: ChatPopout.InputOptions<Configuration>);
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["chat-popout", "themed", "theme-light"],
+   *   position: {
+   *     width: 300
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ChatPopout.DefaultOptions;
 
   /**

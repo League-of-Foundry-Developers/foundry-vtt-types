@@ -28,8 +28,43 @@ declare class GridConfig<
 > {
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["grid-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-ruler-combined"
+   *   },
+   *   position: {width: 480},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     resetChanges: GridConfig.#onResetChanges
+   *   },
+   *   sheetConfig: false,
+   *   ownershipConfig: false
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     template: "templates/scene/grid-config.hbs",
+   *     root: true
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

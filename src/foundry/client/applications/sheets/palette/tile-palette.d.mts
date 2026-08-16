@@ -23,6 +23,15 @@ declare class TilePalette<
   Configuration extends TilePalette.Configuration = TilePalette.Configuration,
   RenderOptions extends TilePalette.RenderOptions = TilePalette.RenderOptions,
 > extends PlaceablePaletteMixin(TileConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "tile-palette",
+   *   initialData: { width: 100, height: 100 }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -39,8 +48,18 @@ declare class TilePalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/tile/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

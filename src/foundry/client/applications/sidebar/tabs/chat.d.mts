@@ -22,12 +22,45 @@ declare class ChatLog<
   Configuration extends ChatLog.Configuration = ChatLog.Configuration,
   RenderOptions extends ChatLog.RenderOptions = ChatLog.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["flexcol"],
+   *   window: {
+   *     title: "CHAT.Title"
+   *   },
+   *   actions: {
+   *     deleteMessage: ChatLog.#onDeleteMessage,
+   *     dismissMessage: ChatLog.#onDismissNotification,
+   *     expandRoll: ChatLog.#onExpandRoll,
+   *     export: ChatLog.#onExportLog,
+   *     flush: ChatLog.#onFlushLog,
+   *     jumpToBottom: ChatLog.#onJumpToBottom,
+   *     messageMode: ChatLog.#onChangeMessageMode
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ChatLog.DefaultOptions;
 
   /** @defaultValue `"chat"` */
   static override tabName: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   log: {
+   *     template: "templates/sidebar/tabs/chat/log.hbs",
+   *     templates: ["templates/sidebar/tabs/chat/notifications.hbs"]
+   *   },
+   *   input: {
+   *     template: "templates/sidebar/tabs/chat/input.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
