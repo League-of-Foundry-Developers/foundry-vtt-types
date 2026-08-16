@@ -146,28 +146,28 @@ declare namespace Combat {
   type Parent = null;
 
   /**
-   * A document's descendants are any child documents, grandchild documents, etc.
-   * This is a union of all instances, or never if the document doesn't have any descendants.
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DescendantName = "Combatant";
+  type DirectDescendantName = "Combatant" | "CombatantGroup";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DirectDescendantName = "Combatant";
-
-  /**
-   * A document's direct descendants are documents that are contained directly within its schema.
-   * This is a union of all such instances, or never if the document doesn't have any descendants.
-   */
-  type DirectDescendant = Combatant.Stored;
+  type DirectDescendant = Combatant.Stored | CombatantGroup.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such classes, or never if the document doesn't have any descendants.
    */
-  type DirectDescendantClass = Combatant.ImplementationClass;
+  type DirectDescendantClass = Combatant.ImplementationClass | CombatantGroup.ImplementationClass;
+
+  /**
+   * A document's descendants are any child documents, grandchild documents, etc.
+   * This is a union of all instances, or never if the document doesn't have any descendants.
+   */
+  type DescendantName = "Combatant";
 
   /**
    * A document's descendants are any documents that are contained within, either within its schema
