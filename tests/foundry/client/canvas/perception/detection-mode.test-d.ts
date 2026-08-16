@@ -8,6 +8,7 @@ import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 declare const level: Level.Implementation;
+declare const losPolygon: foundry.canvas.geometry.PointSourcePolygon;
 
 describe("DetectionMode tests", () => {
   const source = {
@@ -82,11 +83,18 @@ describe("DetectionMode tests", () => {
       myDetectionMode.testVisibility(visionSource, dmData, { object: undefined, level, tests: visibilityTests }),
     ).toBeBoolean();
 
-    expectTypeOf(myDetectionMode["_canDetect"](visionSource, token)).toBeBoolean();
+    expectTypeOf(myDetectionMode["_canDetect"](visionSource, token, level)).toBeBoolean();
     expectTypeOf(myDetectionMode["_testPoint"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
     expectTypeOf(myDetectionMode["_testLOS"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
     expectTypeOf(myDetectionMode["_testAngle"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
     expectTypeOf(myDetectionMode["_testRange"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
+
+    expectTypeOf(DetectionMode["_testCollision"](visionSource, visibilityTests[0]!)).toBeBoolean();
+    expectTypeOf(DetectionMode["_testCollision"](visionSource, visibilityTests[0]!, {})).toBeBoolean();
+    expectTypeOf(
+      DetectionMode["_testCollision"](visionSource, visibilityTests[0]!, { type: "sight", angle: 360 }),
+    ).toBeBoolean();
+    expectTypeOf(DetectionMode["_testCollision"](visionSource, visibilityTests[0]!, losPolygon)).toBeBoolean();
   });
 
   test("Deprecated", () => {

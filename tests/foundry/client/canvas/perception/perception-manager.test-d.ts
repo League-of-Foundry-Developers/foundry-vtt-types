@@ -42,6 +42,7 @@ describe(" Tests", () => {
         refreshOcclusion: false,
         refreshOcclusionStates: undefined,
         refreshOcclusionMask: true,
+        refreshOccludedSurfaces: false,
         initializeSounds: false,
         refreshSounds: undefined,
         soundFadeDuration: true,
@@ -55,12 +56,6 @@ describe(" Tests", () => {
     expectTypeOf(manager.renderFlags.flags.initializeLightSources).toEqualTypeOf<
       interaction.RenderFlag<PerceptionManager.RENDER_FLAGS, "initializeLightSources">
     >();
-  });
-
-  test("Deprecated", () => {
-    // deprecated since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(manager.refresh()).toBeVoid();
   });
 });
 type _x = (keyof PerceptionManager.RENDER_FLAGS)[];

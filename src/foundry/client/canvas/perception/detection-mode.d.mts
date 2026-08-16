@@ -1,8 +1,9 @@
-import type { Brand, Identity } from "#utils";
+import type { Brand, Identity, InexactPartial } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PointVisionSource } from "../sources/_module.d.mts";
 
 /**
@@ -25,8 +26,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
   protected static _detectionFilter: PIXI.Filter | undefined;
 
   /**
-   * The type of the detection mode.
-   * @see {@linkcode CONST.WALL_RESTRICTION_TYPES}
+   * The types of the detection mode.
    * @remarks Returns a reference to a private, frozen object
    */
   static get DETECTION_TYPES(): DetectionMode.DetectionTypes;
@@ -58,13 +58,15 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * This check should not consider the relative positions of either object, only their state.
    * @param visionSource - The vision source being tested
    * @param target       - The target object being tested
+   * @param level        - The level the target is in
    * @returns Can the target object theoretically be detected by this vision source?
    * @remarks Will always be passed a `target` when called by {@linkcode testVisibility | DetectionMode#testVisibility}, it just might possibly be `undefined`.
    * All use is gated behind an `instanceof Token` check, so that's fine.
    */
   protected _canDetect(
     visionSource: PointVisionSource.Internal.Any,
-    target: CanvasVisibility.TestObject | undefined,
+    target: CanvasVisibility.TestObject | null,
+    level: Level.Implementation,
   ): boolean;
 
   /**
@@ -74,7 +76,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @param mode         - The detection mode configuration
    * @param target       - The target object being tested
    * @param test         - The test case being evaluated
-   * @remarks As of 13.346, Foundry's implementation does not use `target` at all, neither directly, because the whole method is calling two subsidiary methods, nor in said
+   * @remarks As of 14.366, Foundry's implementation does not use `target` at all, neither directly, because the whole method is calling two subsidiary methods, nor in said
    * subsidiary methods.
    *
    * See {@linkcode _canDetect} remarks.
@@ -82,7 +84,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
   protected _testPoint(
     visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
-    target: CanvasVisibility.TestObject | undefined,
+    target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
   ): boolean;
 
@@ -95,15 +97,44 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @param target          - The target object being tested
    * @param test            - The test case being evaluated
    * @returns Is the LOS requirement satisfied for this test?
-   * @remarks As of 13.346, Foundry's implementation does not use `target` at all.
+   * @remarks As of 14.366, Foundry's implementation does not use `target` at all.
    *
    * See {@linkcode _canDetect} remarks.
    */
   protected _testLOS(
     visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
-    target: CanvasVisibility.TestObject | undefined,
+    target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
+  ): boolean;
+
+  /**
+   * Test for LOS collision.
+   * For both the segment in the viewed level and in the target level, a ray is cast with the given configuration.
+   * @param visionSource - The vision source
+   * @param test         - The test
+   * @param config       - The configuration
+   * @returns True if there's a collision or the point is not in the vision angle, otherwise false
+   */
+  protected static _testCollision(
+    visionSource: PointVisionSource.Internal.Any,
+    test: CanvasVisibility._TestTarget,
+    config?: DetectionMode.CollisionConfig,
+  ): boolean;
+
+  /**
+   * Test for LOS collision.
+   * For the segment of the ray in the viewed level, `los` is tested.
+   * For the segment of the ray in the target level, a ray is cast with the configuration of `los`.
+   * @param visionSource - The vision source
+   * @param test         - The test
+   * @param los          - The LOS polygon
+   * @returns True if there's a collision or the point is not in the vision angle, otherwise false
+   */
+  protected static _testCollision(
+    visionSource: PointVisionSource.Internal.Any,
+    test: CanvasVisibility._TestTarget,
+    los: PointSourcePolygon.Any,
   ): boolean;
 
   /**
@@ -113,14 +144,14 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @param target          - The target object being tested
    * @param test            - The test case being evaluated
    * @returns Is the point within the vision angle?
-   * @remarks As of 13.346, Foundry's implementation does not use `target` at all
+   * @remarks As of 14.366, Foundry's implementation does not use `target` at all
    *
    * See {@linkcode _canDetect} remarks.
    */
   protected _testAngle(
     visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
-    target: CanvasVisibility.TestObject | undefined,
+    target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
   ): boolean;
 
@@ -131,14 +162,14 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @param target          - The target object being tested
    * @param test            - The test case being evaluated
    * @returns Is the target within range?
-   * @remarks As of 13.346, Foundry's implementation does not use `target` at all
+   * @remarks As of 14.366, Foundry's implementation does not use `target` at all
    *
    * See {@linkcode _canDetect} remarks.
    */
   protected _testRange(
     visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
-    target: CanvasVisibility.TestObject | undefined,
+    target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
   ): boolean;
 
@@ -165,6 +196,12 @@ declare namespace DetectionMode {
   interface Any extends AnyDetectionMode {}
   interface AnyConstructor extends Identity<typeof AnyDetectionMode> {}
 
+  /**
+   * @remarks Foundry documents this as `Partial<Omit<PointSourcePolygonConfig, "source"|"level">>`, but both keys are
+   * simply overwritten before the collision is cast, and core passes a whole stored polygon config through here.
+   */
+  interface CollisionConfig extends InexactPartial<PointSourcePolygon.StoredConfig> {}
+
   interface Schema extends DataSchema {
     id: fields.StringField<{ blank: false }>;
 
@@ -173,7 +210,7 @@ declare namespace DetectionMode {
     /** If this DM is available in Token Config UI */
     tokenConfig: fields.BooleanField<{ initial: true }>;
 
-    /** If this DM is constrained by walls */
+    /** If this DM is constrained by walls and surfaces */
     walls: fields.BooleanField<{ initial: true }>;
 
     /** If this DM is constrained by the vision angle */

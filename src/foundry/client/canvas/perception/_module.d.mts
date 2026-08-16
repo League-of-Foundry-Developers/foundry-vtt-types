@@ -7,7 +7,6 @@ export * as types from "./_types.mjs";
 export { default as FogManager } from "./fog.mjs";
 export { default as PerceptionManager } from "./perception-manager.mjs";
 export { default as VisionMode } from "./vision-mode.mjs";
-// Note: ShaderField not re-exported from vision-mode
 
 // Detection modes
 export { default as DetectionMode } from "./detection-mode.mjs";
