@@ -59,9 +59,7 @@ export function fromUuid<
   ConcreteDocument extends Document.Any = __UnsetDocument,
   Invalid extends boolean | undefined = undefined,
   const Uuid extends string = string,
-  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined =
-    | ValidRelativesOf<Uuid, ConcreteDocument>
-    | undefined,
+  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined = undefined,
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid>,
   options?: FromUuidOptions<Relative, Invalid>,
@@ -119,21 +117,16 @@ type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name ex
   ? CompendiumCollection.IndexEntry<Name>
   : never;
 
-type ValidRelativesOf<
-  Uuid extends string,
-  Expected extends Document.Any,
-  Generation extends number | null = null,
-> = Uuid extends unknown ? Document.ImplementationFor<_ValidRelativesOf<Uuid, Expected, Generation>> : never;
-
-type _x = ValidRelativesOf<"ActiveEffect.ARandomIDToTest" | "PlaylistSound.foo", __UnsetDocument, 0>;
+type ValidRelativesOf<Uuid extends string, Expected extends Document.Any> = Document.ImplementationFor<
+  _ValidRelativesOf<Uuid, Expected>
+>;
 
 type _ValidRelativesOf<
   Uuid extends string,
   ExpectedDoc extends Document.Any,
-  Generation extends number | null,
   Parsed extends ParsedUUID = ParseUuid2<Uuid, ExpectedDoc>,
-> = Generation extends number
-  ? Document.XParentOf<Parsed["type"], Generation>
+> = Parsed["parentGeneration"] extends number
+  ? Document.XParentOf<Parsed["type"], Parsed["parentGeneration"]>
   : Parsed["type"] | Document.AncestorsOf<Parsed["type"]>;
 
 declare const AnyDocumentClass: Document.AnyConstructor;

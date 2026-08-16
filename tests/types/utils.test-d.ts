@@ -392,8 +392,8 @@ expectTypeOf(pActorUuidWrongExpected.isCompendium).toEqualTypeOf<false>();
 expectTypeOf(pActorUuidWrongExpected.isEmbedded).toEqualTypeOf<false>();
 expectTypeOf(pActorUuidWrongExpected.relative).toEqualTypeOf<[]>();
 
-const _malformedUuid = "Actor.foo.bar";
-declare const pMalformedUuid: ParseUuid2<typeof _malformedUuid>;
+const _malformedLastFragmentUuid = "Actor.foo.bar";
+declare const pMalformedLastFragmentUuid: ParseUuid2<typeof _malformedLastFragmentUuid>;
 // TODO
 
 const _compendiumActorUuid = "Compendium.world.a.Actor.foo";
