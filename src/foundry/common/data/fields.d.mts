@@ -1474,7 +1474,7 @@ declare namespace SchemaField {
   };
 
   /** @internal */
-  type _IsNullish<T> = T extends null | undefined ? true : false;
+  type _IsNullish<T> = T & (null | undefined) extends never ? false : true;
 
   /**
    * Get the inner assignment type for the given DataSchema.
@@ -6563,10 +6563,14 @@ declare namespace TypedSchemaField {
   /**
    * @internal
    */
-  type _AssignmentType<Types extends ConfiguredTypes> = ValueOf<{
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    [K in ConcreteKeys<Types>]: _AddType<DataField.AssignmentTypeFor<Types[K]>, K>;
-  }>;
+  type _AssignmentType<Types extends ConfiguredTypes> =
+    ConcreteKeys<Types> extends never
+      ? // eslint-disable-next-line @typescript-eslint/no-deprecated
+        { type: string } & DataField.AssignmentTypeFor<Types[string]>
+      : ValueOf<{
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          [K in ConcreteKeys<Types>]: _AddType<DataField.AssignmentTypeFor<Types[K]>, K>;
+        }>;
 
   /**
    * @internal
@@ -6586,9 +6590,12 @@ declare namespace TypedSchemaField {
   /**
    * @internal
    */
-  type _InitializedType<Types extends ConfiguredTypes> = ValueOf<{
-    [K in ConcreteKeys<Types>]: _AddType<DataField.InitializedTypeFor<Types[K]>, K>;
-  }>;
+  type _InitializedType<Types extends ConfiguredTypes> =
+    ConcreteKeys<Types> extends never
+      ? { type: string } & DataField.InitializedTypeFor<Types[string]>
+      : ValueOf<{
+          [K in ConcreteKeys<Types>]: _AddType<DataField.InitializedTypeFor<Types[K]>, K>;
+        }>;
 
   type InitializedType<
     Types extends TypedSchemaField.Types,
@@ -6598,9 +6605,12 @@ declare namespace TypedSchemaField {
   /**
    * @internal
    */
-  type _PersistedType<Types extends ConfiguredTypes> = ValueOf<{
-    [K in ConcreteKeys<Types>]: _AddType<DataField.PersistedTypeFor<Types[K]>, K>;
-  }>;
+  type _PersistedType<Types extends ConfiguredTypes> =
+    ConcreteKeys<Types> extends never
+      ? { type: string } & DataField.PersistedTypeFor<Types[string]>
+      : ValueOf<{
+          [K in ConcreteKeys<Types>]: _AddType<DataField.PersistedTypeFor<Types[K]>, K>;
+        }>;
 
   type PersistedType<
     Types extends TypedSchemaField.Types,
