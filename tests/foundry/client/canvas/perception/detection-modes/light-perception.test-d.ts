@@ -8,6 +8,7 @@ import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
+declare const level: Level.Implementation;
 
 describe("DetectionModeLightPerception tests", () => {
   const source = {
@@ -23,12 +24,14 @@ describe("DetectionModeLightPerception tests", () => {
     {
       los: new Map([[visionSource, true]]),
       point: { x: 50, y: 50, elevation: 20 },
+      level,
       // deprecated since v13 until v15 (use the point's elevation instead)
       elevation: 20,
     },
     {
       los: new Map([[visionSource, true]]),
       point: { x: 200, y: 300, elevation: -5 },
+      level,
     },
   ] satisfies CanvasVisibility.Test[];
 

@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 
 import PointSoundSource = foundry.canvas.sources.PointSoundSource;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import Edge = foundry.canvas.geometry.edges.Edge;
 
 expectTypeOf(PointSoundSource.sourceType).toEqualTypeOf<"sound">();
 expectTypeOf(PointSoundSource.defaultData).toEqualTypeOf<PointSoundSource.SourceData>();
@@ -37,3 +39,6 @@ expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40, elevation: 10 }, { eas
 // deprecated since v13, until v15 (passing a point without elevation)
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40 }, { easing: true })).toBeNumber();
+
+expectTypeOf(mySource["_getPolygonBackend"]()).toEqualTypeOf<PointSourcePolygon.AnyConstructor>();
+expectTypeOf(mySource["_getEdgeCreationOptions"]()).toEqualTypeOf<Edge.ConstructorOptions>();

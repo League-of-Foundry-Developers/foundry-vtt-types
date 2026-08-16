@@ -61,7 +61,3 @@ expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: undefine
 // animateFlickering is the only animation function with an extra option (`amplification`)
 expectTypeOf(mySource.animateFlickering(12, { amplification: -3, intensity: 2, reverse: true, speed: 10 })).toBeVoid();
 expectTypeOf(mySource.animateSoundPulse(15, { intensity: 3, reverse: false, speed: 10 }));
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.isDarkness).toBeBoolean();

@@ -3,7 +3,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { PointSourceMesh } from "../containers/_module.d.mts";
-import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon, edges } from "#client/canvas/geometry/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
@@ -83,6 +83,9 @@ declare class PointDarknessSource<
    */
   get darkness(): PointSourceMesh;
 
+  protected override _getEdgeCreationOptions(): edges.Edge.ConstructorOptions;
+
+  /** @remarks Ignores `point.elevation`; darkness sources are vertically unbounded and unaffected by surfaces */
   override testPoint(point: Canvas.ElevatedPoint): boolean;
 
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
@@ -99,12 +102,6 @@ declare class PointDarknessSource<
    * Update the uniforms of the shader on the darkness layer.
    */
   protected _updateDarknessUniforms(): void;
-
-  /**
-   * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
-   * @remarks Always returns `true`
-   */
-  get isDarkness(): true;
 
   #PointDarknessSource: true;
 }

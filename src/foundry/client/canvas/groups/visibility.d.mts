@@ -8,6 +8,7 @@ import type { CanvasVisionMask } from "#client/canvas/layers/_module.d.mts";
 import type { PerceptionManager, VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
+import type { Level } from "#client/documents/_module.d.mts";
 // Hooks are only linked, aliased to match foundry's links
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AllHooks as hookEvents } from "#client/hooks.mjs";
@@ -282,12 +283,19 @@ declare namespace CanvasVisibility {
   }
 
   interface TestConfig extends InexactPartial<_TestConfigOptional> {
+    /** The target level */
+    level: Level.Implementation;
+
     /** An array of visibility tests */
     tests: CanvasVisibility.Test[];
   }
 
   interface Test {
+    /** The target point */
     point: Canvas.ElevatedPoint;
+
+    /** The target level */
+    level: Level.Implementation;
 
     /**
      * @deprecated "`CanvasVisibility.Test#elevation` has been deprecated in favor of {@linkcode Canvas.ElevatedPoint.elevation | CanvasVisibility.Test#point#elevation}." (since v13, until v15)

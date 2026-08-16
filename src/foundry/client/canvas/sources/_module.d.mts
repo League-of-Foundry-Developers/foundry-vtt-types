@@ -12,3 +12,4 @@ export { default as PointMovementSource } from "./point-movement-source.mjs";
 export { default as PointSoundSource } from "./point-sound-source.mjs";
 export { default as PointVisionSource } from "./point-vision-source.mjs";
 export { default as RenderedEffectSource } from "./rendered-effect-source.mjs";
+export * as types from "./_types.mjs";

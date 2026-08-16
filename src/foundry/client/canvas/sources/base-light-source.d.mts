@@ -86,7 +86,6 @@ declare abstract class BaseLightSource<
    * ```js
    * {
    *   ...super.defaultData,
-   *   priority: 0,
    *   alpha: 0.5,
    *   bright: 0,
    *   coloration: 1,
@@ -170,13 +169,6 @@ declare abstract class BaseLightSource<
    * @remarks A valid {@linkcode BaseLightSource.LightAnimationFunction | LightAnimationFunction}
    */
   animateSoundPulse(dt: number, options?: BaseLightSource.AnimateSoundPulseOptions): void;
-
-  /**
-   * /**
-   * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
-   * @remarks Always returns `false`, typed as `boolean` to allow `PointDarknessSource` override
-   */
-  get isDarkness(): boolean;
 
   #BaseLightSource: true;
 }
