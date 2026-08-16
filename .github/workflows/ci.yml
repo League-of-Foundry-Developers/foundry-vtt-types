@@ -143,12 +143,12 @@ jobs:
       - name: Publish @league-of-foundry-developers/foundry-vtt-types
         run: |-
           npm version --git-tag-version false "$VERSION"
-          npm publish --provenance --ignore-scripts --tag prerelease
+          npm publish --provenance --ignore-scripts --tag beta
       - name: Publish fvtt-types
         run: |-
           jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
           npm version --allow-same-version --git-tag-version false "$VERSION"
-          npm publish --provenance --ignore-scripts --tag prerelease
+          npm publish --provenance --ignore-scripts --tag beta
 
   publishRelease:
     name: Publish release
