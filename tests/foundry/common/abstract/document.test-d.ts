@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 
 import Document = foundry.abstract.Document;
+import DataModel = foundry.abstract.DataModel;
+import fields = foundry.data.fields;
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
@@ -134,4 +136,19 @@ interface _TestLookupVariance<
   out Name extends Document.Type,
 > {
   _: Document.Database.Internal.Lookup<Operation, Name>;
+}
+
+// `Document#_updateDiff` is narrower than `object`. Its `changes` must still admit the
+// `ForcedReplacement` on `system` that the runtime demands when `type` changes, otherwise the type
+// would silently forbid a legitimate document type change.
+class _TestDocumentUpdateDiff extends Actor {
+  protected override _updateDiff(
+    copy: fields.SchemaField.SourceData<Actor.Schema>,
+    changes: fields.SchemaField.UpdateData<Actor.Schema>,
+    options: DataModel.UpdateOptions,
+    _state: fields.DataField.UpdateState,
+  ): fields.SchemaField.UpdateData<Actor.Schema> {
+    super._updateDiff(copy, { type: "base", system: _replace({}) }, options, _state);
+    return super._updateDiff(copy, changes, options, _state);
+  }
 }

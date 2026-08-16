@@ -794,6 +794,23 @@ declare global {
       layerClass: foundry.canvas.layers.PlaceablesLayer.ImplementationClassFor<Name>;
     }
 
+    /**
+     * The sidebar placeables tab a canvas document is listed in.
+     *
+     * @remarks A document type without this entry gets no tab, and its layer is skipped by
+     * {@linkcode foundry.applications.sidebar.tabs.PlaceableDirectory | PlaceableDirectory} entirely.
+     */
+    interface PlaceableSidebar<ApplicationClass extends foundry.applications.sidebar.tabs.PlaceableTab.AnyConstructor> {
+      applicationClass: ApplicationClass;
+
+      /**
+       * The position of the tab in the placeables directory; lower sorts earlier.
+       *
+       * @remarks An absent order is treated as `1000`.
+       */
+      order?: number | undefined;
+    }
+
     interface Actor extends _Document<"Actor">, _HasTypes<"Actor"> {
       /**
        * @defaultValue {@linkcode collections.Actors}
@@ -912,6 +929,104 @@ declare global {
 
       /** @defaultValue `100` */
       batchSize: number;
+
+      /**
+       * @defaultValue {@linkcode foundry.applications.sidebar.apps.ChatPopout}
+       */
+      popoutClass: typeof foundry.applications.sidebar.apps.ChatPopout;
+
+      /**
+       * Supported chat message visibility modes.
+       */
+      modes: ChatMessage.Modes;
+    }
+
+    namespace ChatMessage {
+      interface Modes {
+        [mode: Brand<string, "CONFIG.ChatMessage.modes">]: ModeConfig;
+
+        /**
+         * Out-of-character messages visible to all players.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.public",
+         *   icon: "fa-solid fa-globe"
+         * }
+         * ```
+         */
+        public: ModeConfig;
+
+        /**
+         * Messages visible between gamemasters and the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.gm",
+         *   icon: "fa-solid fa-user-secret"
+         * }
+         * ```
+         */
+        gm: ModeConfig;
+
+        /**
+         * Messages visible only to gamemasters and not to the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.blind",
+         *   icon: "fa-solid fa-eye-slash"
+         * }
+         * ```
+         */
+        blind: ModeConfig;
+
+        /**
+         * Messages visible only to the sending user.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.self",
+         *   icon: "fa-solid fa-user"
+         * }
+         * ```
+         */
+        self: ModeConfig;
+
+        /**
+         * In-character messages visible to all players.
+         *
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "CHAT.MODES.ic",
+         *   icon: "fa-solid fa-hat-wizard"
+         * }
+         * ```
+         */
+        ic: ModeConfig;
+      }
+
+      interface ModeData extends InexactPartial<foundry.documents.ChatMessage.CreateData> {}
+
+      interface ModeConfig {
+        /** @remarks A localization key. */
+        label: string;
+
+        /** @remarks A Font Awesome class string. */
+        icon: string;
+
+        /**
+         * Replaces the built-in whisper and blindness handling for this mode.
+         *
+         * @privateRemarks Optional at runtime despite Foundry's typedef.
+         */
+        handler?: ((data: ModeData) => void) | undefined;
+      }
     }
 
     interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {
@@ -1578,6 +1693,9 @@ declare global {
 
       /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.MacroDirectory} */
       macros: typeof foundry.applications.sidebar.tabs.MacroDirectory;
+
+      /** @defaultValue {@linkcode foundry.applications.sidebar.tabs.PlaceableDirectory} */
+      placeables: typeof foundry.applications.sidebar.tabs.PlaceableDirectory;
 
       /** @defaultValue {@linkcode foundry.applications.ui.Players} */
       players: typeof foundry.applications.ui.Players;
@@ -3953,9 +4071,25 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {}
+    interface AmbientLight extends _Document<"AmbientLight">, _HasNoTypes<"AmbientLight">, _CanvasDoc<"AmbientLight"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.AmbientLightTab, order: 500 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.AmbientLightTab>;
+    }
 
-    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {}
+    interface AmbientSound extends _Document<"AmbientSound">, _HasNoTypes<"AmbientSound">, _CanvasDoc<"AmbientSound"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.AmbientSoundTab, order: 600 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.AmbientSoundTab>;
+    }
 
     interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
 
@@ -3967,6 +4101,14 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.DrawingHUD;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.DrawingTab, order: 300 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.DrawingTab>;
     }
 
     interface MeasuredTemplate
@@ -3990,9 +4132,25 @@ declare global {
       }
     }
 
-    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {}
+    interface Note extends _Document<"Note">, _HasNoTypes<"Note">, _CanvasDoc<"Note"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.NoteTab, order: 800 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.NoteTab>;
+    }
 
-    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {}
+    interface Region extends _Document<"Region">, _HasNoTypes<"Region">, _CanvasDoc<"Region"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.RegionTab, order: 700 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.RegionTab>;
+    }
 
     interface RegionBehavior extends _Document<"RegionBehavior">, _HasTypes<"RegionBehavior"> {
       /**
@@ -4020,6 +4178,14 @@ declare global {
        * @privateRemarks Instantiated by `new` in the {@linkcode foundry.applications.hud.HeadsUpDisplayContainer} class body.
        */
       hudClass: typeof foundry.applications.hud.TileHUD;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.TileTab, order: 200 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.TileTab>;
     }
 
     interface Level extends _Document<"Level">, _HasNoTypes<"Level"> {}
@@ -4044,6 +4210,14 @@ declare global {
        */
       rulerClass: typeof foundry.canvas.placeables.tokens.TokenRuler;
 
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.TokenTab, order: 100 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.TokenTab>;
+
       movement: Token.Movement;
 
       /** @defaultValue `"TOKEN.Adjectives"` */
@@ -4057,6 +4231,14 @@ declare global {
     }
 
     interface Wall extends _Document<"Wall">, _HasNoTypes<"Wall">, _CanvasDoc<"Wall"> {
+      /**
+       * @defaultValue
+       * ```ts
+       * { applicationClass: foundry.applications.sidebar.tabs.WallTab, order: 400 }
+       * ```
+       */
+      sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.WallTab>;
+
       // TODO: is InterfaceToObject required?
       animationTypes: InterfaceToObject<RemoveIndexSignatures<CONFIG.Wall.DoorAnimations>>;
 

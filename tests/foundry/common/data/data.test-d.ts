@@ -41,6 +41,73 @@ expectTypeOf(myShape.points).toEqualTypeOf<number[]>();
 
 /******************************************************************/
 
+declare const myCircle: foundry.data.CircleShapeData;
+expectTypeOf(myCircle.rotation).toBeNumber();
+expectTypeOf(myCircle.gridBased).toBeBoolean();
+
+declare const myRectangle: foundry.data.RectangleShapeData;
+expectTypeOf(myRectangle.anchorX).toBeNumber();
+expectTypeOf(myRectangle.anchorY).toBeNumber();
+expectTypeOf(myRectangle.gridBased).toBeBoolean();
+
+declare const myEllipse: foundry.data.EllipseShapeData;
+expectTypeOf(myEllipse.gridBased).toBeBoolean();
+
+declare const myPolygon: foundry.data.PolygonShapeData;
+expectTypeOf(myPolygon.origin).toEqualTypeOf<{ x: number; y: number } | null>();
+
+declare const myEmanation: foundry.data.EmanationShapeData;
+expectTypeOf(myEmanation.type).toEqualTypeOf<"emanation">();
+expectTypeOf(myEmanation.radius).toEqualTypeOf<number>();
+expectTypeOf(myEmanation.gridBased).toBeBoolean();
+
+declare const myCone: foundry.data.ConeShapeData;
+expectTypeOf(myCone.type).toEqualTypeOf<"cone">();
+expectTypeOf(myCone.angle).toBeNumber();
+expectTypeOf(myCone.rotation).toBeNumber();
+expectTypeOf(myCone.curvature).toEqualTypeOf<"round" | "flat" | "semicircle">();
+
+declare const myRing: foundry.data.RingShapeData;
+expectTypeOf(myRing.type).toEqualTypeOf<"ring">();
+expectTypeOf(myRing.innerWidth).toEqualTypeOf<number>();
+expectTypeOf(myRing.outerWidth).toEqualTypeOf<number>();
+
+declare const myLine: foundry.data.LineShapeData;
+expectTypeOf(myLine.type).toEqualTypeOf<"line">();
+expectTypeOf(myLine.length).toEqualTypeOf<number>();
+expectTypeOf(myLine.width).toEqualTypeOf<number>();
+
+declare const myTokenShape: foundry.data.TokenShapeData;
+expectTypeOf(myTokenShape.type).toEqualTypeOf<"token">();
+expectTypeOf(myTokenShape.shape).toBeNumber();
+
+declare const myGridShape: foundry.data.GridShapeData;
+expectTypeOf(myGridShape.type).toEqualTypeOf<"grid">();
+expectTypeOf(myGridShape.origin).toEqualTypeOf<{ x: number; y: number } | null>();
+
+// Every `BaseShapeData` subclass takes a `Schema` parameter so a system can extend one with its own
+// fields and still have the instance side see them. Without it the subclass would be stuck with the
+// core schema.
+declare namespace MyEllipseShapeData {
+  interface Schema extends foundry.data.EllipseShapeData.Schema {
+    glow: foundry.data.fields.BooleanField;
+  }
+}
+
+declare class MyEllipseShapeData extends foundry.data.EllipseShapeData<MyEllipseShapeData.Schema> {}
+
+declare const myCustomEllipse: MyEllipseShapeData;
+
+// The added field is visible...
+expectTypeOf(myCustomEllipse.glow).toBeBoolean();
+
+// ...and so are the ones inherited from `EllipseShapeData` and `BaseShapeData`.
+expectTypeOf(myCustomEllipse.gridBased).toBeBoolean();
+expectTypeOf(myCustomEllipse.type).toEqualTypeOf<"ellipse">();
+expectTypeOf(myCustomEllipse.hole).toBeBoolean();
+
+/******************************************************************/
+
 type TextureDataTestSchema = DataModel.SchemaOfClass<typeof TextureDataTestModel>;
 
 class TextureDataTestModel extends DataModel<TextureDataTestSchema> {
@@ -50,6 +117,7 @@ class TextureDataTestModel extends DataModel<TextureDataTestSchema> {
         {},
         { categories: ["IMAGE", "AUDIO"], initial: { src: "path/to/thing.png" } },
       ),
+      textureWithoutInitial: new foundry.data.TextureData({}, { wildcard: true }),
     };
   }
 }
@@ -61,17 +129,11 @@ expectTypeOf(testModel.textureData.anchorX).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.anchorY).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-expectTypeOf(testModel.textureData.offsetX).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-expectTypeOf(testModel.textureData.offsetY).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.fit).toEqualTypeOf<ValueOf<typeof CONST.TEXTURE_DATA_FIT_MODES>>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.scaleX).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.scaleY).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-expectTypeOf(testModel.textureData.rotation).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.tint).toEqualTypeOf<Color>();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -87,9 +149,11 @@ const myProtoToken = new foundry.data.PrototypeToken();
 // schema is tested in `tests/foundry/common/documents/token.test-d.ts`
 expectTypeOf(myProtoToken.name).toEqualTypeOf<string>();
 expectTypeOf(myProtoToken.randomImg).toBeBoolean();
+expectTypeOf(myProtoToken.depth).toBeNumber();
 
 expectTypeOf(myProtoToken.actor).toEqualTypeOf<Actor.Implementation | null>();
-expectTypeOf(myProtoToken.toObject().actorId).toEqualTypeOf<string | null | undefined>();
+// @ts-expect-error V14 no longer adds actorId to serialized PrototypeToken data.
+myProtoToken.toObject().actorId;
 expectTypeOf(myProtoToken.getBarAttribute("foo")).toEqualTypeOf<
   TokenDocument.SingleAttributeBar | TokenDocument.ObjectAttributeBar | null
 >();
@@ -101,6 +165,10 @@ const myTombstone = new foundry.data.TombstoneData();
 
 expectTypeOf(myTombstone._id).toEqualTypeOf<string | null>();
 expectTypeOf(myTombstone._tombstone).toEqualTypeOf<boolean>();
+
+expectTypeOf(
+  foundry.data.PrototypeTokenOverrides.fromJSON,
+).returns.toEqualTypeOf<foundry.data.PrototypeTokenOverrides>();
 
 // `TextureData.Schema` is generated based upon some options and so is important to test.
 // This could be fleshed out a fair bit.

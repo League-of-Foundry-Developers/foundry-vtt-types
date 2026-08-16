@@ -220,7 +220,7 @@ expectTypeOf(BaseActiveEffect.DEFAULT_ICON).toBeString();
 
 // Document template static overrides
 
-expectTypeOf(TestActiveEffect["_initializationOrder"]()).toEqualTypeOf<
+expectTypeOf(fullTestAE["_initializationOrder"]()).toEqualTypeOf<
   Generator<[string, fields.DataField.Any], void, undefined>
 >();
 expectTypeOf(TestActiveEffect.implementation).toEqualTypeOf<ActiveEffect.ImplementationClass>();

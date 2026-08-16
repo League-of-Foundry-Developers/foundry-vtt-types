@@ -331,13 +331,19 @@ declare namespace TokenDocument {
      * The width of the Token in grid units
      * @defaultValue `1`
      */
-    width: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5 }>;
+    width: fields.NumberField<{ required: true; nullable: false; positive: true; initial: 1 }>;
 
     /**
      * The height of the Token in grid units
      * @defaultValue `1`
      */
-    height: fields.NumberField<{ nullable: false; positive: true; initial: 1; step: 0.5 }>;
+    height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: 1 }>;
+
+    /**
+     * The depth in grid spaces (nonnegative).
+     * @defaultValue `1`
+     */
+    depth: fields.NumberField<{ required: true; nullable: false; min: 0; initial: 1 }>;
 
     /**
      * The token's texture on the canvas.

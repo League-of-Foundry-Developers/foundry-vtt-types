@@ -55,12 +55,12 @@ declare namespace LightData {
     /**
      * @defaultValue `0`
      */
-    min: fields.AlphaField<{ initial: 0 }>;
+    min: fields.AlphaField<{ initial: 0; placeholder: "0" }>;
 
     /**
      * @defaultValue `1`
      */
-    max: fields.AlphaField<{ initial: 1 }>;
+    max: fields.AlphaField<{ initial: 1; placeholder: "1" }>;
   }
 
   interface Schema extends fields.DataSchema {
@@ -84,7 +84,7 @@ declare namespace LightData {
 
     /**
      * The angle of emission for this point source
-     * @defaultValue `0`
+     * @defaultValue `360`
      */
     angle: fields.AngleField<{ initial: 360; normalize: false }>;
 
@@ -181,23 +181,21 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   /** @defaultValue `["LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /**
-   * @remarks
-   * Migrations:
-   * - negative `luminosity`s to `1 - luminosity` and setting `negative` true (since v12)
-   */
-  static override migrateData(source: object): object;
-
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<LightData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<LightData.Schema>;
 
+  // fake type override
   static override validateJoint(data: LightData.Source): void;
 
+  // fake type override
   static override fromSource(source: LightData.CreateData, context?: DataModel.FromSourceOptions): LightData;
 
+  // fake type override
   static override fromJSON(json: string): LightData;
 }
 
@@ -216,13 +214,13 @@ declare namespace ShapeData {
      * For rectangles, the pixel width of the shape.
      * @defaultValue `null`
      */
-    width: fields.NumberField<{ required: true; integer: true; min: 0; label: "Width" }>;
+    width: fields.NumberField<{ required: true; integer: true; min: 0 }>;
 
     /**
      * For rectangles, the pixel width of the shape.
      * @defaultValue `null`
      */
-    height: fields.NumberField<{ required: true; integer: true; min: 0; label: "Height" }>;
+    height: fields.NumberField<{ required: true; integer: true; min: 0 }>;
 
     /**
      * For circles, the pixel radius of the shape.
@@ -263,14 +261,19 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<ShapeData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<ShapeData.Schema>;
 
+  // fake type override
   static override validateJoint(data: ShapeData.Source): void;
 
+  // fake type override
   static override fromSource(source: ShapeData.CreateData, context?: DataModel.FromSourceOptions): ShapeData;
 
+  // fake type override
   static override fromJSON(json: string): ShapeData;
 }
 
@@ -291,8 +294,7 @@ declare namespace BaseShapeData {
       blank: false;
       initial: ShapeType;
       validate: (value: unknown) => value is ShapeType;
-      // TODO: The following `choices` does not exist in Foundry, it's a type hack to get this field to report as the only valid value it can have
-      // TODO: The validation function enough might be able to be made to sufficiently limit the value
+      // TODO: Remove `choices` once `validate` can narrow the field to `ShapeType`.
       choices: [ShapeType];
       validationError: `must be equal to "${ShapeType}"`;
     }>;
@@ -310,8 +312,17 @@ declare namespace BaseShapeData {
     rectangle: typeof RectangleShapeData;
     circle: typeof CircleShapeData;
     ellipse: typeof EllipseShapeData;
+    emanation: typeof EmanationShapeData;
+    cone: typeof ConeShapeData;
+    ring: typeof RingShapeData;
+    line: typeof LineShapeData;
     polygon: typeof PolygonShapeData;
+    token: typeof TokenShapeData;
+    grid: typeof GridShapeData;
   }
+
+  /** @see {@linkcode EmanationShapeData.Schema.base} */
+  type EmanationBaseTypes = Omit<Types, "emanation" | "ring">;
 }
 
 /**
@@ -320,6 +331,17 @@ declare namespace BaseShapeData {
 declare abstract class BaseShapeData<
   ShapeSchema extends BaseShapeData.Schema = BaseShapeData.Schema,
 > extends DataModel<ShapeSchema> {
+  /**
+   * The rotation
+   * @defaultValue `0`
+   * @remarks Not part of the schema for shape types which don't define their own `rotation` field
+   * (e.g. {@linkcode CircleShapeData}); this fallback default is applied directly in the constructor.
+   */
+  rotation: number;
+
+  /** @defaultValue `["SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The possible shape types.
    */
@@ -345,13 +367,13 @@ declare abstract class BaseShapeData<
 declare namespace RectangleShapeData {
   interface Schema extends BaseShapeData.Schema<"rectangle"> {
     /**
-     * The top-left x-coordinate in pixels before rotation.
+     * The x-coordinate of the origin in pixels.
      * @defaultValue `undefined`
      */
     x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
 
     /**
-     * The top-left y-coordinate in pixels before rotation.
+     * The y-coordinate of the origin in pixels.
      * @defaultValue `undefined`
      */
     y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
@@ -360,19 +382,39 @@ declare namespace RectangleShapeData {
      * The width of the rectangle in pixels.
      * @defaultValue `undefined`
      */
-    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
 
     /**
      * The height of the rectangle in pixels.
      * @defaultValue `undefined`
      */
-    height: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+    height: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
 
     /**
-     * The rotation around the center of the rectangle in degrees.
+     * The x-coordinate of the anchor.
+     * @defaultValue `0`
+     */
+    anchorX: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * The y-coordinate of the anchor.
+     * @defaultValue `0`
+     */
+    anchorY: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * The rotation around the origin of the rectangle in degrees.
      * @defaultValue `0`
      */
     rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
   }
 
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
@@ -385,28 +427,37 @@ declare namespace RectangleShapeData {
 }
 
 /**
- * The data model for a rectangular shape.
+ * The data model for a rectangle shape.
  */
-declare class RectangleShapeData extends BaseShapeData<RectangleShapeData.Schema> {
-  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
-  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+declare class RectangleShapeData<
+  Schema extends RectangleShapeData.Schema = RectangleShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.rectangle", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
   static override readonly TYPE: "rectangle";
 
   static override defineSchema(): RectangleShapeData.Schema;
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<RectangleShapeData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<RectangleShapeData.Schema>;
 
+  // fake type override
   static override validateJoint(data: RectangleShapeData.Source): void;
 
+  // fake type override
   static override fromSource(
     source: RectangleShapeData.CreateData,
     context?: DataModel.FromSourceOptions,
   ): RectangleShapeData;
 
+  // fake type override
   static override fromJSON(json: string): RectangleShapeData;
 }
 
@@ -428,7 +479,15 @@ declare namespace CircleShapeData {
      * The radius of the circle in pixels.
      * @defaultValue `undefined`
      */
-    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
   }
 
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
@@ -443,26 +502,35 @@ declare namespace CircleShapeData {
 /**
  * The data model for a circle shape.
  */
-declare class CircleShapeData extends BaseShapeData<CircleShapeData.Schema> {
-  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
-  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+declare class CircleShapeData<
+  Schema extends CircleShapeData.Schema = CircleShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.circle", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
   static override readonly TYPE: "circle";
 
   static override defineSchema(): CircleShapeData.Schema;
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<CircleShapeData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<CircleShapeData.Schema>;
 
+  // fake type override
   static override validateJoint(data: CircleShapeData.Source): void;
 
+  // fake type override
   static override fromSource(
     source: CircleShapeData.CreateData,
     context?: DataModel.FromSourceOptions,
   ): CircleShapeData;
 
+  // fake type override
   static override fromJSON(json: string): CircleShapeData;
 }
 
@@ -484,19 +552,27 @@ declare namespace EllipseShapeData {
      * The x-radius of the circle in pixels.
      * @defaultValue `undefined`
      */
-    radiusX: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+    radiusX: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
 
     /**
      * The y-radius of the circle in pixels.
      * @defaultValue `undefined`
      */
-    radiusY: fields.NumberField<{ required: true; nullable: false; initial: undefined; positive: true }>;
+    radiusY: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
 
     /**
      * The rotation around the center of the rectangle in degrees.
      * @defaultValue `0`
      */
     rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
   }
 
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
@@ -511,40 +587,385 @@ declare namespace EllipseShapeData {
 /**
  * The data model for an ellipse shape.
  */
-declare class EllipseShapeData extends BaseShapeData<EllipseShapeData.Schema> {
-  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
-  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+declare class EllipseShapeData<
+  Schema extends EllipseShapeData.Schema = EllipseShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.ellipse", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
   static override readonly TYPE: "ellipse";
 
   static override defineSchema(): EllipseShapeData.Schema;
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<EllipseShapeData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<EllipseShapeData.Schema>;
 
+  // fake type override
   static override validateJoint(data: EllipseShapeData.Source): void;
 
+  // fake type override
   static override fromSource(
     source: EllipseShapeData.CreateData,
     context?: DataModel.FromSourceOptions,
   ): EllipseShapeData;
 
+  // fake type override
   static override fromJSON(json: string): EllipseShapeData;
 }
 
+declare namespace EmanationShapeData {
+  interface Schema extends BaseShapeData.Schema<"emanation"> {
+    /**
+     * The base shape of the emanation.
+     */
+    base: fields.TypedSchemaField<BaseShapeData.EmanationBaseTypes>;
+
+    /**
+     * The radius of the emanation in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for an emanation shape.
+ */
+declare class EmanationShapeData<
+  Schema extends EmanationShapeData.Schema = EmanationShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.emanation", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "emanation";
+
+  static override defineSchema(): EmanationShapeData.Schema;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<EmanationShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<EmanationShapeData.Schema>;
+
+  // fake type override
+  static override validateJoint(data: EmanationShapeData.Source): void;
+
+  // fake type override
+  static override fromSource(
+    source: EmanationShapeData.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): EmanationShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): EmanationShapeData;
+}
+
+declare namespace ConeShapeData {
+  interface Schema extends BaseShapeData.Schema<"cone"> {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the cone in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The angle of the cone in degrees.
+     * @defaultValue `undefined`
+     */
+    angle: fields.AngleField<{ initial: undefined; min: 0; normalize: false }>;
+
+    /**
+     * The direction of the cone in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * The curvature.
+     * @defaultValue `"round"`
+     */
+    curvature: fields.StringField<{
+      required: true;
+      initial: "round";
+      choices: {
+        round: "SHAPE.TYPES.cone.CURVATURES.round.label";
+        flat: "SHAPE.TYPES.cone.CURVATURES.flat.label";
+        semicircle: "SHAPE.TYPES.cone.CURVATURES.semicircle.label";
+      };
+    }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for a cone shape.
+ */
+declare class ConeShapeData<Schema extends ConeShapeData.Schema = ConeShapeData.Schema> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.cone", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "cone";
+
+  static override defineSchema(): ConeShapeData.Schema;
+
+  /**
+   * @throws If `data.curvature` is `"flat"` and `data.angle` is greater than `90`, or if `data.curvature` is
+   * `"semicircle"` and `data.angle` is greater than `180`.
+   */
+  static override validateJoint(data: ConeShapeData.Source): void;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<ConeShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<ConeShapeData.Schema>;
+
+  // fake type override
+  static override fromSource(source: ConeShapeData.CreateData, context?: DataModel.FromSourceOptions): ConeShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): ConeShapeData;
+}
+
+declare namespace RingShapeData {
+  interface Schema extends BaseShapeData.Schema<"ring"> {
+    /**
+     * The x-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The inner width of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    innerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The inner width of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    outerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for a ring shape.
+ */
+declare class RingShapeData<Schema extends RingShapeData.Schema = RingShapeData.Schema> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.ring", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "ring";
+
+  static override defineSchema(): RingShapeData.Schema;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<RingShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<RingShapeData.Schema>;
+
+  // fake type override
+  static override validateJoint(data: RingShapeData.Source): void;
+
+  // fake type override
+  static override fromSource(source: RingShapeData.CreateData, context?: DataModel.FromSourceOptions): RingShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): RingShapeData;
+}
+
+declare namespace LineShapeData {
+  interface Schema extends BaseShapeData.Schema<"line"> {
+    /**
+     * The x-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The length of the line in pixels.
+     * @defaultValue `undefined`
+     */
+    length: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The width of the line in pixels.
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The rotation around the origin of the line in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for a line shape.
+ */
+declare class LineShapeData<Schema extends LineShapeData.Schema = LineShapeData.Schema> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.line", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "line";
+
+  static override defineSchema(): LineShapeData.Schema;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<LineShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<LineShapeData.Schema>;
+
+  // fake type override
+  static override validateJoint(data: LineShapeData.Source): void;
+
+  // fake type override
+  static override fromSource(source: LineShapeData.CreateData, context?: DataModel.FromSourceOptions): LineShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): LineShapeData;
+}
+
 declare namespace PolygonShapeData {
+  interface OriginSchema extends fields.DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+  }
+
   interface Schema extends BaseShapeData.Schema<"polygon"> {
     /**
      * The points of the polygon ([x0, y0, x1, y1, ...]).
-     * The polygon must not be self-intersecting.
+     * The polygon must not be self-intersecting if it is supposed to be filled.
+     * The polygon must not contained zero-length edges except for the edge from the last to the first point.
      * @defaultValue `[]`
      */
     points: fields.ArrayField<
       fields.NumberField<{ required: true; nullable: false; initial: undefined }>,
-      { validate: (value: []) => void }
+      { min: 4; validate: (value: number[]) => void }
     >;
+
+    /**
+     * The origin of the polygon. If null, it defaults to the center-of-mass.
+     * @defaultValue `null`
+     */
+    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
   }
 
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
@@ -559,27 +980,170 @@ declare namespace PolygonShapeData {
 /**
  * The data model for a polygon shape.
  */
-declare class PolygonShapeData extends BaseShapeData<PolygonShapeData.Schema> {
-  // Defined by `Object.defineProperty` in a static initialization block; despite no options being passed, and the base class defining
-  // `static TYPE = ""`, because the SIB runs first, this is readonly.
+declare class PolygonShapeData<
+  Schema extends PolygonShapeData.Schema = PolygonShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.polygon", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
   static override readonly TYPE: "polygon";
 
   static override defineSchema(): PolygonShapeData.Schema;
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<PolygonShapeData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<PolygonShapeData.Schema>;
 
+  // fake type override
   static override validateJoint(data: PolygonShapeData.Source): void;
 
+  // fake type override
   static override fromSource(
     source: PolygonShapeData.CreateData,
     context?: DataModel.FromSourceOptions,
   ): PolygonShapeData;
 
+  // fake type override
   static override fromJSON(json: string): PolygonShapeData;
+}
+
+declare namespace TokenShapeData {
+  interface Schema extends BaseShapeData.Schema<"token"> {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The width in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The height in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
+     * @defaultValue `undefined`
+     */
+    shape: fields.NumberField<{ required: true; choices: CONST.TOKEN_SHAPES[]; initial: undefined }>;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for a token shape.
+ */
+declare class TokenShapeData<
+  Schema extends TokenShapeData.Schema = TokenShapeData.Schema,
+> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.token", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "token";
+
+  static override defineSchema(): TokenShapeData.Schema;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<TokenShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<TokenShapeData.Schema>;
+
+  // fake type override
+  static override validateJoint(data: TokenShapeData.Source): void;
+
+  // fake type override
+  static override fromSource(source: TokenShapeData.CreateData, context?: DataModel.FromSourceOptions): TokenShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): TokenShapeData;
+}
+
+declare namespace GridShapeData {
+  interface OriginSchema extends fields.DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+  }
+
+  interface Schema extends BaseShapeData.Schema<"grid"> {
+    /**
+     * The grid offsets covered by this shape
+     * @defaultValue `[]`
+     */
+    offsets: fields.GridOffsetsField;
+
+    /**
+     * The optional grid space origin, which is by default the center point of the first grid space in `offsets`
+     * @defaultValue `null`
+     */
+    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
+}
+
+/**
+ * The data model for a shape that is the union of grid spaces.
+ */
+declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.Schema> extends BaseShapeData<Schema> {
+  /** @defaultValue `["SHAPE.TYPES.grid", "SHAPE.TYPES.base"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @privateRemarks Defined with `Object.defineProperty` without `writable: true`. */
+  static override readonly TYPE: "grid";
+
+  static override defineSchema(): GridShapeData.Schema;
+
+  /* DataModel overrides */
+
+  // fake type override
+  static override _schema: fields.SchemaField<GridShapeData.Schema>;
+
+  // fake type override
+  static override get schema(): fields.SchemaField<GridShapeData.Schema>;
+
+  // fake type override
+  static override validateJoint(data: GridShapeData.Source): void;
+
+  // fake type override
+  static override fromSource(source: GridShapeData.CreateData, context?: DataModel.FromSourceOptions): GridShapeData;
+
+  // fake type override
+  static override fromJSON(json: string): GridShapeData;
 }
 
 declare namespace TextureData {
@@ -608,9 +1172,15 @@ declare namespace TextureData {
    * @remarks The keys picked directly are passed on to the `src: FilePathField` field, but `initial` is an object of initial values for
    * potentially every field in the schema.
    */
-  interface SrcOptions extends Pick<fields.FilePathField.Options, "categories" | "wildcard" | "label"> {
+  interface SrcOptions {
+    categories?: (keyof typeof CONST.FILE_CATEGORIES)[] | undefined;
+
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    initial: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>>;
+    initial?: _SrcOptionsInitial<fields.SchemaField.AssignmentData<Schema<DefaultOptions>>> | undefined;
+
+    wildcard?: boolean | undefined;
+
+    label?: string | undefined;
   }
 
   interface Schema<Options extends SrcOptions = DefaultOptions> extends fields.DataSchema {
@@ -654,32 +1224,6 @@ declare namespace TextureData {
     }>;
 
     /**
-     * The X offset of the texture with (0,0) in the top left.
-     * @defaultValue `initial.offsetX ?? 0`
-     * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@linkcode TextureData} constructor
-     */
-    offsetX: fields.NumberField<{
-      required: true;
-      nullable: false;
-      integer: true;
-      initial: NullishCoalesce<GetKey<Options["initial"], "offsetX", 0>, 0>;
-    }>;
-
-    /**
-     * The Y offset of the texture with (0,0) in the top left.
-     * @defaultValue `initial.offsetY ?? 0`
-     * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@linkcode TextureData} constructor
-     */
-    offsetY: fields.NumberField<{
-      required: true;
-      nullable: false;
-      integer: true;
-      initial: NullishCoalesce<GetKey<Options["initial"], "offsetY", 0>, 0>;
-    }>;
-
-    /**
      * @defaultValue `initial.fit ?? "fill"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
      * parameter of the {@linkcode TextureData} constructor
@@ -717,16 +1261,6 @@ declare namespace TextureData {
       required: true;
       nullable: false;
       initial: NullishCoalesce<GetKey<Options["initial"], "scaleY", 1>, 1>;
-    }>;
-
-    /**
-     * An angle of rotation by which this texture is rotated around its center.
-     * @defaultValue `initial.rotation ?? 0`
-     * @remarks The `initial` in the above default value is the property from the `srcOptions`
-     * parameter of the {@linkcode TextureData} constructor
-     */
-    rotation: fields.AngleField<{
-      initial: NullishCoalesce<GetKey<Options["initial"], "rotation", 0>, 0>;
     }>;
 
     /**
@@ -865,8 +1399,6 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   get actor(): this["parent"];
 
-  override toObject(source?: boolean): PrototypeToken.Source & { actorId: string | null | undefined };
-
   static get database(): CONFIG["DatabaseBackend"];
 
   override _initializeSource(
@@ -932,17 +1464,25 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<PrototypeToken.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<PrototypeToken.Schema>;
 
+  // fake type override
   static override validateJoint(data: PrototypeToken.Source): void;
 
+  // fake type override
   static override fromSource(source: PrototypeToken.CreateData, context?: DataModel.FromSourceOptions): PrototypeToken;
 
+  // fake type override
   static override fromJSON(json: string): PrototypeToken;
 }
 
+/**
+ * The data model for the the core.prototypeTokenOverrides setting.
+ */
 declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.Schema> {
   static override defineSchema(): PrototypeTokenOverrides.Schema;
 
@@ -957,7 +1497,7 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   /** @defaultValue `["TOKEN"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /**The named of the world setting that stores the prototype token overrides */
+  /** The named of the world setting that stores the prototype token overrides */
   static SETTING: PrototypeTokenOverrides.SETTING;
 
   /** A cached copy of the currently-configured overrides */
@@ -974,22 +1514,30 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
    * @param source    - The prototype token source data on which to operate
    * @param actorType - The prototype parent's actor type: used to retrieve type-specific overrides
    */
-  static applyOverrides(source: PrototypeToken.CreateData, actorType: Actor.SubType): void;
+  static applyOverrides(source: PrototypeToken.CreateData, actorType?: Actor.SubType): void;
 
   /** Apply configured overrides to all Actor documents within the World. */
   static applyAll(): void;
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<PrototypeToken.Schema>;
+  // fake type override
+  static override _schema: fields.SchemaField<PrototypeTokenOverrides.Schema>;
 
-  static override get schema(): fields.SchemaField<PrototypeToken.Schema>;
+  // fake type override
+  static override get schema(): fields.SchemaField<PrototypeTokenOverrides.Schema>;
 
-  static override validateJoint(data: PrototypeToken.Source): void;
+  // fake type override
+  static override validateJoint(data: PrototypeTokenOverrides.Source): void;
 
-  static override fromSource(source: PrototypeToken.CreateData, context?: DataModel.FromSourceOptions): PrototypeToken;
+  // fake type override
+  static override fromSource(
+    source: PrototypeTokenOverrides.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): PrototypeTokenOverrides;
 
-  static override fromJSON(json: string): PrototypeToken;
+  // fake type override
+  static override fromJSON(json: string): PrototypeTokenOverrides;
 
   static #PrototypeTokenOverrides: true;
 }
@@ -1153,14 +1701,19 @@ declare class TombstoneData extends DataModel<TombstoneData.Schema> {
 
   /* DataModel overrides */
 
+  // fake type override
   static override _schema: fields.SchemaField<TombstoneData.Schema>;
 
+  // fake type override
   static override get schema(): fields.SchemaField<TombstoneData.Schema>;
 
+  // fake type override
   static override validateJoint(data: TombstoneData.Source): void;
 
+  // fake type override
   static override fromSource(source: TombstoneData.CreateData, context?: DataModel.FromSourceOptions): TombstoneData;
 
+  // fake type override
   static override fromJSON(json: string): TombstoneData;
 }
 
@@ -1173,7 +1726,13 @@ export {
   RectangleShapeData,
   CircleShapeData,
   EllipseShapeData,
+  EmanationShapeData,
+  ConeShapeData,
+  RingShapeData,
+  LineShapeData,
   PolygonShapeData,
+  TokenShapeData,
+  GridShapeData,
   TextureData,
   TombstoneData,
 };

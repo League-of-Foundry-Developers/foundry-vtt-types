@@ -492,8 +492,10 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
 // Note that `{}` should always be assignable to `DeepPartial<T>`.
 export type DeepPartial<T extends object> = _DeepPartial<T>;
 
+// `Node` (e.g. the `HTMLDivElement` used by `Configuration.content`) is excluded from recursion:
+// its circular DOM properties cause "Excessive stack depth comparing types" crashes.
 type _DeepPartial<T> = T extends object
-  ? T extends AnyArray | AnyFunction | AnyConstructor
+  ? T extends AnyArray | AnyFunction | AnyConstructor | Node
     ? T
     : {
         [K in keyof T]?: _DeepPartial<T[K]>;
