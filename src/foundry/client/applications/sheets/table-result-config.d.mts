@@ -1,6 +1,10 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
+import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type FormDataExtended from "../ux/form-data-extended.d.mts";
+
+import Document = foundry.abstract.Document;
 
 declare module "#configuration" {
   namespace Hooks {
@@ -11,8 +15,7 @@ declare module "#configuration" {
 }
 
 /**
- * A TableResult configuration sheet
- * @remarks TODO: Stub
+ * The Application responsible for configuring a single TableResult document within a parent RollTable.
  */
 declare class TableResultConfig<
   RenderContext extends TableResultConfig.RenderContext = TableResultConfig.RenderContext,
@@ -23,14 +26,61 @@ declare class TableResultConfig<
   RenderContext,
   Configuration,
   RenderOptions
-> {}
+> {
+  static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * TableResult types with localized labels
+   */
+  static get RESULT_TYPES(): TableResultConfig.ResultTypeChoice[];
+
+  /**
+   * Prepare the update data of a single TableResult document to ensure joint validation.
+   * @param data - The TableResult update data
+   */
+  static prepareResultUpdateData(data: TableResult.UpdateData): void;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _prepareSubmitData(
+    event: SubmitEvent,
+    form: HTMLFormElement,
+    formData: FormDataExtended,
+    updateData?: DocumentSheetV2.SubmitData<TableResult.Implementation>,
+  ): DocumentSheetV2.SubmitData<TableResult.Implementation>;
+
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  static #TableResultConfig: true;
+}
 
 declare namespace TableResultConfig {
   interface Any extends AnyTableResultConfig {}
   interface AnyConstructor extends Identity<typeof AnyTableResultConfig> {}
 
+  /** An entry of {@linkcode TableResultConfig.RESULT_TYPES}. */
+  interface ResultTypeChoice {
+    value: string;
+
+    label: string;
+  }
+
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<TableResult.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<TableResult.Implementation> {
+    types: ResultTypeChoice[];
+
+    /**
+     * @remarks The Document the result points at, or `null` when the result is a text result or the UUID no
+     * longer resolves.
+     */
+    resultDocument: Document.Any | null;
+
+    buttons: ApplicationV2.FormFooterButton[];
+  }
 
   interface Configuration
     extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<TableResult.Implementation> {}

@@ -1,6 +1,7 @@
 import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
+import type DragDrop from "../ux/drag-drop.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -29,6 +30,11 @@ declare class ActorSheetV2<
    * If this sheet manages the ActorDelta of an unlinked Token, reference that Token document.
    */
   get token(): this["document"]["token"];
+
+  /**
+   * Return a cached copy of a DragDrop instance, creating one on first access.
+   */
+  protected get _dragDrop(): DragDrop.Implementation;
 
   protected override _getHeaderControls(): ApplicationV2.HeaderControlsEntry[];
 
@@ -116,9 +122,9 @@ declare class ActorSheetV2<
    * @param event - The initiating drop event
    * @param item  - The dropped Item document
    */
-  protected _onSortItem(event: Event, item: Item.Implementation): Promise<Item.Implementation[]> | void;
+  protected _onSortItem(event: DragEvent, item: Item.Implementation): Promise<Item.Implementation[]> | void;
 
-  static #ActorSheetV2;
+  #ActorSheetV2: true;
 }
 
 declare namespace ActorSheetV2 {

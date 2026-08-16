@@ -86,8 +86,10 @@ declare namespace CombatConfiguration {
   interface Any extends AnyCombatConfiguration {}
   interface AnyConstructor extends Identity<typeof AnyCombatConfiguration> {}
 
+  /** A turn marker animation entry formatted for a select element. */
   interface TurnMarkerAnimationChoice {
     value: string;
+
     label: string;
   }
 

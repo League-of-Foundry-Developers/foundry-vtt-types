@@ -390,81 +390,6 @@ declare namespace Scene {
     }>;
   }
 
-  interface EnvironmentDataSchemaDefaults {
-    hue: number;
-    intensity: number;
-    luminosity: number;
-    saturation: number;
-    shadows: number;
-  }
-
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
-    /**
-     * The normalized hue angle.
-     * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
-     */
-    hue: fields.HueField<{
-      required: true;
-      initial: Defaults["hue"];
-      label: "SCENES.ENVIRONMENT.Hue";
-      hint: "SCENES.ENVIRONMENT.HueHint";
-    }>;
-
-    /**
-     * The intensity of the tinting (0 = no tinting).
-     * @defaultValue `0`
-     */
-    intensity: fields.AlphaField<{
-      required: true;
-      nullable: false;
-      initial: Defaults["intensity"];
-      label: "SCENES.ENVIRONMENT.Intensity";
-      hint: "SCENES.ENVIRONMENT.IntensityHint";
-    }>;
-
-    /**
-     * The luminosity.
-     * @defaultValue `0` in `environment.base`, `0.25` in `environment.dark`
-     */
-    luminosity: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: Defaults["luminosity"];
-      min: -1;
-      max: 1;
-      label: "SCENES.ENVIRONMENT.Luminosity";
-      hint: "SCENES.ENVIRONMENT.LuminosityHint";
-    }>;
-
-    /**
-     * The saturation.
-     * @defaultValue `0`
-     */
-    saturation: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: Defaults["saturation"];
-      min: -1;
-      max: 1;
-      label: "SCENES.ENVIRONMENT.Saturation";
-      hint: "SCENES.ENVIRONMENT.SaturationHint";
-    }>;
-
-    /**
-     * The strength of the shadows.
-     * @defaultValue `0`
-     */
-    shadows: fields.NumberField<{
-      required: true;
-      nullable: false;
-      initial: Defaults["shadows"];
-      min: 0;
-      max: 1;
-      label: "SCENES.ENVIRONMENT.Shadows";
-      hint: "SCENES.ENVIRONMENT.ShadowsHint";
-    }>;
-  }
-
   /**
    * The schema for {@linkcode Scene}. This is the source of truth for how a `Scene` document
    * must be structured.
@@ -770,6 +695,58 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
+  /**
+   * The light schema fields shared with a Scene's global light configuration.
+   * @internal
+   */
+  interface _GlobalLightSchemaFields extends Pick<
+    LightData.Schema,
+    "alpha" | "color" | "coloration" | "saturation" | "contrast" | "shadows" | "darkness"
+  > {}
+
+  interface GlobalLightSchema extends fields.DataSchema, _GlobalLightSchemaFields {
+    /**
+     * Is the global light enabled?
+     * @defaultValue `false`
+     */
+    enabled: fields.BooleanField<{ required: true; initial: false }>;
+
+    /**
+     * Is the global light in bright mode?
+     * @defaultValue `false`
+     * @remarks This is `boolean` here instead {@linkcode LightData} schema's `number`, because the global light has infinite range
+     */
+    bright: fields.BooleanField<{ required: true; initial: false }>;
+
+    /**
+     * The luminosity applied in the shader
+     * @defaultValue `0`
+     * @remarks Doesn't pull from the {@linkcode LightData} schema, unlike its siblings, as it has a different `initial`
+     */
+    luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
+  }
+
+  interface GlobalLightSource extends fields.SchemaField.SourceData<GlobalLightSchema> {}
+
+  interface BaseEnvironmentSchema extends EnvironmentDataSchema<{
+    hue: 0;
+    intensity: 0;
+    luminosity: 0;
+    saturation: 0;
+    shadows: 0;
+  }> {}
+
+  /**
+   * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
+   */
+  interface DarkEnvironmentSchema extends EnvironmentDataSchema<{
+    hue: 0.71388889;
+    intensity: 0;
+    luminosity: -0.25;
+    saturation: 0;
+    shadows: 0;
+  }> {}
+
   interface EnvironmentSchema extends fields.DataSchema {
     /**
      * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
@@ -786,69 +763,7 @@ declare namespace Scene {
     /**
      * The global light data configuration.
      */
-    globalLight: fields.SchemaField<{
-      /**
-       * Is the global light enabled?
-       * @defaultValue `false`
-       */
-      enabled: fields.BooleanField<{ required: true; initial: false }>;
-
-      /**
-       * @see {@linkcode LightData.Schema.alpha}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      alpha: LightData.Schema["alpha"];
-
-      /**
-       * Is the global light in bright mode?
-       * @defaultValue `false`
-       * @remarks This is `boolean` here instead {@linkcode LightData} schema's `number`, because the global light has infinite range
-       */
-      bright: fields.BooleanField<{ required: true; initial: false }>;
-
-      /**
-       * @see {@linkcode LightData.Schema.color}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      color: LightData.Schema["color"];
-
-      /**
-       * @see {@linkcode LightData.Schema.coloration}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      coloration: LightData.Schema["coloration"];
-
-      /**
-       * The luminosity applied in the shader
-       * @defaultValue `0`
-       * @remarks Doesn't pull from the {@linkcode LightData} schema, unlike its siblings, as it has a different `initial`
-       */
-      luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
-
-      /**
-       * @see {@linkcode LightData.Schema.saturation}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      saturation: LightData.Schema["saturation"];
-
-      /**
-       * @see {@linkcode LightData.Schema.contrast}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      contrast: LightData.Schema["contrast"];
-
-      /**
-       * @see {@linkcode LightData.Schema.shadows}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      shadows: LightData.Schema["shadows"];
-
-      /**
-       * @see {@linkcode LightData.Schema.darkness}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
-       */
-      darkness: LightData.Schema["darkness"];
-    }>;
+    globalLight: fields.SchemaField<GlobalLightSchema>;
 
     /**
      * If cycling between {@linkcode base} and {@linkcode dark} is activated.
@@ -859,15 +774,12 @@ declare namespace Scene {
     /**
      * The base (darkness level 0) ambience lighting data.
      */
-    base: fields.SchemaField<EnvironmentDataSchema<{ hue: 0; intensity: 0; luminosity: 0; saturation: 0; shadows: 0 }>>;
+    base: fields.SchemaField<BaseEnvironmentSchema>;
 
     /**
      * The dark (darkness level 1) ambience lighting data.
-     * @privateRemarks The `hue` default is actually `257/360` but you can't do division in types. This precision should be more than sufficient.
      */
-    dark: fields.SchemaField<
-      EnvironmentDataSchema<{ hue: 0.71388889; intensity: 0; luminosity: -0.25; saturation: 0; shadows: 0 }>
-    >;
+    dark: fields.SchemaField<DarkEnvironmentSchema>;
   }
 
   interface EnvironmentData extends fields.SchemaField.InitializedData<EnvironmentSchema> {}
