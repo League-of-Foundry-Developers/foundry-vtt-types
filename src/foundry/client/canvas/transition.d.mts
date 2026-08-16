@@ -1,4 +1,4 @@
-import type { Identity, MaybePromise } from "#utils";
+import type { Identity } from "#utils";
 import type { Scene } from "#client/documents/_module.d.mts";
 import type UnboundContainer from "#client/canvas/containers/advanced/unbound-container.d.mts";
 
@@ -148,9 +148,8 @@ declare namespace TransitionContainer {
   interface RunOptions {
     /**
      * Async function performing canvas changes.
-     * @remarks Awaited before the next scene is captured; the resolved value is discarded.
      */
-    operation?: (() => MaybePromise<unknown>) | undefined;
+    operation?: (() => Promise<void>) | undefined;
 
     /** Scene document to view or activate as the "next" scene. */
     nextScene?: Scene.Implementation | undefined;

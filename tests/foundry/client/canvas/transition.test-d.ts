@@ -28,9 +28,8 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<void>>();
 
-// A synchronous operation is accepted, and so is a resolved value the runtime discards.
-expectTypeOf(container.run({ operation: () => {} })).toEqualTypeOf<Promise<void>>();
-expectTypeOf(container.run({ operation: async () => true })).toEqualTypeOf<Promise<void>>();
+// `operation` is awaited and its resolved value discarded.
+expectTypeOf(container.run({ operation: async () => {} })).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(container.cancel()).toEqualTypeOf<Promise<void>>();
 
