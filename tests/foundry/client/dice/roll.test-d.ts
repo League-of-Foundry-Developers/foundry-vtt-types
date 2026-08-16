@@ -74,6 +74,8 @@ expectTypeOf(roll.toMessage({}, { create: null })).toEqualTypeOf<Promise<ChatMes
 expectTypeOf(roll.toMessage({}, { messageMode: "blind" })).toEqualTypeOf<
   Promise<ChatMessage.Implementation | undefined>
 >();
+// @ts-expect-error `messageMode` must be a key of `CONFIG.ChatMessage.modes`
+roll.toMessage({}, { messageMode: "blindroll" });
 expectTypeOf(roll.toMessage({}, { create: testBool })).toEqualTypeOf<
   Promise<ChatMessage.Implementation | undefined | ChatMessage.CreateData>
 >();
