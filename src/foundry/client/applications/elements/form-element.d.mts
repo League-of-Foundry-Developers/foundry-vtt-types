@@ -20,6 +20,7 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends Adop
 
   /**
    * Declare that this custom element provides form element functionality.
+   * @defaultValue `true`
    */
   static formAssociated: boolean;
 

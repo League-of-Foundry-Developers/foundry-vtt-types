@@ -31,8 +31,33 @@ declare class MeasuredTemplateConfig<
    */
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["template-config"],
+   *   canCreate: true,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-ruler-combined",
+   *     resizable: true
+   *   },
+   *   position: {width: 480},
+   *   form: {closeOnSubmit: true}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   main: {template: "templates/scene/template-config.hbs", scrollable: [""]},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

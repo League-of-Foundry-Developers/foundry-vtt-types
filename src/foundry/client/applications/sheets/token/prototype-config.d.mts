@@ -22,6 +22,23 @@ declare class PrototypeTokenConfig<
 > extends TokenApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(options: PrototypeTokenConfig.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tag: "form",
+   *   classes: ["prototype-token-config"],
+   *   actions: {
+   *     assignToken: PrototypeTokenConfig.#onAssignToken,
+   *     cycleImage: PrototypeTokenConfig.#onCycleImage,
+   *     openOverridesConfig: PrototypeTokenConfig.#onOpenOverridesConfig
+   *   },
+   *   form: {
+   *     handler: PrototypeTokenConfig.#onSubmit
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PrototypeTokenConfig.DefaultOptions;
 
   override isPrototype: true;

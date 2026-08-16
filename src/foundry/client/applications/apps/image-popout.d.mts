@@ -40,9 +40,37 @@ declare class ImagePopout<
   /** @deprecated "An ImagePopout image path must be assigned to options.src." (since v13, until v15) */
   constructor(options: string, _options?: DeepPartial<Configuration>);
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["image-popout"],
+   *   caption: "",
+   *   uuid: null,
+   *   actions: { shareImage: function() { this.shareImage(); } },
+   *   window: {
+   *     resizable: true,
+   *     icon: "fa-solid fa-image",
+   *     controls: [{
+   *       label: "JOURNAL.ActionShow",
+   *       icon: "fa-solid fa-eye",
+   *       action: "shareImage",
+   *       visible: () => game.user.isGM
+   *     }]
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ImagePopout.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   popout: { template: "templates/apps/image-popout.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

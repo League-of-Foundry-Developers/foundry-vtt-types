@@ -22,10 +22,45 @@ declare class JournalEntryPageImageSheet<
   Configuration extends JournalEntryPageImageSheet.Configuration = JournalEntryPageImageSheet.Configuration,
   RenderOptions extends JournalEntryPageImageSheet.RenderOptions = JournalEntryPageImageSheet.RenderOptions,
 > extends JournalEntryPageHandlebarsSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["image"],
+   *   window: {
+   *     icon: "fa-solid fa-image"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     template: "templates/journal/pages/image/edit.hbs",
+   *     classes: ["standard-form"]
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   content: {
+   *     template: "templates/journal/pages/image/view.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

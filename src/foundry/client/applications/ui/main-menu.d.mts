@@ -18,11 +18,71 @@ declare class MainMenu<
   Configuration extends MainMenu.Configuration = MainMenu.Configuration,
   RenderOptions extends MainMenu.RenderOptions = MainMenu.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "menu",
+   *   classes: ["themed", "theme-dark"],
+   *   tag: "dialog",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     menuItem: MainMenu.#onClickMenuItem
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: MainMenu.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   items: {
+   *     template: "templates/ui/main-menu.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Configuration of Main Menu items.
+   * @defaultValue
+   * ```js
+   * {
+   *   reload: {
+   *     label: "MENU.Reload",
+   *     icon: "fa-solid fa-fw fa-arrow-rotate-right",
+   *     enabled: true,
+   *     onClick: () => window.location.reload()
+   *   },
+   *   logout: {
+   *     label: "MENU.Logout",
+   *     icon: "fa-solid fa-fw fa-user",
+   *     enabled: true,
+   *     onClick: () => game.logOut()
+   *   },
+   *   players: {
+   *     label: "MENU.Players",
+   *     icon: "fa-solid fa-fw fa-users",
+   *     enabled: () => game.user.isGM && !game.data.demoMode,
+   *     onClick: () => window.location.href = "./players"
+   *   },
+   *   world: {
+   *     label: "GAME.ReturnSetup",
+   *     icon: "fa-solid fa-fw fa-globe",
+   *     enabled: () => game.user.hasRole("GAMEMASTER") && !game.data.demoMode,
+   *     onClick: function() {
+   *       this.close();
+   *       game.shutDown();
+   *     }
+   *   }
+   * }
+   * ```
    */
   static ITEMS: Record<string, MainMenu.MainMenuItem>;
 

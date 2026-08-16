@@ -522,6 +522,7 @@ declare class ApplicationV2<
    * Designates which upstream Application class in this class' inheritance chain is the base application.
    * Any DEFAULT_OPTIONS of super-classes further upstream of the BASE_APPLICATION are ignored.
    * Hook events for super-classes further upstream of the BASE_APPLICATION are not dispatched.
+   * @defaultValue `ApplicationV2`
    */
   static BASE_APPLICATION: typeof ApplicationV2;
 
@@ -529,6 +530,48 @@ declare class ApplicationV2<
    * The default configuration options which are assigned to every instance of this Application class.
    * @privateRemarks `DefaultOptions` is designed to be more easily overrideable by having `object`
    * merged into it.
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "app-{id}",
+   *   classes: [],
+   *   tag: "div",
+   *   window: {
+   *     frame: true,
+   *     positioned: true,
+   *     title: "",
+   *     icon: "",
+   *     controls: [{
+   *       icon: "fa-solid fa-arrow-up-right-from-square",
+   *       label: "APPLICATION.ACTIONS.Detach",
+   *       action: "detach",
+   *       visible: ApplicationV2.#canDetach
+   *     }, {
+   *       icon: "fa-solid fa-arrow-down-to-square",
+   *       label: "APPLICATION.ACTIONS.Attach",
+   *       action: "attach",
+   *       visible: ApplicationV2.#canAttach
+   *     }],
+   *     minimizable: true,
+   *     resizable: false,
+   *     contentTag: "section",
+   *     contentClasses: []
+   *   },
+   *   actions: {
+   *     attach: ApplicationV2.#onAttach,
+   *     detach: ApplicationV2.#onDetach
+   *   },
+   *   form: {
+   *     handler: undefined,
+   *     submitOnChange: false,
+   *     closeOnSubmit: false
+   *   },
+   *   position: {
+   *     width: "auto",
+   *     height: "auto"
+   *   }
+   * }
+   * ```
    */
   static DEFAULT_OPTIONS: ApplicationV2.DefaultOptions;
 
@@ -552,14 +595,17 @@ declare class ApplicationV2<
 
   /**
    * An incrementing integer Application ID.
+   * @defaultValue `0`
    */
   static _appId: number;
 
   /**
    * The current maximum z-index of any displayed Application.
+   * @defaultValue `Number(getComputedStyle(document.body).getPropertyValue("--z-index-window") ?? 100)`
    */
   static _maxZ: number;
 
+  /** @defaultValue `Object.freeze(["prerender", "render", "close", "position"])` */
   static override readonly emittedEvents: string[];
 
   /**

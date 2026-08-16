@@ -23,11 +23,49 @@ declare class Compendium<
   Configuration extends Compendium.Configuration = Compendium.Configuration,
   RenderOptions extends Compendium.RenderOptions = Compendium.RenderOptions,
 > extends DocumentDirectory<DocumentClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "Compendium-{id}",
+   *   classes: ["compendium-directory", "sidebar-popout"],
+   *   window: {
+   *     frame: true,
+   *     positioned: true
+   *   },
+   *   position: {
+   *     top: 70,
+   *     left: 120,
+   *     width: 350,
+   *     height: window.innerHeight - 100
+   *   },
+   *   actions: {
+   *     copyId: Compendium.#onCopyId
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: Compendium.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/sidebar/apps/compendium/header.hbs"
+   *   },
+   *   directory: {
+   *     template: "templates/sidebar/apps/compendium/directory.hbs",
+   *     templates: ["templates/sidebar/directory/directory.hbs"],
+   *     scrollable: [".directory-list"]
+   *   },
+   *   footer: super.PARTS.footer
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /** @defaultValue `"templates/sidebar/apps/compendium/index-partial.hbs"` */
   protected static override _entryPartial: string;
 
   /**

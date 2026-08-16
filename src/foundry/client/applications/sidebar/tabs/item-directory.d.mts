@@ -18,7 +18,14 @@ declare class ItemDirectory<
   Configuration extends ItemDirectory.Configuration = ItemDirectory.Configuration,
   RenderOptions extends ItemDirectory.RenderOptions = ItemDirectory.RenderOptions,
 > extends DocumentDirectory<Item.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Item"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ItemDirectory.DefaultOptions;
 
   /** @defaultValue `"items"` */

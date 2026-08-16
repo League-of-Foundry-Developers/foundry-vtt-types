@@ -23,12 +23,50 @@ declare class CombatTracker<
   Configuration extends CombatTracker.Configuration = CombatTracker.Configuration,
   RenderOptions extends CombatTracker.RenderOptions = CombatTracker.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     title: "COMBAT.SidebarTitle"
+   *   },
+   *   actions: {
+   *     activateCombatant: CombatTracker.#onCombatantMouseDown,
+   *     cycleCombat: CombatTracker.#onCombatCycle,
+   *     createCombat: CombatTracker.#onCombatCreate,
+   *     editName: CombatTracker.#onEditName,
+   *     panToCombatant: CombatTracker.#onCombatantControl,
+   *     pingCombatant: CombatTracker.#onCombatantControl,
+   *     rollInitiative: CombatTracker.#onCombatantControl,
+   *     toggleDefeated: CombatTracker.#onCombatantControl,
+   *     toggleHidden: CombatTracker.#onCombatantControl,
+   *     trackerSettings: CombatTracker.#onConfigure
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CombatTracker.DefaultOptions;
 
   /** @defaultValue `"combat"` */
   static override tabName: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/sidebar/tabs/combat/header.hbs"
+   *   },
+   *   tracker: {
+   *     template: "templates/sidebar/tabs/combat/tracker.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/sidebar/tabs/combat/footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

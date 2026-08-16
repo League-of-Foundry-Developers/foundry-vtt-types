@@ -17,11 +17,38 @@ declare class DefaultSheetsConfig<
   Configuration extends DefaultSheetsConfig.Configuration = DefaultSheetsConfig.Configuration,
   RenderOptions extends DefaultSheetsConfig.RenderOptions = DefaultSheetsConfig.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "default-sheets-config",
+   *   window: {
+   *     title: "SETTINGS.DefaultSheetsN",
+   *     icon: "fa-solid fa-scroll"
+   *   },
+   *   position: {
+   *     width: 720,
+   *     height: 600
+   *   },
+   *   form: {
+   *     handler: DefaultSheetsConfig.#onSubmit
+   *   },
+   *   actions: {
+   *     resetDefaults: DefaultSheetsConfig.#onResetDefaults
+   *   },
+   *   subtemplates: {
+   *     category: "templates/settings/menus/default-sheets-category.hbs",
+   *     sidebarFooter: "templates/category-browser/reset.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DefaultSheetsConfig.DefaultOptions;
 
   /**
    * The Default Sheets setting name
    * @remarks This is mutable at runtime, but Foundry types it as the literal, and it is not intended to ever change.
+   * @defaultValue `"sheetClasses"`
    */
   static SETTING: "sheetClasses";
 

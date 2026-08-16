@@ -18,7 +18,33 @@ declare class ToursManagement<
   Configuration extends ToursManagement.Configuration = ToursManagement.Configuration,
   RenderOptions extends ToursManagement.RenderOptions = ToursManagement.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "tours-management",
+   *   window: {
+   *     title: "TOURS.Title",
+   *     icon: "fa-solid fa-person-hiking",
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 780,
+   *     height: 680
+   *   },
+   *   actions: {
+   *     resetDefaults: ToursManagement.#onResetDefaults,
+   *     play: ToursManagement.#onPlayTour,
+   *     reset: ToursManagement.#onResetTour
+   *   },
+   *   initialCategory: "core",
+   *   subtemplates: {
+   *     category: "templates/sidebar/apps/tours-management-category.hbs",
+   *     sidebarFooter: "templates/category-browser/reset.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ToursManagement.DefaultOptions;
 
   /**

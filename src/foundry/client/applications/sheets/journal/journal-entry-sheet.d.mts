@@ -27,13 +27,69 @@ declare class JournalEntrySheet<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["journal-sheet", "journal-entry"],
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+   *   window: {
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 960,
+   *     height: 800
+   *   },
+   *   form: {
+   *     submitOnChange: true
+   *   },
+   *   actions: {
+   *     configCategories: JournalEntrySheet.#onConfigureCategories,
+   *     createPage: this.prototype.createPageDialog,
+   *     editPage: this.prototype._onEditPage,
+   *     goToHeading: JournalEntrySheet.#onGoToHeading,
+   *     nextPage: this.prototype.nextPage,
+   *     previousPage: this.prototype.previousPage,
+   *     showPlayers: this.prototype._onShowPlayers,
+   *     toggleLock: JournalEntrySheet.#onToggleLock,
+   *     toggleMode: JournalEntrySheet.#onToggleMode,
+   *     toggleSearch: this.prototype.toggleSearchMode,
+   *     toggleSidebar: this.prototype.toggleSidebar
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sidebar: {
+   *     template: "templates/journal/sidebar.hbs",
+   *     templates: ["templates/journal/toc.hbs"],
+   *     scrollable: [".toc"]
+   *   },
+   *   pages: {
+   *     template: "templates/journal/pages.hbs",
+   *     scrollable: [".journal-entry-pages"]
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Icons for page ownership.
    * @remarks Keyed by {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}; only `NONE`, `OBSERVER`, and `OWNER` are given icons.
+   * @defaultValue
+   * ```js
+   * {
+   *   [CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE]: "fa-solid fa-eye-slash",
+   *   [CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]: "fa-solid fa-eye",
+   *   [CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER]: "fa-solid fa-feather-pointed"
+   * }
+   * ```
    */
   static OWNERSHIP_ICONS: Record<number, string>;
 

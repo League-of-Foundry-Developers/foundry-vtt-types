@@ -24,9 +24,50 @@ declare class CompendiumDirectory<
   Configuration extends CompendiumDirectory.Configuration = CompendiumDirectory.Configuration,
   RenderOptions extends CompendiumDirectory.RenderOptions = CompendiumDirectory.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["directory", "flexcol"],
+   *   window: {
+   *     title: "SIDEBAR.TabCompendium"
+   *   },
+   *   actions: {
+   *     activateEntry: CompendiumDirectory.#onClickEntry,
+   *     collapseFolders: CompendiumDirectory.#onCollapseFolders,
+   *     createEntry: CompendiumDirectory.#onCreateEntry,
+   *     createFolder: CompendiumDirectory.#onCreateFolder,
+   *     toggleFolder: CompendiumDirectory.#onToggleFolder,
+   *     toggleSort: CompendiumDirectory.#onToggleSort,
+   *     openDocumentSheet: CompendiumDirectory.#onOpenDocumentSheet
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CompendiumDirectory.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: {
+   *     template: "templates/sidebar/tabs/compendiums.hbs"
+   *   },
+   *   directory: {
+   *     template: "templates/sidebar/directory/directory.hbs",
+   *     templates: [
+   *       "templates/sidebar/partials/folder-partial.hbs",
+   *       "templates/sidebar/partials/pack-partial.hbs",
+   *       "templates/sidebar/partials/document-match.hbs"
+   *     ],
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/sidebar/directory/footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /** @defaultValue `"compendium"` */

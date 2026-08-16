@@ -25,10 +25,45 @@ declare class JournalEntryPageVideoSheet<
   Configuration extends JournalEntryPageVideoSheet.Configuration = JournalEntryPageVideoSheet.Configuration,
   RenderOptions extends JournalEntryPageVideoSheet.RenderOptions = JournalEntryPageVideoSheet.RenderOptions,
 > extends JournalEntryPageHandlebarsSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["video"],
+   *   window: {
+   *     icon: "fa-solid fa-video"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     template: "templates/journal/pages/video/edit.hbs",
+   *     classes: ["standard-form"]
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   content: {
+   *     template: "templates/journal/pages/video/view.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContentContext(

@@ -23,12 +23,62 @@ declare class TokenApplication {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["token-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-circle-user"
+   *   },
+   *   position: {width: 560},
+   *   form: {closeOnSubmit: true},
+   *   actions: {
+   *     overrideDetectionMode: TokenApplication.#onOverrideDetectionMode,
+   *     removeDetectionMode: TokenApplication.#onRemoveDetectionMode
+   *   }
+   * }
+   * ```
+   */
   // Mixin override.
   static DEFAULT_OPTIONS: ApplicationV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   identity: {template: "templates/scene/token/identity.hbs", scrollable: [""]},
+   *   appearance: {template: "templates/scene/token/appearance.hbs", scrollable: [""]},
+   *   vision: {template: "templates/scene/token/vision.hbs", scrollable: [""]},
+   *   light: {template: "templates/scene/token/light.hbs", scrollable: [""]},
+   *   resources: {template: "templates/scene/token/resources.hbs", scrollable: [""]},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   // Mixin override.
   static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "identity", icon: "fa-solid fa-memo-pad"},
+   *       {id: "appearance", icon: "fa-solid fa-square-user"},
+   *       {id: "vision", icon: "fa-solid fa-eye"},
+   *       {id: "light", icon: "fa-solid fa-lightbulb"},
+   *       {id: "resources", icon: "fa-solid fa-heart"}
+   *     ],
+   *     initial: "identity",
+   *     labelPrefix: "TOKEN.TABS"
+   *   }
+   * }
+   * ```
+   */
   // Mixin override.
   static TABS: Record<string, ApplicationV2.TabsConfiguration>;
 

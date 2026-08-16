@@ -18,7 +18,15 @@ declare class SceneDirectory<
   Configuration extends SceneDirectory.Configuration = SceneDirectory.Configuration,
   RenderOptions extends SceneDirectory.RenderOptions = SceneDirectory.RenderOptions,
 > extends DocumentDirectory<Scene.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   renderUpdateKeys: ["background", "thumb"],
+   *   collection: "Scene"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: SceneDirectory.DefaultOptions;
 
   /** @defaultValue `"scenes"` */

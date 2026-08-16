@@ -20,8 +20,48 @@ declare class ShowToPlayersDialog<
   Configuration extends ShowToPlayersDialog.Configuration = ShowToPlayersDialog.Configuration,
   RenderOptions extends ShowToPlayersDialog.RenderOptions = ShowToPlayersDialog.RenderOptions,
 > extends HandlebarsApplicationMixin(DialogV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["show-to-players"],
+   *   modal: true,
+   *   buttons: [{
+   *     label: "JOURNAL.ActionShow",
+   *     type: "submit",
+   *     icon: "fa-solid fa-check",
+   *     default: true
+   *   }],
+   *   window: {
+   *     contentTag: "form",
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   position: {
+   *     width: 500
+   *   },
+   *   form: {
+   *     handler: ShowToPlayersDialog.#onFormSubmit,
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DialogV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     classes: ["standard-form"],
+   *     template: "templates/journal/dialog-show.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

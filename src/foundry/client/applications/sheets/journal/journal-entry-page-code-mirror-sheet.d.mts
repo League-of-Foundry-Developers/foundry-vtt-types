@@ -20,8 +20,29 @@ declare class JournalEntryPageCodeMirrorSheet<
   Configuration extends JournalEntryPageCodeMirrorSheet.Configuration = JournalEntryPageCodeMirrorSheet.Configuration,
   RenderOptions extends JournalEntryPageCodeMirrorSheet.RenderOptions = JournalEntryPageCodeMirrorSheet.RenderOptions,
 > extends JournalEntryPageTextSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     contentClasses: ["codemirror", "flexcol"]
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   content: {
+   *     root: true,
+   *     template: "templates/journal/pages/text/view.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

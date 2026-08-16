@@ -101,6 +101,24 @@ declare class DialogV2<
   Configuration extends DialogV2.Configuration = DialogV2.Configuration<any>,
   RenderOptions extends DialogV2.RenderOptions = DialogV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "dialog-{id}",
+   *   classes: ["dialog"],
+   *   tag: "dialog",
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   window: {
+   *     frame: true,
+   *     positioned: true,
+   *     minimizable: false
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DialogV2.DefaultOptions;
 
   protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;

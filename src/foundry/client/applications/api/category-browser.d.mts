@@ -20,8 +20,44 @@ declare abstract class CategoryBrowser<
   Configuration extends CategoryBrowser.Configuration = CategoryBrowser.Configuration,
   RenderOptions extends CategoryBrowser.RenderOptions = CategoryBrowser.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["category-browser"],
+   *   window: {
+   *     contentClasses: ["standard-form"]
+   *   },
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   initialCategory: null,
+   *   packageList: false,
+   *   subtemplates: {
+   *     category: undefined,
+   *     filters: null,
+   *     sidebarFooter: null
+   *   }
+   * }
+   * ```
+   */
   static DEFAULT_OPTIONS: CategoryBrowser.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sidebar: {
+   *     template: "templates/category-browser/sidebar.hbs",
+   *     scrollable: ["nav"]
+   *   },
+   *   main: {
+   *     template: "templates/category-browser/main.hbs",
+   *     scrollable: [".scrollable"]
+   *   }
+   * }
+   * ```
+   */
   static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

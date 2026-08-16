@@ -129,6 +129,48 @@ declare class DocumentSheetV2<
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "{id}",
+   *   classes: ["sheet"],
+   *   tag: "form",
+   *   document: null,
+   *   viewPermission: DOCUMENT_OWNERSHIP_LEVELS.LIMITED,
+   *   editPermission: DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+   *   canCreate: false,
+   *   canImport: true,
+   *   sheetConfig: true,
+   *   ownershipConfig: true,
+   *   actions: {
+   *     configureSheet: DocumentSheetV2.#onConfigureSheet,
+   *     configureOwnership: DocumentSheetV2.#onConfigureOwnership,
+   *     copyUuid: {handler: DocumentSheetV2.#onCopyUuid, buttons: [0, 2]},
+   *     editImage: DocumentSheetV2.#onEditImage,
+   *     importDocument: DocumentSheetV2.#onImportDocument
+   *   },
+   *   form: {
+   *     handler: DocumentSheetV2.#onSubmitDocumentForm,
+   *     submitOnChange: false,
+   *     closeOnSubmit: false
+   *   },
+   *   window: {
+   *     controls: [{
+   *       icon: "fa-solid fa-gear",
+   *       label: "SHEETS.ConfigureSheet",
+   *       action: "configureSheet",
+   *       visible: DocumentSheetV2.#canConfigureSheet
+   *     }, {
+   *       icon: "fa-solid fa-user-lock",
+   *       label: "OWNERSHIP.Configure",
+   *       action: "configureOwnership",
+   *       visible: DocumentSheetV2.#canConfigureOwnership
+   *     }]
+   *   }
+   * }
+   * ```
+   */
   static DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
   get document(): Document;

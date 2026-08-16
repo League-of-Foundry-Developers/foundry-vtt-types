@@ -23,9 +23,23 @@ declare abstract class AbstractSidebarTab<
    */
   static tabName: string;
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "{id}",
+   *   tag: "section",
+   *   classes: ["tab", "sidebar-tab"],
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: AbstractSidebarTab.DefaultOptions;
 
+  /** @defaultValue `Object.freeze([...super.emittedEvents, "activate", "deactivate"])` */
   static override readonly emittedEvents: string[];
 
   /**

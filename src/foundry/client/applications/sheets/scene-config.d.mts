@@ -27,10 +27,70 @@ declare class SceneConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["scene-config"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-map"
+   *   },
+   *   position: {width: 600},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     addLevel: SceneConfig.#onAddLevel,
+   *     capturePosition: SceneConfig.#onCapturePosition,
+   *     editLevel: SceneConfig.#onEditLevel,
+   *     toggleLinkDimensions: SceneConfig.#onToggleLinkDimensions,
+   *     openGridConfig: SceneConfig.#onOpenGridConfig,
+   *     removeLevel: SceneConfig.#onRemoveLevel,
+   *     resetEnvironment: SceneConfig.#onResetEnvironment,
+   *     transitionPlay: SceneConfig.#onTransitionPlay
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   basics: {template: "templates/scene/config/basics.hbs", scrollable: [""]},
+   *   grid: {template: "templates/scene/config/grid.hbs"},
+   *   levels: {template: "templates/scene/config/levels.hbs", scrollable: [".levels"]},
+   *   visibility: {template: "templates/scene/config/visibility.hbs", scrollable: [""]},
+   *   environment: {template: "templates/scene/config/environment.hbs", scrollable: [""]},
+   *   misc: {template: "templates/scene/config/misc.hbs", scrollable: [""]},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "basics", icon: "fa-solid fa-image"},
+   *       {id: "grid", icon: "fa-solid fa-grid"},
+   *       {id: "levels", icon: "fa-solid fa-layer-group"},
+   *       {id: "visibility", icon: "fa-solid fa-eye"},
+   *       {id: "environment", icon: "fa-solid fa-sun-cloud"},
+   *       {id: "misc", icon: "fa-solid fa-shapes"}
+   *     ],
+   *     initial: "basics",
+   *     labelPrefix: "SCENE.TABS.SHEET"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

@@ -19,7 +19,36 @@ declare class Players<
   Configuration extends Players.Configuration = Players.Configuration,
   RenderOptions extends Players.RenderOptions = Players.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "players",
+   *   classes: ["faded-ui", "flexcol"],
+   *   tag: "aside",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     expand: Players.#onExpand
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: Players.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   players: {
+   *     root: true,
+   *     template: "templates/ui/players.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

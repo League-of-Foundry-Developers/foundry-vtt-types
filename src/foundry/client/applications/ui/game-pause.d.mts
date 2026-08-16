@@ -17,6 +17,19 @@ declare class GamePause<
   Configuration extends GamePause.Configuration = GamePause.Configuration,
   RenderOptions extends GamePause.RenderOptions = GamePause.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "pause",
+   *   tag: "figure",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: GamePause.DefaultOptions;
 
   protected override _prepareContext(

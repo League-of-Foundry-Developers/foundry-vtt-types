@@ -16,11 +16,65 @@ declare class SupportDetails<
   Configuration extends SupportDetails.Configuration = SupportDetails.Configuration,
   RenderOptions extends SupportDetails.RenderOptions = SupportDetails.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "support-details",
+   *   position: {
+   *     height: 735,
+   *     width: 780
+   *   },
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-handshake-angle",
+   *     title: "SUPPORT.Title"
+   *   },
+   *   actions: {
+   *     fullReport: SupportDetails.#onGenerateFullReport,
+   *     copyReport: SupportDetails.#onCopyReport,
+   *     copyUuid: SupportDetails.#onCopyUuid,
+   *     deleteDocument: SupportDetails.#onDeleteDocument
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: SupportDetails.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   support: {
+   *     template: "templates/sidebar/apps/support-details/support.hbs",
+   *     templates: ["templates/sidebar/apps/support-details/report.hbs"]
+   *   },
+   *   documents: {template: "templates/sidebar/apps/support-details/documents.hbs"},
+   *   client: {template: "templates/sidebar/apps/support-details/client.hbs"},
+   *   modules: {template: "templates/sidebar/apps/support-details/modules.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   main: {
+   *     tabs: [
+   *       {id: "support", icon: "fa-solid fa-handshake-angle"},
+   *       {id: "documents", icon: "fa-solid file-circle-exclamation"},
+   *       {id: "client", icon: "fa-regular fa-window"},
+   *       {id: "modules", icon: "fa-solid box-open"}
+   *     ],
+   *     initial: "support",
+   *     labelPrefix: "SUPPORT.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

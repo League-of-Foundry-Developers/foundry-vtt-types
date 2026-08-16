@@ -17,7 +17,14 @@ declare class MacroDirectory<
   Configuration extends MacroDirectory.Configuration = MacroDirectory.Configuration,
   RenderOptions extends MacroDirectory.RenderOptions = MacroDirectory.RenderOptions,
 > extends DocumentDirectory<Macro.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Macro"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: MacroDirectory.DefaultOptions;
 
   /** @defaultValue `"macros"` */

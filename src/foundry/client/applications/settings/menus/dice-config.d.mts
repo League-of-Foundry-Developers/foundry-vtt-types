@@ -18,8 +18,43 @@ declare class DiceConfig<
   Configuration extends DiceConfig.Configuration = DiceConfig.Configuration,
   RenderOptions extends DiceConfig.RenderOptions = DiceConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "dice-config",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     title: "DICE.CONFIG.Title",
+   *     icon: "fa-solid fa-dice"
+   *   },
+   *   position: {
+   *     width: 480
+   *   },
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: DiceConfig.#onSubmit
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DiceConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     template: "templates/settings/menus/dice-config.hbs",
+   *     root: true
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

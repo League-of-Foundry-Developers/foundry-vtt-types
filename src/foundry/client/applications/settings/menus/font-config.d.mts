@@ -28,6 +28,13 @@ declare class FontConfig<
 
   /**
    * Font types.
+   * @defaultValue
+   * ```js
+   * {
+   *   FILE: "file",
+   *   SYSTEM: "system"
+   * }
+   * ```
    */
   static FONT_TYPES: Readonly<FontConfig.FontTypes>;
 
@@ -38,8 +45,42 @@ declare class FontConfig<
    */
   static SETTING: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "font-config",
+   *   tag: "form",
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     title: "SETTINGS.FontConfigL",
+   *     icon: "fa-solid fa-font"
+   *   },
+   *   position: {
+   *     width: 600
+   *   },
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: FontConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {
+   *     template: "templates/settings/menus/font-config.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

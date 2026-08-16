@@ -22,8 +22,26 @@ declare class WallPalette<
   Configuration extends WallPalette.Configuration = WallPalette.Configuration,
   RenderOptions extends WallPalette.RenderOptions = WallPalette.RenderOptions,
 > extends PlaceablePaletteMixin(WallConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "wall-palette",
+   *   initialData: { c: [0, 0, 0, 0] }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/wall/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

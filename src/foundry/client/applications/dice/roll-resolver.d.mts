@@ -22,9 +22,38 @@ declare class RollResolver<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(roll: Roll, options?: DeepPartial<Configuration>);
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "roll-resolver-{id}",
+   *   tag: "form",
+   *   classes: ["roll-resolver"],
+   *   window: {
+   *     title: "DICE.RollResolution"
+   *   },
+   *   position: {width: 500},
+   *   form: {
+   *     submitOnChange: false,
+   *     closeOnSubmit: false,
+   *     handler: RollResolver._fulfillRoll
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: RollResolver.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     id: "form",
+   *     template: "templates/dice/roll-resolver.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

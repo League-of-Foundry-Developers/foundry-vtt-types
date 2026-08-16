@@ -18,6 +18,14 @@ declare class ItemSheetV2<
   Configuration extends ItemSheetV2.Configuration = ItemSheetV2.Configuration,
   RenderOptions extends ItemSheetV2.RenderOptions = ItemSheetV2.RenderOptions,
 > extends DocumentSheetV2<Item.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   position: {width: 480}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ItemSheetV2.DefaultOptions;
 
   /**

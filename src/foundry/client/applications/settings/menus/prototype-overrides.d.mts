@@ -21,8 +21,40 @@ declare class PrototypeOverridesConfig<
   Configuration extends PrototypeOverridesConfig.Configuration = PrototypeOverridesConfig.Configuration,
   RenderOptions extends PrototypeOverridesConfig.RenderOptions = PrototypeOverridesConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "prototype-token-overrides",
+   *   tag: "form",
+   *   window: {
+   *     title: "SETTINGS.PrototypeTokenOverrides.Name",
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-circle-user"
+   *   },
+   *   position: {width: 560},
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: PrototypeOverridesConfig.#onSubmit
+   *   },
+   *   actions: {
+   *     onResetDefaults: PrototypeOverridesConfig.#onResetDefaults
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PrototypeOverridesConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   body: {template: "templates/settings/menus/prototype-overrides.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

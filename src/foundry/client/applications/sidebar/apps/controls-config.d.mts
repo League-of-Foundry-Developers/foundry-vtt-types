@@ -21,13 +21,79 @@ declare class ControlsConfig<
   Configuration extends ControlsConfig.Configuration = ControlsConfig.Configuration,
   RenderOptions extends ControlsConfig.RenderOptions = ControlsConfig.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "controls-config",
+   *   window: {
+   *     title: "KEYBINDINGS.Title",
+   *     icon: "fa-solid fa-gamepad",
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 780,
+   *     height: 680
+   *   },
+   *   actions: {
+   *     addBinding: ControlsConfig.#onAddBinding,
+   *     cancelEdit: ControlsConfig.#onCancelEdit,
+   *     deleteBinding: ControlsConfig.#onDeleteBinding,
+   *     editBinding: ControlsConfig.#onEditBinding,
+   *     resetDefaults: ControlsConfig.#onResetDefaults,
+   *     saveBinding: ControlsConfig.#onSaveBinding
+   *   },
+   *   subtemplates: {
+   *     category: "templates/sidebar/apps/controls/category.hbs",
+   *     sidebarFooter: "templates/category-browser/reset.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: ControlsConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   ...super.PARTS,
+   *   bindingInput: {template: "templates/sidebar/apps/controls/binding-input.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Faux "pointer bindings" for displaying as a readonly category
+   *
+   * @defaultValue
+   * ```js
+   * Object.freeze([
+   *   ["canvas-select", "CONTROLS.CanvasSelect", ["LeftClick"]],
+   *   ["canvas-select-many", "CONTROLS.CanvasSelectMany", ["Shift", "LeftClick"]],
+   *   ["canvas-drag", "CONTROLS.CanvasLeftDrag", ["LeftClick", "Drag"]],
+   *   ["canvas-select-cancel", "CONTROLS.CanvasSelectCancel", ["RightClick"]],
+   *   ["canvas-pan-mouse", "CONTROLS.CanvasPan", ["RightClick", "Drag"]],
+   *   ["canvas-zoom", "CONTROLS.CanvasZoom", ["MouseWheel"]],
+   *   ["ruler-place-waypoint", "CONTROLS.RulerPlaceWaypoint", [KeyboardManager.CONTROL_KEY_STRING, "LeftClick"]],
+   *   ["ruler-remove-waypoint", "CONTROLS.RulerRemoveWaypoint", ["RightClick"]],
+   *   ["object-sheet", "CONTROLS.ObjectSheet", ["LeftClick2"]],
+   *   ["object-hud", "CONTROLS.ObjectHUD", ["RightClick"]],
+   *   ["object-config", "CONTROLS.ObjectConfig", ["RightClick2"]],
+   *   ["object-drag", "CONTROLS.ObjectDrag", ["LeftClick", "Drag"]],
+   *   ["object-no-snap", "CONTROLS.ObjectNoSnap", ["Drag", "Shift", "Drop"]],
+   *   ["object-drag-cancel", "CONTROLS.ObjectDragCancel", ["RightClickDuringDrag"]],
+   *   ["object-rotate-slow", "CONTROLS.ObjectRotateSlow", [KeyboardManager.CONTROL_KEY_STRING, "MouseWheel"]],
+   *   ["object-rotate-fast", "CONTROLS.ObjectRotateFast", ["Shift", "MouseWheel"]],
+   *   ["place-hidden-token", "CONTROLS.TokenPlaceHidden", ["Alt", "Drop"], true],
+   *   ["token-target-mouse", "CONTROLS.TokenTarget", ["RightClick2"]],
+   *   ["canvas-ping", "CONTROLS.CanvasPing", ["LongPress"]],
+   *   ["canvas-ping-alert", "CONTROLS.CanvasPingAlert", ["Alt", "LongPress"]],
+   *   ["canvas-ping-pull", "CONTROLS.CanvasPingPull", ["Shift", "LongPress"], true],
+   *   ["tooltip-lock", "CONTROLS.TooltipLock", ["MiddleClick"]],
+   *   ["tooltip-dismiss", "CONTROLS.TooltipDismiss", ["RightClick"]]
+   * ])
+   * ```
    */
   static readonly POINTER_CONTROLS: readonly ControlsConfig.PointerControl[];
 

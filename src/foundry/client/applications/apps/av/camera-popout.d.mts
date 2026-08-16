@@ -21,8 +21,39 @@ declare class CameraPopout<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(options: CameraPopout.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "camera-view-{id}",
+   *   classes: ["camera-view", "popout"],
+   *   window: {
+   *     resizable: true,
+   *     minimizable: false
+   *   },
+   *   position: {
+   *     height: "auto"
+   *   },
+   *   actions: {
+   *     toggleDocked: CameraPopout.#onToggleDocked
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: CameraPopout.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   camera: {
+   *     root: true,
+   *     template: "templates/apps/av/camera.hbs",
+   *     templates: ["templates/apps/av/controls.hbs"]
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

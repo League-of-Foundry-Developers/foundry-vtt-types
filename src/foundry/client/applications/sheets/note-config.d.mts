@@ -21,8 +21,34 @@ declare class NoteConfig<
   Configuration extends NoteConfig.Configuration = NoteConfig.Configuration,
   RenderOptions extends NoteConfig.RenderOptions = NoteConfig.RenderOptions,
 > extends PlaceableConfig<NoteDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["note-config"],
+   *   canCreate: true,
+   *   position: {width: 480},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-bookmark"
+   *   },
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: {template: "templates/scene/note/config.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

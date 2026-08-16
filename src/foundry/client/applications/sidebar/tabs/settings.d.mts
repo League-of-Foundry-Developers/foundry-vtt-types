@@ -18,12 +18,36 @@ declare class Settings<
   Configuration extends Settings.Configuration = Settings.Configuration,
   RenderOptions extends Settings.RenderOptions = Settings.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     title: "SIDEBAR.TabSettings"
+   *   },
+   *   actions: {
+   *     openApp: Settings.#onOpenApp,
+   *     notifyUpdate: Settings.#onNotifyUpdate
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: Settings.DefaultOptions;
 
   /** @defaultValue `"settings"` */
   static override tabName: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   settings: {
+   *     template: "templates/sidebar/tabs/settings.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

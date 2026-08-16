@@ -21,10 +21,55 @@ declare class DrawingConfig<
   Configuration extends DrawingConfig.Configuration = DrawingConfig.Configuration,
   RenderOptions extends DrawingConfig.RenderOptions = DrawingConfig.RenderOptions,
 > extends PlaceableConfig<DrawingDocument.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["drawing-config"],
+   *   canCreate: true,
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-pencil"
+   *   },
+   *   position: {width: 480},
+   *   form: {closeOnSubmit: true}
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   position: {template: "templates/scene/drawing/position.hbs"},
+   *   lines: {template: "templates/scene/drawing/lines.hbs"},
+   *   fill: {template: "templates/scene/drawing/fill.hbs"},
+   *   text: {template: "templates/scene/drawing/text.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "position", icon: "fa-solid fa-location-dot"},
+   *       {id: "lines", icon: "fa-solid fa-paintbrush"},
+   *       {id: "fill", icon: "fa-regular fa-fill-drip"},
+   *       {id: "text", icon: "fa-solid fa-font"}
+   *     ],
+   *     initial: "position",
+   *     labelPrefix: "DRAWING.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   protected override _previewChanges(changes: DocumentSheetV2.SubmitData<DrawingDocument.Implementation>): void;

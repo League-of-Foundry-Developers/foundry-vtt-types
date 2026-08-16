@@ -23,7 +23,17 @@ declare class FrameViewer<
    */
   constructor(options?: DeepPartial<Configuration>);
 
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "frame-viewer",
+   *   classes: ["theme-dark"],
+   *   window: {icon: "fa-solid fa-browser"},
+   *   url: undefined
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: FrameViewer.DefaultOptions;
 
   /** @remarks Sizes the frame to 90% of the viewport, capped at 1200px wide, and centres it. */

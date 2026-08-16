@@ -18,7 +18,40 @@ declare class SceneNavigation<
   Configuration extends SceneNavigation.Configuration = SceneNavigation.Configuration,
   RenderOptions extends SceneNavigation.RenderOptions = SceneNavigation.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "scene-navigation",
+   *   classes: ["faded-ui", "flexcol"],
+   *   tag: "nav",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     cycleLevel: SceneNavigation.#onCycleLevel,
+   *     viewLevel: SceneNavigation.#onViewLevel,
+   *     viewScene: SceneNavigation.#onViewScene,
+   *     toggleExpand: SceneNavigation.#onToggleExpand
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: SceneNavigation.DefaultOptions;
+
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   scenes: {
+   *     root: true,
+   *     template: "templates/ui/scene-navigation.hbs",
+   *     scrollable: [".scene-levels"]
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

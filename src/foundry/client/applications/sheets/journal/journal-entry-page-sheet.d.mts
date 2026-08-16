@@ -17,6 +17,28 @@ declare class JournalEntryPageSheet<
   Configuration extends JournalEntryPageSheet.Configuration = JournalEntryPageSheet.Configuration,
   RenderOptions extends JournalEntryPageSheet.RenderOptions = JournalEntryPageSheet.RenderOptions,
 > extends DocumentSheetV2<JournalEntryPage.Implementation, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["journal-sheet", "journal-entry-page"],
+   *   includeTOC: false,
+   *   mode: "edit",
+   *   viewPermission: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+   *   viewClasses: [],
+   *   window: {
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 600,
+   *     height: 680
+   *   },
+   *   form: {
+   *     submitOnChange: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
   /**

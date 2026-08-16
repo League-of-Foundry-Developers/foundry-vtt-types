@@ -22,10 +22,43 @@ declare class JournalEntryPageProseMirrorSheet<
   Configuration extends JournalEntryPageProseMirrorSheet.Configuration = JournalEntryPageProseMirrorSheet.Configuration,
   RenderOptions extends JournalEntryPageProseMirrorSheet.RenderOptions = JournalEntryPageProseMirrorSheet.RenderOptions,
 > extends JournalEntryPageTextSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   window: {
+   *     icon: "fa-solid fa-feather"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     template: "templates/journal/pages/text/edit.hbs"
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   content: {
+   *     template: "templates/journal/pages/text/view.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

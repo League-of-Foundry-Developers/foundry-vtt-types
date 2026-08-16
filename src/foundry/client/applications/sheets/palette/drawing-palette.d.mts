@@ -23,6 +23,15 @@ declare class DrawingPalette<
   Configuration extends DrawingPalette.Configuration = DrawingPalette.Configuration,
   RenderOptions extends DrawingPalette.RenderOptions = DrawingPalette.RenderOptions,
 > extends PlaceablePaletteMixin(DrawingConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "drawing-palette",
+   *   initialData: { shape: { type: "p", width: 1, height: 1, points: [0, 0, 1, 0] } }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -39,8 +48,18 @@ declare class DrawingPalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/drawing/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

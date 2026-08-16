@@ -30,8 +30,48 @@ declare class DependencyResolution<
    */
   constructor(options: DependencyResolution.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tag: "dialog",
+   *   classes: ["dependency-resolution", "dialog"],
+   *   window: {
+   *     contentTag: "form",
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-sitemap",
+   *     title: "MODMANAGE.DependencyResolution"
+   *   },
+   *   position: {
+   *     width: 480
+   *   },
+   *   actions: {
+   *     cancel: DependencyResolution.#onCancel
+   *   },
+   *   form: {
+   *     closeOnSubmit: true,
+   *     handler: DependencyResolution.#onSubmitForm
+   *   },
+   *   enabling: true
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DependencyResolution.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   resolution: {
+   *     classes: ["standard-form"],
+   *     template: "templates/setup/impacted-dependencies.hbs"
+   *   },
+   *   footer: {
+   *     template: "templates/generic/form-footer.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

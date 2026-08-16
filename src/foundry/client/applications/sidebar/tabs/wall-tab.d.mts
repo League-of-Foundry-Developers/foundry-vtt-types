@@ -17,6 +17,16 @@ declare class WallTab<
   Configuration extends WallTab.Configuration = WallTab.Configuration,
   RenderOptions extends WallTab.RenderOptions = WallTab.RenderOptions,
 > extends PlaceableTab<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     selectGroup: WallTab.#onSelectGroup
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: WallTab.DefaultOptions;
 
   /**

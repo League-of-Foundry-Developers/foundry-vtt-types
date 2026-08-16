@@ -22,10 +22,41 @@ declare class PlaceableDirectory<
   Configuration extends PlaceableDirectory.Configuration = PlaceableDirectory.Configuration,
   RenderOptions extends PlaceableDirectory.RenderOptions = PlaceableDirectory.RenderOptions,
 > extends HandlebarsApplicationMixin(AbstractSidebarTab)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["flexcol"],
+   *   window: {
+   *     title: "SIDEBAR.TabPlaceables"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableDirectory.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: { template: "templates/sidebar/tabs/placeable/tabs.hbs" },
+   *   tab: { template: "templates/sidebar/tabs/placeable/tab.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [],
+   *     initial: ""
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

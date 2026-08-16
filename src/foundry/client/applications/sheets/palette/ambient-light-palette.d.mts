@@ -23,6 +23,14 @@ declare class AmbientLightPalette<
   Configuration extends AmbientLightPalette.Configuration = AmbientLightPalette.Configuration,
   RenderOptions extends AmbientLightPalette.RenderOptions = AmbientLightPalette.RenderOptions,
 > extends PlaceablePaletteMixin(AmbientLightConfig)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "ambient-light-palette"
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceablePaletteMixin.DefaultOptions;
 
   /**
@@ -39,8 +47,18 @@ declare class AmbientLightPalette<
    */
   static documentName: Document.PlaceableType;
 
+  /** @defaultValue `{}` */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   body: { template: "templates/scene/palette/ambient-light/body.hbs" },
+   *   footer: { template: "templates/generic/form-footer.hbs" }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

@@ -23,10 +23,45 @@ declare class JournalEntryPagePDFSheet<
   Configuration extends JournalEntryPagePDFSheet.Configuration = JournalEntryPagePDFSheet.Configuration,
   RenderOptions extends JournalEntryPagePDFSheet.RenderOptions = JournalEntryPagePDFSheet.RenderOptions,
 > extends JournalEntryPageHandlebarsSheet<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["pdf"],
+   *   window: {
+   *     icon: "fa-solid fa-file-pdf"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: JournalEntryPageSheet.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.EDIT_PARTS.header,
+   *   content: {
+   *     template: "templates/journal/pages/pdf/edit.hbs",
+   *     classes: ["standard-form"]
+   *   },
+   *   footer: super.EDIT_PARTS.footer
+   * }
+   * ```
+   */
   static override EDIT_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   content: {
+   *     template: "templates/journal/pages/pdf/view.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override VIEW_PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**

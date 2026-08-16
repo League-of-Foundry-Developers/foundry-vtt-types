@@ -26,6 +26,14 @@ declare class PlaceableConfig<
     PlaceableConfig.Configuration<ConcreteDocument>,
   RenderOptions extends PlaceableConfig.RenderOptions = PlaceableConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<ConcreteDocument, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   preview: true
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaceableConfig.DefaultOptions;
 
   /**

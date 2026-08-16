@@ -26,15 +26,90 @@ declare class RollTableSheet<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["roll-table-sheet"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-table-list",
+   *     resizable: true
+   *   },
+   *   position: {width: 720},
+   *   form: {
+   *     closeOnSubmit: false
+   *   },
+   *   actions: {
+   *     // Edit mode:
+   *     normalizeResults: RollTableSheet.#onNormalizeResults,
+   *     createResult: RollTableSheet.#onCreateResult,
+   *     openResultSheet: RollTableSheet.#onOpenResultSheet,
+   *     deleteResult: RollTableSheet.#onDeleteResult,
+   *     // View mode:
+   *     drawSpecificResult: RollTableSheet.#onDrawSpecificResult,
+   *     // Shared:
+   *     changeMode: RollTableSheet.#onChangeMode,
+   *     lockResult: RollTableSheet.#onLockResult,
+   *     drawResult: RollTableSheet.#onDrawResult,
+   *     resetResults: RollTableSheet.#onResetResults
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     template: "templates/sheets/roll-table/view.hbs",
+   *     templates: ["templates/sheets/roll-table/result-details.hbs"],
+   *     scrollable: ["table[data-results] tbody"],
+   *     root: true
+   *   },
+   *   header: {template: "templates/sheets/roll-table/edit/header.hbs"},
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   results: {
+   *     template: "templates/sheets/roll-table/edit/results.hbs",
+   *     templates: ["templates/sheets/roll-table/result-details.hbs"],
+   *     scrollable: ["table[data-results] tbody"]
+   *   },
+   *   summary: {template: "templates/sheets/roll-table/edit/summary.hbs"},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Parts for each view
+   * @defaultValue
+   * ```js
+   * {
+   *   edit: ["header", "tabs", "summary", "results", "footer"],
+   *   view: ["sheet", "footer"]
+   * }
+   * ```
    */
   static MODE_PARTS: Record<RollTableSheet.Mode, string[]>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "results", icon: "fa-solid fa-table-rows"},
+   *       {id: "summary", icon: "fa-solid fa-memo-pad"}
+   *     ],
+   *     initial: "results",
+   *     labelPrefix: "TABLE.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

@@ -22,8 +22,35 @@ declare class BaseSheet<
   Configuration extends BaseSheet.Configuration<Document> = BaseSheet.Configuration<Document>,
   RenderOptions extends BaseSheet.RenderOptions = BaseSheet.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["base-sheet"],
+   *   position: {width: 480},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     resizable: true
+   *   },
+   *   form: {
+   *     submitOnChange: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     template: "templates/sheets/base-sheet.hbs",
+   *     root: true
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   protected override _prepareContext(

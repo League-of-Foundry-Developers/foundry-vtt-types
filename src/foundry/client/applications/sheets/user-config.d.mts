@@ -25,8 +25,40 @@ declare class UserConfig<
   Configuration,
   RenderOptions
 > {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   classes: ["user-config"],
+   *   position: {width: 480},
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-user"
+   *   },
+   *   actions: {
+   *     releaseCharacter: UserConfig.#onReleaseCharacter
+   *   },
+   *   form: {
+   *     closeOnSubmit: true
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   form: {
+   *     id: "form",
+   *     template: "templates/sheets/user-config.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   override get title(): string;

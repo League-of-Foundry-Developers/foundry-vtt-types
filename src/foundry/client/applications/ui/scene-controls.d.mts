@@ -18,8 +18,41 @@ declare class SceneControls<
   Configuration extends SceneControls.Configuration = SceneControls.Configuration,
   RenderOptions extends SceneControls.RenderOptions = SceneControls.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "scene-controls",
+   *   classes: ["faded-ui"],
+   *   tag: "aside",
+   *   window: {
+   *     frame: false,
+   *     positioned: false
+   *   },
+   *   actions: {
+   *     control: SceneControls.#onChangeControl,
+   *     tool: SceneControls.#onChangeTool
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: SceneControls.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   layers: {
+   *     id: "layers",
+   *     template: "templates/ui/scene-controls-layers.hbs"
+   *   },
+   *   tools: {
+   *     id: "tools",
+   *     template: "templates/ui/scene-controls-tools.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   static override readonly emittedEvents: string[];
@@ -82,6 +115,34 @@ declare class SceneControls<
 
   /**
    * Reusable toolclip items.
+   *
+   * @defaultValue
+   * ```js
+   * {
+   *   create: {heading: "CONTROLS.CommonCreate", reference: "CONTROLS.ClickDrag"},
+   *   move: {heading: "CONTROLS.CommonMove", reference: "CONTROLS.Drag"},
+   *   edit: {heading: "CONTROLS.CommonEdit", reference: "CONTROLS.DoubleClick"},
+   *   editAlt: {heading: "CONTROLS.CommonEdit", reference: "CONTROLS.RightClick2"},
+   *   sheet: {heading: "CONTROLS.CommonOpenSheet", reference: "CONTROLS.DoubleClick"},
+   *   hide: {heading: "CONTROLS.CommonHide", reference: "CONTROLS.RightClick"},
+   *   delete: {heading: "CONTROLS.CommonDelete", reference: "CONTROLS.Delete"},
+   *   rotate: {heading: "CONTROLS.CommonRotate", content: "CONTROLS.ShiftOrCtrlScroll"},
+   *   select: {heading: "CONTROLS.CommonSelect", reference: "CONTROLS.Click"},
+   *   selectAlt: {heading: "CONTROLS.CommonSelect", content: "CONTROLS.ClickOrClickDrag"},
+   *   selectMultiple: {heading: "CONTROLS.CommonSelectMultiple", reference: "CONTROLS.ShiftClick"},
+   *   hud: {heading: "CONTROLS.CommonToggleHUD", reference: "CONTROLS.RightClick"},
+   *   draw: {heading: "CONTROLS.CommonDraw", reference: "CONTROLS.ClickDrag"},
+   *   drawProportionally: {heading: "CONTROLS.CommonDrawProportional", reference: "CONTROLS.AltClickDrag"},
+   *   place: {heading: "CONTROLS.CommonPlace", reference: "CONTROLS.ClickDrag"},
+   *   chain: {heading: "CONTROLS.CommonChain", content: "CONTROLS.ChainCtrlClick"},
+   *   movePoint: {heading: "CONTROLS.CommonMovePoint", reference: "CONTROLS.ClickDrag"},
+   *   openClose: {heading: "CONTROLS.CommonOpenClose", reference: "CONTROLS.Click"},
+   *   openCloseSilently: {heading: "CONTROLS.CommonOpenCloseSilently", reference: "CONTROLS.AltClick"},
+   *   lock: {heading: "CONTROLS.CommonLock", reference: "CONTROLS.RightClick"},
+   *   lockSilently: {heading: "CONTROLS.CommonLockSilently", reference: "CONTROLS.AltRightClick"},
+   *   onOff: {heading: "CONTROLS.CommonOnOff", reference: "CONTROLS.RightClick"}
+   * }
+   * ```
    */
   static COMMON_TOOLCLIP_ITEMS: Record<string, SceneControls.CommonToolclipItem>;
 

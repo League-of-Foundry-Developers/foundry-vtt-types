@@ -28,10 +28,65 @@ declare class AdventureExporter<
   /** @throws If the Adventure does not belong to a Compendium pack. */
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "adventure-exporter",
+   *   classes: ["adventure-exporter"],
+   *   window: {
+   *     contentClasses: ["standard-form"],
+   *     icon: "fa-solid fa-upload"
+   *   },
+   *   position: {width: 560},
+   *   form: {
+   *     closeOnSubmit: true
+   *   },
+   *   actions: {
+   *     clearSection: AdventureExporter.#onClearSection,
+   *     collapseSection: AdventureExporter.#onCollapseSection,
+   *     removeContent: AdventureExporter.#onRemoveContent
+   *   },
+   *   canCreate: true
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   tabs: {template: "templates/generic/tab-navigation.hbs"},
+   *   summary: {
+   *     template: "templates/adventure/exporter/summary.hbs",
+   *     scrollable: [""]
+   *   },
+   *   contents: {
+   *     template: "templates/adventure/exporter/contents.hbs",
+   *     scrollable: [""]
+   *   },
+   *   footer: {template: "templates/generic/form-footer.hbs"}
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   sheet: {
+   *     tabs: [
+   *       {id: "summary", icon: "fa-solid fa-feather-pointed"},
+   *       {id: "contents", icon: "fa-solid fa-folder-tree"}
+   *     ],
+   *     initial: "summary",
+   *     labelPrefix: "ADVENTURE.TABS"
+   *   }
+   * }
+   * ```
+   */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
   /**

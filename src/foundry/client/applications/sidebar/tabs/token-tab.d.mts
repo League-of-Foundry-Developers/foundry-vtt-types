@@ -18,6 +18,16 @@ declare class TokenTab<
   Configuration extends TokenTab.Configuration = TokenTab.Configuration,
   RenderOptions extends TokenTab.RenderOptions = TokenTab.RenderOptions,
 > extends PlaceableTab<RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     selectGroup: TokenTab.#onSelectGroup
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: TokenTab.DefaultOptions;
 
   /**

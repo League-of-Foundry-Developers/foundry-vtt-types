@@ -21,6 +21,35 @@ declare class SettingsConfig<
   Configuration extends SettingsConfig.Configuration = SettingsConfig.Configuration,
   RenderOptions extends SettingsConfig.RenderOptions = SettingsConfig.RenderOptions,
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   id: "settings-config",
+   *   window: {
+   *     title: "SETTINGS.Title",
+   *     icon: "fa-solid fa-gears",
+   *     resizable: true
+   *   },
+   *   position: {
+   *     width: 780,
+   *     height: 680
+   *   },
+   *   form: {
+   *     handler: SettingsConfig.#onSubmit
+   *   },
+   *   actions: {
+   *     openSubmenu: SettingsConfig.#onOpenSubmenu,
+   *     resetDefaults: SettingsConfig.#onResetDefaults
+   *   },
+   *   initialCategory: "core",
+   *   subtemplates: {
+   *     category: "templates/settings/config-category.hbs",
+   *     sidebarFooter: "templates/category-browser/reset.hbs"
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: SettingsConfig.DefaultOptions;
 
   /**

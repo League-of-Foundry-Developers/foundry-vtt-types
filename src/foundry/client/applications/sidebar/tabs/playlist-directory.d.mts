@@ -23,16 +23,77 @@ declare class PlaylistDirectory<
   Configuration extends PlaylistDirectory.Configuration = PlaylistDirectory.Configuration,
   RenderOptions extends PlaylistDirectory.RenderOptions = PlaylistDirectory.RenderOptions,
 > extends DocumentDirectory<Playlist.ImplementationClass, RenderContext, Configuration, RenderOptions> {
-  // Fake override.
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   collection: "Playlist",
+   *   renderUpdateKeys: ["playing", "mode", "sounds", "sorting"],
+   *   actions: {
+   *     pinCurrentlyPlaying: PlaylistDirectory.#onPinCurrentlyPlaying,
+   *     playlistBackward: PlaylistDirectory.#onPlaylistSkip,
+   *     playlistForward: PlaylistDirectory.#onPlaylistSkip,
+   *     playlistMode: PlaylistDirectory.#onPlaylistCycleMode,
+   *     playlistPlay: PlaylistDirectory.#onPlaylistPlayback,
+   *     playlistStop: PlaylistDirectory.#onPlaylistPlayback,
+   *     soundCreate: PlaylistDirectory.#onSoundAdd,
+   *     soundPause: PlaylistDirectory.#onSoundPlayback,
+   *     soundPlay: PlaylistDirectory.#onSoundPlayback,
+   *     soundRepeat: PlaylistDirectory.#onSoundToggleMode,
+   *     soundStop: PlaylistDirectory.#onSoundPlayback,
+   *     volumeExpand: PlaylistDirectory.#onVolumeExpand
+   *   }
+   * }
+   * ```
+   */
   static override DEFAULT_OPTIONS: PlaylistDirectory.DefaultOptions;
 
   /** @defaultValue `"playlists"` */
   static override tabName: string;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   header: super.PARTS.header,
+   *   controls: {
+   *     template: "templates/sidebar/tabs/playlist/controls.hbs"
+   *   },
+   *   directory: super.PARTS.directory,
+   *   playing: {
+   *     template: "templates/sidebar/tabs/playlist/playing.hbs",
+   *     templates: ["templates/sidebar/tabs/playlist/sound-partial.hbs"]
+   *   },
+   *   footer: super.PARTS.footer
+   * }
+   * ```
+   */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
    * Playlist mode button descriptors.
+   *
+   * @defaultValue
+   * ```js
+   * {
+   *   [PLAYLIST_MODES.DISABLED]: {
+   *     icon: "fa-solid fa-ban",
+   *     label: "PLAYLIST.ModeDisabled"
+   *   },
+   *   [PLAYLIST_MODES.SEQUENTIAL]: {
+   *     icon: "fa-regular fa-circle-right",
+   *     label: "PLAYLIST.ModeSequential"
+   *   },
+   *   [PLAYLIST_MODES.SHUFFLE]: {
+   *     icon: "fa-solid fa-shuffle",
+   *     label: "PLAYLIST.ModeShuffle"
+   *   },
+   *   [PLAYLIST_MODES.SIMULTANEOUS]: {
+   *     icon: "fa-solid fa-minimize",
+   *     label: "PLAYLIST.ModeSimultaneous"
+   *   }
+   * }
+   * ```
    */
   static PLAYLIST_MODES: Record<foundry.CONST.PLAYLIST_MODES, PlaylistDirectory.ControlContext>;
 
