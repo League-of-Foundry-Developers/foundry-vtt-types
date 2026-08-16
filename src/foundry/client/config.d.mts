@@ -3965,15 +3965,76 @@ declare global {
     }
 
     interface ActiveEffect extends _Document<"ActiveEffect">, _HasTypes<"ActiveEffect"> {
+      /** @defaultValue `"ui/banners/active-effect-banner.webp"` */
+      compendiumBanner: string;
+
+      /** @defaultValue `"base"` */
+      defaultType: string;
+
+      /** @defaultValue `"fa-solid fa-person-rays"` */
+      sidebarIcon: string;
+
+      /** @defaultValue `{}` */
+      changeTypes: ActiveEffect.ChangeTypes;
+
       /**
-       * If true, Active Effects on Items will be copied to the Actor when the Item is created on the Actor if the
-       * Active Effect's transfer property is true, and will be deleted when that Item is deleted from the Actor.
-       * If false, Active Effects are never copied to the Actor, but will still apply to the Actor from within the Item
-       * if the transfer property on the Active Effect is true.
-       * @defaultValue `false`
-       * @deprecated since V11. It can be set to true until V14, at which point it will be removed.
+       * Additional expiry events registered by packages, with the key of each entry being an identifier and the value a
+       * label. Such events must be triggered by calling {@linkcode foundry.documents.ActiveEffect.registry.refresh | ActiveEffect.registry.refresh}.
+       * If an expiry event happens in tandem with advancing world time, the advancement must be done before notifying
+       * the registry of the custom event.
+       * @defaultValue `{}`
        */
-      legacyTransferral: boolean;
+      expiryEvents: ActiveEffect.ExpiryEvents;
+
+      /**
+       * The action taken by the {@linkcode foundry.helpers.ActiveEffectRegistry | ActiveEffectRegistry} upon an
+       * ActiveEffect's expiration. An update action will set the value of
+       * {@linkcode foundry.documents.ActiveEffect.Duration.expired | ActiveEffectDuration#expired}.
+       * @defaultValue `"update"`
+       */
+      expiryAction: "update" | "delete" | null;
+
+      /**
+       * Additional change phases registered by packages. `Actor#applyActiveEffects` must be called by introducing
+       * packages at the desired points in data preparation or on certain events.
+       * @defaultValue `{}`
+       */
+      phases: ActiveEffect.Phases;
+    }
+
+    namespace ActiveEffect {
+      type ChangeType = Brand<string, "CONFIG.ActiveEffect.changeType">;
+
+      type ExpiryEvent = Brand<string, "CONFIG.ActiveEffect.expiryEvent">;
+
+      type Phase = Brand<string, "CONFIG.ActiveEffect.phase">;
+
+      /**
+       * @remarks Core registers no change types here; the core types live in
+       * {@linkcode CONST.ACTIVE_EFFECT_CHANGE_TYPES} and are merged with this map by
+       * {@linkcode foundry.documents.ActiveEffect.CHANGE_TYPES | ActiveEffect.CHANGE_TYPES}.
+       */
+      interface ChangeTypes {
+        [changeType: ChangeType]: foundry.documents.ActiveEffect.ChangeTypeConfig;
+      }
+
+      /**
+       * @remarks Core registers no expiry events here; the core events live in
+       * {@linkcode CONST.ACTIVE_EFFECT_EXPIRY_EVENTS} and are merged with this map by
+       * {@linkcode foundry.documents.ActiveEffect.EXPIRY_EVENTS | ActiveEffect.EXPIRY_EVENTS}.
+       */
+      interface ExpiryEvents {
+        [expiryEvent: ExpiryEvent]: string;
+      }
+
+      /**
+       * @remarks Core registers no phases here; the core phases live in
+       * {@linkcode CONST.ACTIVE_EFFECT_CHANGE_PHASES} and are merged with this map by
+       * {@linkcode foundry.documents.ActiveEffect.CHANGE_PHASES | ActiveEffect.CHANGE_PHASES}.
+       */
+      interface Phases {
+        [phase: Phase]: foundry.documents.ActiveEffect.ChangePhaseConfig;
+      }
     }
 
     interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}

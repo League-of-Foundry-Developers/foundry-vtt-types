@@ -26,7 +26,15 @@ expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ActiveEffect.Stored[]>();
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
+expectTypeOf(actor.applyActiveEffects("initial")).toEqualTypeOf<void>();
+expectTypeOf(actor.applyActiveEffects("final")).toEqualTypeOf<void>();
+// deprecated since v14, until v16: omitting `phase` infers it
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(actor.applyActiveEffects()).toEqualTypeOf<void>();
+
+declare const someEffects: ActiveEffect.Implementation[];
+expectTypeOf(actor.onUpdateEffectDurations(someEffects, "turnEnd")).toEqualTypeOf<Promise<void>>();
+expectTypeOf(actor.onUpdateEffectDurations(someEffects, "turnEnd", {})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(actor.getActiveTokens(false)).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(actor.getActiveTokens(false, Math.random() > 0.5)).toEqualTypeOf<
   Token.Implementation[] | TokenDocument.Stored[]

@@ -1737,4 +1737,6 @@ export {
   TombstoneData,
 };
 
+export { default as ActiveEffectTypeDataModel } from "./active-effect.mjs";
+
 type _Not<T extends boolean> = T extends true ? false : true;

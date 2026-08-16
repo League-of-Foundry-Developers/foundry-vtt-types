@@ -1,6 +1,7 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The ActiveEffect Document.
@@ -31,14 +32,17 @@ declare abstract class BaseActiveEffect<
    *   name: "ActiveEffect",
    *   collection: "effects",
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
    *   label: "DOCUMENT.ActiveEffect",
    *   labelPlural: "DOCUMENT.ActiveEffects",
-   *   schemaVersion: "13.341",
+   *   schemaVersion: "14.353",
    *   permissions: {
-   *     create: "OWNER",
+   *     create: BaseActiveEffect.#canCreate,
    *     delete: "OWNER"
    *   }
-   * });
+   * }, {inplace: false});
    * ```
    */
   static override metadata: BaseActiveEffect.Metadata;
@@ -47,6 +51,12 @@ declare abstract class BaseActiveEffect<
 
   /** @defaultValue `["DOCUMENT", "EFFECT"]` */
   static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * The default icon used for newly created ActiveEffect documents
+   * @defaultValue `"icons/svg/aura.svg"`
+   */
+  static DEFAULT_ICON: string;
 
   protected override _preCreate(
     data: BaseActiveEffect.CreateData,
@@ -57,24 +67,32 @@ declare abstract class BaseActiveEffect<
   /**
    * @remarks
    * Migrations:
-   * - `icon` to `img` (since v12, no specified end)
+   * - unparseable `origin` to `flags.core.originText`, with `origin` set to `null` (since v14)
+   * - `changes` to `system.changes`, with each change's numeric `mode` becoming a string `type`
+   *   (`custom.{mode}` for unrecognized modes) and string `value`s parsed out of JSON (since v14)
+   * - `duration.startTime`/`startRound`/`startTurn`/`combat` to `start.time`/`round`/`turn`/`combat`
+   *   (since v14)
+   * - `duration.seconds`/`rounds`/`turns` to `duration.value` and `duration.units` (since v14)
    */
   static override migrateData(source: object): object;
 
   /**
    * @remarks
    * Shims:
-   * - `icon` to `img` (since v12, until v14)
+   * - `changes` to `system.changes` (no compatibility warning)
+   * - each change's `mode` to `type` (since v14, until v16)
+   * - `duration.combat` to `start.combat` (since v14, until v16)
+   * - `duration.startTime`/`startRound`/`startTurn` to `start.time`/`start.round`/`start.turn`
+   *   (since v14, until v16)
+   * - `duration.seconds`/`rounds`/`turns` to `duration.value` and `duration.units` (since v14, until v16)
    */
   static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks Replaced by `img`
+   * Add shims to the changes array.
+   * @internal
    */
-  get icon(): this["img"];
-
-  set icon(value);
+  protected static _shimChanges(changes: ActiveEffect.ChangeData[]): void;
 
   /*
    * After this point these are not really overridden methods.
@@ -153,8 +171,11 @@ declare abstract class BaseActiveEffect<
 
   override delete(operation?: BaseActiveEffect.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  // `ActiveEffect`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseActiveEffect.Database.GetDocumentsOperation): null;
+  // `ActiveEffect`s are not world documents, so this can only return an index entry (if a `pack` is passed in `operation`) or `null`
+  static override get(
+    documentId: string,
+    operation?: BaseActiveEffect.Database.GetDocumentsOperation,
+  ): CompendiumCollection.IndexEntry<"ActiveEffect"> | null;
 
   // `ActiveEffect`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -250,6 +271,8 @@ declare abstract class BaseActiveEffect<
   ): ActiveEffect.Implementation;
 
   static override fromJSON(json: string): ActiveEffect.Implementation;
+
+  static #BaseActiveEffect: true;
 }
 
 export default BaseActiveEffect;
@@ -262,6 +285,7 @@ declare namespace BaseActiveEffect {
   export import ConstructorArgs = ActiveEffect.ConstructorArgs;
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;
+  export import CoreEffects = ActiveEffect.CoreEffects;
   export import SubType = ActiveEffect.SubType;
   export import ConfiguredSubType = ActiveEffect.ConfiguredSubType;
   export import Known = ActiveEffect.Known;
@@ -288,9 +312,16 @@ declare namespace BaseActiveEffect {
   export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;
   export import CoreFlags = ActiveEffect.CoreFlags;
+  export import StartSchema = ActiveEffect.StartSchema;
+  export import StartData = ActiveEffect.StartData;
+  export import DurationSchema = ActiveEffect.DurationSchema;
   export import DurationData = ActiveEffect.DurationData;
   export import Duration = ActiveEffect.Duration;
   export import ChangeData = ActiveEffect.ChangeData;
+  export import ChangesOfType = ActiveEffect.ChangesOfType;
+  export import ChangeTypeConfig = ActiveEffect.ChangeTypeConfig;
+  export import ChangePhaseConfig = ActiveEffect.ChangePhaseConfig;
+  export import ChangeTarget = ActiveEffect.ChangeTarget;
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `ActiveEffect` a name.

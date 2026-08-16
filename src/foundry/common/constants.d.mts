@@ -141,7 +141,7 @@ export type ACTIVE_EFFECT_CHANGE_TYPES = Brand<number, "constants.ACTIVE_EFFECT_
  * Possible values for ActiveEffectData#showIcon: the default is CONDITIONAL, dependent on whether the ActiveEffect has
  * a temporary duration.
  */
-export declare const ACTIVE_EFFECT_SHOW_ICON: Readonly<{
+export const ACTIVE_EFFECT_SHOW_ICON: Readonly<{
   /**
    * The icon is never shown.
    */

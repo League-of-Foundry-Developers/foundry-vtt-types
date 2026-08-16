@@ -1306,11 +1306,53 @@ declare namespace Document {
   /**
    * Gets the map of subtypes to configured `TypeDataModel` classes for a given Document.
    */
-  // TODO: Possibly convert to map of names to core models if docs other than RegionBehavior get any.
-  type TypeModelsFor<Name extends WithSystem> = Name extends "RegionBehavior"
-    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      GetKey<DataModelConfig, Name, {}> & RegionBehavior.CoreBehaviors
-    : GetKey<DataModelConfig, Name, EmptyObject>;
+  type TypeModelsFor<Name extends WithSystem> = _ConstrainModels<
+    Name,
+    Name extends keyof _CoreTypeModels
+      ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        GetKey<DataModelConfig, Name, {}> & _CoreTypeModels[Name]
+      : GetKey<DataModelConfig, Name, EmptyObject>
+  >;
+
+  /**
+   * The subtypes for which Foundry itself registers a `TypeDataModel` in `CONFIG`.
+   * @internal
+   */
+  interface _CoreTypeModels {
+    ActiveEffect: ActiveEffect.CoreEffects;
+    RegionBehavior: RegionBehavior.CoreBehaviors;
+  }
+
+  /**
+   * Documents whose registered `TypeDataModel`s must satisfy a structural minimum when they define the
+   * corresponding fields. ActiveEffect models which omit `changes` are temporarily preserved because the runtime
+   * patches that field into their schema during setup.
+   * @internal
+   */
+  interface _ModelConstraints {
+    ActiveEffect: foundry.data.ActiveEffectTypeDataModel.RegistrableClass;
+  }
+
+  /**
+   * `DataModelConfig` accepts arbitrary declaration merges, so constrained Document models are
+   * sanitized before their `system` shapes become consumer-visible.
+   * @internal
+   */
+  type _ConstrainModels<Name extends WithSystem, Models> =
+    unknown extends GetKey<_ModelConstraints, Name, unknown>
+      ? Models
+      : {
+          [K in keyof Models]: _ConstrainModel<Models[K], GetKey<_ModelConstraints, Name, unknown>>;
+        };
+
+  /** @internal */
+  type _ConstrainModel<Model, Constraint> = Model extends { defineSchema(): infer Schema extends DataSchema }
+    ? RemoveIndexSignatures<Schema> extends { changes: unknown }
+      ? Model extends Constraint
+        ? Model
+        : Constraint
+      : Model
+    : Constraint;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1389,11 +1431,31 @@ declare namespace Document {
       // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
       Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
 
+    /** @internal */
+    // Note(123499): The `EmptyObject` defaults matter: `GetKey`'s `never` fallback would distribute over the naked
+    // conditional in `_CoreSystemFor`, collapsing unregistered subtypes to `never` instead of `EmptyObject`.
+    type _CoreModelFor<Name extends Document.WithSubTypes, SubType extends Document.CoreTypesForName<Name>> = GetKey<
+      GetKey<_CoreTypeModels, Name, EmptyObject>,
+      SubType,
+      EmptyObject
+    >;
+
+    /**
+     * The `system` a core subtype has before any `DataModelConfig` entry is layered over it, read from
+     * the core models Foundry itself registers in `CONFIG` (see {@linkcode Document._CoreTypeModels}).
+     * Core subtypes without a registered model have no system data of their own.
+     * @internal
+     */
+    type _CoreSystemFor<Name extends Document.WithSubTypes, SubType extends Document.CoreTypesForName<Name>> =
+      _CoreModelFor<Name, SubType> extends abstract new (...args: never) => DataModel.Any
+        ? FixedInstanceType<_CoreModelFor<Name, SubType>>
+        : EmptyObject;
+
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.
     type _SystemMap<Name extends Document.WithSubTypes, DataModel, DataConfig> = PrettifyType<
       SimpleMerge<
         {
-          [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
+          [SubType in Document.CoreTypesForName<Name>]: _CoreSystemFor<Name, SubType>;
         },
         SimpleMerge<
           {

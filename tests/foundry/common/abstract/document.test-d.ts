@@ -7,14 +7,17 @@ import fields = foundry.data.fields;
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
-expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject().changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(true).changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
-expectTypeOf(baseActiveEffect.toObject(false).changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+// `changes` moved to `system.changes` in v14. `start` is source data here, so `combat` is an id rather
+// than a resolved Combat.
+type AEStartSource = foundry.data.fields.SchemaField.SourceData<ActiveEffect.StartSchema>;
+expectTypeOf(baseActiveEffect.toJSON().start).toEqualTypeOf<AEStartSource | null>();
+expectTypeOf(baseActiveEffect.toObject().start).toEqualTypeOf<AEStartSource | null>();
+expectTypeOf(baseActiveEffect.toObject(true).start).toEqualTypeOf<AEStartSource | null>();
+expectTypeOf(baseActiveEffect.toObject(false).start).toEqualTypeOf<AEStartSource | null>();
 
 const item = await Item.create({ name: "Some Item", type: "base" });
 if (item) {
-  expectTypeOf(item.toObject(false).effects[0]!.changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
+  expectTypeOf(item.toObject(false).effects[0]!.duration.value).toEqualTypeOf<number | null>();
   expectTypeOf(item.toObject().effects).toEqualTypeOf<
     foundry.data.fields.SchemaField.SourceData<BaseActiveEffect["schema"]["fields"]>[]
   >();

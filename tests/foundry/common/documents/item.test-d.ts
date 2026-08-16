@@ -10,7 +10,7 @@ new foundry.documents.BaseItem({ name: "foo", type: "base" });
 declare const baseItem: foundry.documents.BaseItem;
 
 expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Item.Implementation>>();
-expectTypeOf(baseItem._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(baseItem._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
 expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();
 
 type ItemFlags = {

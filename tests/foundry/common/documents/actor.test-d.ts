@@ -32,7 +32,7 @@ expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
 expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Stored | undefined>();
 expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null>();
-expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(baseActor._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
 
 /**
  * Data Model Integration
