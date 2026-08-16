@@ -85,6 +85,7 @@ declare namespace Scene {
       AmbientLight: "lights";
       AmbientSound: "sounds";
       Drawing: "drawings";
+      Level: "levels";
       MeasuredTemplate: "templates";
       Note: "notes";
       Region: "regions";
@@ -108,6 +109,7 @@ declare namespace Scene {
     | "AmbientLight"
     | "AmbientSound"
     | "Drawing"
+    | "Level"
     | "MeasuredTemplate"
     | "Note"
     | "Region"
@@ -123,6 +125,7 @@ declare namespace Scene {
     | AmbientLightDocument.Stored
     | AmbientSoundDocument.Stored
     | DrawingDocument.Stored
+    | Level.Stored
     | MeasuredTemplateDocument.Stored
     | NoteDocument.Stored
     | RegionDocument.Stored
@@ -138,6 +141,7 @@ declare namespace Scene {
     | AmbientLightDocument.ImplementationClass
     | AmbientSoundDocument.ImplementationClass
     | DrawingDocument.ImplementationClass
+    | Level.ImplementationClass
     | MeasuredTemplateDocument.ImplementationClass
     | NoteDocument.ImplementationClass
     | RegionDocument.ImplementationClass
