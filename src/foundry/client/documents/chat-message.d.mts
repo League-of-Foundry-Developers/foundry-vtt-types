@@ -1033,6 +1033,8 @@ declare namespace ChatMessage {
     whisperTo: string;
   }
 
+  type Mode = keyof CONFIG.ChatMessage.Modes;
+
   /** @remarks `"roll"` means "use the current rollMode" */
   type PassableRollMode = foundry.dice.Roll.Mode | "roll";
 

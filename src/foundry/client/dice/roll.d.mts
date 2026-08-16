@@ -671,9 +671,7 @@ declare namespace Roll {
     /**
      * A message visibility mode to apply to the resulting message.
      */
-    // TODO: Type as a key of `CONFIG.ChatMessage.modes` once that registry replaces `CONFIG.Dice.rollModes` in
-    // `config.d.mts`; `chat-message.d.mts` still models the v13 `applyRollMode` surface.
-    messageMode?: string | undefined;
+    messageMode?: ChatMessage.Mode | undefined;
 
     /**
      * @deprecated "The rollMode option of Roll#toMessage is deprecated in favor of messageMode, a string value in
