@@ -92,19 +92,19 @@ declare namespace JournalEntry {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DirectDescendantName = "JournalEntryPage";
+  type DirectDescendantName = "JournalEntryPage" | "JournalEntryCategory";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DirectDescendant = JournalEntryPage.Stored;
+  type DirectDescendant = JournalEntryPage.Stored | JournalEntryCategory.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such classes, or never if the document doesn't have any descendants.
    */
-  type DirectDescendantClass = JournalEntryPage.ImplementationClass;
+  type DirectDescendantClass = JournalEntryPage.ImplementationClass | JournalEntryCategory.ImplementationClass;
 
   /**
    * A document's descendants are any documents that are contained within, either within its schema
