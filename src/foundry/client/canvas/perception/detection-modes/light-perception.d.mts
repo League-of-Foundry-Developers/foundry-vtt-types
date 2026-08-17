@@ -10,12 +10,12 @@ import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
  */
 declare class DetectionModeLightPerception extends DetectionMode {
   protected override _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 
   protected override _testPoint(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,

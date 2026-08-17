@@ -15,7 +15,7 @@ declare class DetectionModeAll extends DetectionMode {
   protected static override _detectionFilter: OutlineOverlayFilter | undefined;
 
   protected override _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }

@@ -5,7 +5,7 @@ import DetectionMode = foundry.canvas.perception.DetectionMode;
 import PointVisionSource = foundry.canvas.sources.PointVisionSource;
 import Token = foundry.canvas.placeables.Token;
 
-declare const visionSource: PointVisionSource.Initialized;
+declare const visionSource: PointVisionSource.Implementation;
 declare const token: Token.Implementation;
 
 describe("DetectionModeDarkvision tests", () => {

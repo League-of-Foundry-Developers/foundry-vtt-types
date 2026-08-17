@@ -311,7 +311,7 @@ declare namespace CanvasVisibility {
      */
     elevation?: number;
 
-    los: Map<PointVisionSource.Internal.Any, boolean>;
+    los: Map<PointVisionSource.Implementation, boolean>;
   }
 
   /**

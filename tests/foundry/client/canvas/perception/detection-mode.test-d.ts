@@ -5,7 +5,7 @@ import PointVisionSource = foundry.canvas.sources.PointVisionSource;
 import Token = foundry.canvas.placeables.Token;
 import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 
-declare const visionSource: PointVisionSource.Initialized;
+declare const visionSource: PointVisionSource.Implementation;
 declare const token: Token.Implementation;
 declare const level: Level.Implementation;
 declare const losPolygon: foundry.canvas.geometry.PointSourcePolygon;
