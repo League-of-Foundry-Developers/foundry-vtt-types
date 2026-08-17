@@ -242,9 +242,9 @@ type PlaceableLayerName = {
 }[keyof PlaceablesLayerConfig];
 
 type PastePlaceableLayerHooks = {
-  [
-    K in PlaceableLayerName as `paste${layers.PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`
-  ]: Hooks.PastePlaceableObject<layers.PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>>;
+  [K in PlaceableLayerName as `paste${layers.PlaceablesLayer.DocumentNameOf<PlaceablesLayerConfig[K]>}`]: Hooks.PastePlaceableObject<
+    layers.PlaceablesLayer.ObjectOf<PlaceablesLayerConfig[K]>
+  >;
 };
 
 interface PlaceableLayerHooks extends PastePlaceableLayerHooks {}
