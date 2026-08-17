@@ -3,12 +3,12 @@ import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Cursor, UnboundContainer } from "#client/canvas/containers/_module.mjs";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
-import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
+import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
 import type { Ping, Ruler } from "#client/canvas/interaction/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
-    interface InteractionLayerConfig {
+    interface CanvasLayerConfig {
       ControlsLayer: ControlsLayer.Implementation;
     }
   }
@@ -22,11 +22,16 @@ declare module "#configuration" {
  * 2) Ruler measurement
  * 3) Map pings
  */
-declare class ControlsLayer extends InteractionLayer {
+declare class ControlsLayer extends CanvasLayer {
   constructor();
 
   /** @privateRemarks This is not overridden in foundry but reflects the real behavior. */
   static get instance(): Canvas["controls"];
+
+  /**
+   * @defaultValue `"passive"`
+   */
+  override eventMode: PIXI.EventMode;
 
   /**
    * Always interactive even if disabled for doors controls
@@ -53,9 +58,6 @@ declare class ControlsLayer extends InteractionLayer {
    */
   cursors: UnboundContainer;
 
-  /** @deprecated Removed and replaced with {@linkcode _rulerPaths} in v13. This warning will be removed in v14. */
-  rulers: never;
-
   /**
    * The ruler paths.
    * @remarks This Container's `eventMode` is set to `"none"`
@@ -75,15 +77,6 @@ declare class ControlsLayer extends InteractionLayer {
    * @remarks Only `undefined` prior to first draw
    */
   select: PIXI.Graphics | undefined;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  _cursors: never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _rulers: never;
-
-  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
-  protected _offscreenPings: never;
 
   /**
    * @defaultValue
@@ -121,9 +114,9 @@ declare class ControlsLayer extends InteractionLayer {
   protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<this>;
+  override tearDown(options?: ControlsLayer.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: ControlsLayer.TearDownOptions): Promise<void>;
 
   /**
    * Draw the cursors container
@@ -146,7 +139,11 @@ declare class ControlsLayer extends InteractionLayer {
    */
   drawSelect(coords: Canvas.Rectangle): void;
 
-  protected override _deactivate(): void;
+  /**
+   * @privateRemarks Foundry marks this `@override`, but `CanvasLayer` declares no `_deactivate` hook,
+   * so nothing calls it now that `ControlsLayer` no longer extends `InteractionLayer`.
+   */
+  protected _deactivate(): void;
 
   /**
    * Handle mousemove events on the game canvas to broadcast activity. With SHOW_CURSOR permission enabled,
@@ -230,9 +227,6 @@ declare class ControlsLayer extends InteractionLayer {
    */
   drawPing(position: Canvas.Point, options?: ControlsLayer.DrawPingOptions): Promise<boolean>;
 
-  /** @deprecated Foundry made this hard private in v13. This warning will be removed in v14. */
-  protected _findViewportIntersection(position: never): never;
-
   #ControlsLayer: true;
 }
 
@@ -257,16 +251,16 @@ declare namespace ControlsLayer {
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.controls.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface LayerOptions extends InteractionLayer.LayerOptions {
+  interface LayerOptions extends CanvasLayer.LayerOptions {
     name: "controls";
 
     /** @defaultValue `1000` */
     zIndex: number;
   }
 
-  interface DrawOptions extends InteractionLayer.DrawOptions {}
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
 
-  interface TearDownOptions extends InteractionLayer.TearDownOptions {}
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   interface HandlePingOptions extends User.PingData, Ping.ConstructorOptions {}
 

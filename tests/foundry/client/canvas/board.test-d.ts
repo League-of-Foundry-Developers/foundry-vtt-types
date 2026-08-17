@@ -7,6 +7,7 @@ import HiddenCanvasGroup = foundry.canvas.groups.HiddenCanvasGroup;
 import LightingLayer = foundry.canvas.layers.LightingLayer;
 import NotesLayer = foundry.canvas.layers.NotesLayer;
 import RegionLayer = foundry.canvas.layers.RegionLayer;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import TemplateLayer = foundry.canvas.layers.TemplateLayer;
 import TilesLayer = foundry.canvas.layers.TilesLayer;
 import TokenLayer = foundry.canvas.layers.TokenLayer;
@@ -23,6 +24,7 @@ expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientLight")).toEqualTypeOf<Ligh
 expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientSound")).toEqualTypeOf<SoundsLayer.Implementation | null>();
 expectTypeOf(myCanvas.getLayerByEmbeddedName("Drawing")).toEqualTypeOf<DrawingsLayer.Implementation | null>();
 expectTypeOf(myCanvas.getLayerByEmbeddedName("Note")).toEqualTypeOf<NotesLayer.Implementation | null>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myCanvas.getLayerByEmbeddedName("MeasuredTemplate")).toEqualTypeOf<TemplateLayer.Implementation | null>();
 expectTypeOf(myCanvas.getLayerByEmbeddedName("Region")).toEqualTypeOf<RegionLayer.Implementation | null>();
 expectTypeOf(myCanvas.getLayerByEmbeddedName("Tile")).toEqualTypeOf<TilesLayer.Implementation | null>();
@@ -35,6 +37,7 @@ expectTypeOf(myCanvas.getCollectionLayer("sounds")).toEqualTypeOf<SoundsLayer.Im
 expectTypeOf(myCanvas.getCollectionLayer("drawings")).toEqualTypeOf<DrawingsLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.getCollectionLayer("notes")).toEqualTypeOf<NotesLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.getCollectionLayer("regions")).toEqualTypeOf<RegionLayer.Implementation | undefined>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myCanvas.getCollectionLayer("templates")).toEqualTypeOf<TemplateLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.getCollectionLayer("tiles")).toEqualTypeOf<TilesLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.getCollectionLayer("tokens")).toEqualTypeOf<TokenLayer.Implementation | undefined>();
@@ -73,6 +76,7 @@ expectTypeOf(myCanvas.interface!.grid).toEqualTypeOf<foundry.canvas.layers.GridL
 expectTypeOf(myCanvas.lighting).toEqualTypeOf<foundry.canvas.layers.LightingLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.regions).toEqualTypeOf<foundry.canvas.layers.RegionLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.sounds).toEqualTypeOf<foundry.canvas.layers.SoundsLayer.Implementation | undefined>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myCanvas.templates).toEqualTypeOf<foundry.canvas.layers.TemplateLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.tiles).toEqualTypeOf<foundry.canvas.layers.TilesLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.notes).toEqualTypeOf<foundry.canvas.layers.NotesLayer.Implementation | undefined>();

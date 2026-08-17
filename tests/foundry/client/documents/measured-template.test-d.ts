@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import TemplateLayer = foundry.canvas.layers.TemplateLayer;
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
@@ -7,6 +8,7 @@ import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 const doc = new MeasuredTemplateDocument.implementation();
 
 expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(doc.layer).toEqualTypeOf<TemplateLayer>();
 expectTypeOf(doc.rotation).toEqualTypeOf<MeasuredTemplateDocument.Implementation["direction"]>();
 

@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+import SceneControls = foundry.applications.ui.SceneControls;
 
 declare global {
   namespace CONFIG.Canvas {
@@ -27,6 +28,8 @@ declare class MyInteractionLayer extends InteractionLayer {
 }
 
 expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
+
+expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<Partial<SceneControls.Tool>>();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someUser: User.Implementation;

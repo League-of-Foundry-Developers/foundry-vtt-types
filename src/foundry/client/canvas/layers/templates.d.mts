@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -13,8 +14,7 @@ declare module "#configuration" {
 }
 
 /**
- * This Canvas Layer provides a container for MeasuredTemplate objects.
- * @see {@linkcode MeasuredTemplate}
+ * @deprecated since v14
  */
 declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
   // Fake type override
@@ -39,9 +39,18 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   override get hookName(): "TemplateLayer";
 
+  /**
+   * @remarks Unlike the base implementation, this reads every template of the Scene rather than the
+   * layer's children, because {@linkcode TemplateLayer.objects | #objects} is never populated.
+   */
+  override get placeables(): MeasuredTemplate.Implementation[];
+
   override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): MeasuredTemplate.Implementation[];
 
-  protected override _deactivate(): void;
+  /**
+   * @remarks Activates {@linkcode foundry.canvas.layers.RegionLayer | canvas.regions} instead of this layer.
+   */
+  override activate(): this;
 
   // fake type override
   override draw(options?: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<this>;
@@ -55,7 +64,7 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   static override prepareSceneControls(): SceneControls.Control;
 
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
+  protected override _createDragPreviewData(event: Canvas.Event.Pointer): MeasuredTemplateDocument.CreateData;
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 

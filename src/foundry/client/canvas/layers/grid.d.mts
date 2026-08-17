@@ -1,17 +1,10 @@
-import type {
-  AnyObject,
-  EmptyObject,
-  FixedInstanceType,
-  HandleEmptyObject,
-  Identity,
-  InexactPartial,
-  RemoveIndexSignatures,
-} from "#utils";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial, RemoveIndexSignatures } from "#utils";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type { Canvas } from "#client/canvas/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type BaseGrid from "#common/grid/base.d.mts";
 
@@ -116,81 +109,6 @@ declare class GridLayer extends CanvasLayer {
    * @remarks See {@linkcode GridLayer.HighlightPositionOptionsGridless} remarks
    */
   highlightPosition(name: string, options: GridLayer.HighlightPositionOptionsGridless): void;
-
-  /**
-   * @deprecated "`GridLayer#type` is deprecated. Use {@linkcode BaseGrid.type | canvas.grid.type} instead." (since v12, until v14)
-   */
-  get type(): CONST.GRID_TYPES;
-
-  /**
-   * @deprecated "`GridLayer#size` is deprecated. Use {@linkcode BaseGrid.size | canvas.grid.type} instead." (since v12, until v14)
-   */
-  get size(): number;
-
-  /**
-   * @deprecated "`GridLayer#grid` is deprecated. Use {@linkcode Canvas.grid | canvas.grid} instead." (since v12, until v14)
-   */
-  get grid(): Canvas["grid"];
-
-  /**
-   * @deprecated "`GridLayer#isNeighbor` is deprecated. Use {@linkcode BaseGrid.testAdjacency | canvas.grid.testAdjacency} instead." (since v12, until v14)
-   */
-  isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
-
-  /**
-   * @deprecated "`GridLayer#w` is deprecated. Use {@linkcode BaseGrid.sizeX | canvas.grid.sizeX} instead." (since v12, until v14)
-   */
-  get w(): number;
-
-  /**
-   * @deprecated "`GridLayer#h` is deprecated. Use {@linkcode BaseGrid.sizeY | canvas.grid.sizeY} instead." (since v12, until v14)
-   */
-  get h(): number;
-
-  /**
-   * @deprecated "`GridLayer#isHex` is deprecated. Use {@linkcode BaseGrid.isHexagonal | canvas.grid.isHexagonal} instead."
-   * (since v12, until v14)
-   */
-  get isHex(): boolean;
-
-  /**
-   * @deprecated "`GridLayer#getTopLeft` is deprecated. Use {@linkcode BaseGrid.getTopLeft | canvas.grid.getTopLeft} instead."
-   * (since v12, until v14)
-   */
-  getTopLeft(x: number, y: number): Canvas.PointTuple;
-
-  /**
-   * @deprecated "`GridLayer#getCenter` is deprecated. Use {@linkcode BaseGrid.getCenterPoint | canvas.grid.getCenterPoint} instead."
-   * (since v12, until v14)
-   */
-  getCenter(x: number, y: number): Canvas.PointTuple;
-
-  /**
-   * @deprecated "`GridLayer#getSnappedPosition` is deprecated. Use {@linkcode BaseGrid.getSnappedPoint | canvas.grid.getSnappedPoint}
-   * instead." (since v12, until v14)
-   */
-  getSnappedPosition(
-    x: number,
-    y: number,
-
-    /** @defaultValue `1` */
-    interval?: number,
-
-    /** @remarks Unused */
-    options?: AnyObject,
-  ): PIXI.IPointData;
-
-  /**
-   * @deprecated "`GridLayer#measureDistance` is deprecated. Use {@linkcode BaseGrid.measurePath | canvas.grid.measurePath} instead,
-   * which returns grid distance (`gridSpaces: true`) and Euclidean distance (`gridSpaces: false`)." (since v12, until v14)
-   */
-  measureDistance(
-    origin: Canvas.Point,
-    target: Canvas.Point,
-
-    /** @remarks Unused */
-    options?: EmptyObject | null,
-  ): number;
 }
 
 declare namespace GridLayer {
@@ -237,6 +155,7 @@ declare namespace GridLayer {
   /** @internal */
   interface _HighlightPositionOptions {
     /**
+     * The fill color of the highlight
      * @defaultValue `0x33BBFF`
      */
     color: PIXI.ColorSource | Color;

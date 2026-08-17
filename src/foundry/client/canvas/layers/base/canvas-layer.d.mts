@@ -65,19 +65,24 @@ declare abstract class CanvasLayer extends PIXI.Container {
    * The inner _draw method which must be defined by each CanvasLayer subclass.
    * @param options - Options which configure how the layer is drawn
    */
-  protected abstract _draw(options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
+  protected _draw(options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
    * @param options - Options which configure how the layer is deconstructed
    */
-  tearDown(options?: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<this>;
+  tearDown(options?: CanvasLayer.TearDownOptions): Promise<this>;
 
   /**
    * The inner _tearDown method which may be customized by each CanvasLayer subclass.
    * @param options - Options which configure how the layer is deconstructed
    */
-  protected _tearDown(options: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<void>;
+  protected _tearDown(options: CanvasLayer.TearDownOptions): Promise<void>;
+
+  /**
+   * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
+   */
+  getZIndex(): number;
 
   #CanvasLayer: true;
 }
@@ -87,9 +92,6 @@ declare namespace CanvasLayer {
   interface AnyConstructor extends Identity<typeof AnyCanvasLayer> {}
 
   type Layer = keyof typeof CONFIG.Canvas.layers;
-
-  /** @deprecated Use {@linkcode CanvasLayer.Layer} instead. This warning will be removed in v14. */
-  type Layers = Layer;
 
   interface LayerOptions {
     /**
@@ -106,16 +108,24 @@ declare namespace CanvasLayer {
      * @remarks As of 14.361, this is used solely to get a `name` to compare against, so no specific constructor is required.
      */
     baseClass: CanvasLayer.AnyConstructor;
+
+    /**
+     * @defaultValue `0`
+     */
+    zIndex: number;
   }
 
-  /** As of 13.351, core neither defines not uses without defining any properties */
+  /** As of 14.366, core neither defines not uses without defining any properties */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface DrawOptions {}
 
-  /** As of 13.351, core neither defines not uses without defining any properties */
-  // TODO: update in v14 with the passthrough from Canvas#tearDown
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface TearDownOptions {}
+  interface TearDownOptions {
+    /** The Scene about to be drawn, or null if the canvas is going blank. */
+    nextScene?: Scene.Implementation | null | undefined;
+
+    /** The Level about to be drawn, or null if the canvas is going blank. */
+    nextLevel?: Level.Implementation | null | undefined;
+  }
 }
 
 export default CanvasLayer;
