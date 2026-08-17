@@ -48,7 +48,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @returns Is the test target visible?
    */
   testVisibility(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     config: CanvasVisibility.TestConfig,
   ): boolean;
@@ -64,7 +64,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * All use is gated behind an `instanceof Token` check, so that's fine.
    */
   protected _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | null,
     level: Level.Implementation,
   ): boolean;
@@ -82,7 +82,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testPoint(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
@@ -102,7 +102,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testLOS(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
@@ -117,7 +117,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @returns True if there's a collision or the point is not in the vision angle, otherwise false
    */
   protected static _testCollision(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     test: CanvasVisibility.TestTarget,
     config?: DetectionMode.CollisionConfig,
   ): boolean;
@@ -132,7 +132,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @returns True if there's a collision or the point is not in the vision angle, otherwise false
    */
   protected static _testCollision(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     test: CanvasVisibility.TestTarget,
     los: PointSourcePolygon.Any,
   ): boolean;
@@ -149,7 +149,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testAngle(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
@@ -167,7 +167,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testRange(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | null,
     test: CanvasVisibility.Test,
