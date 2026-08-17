@@ -126,9 +126,8 @@ declare class PointVisionSource<
 
   /**
    * If this vision source background is rendered into the lighting container.
-   * @remarks `undefined` prior to initialization
    */
-  get preferred(): boolean | undefined;
+  get preferred(): boolean;
 
   /**
    * Is the rendered source animated?
@@ -268,9 +267,6 @@ declare namespace PointVisionSource {
 
       /** An alias for the shape of the vision source. */
       get fov(): SourceShape;
-
-      /** If this vision source background is rendered into the lighting container. */
-      get preferred(): boolean;
     }
   >;
 
@@ -345,7 +341,10 @@ declare namespace PointVisionSource {
     burrow?: boolean | undefined;
   }
 
-  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
+  interface PolygonConfig extends RequiredProps<
+    PointEffectSourceMixin.PolygonConfig,
+    "radius" | "useThreshold" | "surfaceExposure"
+  > {}
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["visionSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

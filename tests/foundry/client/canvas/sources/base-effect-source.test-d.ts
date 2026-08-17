@@ -17,7 +17,7 @@ class MyEffectSource<
     if (data) {
       // @ts-expect-error foo is not a key of BaseEffectSource.SourceData
       if (data.foo) return this;
-      if (data.disabled && data.x && data.y && data.elevation) return this;
+      if (data.disabled && data.x && data.y && data.elevation && data.level) return this;
     }
     if (options?.reset) return this;
     return this;
@@ -57,6 +57,7 @@ expectTypeOf(mySource["_flags"]).toEqualTypeOf<BaseEffectSource.Flags>();
 expectTypeOf(mySource.x).toBeNumber();
 expectTypeOf(mySource.y).toBeNumber();
 expectTypeOf(mySource.elevation).toBeNumber();
+expectTypeOf(mySource.level).toEqualTypeOf<Level.Implementation | undefined>();
 expectTypeOf(mySource.effectsCollection).toEqualTypeOf<Collection<MyEffectSource>>();
 expectTypeOf(mySource.updateId).toBeNumber();
 expectTypeOf(mySource.active).toBeBoolean();
@@ -72,6 +73,7 @@ expectTypeOf(
       y: undefined,
       disabled: undefined,
       elevation: undefined,
+      level: undefined,
     },
     { reset: undefined },
   ),
@@ -82,6 +84,7 @@ expectTypeOf(
       x: 50,
       y: 50,
       elevation: 50,
+      level: "XXXXXSomeLevelID",
       disabled: false,
     },
     undefined,
@@ -102,9 +105,13 @@ expectTypeOf(
     x: 50,
     y: 50,
     elevation: 50,
+    level: null,
     disabled: false,
   }),
 ).toBeVoid();
+
+expectTypeOf(mySource["_couldShapesChange"]({})).toBeBoolean();
+expectTypeOf(mySource["_couldShapesChange"]({ x: 50, level: "XXXXXSomeLevelID" })).toBeBoolean();
 
 // `#_configure` gets passed flattened data, but none of the core Source types have any
 // nested objects in their data, so this is currently irrelevant

@@ -174,6 +174,8 @@ declare abstract class RenderedEffectSource<
    */
   protected _drawMesh(layerId: keyof RenderingLayers): PointSourceMesh | null;
 
+  protected override _refresh(): void;
+
   /**
    * Update shader uniforms used by every rendered layer.
    */

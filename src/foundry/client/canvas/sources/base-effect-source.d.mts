@@ -2,6 +2,7 @@ import type { IntentionalPartial, AnyObject, Identity, InexactPartial } from "#u
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Level } from "#client/documents/_module.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -49,6 +50,7 @@ declare abstract class BaseEffectSource<
    *   x: 0,
    *   y: 0,
    *   elevation: 0,
+   *   level: null,
    *   disabled: false
    * }
    * ```
@@ -63,7 +65,7 @@ declare abstract class BaseEffectSource<
 
   /**
    * The source id linked to this effect source.
-   * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
+   * @remarks Foundry marks this `@readonly`, but does nothing to that effect at runtime
    */
   sourceId: string | undefined;
 
@@ -102,6 +104,13 @@ declare abstract class BaseEffectSource<
    * The elevation bound to this source.
    */
   get elevation(): number;
+
+  /**
+   * The level this source is in.
+   * @remarks `undefined` prior to the first call to {@linkcode BaseEffectSource.initialize | BaseEffectSource#initialize}; after that
+   * it is guaranteed, as {@linkcode BaseEffectSource._initialize | #_initialize} throws if the Level does not exist
+   */
+  get level(): Level.Implementation | undefined;
 
   /**
    * The EffectsCanvasGroup collection linked to this effect source.
@@ -152,18 +161,29 @@ declare abstract class BaseEffectSource<
   /**
    * Subclass specific data initialization steps.
    * @param data - Provided data for configuration
+   * @remarks
+   * @throws If `#data.level` does not name a Level of the current Scene.
    */
-  protected abstract _initialize(
+  protected _initialize(
     /** @privateRemarks `IntentionalPartial` because `#initialize` has filtered invalid keys and replaced any nullish values before calling this */
     data: IntentionalPartial<SourceData>,
   ): void;
+
+  /**
+   * If true is returned, {@linkcode BaseEffectSource._createShapes | BaseEffectSource#_createShapes} is called in
+   * {@linkcode BaseEffectSource.initialize | BaseEffectSource#initialize}.
+   * @param changes - Changes to the source data which were applied
+   * @remarks Unconditionally returns `true` in {@linkcode BaseEffectSource}
+   */
+  // TODO: Flatten<IntentionalPartial<SourceData>>
+  protected _couldShapesChange(changes: AnyObject): boolean;
 
   /** Create the polygon shape (or shapes) for this source using configured data. */
   protected abstract _createShapes(): void;
 
   /**
    * Subclass specific configuration steps. Occurs after data initialization and shape computation.
-   * Only called if the source is attached and not disabled.
+   * Only called if the source is attached and not disabled and its data or shapes have changed.
    * @param changes - Changes to the source data which were applied
    * @remarks Not actually abstract, but is a no-op in `BaseEffectSource`
    * @privateRemarks This is actually passed *flattened* partial data, and while we were very close to having
@@ -211,6 +231,8 @@ declare abstract class BaseEffectSource<
    * Test whether the point is contained within the shape of the source.
    * @param point - The point.
    * @returns Is inside the source?
+   * @privateRemarks Reads `#data.radius`, `#data.walls`, and `#origin`, none of which {@linkcode BaseEffectSource}
+   * itself provides; only sources mixed with {@linkcode foundry.canvas.sources.PointEffectSourceMixin | PointEffectSourceMixin} have them.
    */
   testPoint(point: Canvas.ElevatedPoint): boolean;
 
@@ -225,19 +247,15 @@ declare namespace BaseEffectSource {
   interface _ConstructorOptions {
     /**
      * An optional PlaceableObject which is responsible for this source
-     * @remarks The {@linkcode EnvironmentCanvasGroup} passes itself when creating the global light source during its construction,
-     * as an exception to Foundry's typing of just {@linkcode PlaceableObject}. Otherwise, is only ever {@linkcode placeables.AmbientLight | AmbientLight},
-     * {@linkcode placeables.AmbientSound | AmbientSound}, or {@linkcode placeables.Token | Token} in Foundry usage
+     * @privateRemarks Core passes an {@linkcode EnvironmentCanvasGroup} for the global light source;
+     * other core sources use an AmbientLight, AmbientSound, or Token.
      */
     object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Implementation;
 
     /**
      * A unique ID for this source. This will be set automatically if an object is provided, otherwise is required.
-     * @remarks The above is misleading; sourceId **was** only inferred if you passed a `PlaceableObject`
-     * _instead_ of an options object to the constructor (which was a deprecated path removed in v13),
-     * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
-     * yourself, if you want it to be {@linkcode BaseEffectSource.add | added} to its
-     * {@linkcode BaseEffectSource.effectsCollection | #effectsCollection}
+     * @remarks Despite the description, this is not inferred from `object`;
+     * {@linkcode BaseEffectSource.add | add()} throws unless a source ID is assigned.
      */
     sourceId: string;
   }
@@ -262,6 +280,14 @@ declare namespace BaseEffectSource {
      * @defaultValue `0`
      */
     elevation: number;
+
+    /**
+     * The ID of the Level the point source is in
+     * @defaultValue `null`
+     * @remarks A `null` here is replaced with the ID of the viewed Level by
+     * {@linkcode BaseEffectSource._initialize | BaseEffectSource#_initialize}
+     */
+    level: string | null;
 
     /**
      * Whether or not the source is disabled

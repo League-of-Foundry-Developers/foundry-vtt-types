@@ -3,6 +3,7 @@ import { expectTypeOf } from "vitest";
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
+import Edge = foundry.canvas.geometry.edges.Edge;
 import BlackHoleDarknessShader = foundry.canvas.rendering.shaders.BlackHoleDarknessShader;
 
 expectTypeOf(PointDarknessSource.sourceType).toEqualTypeOf<"darkness">();
@@ -52,6 +53,7 @@ const sourceData = {
   dim: 20,
   disabled: false,
   elevation: 0,
+  level: null,
   externalRadius: 0,
   luminosity: 1,
   preview: false,
@@ -85,6 +87,4 @@ expectTypeOf(mySource["_drawMesh"]("background")).toEqualTypeOf<PointSourceMesh 
 expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
 expectTypeOf(mySource["_updateDarknessUniforms"]()).toBeVoid();
 
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.isDarkness).toEqualTypeOf<true>();
+expectTypeOf(mySource["_getEdgeCreationOptions"]()).toEqualTypeOf<Edge.ConstructorOptions>();

@@ -26,7 +26,8 @@ declare class PointEffectSource {
    *   externalRadius: 0,
    *   rotation: 0,
    *   angle: 360,
-   *   walls: true
+   *   walls: true,
+   *   priority: 0
    * }
    * ```
    * @remarks `...super.defaultData` will depend on the mixed class; See {@linkcode foundry.canvas.sources.BaseLightSource.defaultData | BaseLightSource.defaultData},
@@ -88,6 +89,11 @@ declare class PointEffectSource {
   protected _initializeSoftEdges(): void;
 
   /**
+   * Get the polygon backend that is used to create the shapes for this source.
+   */
+  protected _getPolygonBackend(): PointSourcePolygon.AnyConstructor;
+
+  /**
    * Configure the parameters of the polygon that is generated for this source.
    */
   protected _getPolygonConfiguration(): PointEffectSourceMixin.PolygonConfig;
@@ -104,6 +110,14 @@ declare class PointEffectSource {
    * Create the Edge instances that correspond to this source.
    */
   protected _createEdges(): void;
+
+  /**
+   * Get the options used for Edge creation.
+   * @remarks
+   * @throws If not overridden. Only subclasses that report {@linkcode PointEffectSourceMixin.AnyMixed.requiresEdges | #requiresEdges}
+   * need an implementation.
+   */
+  protected _getEdgeCreationOptions(): edges.Edge.ConstructorOptions;
 
   /**
    * Remove edges from the active Edges collection.
@@ -144,7 +158,7 @@ declare namespace PointEffectSourceMixin {
   /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
   interface PolygonConfig extends RequiredProps<
     ClockwiseSweepPolygon.Config,
-    "radius" | "edgeOptions" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
+    "level" | "radius" | "edgeTypes" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
   > {}
 
   interface SourceData {
@@ -173,7 +187,7 @@ declare namespace PointEffectSourceMixin {
     angle: number;
 
     /**
-     * Whether or not the source is constrained by walls
+     * Whether or not the source is constrained by walls and surfaces
      * @defaultValue `true`
      */
     walls: boolean;

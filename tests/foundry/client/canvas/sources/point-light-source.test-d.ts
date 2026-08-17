@@ -51,6 +51,7 @@ const sourceData = {
   dim: 20,
   disabled: false,
   elevation: 0,
+  level: null,
   externalRadius: 0,
   luminosity: 1,
   preview: false,
@@ -84,21 +85,25 @@ expectTypeOf(mySource["_drawMesh"]("foo")).toEqualTypeOf<PointSourceMesh | null>
 expectTypeOf(mySource["_getPolygonConfiguration"]()).toEqualTypeOf<PointLightSource.PolygonConfig>();
 
 declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
+declare const level: Level.Implementation;
 const tests = [
   {
     elevation: 0,
+    level,
     los: new Map([[someVisionSource, true]]),
     point: { elevation: 0, x: 50, y: 50 },
   },
 ];
-expectTypeOf(mySource.testVisibility({ object: object, tests }));
-expectTypeOf(mySource.testVisibility({ object: null, tests }));
-expectTypeOf(mySource.testVisibility({ tests }));
+expectTypeOf(mySource.testVisibility({ object: object, level, tests }));
+expectTypeOf(mySource.testVisibility({ object: null, level, tests }));
+expectTypeOf(mySource.testVisibility({ level, tests }));
 
 expectTypeOf(mySource["_canDetectObject"]()).toBeBoolean();
 expectTypeOf(mySource["_canDetectObject"](null)).toBeBoolean();
 expectTypeOf(mySource["_canDetectObject"](object)).toBeBoolean();
+expectTypeOf(mySource["_canDetectObject"](object, level)).toBeBoolean();
 
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.isDarkness).toEqualTypeOf<false>();
+expectTypeOf(
+  mySource["_getEdgeCreationOptions"](),
+).toEqualTypeOf<foundry.canvas.geometry.edges.Edge.ConstructorOptions>();
+expectTypeOf(mySource.testPoint({ x: 50, y: 50, elevation: 0 })).toBeBoolean();

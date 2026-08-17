@@ -7,6 +7,7 @@ import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
+declare const level: Level.Implementation;
 
 describe("DetectionMode tests", () => {
   const source = {
@@ -22,12 +23,14 @@ describe("DetectionMode tests", () => {
     {
       los: new Map([[visionSource, true]]),
       point: { x: 50, y: 50, elevation: 20 },
+      level,
       // deprecated since v13 until v15 (use the point's elevation instead)
       elevation: 20,
     },
     {
       los: new Map([[visionSource, true]]),
       point: { x: 200, y: 300, elevation: -5 },
+      level,
     },
   ] satisfies CanvasVisibility.Test[];
 
@@ -69,14 +72,14 @@ describe("DetectionMode tests", () => {
       myDetectionMode.testVisibility(
         visionSource,
         { id: "foobar", enabled: true, range: 3 },
-        { object: token, tests: visibilityTests },
+        { object: token, level, tests: visibilityTests },
       ),
     ).toBeBoolean();
     expectTypeOf(
-      myDetectionMode.testVisibility(visionSource, dmData, { object: null, tests: visibilityTests }),
+      myDetectionMode.testVisibility(visionSource, dmData, { object: null, level, tests: visibilityTests }),
     ).toBeBoolean();
     expectTypeOf(
-      myDetectionMode.testVisibility(visionSource, dmData, { object: undefined, tests: visibilityTests }),
+      myDetectionMode.testVisibility(visionSource, dmData, { object: undefined, level, tests: visibilityTests }),
     ).toBeBoolean();
 
     expectTypeOf(myDetectionMode["_canDetect"](visionSource, token)).toBeBoolean();

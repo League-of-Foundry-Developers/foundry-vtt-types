@@ -48,8 +48,7 @@ expectTypeOf(initializedSource.light).toEqualTypeOf<PointVisionSource.Implementa
 expectTypeOf(mySource.fov).toEqualTypeOf<PointVisionSource.ImplementationPolygon | undefined>();
 expectTypeOf(initializedSource.fov).toEqualTypeOf<PointVisionSource.ImplementationPolygon>();
 
-expectTypeOf(mySource.preferred).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(initializedSource.preferred).toEqualTypeOf<boolean>();
+expectTypeOf(mySource.preferred).toEqualTypeOf<boolean>();
 
 expectTypeOf(mySource.isAnimated).toBeBoolean();
 expectTypeOf(mySource.lightRadius).toBeNumber();
