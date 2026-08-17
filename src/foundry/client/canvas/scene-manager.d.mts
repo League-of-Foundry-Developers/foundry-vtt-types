@@ -1,4 +1,6 @@
 import type { AnyFunction, Identity } from "#utils";
+import type { Level } from "#client/documents/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A framework for imbuing special scripted behaviors into a single specific Scene.
@@ -17,6 +19,11 @@ import type { AnyFunction, Identity } from "#utils";
  *     console.log(`Initializing managed Scene "${this.scene.name}"`);
  *   }
  *
+ *   _getAvailableLevels(defaultLevels) {
+ *     // Return a custom subset of levels for this Scene
+ *     return new Set([this.scene.levels.get(someLevelId)]);
+ *   }
+ *
  *   async _onDraw() {
  *     console.log(`Drawing managed Scene "${this.scene.name}"`);
  *   }
@@ -25,8 +32,8 @@ import type { AnyFunction, Identity } from "#utils";
  *     console.log(`Readying managed Scene "${this.scene.name}"`);
  *   }
  *
- *   async _onTearDown() {
- *     console.log(`Deconstructing managed Scene "${this.scene.name}"`);
+ *   async _onTearDown({nextScene}) {
+ *     console.log(`Deconstructing "${this.scene.name}", next up: ${nextScene?.name ?? "blank canvas"}`);
  *   }
  *
  *   _registerHooks() {
@@ -51,14 +58,44 @@ declare class SceneManager {
   constructor(scene: Scene.Implementation);
 
   /**
-   * The managed Scene
+   * The managed Scene.
    */
   get scene(): Scene.Implementation;
+
+  /**
+   * Configure which level of the Scene should be initially viewed for a managed Scene.
+   * This initial level could be user-specific.
+   * This method may be called when the Scene is not viewed.
+   */
+  protected _determineInitialLevel(): string | void;
+
+  /**
+   * Configure which levels of the Scene are available to the current user.
+   * This method may be called when the Scene is not viewed.
+   * @param defaultLevels - The levels that are available to the current user by default in ascending order.
+   * @returns Return a Set of Level documents to override the default token-ownership logic,
+   * or return nothing to fall back to the default behavior. The returned Levels must
+   * be sorted in ascending order.
+   */
+  protected _getAvailableLevels(defaultLevels: Set<Level.Implementation>): Set<Level.Implementation> | void;
 
   /**
    * Additional behaviors to perform when the Canvas is first initialized for the Scene.
    */
   protected _onInit(): Promise<void>;
+
+  /**
+   * Load additional texture resources for the Scene/Level.
+   * This method may be called when the Scene is not viewed.
+   * @param textures          - Destination record to register textures into.
+   * @param additionalSources - Additional sources to load.
+   * @param level             - The Level to load textures for.
+   */
+  protected _loadTextures(
+    textures: Canvas.SceneTextures,
+    additionalSources: string[],
+    level: Level.Implementation,
+  ): void;
 
   /**
    * Additional behaviors to perform after core groups and layers are drawn to the canvas.
@@ -72,8 +109,9 @@ declare class SceneManager {
 
   /**
    * Additional behaviors to perform when the Scene is deactivated.
+   * @param options - Options which configure how the canvas is deconstructed.
    */
-  protected _onTearDown(): Promise<void>;
+  protected _onTearDown(options: Canvas.TearDownOptions): Promise<void>;
 
   /**
    * Register additional hook functions are only used while this Scene is active and is automatically deactivated.
@@ -84,7 +122,7 @@ declare class SceneManager {
   /**
    * Register additional hook functions are only used while this Scene is active and is automatically deactivated.
    */
-  registerHooks(hookName: string, handler: AnyFunction): void;
+  registerHook(hookName: string, handler: AnyFunction): void;
 
   /**
    * Deactivate Hook functions that were added specifically for this Scene.

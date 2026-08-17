@@ -4,9 +4,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { PolygonVertex } from "#client/canvas/geometry/edges/_module.d.mts";
 import type ElevatedSurfaceExposureGenerator from "./elevated-surface-exposure-polygon.d.mts";
-// TODO: V14 renames this to `PolygonTree` and moves it to `client/data/polygon-tree.mjs`; retarget this
-// import in the `client/data` migration.
-import type { RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
+import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 import type { Level, Scene } from "#client/documents/_module.d.mts";
 
 /**
@@ -61,7 +59,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * The area of surfaces that is visible to this polygon, if any.
    * @privateRemarks Declared without an initializer, so `undefined` until {@linkcode PointSourcePolygon.create} assigns it.
    */
-  surfaceExposure: RegionPolygonTree | null | undefined;
+  surfaceExposure: PolygonTree | null | undefined;
 
   /**
    * The level the polygon is computed it.

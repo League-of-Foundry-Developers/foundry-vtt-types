@@ -1,7 +1,5 @@
 import type { Identity, InexactPartial } from "#utils";
-// TODO: V14 renames this to `PolygonTree` and moves it to `client/data/polygon-tree.mjs`; retarget this
-// import in the `client/data` migration.
-import type { RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
+import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 import type PointSourcePolygon from "./source-polygon.d.mts";
 
 /**
@@ -24,7 +22,7 @@ declare class ElevatedSurfaceExposureGenerator {
   static compute(
     polygon: PointSourcePolygon.Any,
     options?: ElevatedSurfaceExposureGenerator.Options,
-  ): RegionPolygonTree | null;
+  ): PolygonTree | null;
 
   /**
    * The source polygon the exposure is computed for.
@@ -41,13 +39,13 @@ declare class ElevatedSurfaceExposureGenerator {
    * @throws If {@linkcode ElevatedSurfaceExposureGenerator.compute | ElevatedSurfaceExposureGenerator#compute}
    * wasn't called yet.
    */
-  get result(): RegionPolygonTree | null;
+  get result(): PolygonTree | null;
 
   /**
    * Compute the surface exposure.
    * @returns The computed elevated surface exposure or null if empty
    */
-  compute(): RegionPolygonTree | null;
+  compute(): PolygonTree | null;
 
   #ElevatedSurfaceExposureGenerator: true;
 }

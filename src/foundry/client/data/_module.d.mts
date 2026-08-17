@@ -4,6 +4,7 @@
 
 export * as types from "./_types.mjs";
 export * from "#common/data/_module.mjs";
+export * from "./polygon-tree.mjs";
 export * as regionBehaviors from "./region-behaviors/_module.mjs";
 export * as regionShapes from "./region-shapes/_module.mjs";
 export * as fields from "./fields.mjs";

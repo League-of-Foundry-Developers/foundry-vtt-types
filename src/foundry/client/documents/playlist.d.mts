@@ -100,6 +100,12 @@ declare namespace Playlist {
   type DirectDescendantClass = PlaylistSound.ImplementationClass;
 
   /**
+   * A document's descendants are any child documents, grandchild documents, etc.
+   * This is a union of all instances, or never if the document doesn't have any descendants.
+   */
+  type DescendantName = DirectDescendantName;
+
+  /**
    * A document's descendants are any documents that are contained within, either within its schema
    * or its descendant's schemas.
    * This is a union of all such instances, or never if the document doesn't have any descendants.

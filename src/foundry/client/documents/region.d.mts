@@ -3,7 +3,8 @@ import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
-import type { RegionPolygonTree, RegionShape } from "#client/data/region-shapes/_module.d.mts";
+import type { RegionShape } from "#client/data/region-shapes/_module.d.mts";
+import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -51,7 +52,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    *
    * This property is updated only by a document update.
    */
-  get polygonTree(): RegionPolygonTree;
+  get polygonTree(): PolygonTree;
 
   /**
    * The Clipper paths of this Region.
@@ -368,6 +369,12 @@ declare namespace RegionDocument {
    * This is a union of all such classes, or never if the document doesn't have any descendants.
    */
   type DirectDescendantClass = RegionBehavior.ImplementationClass;
+
+  /**
+   * A document's descendants are any child documents, grandchild documents, etc.
+   * This is a union of all instances, or never if the document doesn't have any descendants.
+   */
+  type DescendantName = DirectDescendantName;
 
   /**
    * A document's descendants are any documents that are contained within, either within its schema

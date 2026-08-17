@@ -64,16 +64,41 @@ declare namespace Adventure {
   type Parent = null;
 
   /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = never;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendant = never;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such classes, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantClass = never;
+
+  /**
    * A document's descendants are any child documents, grandchild documents, etc.
    * This is a union of all instances, or never if the document doesn't have any descendants.
    */
-  type Descendant = never;
+  type DescendantName = DirectDescendantName;
+
+  /**
+   * A document's descendants are any documents that are contained within, either within its schema
+   * or its descendant's schemas.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type Descendant = DirectDescendant;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
    * This is a union of all classes, or never if the document doesn't have any descendants.
    */
-  type DescendantClass = never;
+  type DescendantClass = DirectDescendantClass;
 
   /**
    * An embedded document is a document contained in another.
@@ -81,7 +106,7 @@ declare namespace Adventure {
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
    */
-  type Embedded = never;
+  type Embedded = DirectDescendant;
 
   /**
    * The name of the world or embedded collection this document can find itself in.

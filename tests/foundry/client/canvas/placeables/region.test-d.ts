@@ -4,7 +4,7 @@ import Region = foundry.canvas.placeables.Region;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
 import RegionShape = foundry.data.regionShapes.RegionShape;
-import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
+import PolygonTree = foundry.data.PolygonTree;
 
 expectTypeOf(Region.implementation).toEqualTypeOf<Region.ImplementationClass>();
 expectTypeOf(Region.embeddedName).toEqualTypeOf<"Region">();
@@ -95,7 +95,7 @@ expectTypeOf(region.top).toBeNumber();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(region.polygons).toEqualTypeOf<PIXI.Polygon[]>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(region.polygonTree).toEqualTypeOf<RegionPolygonTree>();
+expectTypeOf(region.polygonTree).toEqualTypeOf<PolygonTree>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(region.clipperPaths).toEqualTypeOf<ClipperLib.Paths>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated

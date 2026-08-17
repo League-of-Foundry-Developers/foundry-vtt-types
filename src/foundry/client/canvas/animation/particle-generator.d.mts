@@ -3,9 +3,7 @@ import type Color from "#common/utils/color.d.mts";
 import type { BaseShapeData } from "#common/data/data.d.mts";
 import type SpriteMesh from "#client/canvas/containers/elements/sprite-mesh.d.mts";
 import type BaseSamplerShader from "#client/canvas/rendering/shaders/samplers/base-sampler.d.mts";
-// TODO: V14 renames this to `PolygonTree` and moves it to `client/data/polygon-tree.mjs`; retarget this
-// import in the `client/data` migration.
-import type { RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
+import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 
 /**
  * A lightweight, native particle generator designed for VFX.
@@ -1418,7 +1416,7 @@ declare namespace ParticleGenerator {
    */
   type Area =
     | PIXI.Rectangle
-    | RegionPolygonTree
+    | PolygonTree
     | AnyBaseShapeData
     | ShapeDataSource
     | Point
