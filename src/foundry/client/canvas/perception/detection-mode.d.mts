@@ -118,7 +118,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    */
   protected static _testCollision(
     visionSource: PointVisionSource.Internal.Any,
-    test: CanvasVisibility._TestTarget,
+    test: CanvasVisibility.TestTarget,
     config?: DetectionMode.CollisionConfig,
   ): boolean;
 
@@ -133,7 +133,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    */
   protected static _testCollision(
     visionSource: PointVisionSource.Internal.Any,
-    test: CanvasVisibility._TestTarget,
+    test: CanvasVisibility.TestTarget,
     los: PointSourcePolygon.Any,
   ): boolean;
 
