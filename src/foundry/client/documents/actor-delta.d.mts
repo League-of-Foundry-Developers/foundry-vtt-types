@@ -158,6 +158,12 @@ declare namespace ActorDelta {
   type DirectDescendantClass = Item.ImplementationClass | ActiveEffect.ImplementationClass;
 
   /**
+   * A document's descendants are any child documents, grandchild documents, etc.
+   * This is a union of all instances, or never if the document doesn't have any descendants.
+   */
+  type DescendantName = DirectDescendantName | Item.DescendantName;
+
+  /**
    * A document's descendants are any documents that are contained within, either within its schema
    * or its descendant's schemas.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
@@ -275,9 +281,8 @@ declare namespace ActorDelta {
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
-  interface Source<
-    SubType extends ActorDelta.SubType = ActorDelta.SubType,
-  > extends fields.SchemaField.SourceData<Schema> {
+  interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
+    .SourceData<Schema> {
     type: SubType | null;
   }
 
@@ -289,9 +294,8 @@ declare namespace ActorDelta {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<
-    SubType extends ActorDelta.SubType = ActorDelta.SubType,
-  > extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
