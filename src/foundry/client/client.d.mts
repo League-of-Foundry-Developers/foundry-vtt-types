@@ -1432,10 +1432,10 @@ declare global {
   export import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
 
   /**
-   * @deprecated "You are accessing the global {@linkcode RegionPolygonTree} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionPolygonTree}"
+   * @deprecated "You are accessing the global {@linkcode RegionPolygonTree} which is now namespaced under {@linkcode foundry.data.PolygonTree}"
    * (since v13 will be removed in v15)
    */
-  export import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
+  export import RegionPolygonTree = foundry.data.PolygonTree;
 
   /**
    * @deprecated "You are accessing the global {@linkcode RegionShape} which is now namespaced under {@linkcode foundry.data.regionShapes.RegionShape}"

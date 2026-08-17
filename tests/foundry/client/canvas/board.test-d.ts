@@ -12,6 +12,7 @@ import TilesLayer = foundry.canvas.layers.TilesLayer;
 import TokenLayer = foundry.canvas.layers.TokenLayer;
 import SoundsLayer = foundry.canvas.layers.SoundsLayer;
 import RenderedCanvasGroup = foundry.canvas.groups.RenderedCanvasGroup;
+import TransitionContainer = foundry.canvas.TransitionContainer;
 import WallsLayer = foundry.canvas.layers.WallsLayer;
 
 const myCanvas = new Canvas();
@@ -64,6 +65,7 @@ if (myCanvas.pendingRenderFlags) {
 expectTypeOf(myCanvas.hidden).toEqualTypeOf<HiddenCanvasGroup | undefined>();
 expectTypeOf(myCanvas.rendered).toEqualTypeOf<RenderedCanvasGroup.Implementation | undefined>();
 expectTypeOf(myCanvas.environment).toEqualTypeOf<EnvironmentCanvasGroup.Implementation | undefined>();
+expectTypeOf(myCanvas.transition).toEqualTypeOf<TransitionContainer | undefined>();
 
 expectTypeOf(myCanvas.controls).toEqualTypeOf<foundry.canvas.layers.ControlsLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.drawings).toEqualTypeOf<foundry.canvas.layers.DrawingsLayer.Implementation | undefined>();

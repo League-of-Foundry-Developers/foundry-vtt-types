@@ -1,7 +1,7 @@
 import type { InexactPartial, FixedInstanceType, Brand, IntentionalPartial, InitializedOn } from "#utils";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
-import type { FramebufferSnapshot, SceneManager } from "#client/canvas/_module.d.mts";
+import type { FramebufferSnapshot, SceneManager, TransitionContainer } from "#client/canvas/_module.d.mts";
 import type {
   CanvasGroupMixin,
   CanvasVisibility,
@@ -20,6 +20,7 @@ import type { CanvasEdges } from "#client/canvas/geometry/edges/_module.d.mts";
 import type { HeadsUpDisplayContainer } from "#client/applications/hud/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
+import type { Level } from "#client/documents/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
@@ -324,6 +325,13 @@ declare class Canvas extends _InternalCanvas {
   readonly overlay: InitializedOn<OverlayCanvasGroup.Implementation, "ready">;
 
   /**
+   * The transition container specialized in smooth scene transitions
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   */
+  transition: InitializedOn<TransitionContainer, "ready">;
+
+  /**
    * The singleton {@linkcode HeadsUpDisplayContainer} which overlays HTML rendering on top of this Canvas.
    *
    */
@@ -450,8 +458,9 @@ declare class Canvas extends _InternalCanvas {
 
   /**
    * When re-drawing the canvas, first tear down or discontinue some existing processes
+   * @param options - Options which configure how the canvas is deconstructed.
    */
-  tearDown(): Promise<void>;
+  tearDown(options?: Canvas.TearDownOptions): Promise<void>;
 
   /**
    * Create a SceneManager instance used for this Scene, if any.
@@ -702,6 +711,14 @@ declare namespace Canvas {
   interface VisibilityOptions {
     /** @defaultValue `false` */
     persistentVision: boolean;
+  }
+
+  interface TearDownOptions {
+    /** The Scene about to be drawn, or null if the canvas is going blank. */
+    nextScene?: Scene.Implementation | null | undefined;
+
+    /** The Level about to be drawn, or null if the canvas is going blank. */
+    nextLevel?: Level.Implementation | null | undefined;
   }
 
   interface BlurOptions {
