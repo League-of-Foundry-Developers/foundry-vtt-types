@@ -214,8 +214,9 @@ declare namespace CombatantGroup {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> extends fields.SchemaField
-    .CreateData<Schema> {
+  interface CreateData<
+    SubType extends CombatantGroup.SubType = CombatantGroup.SubType,
+  > extends fields.SchemaField.CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 

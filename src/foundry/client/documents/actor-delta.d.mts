@@ -281,8 +281,9 @@ declare namespace ActorDelta {
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
-  interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
-    .SourceData<Schema> {
+  interface Source<
+    SubType extends ActorDelta.SubType = ActorDelta.SubType,
+  > extends fields.SchemaField.SourceData<Schema> {
     type: SubType | null;
   }
 
@@ -294,8 +295,9 @@ declare namespace ActorDelta {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
-    .CreateData<Schema> {
+  interface CreateData<
+    SubType extends ActorDelta.SubType = ActorDelta.SubType,
+  > extends fields.SchemaField.CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
