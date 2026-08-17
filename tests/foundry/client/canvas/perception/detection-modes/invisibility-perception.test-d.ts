@@ -6,7 +6,7 @@ import PointVisionSource = foundry.canvas.sources.PointVisionSource;
 import Token = foundry.canvas.placeables.Token;
 import GlowOverlayFilter = foundry.canvas.rendering.filters.GlowOverlayFilter;
 
-declare const visionSource: PointVisionSource.Initialized;
+declare const visionSource: PointVisionSource.Implementation;
 declare const token: Token.Implementation;
 
 describe("DetectionModeInvisibility tests", () => {

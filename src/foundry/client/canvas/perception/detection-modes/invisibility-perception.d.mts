@@ -17,7 +17,7 @@ declare class DetectionModeInvisibility extends DetectionMode {
   protected static override _detectionFilter: GlowOverlayFilter | undefined;
 
   protected override _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }

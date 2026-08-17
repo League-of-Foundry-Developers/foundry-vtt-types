@@ -6,7 +6,7 @@ import type { OutlineOverlayFilter } from "#client/canvas/rendering/filters/_mod
 
 /**
  * Detection mode that see ALL creatures (no blockers).
- * If not constrained by walls, see everything within the range.
+ * If not constrained by walls and surfaces, see everything within the range.
  */
 declare class DetectionModeAll extends DetectionMode {
   static override getDetectionFilter(): OutlineOverlayFilter;
@@ -15,7 +15,7 @@ declare class DetectionModeAll extends DetectionMode {
   protected static override _detectionFilter: OutlineOverlayFilter | undefined;
 
   protected override _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }

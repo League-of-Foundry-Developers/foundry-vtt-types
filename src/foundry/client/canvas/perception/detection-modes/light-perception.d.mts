@@ -5,17 +5,17 @@ import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
 
 /**
  * This detection mode tests whether the target is visible due to being illuminated by a light source.
- * By default tokens have light perception with an infinite range if light perception isn't explicitly
+ * By default tokens have light perception with an infinite range if light perception isn't explicitely
  * configured.
  */
 declare class DetectionModeLightPerception extends DetectionMode {
   protected override _canDetect(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 
   protected override _testPoint(
-    visionSource: PointVisionSource.Internal.Any,
+    visionSource: PointVisionSource.Implementation,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,

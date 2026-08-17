@@ -10,3 +10,5 @@
 export {};
 
 type PerceptionManagerFlags = foundry.canvas.perception.PerceptionManager.RenderFlags;
+
+type LightingVisibility = foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY;
