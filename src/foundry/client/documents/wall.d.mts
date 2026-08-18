@@ -77,12 +77,23 @@ declare namespace WallDocument {
   type Parent = Scene.Implementation | null;
 
   /**
-   * A document's descendants are any documents that are contained within, either within its schema
-   * or its descendant's schemas.
-   * This is a union of the names of all such instances, or never if the document doesn't have any descendants.
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DescendantName = never;
+  type DirectDescendantName = never;
 
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendant = never;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such classes, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantClass = never;
+  
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
    * This is a union of all instances, or never if the document doesn't have any descendants.

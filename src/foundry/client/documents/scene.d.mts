@@ -158,23 +158,6 @@ declare namespace Scene {
   /**
    * A document's descendants are any documents that are contained within, either within its schema
    * or its descendant's schemas.
-   * This is a union of the names of all such instances, or never if the document doesn't have any descendants.
-   */
-  type DescendantName = DirectDescendantName |
-    | AmbientLightDocument.DescendantName
-    | AmbientSoundDocument.DescendantName
-    | DrawingDocument.DescendantName
-    | Level.DescendantName
-    | MeasuredTemplateDocument.DescendantName
-    | NoteDocument.DescendantName
-    | RegionDocument.DescendantName
-    | TileDocument.DescendantName
-    | TokenDocument.DescendantName
-    | WallDocument.DescendantName;
-
-  /**
-   * A document's descendants are any documents that are contained within, either within its schema
-   * or its descendant's schemas.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
   type Descendant = DirectDescendant | RegionDocument.Descendant | TokenDocument.Descendant;
