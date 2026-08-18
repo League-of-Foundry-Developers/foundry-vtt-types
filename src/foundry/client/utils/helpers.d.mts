@@ -127,7 +127,11 @@ type _ValidRelativesOf<
   Parsed extends ParsedUUID = ParseUuid2<Uuid, ExpectedDoc>,
 > = Parsed["parentGeneration"] extends number
   ? Document.XParentOf<Parsed["type"], Parsed["parentGeneration"]>
-  : Parsed["type"] | Document.AncestorsOf<Parsed["type"]>;
+  : [Document.Type] extends [Parsed["type"]]
+    ? Document.Type
+    : Parsed["type"] | Document.AncestorsOf<Parsed["type"]>;
+
+    type _a = _ValidRelativesOf<"Actor.foo">
 
 declare const AnyDocumentClass: Document.AnyConstructor;
 declare abstract class InvalidUuid extends AnyDocumentClass {}

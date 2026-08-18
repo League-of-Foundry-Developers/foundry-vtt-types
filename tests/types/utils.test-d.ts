@@ -72,6 +72,7 @@ import type {
   ParseUUID,
   ParseUuid2,
   UnionToIntersection,
+  ConcreteKeys,
   // GetProperty,
   // PartialUntilInitialized,
   // Mutable,
@@ -343,7 +344,7 @@ mustBeValidUuid(compendiumGreatGreatGrandchildUUID, "ActiveEffect");
 mustBeValidUuid(compendiumGreatGreatGrandchildUUID, "Macro");
 
 mustBeValidUuid(relativeItemUUID, "Item");
-type _p = ParseUuid2<"Actor.foo.Item.bar", Macro.Stored>;
+type _p = ParseUuid2<"Actor.foo.Item.bar">;
 type _y = _p["collection"];
 
 // @ts-expect-error `Item`s aren't `RollTable`s

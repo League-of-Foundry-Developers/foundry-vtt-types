@@ -1312,11 +1312,15 @@ declare namespace Document {
   type AncestorsOf<Name extends Document.Type> = _AncestorsOf<Name>;
 
   /** @internal */
-  type _AncestorsOf<Name extends Document.Type, ParentNames extends Document.Type = Document.ParentNameFor<Name>> = [
-    ParentNames,
-  ] extends [never]
-    ? never
-    : ParentNames | _AncestorsOf<ParentNames>;
+  type _AncestorsOf<
+    Name extends Document.Type,
+    ParentName extends Document.Type = Document.ParentNameFor<Name>,
+    GrandParentName extends Document.Type = Document.ParentNameFor<ParentName>,
+    GreatGrandParentName extends Document.Type = Document.ParentNameFor<GrandParentName>,
+    GreatGreatGrandParentName extends Document.Type = Document.ParentNameFor<GreatGrandParentName>,
+  > = ParentName | GrandParentName | GreatGrandParentName | GreatGreatGrandParentName;
+
+  type _x = _AncestorsOf2<"ActiveEffect">;
 
   /** Get possible parent types for the provided Document type, to the specified depth. 0 = itself, 1 = parent, 2 = grandparent, etc. */
   type XParentOf<Name extends Document.Type, Depth extends number> = _XParentOf<Name, _Accumulate<Depth>>;
@@ -2008,44 +2012,79 @@ declare namespace Document {
     | (DocumentType extends "Token" ? TokenDocument.Parent : never)
     | (DocumentType extends "Wall" ? WallDocument.Parent : never);
 
-  type ParentNameFor<Name extends Document.Type> = NonNullable<ParentForName<Name>>["documentName"];
+  type ParentNameFor<Name extends Document.Type> =
+    | (Name extends "ActiveEffect" ? ActiveEffect.ParentName : never)
+    | (Name extends "ActorDelta" ? ActorDelta.ParentName : never)
+    | (Name extends "Actor" ? Actor.ParentName : never)
+    | (Name extends "Adventure" ? Adventure.ParentName : never)
+    | (Name extends "Card" ? Card.ParentName : never)
+    | (Name extends "Cards" ? Cards.ParentName : never)
+    | (Name extends "ChatMessage" ? ChatMessage.ParentName : never)
+    | (Name extends "Combat" ? Combat.ParentName : never)
+    | (Name extends "Combatant" ? Combatant.ParentName : never)
+    | (Name extends "CombatantGroup" ? CombatantGroup.ParentName : never)
+    | (Name extends "FogExploration" ? FogExploration.ParentName : never)
+    | (Name extends "Folder" ? Folder.ParentName : never)
+    | (Name extends "Item" ? Item.ParentName : never)
+    | (Name extends "JournalEntryCategory" ? JournalEntryCategory.ParentName : never)
+    | (Name extends "JournalEntryPage" ? JournalEntryPage.ParentName : never)
+    | (Name extends "JournalEntry" ? JournalEntry.ParentName : never)
+    | (Name extends "Level" ? Level.ParentName : never)
+    | (Name extends "Macro" ? Macro.ParentName : never)
+    | (Name extends "PlaylistSound" ? PlaylistSound.ParentName : never)
+    | (Name extends "Playlist" ? Playlist.ParentName : never)
+    | (Name extends "RegionBehavior" ? RegionBehavior.ParentName : never)
+    | (Name extends "RollTable" ? RollTable.ParentName : never)
+    | (Name extends "Scene" ? Scene.ParentName : never)
+    | (Name extends "Setting" ? Setting.ParentName : never)
+    | (Name extends "TableResult" ? TableResult.ParentName : never)
+    | (Name extends "User" ? User.ParentName : never)
+    | (Name extends "AmbientLight" ? AmbientLightDocument.ParentName : never)
+    | (Name extends "AmbientSound" ? AmbientSoundDocument.ParentName : never)
+    | (Name extends "Drawing" ? DrawingDocument.ParentName : never)
+    | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.ParentName : never)
+    | (Name extends "Note" ? NoteDocument.ParentName : never)
+    | (Name extends "Region" ? RegionDocument.ParentName : never)
+    | (Name extends "Tile" ? TileDocument.ParentName : never)
+    | (Name extends "Token" ? TokenDocument.ParentName : never)
+    | (Name extends "Wall" ? WallDocument.ParentName : never);
 
-  type DescendantForName<DocumentType extends Document.Type> =
-    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Descendant : never)
-    | (DocumentType extends "ActorDelta" ? ActorDelta.Descendant : never)
-    | (DocumentType extends "Actor" ? Actor.Descendant : never)
-    | (DocumentType extends "Adventure" ? Adventure.Descendant : never)
-    | (DocumentType extends "Card" ? Card.Descendant : never)
-    | (DocumentType extends "Cards" ? Cards.Descendant : never)
-    | (DocumentType extends "ChatMessage" ? ChatMessage.Descendant : never)
-    | (DocumentType extends "Combat" ? Combat.Descendant : never)
-    | (DocumentType extends "Combatant" ? Combatant.Descendant : never)
-    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Descendant : never)
-    | (DocumentType extends "FogExploration" ? FogExploration.Descendant : never)
-    | (DocumentType extends "Folder" ? Folder.Descendant : never)
-    | (DocumentType extends "Item" ? Item.Descendant : never)
-    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Descendant : never)
-    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Descendant : never)
-    | (DocumentType extends "JournalEntry" ? JournalEntry.Descendant : never)
-    | (DocumentType extends "Level" ? Level.Descendant : never)
-    | (DocumentType extends "Macro" ? Macro.Descendant : never)
-    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Descendant : never)
-    | (DocumentType extends "Playlist" ? Playlist.Descendant : never)
-    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Descendant : never)
-    | (DocumentType extends "RollTable" ? RollTable.Descendant : never)
-    | (DocumentType extends "Scene" ? Scene.Descendant : never)
-    | (DocumentType extends "Setting" ? Setting.Descendant : never)
-    | (DocumentType extends "TableResult" ? TableResult.Descendant : never)
-    | (DocumentType extends "User" ? User.Descendant : never)
-    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Descendant : never)
-    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Descendant : never)
-    | (DocumentType extends "Drawing" ? DrawingDocument.Descendant : never)
-    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Descendant : never)
-    | (DocumentType extends "Note" ? NoteDocument.Descendant : never)
-    | (DocumentType extends "Region" ? RegionDocument.Descendant : never)
-    | (DocumentType extends "Tile" ? TileDocument.Descendant : never)
-    | (DocumentType extends "Token" ? TokenDocument.Descendant : never)
-    | (DocumentType extends "Wall" ? WallDocument.Descendant : never);
+  type DescendantNameFor<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.DescendantName : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.DescendantName : never)
+    | (DocumentType extends "Actor" ? Actor.DescendantName : never)
+    | (DocumentType extends "Adventure" ? Adventure.DescendantName : never)
+    | (DocumentType extends "Card" ? Card.DescendantName : never)
+    | (DocumentType extends "Cards" ? Cards.DescendantName : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.DescendantName : never)
+    | (DocumentType extends "Combat" ? Combat.DescendantName : never)
+    | (DocumentType extends "Combatant" ? Combatant.DescendantName : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.DescendantName : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.DescendantName : never)
+    | (DocumentType extends "Folder" ? Folder.DescendantName : never)
+    | (DocumentType extends "Item" ? Item.DescendantName : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.DescendantName : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.DescendantName : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.DescendantName : never)
+    | (DocumentType extends "Level" ? Level.DescendantName : never)
+    | (DocumentType extends "Macro" ? Macro.DescendantName : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.DescendantName : never)
+    | (DocumentType extends "Playlist" ? Playlist.DescendantName : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.DescendantName : never)
+    | (DocumentType extends "RollTable" ? RollTable.DescendantName : never)
+    | (DocumentType extends "Scene" ? Scene.DescendantName : never)
+    | (DocumentType extends "Setting" ? Setting.DescendantName : never)
+    | (DocumentType extends "TableResult" ? TableResult.DescendantName : never)
+    | (DocumentType extends "User" ? User.DescendantName : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.DescendantName : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.DescendantName : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.DescendantName : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.DescendantName : never)
+    | (DocumentType extends "Note" ? NoteDocument.DescendantName : never)
+    | (DocumentType extends "Region" ? RegionDocument.DescendantName : never)
+    | (DocumentType extends "Tile" ? TileDocument.DescendantName : never)
+    | (DocumentType extends "Token" ? TokenDocument.DescendantName : never)
+    | (DocumentType extends "Wall" ? WallDocument.DescendantName : never);
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };

@@ -1069,10 +1069,19 @@ type _PrimaryTypeFor<
   RelativeType extends Document.AncestorsOf<ExpectedType> | ExpectedType = ExpectedType,
 > =
   | Extract<
-      Document.AncestorsOf<RelativeType> | (RelativeType extends ExpectedType ? never : RelativeType),
+      | Document.AncestorsOf<RelativeType>
+      | (RelativeType extends ExpectedType
+          ? // If the relative matches the expected, then we don't add it here, and we conditionally add `undefined` below
+            never
+          : RelativeType),
       Document.PrimaryType
     >
-  | (ExpectedType extends Document.PrimaryType ? (RelativeType extends ExpectedType ? undefined : never) : never);
+  | (ExpectedType extends Document.PrimaryType
+      ? // If the Relative matches the Expected, and Expected is PrimaryType, the target document might not be embedded, in which case `primaryType` will be `undefined`
+        RelativeType extends ExpectedType
+        ? undefined
+        : never
+      : never);
 
 type _Not<T extends boolean> = T extends true ? false : true;
 
@@ -1092,7 +1101,7 @@ type __EmbeddedFor<
   RelativeType extends Document.Type,
   ParentType extends Document.Type = Document.ParentNameFor<FinalType>,
   MostParentType extends Document.Type = Coalesce<_PrimaryTypeFor<RelativeType>, RelativeType>,
-  RelativeDescendants extends Document.Type = Document.DescendantForName<MostParentType>["documentName"],
+  RelativeDescendants extends Document.Type = Document.DescendantNameFor<MostParentType>,
 > = [RelativeDescendants] extends [never]
   ? never
   : MostParentType extends Document.AncestorsOf<FinalType>
@@ -1117,8 +1126,10 @@ type ___EmbeddedFor<
     ? Embedded
     : never;
 
+type _k = _EmbeddedFor<"ActiveEffect", "Scene">;
+
 type _actorAncestors = Document.AncestorsOf<"Actor">;
-type _descendants = Document.DescendantForName<"Scene">["documentName"];
+type _descendants = Document.DescendantFor<"Scene">["documentName"];
 type _parents = Document.ParentNameFor<_descendants>;
 type _i = _EmbeddedFor<"ActiveEffect", "Scene">;
 type _j = _EmbeddedFor<"PlaylistSound", "Playlist">;
@@ -1354,7 +1365,7 @@ type _ParseUuidStringExpectedRelative<
     collection: Document.ContainingCollection<RelativeDoc["documentName"]>;
 
     // If the ExpectedDoc and RelativeDoc differ, then RelativeDoc must be an ancestor, and thus ExpectedDoc must be embedded.
-    isEmbedded: _IsEmbedded<ExpectedDoc["documentName"], RelativeDoc["documentName"]>;
+    isEmbedded: RelativeDoc["documentName"] extends ExpectedDoc["documentName"] ? boolean : true;
 
     // this is currently always `boolean`
     isCompendium: _IsNotNull<RelativeDoc["compendium"]>;
@@ -1364,6 +1375,8 @@ type _ParseUuidStringExpectedRelative<
     primaryId: PrimaryType extends undefined ? undefined : string;
 
     documentType: Coalesce<PrimaryType, ExpectedDoc["documentName"]>;
+
+    embedded: _EmbeddedFor<State["type"], RelativeDoc["documentName"]>;
   }
 >;
 
@@ -1383,7 +1396,7 @@ type _ParseIDWithRelative<
     documentType: Type;
     collection: Document.ContainingCollection<Type>;
     isCompendium: _IsNotNull<RelativeDoc["compendium"]>; // this is currently always `boolean`
-    isEmbedded: _IsEmbedded<Type, RelativeDoc["documentName"]>;
+    isEmbedded: RelativeDoc["documentName"] extends ExpectedDoc["documentName"] ? boolean : true;
     embedded: string[]; // TODO: this could possibly typed more specifically with a walk up the inheritance chain but meh
   }
 >;
