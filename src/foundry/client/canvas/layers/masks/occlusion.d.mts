@@ -1,8 +1,9 @@
-import type { AnyObject, DeepReadonly, Identity } from "#utils";
+import type { DeepReadonly, Identity } from "#utils";
 import type { CachedContainer } from "#client/canvas/containers/_module.d.mts";
 import type { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { RegionDocument } from "#client/documents/_module.d.mts";
+import type { PerceptionManager } from "#client/canvas/perception/_module.d.mts";
 
 /**
  * The occlusion mask which contains radial occlusion and vision occlusion from tokens.
@@ -108,7 +109,7 @@ declare class CanvasOcclusionMask extends CachedContainer {
    * @param flags - The perception render flags that are processed
    * @internal
    */
-  _updateOccludedSurfaces(flags: AnyObject): void;
+  _updateOccludedSurfaces(flags: PerceptionManager.RenderFlags): void;
 
   /**
    * @deprecated "`CanvasOcclusionMask#updateOcclusion` is deprecated. Use

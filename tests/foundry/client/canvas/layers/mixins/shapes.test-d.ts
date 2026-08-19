@@ -38,7 +38,9 @@ expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toBeVoid();
 expectTypeOf(layer["_cancelMouseWheel"]()).toBeVoid();
 expectTypeOf(layer["_updateMouseWheelShape"](wheelEvent)).toBeVoid();
 expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
-// `toEqualTypeOf` cannot compare this union, so check assignability both ways.
+// `toEqualTypeOf` rejects this union as a type argument: "Type 'AnyMutableObject | [data: AnyMutableObject,
+// options?: AnyMutableObject | undefined]' does not satisfy the constraint '{ [x: string]: never; [x: number]:
+// unknown; }'." Checked as mutual assignability instead.
 type PrepareMouseWheelUpdateReturn =
   | AnyMutableObject
   | [data: AnyMutableObject, options?: AnyMutableObject | undefined];

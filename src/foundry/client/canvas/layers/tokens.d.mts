@@ -366,7 +366,6 @@ declare namespace TokenLayer {
 
   interface SetTargetsOptions extends InexactPartial<_SetTargetsOptions> {}
 
-  /** @internal */
   interface MovementPlanningContext {
     object: Token.Implementation;
     allowedActions: string[] | null;
@@ -393,7 +392,6 @@ declare namespace TokenLayer {
     violations: string[];
   }
 
-  /** @internal */
   interface MovementPlanningResult {
     id: string;
     origin: TokenDocument.Position;
@@ -401,7 +399,12 @@ declare namespace TokenLayer {
     waypoints: TokenDocument.MovementWaypoint[];
   }
 
-  /** @internal */
+  /**
+   * @remarks Forwarded to {@linkcode Scene.createEmbeddedDocuments | Scene#createEmbeddedDocuments}; `parent` is
+   * always supplied by the layer.
+   */
+  interface CreateOptions extends InexactPartial<Omit<TokenDocument.Database.CreateOperation, "parent">> {}
+
   interface PlacementContext {
     data: Iterable<Partial<Document.CreateDataForName<"Token">>>;
     previews: Token.Implementation[];
@@ -410,7 +413,7 @@ declare namespace TokenLayer {
     resolve: (documents: TokenDocument.Implementation[]) => void;
     reject: (error: Error) => void;
     create: boolean;
-    createOptions: Omit<Document.Database.CreateOperationForName<"Token">, "parent">;
+    createOptions: TokenLayer.CreateOptions;
     allowRotation: boolean;
     onMove: PlaceTokensOptions["onMove"];
     onRotate: PlaceTokensOptions["onRotate"];
@@ -467,7 +470,7 @@ declare namespace TokenLayer {
      * Optional creation options. By default the creation option `controlObject` is true.
      * @defaultValue `{}`
      */
-    createOptions: Omit<Document.Database.CreateOperationForName<"Token">, "parent">;
+    createOptions: TokenLayer.CreateOptions;
 
     /**
      * Allow rotation of the Tokens?

@@ -153,6 +153,58 @@ declare class RegionLayer extends ShapeLayerMixin(PlaceablesLayer<"Region">) {
    * }, {attachToToken: true});
    * ```
    *
+   * @example Place four 40-foot radius circles.
+   * ```js
+   * const radius = 40 * canvas.dimensions.distancePixels;
+   * const shapes = [];
+   * for ( let i = 0; i < 4; i++ ) shapes.push({type: "circle", x: 0, y: 0, radius, gridBased: true});
+   * await canvas.regions.placeRegion({
+   *   name: "Meteor Swarm",
+   *   shapes,
+   *   color: game.user.color,
+   *   restriction: {enabled: true},
+   *   levels: [canvas.level.id],
+   *   highlightMode: "coverage",
+   *   displayMeasurements: true,
+   *   visibility: CONST.REGION_VISIBILITY.ALWAYS,
+   *   ownership: {[game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER}
+   * });
+   * ```
+   *
+   * @example Spawn 10 tokens with random actor and random rotation in a placed circle with 30 grid units radius.
+   * ```js
+   * ui.notifications.info("Choose the placement for the spawn area.");
+   * const spawnArea = await canvas.regions.placeRegion({
+   *   name: "Spawn Area",
+   *   shapes: [{
+   *     type: "circle",
+   *     x: 0,
+   *     y: 0,
+   *     radius: canvas.dimensions.distancePixels * 30
+   *   }],
+   *   restriction: {enabled: true},
+   *   levels: [canvas.level.id]
+   * }, {create: false});
+   * if ( spawnArea ) {
+   *   const {count: numTokensToSpawn=0} = await foundry.applications.api.DialogV2.input({
+   *    window: {
+   *       title: "How many tokens to you want to spawn?"
+   *    },
+   *    content: `<input type="number" name="count" min="0" step="1" value="10">`
+   *   }) ?? {};
+   *   const actors = game.actors.contents;
+   *   const tokensToSpawn = [];
+   *   for ( let i = 0; i < numTokensToSpawn; i++ ) {
+   *     const actor = actors[Math.floor(Math.random() * actors.length)];
+   *     const token = await actor.getTokenDocument({
+   *       rotation: Math.random() * 360
+   *     }, {parent: spawnArea.parent});
+   *     tokensToSpawn.push(token);
+   *   }
+   *   const spawnedTokens = await spawnArea.spawnTokens(tokensToSpawn);
+   * }
+   * ```
+   *
    * @remarks
    * @throws If any of the callback options is provided and is not a function, or if the canvas is not ready.
    */
@@ -162,10 +214,46 @@ declare class RegionLayer extends ShapeLayerMixin(PlaceablesLayer<"Region">) {
   ): Promise<RegionDocument.Implementation | null>;
 
   /**
-   * Place multiple Regions at the cursor one after the other.
+   * Place one or multiple Regions at the cursor.
+   * The Region can have multiple shapes but must have at least one.
+   * Each Region is placed one after the other in the given order.
+   * Each shape of a Region is placed one after the other in the given order.
+   * The placed Region shapes can be rotated with the mouse wheel unless `allowRotation` is false.
+   * Left-click confirms the placement of a shape. Right-click skips the placement of a shape.
    * @param data    - The data of the Regions to place
    * @param options - Additional options
-   * @returns The Region documents that were placed, or null if the placement was cancelled
+   * @returns The Region documents that were placed and not rejected by preCreate,
+   * or null if
+   * - the placement was rejected by `preCommit`,
+   * - the dismiss key was pressed, or
+   * - the game was paused, the user is not a GM, and the `create` option is true.
+   *
+   * @example Place three 20-foot token emanations.
+   * ```js
+   * const data = [];
+   * for ( let i = 0; i < 3; i++ ) data.push({
+   *   name: `Emanation (${i + 1})`,
+   *   shapes: [{
+   *     type: "emanation",
+   *     base: {
+   *       type: "token",
+   *       x: 0,
+   *       y: 0,
+   *       width: 1,
+   *       height: 1,
+   *       shape: CONST.TOKEN_SHAPES.ELLIPSE_1
+   *     },
+   *     radius: 20 * canvas.dimensions.distancePixels,
+   *     gridBased: true
+   *   }],
+   *   restriction: {enabled: true},
+   *   levels: [canvas.level.id],
+   *   displayMeasurements: true,
+   *   visibility: CONST.REGION_VISIBILITY.ALWAYS,
+   *   ownership: {[game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER}
+   * });
+   * await canvas.regions.placeRegions(data, {attachToToken: true});
+   * ```
    *
    * @remarks
    * @throws If `data` is empty, or if `preCommit` is provided and is not a function.
@@ -252,19 +340,19 @@ declare namespace RegionLayer {
    * @remarks The shape-level position of the shape a placement callback is being invoked for.
    */
   interface PlacementProgress {
-    /** The index of the Region being placed */
+    /** @remarks The index of the Region being placed */
     regionIndex: number;
 
-    /** The number of Regions being placed */
+    /** @remarks The number of Regions being placed */
     regionCount: number;
 
-    /** The shape currently being placed */
+    /** @remarks The shape currently being placed */
     shape: BaseShapeData;
 
-    /** The index of {@linkcode shape} within the Region's shapes */
+    /** @remarks The index of {@linkcode shape} within the Region's shapes */
     shapeIndex: number;
 
-    /** The number of shapes of the Region being placed */
+    /** @remarks The number of shapes of the Region being placed */
     shapeCount: number;
   }
 
@@ -375,10 +463,7 @@ declare namespace RegionLayer {
    * @remarks Forwarded to {@linkcode Scene.createEmbeddedDocuments | Scene#createEmbeddedDocuments}; `parent` is
    * always supplied by the layer.
    */
-  interface CreateOptions extends Omit<
-    RegionDocument.Database.CreateOperation,
-    "parent" | "data" | "modifiedTime" | "render"
-  > {}
+  interface CreateOptions extends InexactPartial<Omit<RegionDocument.Database.CreateOperation, "parent">> {}
 
   /**
    * @remarks The in-progress state of a {@linkcode RegionLayer.placeRegion | RegionLayer#placeRegion} workflow.

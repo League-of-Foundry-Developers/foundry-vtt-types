@@ -94,7 +94,7 @@ declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> e
   static documentName: Document.PlaceableType;
 
   /**
-   * @remarks Foundry does not declare this on `PlaceablesLayer` itself; it is read as
+   * @privateRemarks Foundry does not declare this on `PlaceablesLayer` itself; it is read as
    * `this.constructor.paletteClass?.createData` and is only assigned by subclasses that have a palette.
    */
   static paletteClass: PlaceablePaletteMixin.AnyMixedConstructor | undefined;
@@ -201,7 +201,6 @@ declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> e
 
   /**
    * Iterate over all documents which are viewed in the current Level.
-   * @yields A document
    */
   viewedDocuments(): Generator<Document.StoredForName<DocumentName>, void, undefined>;
 
@@ -612,7 +611,7 @@ declare namespace PlaceablesLayer {
     rotatableObjects: boolean;
 
     /**
-     * Can placeable objects in this layer be moved via keyboard arrow keys?
+     * Can placeable objects in this layer be moved via keyboard?
      * @defaultValue `false`
      */
     keyboardMovableObjects: boolean;
@@ -624,17 +623,16 @@ declare namespace PlaceablesLayer {
     confirmDeleteKey: boolean;
 
     /**
-     * Confirm placeable object creation via drag-drop by rendering its sheet instead of committing it directly?
-     * Evaluated the same way as {@linkcode controlObjectAfterCreation}.
+     * Confirm before creating the drawn object (for the given tools)?
      * @defaultValue `false`
+     * @remarks When this evaluates true the preview's sheet is rendered instead of the document being created.
      */
     confirmBeforeCreation: PlaceablesLayer.EvaluatableBoolean;
 
     /**
-     * Control a newly created placeable object after it is created via drag-drop?
+     * Control the drawn object that has been created (for the given tools)?
      * @defaultValue `true`
-     * @remarks A `boolean` is used as-is, an array of tool names is checked against `game.activeTool`, and a
-     * function is called with no arguments and must return a `boolean`.
+     * @remarks Only takes effect if {@linkcode controllableObjects} is also true.
      */
     controlObjectAfterCreation: PlaceablesLayer.EvaluatableBoolean;
 
