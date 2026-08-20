@@ -300,7 +300,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeCreateDataArray,
-    { action: "create", modifiedTime: 0, render: false, renderSheet: false },
+    { action: "create", documentName: "ActiveEffect", modifiedTime: 0, render: false, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -310,7 +310,14 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeCreateDataArray,
-    { action: "create", modifiedTime: 0, render: false, renderSheet: false, parent: tempItem },
+    {
+      action: "create",
+      documentName: "ActiveEffect",
+      modifiedTime: 0,
+      render: false,
+      renderSheet: false,
+      parent: tempItem,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -320,7 +327,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeUpdateDataArray,
-    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true },
+    { action: "update", documentName: "ActiveEffect", modifiedTime: 0, render: false, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -330,7 +337,15 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeUpdateDataArray,
-    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true, parent: tempItem },
+    {
+      action: "update",
+      documentName: "ActiveEffect",
+      modifiedTime: 0,
+      render: false,
+      diff: true,
+      recursive: true,
+      parent: tempItem,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -340,7 +355,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeIDs,
-    { action: "delete", modifiedTime: 0, render: false },
+    { action: "delete", documentName: "ActiveEffect", modifiedTime: 0, render: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -350,7 +365,7 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeIDs,
-    { action: "delete", modifiedTime: 0, render: false, parent: tempItem },
+    { action: "delete", documentName: "ActiveEffect", modifiedTime: 0, render: false, parent: tempItem },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();

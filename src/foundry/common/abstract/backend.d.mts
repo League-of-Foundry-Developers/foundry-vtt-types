@@ -23,7 +23,9 @@ import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts"
 declare abstract class DatabaseBackend {
   /**
    * Retrieve Documents based on provided query parameters.
-   * @param documentClass - The Document definition
+   * It recommended to use {@linkcode CompendiumCollection.getDocuments | CompendiumCollection#getDocuments} or
+   * {@linkcode CompendiumCollection.getIndex | CompendiumCollection#getIndex} rather than calling this method directly.
+   * @param documentClass - The Document class definition
    * @param operation     - Parameters of the get operation
    * @param user          - The requesting User
    * @returns An array of retrieved Document instances or index objects
@@ -35,7 +37,7 @@ declare abstract class DatabaseBackend {
     documentClass: DocClass,
     operation: Document.Database.BackendGetOperationForName<DocClass["documentName"]>,
     user?: User.Stored,
-  ): Promise<FixedInstanceType<DocClass>>[];
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Retrieve Document instances using the specified operation parameters.
@@ -126,12 +128,12 @@ declare abstract class DatabaseBackend {
 
   /**
    * Delete Documents using provided ids and context.
-   * It is recommended to use {@linkcode Document.deleteDocuments} or {@link Document.delete | `Document#delete`}
+   * It is recommended to use {@linkcode Document.deleteDocuments} or {@linkcode Document.delete | Document#delete}
    * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
-   * @returns The deleted Document instances
+   * @returns An array of deleted Document instances
    *
    * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
    * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments} defaults to `game.user`.
@@ -149,6 +151,7 @@ declare abstract class DatabaseBackend {
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
+   * @returns An array of deleted Document instances
    *
    * @remarks Abstract; See {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} remarks.
    */
@@ -162,6 +165,9 @@ declare abstract class DatabaseBackend {
    * Get the parent Document (if any) associated with a request context.
    * @param operation - The requested database operation
    * @returns The parent Document, or `null`
+   * @internal
+   * @remarks
+   * @throws If `operation.parent` is set to something that isn't a {@linkcode Document} instance.
    */
   _getParent(operation: DatabaseBackend.DatabaseOperation): Promise<Document.Any | null>;
 
@@ -200,9 +206,16 @@ declare abstract class DatabaseBackend {
 
   /**
    * Construct a standardized error message given the context of an attempted operation
-   * @remarks This method is only called in server-side code
+   * @remarks This method is only called in server-side code.
+   *
+   * A `subject` passed as a {@linkcode Document} is replaced with a description of that Document; any other string is used as-is.
    */
-  protected _logError(user: User.Stored, action: string, context?: DatabaseBackend.LogErrorContext): string;
+  protected _logError(
+    user: User.Stored,
+    action: string,
+    subject: Document.Any | string,
+    context?: DatabaseBackend.LogErrorContext,
+  ): string;
 
   #DatabaseBackend: true;
 }
@@ -212,23 +225,32 @@ declare namespace DatabaseBackend {
   interface AnyConstructor extends Identity<typeof AnyDatabaseBackend> {}
 
   /** @internal */
-  interface _LogOperationContext {
+  interface _LogErrorContext {
     /** A parent document */
     parent: Document.Any;
 
     /** A compendium pack within which the operation occurred */
     pack: string;
+  }
 
+  /** @internal */
+  interface _LogOperationContext extends _LogErrorContext {
     /**
      * The logging level
      * @defaultValue `"info"`
      */
     level: LoggingLevels;
+
+    /**
+     * Whether this operation is part of a dry run: abort true and level isn't "debug"
+     * @defaultValue `false`
+     */
+    dryRun: boolean;
   }
 
   interface LogOperationContext extends InexactPartial<_LogOperationContext> {}
 
-  interface LogErrorContext extends Omit<LogOperationContext, "level"> {}
+  interface LogErrorContext extends InexactPartial<_LogErrorContext> {}
 
   interface DatabaseOperationMap {
     get: GetOperation;
@@ -262,6 +284,15 @@ declare namespace DatabaseBackend {
     parent: Parent;
 
     /**
+     * The Document name
+     *
+     * @remarks Set in `DatabaseBackend##configureOperation` from the `documentClass` parameter, so it's omitted from interfaces prior to
+     * that call ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+     * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation})
+     */
+    documentName: Document.Type;
+
+    /**
      * The timestamp when the operation was performed
      *
      * @remarks This property is set in `DatabaseBackend##configureOperation`; since passed values are never respected, it is omitted from
@@ -278,16 +309,6 @@ declare namespace DatabaseBackend {
      * `FogExploration._onXOperation` methods. It sees no other use in core.
      */
     broadcast?: boolean;
-
-    /**
-     * Block the dispatch of hooks related to this operation
-     *
-     * @remarks Behaves as if the default is `false`.
-     *
-     * Despite the description, only prevents `pre[Operation][Document]` hooks from being called. Post-operation hooks (`createItem` etc)
-     * still fire.
-     */
-    noHook?: boolean;
 
     /**
      * Re-render Applications whose display depends on the created Documents
@@ -313,6 +334,16 @@ declare namespace DatabaseBackend {
      * A parent Document UUID provided when the parent instance is unavailable
      */
     parentUuid?: string | null;
+
+    /**
+     * Is the operation a dry run? If so, an empty result array is returned before the Documents are created.
+     *
+     * @remarks Defaults to `false`. Nothing is dispatched to the server; no hooks fire and no Documents are returned.
+     *
+     * @privateRemarks Also checked by {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments},
+     * though core's typedef only lists it for the three write operations.
+     */
+    dryRun?: boolean;
   }
 
   /**
@@ -329,7 +360,7 @@ declare namespace DatabaseBackend {
    */
   interface GetOperation<Parent extends Document.Any | null = Document.Any | null> extends Pick<
     _CommonOperationKeys<Parent>,
-    "pack" | "parent" | "parentUuid"
+    "documentName" | "dryRun" | "pack" | "parent" | "parentUuid"
   > {
     /**
      * The action of this database operation
@@ -374,6 +405,14 @@ declare namespace DatabaseBackend {
      * `CONFIG` (e.g {@linkcode CONFIG.Actor.compendiumIndexFields}) before the initial index is requested, in its index already.
      */
     indexFields?: string[];
+
+    /**
+     * Additional options passed to the ServerDocument#find API
+     *
+     * @remarks Core only passes this in {@linkcode foundry.canvas.layers.FogManager.initialize | FogManager#initialize}, as
+     * `{ sharedFog: boolean }`.
+     */
+    queryOptions?: AnyObject;
   }
 
   /**
@@ -445,6 +484,12 @@ declare namespace DatabaseBackend {
     data: CreateData[];
 
     /**
+     * Skip dispatch of preCreate hooks for this operation
+     * @remarks Behaves as if the default is `false`. Post-operation hooks (`createItem` etc) still fire.
+     */
+    noHook?: boolean;
+
+    /**
      * Render the sheet Application for any created Documents
      * @defaultValue `false`
      * @remarks This is guaranteed to exist by `DatabaseBackend##configureCreate`. It is not omitted from passable types as it's set via
@@ -466,6 +511,14 @@ declare namespace DatabaseBackend {
      * @remarks Behaves like the default is `false`
      */
     keepEmbeddedIds?: boolean;
+
+    /**
+     * Control the object of any created Documents
+     * @remarks Behaves like the default is `false`. Only consumed by
+     * {@linkcode foundry.documents.abstract.CanvasDocumentMixin.AnyMixed._onCreate | CanvasDocument#_onCreate}, and only when the
+     * creating user is the current user.
+     */
+    controlObject?: boolean;
   }
 
   /**
@@ -540,6 +593,12 @@ declare namespace DatabaseBackend {
      * either `UpdateData` objects or Document instances. It's restricted to only the `UpdateData` in all interfaces downstream of this one.
      */
     updates: UpdateData[];
+
+    /**
+     * Skip dispatch of preUpdate hooks for this operation
+     * @remarks Behaves as if the default is `false`. Post-operation hooks (`updateItem` etc) still fire.
+     */
+    noHook?: boolean;
 
     /**
      * Difference each update object against current Document data and only use differential data for the update operation
@@ -631,6 +690,12 @@ declare namespace DatabaseBackend {
      * An array of Document ids which should be deleted.
      */
     ids: string[];
+
+    /**
+     * Skip dispatch of preDelete hooks for this operation
+     * @remarks Behaves as if the default is `false`. Post-operation hooks (`deleteItem` etc) still fire.
+     */
+    noHook?: boolean;
 
     /**
      * Delete all documents in the Collection, regardless of `_id`

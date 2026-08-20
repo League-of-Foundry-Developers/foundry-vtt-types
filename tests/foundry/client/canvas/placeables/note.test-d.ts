@@ -68,7 +68,7 @@ expectTypeOf(note["_refreshElevation"]()).toBeVoid();
 expectTypeOf(
   note["_onCreate"](
     doc.toObject(),
-    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    { action: "create", documentName: "Note", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -77,13 +77,24 @@ expectTypeOf(
   note["_onUpdate"](
     // partial source data
     { elevation: 20, entryId: "YYYYYSomeIDYYYYY", fontSize: 60, flags: { core: { sheetLock: true } } },
-    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
+    {
+      action: "update",
+      documentName: "Note",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      diff: true,
+      recursive: true,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  note["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  note["_onDelete"](
+    { action: "delete", documentName: "Note", parent: scene, modifiedTime: 7, render: true },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 // TODO: _onUpdate test after document test helpers are done

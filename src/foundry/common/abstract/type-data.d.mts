@@ -301,7 +301,11 @@ declare abstract class TypeDataModel<
   " __fvtt_types_base_data": BaseData;
   " __fvtt_types_derived_data": DerivedData;
 
-  modelProvider: foundry.packages.System | foundry.packages.Module | null;
+  /**
+   * The package that is providing this DataModel for the given sub-type.
+   * @remarks Defined via `Object.defineProperty` during construction with `{ writable: false }`.
+   */
+  readonly modelProvider: foundry.packages.System | foundry.packages.Module | null;
 
   static override LOCALIZATION_PREFIXES: string[];
 
