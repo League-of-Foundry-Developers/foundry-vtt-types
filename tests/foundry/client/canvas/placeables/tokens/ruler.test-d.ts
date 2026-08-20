@@ -181,12 +181,14 @@ const rulerWaypoint = {
   center: new PIXI.Point(50, 50),
   checkpoint: true,
   cost: 1,
+  depth: 1,
   elevation: 0,
   explicit: true,
   height: 1,
   hidden: false,
   index: 1,
   intermediate: false,
+  level: "ARandomIDForTest",
   measurement: { backward: null, forward: null, cost: 1, diagonals: 0, distance: 1, euclidean: 1, spaces: 1 },
   movementId: "ARandomIDForTest",
   next: null,
@@ -232,13 +234,20 @@ describe("TokenRuler Tests", async () => {
     ).toBeVoid();
   });
 
+  test("Path preparation", () => {
+    expectTypeOf(tr["_preparePath"]([rulerWaypoint])).toBeVoid();
+    expectTypeOf(tr["_shouldRenderWaypoint"](rulerWaypoint)).toBeBoolean();
+    expectTypeOf(tr["_accumulateWaypointData"]({}, rulerWaypoint)).toBeVoid();
+    expectTypeOf(tr["_accumulateWaypointData"]({ cost: 1, elevation: undefined }, rulerWaypoint)).toBeVoid();
+  });
+
   test("Context and Style", () => {
     expectTypeOf(tr["_getWaypointLabelContext"](rulerWaypoint, {})).toEqualTypeOf<TokenRuler.WaypointContext | void>();
     expectTypeOf(
       tr["_getWaypointLabelContext"](rulerWaypoint, { hasElevation: true, initialized: true, previousElevation: 0 }),
     ).toEqualTypeOf<TokenRuler.WaypointContext | void>();
 
-    expectTypeOf(tr["_getWaypointStyle"](rulerWaypoint)).toEqualTypeOf<Ruler.WaypointStyle>();
+    expectTypeOf(tr["_getWaypointStyle"](rulerWaypoint)).toEqualTypeOf<TokenRuler.WaypointStyle>();
     expectTypeOf(tr["_getSegmentStyle"](rulerWaypoint)).toEqualTypeOf<Ruler.SegmentStyle>();
     expectTypeOf(
       tr["_getGridHighlightStyle"](rulerWaypoint, { i: 0, j: 1, k: 0 }),

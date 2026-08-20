@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 import Drawing = foundry.canvas.placeables.Drawing;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import ShapeObjectMixin from "#client/canvas/placeables/mixins/shapes.mjs";
 import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
 
 declare const drawingDoc: DrawingDocument.Stored;
@@ -13,6 +13,7 @@ expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "refresh"
       | "refreshState"
+      | "refreshVisibility"
       | "refreshTransform"
       | "refreshPosition"
       | "refreshRotation"
@@ -21,7 +22,6 @@ expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
       | "refreshText"
       | "refreshFrame"
       | "refreshElevation"
-      | "refreshMesh"
     >
   | undefined
 >();
@@ -66,6 +66,7 @@ expectTypeOf(drawing._onkeydown).toEqualTypeOf<((event: KeyboardEvent) => void) 
 expectTypeOf(drawing.shape).toEqualTypeOf<PrimaryGraphics | PIXI.Graphics | undefined>();
 expectTypeOf(drawing.text).toEqualTypeOf<PIXI.Text | null>();
 expectTypeOf(drawing.frame).toEqualTypeOf<PIXI.Container | undefined>();
+expectTypeOf(drawing.controls).toEqualTypeOf<PIXI.Container | undefined>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(drawing["_destroy"]()).toBeVoid();
@@ -74,19 +75,17 @@ expectTypeOf(drawing["_destroy"]({ baseTexture: true, children: true, texture: t
 expectTypeOf(drawing["_destroy"](true)).toBeVoid();
 expectTypeOf(drawing["_destroy"](undefined)).toBeVoid();
 
-expectTypeOf(drawing.clear()).toEqualTypeOf<typeof drawing>();
-
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(drawing["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(drawing["_draw"]({})).toEqualTypeOf<Promise<void>>();
+
+expectTypeOf(drawing["_clear"]()).toBeVoid();
 
 expectTypeOf(drawing["_getLineStyle"]()).toEqualTypeOf<Drawing.LineStyleData>();
 expectTypeOf(drawing["_getFillStyle"]()).toEqualTypeOf<Drawing.FillStyleData>();
 expectTypeOf(drawing["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
 
 expectTypeOf(drawing.clone()).toEqualTypeOf<Drawing.Implementation>();
-expectTypeOf(drawing.clear()).toEqualTypeOf<Drawing.Implementation>();
-
 // @ts-expect-error an object must be passed
 expectTypeOf(drawing["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(drawing["_applyRenderFlags"]({})).toBeVoid();
@@ -105,26 +104,16 @@ expectTypeOf(
     refreshText: true,
     refreshFrame: true,
     refreshElevation: true,
-    // deprecated since v12, until v14
-    refreshMesh: true,
   }),
 ).toBeVoid();
 
 expectTypeOf(drawing["_refreshPosition"]()).toBeVoid();
 expectTypeOf(drawing["_refreshRotation"]()).toBeVoid();
+expectTypeOf(drawing["_refreshVisibility"]()).toBeVoid();
 expectTypeOf(drawing["_refreshState"]()).toBeVoid();
 expectTypeOf(drawing["_refreshShape"]()).toBeVoid();
 expectTypeOf(drawing["_refreshElevation"]()).toBeVoid();
-expectTypeOf(drawing["_refreshFrame"]()).toBeVoid();
 expectTypeOf(drawing["_refreshText"]()).toBeVoid();
-
-expectTypeOf(drawing._addPoint({ x: 50, y: 60 })).toBeVoid();
-expectTypeOf(drawing._addPoint({ x: 50, y: 60 }, {})).toBeVoid();
-expectTypeOf(drawing._addPoint({ x: 50, y: 60 }, { round: true, snap: false, temporary: true })).toBeVoid();
-expectTypeOf(
-  drawing._addPoint({ x: 50, y: 60 }, { round: undefined, snap: undefined, temporary: undefined }),
-).toBeVoid();
-expectTypeOf(drawing._removePoint()).toBeVoid();
 
 expectTypeOf(
   drawing["_onCreate"](
@@ -165,31 +154,13 @@ expectTypeOf(drawing.enableTextEditing({ forceTextEditing: undefined, isNew: und
 
 // TODO: _onUpdate test after document test helpers are done
 
-expectTypeOf(drawing.activateListeners()).toBeVoid();
-
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(drawing["_canControl"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(drawing["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
-
-expectTypeOf(drawing["_onHoverIn"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](pointerEvent, {})).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
-
-expectTypeOf(drawing["_onMouseDraw"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onClickLeft"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing._hasShapeChanged({ rotation: 45 })).toBeBoolean();
+expectTypeOf(drawing["_initializeDragShape"](pointerEvent)).toEqualTypeOf<foundry.data.BaseShapeData>();
+expectTypeOf(drawing["_updateDragPreviews"](pointerEvent)).toBeVoid();
 expectTypeOf(drawing["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<
-  PlaceableObject.DragLeftDropUpdate[]
+  ShapeObjectMixin.DragLeftDropUpdate[]
 >();
-expectTypeOf(drawing["_onDragLeftCancel"](pointerEvent)).toBeVoid();
-
-expectTypeOf(drawing["_onHandleHoverIn"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleHoverOut"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragStart"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragMove"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragDrop"](pointerEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragCancel"](pointerEvent)).toBeVoid();

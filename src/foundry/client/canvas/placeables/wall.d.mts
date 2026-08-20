@@ -5,7 +5,6 @@ import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Edge } from "#client/canvas/geometry/edges/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -23,6 +22,8 @@ declare module "#configuration" {
  * @see {@linkcode foundry.canvas.layers.WallsLayer}
  */
 declare class Wall extends PlaceableObject<WallDocument.Implementation> {
+  constructor(document: WallDocument.Implementation);
+
   // fake type override
   static override get implementation(): Wall.ImplementationClass;
 
@@ -30,8 +31,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   static override RENDER_FLAGS: Wall.RENDER_FLAGS;
 
-  // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
-  // `RENDER_FLAGS` and so it has to be adjusted here.
+  // fake type override
   renderFlags: RenderFlags<Wall.RENDER_FLAGS>;
 
   // fake override; super has to type as if this could be a ControlIcon, but Walls don't use one
@@ -51,6 +51,8 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   /**
    * The line segment that represents the Wall.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw.
    */
   line: PIXI.Graphics | undefined;
 
@@ -64,10 +66,10 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * The icon that indicates the direction of the Wall.
    * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw.
-   * @privateRemarks Foundry types this as `| null` as well, but it is never set that in practice
+   * @remarks Only `undefined` prior to first draw. `null` after a redraw, because
+   * {@linkcode Wall._clear | Wall#_clear} destroys the sprite without clearing this property.
    */
-  directionIcon: PIXI.Sprite | undefined;
+  directionIcon: PIXI.Sprite | null | undefined;
 
   /**
    * A Graphics object used to highlight this wall segment. Only used when the wall is controlled.
@@ -84,9 +86,8 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   /**
    * The Edge instance which represents this Wall.
-   * The Edge is re-created when data for the Wall changes.
    */
-  get edge(): Edge;
+  get edge(): Edge | null;
 
   override get bounds(): PIXI.Rectangle;
 
@@ -120,13 +121,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   override getSnappedPosition(position: never): never;
 
-  override _pasteObject(offset: Canvas.Point, options?: PlaceablesLayer.PasteOptions): WallDocument.Source;
-
-  /**
-   * Initialize the edge which represents this Wall.
-   * @param options - Options which modify how the edge is initialized
-   */
-  initializeEdge(options?: Wall.InitializeEdgeOptions): void;
+  override _pasteObject(offset: Canvas.Point, options?: PlaceableObject.PasteObjectOptions): Wall.PasteObjectData;
 
   /**
    * This helper converts the wall segment to a Ray
@@ -139,7 +134,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
 
   protected override _draw(options: HandleEmptyObject<Wall.DrawOptions>): Promise<void>;
 
-  override clear(): this;
+  protected override _clear(): void;
 
   override control(options?: Wall.ControlOptions): boolean;
 
@@ -189,28 +184,15 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   protected _refreshHighlight(): void;
 
   /**
-   * Refresh the displayed state of the Wall.
-   */
-  protected _refreshState(): void;
-
-  /**
    * Given the properties of the wall - decide upon a color to render the wall for display on the WallsLayer
    */
   protected _getWallColor(): number;
-
-  protected override _onCreate(
-    data: WallDocument.CreateData,
-    options: WallDocument.Database.OnCreateOptions,
-    userId: string,
-  ): void;
 
   protected override _onUpdate(
     changed: WallDocument.UpdateData,
     options: WallDocument.Database.OnUpdateOptions,
     userId: string,
   ): void;
-
-  protected override _onDelete(options: WallDocument.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Should this Wall have a corresponding {@linkcode DoorMesh}?
@@ -243,7 +225,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Draw a control icon that is used to manipulate the door's open/closed state
    */
-  createDoorControl(): DoorControl.Implementation;
+  createDoorControl(): DoorControl.Implementation | null;
 
   /**
    * Clear the door control if it exists.
@@ -271,66 +253,11 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): Wall.DragLeftDropUpdate[] | null;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#roof` has been deprecated. There's no replacement"
+   * @deprecated "`Wall#initializeEdge` has been deprecated. Use
+   * {@linkcode WallDocument.initializeEdge | WallDocument#initializeEdge} instead." (since v14, until v16)
+   * @privateRemarks Foundry's JSDoc says `since v14`, but the `logCompatibilityWarning` call passes `{since: 15}`.
    */
-  get roof(): null;
-
-  /**
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#hasActiveRoof` has been deprecated. There's no replacement"
-   */
-  get hasActiveRoof(): boolean;
-
-  /**
-   * @deprecated since v12, until v14
-   * @remarks "`Wall#identifyInteriorState` has been deprecated. It has no effect anymore and there's no replacement."
-   */
-  identifyInteriorState(): void;
-
-  /**
-   * Determine the orientation of this wall with respect to a reference point
-   * @param point - Some reference point, relative to which orientation is determined
-   * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left, right, or collinear (both) with
-   * the Wall
-   * @deprecated "`Wall#orientPoint` has been moved to {@linkcode Edge.orientPoint | foundry.canvas.geometry.edges.Edge#orientPoint}"
-   * (since v12, until v14)
-   */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
-
-  /**
-   * Test whether to apply a configured threshold of this wall.
-   * When the proximity threshold is met, this wall is excluded as an edge in perception calculations.
-   * @param sourceType     - Sense type for the source
-   * @param sourceOrigin   - The origin or position of the source on the canvas
-   * @param externalRadius - The external radius of the source (default: `0`)
-   * @returns `true` if the wall has a threshold greater than 0 for the source type, and the source type is within that distance.
-   * @deprecated "Wall#applyThreshold has been moved to {@linkcode Edge.applyThreshold | foundry.canvas.geometry.edges.Edge#applyThreshold}"
-   * (since v12, until v14)
-   */
-  applyThreshold(
-    sourceType: Edge.AttenuationTypes,
-    sourceOrigin: Canvas.Point,
-    externalRadius?: number | null,
-  ): boolean;
-
-  /**
-   * @deprecated "`Wall#vertices` is replaced by {@linkcode Wall.edge | Wall#edge}" (since v12, until v14)
-   */
-  get vertices(): Edge;
-
-  /**
-   * The initial endpoint of the Wall
-   * @deprecated "`Wall#A` is replaced by {@linkcode Edge.a | Wall#edge#a}" (since v12, until v14)
-   */
-  get A(): Edge["a"];
-
-  /**
-   * The second endpoint of the Wall
-   * @deprecated "`Wall#B` is replaced by {@linkcode Edge.b | Wall#edge#b}" (since v12, until v14)
-   */
-  get B(): Edge["b"];
+  initializeEdge(options?: Wall.InitializeEdgeOptions): void;
 
   #Wall: true;
 }
@@ -354,15 +281,18 @@ declare namespace Wall {
    */
   type ImplementationClass = PlaceableObject.ImplementationClassFor<"Wall">;
 
-  interface RENDER_FLAGS {
+  interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
     /** @defaultValue `{ propagate: ["refreshState", "refreshLine"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight"] }` */
+    /** @defaultValue `{ propagate: ["refreshVisibility", "refreshEndpoints", "refreshHighlight"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
     /** @defaultValue `{ propagate: ["refreshEndpoints", "refreshHighlight", "refreshDirection"] }` */
     refreshLine: RenderFlag<this, "refreshLine">;
@@ -378,6 +308,11 @@ declare namespace Wall {
   }
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
+
+  interface PasteObjectData {
+    c: WallDocument.Coordinates;
+    levels: string[];
+  }
 
   type Coordinates = WallDocument.Coordinates;
 

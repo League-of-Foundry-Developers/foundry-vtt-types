@@ -2,7 +2,6 @@ import { expectTypeOf } from "vitest";
 
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import Note = foundry.canvas.placeables.Note;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
 expectTypeOf(Note.implementation).toEqualTypeOf<Note.ImplementationClass>();
@@ -12,10 +11,11 @@ expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
       | "refresh"
       | "refreshState"
       | "refreshVisibility"
+      | "refreshTransform"
       | "refreshPosition"
+      | "refreshSize"
       | "refreshTooltip"
       | "refreshElevation"
-      | "refreshText"
     >
   | undefined
 >();
@@ -29,7 +29,10 @@ expectTypeOf(note.tooltip).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(note.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(note.entry).toEqualTypeOf<JournalEntry.Stored | undefined>();
 expectTypeOf(note.page).toEqualTypeOf<JournalEntryPage.Stored | undefined>();
+expectTypeOf(note.isAuthor).toBeBoolean();
 expectTypeOf(note.isVisible).toBeBoolean();
+expectTypeOf(note.isInteractable).toBeBoolean();
+expectTypeOf(note["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(note["_draw"]()).toEqualTypeOf<Promise<void>>();
@@ -39,8 +42,6 @@ expectTypeOf(note["_drawControlIcon"]()).toEqualTypeOf<ControlIcon>();
 expectTypeOf(note["_drawTooltip"]()).toEqualTypeOf<PIXI.Text>();
 expectTypeOf(note["_refreshTooltip"]()).toBeVoid();
 expectTypeOf(note["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
-
-expectTypeOf(note.clear()).toEqualTypeOf<Note.Implementation>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(note["_applyRenderFlags"]()).toBeVoid();
@@ -53,16 +54,18 @@ expectTypeOf(
     refresh: true,
     refreshState: true,
     refreshVisibility: true,
+    refreshTransform: true,
     refreshPosition: true,
+    refreshSize: true,
     refreshTooltip: true,
     refreshElevation: true,
-    refreshText: true,
   }),
 ).toBeVoid();
 
 expectTypeOf(note["_refreshVisibility"]()).toBeVoid();
 expectTypeOf(note["_refreshState"]()).toBeVoid();
 expectTypeOf(note["_refreshPosition"]()).toBeVoid();
+expectTypeOf(note["_refreshSize"]()).toBeVoid();
 expectTypeOf(note["_refreshElevation"]()).toBeVoid();
 
 expectTypeOf(
@@ -93,12 +96,4 @@ declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(note["_canHover"](someUser)).toBeBoolean();
 expectTypeOf(note["_canView"](someUser)).toBeBoolean();
 expectTypeOf(note["_canConfigure"](someUser)).toBeBoolean();
-expectTypeOf(note["_onHoverIn"](pointerEvent)).toBeVoid();
 expectTypeOf(note["_onClickLeft2"](pointerEvent)).toBeVoid();
-expectTypeOf(note["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(note.text).toEqualTypeOf<string>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(note.size).toEqualTypeOf<number>();

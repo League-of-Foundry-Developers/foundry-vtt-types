@@ -40,7 +40,3 @@ expectTypeOf(myTRC.useConfig("someConfig")).toBeBoolean();
 
 expectTypeOf(myTRC.configIDs).toEqualTypeOf<string[]>();
 expectTypeOf(myTRC.configLabels).toEqualTypeOf<Record<string, string>>();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myTRC.configNames).toEqualTypeOf<string[]>();
