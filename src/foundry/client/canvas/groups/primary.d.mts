@@ -70,15 +70,16 @@ declare class PrimaryCanvasGroup<
   protected _backgroundColor: Color.RGBColorVector | undefined;
 
   /**
+   * All PCOs that are in this primary group in no particular order.
+   * @defaultValue `[]`
+   * @remarks Marked `ReadonlyArray`; not to be mutated externally.
+   */
+  objects: ReadonlyArray<PrimaryCanvasObjectMixin.AnyMixed>;
+
+  /**
    * Track the set of HTMLVideoElements which are currently playing as part of this group.
    */
   videoMeshes: Set<PrimarySpriteMesh.Any>;
-
-  /**
-   * Occludable objects above this elevation are faded on hover.
-   * @defaultValue `0`
-   */
-  hoverFadeElevation: number;
 
   /**
    * Allow API users to override the default elevation of the background layer.
@@ -98,6 +99,12 @@ declare class PrimaryCanvasGroup<
    * @remarks Only `undefined` prior to first draw
    */
   foreground: PrimarySpriteMesh | undefined;
+
+  /**
+   * The level texture meshes, sorted in ascending order.
+   * @defaultValue `[]`
+   */
+  levelTextures: PrimarySpriteMesh[];
 
   /**
    * A Quadtree which partitions and organizes primary canvas objects.
@@ -151,7 +158,7 @@ declare class PrimaryCanvasGroup<
 
   protected override _render(renderer: PIXI.Renderer): void;
 
-  protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: TearDownOptions): Promise<void>;
 
   /**
    * Draw the SpriteMesh for a specific Token object.
@@ -219,10 +226,10 @@ declare class PrimaryCanvasGroup<
   protected _onMouseMove(currentPos: PIXI.Point, hasMouseMoved: boolean): void;
 
   /**
-   * @deprecated "`PrimaryCanvasGroup#mapElevationAlpha` is deprecated. Use {@linkcode foundry.canvas.layers.CanvasDepthMask.mapElevation | canvas.masks.depth.mapElevation(elevation)}
-   * instead." (since v12, until v14)
+   * @remarks The getter returns `canvas.level?.elevation.base ?? 0`; the setter does nothing.
+   * @deprecated "`PrimaryCanvasGroup#hoverFadeElevation` has been deprecated. It no longer has any effect." (since v14.361, until v16)
    */
-  mapElevationToDepth(elevation: number): number;
+  hoverFadeElevation: number;
 
   #PrimaryCanvasGroup: true;
 }
