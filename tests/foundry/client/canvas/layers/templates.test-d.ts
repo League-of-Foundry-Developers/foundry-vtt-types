@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import TemplateLayer = foundry.canvas.layers.TemplateLayer;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -20,6 +21,7 @@ expectTypeOf(TemplateLayer.registerSettings()).toEqualTypeOf<void>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 const layer = new TemplateLayer();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.options).toEqualTypeOf<TemplateLayer.LayerOptions>();
@@ -34,4 +36,5 @@ declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someWheelEvent: WheelEvent;
 expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation> | void>();

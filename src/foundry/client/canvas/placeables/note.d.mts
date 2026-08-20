@@ -26,8 +26,7 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
 
   static override RENDER_FLAGS: Note.RENDER_FLAGS;
 
-  // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
-  // `RENDER_FLAGS` and so it has to be adjusted here.
+  // fake type override
   renderFlags: RenderFlags<Note.RENDER_FLAGS>;
 
   // `controlIcon` is actually defined in the class body here (unlike in super or any of its siblings, where it only comes
@@ -44,7 +43,7 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   override get bounds(): PIXI.Rectangle;
 
   /**
-   * The associated JournalEntry which is described by this note
+   * The associated JournalEntry which is referenced by this Note
    */
   get entry(): JournalEntry.Stored | undefined;
 
@@ -54,11 +53,15 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
   get page(): JournalEntryPage.Stored | undefined;
 
   /**
-   * Determine whether the Note is visible to the current user based on their perspective of the Scene.
-   * Visibility depends on permission to the underlying journal entry, as well as the perspective of controlled Tokens.
-   * If Token Vision is required, the user must have a token with vision over the note to see it.
+   * A convenient reference for whether the current User is the author of the Note document.
    */
-  get isVisible(): boolean;
+  get isAuthor(): boolean;
+
+  override get isVisible(): boolean;
+
+  override get isInteractable(): boolean;
+
+  protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
   // fake type override
   override draw(options?: HandleEmptyObject<Note.DrawOptions>): Promise<this>;
@@ -87,20 +90,19 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
 
   protected override _applyRenderFlags(flags: Note.RenderFlags): void;
 
-  /**
-   * Refresh the visibility.
-   */
-  protected _refreshVisibility(): void;
+  protected override _refreshVisibility(): void;
 
-  /**
-   * Refresh the state of the Note. Called the Note enters a different interaction state.
-   */
-  protected _refreshState(): void;
+  protected override _refreshState(): void;
 
   /**
    * Refresh the position of the Note. Called with the coordinates change.
    */
   protected _refreshPosition(): void;
+
+  /**
+   * Refresh the size of the Note.
+   */
+  protected _refreshSize(): void;
 
   /**
    * Refresh the elevation of the control icon.
@@ -117,28 +119,7 @@ declare class Note extends PlaceableObject<NoteDocument.Implementation> {
 
   protected override _canView(user: User.Implementation): boolean;
 
-  protected override _canConfigure(user: User.Implementation): boolean;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
-
   protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
-
-  /**
-   * The text label used to annotate this Note
-   * @deprecated "`Note#text` has been deprecated. Use {@linkcode NoteDocument.label | Note#document#label} instead." (since v12, until v14)
-   */
-  get text(): string;
-
-  /**
-   * The Map Note icon size
-   * @deprecated "`Note#size` has been deprecated. Use {@linkcode NoteDocument.iconSize | Note#document#iconSize} instead."
-   * (since v12, until v14)
-   */
-  get size(): number;
 }
 
 declare namespace Note {
@@ -164,7 +145,7 @@ declare namespace Note {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
-    /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshTooltip", "refreshElevation"], alias: true }` */
+    /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshTooltip", "refreshElevation"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
     /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
@@ -173,20 +154,20 @@ declare namespace Note {
     /** @defaultValue `{}` */
     refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
+    /** @defaultValue `{ propagate: ["refreshPosition", "refreshSize"], alias: true }` */
+    refreshTransform: RenderFlag<this, "refreshTransform">;
+
     /** @defaultValue `{}` */
     refreshPosition: RenderFlag<this, "refreshPosition">;
+
+    /** @defaultValue `{}` */
+    refreshSize: RenderFlag<this, "refreshSize">;
 
     /** @defaultValue `{}` */
     refreshTooltip: RenderFlag<this, "refreshTooltip">;
 
     /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshElevation: RenderFlag<this, "refreshElevation">;
-
-    /**
-     * @defaultValue `{ propagate: ["refreshTooltip"], deprecated: { since: 12, until: 14 }, alias: true }`
-     * @deprecated since v12, until v14
-     */
-    refreshText: RenderFlag<this, "refreshText">;
   }
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

@@ -13,7 +13,7 @@ import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionMana
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 
 expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  Array<"refresh" | "refreshState"> | undefined
+  Array<"refresh" | "refreshState" | "refreshVisibility"> | undefined
 >();
 
 class FakeLight extends PlaceableObject<AmbientLightDocument.Implementation> {
@@ -43,6 +43,11 @@ expectTypeOf(placeable.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(placeable.id).toEqualTypeOf<string | null>();
 expectTypeOf(placeable.objectId).toBeString();
 expectTypeOf(placeable.sourceId).toBeString();
+expectTypeOf(placeable.isVisible).toBeBoolean();
+expectTypeOf(placeable.isInteractable).toBeBoolean();
+expectTypeOf(placeable.isFilteredOut).toBeBoolean();
+expectTypeOf(placeable.previewType).toEqualTypeOf<PlaceableObject.PreviewType>();
+expectTypeOf(placeable._previewType).toEqualTypeOf<PlaceableObject.PreviewType>();
 expectTypeOf(placeable.isPreview).toBeBoolean();
 expectTypeOf(placeable.hasPreview).toBeBoolean();
 expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Implementation>();
@@ -60,14 +65,14 @@ expectTypeOf(placeable.getSnappedPosition({ x: 50, y: 70 })).toEqualTypeOf<Canva
 expectTypeOf(placeable.getSnappedPosition(new PIXI.Point(5, 10))).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(PlaceableObject._getCopiedObjectsOrigin([placeable])).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(placeable._pasteObject({ x: 50, y: 70 })).toEqualTypeOf<AmbientLightDocument.Source>();
-expectTypeOf(placeable._pasteObject({ x: 50, y: 70 }, {})).toEqualTypeOf<AmbientLightDocument.Source>();
+expectTypeOf(placeable._pasteObject({ x: 50, y: 70 })).toEqualTypeOf<PlaceableObject.AnyPasteObjectData>();
+expectTypeOf(placeable._pasteObject({ x: 50, y: 70 }, {})).toEqualTypeOf<PlaceableObject.AnyPasteObjectData>();
 expectTypeOf(
-  placeable._pasteObject({ x: 50, y: 70 }, { hidden: true, snap: false }),
-).toEqualTypeOf<AmbientLightDocument.Source>();
+  placeable._pasteObject({ x: 50, y: 70 }, { hidden: true, snap: false, cut: true }),
+).toEqualTypeOf<PlaceableObject.AnyPasteObjectData>();
 expectTypeOf(
-  placeable._pasteObject({ x: 50, y: 70 }, { hidden: undefined, snap: undefined }),
-).toEqualTypeOf<AmbientLightDocument.Source>();
+  placeable._pasteObject({ x: 50, y: 70 }, { hidden: undefined, snap: undefined, cut: undefined }),
+).toEqualTypeOf<PlaceableObject.AnyPasteObjectData>();
 
 expectTypeOf(placeable.applyRenderFlags()).toBeVoid();
 
@@ -78,6 +83,11 @@ expectTypeOf(placeable["_applyRenderFlags"]({})).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({ redraw: false, refresh: undefined })).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({ redraw: true, refresh: true, refreshState: true })).toBeVoid();
 
+expectTypeOf(placeable["_refreshVisibility"]()).toBeVoid();
+expectTypeOf(placeable["_refreshState"]()).toBeVoid();
+expectTypeOf(placeable["_clear"]()).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(placeable.clear()).toEqualTypeOf<FakeLight>();
 
 expectTypeOf(placeable.destroy()).toBeVoid();
@@ -113,8 +123,11 @@ expectTypeOf(placeable["_getTargetAlpha"]()).toBeNumber();
 expectTypeOf(placeable.control()).toBeBoolean();
 expectTypeOf(placeable.control({})).toBeBoolean();
 expectTypeOf(placeable.control({ releaseOthers: true })).toBeBoolean();
-// @ts-expect-error releaseOthers is checked via `!== false` and can't be nullish
 expectTypeOf(placeable.control({ releaseOthers: undefined })).toBeBoolean();
+expectTypeOf(
+  placeable.control({ renderSidebar: false, isNew: true, force: true, pan: false, chain: true }),
+).toBeBoolean();
+expectTypeOf(placeable.control({ pan: { duration: 250, force: true } })).toBeBoolean();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(placeable["_onControl"]()).toBeVoid();
@@ -123,6 +136,7 @@ expectTypeOf(placeable["_onControl"]({ releaseOthers: false })).toBeVoid();
 
 expectTypeOf(placeable.release()).toBeBoolean();
 expectTypeOf(placeable.release({})).toBeBoolean();
+expectTypeOf(placeable.release({ renderSidebar: false })).toBeBoolean();
 
 // @ts-expect-error _onRelease always gets passed a value
 expectTypeOf(placeable["_onRelease"]()).toBeVoid();
@@ -146,8 +160,9 @@ expectTypeOf(
 ).toEqualTypeOf<Canvas.ElevatedPoint>();
 
 expectTypeOf(placeable.activateListeners()).toBeVoid();
-expectTypeOf(placeable["_createInteractionManager"]()).toEqualTypeOf<MouseInteractionManager<FakeLight>>();
+expectTypeOf(placeable["_createInteractionManager"]()).toEqualTypeOf<MouseInteractionManager<FakeLight> | null>();
 
+declare const domEvent: Event;
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
@@ -167,6 +182,7 @@ expectTypeOf(placeable["_canCreate"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(placeable["_canDrag"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(placeable["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(placeable["_canHover"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canHover"](someUser, domEvent)).toBeBoolean();
 expectTypeOf(placeable["_canUpdate"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(placeable["_canDelete"](someUser, pointerEvent)).toBeBoolean();
 

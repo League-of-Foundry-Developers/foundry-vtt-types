@@ -191,12 +191,6 @@ declare class TokenRingConfig {
 
   /** Get the labels of all configurations. */
   get configLabels(): Record<string, string>;
-
-  /**
-   * @deprecated "`TokenRingConfig#configNames` is deprecated and replaced by
-   * {@linkcode TokenRingConfig.configIDs | TokenRingConfig#configIDs}" (since v12, until v14)
-   */
-  get configNames(): string[];
 }
 
 declare namespace TokenRingConfig {

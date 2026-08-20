@@ -1,15 +1,15 @@
 import { expectTypeOf } from "vitest";
 
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
-import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
-import PointLightSource = foundry.canvas.sources.PointLightSource;
+import AmbientLightShapeControls = foundry.canvas.placeables.lights.AmbientLightShapeControls;
+import PreciseText = foundry.canvas.containers.PreciseText;
 
 expectTypeOf(AmbientLight.implementation).toEqualTypeOf<AmbientLight.ImplementationClass>();
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   // undefined only from the optional chain, not underlying type
-  Array<"refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
+  | Array<"refresh" | "refreshState" | "refreshVisibility" | "refreshField" | "refreshPosition" | "refreshElevation">
+  | undefined
 >();
 
 declare const doc: AmbientLightDocument.Stored;
@@ -19,6 +19,8 @@ const light = new CONFIG.AmbientLight.objectClass(doc);
 
 expectTypeOf(light.field).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(light.lightSource);
+expectTypeOf(light.controls).toEqualTypeOf<AmbientLightShapeControls | undefined>();
+expectTypeOf(light.tooltip).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(light.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(light.sourceId).toBeString();
 expectTypeOf(light.config).toEqualTypeOf<foundry.data.LightData>();
@@ -32,6 +34,7 @@ expectTypeOf(light.isDarknessSource).toBeBoolean();
 expectTypeOf(light["_isLightSourceDisabled"]()).toBeBoolean();
 expectTypeOf(light.emitsDarkness).toBeBoolean();
 expectTypeOf(light.emitsLight).toBeBoolean();
+expectTypeOf(light.isInteractable).toBeBoolean();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(light["_destroy"]()).toBeVoid();
@@ -43,8 +46,6 @@ expectTypeOf(light["_destroy"](undefined)).toBeVoid();
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(light["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(light["_draw"]({})).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(light.clear()).toEqualTypeOf<AmbientLight.Implementation>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(light["_applyRenderFlags"]()).toBeVoid();
@@ -62,9 +63,16 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
-expectTypeOf(light["_refreshField"]()).toBeVoid();
+expectTypeOf(light["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
+
 expectTypeOf(light["_refreshPosition"]()).toBeVoid();
-expectTypeOf(light["_refreshElevation"]()).toBeVoid();
+expectTypeOf(light["_refreshRotation"]()).toBeVoid();
+expectTypeOf(light["_refreshSize"]()).toBeVoid();
+expectTypeOf(light["_refreshField"]()).toBeVoid();
+expectTypeOf(light["_refreshTooltip"]()).toBeVoid();
+expectTypeOf(light["_getTooltipText"]()).toBeString();
+expectTypeOf(light["_getTextStyle"]()).toEqualTypeOf<PIXI.TextStyle>();
+expectTypeOf(light["_getMeasuredShapes"]()).toEqualTypeOf<foundry.data.BaseShapeData[]>();
 expectTypeOf(light["_refreshState"]()).toBeVoid();
 
 expectTypeOf(
@@ -88,8 +96,6 @@ expectTypeOf(
   light["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
-expectTypeOf(light.refreshControl()).toBeVoid();
-
 expectTypeOf(light.initializeLightSource()).toBeVoid();
 expectTypeOf(light.initializeLightSource({})).toBeVoid();
 expectTypeOf(light.initializeLightSource({ deleted: true })).toBeVoid();
@@ -100,25 +106,11 @@ expectTypeOf(light["_getLightSourceData"]()).toEqualTypeOf<AmbientLight.LightSou
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(light._hasShapeChanged({ rotation: 45 })).toBeBoolean();
+
 expectTypeOf(light["_canHUD"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(light["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
-expectTypeOf(light["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
-expectTypeOf(light["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(light["_onControl"]({})).toBeVoid();
+expectTypeOf(light["_onRelease"]({})).toBeVoid();
 expectTypeOf(light["_onClickRight"](pointerEvent)).toBeVoid();
-expectTypeOf(light["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(light["_onDragEnd"]()).toBeVoid();
-expectTypeOf(light["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.updateSource()).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.updateSource({})).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.updateSource({ deleted: undefined })).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(light.source).toEqualTypeOf<
-  PointLightSource.Implementation | PointDarknessSource.Implementation | undefined
->();
+expectTypeOf(light["_updateDragPreviews"](pointerEvent)).toBeVoid();
