@@ -65,7 +65,7 @@ declare class VideoHelper {
    * @param video   - The VIDEO element to play
    * @param options - Additional options for modifying video playback (default: `{}`)
    */
-  play(video: HTMLVideoElement, options?: VideoHelper.PlayOptions): void;
+  play(video: HTMLVideoElement, options?: VideoHelper.PlayOptions): Promise<void>;
 
   /**
    * Stop a single video source

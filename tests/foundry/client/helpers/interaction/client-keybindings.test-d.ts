@@ -21,6 +21,7 @@ expectTypeOf(keybindings.activeKeys).toEqualTypeOf<Map<string, ClientKeybindings
 expectTypeOf(keybindings.bindings).toEqualTypeOf<
   Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(keybindings.moveKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(keybindings.initialize()).toEqualTypeOf<void>();
 

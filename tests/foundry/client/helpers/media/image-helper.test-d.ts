@@ -37,6 +37,13 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<ImageHelper.ThumbnailReturn | null>>();
 
+declare const thumbnail: ImageHelper.ThumbnailReturn;
+expectTypeOf(thumbnail.thumb).toBeString();
+expectTypeOf(thumbnail.width).toBeNumber();
+expectTypeOf(thumbnail.height).toBeNumber();
+expectTypeOf(thumbnail.format).toEqualTypeOf<ImageHelper.IMAGE_MIME_TYPES>();
+expectTypeOf(thumbnail.quality).toBeNumber();
+
 expectTypeOf(ImageHelper.hasImageExtension("path/to/some.thing")).toEqualTypeOf<boolean>();
 
 expectTypeOf(ImageHelper.compositeCanvasTexture(displayObject)).toEqualTypeOf<PIXI.Texture>();

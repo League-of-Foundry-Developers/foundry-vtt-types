@@ -18,10 +18,10 @@ declare class DocumentIndex {
   trees: DocumentIndex.WordTrees;
 
   /**
-   * A reverse-lookup of a document's UUID to its parent node in the word tree.
+   * A reverse-lookup of a document's UUID to its parent nodes in the word tree.
    * @defaultValue `{}`
    */
-  uuids: Record<string, StringTree.Node<DocumentIndex.Leaf>>;
+  uuids: Record<string, StringTree.Node<DocumentIndex.Leaf>[]>;
 
   /**
    * Returns a Promise that resolves when the indexing process is complete.
@@ -35,11 +35,11 @@ declare class DocumentIndex {
 
   /**
    * Return entries that match the given string prefix.
-   * @param prefix  - The prefix.
+   * @param query   - The search prefix or phrase.
    * @param options - Additional options to configure behaviour.
    * @returns A number of entries that have the given prefix, grouped by document type.
    */
-  lookup(prefix: string, options?: DocumentIndex.LookupOptions): DocumentIndex.LookupReturn;
+  lookup(query: string, options?: DocumentIndex.LookupOptions): DocumentIndex.LookupReturn;
 
   /**
    * Add an entry to the index.
@@ -60,35 +60,40 @@ declare class DocumentIndex {
   replaceDocument(doc: DocumentIndex.AnyIndexedDocument): void;
 
   /**
-   * Add a leaf node to the word tree index.
-   * @param doc     - The document or compendium index entry to add.
+   * Add one or more leaf nodes to the word-tree index.
+   * @param doc     - The Document or compendium index entry to add.
    * @param options - Additional information for indexing.
-   * @internal
    */
-  protected _addLeaf(doc: DocumentIndex.AnyIndexedDocument, options?: DocumentIndex.AddLeafOptions): void;
+  protected _addLeaves(doc: DocumentIndex.AnyIndexedDocument, options?: DocumentIndex.AddLeavesOptions): void;
+
+  /**
+   * Add a leaf node to the word-tree index.
+   * @deprecated "You are using DocumentIndex#_addLeaf: use {@linkcode DocumentIndex._addLeaves | DocumentIndex#_addLeaves}
+   * instead." (since v14, until v16)
+   */
+  protected _addLeaf(doc: DocumentIndex.AnyIndexedDocument, options?: DocumentIndex.AddLeavesOptions): void;
 
   /**
    * Aggregate the compendium index and add it to the word tree index.
    * @param pack - The compendium pack.
-   * @internal
    */
   protected _indexCompendium(pack: CompendiumCollection.Any): void;
 
   /**
    * Add all of a parent document's embedded documents to the index.
    * @param parent - The parent document.
-   * @internal
    */
   protected _indexEmbeddedDocuments(parent: Document.Any): void;
 
   /**
    * Aggregate all documents and embedded documents in a world collection and add them to the index.
    * @param documentName - The name of the documents to index.
-   * @internal
    */
   protected _indexWorldCollection(documentName: DocumentIndex.IndexedDocumentNames): void;
 
   #DocumentIndex: true;
+
+  static #DocumentIndexStatic: true;
 }
 
 declare namespace DocumentIndex {
@@ -158,12 +163,10 @@ declare namespace DocumentIndex {
 
   interface LookupOptions extends InexactPartial<_LookupOptions> {}
 
-  interface _AddLeafOptions {
+  interface AddLeavesOptions {
     /** The compendium that the index belongs to. */
-    pack: CompendiumCollection.Any;
+    pack?: CompendiumCollection.Any | undefined;
   }
-
-  interface AddLeafOptions extends InexactPartial<_AddLeafOptions> {}
 }
 
 export default DocumentIndex;
