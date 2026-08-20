@@ -4,7 +4,7 @@ import Module = foundry.packages.Module;
 import ClientPackageMixin = foundry.packages.ClientPackageMixin;
 
 declare const mod: Module;
-expectTypeOf(mod.favorite).toEqualTypeOf<false>();
+expectTypeOf(mod.favorite).toEqualTypeOf<boolean>();
 expectTypeOf(mod.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 expectTypeOf(mod.install()).toEqualTypeOf<void>();
 expectTypeOf(mod.uninstall()).toEqualTypeOf<void>();

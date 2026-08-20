@@ -312,11 +312,12 @@ export class PackageCompendiumPacks<ElementFieldType extends DataField.Any> exte
  */
 declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage.Schema> extends DataModel<
   PackageSchema,
-  null
+  null,
+  BasePackage.ExtraConstructionOptions
 > {
   constructor(
     data: BasePackage.ManifestData<PackageSchema> | BasePackage.Any,
-    options?: DataModel.ConstructionContext<null>,
+    options?: DataModel.ConstructionContext<null, BasePackage.ExtraConstructionOptions>,
   );
 
   static [__BasePackageBrand]: never;
@@ -404,6 +405,18 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
   get unavailable(): boolean;
 
   /**
+   * An array of top-level manifest keys that were provided which are not supported by the schema.
+   * @internal
+   * @remarks A key with a known v12-or-earlier replacement is not reported unless that replacement is also absent.
+   */
+  _unknownKeys: string[];
+
+  /**
+   * Is this Package incompatible with the currently installed core Foundry VTT software version?
+   */
+  get incompatibleWithCoreVersion(): boolean;
+
+  /**
    * Test if a given availability is incompatible with the core version.
    * @param availability - The availability value to test.
    */
@@ -418,6 +431,15 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
 
   /** @defaultValue `["PACKAGE"]` */
   static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * @remarks Manifest data is cleaned with pruning and key expansion off and sanitization on, and the keys the schema
+   * does not define are recorded in {@linkcode BasePackage._unknownKeys | #_unknownKeys}.
+   */
+  protected override _initializeSource(
+    data: BasePackage.ManifestData<PackageSchema> | this,
+    options?: BasePackage.InitializeSourceOptions,
+  ): SchemaField.SourceData<PackageSchema>;
 
   /**
    * Check the given compatibility data against the current installation state and determine its availability.
@@ -462,7 +484,15 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
    */
   static testDependencyCompatibility(compatibility: PackageCompatibility.Data, dependency: BasePackage.Any): boolean;
 
-  static cleanData(source?: object, options?: BasePackage.CleanDataOptions): object;
+  /**
+   * @remarks Defaults each language's `name` to its `lang`, each pack's `system` to the package's sole game system, and
+   * expands a string `ownership` on a pack into `{PLAYER: ownership}`.
+   */
+  protected static override _cleanData(
+    data: object,
+    options: BasePackage.CleanDataOptions,
+    _state: DataField.UpdateState,
+  ): void;
 
   /**
    * Validate that a Package ID is allowed.
@@ -490,7 +520,6 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
   /**
    * @remarks
    * Migrations:
-   * - Inside `packs` entries, slugifies the `name` if not already a valid slug (since v12, until v14)
    * - Old style `string[]` styles entries to new `{src: string; layer?: string}[]` style (since v13, no stated end)
    */
   static override migrateData(data: object, options?: BasePackage.MigrateDataOptions): object;
@@ -498,14 +527,9 @@ declare class BasePackage<PackageSchema extends BasePackage.Schema = BasePackage
   /**
    * Migrate to v13-schema styles array from string array
    * @internal
+   * @deprecated since v13
    */
   static _migrateStyles(data: object): void;
-
-  /**
-   * Adjust pack names to conform to a slugified version
-   * @internal
-   */
-  static _migratePackIDs(data: object, logOptions: BasePackage.LogOptions): void;
 
   /**
    * Retrieve the latest Package manifest from a provided remote location.
@@ -601,7 +625,6 @@ declare namespace BasePackage {
       required: true;
       blank: false;
       validate: typeof BasePackage.validateId;
-      validationError: "may not contain periods";
     }>;
 
     /**
@@ -643,7 +666,7 @@ declare namespace BasePackage {
      * Required for "Actor" and "Item" packs, but even others should keep in mind that system
      * specific features and subtypes (e.g. JournalEntryPage) may present limitations.
      */
-    system: StringField<_OptionalStringOptions>;
+    system: StringField<_OptionalStringOptions & { validate: typeof BasePackage.validateId }>;
 
     /** @remarks Be careful when setting this; an empty object will prevent even a GM from seeing it in the directory. */
     ownership: CompendiumOwnershipField;
@@ -681,12 +704,12 @@ declare namespace BasePackage {
     /**
      * Only apply this set of translations when a specific system is being used
      */
-    system: StringField<_OptionalStringOptions>;
+    system: StringField<_OptionalStringOptions & { validate: typeof BasePackage.validateId }>;
 
     /**
      * Only apply this set of translations when a specific module is active
      */
-    module: StringField<_OptionalStringOptions>;
+    module: StringField<_OptionalStringOptions & { validate: typeof BasePackage.validateId }>;
 
     flags: ObjectField;
   }
@@ -904,6 +927,20 @@ declare namespace BasePackage {
     manifest: string;
   }
 
+  interface SystemCompatibility {
+    /** The system ID. */
+    id: string;
+
+    /** The system title. */
+    title: string;
+
+    /** The system version. */
+    version: string;
+
+    /** Whether the system version is compatible with the package. */
+    compatible: boolean;
+  }
+
   /**
    * Package creation takes additional properties, beyond just fields defined in the schema, which get handled by `BasePackage#constructor`.
    * @privateRemarks the `& { version }` is to account for how we've handled `BaseWorld`'s unsound schema subclassing of `version`. See
@@ -988,9 +1025,14 @@ declare namespace BasePackage {
 
   interface LogOptions extends InexactPartial<_Installed>, InexactPartial<LogCompatibilityWarningOptions> {}
 
-  interface MigrateDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
+  /** @remarks `installed` defaults to `true` and reaches migration as the `migrate` cleaning option; it is not stored on the package. */
+  interface ExtraConstructionOptions extends InexactPartial<_Installed> {}
 
-  interface CleanDataOptions extends InexactPartial<_Installed>, DataField.CleanOptions {}
+  interface InitializeSourceOptions extends DataModel.InitializeSourceOptions<ExtraConstructionOptions> {}
+
+  interface MigrateDataOptions extends DataField.CleanOptions {}
+
+  interface CleanDataOptions extends DataField.CleanOptions {}
 
   /** @internal */
   interface _FromRemoteManifestOptions {

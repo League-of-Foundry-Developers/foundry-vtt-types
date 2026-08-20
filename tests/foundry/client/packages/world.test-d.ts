@@ -4,7 +4,7 @@ import World = foundry.packages.World;
 import ClientPackageMixin = foundry.packages.ClientPackageMixin;
 
 declare const world: World;
-expectTypeOf(world.favorite).toEqualTypeOf<false>();
+expectTypeOf(world.favorite).toEqualTypeOf<boolean>();
 expectTypeOf(world.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 expectTypeOf(world.install()).toEqualTypeOf<void>();
 expectTypeOf(world.uninstall()).toEqualTypeOf<void>();
