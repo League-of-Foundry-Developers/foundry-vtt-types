@@ -140,6 +140,13 @@ declare namespace ActorDelta {
   type Parent = TokenDocument.Implementation;
 
   /**
+   * A document's parent is something that can contain it.
+   * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   * This is a union of all `documentName`s of the parents of this document.
+   */
+  type ParentName = "Token";
+
+  /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */

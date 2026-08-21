@@ -527,7 +527,9 @@ declare namespace CompendiumCollection {
         : never;
 
   type ForDocument<Name extends Document.Type> = Name extends Document.CompendiumType
-    ? CompendiumCollection<Name>
+    ?
+        | CompendiumCollection<Name>
+        | (Name extends Document.EmbeddedType | "Actor" ? ForDocument<Document.AncestorsOf<Name>> : never)
     : Name extends Document.EmbeddedType
       ? ForDocument<Exclude<Document.ParentForName<Name>, null>["documentName"]>
       : never;

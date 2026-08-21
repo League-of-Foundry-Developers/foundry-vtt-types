@@ -107,41 +107,49 @@ declare namespace TokenDocument {
   type Parent = Scene.Implementation | null;
 
   /**
-   * A document's direct descendants are documents that are contained directly within its schema.
-   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   * A document's parent is something that can contain it.
+   * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   * This is a union of all `documentName`s of the parents of this document.
    */
-  type DirectDescendantName = "ActorDelta";
+  type ParentName = "Scene";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type DirectDescendant = ActorDelta.Stored;
+  type DirectDescendantName = "ActorDelta" | "Actor";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendant = ActorDelta.Stored | Actor.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such classes, or never if the document doesn't have any descendants.
    */
-  type DirectDescendantClass = ActorDelta.ImplementationClass;
+  type DirectDescendantClass = ActorDelta.ImplementationClass | Actor.ImplementationClass;
 
   /**
-   * A document's descendants are any child documents, grandchild documents, etc.
-   * This is a union of all instances, or never if the document doesn't have any descendants.
+   * A document's descendants are any documents that are contained within, either within its schema
+   * or its descendant's schemas.
+   * This is a union of the names of all such instances, or never if the document doesn't have any descendants.
    */
-  type DescendantName = DirectDescendantName;
+  type DescendantName = DirectDescendantName | ActorDelta.DescendantName | Actor.DescendantName;
 
   /**
    * A document's descendants are any documents that are contained within, either within its schema
    * or its descendant's schemas.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
-  type Descendant = DirectDescendant | ActorDelta.Descendant;
+  type Descendant = DirectDescendant | ActorDelta.Descendant | Actor.Descendant;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
    * This is a union of all classes, or never if the document doesn't have any descendants.
    */
-  type DescendantClass = DirectDescendantClass | ActorDelta.DescendantClass;
+  type DescendantClass = DirectDescendantClass | ActorDelta.DescendantClass | Actor.DescendantClass;
 
   /**
    * An embedded document is a document contained in another.

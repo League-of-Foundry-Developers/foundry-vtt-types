@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, AnyObject, MaybePromise } from "fvtt-types/utils";
+import type { AnyMutableObject } from "#utils";
 import { database, testID } from "../../../utils.ts";
 import * as itemHelpers from "./item.test-d.ts";
 
@@ -696,7 +696,7 @@ expectTypeOf(
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
   ActiveEffect.fromDropData({
-    uuid: "someUUID", // TODO: This should be allowed
+    uuid: "Item.id.ActiveEffect.someID",
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(

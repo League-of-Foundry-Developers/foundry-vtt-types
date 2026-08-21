@@ -6,7 +6,10 @@ import type {
   DeepReadonly,
   DeletableDotKeys,
   InexactPartial,
+  MustBeValidUuid,
   NonNullish,
+  ParsedUUID,
+  ParseUUID,
   NonObject,
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
@@ -744,17 +747,36 @@ export interface ResolvedUUID {
  * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining
  * Embedded Document parts, if any.
  */
-export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
+export function parseUuid<
+  Doc extends Document.Any = __UnsetDocument,
+  const Uuid extends string = string,
+  Parsed extends ParsedUUID = ParseUUID<Uuid>,
+  Relative extends Document.AllowedRelativesOf<Parsed["type"]> | undefined = undefined,
+>(uuid: ParseUuidValidate<Doc, Uuid>, options?: ParseUUIDOptions<Relative>): ResolvedUUID;
 
-/** @internal */
-interface _ParseUUIDOptions {
-  /**
-   * A document to resolve relative UUIDs against.
-   */
-  relative: Document.AnyStored;
+type ParseUuidValidate<Doc extends Document.Any, Uuid extends string> = string extends Uuid
+  ? string
+  : MustBeValidUuid<Uuid, Doc["documentName"]>;
+
+declare const __Unset: unique symbol;
+
+type __UnsetDocument = Document.Any & {
+  [__Unset]: true;
+};
+
+type ParseUUIDReturn<Doc extends Document.Any, Uuid extends string> = _ParseUUIDReturn<Doc, Uuid>;
+
+type _ParseUUIDReturn<
+  Doc extends Document.Any,
+  Uuid extends string,
+  Parsed extends ParsedUUID = ParseUUID<Uuid>,
+  Relative extends Document.AllowedRelativesOf<Parsed["type"]> | undefined = undefined,
+> = never;
+
+export interface ParseUUIDOptions<Relative extends Document.Any | undefined> {
+  /** A document to resolve relative UUIDs against. */
+  relative?: Relative;
 }
-
-export interface ParseUUIDOptions extends InexactPartial<_ParseUUIDOptions> {}
 
 /**
  * Build the relative UUID of the target relative to the origin if possible.

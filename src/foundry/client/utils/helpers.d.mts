@@ -1,5 +1,15 @@
-import type { AnyObject, InexactPartial, MustBeValidUuid } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type {
+  Coalesce,
+  GetNameFromUuid,
+  InexactPartial,
+  MustBeValidUuid,
+  ParsedUUID,
+  ParseUUID,
+  __UnsetDocument,
+  ParseUuid2,
+} from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * Clean a provided HTML fragment, closing unbalanced tags and stripping some undesirable properties
@@ -24,39 +34,60 @@ export function saveDataToFile(data: string, type: string, filename: string): vo
 export function readTextFromFile(file: File): Promise<string>;
 
 /** @internal */
-interface _FromUuidOptions {
+interface _FromUuidOptions<Invalid extends boolean | undefined, Relative extends Document.Any | undefined> {
   /** A Document to resolve relative UUIDs against. */
-  relative: Document.Any;
+  relative: Relative;
 
   /**
    * Allow retrieving an invalid Document.
    * @defaultValue `false`
    */
-  invalid: boolean;
+  invalid: Invalid;
 }
 
-export interface FromUuidOptions extends InexactPartial<_FromUuidOptions> {}
+export interface FromUuidOptions<
+  Relative extends Document.Any | undefined,
+  Invalid extends boolean | undefined,
+> extends InexactPartial<_FromUuidOptions<Invalid, Relative>> {}
 
 /**
- * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
+ * Retrieve a Document by its Universally Unique Identifier (uuid).
  * @param uuid    - The uuid of the Entity or Embedded Entity to retrieve
  * @param options - Options to configure how a UUID is resolved.
  */
-export function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
-  uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-  options?: FromUuidOptions,
-): Promise<(__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | null>;
+export function fromUuid<
+  ConcreteDocument extends Document.Any = __UnsetDocument,
+  Invalid extends boolean | undefined = undefined,
+  const Uuid extends string = string,
+  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined = undefined,
+>(
+  uuid: FromUuidValidate<ConcreteDocument, Uuid>,
+  options?: FromUuidOptions<Relative, Invalid>,
+): Promise<FromUuidReturn<ConcreteDocument, Invalid, Uuid>>;
+
+type FromUuidReturn<Doc extends Document.Any, Invalid extends boolean | undefined, Uuid extends string> =
+  | (__UnsetDocument extends Doc
+      ? FromUuid<Uuid, Coalesce<Invalid, false>>
+      : _MaybeInvalid<Doc, Coalesce<Invalid, false>>)
+  | null;
+
+type _MaybeInvalid<Doc extends Document.Any, Invalid extends boolean> =
+  | (Invalid extends true ? Document.InvalidForName<Doc["documentName"]> : never)
+  | Doc;
 
 /** @internal */
 interface _FromUuidSyncOptions {
   /**
    * Throw an error if the UUID cannot be resolved synchronously.
    * @defaultValue `true`
+   * @privateRemarks This doesn't actually affect the return type, even with `strict: true` there are paths
+   * that can return `null` before it throws.
    */
   strict: boolean;
 }
 
-export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, InexactPartial<_FromUuidSyncOptions> {}
+export interface FromUuidSyncOptions<Relative extends Document.Any | undefined, Invalid extends boolean | undefined>
+  extends InexactPartial<FromUuidOptions<Relative, Invalid>>, InexactPartial<_FromUuidSyncOptions> {}
 
 /**
  * Retrieve a Document by its Universally Unique Identifier (uuid) synchronously. If the uuid resolves to a compendium
@@ -68,27 +99,77 @@ export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, I
  */
 export function fromUuidSync<
   ConcreteDocument extends Document.Any = __UnsetDocument,
+  Invalid extends boolean | undefined = undefined,
   const Uuid extends string = string,
+  Relative extends ValidRelativesOf<Uuid, ConcreteDocument> | undefined = undefined,
 >(
-  uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
-  options?: FromUuidSyncOptions,
-  // TODO(LukeAbby): `AnyObject` is actually a stand in for a compendium index entry which should be typed.
-): (__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | AnyObject | null;
+  uuid: FromUuidValidate<ConcreteDocument, Uuid>,
+  options?: FromUuidSyncOptions<Relative, Invalid>,
+): FromUuidSyncReturn<ConcreteDocument, Invalid, Uuid>;
 
-declare const __Unset: unique symbol;
+type FromUuidSyncReturn<Doc extends Document.Any, Invalid extends boolean | undefined, Uuid extends string> =
+  | (__UnsetDocument extends Doc
+      ? FromUuid<Uuid, Coalesce<Invalid, false>> | _IndexEntryFor<Uuid>
+      : _MaybeInvalid<Doc, Coalesce<Invalid, false>> | _IndexEntryFor<string, Doc["documentName"]>)
+  | null;
 
-type __UnsetDocument = Document.Any & {
-  [__Unset]: true;
-};
+type _IndexEntryFor<Uuid extends string, Name = GetNameFromUuid<Uuid>> = Name extends Document.CompendiumType
+  ? CompendiumCollection.IndexEntry<Name>
+  : never;
+
+type ValidRelativesOf<Uuid extends string, Expected extends Document.Any> = Document.ImplementationFor<
+  _ValidRelativesOf<Uuid, Expected>
+>;
+
+type _ValidRelativesOf<
+  Uuid extends string,
+  ExpectedDoc extends Document.Any,
+  Parsed extends ParsedUUID = ParseUuid2<Uuid, ExpectedDoc>,
+> = Parsed["parentGeneration"] extends number
+  ? Document.XParentOf<Parsed["type"], Parsed["parentGeneration"]>
+  : [Document.Type] extends [Parsed["type"]]
+    ? Document.Type
+    : Parsed["type"] | Document.AncestorsOf<Parsed["type"]>;
+
+    type _a = _ValidRelativesOf<"Actor.foo">
 
 declare const AnyDocumentClass: Document.AnyConstructor;
 declare abstract class InvalidUuid extends AnyDocumentClass {}
+declare abstract class RelativeRequired extends AnyDocumentClass {}
 
-type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
-  ? FromUuid<Rest>
-  : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
-    ? Document.StoredForName<DocumentType>
-    : InvalidUuid;
+type FromUuid<
+  Uuid extends string,
+  Invalid extends boolean | undefined = undefined,
+  Name extends GetNameFromUuid<Uuid> = GetNameFromUuid<Uuid>,
+> = [Name] extends [never] ? InvalidUuid : _MaybeInvalid<Document.StoredForName<Name>, Coalesce<Invalid, false>>;
+
+// type _FromUuid<
+//   Uuid extends string,
+//   Invalid extends boolean | undefined,
+//   RelativeDoc extends Document.Any | undefined,
+//   Parsed extends ParsedUUID = ParseUUID<Uuid>,
+// > = Parsed["relative"]["length"] extends 0
+//   ? Document.Type extends Parsed["type"]
+//     ?
+
+//     _MaybeInvalid<Document.StoredForName<Parsed["type"]>, Coalesce<Invalid, false>>
+//   : RelativeDoc extends undefined
+//     ? // No relative was passed for a relative UUID
+//       RelativeRequired
+//     : _MaybeInvalid<
+//         Document.StoredForName<_GetTypeFromRelative<Parsed["relative"], NonNullable<RelativeDoc>>>,
+//         Coalesce<Invalid, false>
+//       >;
+
+type _GetTypeFromRelative<
+  RelativeCount extends unknown[],
+  RelativeDoc extends Document.Any,
+  Type extends Document.Type = RelativeDoc["documentName"],
+> = RelativeCount extends [unknown, ...infer Rest]
+  ? _GetTypeFromRelative<Rest, NonNullable<RelativeDoc["parent"]>, NonNullable<RelativeDoc["parent"]>["documentName"]>
+  : Type;
+
+type _t = _GetTypeFromRelative<[unknown, unknown, unknown, unknown], ActiveEffect.Stored>;
 
 type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid
   ? string
@@ -106,30 +187,29 @@ export function getDocumentClass<Name extends Document.Type>(documentName: Name)
  * Return a reference to the PlaceableObject class implementation which is configured for use.
  * @param documentName - The canonical Document name, for example "Actor"
  * @returns The configured PlaceableObject class implementation
- * @privateRemarks Consider if the generic should be broader; this returns undefined, rather than errors, if the Name isn't a placeable type
  */
 export function getPlaceableObjectClass<Name extends Document.PlaceableType>(
   documentName: Name,
-): Document.ObjectClassFor<Name> | undefined;
+): Document.ObjectClassFor<Name>;
 
-export interface SortOptions<T, SortKey extends string = "sort"> {
+interface _SortOptions<T, SortKey extends string | undefined> {
   /**
    * The target object relative which to sort
    * @defaultValue `null`
    */
-  target?: T | null | undefined;
+  target: T | null;
 
   /**
    * The sorted Array of siblings which share the same sorted container
    * @defaultValue `[]`
    */
-  siblings?: T[] | undefined;
+  siblings: T[];
 
   /**
    * The name of the data property within the source object which defines the sort key
    * @defaultValue `"sort"`
    */
-  sortKey?: SortKey | undefined;
+  sortKey: SortKey;
 
   /**
    * Whether to explicitly sort before (true) or sort after (false). If nothing is passed
@@ -137,18 +217,22 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
    *
    * @defaultValue `true`
    */
-  sortBefore?: boolean | undefined;
+  sortBefore: boolean;
 }
+
+export interface SortOptions<T, SortKey extends string | undefined = undefined> extends InexactPartial<
+  _SortOptions<T, SortKey>
+> {}
 
 /**
  * Given a source object to sort, a target to sort relative to, and an Array of siblings in the container:
  * Determine the updated sort keys for the source object, or all siblings if a reindex is required.
  * Return an Array of updates to perform, it is up to the caller to dispatch these updates.
  * Each update is structured as:
- * ```typescript
+ * ```ts
  * {
  *   target: object,
- *   update: {sortKey: sortValue}
+ *   update: {[sortKey]: sortValue}
  * }
  * ```
  *
@@ -157,14 +241,15 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
  * @template T   - the type of the source and target object
  *
  * @returns An Array of updates for the caller of the helper function to perform
+ * @privateRemarks Edited the return example to be clearer.
  */
-export function performIntegerSort<T, SortKey extends string = "sort">(
+export function performIntegerSort<T, SortKey extends string | undefined = undefined>(
   source: T,
   options?: SortOptions<T, SortKey>,
 ): Array<{
   target: T;
   update: {
-    [Key in SortKey]: number;
+    [Key in Coalesce<SortKey, "sort">]: number;
   };
 }>;
 
@@ -179,8 +264,9 @@ export function timeSince(timeStamp: Date | string): string;
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.
  * A single HTMLElement is returned if the provided string contains only a single top-level element.
  * An HTMLCollection is returned if the provided string contains multiple top-level elements.
+ * If no element was parsable, the return is `null`.
  */
-export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
+export function parseHTML(htmlString: string): HTMLCollection | HTMLElement | null;
 
 /**
  * Return a URL with a cache-busting query parameter appended.

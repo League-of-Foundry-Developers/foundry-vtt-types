@@ -1093,15 +1093,18 @@ declare namespace Document {
 
   /**
    * Documents that require a parent for persisted creation. Most of them do not require
-   * one for temporary construction; only `ActorDelta` does, as of 13.351.
+   * one for temporary construction; only `ActorDelta` does, as of 14.366.
    */
   type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
 
-  /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
+  /** Documents which can only be persisted inside compendia. As of 14.366 this is only `Adventure`. */
   type AlwaysCompendiumType = "Adventure";
 
   /** Documents which can never be found inside compendia. */
   type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
+
+  /** Primary Documents which are never embedded inside other Documents. */
+  type NeverEmbeddedType = Exclude<Document.PrimaryType, Document.EmbeddedType | "Actor">;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1267,7 +1270,7 @@ declare namespace Document {
     }[keyof Embedded];
 
     /** Provides a union of `Implementation` types for all possible parents of a given embedded Document type */
-    type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
+    type ParentForName<Name extends Document.EmbeddedType | "Actor"> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
 
@@ -1281,12 +1284,59 @@ declare namespace Document {
     > = _CollectionNameForName<Embedded, Name>;
   }
 
-  type WorldCollectionForName<Name extends Document.WorldType> = WorldCollection.ForName<Name>;
+  /**
+   * This type will return the `WorldCollection` a Document is ultimately contained within, even for embedded Documents.
+   * If you need a type limited to *just* the `WorldCollection`s, use {@linkcode WorldCollection.ForName} directly.
+   */
+  type WorldCollectionForName<Name extends Document.Type> = Name extends Document.WorldType
+    ? WorldCollection.ForName<Name>
+    : Name extends Document.EmbeddedType
+      ? WorldCollectionForName<Exclude<Document.ParentForName<Name>, null>["documentName"]>
+      : never;
+
+  /** Given a document name, what top level collection(s) could it be in? */
+  type ContainingCollection<Name extends Document.Type> =
+    | WorldCollectionForName<Name>
+    | CompendiumCollection.ForDocument<Name>;
+
+  type AllowedRelativesOf<Name extends Document.Type> = Name extends Document.EmbeddedType | "Actor"
+    ? Document.Embedded.ParentForName<Name>
+    : never;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
     ChildDocument extends Document.Internal.Instance.Any,
   > = ParentDocument extends Internal.ParentFor<ChildDocument> ? true : false;
+
+  /** For a given Document, return the names of every document that could be a parent, grandparent, great-grandparent, etc. */
+  type AncestorsOf<Name extends Document.Type> = _AncestorsOf<Name>;
+
+  /** @internal */
+  type _AncestorsOf<
+    Name extends Document.Type,
+    ParentName extends Document.Type = Document.ParentNameFor<Name>,
+    GrandParentName extends Document.Type = Document.ParentNameFor<ParentName>,
+    GreatGrandParentName extends Document.Type = Document.ParentNameFor<GrandParentName>,
+    GreatGreatGrandParentName extends Document.Type = Document.ParentNameFor<GreatGrandParentName>,
+  > = ParentName | GrandParentName | GreatGrandParentName | GreatGreatGrandParentName;
+
+  type _x = _AncestorsOf2<"ActiveEffect">;
+
+  /** Get possible parent types for the provided Document type, to the specified depth. 0 = itself, 1 = parent, 2 = grandparent, etc. */
+  type XParentOf<Name extends Document.Type, Depth extends number> = _XParentOf<Name, _Accumulate<Depth>>;
+
+  /** @internal */
+  type _XParentOf<Name extends Document.Type, Depth extends unknown[]> = Depth["length"] extends 0
+    ? Name
+    : Depth extends [unknown, ...infer Rest]
+      ? _XParentOf<NonNullable<Document.ParentForName<Name>>["documentName"], Rest>
+      : never;
+
+  // TODO: recursive helper for embedded types, limiting to valid parents
+  type UuidFor<Name extends Document.Type> =
+    | (Name extends Document.WorldType ? `${Name}.${string}` : never)
+    | (Name extends Document.EmbeddedType | "Actor" ? `${string}.${string}.${Name}.${string}` : never)
+    | (Name extends Document.NeverCompendiumType ? never : `Compendium.${string}.${string}.${Name}.${string}`);
 
   type SocketRequest<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketRequest<Action>;
   type SocketResponse<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketResponse<Action>;
@@ -1645,8 +1695,7 @@ declare namespace Document {
        * The uuid of an existing document.
        * At least one of `data` and `uuid` must be set.
        */
-      // TODO: Handle as part of the UUID update.
-      uuid?: string;
+      uuid?: Document.UuidFor<DocumentType>;
     }
 
     // Like `keyof` but handles properties desirable for flags:
@@ -1962,6 +2011,80 @@ declare namespace Document {
     | (DocumentType extends "Tile" ? TileDocument.Parent : never)
     | (DocumentType extends "Token" ? TokenDocument.Parent : never)
     | (DocumentType extends "Wall" ? WallDocument.Parent : never);
+
+  type ParentNameFor<Name extends Document.Type> =
+    | (Name extends "ActiveEffect" ? ActiveEffect.ParentName : never)
+    | (Name extends "ActorDelta" ? ActorDelta.ParentName : never)
+    | (Name extends "Actor" ? Actor.ParentName : never)
+    | (Name extends "Adventure" ? Adventure.ParentName : never)
+    | (Name extends "Card" ? Card.ParentName : never)
+    | (Name extends "Cards" ? Cards.ParentName : never)
+    | (Name extends "ChatMessage" ? ChatMessage.ParentName : never)
+    | (Name extends "Combat" ? Combat.ParentName : never)
+    | (Name extends "Combatant" ? Combatant.ParentName : never)
+    | (Name extends "CombatantGroup" ? CombatantGroup.ParentName : never)
+    | (Name extends "FogExploration" ? FogExploration.ParentName : never)
+    | (Name extends "Folder" ? Folder.ParentName : never)
+    | (Name extends "Item" ? Item.ParentName : never)
+    | (Name extends "JournalEntryCategory" ? JournalEntryCategory.ParentName : never)
+    | (Name extends "JournalEntryPage" ? JournalEntryPage.ParentName : never)
+    | (Name extends "JournalEntry" ? JournalEntry.ParentName : never)
+    | (Name extends "Level" ? Level.ParentName : never)
+    | (Name extends "Macro" ? Macro.ParentName : never)
+    | (Name extends "PlaylistSound" ? PlaylistSound.ParentName : never)
+    | (Name extends "Playlist" ? Playlist.ParentName : never)
+    | (Name extends "RegionBehavior" ? RegionBehavior.ParentName : never)
+    | (Name extends "RollTable" ? RollTable.ParentName : never)
+    | (Name extends "Scene" ? Scene.ParentName : never)
+    | (Name extends "Setting" ? Setting.ParentName : never)
+    | (Name extends "TableResult" ? TableResult.ParentName : never)
+    | (Name extends "User" ? User.ParentName : never)
+    | (Name extends "AmbientLight" ? AmbientLightDocument.ParentName : never)
+    | (Name extends "AmbientSound" ? AmbientSoundDocument.ParentName : never)
+    | (Name extends "Drawing" ? DrawingDocument.ParentName : never)
+    | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.ParentName : never)
+    | (Name extends "Note" ? NoteDocument.ParentName : never)
+    | (Name extends "Region" ? RegionDocument.ParentName : never)
+    | (Name extends "Tile" ? TileDocument.ParentName : never)
+    | (Name extends "Token" ? TokenDocument.ParentName : never)
+    | (Name extends "Wall" ? WallDocument.ParentName : never);
+
+  type DescendantNameFor<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.DescendantName : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.DescendantName : never)
+    | (DocumentType extends "Actor" ? Actor.DescendantName : never)
+    | (DocumentType extends "Adventure" ? Adventure.DescendantName : never)
+    | (DocumentType extends "Card" ? Card.DescendantName : never)
+    | (DocumentType extends "Cards" ? Cards.DescendantName : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.DescendantName : never)
+    | (DocumentType extends "Combat" ? Combat.DescendantName : never)
+    | (DocumentType extends "Combatant" ? Combatant.DescendantName : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.DescendantName : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.DescendantName : never)
+    | (DocumentType extends "Folder" ? Folder.DescendantName : never)
+    | (DocumentType extends "Item" ? Item.DescendantName : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.DescendantName : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.DescendantName : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.DescendantName : never)
+    | (DocumentType extends "Level" ? Level.DescendantName : never)
+    | (DocumentType extends "Macro" ? Macro.DescendantName : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.DescendantName : never)
+    | (DocumentType extends "Playlist" ? Playlist.DescendantName : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.DescendantName : never)
+    | (DocumentType extends "RollTable" ? RollTable.DescendantName : never)
+    | (DocumentType extends "Scene" ? Scene.DescendantName : never)
+    | (DocumentType extends "Setting" ? Setting.DescendantName : never)
+    | (DocumentType extends "TableResult" ? TableResult.DescendantName : never)
+    | (DocumentType extends "User" ? User.DescendantName : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.DescendantName : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.DescendantName : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.DescendantName : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.DescendantName : never)
+    | (DocumentType extends "Note" ? NoteDocument.DescendantName : never)
+    | (DocumentType extends "Region" ? RegionDocument.DescendantName : never)
+    | (DocumentType extends "Tile" ? TileDocument.DescendantName : never)
+    | (DocumentType extends "Token" ? TokenDocument.DescendantName : never)
+    | (DocumentType extends "Wall" ? WallDocument.DescendantName : never);
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };
@@ -3727,3 +3850,10 @@ declare namespace Document {
    */
   type ConfiguredCollection<Name extends Document.Type> = Document.Internal.ConfiguredCollection<Name>;
 }
+
+/** @internal */
+type _Accumulate<Depth extends number, Accumulator extends unknown[] = []> = number extends Depth
+  ? never
+  : Accumulator["length"] extends Depth
+    ? Accumulator
+    : _Accumulate<Depth, [unknown, ...Accumulator]>;
