@@ -2,9 +2,9 @@ import type { Identity } from "#utils";
 
 export default Color;
 
-// `Color#fromString` breaks inheritance
+// Widens `fromString`'s parameter so `Color`'s narrower override (`string` only) still extends it legally.
 declare class PatchedNumber extends Number {
-  static fromString(color: string): any;
+  static fromString(color: string | number): any;
 }
 
 /**
