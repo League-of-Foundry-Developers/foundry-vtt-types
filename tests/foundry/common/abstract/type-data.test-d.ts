@@ -42,7 +42,6 @@ type DerivedQuestData = {
 };
 
 // Test With specified Base and DerivedData.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementation, BaseQuestData, DerivedQuestData> {
   otherMethod() {}
 
@@ -72,11 +71,26 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
     // @ts-expect-error Derived Data is not available yet
     this.totalSteps + 1;
 
-    // @ts-expect-error Recursively calling is technically possible but wouldn't be desired. Removing it also seems to reduce the type complexity.
+    // Any method taking the same prepared `this` is callable, recursion included.
     this.prepareBaseData();
+    this.baseHelper();
 
     // @ts-expect-error The this parameter is incompatible.
     this.prepareDerivedData();
+  }
+
+  // Regression test for `PrepareBaseDataThis<this>` methods being unable to call each other. The
+  // receiver's `this` type is substituted into the callee's `this` parameter. This call therefore
+  // checks `PrepareBaseDataThis<this>` against `PrepareBaseDataThis<PrepareBaseDataThis<this>>`.
+  baseCaller(this: TypeDataModel.PrepareBaseDataThis<this>): void {
+    this.baseHelper();
+  }
+
+  baseHelper(this: TypeDataModel.PrepareBaseDataThis<this>): void {
+    expectTypeOf(this.questName).toEqualTypeOf<string | undefined>();
+
+    // @ts-expect-error Derived data is not available yet.
+    this.totalSteps + 1;
   }
 
   override prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
@@ -102,8 +116,20 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
     // @ts-expect-error The this parameter is incompatible.
     this.prepareBaseData();
 
-    // @ts-expect-error Recursively calling is technically possible but wouldn't be desired. Removing it also seems to reduce the type complexity.
+    // Any method taking the same prepared `this` is callable, recursion included.
     this.prepareDerivedData();
+    this.derivedHelper();
+  }
+
+  derivedCaller(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
+    this.derivedHelper();
+  }
+
+  derivedHelper(this: TypeDataModel.PrepareDerivedDataThis<this>): void {
+    expectTypeOf(this.totalSteps).toEqualTypeOf<number | undefined>();
+
+    // @ts-expect-error The this parameter is incompatible.
+    this.baseHelper();
   }
 
   method() {
@@ -200,3 +226,52 @@ test("TypeDataModel parent regression test", () => {
   // @ts-expect-error This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
   new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });
 });
+
+// A prepared `this` tracks both the model and its merged data. Differing data is the easy half.
+declare class VehicleModel extends foundry.abstract.TypeDataModel<
+  QuestSchema,
+  JournalEntryPage.Implementation,
+  { cargo: string },
+  { speed: boolean }
+> {}
+
+declare const preparedQuest: TypeDataModel.PrepareDerivedDataThis<QuestModel>;
+
+// @ts-expect-error A VehicleModel's prepared this is unrelated to a QuestModel's.
+export const _preparedVehicle: TypeDataModel.PrepareDerivedDataThis<VehicleModel> = preparedQuest;
+
+// The model itself has to stay covariant. These three share a schema, base data and derived data,
+// so the merged data cannot tell them apart and only the model parameter can. If it ever degrades
+// to being uncompared these assignments all start passing.
+declare class QuestWithA extends TypeDataModel<
+  QuestSchema,
+  JournalEntryPage.Implementation,
+  BaseQuestData,
+  DerivedQuestData
+> {
+  methodA(): void;
+}
+
+declare class QuestWithC extends TypeDataModel<
+  QuestSchema,
+  JournalEntryPage.Implementation,
+  BaseQuestData,
+  DerivedQuestData
+> {
+  methodC(): void;
+}
+
+declare class SubOfQuestWithA extends QuestWithA {
+  extra(): void;
+}
+
+declare const preparedA: TypeDataModel.PrepareDerivedDataThis<QuestWithA>;
+declare const preparedSubOfA: TypeDataModel.PrepareDerivedDataThis<SubOfQuestWithA>;
+
+// @ts-expect-error Neither model is a subtype of the other.
+export const _siblings: TypeDataModel.PrepareDerivedDataThis<QuestWithC> = preparedA;
+
+export const _subToSuper: TypeDataModel.PrepareDerivedDataThis<QuestWithA> = preparedSubOfA;
+
+// @ts-expect-error A supertype's prepared this cannot stand in for a subtype's.
+export const _superToSub: TypeDataModel.PrepareDerivedDataThis<SubOfQuestWithA> = preparedA;

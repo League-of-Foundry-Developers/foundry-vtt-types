@@ -10,7 +10,6 @@ import type {
   IsObject,
   AllKeysOf,
   GetKey,
-  Override,
 } from "#utils";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { DataModel } from "./data.d.mts";
@@ -45,6 +44,41 @@ declare class Uses<T> {
 // @ts-expect-error This pattern is inherently an error.
 interface DataModelOverride<Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>
   extends _ComputedInstance, DataModel<Schema, Parent>, Uses<_ComputedInstance> {}
+
+// PrepareBaseDataThis and PrepareDerivedDataThis must be trivially idempotent. A user would never
+// be expected to call them multiple times but TypeScript essentially does it itself. If you have
+// two methods (A and B) with `this: PrepareBaseDataThis<this>` then an initial they are essentially type
+// checked as if `this: PrepareBaseDataThis<YourActor>` which is exactly what we want.
+//
+// However when this method is being called, the `this` in scope is given. So if method A calls
+// method B this means `this` starts as `PrepareBaseDataThis<YourActor>` already and you get
+// essentially `PrepareBaseDataThis<PrepareBaseDataThis<YourActor>>`. Then
+// `PrepareBaseDataThis<PrepareBaseDataThis<YourActor>>` is compared to
+// `PrepareBaseDataThis<YourActor>` but this can fail because the idempotency isn't obvious enough
+// to tsc.
+//
+// There are some extra subtleties to do with the fact that `this` is a pseudo-generic that can't
+// really be substituted for a simpler type like `YourActor` but the core idea is just ensuring
+// trivial idempotency to keep tsc happy.
+//
+// In generic contexts this is normally difficult so two tricks are used:
+// 1) The item is moved into a property access. This is a generally useful trick since it
+// simplifies comparison in generic context and is cached more reliably.
+// 2) To ensure `PrepareBaseDataThis<PrepareBaseDataThis<...>>` is more trivially idempotent the
+// `" __fvtt_types_prepare_base_data_this": this;` property is added so it's genuinely just repeated
+// property access.
+
+// @ts-expect-error This pattern is inherently an error.
+interface PrepareBaseDataOverride<BaseThis extends object, Prepared extends object>
+  extends Prepared, BaseThis, Uses<[BaseThis, Prepared]> {
+  " __fvtt_types_prepare_base_data_this": this;
+}
+
+// @ts-expect-error This pattern is inherently an error.
+interface PrepareDerivedDataOverride<BaseThis extends object, Prepared extends object>
+  extends Prepared, BaseThis, Uses<[BaseThis, Prepared]> {
+  " __fvtt_types_prepare_derived_data_this": this;
+}
 
 type UnmergePartial<
   Schema extends DataSchema,
@@ -176,6 +210,11 @@ declare namespace TypeDataModel {
       " __fvtt_types_base_model": BaseModel;
       " __fvtt_types_base_data": BaseData;
       " __fvtt_types_derived_data": DerivedData;
+
+      // The model computes these off its own `this`. Only the constraint belongs here.
+      // `PrepareBaseDataThis` explains why the finished type is stored.
+      " __fvtt_types_prepare_base_data_this": object;
+      " __fvtt_types_prepare_derived_data_this": object;
     }
 
     namespace Instance {
@@ -183,23 +222,10 @@ declare namespace TypeDataModel {
     }
   }
 
-  type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer Schema, infer _1, infer _2, infer BaseData, infer DerivedData>
-      ? Override<BaseThis, UnmergePartial<Schema, RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>>
-      : never;
+  type PrepareBaseDataThis<BaseThis extends Internal.Instance.Any> = BaseThis[" __fvtt_types_prepare_base_data_this"];
 
   type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer Schema, infer _1, infer _2, infer BaseData, infer DerivedData>
-      ? Override<
-          BaseThis,
-          MergePartial<
-            // TODO: Put back in `BaseThis` and write as yet another unmerge
-            SchemaField.InitializedData<Schema>,
-            RemoveIndexSignatures<BaseData>,
-            RemoveIndexSignatures<DerivedData>
-          >
-        >
-      : never;
+    BaseThis[" __fvtt_types_prepare_derived_data_this"];
 
   type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<
     SchemaField.InitializedData<Document.SchemaFor<Parent>>,
@@ -300,6 +326,21 @@ declare abstract class TypeDataModel<
   " __fvtt_types_base_model": DataModel<Schema, Parent>;
   " __fvtt_types_base_data": BaseData;
   " __fvtt_types_derived_data": DerivedData;
+
+  " __fvtt_types_prepare_base_data_this": PrepareBaseDataOverride<
+    this,
+    UnmergePartial<Schema, RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>
+  >;
+
+  " __fvtt_types_prepare_derived_data_this": PrepareDerivedDataOverride<
+    this,
+    MergePartial<
+      // TODO: Put back in `this` and write as yet another unmerge
+      SchemaField.InitializedData<Schema>,
+      RemoveIndexSignatures<BaseData>,
+      RemoveIndexSignatures<DerivedData>
+    >
+  >;
 
   /**
    * The package that is providing this DataModel for the given sub-type.
