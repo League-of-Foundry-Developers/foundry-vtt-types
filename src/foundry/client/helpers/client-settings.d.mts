@@ -6,10 +6,10 @@ import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * A class responsible for managing defined game settings or settings menus.
- * Each setting is a string key/value pair belonging to a certain package and a certain store scope.
+ * Each setting is a string key/value pair belonging to a certain namespace and a certain store scope.
  *
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
- * Game object as as game.settings.
+ * Game object as game.settings.
  *
  * @see {@linkcode foundry.Game.settings | Game#settings}
  * @see {@linkcode foundry.applications.sidebar.tabs.Settings | Settings}
@@ -118,7 +118,7 @@ declare class ClientSettings {
    * Register a new sub-settings menu
    *
    * @param namespace - The namespace under which the menu is registered
-   * @param key       - The key name for the setting under the namespace module
+   * @param key       - The key name for the setting under the namespace
    * @param data      - Configuration for setting data
    * @template N     - The namespace under which the menu is registered, as a type
    * @template K     - The key name for the setting under the namespace module, as a type
