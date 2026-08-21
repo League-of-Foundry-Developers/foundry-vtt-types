@@ -2,7 +2,7 @@ import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 /** @privateRemarks `DocumentStatsField` only used for links. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -40,13 +40,14 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
    *   embedded: {ActiveEffect: "effects", Item: "items"},
    *   hasTypeData: true,
+   *   baseTypeAllowed: false,
    *   label: "DOCUMENT.Actor",
    *   labelPlural: "DOCUMENT.Actors",
    *   permissions: {
    *     create: this.#canCreate,
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.353"
    * })
    * ```
    */
@@ -89,7 +90,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<boolean | void>;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;

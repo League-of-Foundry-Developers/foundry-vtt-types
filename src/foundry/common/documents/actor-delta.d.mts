@@ -1,6 +1,6 @@
 import type { Identity, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -88,14 +88,14 @@ declare abstract class BaseActorDelta<
    *
    * Simply forwards to `BaseActor`
    */
-  static migrateData(source: object): object;
+  static migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * Prepare changes to a descendent delta collection.
    * @param changes - Candidate source changes. (default: `{}`)
    * @param options - Options which determine how the new data is merged. (default: `{}`)
    * @internal
-   * @remarks Forwards sections of the passed `changes` to the relevant
+   * @remarks Sets `options._deltaModel` to `this`, then forwards sections of the passed `changes` to the relevant
    * {@linkcode foundry.abstract.EmbeddedCollectionDelta._prepareDeltaUpdate | EmbeddedCollectionDelta#_prepareDeltaUpdate}s.
    */
   _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;

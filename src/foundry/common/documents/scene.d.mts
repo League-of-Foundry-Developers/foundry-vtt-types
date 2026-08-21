@@ -1,7 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
-import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -37,9 +37,9 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    *     AmbientLight: "lights",
    *     AmbientSound: "sounds",
    *     Drawing: "drawings",
-   *     MeasuredTemplate: "templates",
    *     Note: "notes",
    *     Region: "regions",
+   *     Level: "levels",
    *     Tile: "tiles",
    *     Token: "tokens",
    *     Wall: "walls"
@@ -47,7 +47,8 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    *   label: "DOCUMENT.Scene",
    *   labelPlural: "DOCUMENT.Scenes",
    *   preserveOnImport: [...super.metadata.preserveOnImport, "active"],
-   *   schemaVersion: "13.341"
+   *   defaultLevelId: "defaultLevel0000",
+   *   schemaVersion: "14.354"
    * });
    * ```
    */
@@ -59,116 +60,74 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
+   * A mapping of top-level scene properties to their corresponding properties on the child level.
+   * @defaultValue
+   * ```js
+   * Object.freeze([
+   *   ["background.src", "background.src"],
+   *   ["background.tint", "background.tint"],
+   *   ["background.alphaThreshold", "background.alphaThreshold"],
+   *   ["background.anchorX", "textures.anchorX"],
+   *   ["background.anchorY", "textures.anchorY"],
+   *   ["background.fit", "textures.fit"],
+   *   ["background.scaleX", "textures.scaleX"],
+   *   ["background.scaleY", "textures.scaleY"],
+   *   ["background.rotation", "textures.rotation"],
+   *   ["fog.overlay", "fog.src"],
+   *   ["foreground", "foreground.src"],
+   *   ["foregroundElevation", "elevation.top"],
+   *   ["backgroundColor", "background.color"]
+   * ])
+   * ```
+   * @internal
+   */
+  protected static _LEVELS_PROPERTY_MAP: readonly (readonly [sceneProperty: string, levelProperty: string])[];
+
+  /**
    * The default grid defined by the system.
    */
   static get defaultGrid(): foundry.grid.BaseGrid;
 
-  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
+  /**
+   * The gridless version of the default grid defined by the system.
+   */
+  static get defaultGridlessGrid(): foundry.grid.GridlessGrid;
+
+  /**
+   * The initial Level of the Scene. By default the first Level.
+   */
+  get initialLevel(): Level.Implementation;
+
+  /**
+   * A convenience getter for the Scene's first created Level. This should not be relied on in multi-level scenes to
+   * mean the first level by sort order.
+   */
+  get firstLevel(): Level.Implementation;
+
+  /**
+   * @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)`, then defines a deprecated
+   * `fog.exploration` accessor over `fog.mode` (since v14, until v16).
+   */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   override updateSource(changes?: Scene.UpdateData, options?: DataModel.UpdateOptions): Scene.UpdateData;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `fogExploration` to `fog.exploration` (since v12, until 14 (probably))
-   * - `fogReset` to `fog.reset` (since v12, until 14 (probably))
-   * - `fogOverlay` to `fog.overlay` (since v12, until 14 (probably))
-   * - `fogExploredColor` to `fog.colors.explored` (since v12, until 14 (probably))
-   * - `fogUnexploredColor` to `fog.colors.unexplored` (since v12, until 14 (probably))
-   * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14 (probably))
-   * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14 (probably))
-   * - `darkness` to `environment.darknessLevel` (since v12, until 14 (probably))
-   * - Calls {@linkcode DocumentStatsField._migrateData}`(this, source)`
-   */
-  static override migrateData(source: object): object;
+  /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks
-   * Shims:
-   * - `fogExploration` to `fog.exploration` (since v12, until 14)
-   * - `fogReset` to `fog.reset` (since v12, until 14)
-   * - `fogOverlay` to `fog.overlay` (since v12, until 14)
-   * - `fogExploredColor` to `fog.colors.explored` (since v12, until 14)
-   * - `fogUnexploredColor` to `fog.colors.unexplored` (since v12, until 14)
-   * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14)
-   * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14)
-   * - `darkness` to `environment.darknessLevel` (since v12, until 14)
+   * Shims, all reading from the Scene's first {@linkcode Level}:
+   * - `foreground` from `levels[0].foreground.src`
+   * - `foregroundElevation` from `levels[0].elevation.top`
+   * - `fog.overlay` from `levels[0].fog.src`
+   * - `background` from the level's `background` and `textures` properties, plus `offsetX`/`offsetY`
+   *   from the Scene's `shiftX`/`shiftY`
+   * - `backgroundColor` from `levels[0].background.color`
+   * - `fog.exploration` to `fog.mode` (since v14, until v16)
    * - {@linkcode DocumentStatsField._shimData}`(this, source, options)`
    */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
-
-  /**
-   * @deprecated Replaced with `fog.exploration` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get fogExploration(): this["fog"]["exploration"];
-
-  set fogExploration(value);
-
-  /**
-   * @deprecated Replaced with `fog.reset` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get fogReset(): this["fog"]["reset"];
-
-  set fogReset(value);
-
-  /**
-   * @deprecated Replaced with `fog.overlay` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get fogOverlay(): this["fog"]["overlay"];
-
-  set fogOverlay(value);
-
-  /**
-   * @deprecated Replaced with `fog.colors.explored` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get fogExploredColor(): this["fog"]["colors"]["explored"];
-
-  set fogExploredColor(value);
-
-  /**
-   * @deprecated Replaced with `fog.colors.unexplored` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get fogUnexploredColor(): this["fog"]["colors"]["unexplored"];
-
-  set fogUnexploredColor(value);
-
-  /**
-   * @deprecated Replaced with `environment.globalLight.enabled` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get globalLight(): this["environment"]["globalLight"]["enabled"];
-
-  set globalLight(value);
-
-  /**
-   * @deprecated Replaced with `environment.globalLight.darkness.max` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get globalLightThreshold(): this["environment"]["globalLight"]["darkness"]["max"];
-
-  set globalLightThreshold(value);
-
-  /**
-   * @deprecated Replaced with `environment.darknessLevel` (since v12, until v14)
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
-   * in a static initialization block with options: `{configurable: true}`
-   */
-  get darkness(): this["environment"]["darknessLevel"];
-
-  set darkness(value);
 
   /*
    * After this point these are not really overridden methods.

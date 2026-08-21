@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -58,6 +58,8 @@ declare abstract class BaseActiveEffect<
    */
   static DEFAULT_ICON: string;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   protected override _preCreate(
     data: BaseActiveEffect.CreateData,
     options: BaseActiveEffect.Database.PreCreateOptions,
@@ -74,7 +76,7 @@ declare abstract class BaseActiveEffect<
    *   (since v14)
    * - `duration.seconds`/`rounds`/`turns` to `duration.value` and `duration.units` (since v14)
    */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks
@@ -128,7 +130,7 @@ declare abstract class BaseActiveEffect<
 
   override " fvtt_types_internal_document_parent": BaseActiveEffect.Parent;
 
-  static override canUserCreate(user: User.Implementation): boolean;
+  // `canUserCreate` omitted from template due to actual override above.
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

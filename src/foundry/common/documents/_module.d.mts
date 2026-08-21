@@ -23,7 +23,6 @@ export { default as BaseJournalEntryCategory } from "./journal-entry-category.mj
 export { default as BaseJournalEntryPage } from "./journal-entry-page.mjs";
 export { default as BaseLevel } from "./level.mjs";
 export { default as BaseMacro } from "./macro.mjs";
-export { default as BaseMeasuredTemplate } from "./measured-template.mjs";
 export { default as BaseNote } from "./note.mjs";
 export { default as BasePlaylist } from "./playlist.mjs";
 export { default as BasePlaylistSound } from "./playlist-sound.mjs";

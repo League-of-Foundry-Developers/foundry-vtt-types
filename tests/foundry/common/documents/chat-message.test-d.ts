@@ -94,3 +94,6 @@ expectTypeOf(
     whisper: [myUser],
   }),
 ).toEqualTypeOf<TestBaseChatMessage>();
+
+declare const myMessage: TestBaseChatMessage;
+expectTypeOf(myMessage.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();

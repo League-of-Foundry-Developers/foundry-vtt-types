@@ -2151,6 +2151,37 @@ declare namespace TokenDocument {
   }
 
   /**
+   * The hexagonal shape of a Token.
+   */
+  interface HexagonalShapeData {
+    /**
+     * The occupied offsets in even/odd rows/columns
+     */
+    offsets: HexagonalShapeOffsets;
+
+    /**
+     * The points in normalized coordinates
+     */
+    points: number[];
+
+    /**
+     * The center of the shape in normalized coordinates
+     */
+    center: Canvas.Point;
+
+    /**
+     * The snapping anchor in normalized coordinates, i.e. the top-left grid hex center in the snapped position
+     */
+    anchor: Canvas.Point;
+  }
+
+  /** The `offsets` of a {@linkcode TokenDocument.HexagonalShapeData}. */
+  interface HexagonalShapeOffsets {
+    even: BaseGrid.Offset2D[];
+    odd: BaseGrid.Offset2D[];
+  }
+
+  /**
    * @remarks This is the type for entries in {@linkcode TokenDocument.Database._PreServerUpdateOperation._movement}, as well as the first
    * argument of {@linkcode TokenDocument._preUpdateMovement | TokenDocument#_preUpdateMovement}
    */

@@ -73,7 +73,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param permission - The permission name from {@linkcode CONST.USER_PERMISSIONS} to test
    * @returns Does the user have at least this permission
    */
-  hasPermission(permission: keyof typeof CONST.USER_PERMISSIONS): boolean;
+  hasPermission(permission: BaseUser.Permission): boolean;
 
   /**
    * Test whether the User has at least the permission level of a certain role
@@ -292,6 +292,7 @@ declare namespace BaseUser {
   export import PingData = User.PingData;
   export import ActivityData = User.ActivityData;
   export import HasRoleOptions = User.HasRoleOptions;
+  export import Permission = User.Permission;
   export import ActionPermission = User.ActionPermission;
 
   namespace Internal {

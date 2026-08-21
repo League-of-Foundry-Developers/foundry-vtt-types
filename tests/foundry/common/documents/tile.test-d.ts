@@ -186,12 +186,4 @@ expectTypeOf(myTile.flags).toEqualTypeOf<
 // document-specific flag(s)
 expectTypeOf(myTile.flags.core?.randomizeVideo).toEqualTypeOf<boolean | undefined>();
 
-// non-schema:
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-myTile.roof = true;
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myTile.roof).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myTile.z).toBeNumber();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myTile.overhead).toBeBoolean();
+expectTypeOf(myTile.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();

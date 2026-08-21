@@ -122,3 +122,18 @@ expectTypeOf(myRegion.behaviors).toEqualTypeOf<
 expectTypeOf(myRegion.visibility).toEqualTypeOf<CONST.REGION_VISIBILITY | null>();
 expectTypeOf(myRegion.locked).toBeBoolean();
 expectTypeOf(myRegion.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
+
+expectTypeOf(myRegion.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
+
+expectTypeOf(BaseRegion._migrateMeasuredTemplateData({})).toEqualTypeOf<RegionDocument.CreateData>();
+expectTypeOf(
+  BaseRegion._migrateMeasuredTemplateData(
+    { t: "circle", x: 0, y: 0, distance: 10 },
+    {
+      grid: foundry.documents.BaseScene.defaultGrid,
+      gridTemplates: false,
+      coneTemplateType: "flat",
+      users: [],
+    },
+  ),
+).toEqualTypeOf<RegionDocument.CreateData>();

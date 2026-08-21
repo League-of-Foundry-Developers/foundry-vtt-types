@@ -34,9 +34,10 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    *   name: "Card",
    *   collection: "cards",
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
    *   indexed: true,
    *   label: "DOCUMENT.Card",
-   *   labelPlural: "DOCUMENT.Cards",
+   *   labelPlural: "DOCUMENT.CardPlural",
    *   permissions: {
    *     create: this.#canCreate,
    *     update: this.#canUpdate,
