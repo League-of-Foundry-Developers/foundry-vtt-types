@@ -8,6 +8,7 @@ import type {
   AutumnLeavesWeatherEffect,
 } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "../_module.d.mts";
+import type ParticleGenerator from "#client/canvas/animation/particle-generator.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type PrimaryCanvasGroup from "#client/canvas/groups/primary.d.mts";
@@ -62,7 +63,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
    * Array of weather effects linked to this weather container.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  effects: Map<string, Array<ParticleEffect | WeatherShaderEffect>>;
+  effects: Map<string, ParticleEffect | WeatherShaderEffect | ParticleGenerator>;
 
   /**
    * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
@@ -131,9 +132,9 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   protected override _draw(options: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<this>;
+  override tearDown(options?: WeatherEffects.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: WeatherEffects.TearDownOptions): Promise<void>;
 
   /**
    * Initialize the weather container from a weather config object.
@@ -277,10 +278,33 @@ declare namespace WeatherEffects {
     blendMode: PIXI.BLEND_MODES;
   }
 
+  /**
+   * @remarks A {@linkcode ParticleGenerator.Configuration} plus the generator class to instantiate it with.
+   */
+  interface ParticleConfiguration extends ParticleGenerator.Configuration {
+    /**
+     * An optional ParticleGenerator subclass to instantiate. Defaults to ParticleGenerator.
+     * @defaultValue {@linkcode ParticleGenerator}
+     */
+    generatorClass?: ParticleGenerator.AnyConstructor | undefined;
+  }
+
+  interface ParticleGeneratorEffectConfiguration extends InexactPartial<_CommonEffectConfiguration> {
+    id: string;
+
+    /**
+     * @remarks Mutually exclusive with `effectClass`; an entry declaring both is skipped with a console warning.
+     */
+    particles: ParticleConfiguration[];
+
+    effectClass?: never;
+  }
+
+  /** @deprecated Foundry deprecated `ParticleEffect`-based weather effects in v14 in favor of {@linkcode ParticleGeneratorEffectConfiguration}. */
   interface ParticleEffectConfiguration extends InexactPartial<_CommonEffectConfiguration> {
     id: string;
 
-    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
+    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructLegacyParticleEffect` */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     effectClass: typeof ParticleEffect;
 
@@ -294,7 +318,7 @@ declare namespace WeatherEffects {
   interface SpecificallyAutumnLeavesConfiguration {
     id: string;
 
-    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
+    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructLegacyParticleEffect` */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     effectClass: typeof AutumnLeavesWeatherEffect;
 
@@ -310,7 +334,7 @@ declare namespace WeatherEffects {
   interface WeatherShaderEffectConfiguration extends InexactPartial<_CommonEffectConfiguration> {
     id: string;
 
-    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
+    /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructShaderEffect` */
     effectClass: typeof WeatherShaderEffect;
 
     shaderClass: AbstractWeatherShader.AnyConstructor;
@@ -318,10 +342,13 @@ declare namespace WeatherEffects {
     config?: WeatherShaderEffect.Configuration | undefined;
   }
 
+  /* eslint-disable @typescript-eslint/no-deprecated */
   type EffectConfiguration =
     | SpecificallyAutumnLeavesConfiguration
     | ParticleEffectConfiguration
-    | WeatherShaderEffectConfiguration;
+    | WeatherShaderEffectConfiguration
+    | ParticleGeneratorEffectConfiguration;
+  /* eslint-enable @typescript-eslint/no-deprecated */
 }
 
 export default WeatherEffects;

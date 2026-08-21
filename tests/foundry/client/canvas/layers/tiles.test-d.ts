@@ -1,4 +1,6 @@
 import { expectTypeOf } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
+import TilePalette = foundry.applications.sheets.palette.TilePalette;
 
 import TilesLayer = foundry.canvas.layers.TilesLayer;
 import Tile = foundry.canvas.placeables.Tile;
@@ -20,17 +22,19 @@ expectTypeOf(layer.options.name).toEqualTypeOf<"tiles">();
 expectTypeOf(layer.hookName).toEqualTypeOf<"TilesLayer">();
 expectTypeOf(layer.hud).toEqualTypeOf<TileHUD>();
 expectTypeOf(layer.tiles).toEqualTypeOf<Tile.Implementation[]>();
-expectTypeOf(layer.controllableObjects()).toEqualTypeOf<Generator<Tile.Implementation, void, undefined>>();
 expectTypeOf(layer.getSnappedPoint({ x: 2, y: 3 })).toEqualTypeOf<Canvas.Point>();
+
+expectTypeOf(TilesLayer.paletteClass).toEqualTypeOf<typeof TilePalette>();
+expectTypeOf(TilesLayer.layerOptions.confirmBeforeCreation).toEqualTypeOf<true>();
 
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
-expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_createDragPreviewData"](pointerEvent)).toEqualTypeOf<TileDocument.CreateData>();
+expectTypeOf(layer["_createDragShapeData"](pointerEvent)).toEqualTypeOf<AnyMutableObject>();
+expectTypeOf(layer["_updateDragPreview"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
 
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {
@@ -38,12 +42,10 @@ expectTypeOf(
     fromFilePicker: true,
     tileSize: 100,
     texture: { src: "path/to/image.webp" },
-    elevation: 0,
     width: 200,
     height: 200,
     x: 500,
     y: 500,
     sort: 1,
-    occlusion: { mode: CONST.OCCLUSION_MODES.NONE },
   }),
 ).toEqualTypeOf<Promise<TileDocument.Implementation | false | void>>();

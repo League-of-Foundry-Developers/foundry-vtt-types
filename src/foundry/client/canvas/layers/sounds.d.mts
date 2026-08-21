@@ -1,8 +1,10 @@
-import type { InexactPartial, Identity, FixedInstanceType, HandleEmptyObject } from "#utils";
+import type { AnyMutableObject, InexactPartial, Identity, FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PlaceablesLayer } from "./_module.d.mts";
+import type PlaceablesLayer from "./base/placeables-layer.d.mts";
+import type ShapeLayerMixin from "./mixins/shapes.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { AmbientSoundPalette } from "#client/applications/sheets/palette/_module.d.mts";
 import type { Sound } from "#client/audio/_module.mjs";
 import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
 
@@ -17,7 +19,7 @@ declare module "#configuration" {
 /**
  * This Canvas Layer provides a container for AmbientSound objects.
  */
-declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
+declare class SoundsLayer extends ShapeLayerMixin(PlaceablesLayer<"AmbientSound">) {
   /** @remarks There are no args to pass along, but Foundry does just in case. Only exists to register a mousemove handler  */
   constructor(...args: ConstructorParameters<typeof PlaceablesLayer<"AmbientSound">>);
 
@@ -45,14 +47,17 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "sounds",
-   *  zIndex: 900
+   *  controllableObjects: true,
+   *  zIndex: 900,
+   *  confirmBeforeCreation: true
    * })
    * ```
    */
-
   static override get layerOptions(): SoundsLayer.LayerOptions;
 
   static override documentName: "AmbientSound";
+
+  static override paletteClass: typeof AmbientSoundPalette;
 
   override get hookName(): "SoundsLayer";
 
@@ -62,9 +67,9 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   protected override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<this>;
+  override tearDown(options?: SoundsLayer.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: SoundsLayer.TearDownOptions): Promise<void>;
 
   protected override _activate(): void;
 
@@ -77,9 +82,8 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * Update all AmbientSound effects in the layer by toggling their playback status.
    * Sync audio for the positions of tokens which are capable of hearing.
    * @param options - Additional options forwarded to AmbientSound synchronization (defaultValue: `{}`)
-   * @remarks Probably meant to be treated as always `void`; the `number` return is from an `Array#push` call, not anything meaningful
    */
-  refresh(options?: SoundsLayer.RefreshOptions): number | void;
+  refresh(options?: SoundsLayer.RefreshOptions): void;
 
   /**
    * Preview ambient audio for a given position
@@ -151,7 +155,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * const origin = token.center; // The origin point for the sound
    * const radius = 60;           // Audible in a 60-foot radius
    * await canvas.sounds.playAtPosition(src, origin, radius, {
-   *   walls: false,              // Not constrained by walls with a lowpass muffled effect
+   *   walls: false,              // Not constrained by walls and surfaces with a lowpass muffled effect
    *   muffledEffect: {type: "lowpass", intensity: 6},
    *   sourceData: {
    *     angle: 120,              // Sound emitted at a limited angle
@@ -189,13 +193,9 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    */
   protected _onMouseMove(currentPos: PIXI.Point): void;
 
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
+  protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
-  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
+  protected override _updateDragPreview(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle PlaylistSound document drop data.
@@ -228,11 +228,14 @@ declare namespace SoundsLayer {
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.sounds.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
+  interface LayerOptions extends ShapeLayerMixin.LayerOptions<AmbientSound.ImplementationClass> {
     name: "sounds";
+    controllableObjects: true;
 
     /** @defaultValue `900` */
     zIndex: number;
+
+    confirmBeforeCreation: true;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -256,12 +259,6 @@ declare namespace SoundsLayer {
   interface RefreshOptions extends InexactPartial<_Fade> {}
 
   interface SyncPositionsOptions extends InexactPartial<_Fade> {}
-
-  /** @deprecated This interface is redundant. Use {@linkcode Sound.PlayAtPositionOptions} instead. This type will be removed in v14. */
-  type PlayAtPositionOptions = Sound.PlayAtPositionOptions;
-
-  /** @deprecated Use {@linkcode SoundsLayer.PlaybackConfig} instead. This type will be removed in v14. */
-  type AmbientSoundPlaybackConfig = PlaybackConfig;
 
   /**
    * @remarks The only use of this interface in core is {@linkcode SoundsLayer._syncPositions | SoundsLayer#_syncPositions}
@@ -307,12 +304,12 @@ declare namespace SoundsLayer {
      * - There is a valid listener and
      * - That listener does not share coordinates with the sound and
      * - The sound is not explicitly constrained by walls and
-     * - There is a wall between the listener and the sound
+     * - There is a wall or occluding surface between the listener and the sound
      */
     muffled?: boolean | undefined;
 
     /**
-     * Is playback constrained or muffled by walls?
+     * Is playback constrained or muffled by walls and surfaces?
      * @remarks The {@linkcode AmbientSoundDocument.walls | #walls} of this config's `object.document`
      *
      * Only `undefined` if there are no listeners in range of the sound

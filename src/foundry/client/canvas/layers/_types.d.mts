@@ -24,3 +24,5 @@ type CanvasVisionContainerLight = foundry.canvas.layers.CanvasVisionMask.CanvasV
 type CanvasVisionContainerDarkness = foundry.canvas.layers.CanvasVisionMask.CanvasVisionContainerDarkness;
 
 type CanvasVisionContainer = foundry.canvas.layers.CanvasVisionMask.CanvasVisionContainer;
+
+type RegionPlacementOptions = foundry.canvas.layers.RegionLayer.PlacementOptions;

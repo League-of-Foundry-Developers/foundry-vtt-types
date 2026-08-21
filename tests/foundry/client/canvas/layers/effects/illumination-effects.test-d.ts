@@ -25,11 +25,5 @@ expectTypeOf(layer.invalidateDarknessLevelContainer(true)).toBeVoid();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasIlluminationEffects>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-// deprecated until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.background()).toBeNull();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.globalLight).toBeBoolean();
-
 // Literally no instance changes to test on DLC
 expectTypeOf(DarknessLevelContainer.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();

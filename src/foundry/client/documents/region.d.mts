@@ -1311,6 +1311,38 @@ declare namespace RegionDocument {
     teleport: boolean;
   }
 
+  interface Surface {
+    /** A key that uniquely identifies the surface */
+    key: string;
+
+    /** The region of the surface */
+    region: RegionDocument.Implementation;
+
+    /** The elevation of the surface */
+    elevation: number;
+
+    /** Does the surface restrict light? */
+    light: boolean;
+
+    /** Does the surface restrict movement? */
+    move: boolean;
+
+    /** Does the surface restrict sight? */
+    sight: boolean;
+
+    /** Does the surface restrict sound? */
+    sound: boolean;
+
+    /** Does the surface cause occlusion? */
+    occlusion: boolean;
+
+    /** Does the surface cause exposure? */
+    exposure: boolean;
+
+    /** Does the surface cause culling? */
+    culling: boolean;
+  }
+
   /** @deprecated The method this interface was for was made hard private in v13. This type will be removed in v14. */
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
   type UpdateTokensOptions = {};

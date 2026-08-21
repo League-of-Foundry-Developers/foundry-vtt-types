@@ -27,9 +27,6 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   lights: PIXI.Container;
 
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
-  backgroundColorTexture: never;
-
   /**
    * The base line mesh.
    */
@@ -50,9 +47,6 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   get renderTexture(): PIXI.RenderTexture;
 
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
-  set backgroundColor(color: never);
-
   /**
    * Clear illumination effects container
    */
@@ -65,33 +59,15 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   invalidateDarknessLevelContainer(force?: boolean | null): void;
 
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
-  protected _createBackgroundColorTexture(): never;
-
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
-  override render(renderer: never): never;
-
   // fake type override
   override draw(options?: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<this>;
+  override tearDown(options?: CanvasIlluminationEffects.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<void>;
-
-  /**
-   * @deprecated "`CanvasIlluminationEffects#background` is now obsolete." (since v12, until v14)
-   */
-  background(): null;
-
-  /**
-   * @deprecated "`CanvasIlluminationEffects#globalLight` has been deprecated without replacement.
-   * Check the {@linkcode foundry.canvas.sources.GlobalLightSource.active | canvas.environment.globalLightSource.active} instead."
-   * (since v12, until v14)
-   */
-  get globalLight(): boolean;
+  protected override _tearDown(options: CanvasIlluminationEffects.TearDownOptions): Promise<void>;
 
   #CanvasIlluminationEffects: true;
 }
