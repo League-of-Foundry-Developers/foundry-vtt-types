@@ -46,7 +46,35 @@ declare class CanvasDocument<
    */
   get rendered(): boolean;
 
-  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  override get visible(): boolean;
+
+  /**
+   * Is this CanvasDocument viewed, i.e. included in the viewed Level?
+   */
+  get viewed(): boolean;
+
+  /**
+   * Is this CanvasDocument included in a given Level?
+   * @param level - The Level or ID
+   * @remarks Returns `true` if this document has no `levels` field, or an empty one.
+   */
+  includedInLevel(level: string | Level.Implementation): boolean;
+
+  /**
+   * Is this CanvasDocument located in a given Level?
+   * @param level - The Level or ID
+   * @remarks Forwards to {@linkcode CanvasDocumentMixin.AnyMixed.includedInLevel | #includedInLevel} unchanged here.
+   */
+  locatedInLevel(level: string | Level.Implementation): boolean;
+
+  /**
+   * Handle the Document becoming (un)viewed.
+   * @internal
+   */
+  protected _refreshViewedState(): Promise<void>;
+
+  // _preCreate, _onCreate, _onUpdate, and _onDelete, along with the static _onCreateOperation, _onUpdateOperation, and
+  // _onDeleteOperation, are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 }
 
