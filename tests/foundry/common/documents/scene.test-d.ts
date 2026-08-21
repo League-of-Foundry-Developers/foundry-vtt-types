@@ -120,3 +120,12 @@ expectTypeOf(
     flags: null,
   }),
 ).toEqualTypeOf<BaseScene>();
+
+expectTypeOf(foundry.documents.BaseScene.defaultGridlessGrid).toEqualTypeOf<foundry.grid.GridlessGrid>();
+expectTypeOf(foundry.documents.BaseScene["_LEVELS_PROPERTY_MAP"]).toEqualTypeOf<
+  readonly (readonly [sceneProperty: string, levelProperty: string])[]
+>();
+
+declare const someScene: Scene.Implementation;
+expectTypeOf(someScene.initialLevel).toEqualTypeOf<Level.Implementation>();
+expectTypeOf(someScene.firstLevel).toEqualTypeOf<Level.Implementation>();

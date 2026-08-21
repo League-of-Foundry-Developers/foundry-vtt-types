@@ -38,7 +38,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    *     create: this.#canCreate,
    *     delete: "OWNER"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.355"
    * })
    * ```
    */
@@ -63,25 +63,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override canUserCreate(user: User.Implementation): boolean;
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  /**
-   * @remarks
-   * Migrations:
-   * - `z` to `elevation` (since v12, no specified end)
-   */
-  static override migrateData(source: object): object;
-
-  /**
-   * @remarks
-   * Shims:
-   * - `z` to `elevation` (since v12, until v14)
-   */
-  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
-
-  /**
-   * @deprecated "You are accessing `z` which has been migrated to `elevation`" (since v12, until v14)
-   */
-  get z(): this["elevation"];
 
   /*
    * After this point these are not really overridden methods.

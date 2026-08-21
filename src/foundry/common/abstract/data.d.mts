@@ -776,6 +776,21 @@ declare namespace DataModel {
     /** An advanced option used specifically and internally by the ActorDelta model */
     restoreDelta: boolean;
 
+    /**
+     * The ActorDelta being updated, set by
+     * {@linkcode foundry.documents.BaseActorDelta._prepareDeltaUpdate | BaseActorDelta#_prepareDeltaUpdate} and read by
+     * {@linkcode foundry.documents.ActorDeltaField | ActorDeltaField}
+     * @internal
+     */
+    _deltaModel: ActorDelta.Implementation;
+
+    /**
+     * The ActorDelta that {@linkcode foundry.documents.ActorDeltaField | ActorDeltaField} replaced when a `null` delta
+     * was updated, so callers can still reach the discarded model
+     * @internal
+     */
+    _deltaModelDeleted: ActorDelta.Implementation;
+
     /** Used only by the server to understand update context */
     user: User.Implementation;
   }

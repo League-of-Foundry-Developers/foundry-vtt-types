@@ -139,3 +139,5 @@ expectTypeOf(mySound.effects.base.intensity).toEqualTypeOf<number | null>();
 expectTypeOf(mySound.effects.muffled.type).toEqualTypeOf<string | undefined>();
 expectTypeOf(mySound.effects.muffled.intensity).toEqualTypeOf<number | null>();
 expectTypeOf(mySound.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
+
+expectTypeOf(mySound.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
