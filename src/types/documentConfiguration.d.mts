@@ -99,12 +99,41 @@ type GetDocumentClass<ConcreteDocumentType extends Document.Type> =
     ? DocumentClassConfig[ConcreteDocumentType]
     : DefaultDocumentClasses[ConcreteDocumentType];
 
+interface _DocumentInstanceConfig {
+  ActiveEffect: configuration.ConfiguredActiveEffect<ActiveEffect.SubType>;
+  ActorDelta: configuration.ConfiguredActorDelta<ActorDelta.SubType>;
+  Actor: configuration.ConfiguredActor<Actor.SubType>;
+  Card: configuration.ConfiguredCard<Card.SubType>;
+  Cards: configuration.ConfiguredCards<Cards.SubType>;
+  ChatMessage: configuration.ConfiguredChatMessage<ChatMessage.SubType>;
+  Combat: configuration.ConfiguredCombat<Combat.SubType>;
+  Combatant: configuration.ConfiguredCombatant<Combatant.SubType>;
+  CombatantGroup: configuration.ConfiguredCombatantGroup<CombatantGroup.SubType>;
+  Folder: configuration.ConfiguredFolder<Folder.SubType>;
+  Item: configuration.ConfiguredItem<Item.SubType>;
+  JournalEntryPage: configuration.ConfiguredJournalEntryPage<JournalEntryPage.SubType>;
+  Macro: configuration.ConfiguredMacro<Macro.SubType>;
+  RegionBehavior: configuration.ConfiguredRegionBehavior<RegionBehavior.SubType>;
+  TableResult: configuration.ConfiguredTableResult<TableResult.SubType>;
+}
+
+// As typical, written in a bit of an obtuse way to deal with a circularity.
 type GetDocumentInstance<ConcreteDocumentType extends Document.Type> =
-  ConcreteDocumentType extends keyof configuration.DocumentInstanceConfig
-    ? configuration.DocumentInstanceConfig[ConcreteDocumentType]
-    : ConcreteDocumentType extends keyof DocumentClassConfig
-      ? FixedInstanceType<DocumentClassConfig[ConcreteDocumentType]>
-      : DefaultDocumentInstance[ConcreteDocumentType];
+  ConcreteDocumentType extends Document.WithSubTypes
+    ? _DocumentInstanceConfig[ConcreteDocumentType] extends { document: infer Document }
+      ? Document
+      : GetDocumentInstanceFromClass<ConcreteDocumentType>
+    : GetDocumentInstanceFromClass<ConcreteDocumentType>;
+
+// `GetDocumentInstance` reads `_DocumentInstanceConfig` through `Document.WithSubTypes`, so a
+// `Configured*` interface added for a document outside that union would be silently ignored.
+type TestConfigurableTypesValid = MustConform<keyof _DocumentInstanceConfig, Document.WithSubTypes>;
+type TestWithSubTypesValid = MustConform<Document.WithSubTypes, keyof _DocumentInstanceConfig>;
+
+type GetDocumentInstanceFromClass<ConcreteDocumentType extends Document.Type> =
+  ConcreteDocumentType extends keyof DocumentClassConfig
+    ? FixedInstanceType<DocumentClassConfig[ConcreteDocumentType]>
+    : DefaultDocumentInstance[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
