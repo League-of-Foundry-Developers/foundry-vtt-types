@@ -51,7 +51,7 @@ expectTypeOf(edge.a).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(edge.b).toEqualTypeOf<PIXI.Point>();
 
 expectTypeOf(edge.id).toEqualTypeOf<string | undefined>();
-if (edge.object) expectTypeOf(edge.object).toEqualTypeOf<PlaceableObject.Any>();
+if (edge.object) expectTypeOf(edge.object).toEqualTypeOf<PlaceableObject.AnyCanvasDocument | PlaceableObject.Any>();
 expectTypeOf(edge.type).toEqualTypeOf<Edge.EdgeTypes>();
 expectTypeOf(edge.direction).toEqualTypeOf<CONST.EDGE_DIRECTIONS>();
 expectTypeOf(edge.light).toEqualTypeOf<CONST.EDGE_SENSE_TYPES>();
