@@ -34,7 +34,7 @@ export interface DocumentSocketRequest<Action extends DatabaseBackend.DatabaseAc
   /**
    * The type of Document being transacted
    */
-  type: string;
+  type: Document.Type;
 
   /**
    * The action of the request

@@ -129,7 +129,7 @@ expectTypeOf(drawing._removePoint()).toBeVoid();
 expectTypeOf(
   drawing["_onCreate"](
     drawingDoc.toObject(),
-    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    { action: "create", documentName: "Drawing", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -138,13 +138,24 @@ expectTypeOf(
   drawing._onUpdate(
     // partial source data
     { bezierFactor: 2, flags: { core: { sheetLock: true } }, fillColor: "#ABCFEF" },
-    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
+    {
+      action: "update",
+      documentName: "Drawing",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      diff: true,
+      recursive: true,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  drawing._onDelete({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  drawing._onDelete(
+    { action: "delete", documentName: "Drawing", parent: scene, modifiedTime: 7, render: true },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value

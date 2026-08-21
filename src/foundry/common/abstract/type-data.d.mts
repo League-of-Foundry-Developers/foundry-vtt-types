@@ -342,7 +342,11 @@ declare abstract class TypeDataModel<
     >
   >;
 
-  modelProvider: foundry.packages.System | foundry.packages.Module | null;
+  /**
+   * The package that is providing this DataModel for the given sub-type.
+   * @remarks Defined via `Object.defineProperty` during construction with `{ writable: false }`.
+   */
+  readonly modelProvider: foundry.packages.System | foundry.packages.Module | null;
 
   static override LOCALIZATION_PREFIXES: string[];
 

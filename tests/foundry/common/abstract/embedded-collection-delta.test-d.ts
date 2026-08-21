@@ -73,9 +73,11 @@ describe("EmbeddedCollectionDelta Tests", async () => {
   });
 
   test("Collection getters", () => {
-    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Stored>>();
+    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<
+      EmbeddedCollection<Item.Stored, Actor.Stored> | undefined
+    >();
     expectTypeOf(itemCollOnDelta.syntheticCollection).toEqualTypeOf<
-      EmbeddedCollection<Item.Stored, Actor.Implementation>
+      EmbeddedCollection<Item.Stored, Actor.Implementation> | undefined
     >();
   });
 
@@ -92,8 +94,8 @@ describe("EmbeddedCollectionDelta Tests", async () => {
     expectTypeOf(itemCollOnDelta.restoreDocument("ID")).toEqualTypeOf<Promise<Item.Stored>>();
     expectTypeOf(itemCollOnDelta.restoreDocuments(["ID1", "ID2"])).toEqualTypeOf<Promise<Item.Stored[]>>();
 
-    expectTypeOf(itemCollOnDelta._prepareDeltaUpdate(itemUpdateData)).toBeVoid();
-    expectTypeOf(itemCollOnDelta._prepareDeltaUpdate(itemUpdateData, {})).toBeVoid();
+    expectTypeOf(itemCollOnDelta._prepareDeltaUpdate([itemUpdateData])).toBeVoid();
+    expectTypeOf(itemCollOnDelta._prepareDeltaUpdate([itemUpdateData], {})).toBeVoid();
     // ^ 2nd arg is the DataModel.UpdateOptions interface, see DataModel tests for more complete coverage
   });
 
