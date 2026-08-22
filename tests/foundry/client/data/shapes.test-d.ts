@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { DeepReadonly } from "#utils";
+import type { AnyObject, DeepReadonly } from "#utils";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -55,6 +55,24 @@ expectTypeOf(rectangle.moveControlHandle("width", point, { snap: true, unlinked:
 expectTypeOf(rectangle.sampleInterior()).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(rectangle.sampleBoundary(point)).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(RectangleShapeData._toClipperPath([0, 0, 1, 1])).toEqualTypeOf<PIXI.Polygon.ClipperPath>();
+
+// The mixin's subclass hooks retain their protected access.
+declare class CustomRectangleShapeData extends RectangleShapeData {
+  protected override _onShapeChange(): void;
+  protected override _onGridChange(changed: AnyObject): void;
+  protected override _createClipperPolyTree(): ClipperLib.PolyTree;
+  protected override _createOrigin(): Canvas.Point;
+  protected override _createCenter(): Canvas.Point;
+  protected override _calculateArea(): number;
+  protected override _rotate(angle: number): void;
+  protected override _createMeasuredSegments(): never[];
+}
+
+declare const customRectangle: CustomRectangleShapeData;
+expectTypeOf(customRectangle).toExtend<RectangleShapeData>();
+
+// @ts-expect-error Property '_onShapeChange' is protected and only accessible within class 'ClientShapeData' and its subclasses.
+rectangle._onShapeChange();
 
 // Each `measuredSegments` entry is deeply frozen.
 expectTypeOf(rectangle.measuredSegments[0]!.winding).toEqualTypeOf<-1 | 0 | 1>();
