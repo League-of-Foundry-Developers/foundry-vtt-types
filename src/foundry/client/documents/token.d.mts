@@ -818,47 +818,47 @@ declare namespace TokenDocument {
    * @remarks TSGo doesn't properly merge the JSDoc yet, but assuming it eventually will, this is the most-DRY way to write this.
    * @internal
    */
-  interface _GetCompleteMovementPathWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {
+  interface _GetCompleteMovementPathWaypoint extends ProcessedMovementWaypoint {
     /** @defaultValue The previous or source x-coordinate. */
-    x: MeasuredMovementWaypoint["x"];
+    x: ProcessedMovementWaypoint["x"];
 
     /** @defaultValue The previous or source y-coordinate. */
-    y: MeasuredMovementWaypoint["y"];
+    y: ProcessedMovementWaypoint["y"];
 
     /** @defaultValue The previous or source elevation. */
-    elevation: MeasuredMovementWaypoint["elevation"];
+    elevation: ProcessedMovementWaypoint["elevation"];
 
     /** @defaultValue The previous or source width. */
-    width: MeasuredMovementWaypoint["width"];
+    width: ProcessedMovementWaypoint["width"];
 
     /** @defaultValue The previous or source height. */
-    height: MeasuredMovementWaypoint["height"];
+    height: ProcessedMovementWaypoint["height"];
 
     /** @defaultValue The previous or source shape. */
-    shape: MeasuredMovementWaypoint["shape"];
+    shape: ProcessedMovementWaypoint["shape"];
 
     /** @defaultValue The previous or prepared movement action. */
-    action: MeasuredMovementWaypoint["action"];
+    action: ProcessedMovementWaypoint["action"];
 
     /** @defaultValue `null` */
-    terrain: MeasuredMovementWaypoint["terrain"];
+    terrain: ProcessedMovementWaypoint["terrain"];
 
     /** @defaultValue `false` */
-    snapped: MeasuredMovementWaypoint["snapped"];
+    snapped: ProcessedMovementWaypoint["snapped"];
 
     /** @defaultValue `false` */
-    explicit: MeasuredMovementWaypoint["explicit"];
+    explicit: ProcessedMovementWaypoint["explicit"];
 
     /** @defaultValue `false` */
-    checkpoint: MeasuredMovementWaypoint["checkpoint"];
+    checkpoint: ProcessedMovementWaypoint["checkpoint"];
 
     /** @defaultValue `false` */
-    intermediate: MeasuredMovementWaypoint["intermediate"];
+    intermediate: ProcessedMovementWaypoint["intermediate"];
   }
 
   interface GetCompleteMovementPathWaypoint extends InexactPartial<_GetCompleteMovementPathWaypoint> {}
 
-  interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
+  interface CompleteMovementWaypoint extends ProcessedMovementWaypoint {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
@@ -1952,8 +1952,18 @@ declare namespace TokenDocument {
 
   interface MovementWaypoint extends Omit<
     MeasuredMovementWaypoint,
-    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+    "terrain" | "intermediate" | "userId" | "movementId" | "subpathId" | "cost"
   > {}
+
+  type MovementTerrain = MeasuredMovementWaypoint["terrain"];
+
+  interface ProcessedMovementWaypoint extends MovementWaypoint {
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is this waypoint intermediate? */
+    intermediate: boolean;
+  }
 
   /** @remarks Used for passing to {@linkcode TokenDocument.move | TokenDocument#move}. */
   interface PartialMovementWaypoint extends InexactPartial<MovementWaypoint> {}
@@ -1964,6 +1974,34 @@ declare namespace TokenDocument {
   > {
     actionConfig: CONFIG.Token.Movement.ActionConfig;
     teleport: boolean;
+  }
+
+  interface MeasurableMovementWaypointData {
+    /** A predetermined cost (nonnegative) or cost function to be used instead of `options.cost`. */
+    cost?: number | MovementCostFunction | undefined;
+  }
+
+  interface MeasurableMovementWaypoint
+    extends InexactPartial<ProcessedMovementWaypoint>, MeasurableMovementWaypointData {}
+
+  interface RegionMovementSegment {
+    /** The type of this segment (see {@linkcode CONST.REGION_MOVEMENT_SEGMENTS}). */
+    type: CONST.REGION_MOVEMENT_SEGMENTS;
+
+    /** The waypoint that this segment starts from. */
+    from: Position;
+
+    /** The waypoint that this segment goes to. */
+    to: Position;
+
+    /** The movement action between the waypoints. */
+    action: string;
+
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is the destination snapped to the grid? */
+    snapped: boolean;
   }
 
   interface MovementSectionData {
@@ -2392,8 +2430,11 @@ declare namespace TokenDocument {
 
   interface MovementOptions extends InexactPartial<_MovementOptions> {}
 
+  /** A callback that resumes paused movement. */
+  type ResumeMovementCallback = () => Promise<boolean>;
+
   type PauseMovementReturn<Key extends string | undefined> =
-    | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
+    | (Key extends string ? Promise<boolean> : ResumeMovementCallback)
     | null;
 
   /**
@@ -3330,7 +3371,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   segmentizeRegionMovementPath(
     region: RegionDocument.Implementation,
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
-  ): RegionDocument.MovementSegment[];
+  ): TokenDocument.RegionMovementSegment[];
 
   protected override _preCreateDescendantDocuments(...args: TokenDocument.PreCreateDescendantDocumentsArgs): void;
 
