@@ -30,6 +30,8 @@ import * as _utils from "./utils/_module.mjs"; // moved here to match other clie
 
 import * as globalConfig from "./config.mjs";
 
+import * as _animejs from "animejs";
+
 /**
  * Constant definitions used throughout the Foundry Virtual Tabletop framework.
  */
@@ -215,7 +217,11 @@ declare global {
    */
   let _del: foundry.data.operators.ForcedDeletion;
 
-  // TODO: _loc
+  /**
+   * A convenience alias of `game#i18n#localize`
+   * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
+   */
+  const _loc: foundry.helpers.Localization["localize"];
 
   /**
    * A reference for ForcedReplacement.create that can be easily referenced.
@@ -225,7 +231,7 @@ declare global {
 
   // Blessed globals - will remain global without deprecation
 
-  // Color is currently handled in src/foundry/client/head.d.mts
+  // Color is currently handled in src/foundry/client/global.d.mts
 
   export import Collection = _utils.Collection;
 
@@ -309,6 +315,10 @@ declare global {
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
   let _token: foundry.canvas.placeables.Token.Implementation | null;
+
+  // Bundled Libraries
+
+  export import animejs = _animejs;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Game} which is now namespaced under {@linkcode foundry.Game}"
@@ -2379,11 +2389,6 @@ declare global {
   export import ClientPackageMixin = foundry.packages.ClientPackageMixin;
 
   /**
-   * @deprecated The ClientPackage namespace has been adjusted to ClientPackageMixin
-   */
-  export import ClientPackage = foundry.packages.ClientPackageMixin;
-
-  /**
    * @deprecated "You are accessing the global {@linkcode Module} which is now namespaced under {@linkcode foundry.packages.Module}"
    * (since v13 will be removed in v15)
    */
@@ -2406,138 +2411,4 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import PACKAGE_TYPES = foundry.packages.PACKAGE_TYPES;
-
-  // v12 deprecations
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import Semaphore = _utils.Semaphore;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import IterableWeakMap = _utils.IterableWeakMap;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import IterableWeakSet = _utils.IterableWeakSet;
-
-  /* --- geometry --- */
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import orient2dFast = _utils.orient2dFast;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import lineSegmentIntersects = _utils.lineSegmentIntersects;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import lineLineIntersection = _utils.lineLineIntersection;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import lineSegmentIntersection = _utils.lineSegmentIntersection;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import lineCircleIntersection = _utils.lineCircleIntersection;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import closestPointToSegment = _utils.closestPointToSegment;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import quadraticIntersection = _utils.quadraticIntersection;
-
-  /* --- helpers --- */
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import benchmark = _utils.benchmark;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import threadLock = _utils.threadLock;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import debounce = _utils.debounce;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import debouncedReload = _utils.debouncedReload;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import deepClone = _utils.deepClone;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import diffObject = _utils.diffObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  export import objectsEqual = _utils.objectsEqual;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import duplicate = _utils.duplicate;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import isSubclass = _utils.isSubclass;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import getDefiningClass = _utils.getDefiningClass;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import encodeURL = _utils.encodeURL;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import expandObject = _utils.expandObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import filterObject = _utils.filterObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import flattenObject = _utils.flattenObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import getParentClasses = _utils.getParentClasses;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import getRoute = _utils.getRoute;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import getType = _utils.getType;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import hasProperty = _utils.hasProperty;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import getProperty = _utils.getProperty;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import setProperty = _utils.setProperty;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import invertObject = _utils.invertObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import isEmpty = _utils.isEmpty;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import mergeObject = _utils.mergeObject;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import parseS3URL = _utils.parseS3URL;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import randomID = _utils.randomID;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import timeSince = _utils.timeSince;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import formatFileSize = _utils.formatFileSize;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import parseUuid = _utils.parseUuid;
-
-  /* --- http --- */
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import fetchWithTimeout = _utils.fetchWithTimeout;
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import fetchJsonWithTimeout = _utils.fetchJsonWithTimeout;
-
-  /* --- logging --- */
-
-  /** @deprecated since v12 will be removed in v14 */
-  export import logCompatibilityWarning = _utils.logCompatibilityWarning;
 }

@@ -34,12 +34,12 @@ type SimpleInitializedOn<
  */
 declare class InternalGame<RunEvents extends InitializationHook> {
   /**
-   * @param view      - The named view which is active for this game instance.
-   * @param data      - An object of all the World data vended by the server when the client first connects
-   * @param sessionId - The ID of the currently active client session retrieved from the browser cookie
-   * @param socket    - The open web-socket which should be used to transact game-state data
+   * * Initialize a singleton Game instance for a specific view using socket data retrieved from the server.
+   * @param view   - The named view which is active for this game instance.
+   * @param data   - An object of all the World data vended by the server when the client first connects
+   * @param socket - The open web-socket which should be used to transact game-state data
    */
-  constructor(view: Game["view"], data: Game.Data, sessionId: Game["sessionId"], socket: Game["socket"]);
+  constructor(view: Game["view"], data: Game.Data, socket: Game["socket"]);
 
   /**
    * The named view which is currently active.
@@ -51,11 +51,6 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * The object of world data passed from the server
    */
   readonly data: Game.Data;
-
-  /**
-   * The client session id which is currently active.
-   */
-  readonly sessionId: string;
 
   /**
    * A reference to the open Socket.io connection
@@ -95,10 +90,9 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   get model(): Game.Model;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "Game#template is deprecated and will be removed in Version 14. Use cases for Game#template should be refactored to instead use System#documentTypes or Game#model"
+   * A shortcut to compendiumConfiguration data settings
    */
-  get template(): Game.Data["template"];
+  get compendiumConfiguration(): foundry.documents.collections.CompendiumCollection.SettingData;
 
   /**
    * A registry of document types supported by the active world.
@@ -331,18 +325,16 @@ declare class InternalGame<RunEvents extends InitializationHook> {
 
   /**
    * Fetch World data and return a Game instance
-   * @param view      - The named view being created
-   * @param sessionId - The current sessionId of the connecting client
+   * @param view - The named view being created
    * @returns A Promise which resolves to the created Game instance
    */
-  static create(view: string, sessionId: string | null): Promise<Game>;
+  static create(view: string): Promise<Game>;
 
   /**
    * Establish a live connection to the game server through the socket.io URL
-   * @param sessionId - The client session ID with which to establish the connection
    * @returns A promise which resolves to the connected socket, if successful
    */
-  static connect(sessionId: string): Promise<io.Socket>;
+  static connect(): Promise<io.Socket>;
 
   /**
    * Retrieve the cookies which are attached to the client session
@@ -413,6 +405,11 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   initializePacks(): Promise<this["packs"]>;
 
   /**
+   * Initialize collection trees.
+   */
+  initializeTrees(): void;
+
+  /**
    * Initialize the WebRTC implementation
    */
   initializeRTC(): Promise<boolean>;
@@ -453,11 +450,6 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   registerSettings(): void;
 
   /**
-   * Register core Tours
-   */
-  registerTours(): Promise<void>;
-
-  /**
    * Is the current session user authenticated as an application administrator?
    */
   get isAdmin(): boolean;
@@ -471,8 +463,9 @@ declare class InternalGame<RunEvents extends InitializationHook> {
 
   /**
    * A convenience accessor for the currently viewed Combat encounter
+   * If the CombatTracker has yet to render, fall back to the first active combat.
    */
-  get combat(): foundry.documents.collections.CombatEncounters["viewed"];
+  get combat(): foundry.documents.Combat.Implementation | null;
 
   /**
    * A state variable which tracks whether the game session is currently paused
@@ -482,7 +475,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   /**
    * A convenient reference to the currently active canvas tool
    */
-  get activeTool(): string;
+  get activeTool(): string | null;
 
   /**
    * Toggle the pause state of the game, triggering the {@link hookEvents.pauseGame} hook when the paused
@@ -518,13 +511,19 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   configureUI(config?: DeepPartial<UIConfig.GameUIConfiguration>): void;
 
   /**
-   * Scale the base font size according to the user's settings.
-   * @param index - Optionally supply a font size index to use, otherwise use the user's setting.
-   *                Available font sizes, starting at index 1, are: 8, 10, 12, 14, 16, 18, 20, 24, 28, and 32.
-   *
-   * @deprecated "Game#scaleFonts is deprecated in favor of Game#configureUI" (since v13 until v15)
+   * Configure custom cursors.
    */
-  scaleFonts(index?: number): void;
+  configureCursors(): void;
+
+  /**
+   * Race the given against for the browser window becoming hidden.
+   * @param promise - The promise that is raced against the promise of the browser window becoming hidden
+   * @returns The promise of the race
+   *
+   * @privateRemarks Foundry's `@returns` is `Promise<T|void>`, but the method discards the race's result and
+   * returns nothing.
+   */
+  raceWithWindowHidden(promise: Promise<unknown>): Promise<void>;
 
   /**
    * Activate Socket event listeners which are used to transact game state data with the server
@@ -532,15 +531,10 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   activateSocketListeners(): void;
 
   /**
-   * Activate Event Listeners which apply to every Game View
+   * Activate Event Listeners which apply to every Game View.
+   * @param document - The document to bind listeners to. (default: `window.document`)
    */
-  activateListeners(): void;
-
-  /**
-   * Support mousewheel control for range type input elements
-   * @param event - A Mouse Wheel scroll event
-   */
-  protected static _handleMouseWheelInputChange(event: WheelEvent): void;
+  activateListeners(document?: globalThis.Document): void;
 
   /**
    * On left mouse clicks, check if the element is contained in a valid hyperlink and open it in a new tab.
@@ -548,71 +542,17 @@ declare class InternalGame<RunEvents extends InitializationHook> {
   protected _onClickHyperlink(event: MouseEvent): void;
 
   /**
-   * Prevent starting a drag and drop workflow on elements within the document unless the element has the draggable
-   * attribute explicitly defined or overrides the dragstart handler.
-   * @param event - The initiating drag start event
-   */
-  protected _onPreventDragstart(event: DragEvent): boolean;
-
-  /**
-   * Disallow dragging of external content onto anything but a file input element
-   * @param event - The requested drag event
-   */
-  protected _onPreventDragover(event: DragEvent): void;
-
-  /**
-   * Disallow dropping of external content onto anything but a file input element
-   * @param event - The requested drag event
-   */
-  protected _onPreventDrop(event: DragEvent): void;
-
-  /**
-   * On a left-click event, remove any currently displayed inline roll tooltip
-   * @param event - The mousedown pointer event
-   */
-  protected _onPointerDown(event: PointerEvent): void;
-
-  /**
-   * Fallback handling for mouse-up events which aren't handled further upstream.
-   * @param event - The mouseup pointer event
-   */
-  protected _onPointerUp(event: PointerEvent): void;
-
-  /**
-   * Handle resizing of the game window by adjusting the canvas and repositioning active interface applications.
-   * @param event - The window resize event which has occurred
-   * @internal
-   */
-  protected _onWindowResize(event: UIEvent): void;
-
-  /**
-   * Handle window unload operations to clean up any data which may be pending a final save
-   * @param event - The window unload event which is about to occur
-   */
-  protected _onWindowBeforeUnload(event: Event): Promise<void>;
-
-  /**
-   * Handle cases where the browser window loses focus to reset detection of currently pressed keys
-   * @param event - The originating window.blur event
-   */
-  protected _onWindowBlur(event: FocusEvent): void;
-
-  protected _onWindowPopState(event: PopStateEvent): void;
-
-  /**
    * Initialize elements required for the current view
+   * @internal
    */
   protected _initializeView(): Promise<void>;
 
-  /**
-   * Initialization steps for the primary Game view
-   */
-  protected _initializeGameView(): Promise<void>;
+  /* Deprecations and Compatibility */
 
   /**
-   * Initialization steps for the Stream helper view
+   * @deprecated "Game#scaleFonts is deprecated in favor of Game#configureUI" (since v13 until v15)
    */
-  protected _initializeStreamView(): Promise<void>;
+  scaleFonts(index?: number): void;
 }
 
 type _InitGame = Game & InternalGame<"init">;

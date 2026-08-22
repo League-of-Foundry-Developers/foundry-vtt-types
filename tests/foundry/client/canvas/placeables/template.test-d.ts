@@ -30,6 +30,7 @@ expectTypeOf(MeasuredTemplate.getRayShape(5, 180, 2)).toEqualTypeOf<PIXI.Polygon
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const doc: MeasuredTemplateDocument.Stored;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const template = new CONFIG.MeasuredTemplate.objectClass(doc);
 
 expectTypeOf(template.controlIcon).toEqualTypeOf<ControlIcon | null>();
