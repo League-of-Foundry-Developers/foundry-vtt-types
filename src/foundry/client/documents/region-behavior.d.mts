@@ -881,11 +881,12 @@ declare namespace RegionBehavior {
   interface CoreBehaviors {
     adjustDarknessLevel: typeof foundry.data.regionBehaviors.AdjustDarknessLevelRegionBehaviorType;
     applyActiveEffect: typeof foundry.data.regionBehaviors.ApplyActiveEffectRegionBehaviorType;
+    changeLevel: typeof foundry.data.regionBehaviors.ChangeLevelRegionBehaviorType;
+    defineSurface: typeof foundry.data.regionBehaviors.DefineSurfaceRegionBehaviorType;
     displayScrollingText: typeof foundry.data.regionBehaviors.DisplayScrollingTextRegionBehaviorType;
     executeMacro: typeof foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType;
     executeScript: typeof foundry.data.regionBehaviors.ExecuteScriptRegionBehaviorType;
-    // TODO: Implement modifyMovementCost
-    // modifyMovementCost: typeof foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType;
+    modifyMovementCost: typeof foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType;
     pauseGame: typeof foundry.data.regionBehaviors.PauseGameRegionBehaviorType;
     suppressWeather: typeof foundry.data.regionBehaviors.SuppressWeatherRegionBehaviorType;
     teleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType;

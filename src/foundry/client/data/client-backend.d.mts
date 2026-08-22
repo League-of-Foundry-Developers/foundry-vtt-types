@@ -32,11 +32,21 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
+   * Bundle multiple Document-modification operations into a single, batched request.
+   * @see {@linkcode foundry.documents.modifyBatch}
+   * @remarks
+   * @throws If some but not all of the batched operations are dry runs.
+   */
+  modifyDocumentBatch(
+    operations: foundry.abstract.DatabaseBackend.WriteOperation[],
+  ): Promise<foundry.abstract.Document.Any[][]>;
+
+  /**
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
    * @internal
    */
-  activateSocketListeners(socket: Game["socket"]): void;
+  protected _activateSocketListeners(socket: Game["socket"]): void;
 
   override getFlagScopes(): ClientDatabaseBackend.FlagScope[];
 
@@ -46,6 +56,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   protected override _log(level: LoggingLevels, message: string): void;
 
   #ClientDatabaseBackend: true;
+  static #ClientDatabaseBackendStatic: true;
 }
 
 declare namespace ClientDatabaseBackend {
