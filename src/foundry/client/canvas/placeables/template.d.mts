@@ -17,8 +17,9 @@ declare module "#configuration" {
 }
 
 /**
- * @deprecated "MeasuredTemplate is deprecated because the MeasuredTemplate document has been merged into the
- * functionality of the Region document." (since v14, until v16)
+ * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
+ * @see {@linkcode foundry.documents.MeasuredTemplateDocument}
+ * @see {@linkcode foundry.canvas.layers.TemplateLayer}
  */
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
   // fake type override

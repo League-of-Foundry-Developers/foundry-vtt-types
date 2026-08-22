@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Canvas = foundry.canvas.Canvas;
@@ -9,11 +8,8 @@ import PreciseText = foundry.canvas.containers.PreciseText;
 
 declare const scene: Scene.Stored;
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.implementation).toEqualTypeOf<MeasuredTemplate.ImplementationClass>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "refresh"
@@ -27,13 +23,9 @@ expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
     >
   | undefined
 >();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.getCircleShape(5)).toEqualTypeOf<PIXI.Circle | PIXI.Polygon>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.getConeShape(5, 270, 60)).toEqualTypeOf<PIXI.Polygon>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.getRectShape(5, 90)).toEqualTypeOf<PIXI.Rectangle>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplate.getRayShape(5, 180, 2)).toEqualTypeOf<PIXI.Polygon>();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -62,7 +54,6 @@ expectTypeOf(template["_destroy"]({ baseTexture: true, children: true, texture: 
 expectTypeOf(template["_destroy"](true)).toBeVoid();
 expectTypeOf(template["_destroy"](undefined)).toBeVoid();
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.clear()).toEqualTypeOf<MeasuredTemplate.Implementation>();
 
 // @ts-expect-error an object must be passed
@@ -97,7 +88,6 @@ expectTypeOf(template.highlightGrid()).toBeVoid();
 expectTypeOf(template["_getGridHighlightShape"]()).toEqualTypeOf<PIXI.Circle | PIXI.Rectangle | PIXI.Polygon>();
 expectTypeOf(template["_getGridHighlightPositions"]()).toEqualTypeOf<Canvas.Point[]>();
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation>>();
 
 expectTypeOf(
