@@ -80,6 +80,7 @@ declare class CombatConfiguration {
   get turnMarkerAnimations(): CombatConfiguration.TurnMarkerAnimationChoice[];
 
   #CombatConfiguration: true;
+  static #CombatConfigurationStatic: true;
 }
 
 declare namespace CombatConfiguration {

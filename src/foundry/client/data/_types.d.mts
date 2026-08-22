@@ -6,16 +6,17 @@
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
 import type CombatConfiguration from "./combat-config.d.mts";
+import type CalendarData from "./calendar.d.mts";
 
 type CombatConfigurationData = CombatConfiguration.Data;
-type CalendarConfig = unknown;
-type CalendarConfigYears = unknown;
-type CalendarConfigLeapYear = unknown;
-type CalendarConfigMonths = unknown;
-type CalendarConfigMonth = unknown;
-type CalendarConfigDays = unknown;
-type CalendarConfigDay = unknown;
-type CalendarConfigSeasons = unknown;
-type CalendarConfigSeason = unknown;
-type TimeComponents = unknown;
-type TimeFormatter = unknown;
+type CalendarConfig = CalendarData.CreateData;
+type CalendarConfigYears = CalendarData.ConfigYears.CreateData;
+type CalendarConfigLeapYear = CalendarData.ConfigLeapYear.CreateData;
+type CalendarConfigMonths = CalendarData.ConfigMonths.CreateData;
+type CalendarConfigMonth = CalendarData.ConfigMonth.CreateData;
+type CalendarConfigDays = CalendarData.ConfigDays.CreateData;
+type CalendarConfigDay = CalendarData.ConfigDay.CreateData;
+type CalendarConfigSeasons = CalendarData.ConfigSeasons.CreateData;
+type CalendarConfigSeason = CalendarData.ConfigSeason.CreateData;
+type TimeComponents = CalendarData.TimeComponents;
+type TimeFormatter = CalendarData.TimeFormatter;

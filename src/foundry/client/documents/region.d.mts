@@ -436,9 +436,11 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @deprecated "`RegionDocument#regionShapes` is deprecated. Use {@linkcode RegionDocument.shapes | RegionDocument#shapes}
    * instead." (since v14, until v16)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   get regionShapes(): RegionShape.Any[];
 
   /** @remarks The {@linkcode RegionShape} wrappers of this Region's shapes, rebuilt whenever `shapes` changes. */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   get _regionShapes(): RegionShape.Any[];
 
   /*

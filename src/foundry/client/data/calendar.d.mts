@@ -1,6 +1,6 @@
 import type DataModel from "#common/abstract/data.d.mts";
 import type * as fields from "#common/data/fields.mjs";
-import type { AnyObject, Identity, IntentionalPartial } from "#utils";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial } from "#utils";
 
 declare namespace CalendarData {
   interface Any extends AnyCalendarData {}
@@ -14,7 +14,7 @@ declare namespace CalendarData {
     description: fields.StringField;
 
     /** Configuration of years. */
-    years: fields.SchemaField<ConfigYears.Schema, { required: true; nullable: true; initial: null }>;
+    years: fields.SchemaField<ConfigYears.Schema>;
 
     /** Configuration of months. */
     months: fields.SchemaField<ConfigMonths.Schema, { required: true; nullable: true; initial: null }>;
@@ -55,8 +55,11 @@ declare namespace CalendarData {
   /** A definition of a year within a calendar. */
   namespace ConfigYears {
     interface Schema extends fields.DataSchema {
-      /** The year which is considered year 0 in the calendar. */
-      yearZero: fields.NumberField<{ required: true; nullable: false; integer: true }>;
+      /**
+       * The year which is presented as 0 when formatting a time into a string representation.
+       * @defaultValue `0`
+       */
+      yearZero: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
 
       /** The index of days.values that is the first weekday at time=0 */
       firstWeekday: fields.NumberField<{ required: true; nullable: false; min: 0; integer: true }>;
@@ -77,7 +80,7 @@ declare namespace CalendarData {
       leapStart: fields.NumberField<{ required: true; nullable: false; integer: true }>;
 
       /** The number of years between leap years. */
-      leapInterval: fields.NumberField<{ required: true; nullable: false; min: 1; integer: true }>;
+      leapInterval: fields.NumberField<{ required: true; nullable: false; min: 2; integer: true }>;
     }
 
     interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
@@ -140,7 +143,14 @@ declare namespace CalendarData {
       secondsPerMinute: fields.NumberField<{ required: true; nullable: false; positive: true }>;
     }
 
-    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+    interface InitializedData extends fields.SchemaField.InitializedData<Schema> {
+      /**
+       * @remarks Not part of the schema. {@linkcode CalendarData._initialize | CalendarData#_initialize} sums the
+       * `leapDays` (falling back to `days`, then `0`) of every configured month, or reuses `daysPerYear` when the
+       * calendar has no months.
+       */
+      daysPerLeapYear: number;
+    }
 
     interface CreateData extends fields.SchemaField.CreateData<Schema> {}
   }
@@ -261,24 +271,91 @@ declare namespace CalendarData {
     Formatter extends FormatterName ? (typeof CONFIG.time.formatters)[Formatter] : Formatter
   >[1];
 
-  interface FormatAgoOptions {
-    /** @defaultValue `false` */
-    short?: boolean | undefined;
+  /**
+   * {@linkcode CalendarData.TimeComponents} units usable in {@linkcode CalendarData.formatDuration}, sorted
+   * descendingly by order of magnitude.
+   */
+  type DurationFormatUnit = "year" | "month" | "day" | "hour" | "minute" | "second";
+
+  interface ComponentsToUnitOptions {
+    /**
+     * The Math function to use in rounding a remainder
+     * @defaultValue `"ceil"`
+     */
+    roundFn?: "ceil" | "floor" | "round" | "trunc" | undefined;
+  }
+
+  /** The year, the seconds remaining within it, and whether that year is a leap year. */
+  interface DecomposedYears {
+    year: number;
+
+    second: number;
+
+    leapYear: boolean;
+  }
+
+  interface _FormatDurationOptions extends Intl.DurationFormatOptions {
+    /**
+     * @remarks A pre-built formatter. When omitted one is constructed from `game.i18n.lang` and the remaining
+     * options, whose `style` defaults to `"long"`.
+     */
+    formatter?: Intl.DurationFormat | undefined;
 
     maxTerms?: number | undefined;
+  }
+
+  interface FormatDurationOptions extends _FormatDurationOptions {}
+
+  interface FormatAgoOptions extends _FormatDurationOptions {
+    /**
+     * @deprecated "The short option in CalendarData.formatAgo is deprecated. Use the Intl.DurationFormat style
+     * option instead." (since v14, until v16)
+     */
+    short?: boolean | undefined;
   }
 }
 
 /**
  * Game Time Calendar configuration data model.
  */
-declare class CalendarData<Components extends CalendarData.TimeComponents> extends DataModel<CalendarData.Schema> {
+declare class CalendarData<
+  Components extends CalendarData.TimeComponents = CalendarData.TimeComponents,
+> extends DataModel<CalendarData.Schema> {
   /**
-   * Expand a world time integer into an object containing the relevant time components.
+   * {@linkcode CalendarData.TimeComponents} units usable in {@linkcode CalendarData.formatDuration}, sorted
+   * descendingly by order of magnitude
+   * @defaultValue `new Set(["year", "month", "day", "hour", "minute", "second"])`
+   * @internal
+   */
+  static _DURATION_FORMAT_UNITS: Set<CalendarData.DurationFormatUnit>;
+
+  /** @remarks Adds the derived `daysPerLeapYear`, which is not part of the schema. */
+  days: CalendarData.ConfigDays.InitializedData;
+
+  protected override _initialize(options?: DataModel.InitializeOptions): void;
+
+  /**
+   * Convert a set of {@linkcode CalendarData.TimeComponents} into seconds.
    * @param components - An amount of time expressed as components
    * @returns The cumulative time in seconds
    */
-  componentsToTime(components: Partial<Components>): number;
+  componentsToTime(components: InexactPartial<Components>): number;
+
+  /**
+   * Convert a partial set {@linkcode CalendarData.TimeComponents} into an integer of a provided unit.
+   * @param components - An amount of time expressed as components
+   * @param unit       - The unit to convert into
+   * @param options    - Additional options
+   * @returns The cumulative time in the requested units
+   * @remarks
+   * @throws If `unit` is `"month"`, which {@linkcode CalendarData._DURATION_FORMAT_UNITS} lists but the conversion
+   * does not handle.
+   */
+  componentsToUnit(
+    components: InexactPartial<Components>,
+    unit: CalendarData.DurationFormatUnit,
+    options?: CalendarData.ComponentsToUnitOptions,
+  ): number;
 
   /**
    * Modify some start time by adding a number of seconds or components to it. The delta components may be negative.
@@ -318,11 +395,25 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
   isLeapYear(year: number): boolean;
 
   /**
+   * Count the number of leap years which have occurred up to a certain year.
+   * @param year - The year to count up to
+   * @returns The number of leap years
+   */
+  countLeapYears(year: number): number;
+
+  /**
    * Expand a world time integer into an object containing the relevant time components.
    * @param time - A time in seconds (default: `0`)
    * @returns The time expressed as components
    */
-  timeToComponents(time: number): Components;
+  timeToComponents(time?: number): Components;
+
+  /**
+   * Decompose a world time into the number of completed years and the remaining seconds within the current year.
+   * Also returns whether the remaining seconds fall within a leap year.
+   * This method is factored out so calendars which require advanced leap year handling can override this logic.
+   */
+  protected _decomposeTimeYears(time: number): CalendarData.DecomposedYears;
 
   /** Format time components as a YYYY-MM-DD HH:MM:SS timestamp. */
   static formatTimestamp(
@@ -331,12 +422,39 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
     _options?: AnyObject,
   ): string;
 
+  /**
+   * Format time components as "\{years\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\}". The empty string is returned
+   * if the components are unabled to be formatted.
+   * @remarks Returns the infinity sign when a component is not finite, or when the formatter reports a
+   * {@linkcode RangeError}.
+   */
+  static formatDuration(
+    calendar: CalendarData<CalendarData.TimeComponents>,
+    components: CalendarData.TimeComponents,
+    options?: CalendarData.FormatDurationOptions,
+  ): string;
+
   /** Format time components as "\{years\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\} ago". */
   static formatAgo(
     calendar: CalendarData<CalendarData.TimeComponents>,
     components: CalendarData.TimeComponents,
     options?: CalendarData.FormatAgoOptions,
   ): string;
+
+  /**
+   * Allow the active world calendar instance to respond to changes in the world time.
+   * This method is called and awaited before "updateWorldTime" hooks are dispatched.
+   * @param worldTime - The new world time, game.time.worldTime
+   * @param deltaTime - The relative change in the world time
+   * @param options   - Options passed through the world time update operation
+   * @param userId    - The user who triggered the time change
+   */
+  onUpdateWorldTime(
+    worldTime: number,
+    deltaTime: number,
+    options: AnyObject | undefined,
+    userId: string,
+  ): Promise<void>;
 
   /* DataModel overrides */
 
