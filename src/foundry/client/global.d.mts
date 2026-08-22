@@ -46,16 +46,24 @@ declare global {
 
   /**
    * Critical server-side startup messages which need to be displayed to the client.
+   * @remarks The page template can emit `null` here, but `client.mjs` normalizes that to `[]` before assigning
+   * `globalThis`, and {@linkcode foundry.applications.ui.Notifications | Notifications} iterates it unguarded.
    */
-  let MESSAGES:
-    | {
-        type: foundry.applications.ui.Notifications.Type;
-        message: string;
-        options: foundry.applications.ui.Notifications.NotifyOptions;
-      }[]
-    | null;
+  let MESSAGES: {
+    type: foundry.applications.ui.Notifications.Type;
+    message: string;
+    options?: foundry.applications.ui.Notifications.NotifyOptions;
+  }[];
 
   interface UI {
+    /**
+     * The most recently focused Application window.
+     * @defaultValue `null`
+     * @remarks Assigned by both {@linkcode foundry.applications.api.ApplicationV2 | ApplicationV2} and
+     * {@linkcode foundry.appv1.api.Application | Application} when they are brought to the front.
+     */
+    activeWindow: foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any | null;
+
     /**
      * @remarks
      * Initialized whenever a {@link foundry.applications.ux.Autocomplete | `Autocomplete`} menu is activated, deleted

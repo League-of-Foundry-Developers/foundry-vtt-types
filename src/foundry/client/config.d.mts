@@ -390,6 +390,8 @@ export declare let defaultFontFamily: ConcreteKeys<typeof CONFIG.fontDefinitions
  *   }
  * ]
  * ```
+ * @remarks A `Proxy` around an array that also exposes each entry by its `id`, so `CONFIG.statusEffects.dead` and
+ * `CONFIG.statusEffects[0]` are the same object, and deleting either removes both.
  */
 export declare const statusEffects: CONFIG.StatusEffect[];
 
@@ -443,6 +445,11 @@ export declare const Card: CONFIG.Card;
 export declare const TableResult: CONFIG.TableResult;
 
 /**
+ * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
+ */
+export declare const JournalEntryCategory: CONFIG.JournalEntryCategory;
+
+/**
  * Configuration for the {@linkcode foundry.documents.JournalEntryPage | JournalEntryPage} embedded document type.
  */
 export declare const JournalEntryPage: CONFIG.JournalEntryPage;
@@ -482,13 +489,8 @@ export declare const CombatantGroup: CONFIG.CombatantGroup;
 export declare const Drawing: CONFIG.Drawing;
 
 /**
- * Configuration for the {@linkcode foundry.documents.JournalEntryCategory | JournalEntryCategory} embedded document type.
- */
-export declare const JournalEntryCategory: CONFIG.JournalEntryCategory;
-
-/**
- * Configuration for the {@linkcode foundry.documents.MeasuredTemplate | MeasuredTemplate} embedded document type and its representation
- * on the game Canvas
+ * @deprecated since v14
+ * @remarks MeasuredTemplates have been merged into {@linkcode foundry.documents.RegionDocument | RegionDocument}.
  */
 export declare const MeasuredTemplate: CONFIG.MeasuredTemplate;
 
@@ -506,6 +508,11 @@ export declare const Region: CONFIG.Region;
  * Configuration for the {@linkcode foundry.documents.RegionBehavior | RegionBehavior} embedded document type
  */
 export declare const RegionBehavior: CONFIG.RegionBehavior;
+
+/**
+ * Configuration for the {@linkcode foundry.documents.Level | Level} embedded document type and its representation on the game Canvas.
+ */
+export declare const Level: CONFIG.Level;
 
 /**
  * Configuration for the {@linkcode foundry.documents.Tile | Tile} embedded document type and its representation on the game Canvas
@@ -728,8 +735,38 @@ declare global {
       /**
        * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode foundry.Game | Game#constructor} as
        * an empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
+       *
+       * `MeasuredTemplate` is the exception: `config.mjs` gives it its `core.MeasuredTemplateConfig` entry outright.
        */
       sheetClasses: CONFIG.SheetClasses<Name>;
+    }
+
+    /**
+     * @param doc     - The Document being embedded.
+     * @param content - The candidate element for embedding.
+     * @param config  - Configuration for embedding behavior.
+     * @param options - The original enrichment options for cases where the Document embed content also contains text
+     *                  that must be enriched.
+     * @returns The desired embed result, or `null` to prevent embedding.
+     */
+    type DocumentEmbedHandler = (
+      doc: Document.Any,
+      content: HTMLElement | null,
+      config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+      options?: foundry.applications.ux.TextEditor.EnrichmentOptions,
+    ) => Promise<HTMLElement | HTMLCollection | null>;
+
+    /**
+     * Common properties for the Documents that can be embedded in enriched text.
+     * @internal
+     */
+    interface _HasEmbedHandlers {
+      /**
+       * @defaultValue `[]`
+       * @remarks Applied in order by {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.toEmbed | ClientDocument#toEmbed}
+       * after `_buildEmbedHTML`, each receiving the previous handler's result.
+       */
+      embedHandlers: DocumentEmbedHandler[];
     }
 
     /**
@@ -751,6 +788,13 @@ declare global {
        * after which at least one entry per document is guaranteed.
        */
       typeLabels: PartialUntilInitialized<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
+
+      /**
+       * @defaultValue `{}`
+       * @remarks Filled in alongside `typeLabels` by {@linkcode Localization.initialize | Localization#initialize} just before
+       * `i18nInit`; a subtype with no `TYPES.HINTS.<DocumentName>.<subtype>` translation gets `""`, not a missing key.
+       */
+      typeHints: PartialUntilInitialized<Record<Document.SubTypesOf<Name>, string>, "i18nInit">;
 
       /**
        * @defaultValue `{}`
@@ -811,7 +855,7 @@ declare global {
       order?: number | undefined;
     }
 
-    interface Actor extends _Document<"Actor">, _HasTypes<"Actor"> {
+    interface Actor extends _Document<"Actor">, _HasTypes<"Actor">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Actors}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -827,21 +871,29 @@ declare global {
       /** @defaultValue `"fa-solid fa-user"` */
       sidebarIcon: string;
 
-      /** @defaultValue `{}` */
-      trackableAttributes: Actor.TrackableAttribute;
+      /**
+       * @defaultValue `{}`
+       * @remarks Keyed by Actor subtype. {@linkcode foundry.documents.TokenDocument.getTrackedAttributes | TokenDocument.getTrackedAttributes}
+       * falls back to the union of every entry when the requested subtype has none.
+       */
+      trackableAttributes: Record<string, Actor.TrackableAttribute>;
     }
 
     namespace Actor {
+      /** Configure which Actor system attributes can be tracked by Tokens. */
       interface TrackableAttribute {
-        bar: string[];
-        value: string[];
+        /** Paths to attributes that have both a value and a max property. */
+        bar?: string[] | undefined;
+
+        /** Paths to attributes that have only a value property. */
+        value?: string[] | undefined;
       }
     }
 
     /** @deprecated Use {@linkcode CONFIG.Actor.TrackableAttribute} instead. This warning will be removed in v14. */
     type TrackableAttribute = Actor.TrackableAttribute;
 
-    interface Adventure extends _Document<"Adventure">, _HasNoTypes<"Adventure"> {
+    interface Adventure extends _Document<"Adventure">, _HasNoTypes<"Adventure">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode foundry.applications.sheets.AdventureExporter}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.applications.sidebar.apps.Compendium}.
@@ -858,7 +910,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface Cards extends _Document<"Cards">, _HasTypes<"Cards"> {
+    interface Cards extends _Document<"Cards">, _HasTypes<"Cards">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.CardStacks}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -914,7 +966,7 @@ declare global {
       }
     }
 
-    interface ChatMessage extends _Document<"ChatMessage">, _HasTypes<"ChatMessage"> {
+    interface ChatMessage extends _Document<"ChatMessage">, _HasTypes<"ChatMessage">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.ChatMessages}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1029,7 +1081,7 @@ declare global {
       }
     }
 
-    interface Combat extends _Document<"Combat">, _HasTypes<"Combat"> {
+    interface Combat extends _Document<"Combat">, _HasTypes<"Combat">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.CombatEncounters}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1047,7 +1099,7 @@ declare global {
 
       initiative: Combat.Initiative;
 
-      /** @defaultValue "icons/vtt-512.png" */
+      /** @defaultValue `"canvas/tokens/turn-marker-square-circle-orange.webp"` */
       fallbackTurnMarker: string;
 
       /**
@@ -1112,6 +1164,13 @@ declare global {
       /** The Dice types which are supported. */
       types: (typeof foundry.dice.terms.DiceTerm)[];
 
+      /**
+       * @deprecated "`CONFIG.Dice.rollModes` is deprecated in favor of {@linkcode CONFIG.ChatMessage.modes}"
+       * (since v14, until v16)
+       *
+       * @remarks A `Proxy` over {@linkcode CONFIG.ChatMessage.modes} that maps the legacy keys onto the new ones and
+       * enumerates only those four; writes are swallowed rather than applied.
+       */
       // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
       rollModes: InterfaceToObject<RemoveIndexSignatures<Dice.RollModes>>;
 
@@ -1161,7 +1220,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "CHAT.RollPublic",
+         *   label: "CHAT.MODES.public",
          *   icon: "fa-solid fa-globe"
          * }
          * ```
@@ -1172,7 +1231,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "CHAT.RollPrivate",
+         *   label: "CHAT.MODES.gm",
          *   icon: "fa-solid fa-user-secret"
          * }
          * ```
@@ -1183,7 +1242,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "CHAT.RollBlind",
+         *   label: "CHAT.MODES.blind",
          *   icon: "fa-solid fa-eye-slash"
          * }
          * ```
@@ -1194,7 +1253,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "CHAT.RollSelf",
+         *   label: "CHAT.MODES.self",
          *   icon: "fa-solid fa-user"
          * }
          * ```
@@ -1202,13 +1261,11 @@ declare global {
         selfroll: RollModeConfig;
       }
 
-      interface RollModeConfig {
-        /** @remarks A localization key */
-        label: string;
-
-        /** @remarks Just the class string, e.g `"fa-solid fa-globe"` */
-        icon: string;
-      }
+      /**
+       * @remarks Each entry is a copy of the matching {@linkcode CONFIG.ChatMessage.modes} entry, taken through the
+       * deprecation `Proxy` on {@linkcode CONFIG.Dice.rollModes}.
+       */
+      interface RollModeConfig extends CONFIG.ChatMessage.ModeConfig {}
 
       namespace RollModes {
         /**
@@ -1423,7 +1480,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface Item extends _Document<"Item">, _HasTypes<"Item"> {
+    interface Item extends _Document<"Item">, _HasTypes<"Item">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Items}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1440,7 +1497,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface JournalEntry extends _Document<"JournalEntry">, _HasNoTypes<"JournalEntry"> {
+    interface JournalEntry extends _Document<"JournalEntry">, _HasNoTypes<"JournalEntry">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Journal}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1546,7 +1603,7 @@ declare global {
       }
     }
 
-    interface Macro extends _Document<"Macro">, _HasNoTypes<"Macro"> {
+    interface Macro extends _Document<"Macro">, _HasNoTypes<"Macro">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Macros}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1563,7 +1620,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface Playlist extends _Document<"Playlist">, _HasNoTypes<"Playlist"> {
+    interface Playlist extends _Document<"Playlist">, _HasNoTypes<"Playlist">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Playlists}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1583,7 +1640,7 @@ declare global {
       autoPreloadSeconds: number;
     }
 
-    interface RollTable extends _Document<"RollTable">, _HasNoTypes<"RollTable"> {
+    interface RollTable extends _Document<"RollTable">, _HasNoTypes<"RollTable">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.RollTables}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1606,7 +1663,7 @@ declare global {
       resultTemplate: string;
     }
 
-    interface Scene extends _Document<"Scene">, _HasNoTypes<"Scene"> {
+    interface Scene extends _Document<"Scene">, _HasNoTypes<"Scene">, _HasEmbedHandlers {
       /**
        * @defaultValue {@linkcode collections.Scenes}
        * @privateRemarks Instantiated via `new` in {@linkcode foundry.Game.initializeDocuments | Game#initializeDocuments}.
@@ -1912,12 +1969,15 @@ declare global {
 
       darknessAnimations: RemoveIndexSignatures<Canvas.DarknessAnimations>;
 
+      sceneTransitions: RemoveIndexSignatures<Canvas.SceneTransitions>;
+
       /**
-       * A registry of Scenes which are managed by a specific SceneManager class.
+       * A registry of Scenes which are managed by a specific SceneManager class or instance.
        * @remarks Keys are Scene IDs
-       * @privateRemarks Instantiated via `new` in {@linkcode foundry.canvas.Canvas.getSceneManager}
+       * @privateRemarks {@linkcode foundry.canvas.Canvas.getSceneManager | Canvas.getSceneManager} instantiates the entry
+       * via `new` only when it is a class; an instance is returned as-is.
        */
-      managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
+      managedScenes: Record<string, typeof foundry.canvas.SceneManager | foundry.canvas.SceneManager>;
 
       pings: Canvas.Pings;
 
@@ -2356,6 +2416,7 @@ declare global {
         revolving: LightAnimations.Revolving;
         siren: LightAnimations.Siren;
         pulse: LightAnimations.Pulse;
+        reactivepulse: LightAnimations.ReactivePulse;
         chroma: LightAnimations.Chroma;
         wave: LightAnimations.Wave;
         fog: LightAnimations.Fog;
@@ -2370,11 +2431,14 @@ declare global {
         rainbowswirl: LightAnimations.RainbowSwirl;
         radialrainbow: LightAnimations.RadialRainbow;
         fairy: LightAnimations.Fairy;
+        grid: LightAnimations.Grid;
+        starlight: LightAnimations.StarLight;
+        smokepatch: LightAnimations.SmokePatch;
       }
 
       namespace LightAnimations {
         interface Flame extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationFame"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Flame"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateFlickering} */
@@ -2388,7 +2452,7 @@ declare global {
         }
 
         interface Torch extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationTorch"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Torch"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTorch} */
@@ -2402,7 +2466,7 @@ declare global {
         }
 
         interface Revolving extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationRevolving"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Revolving"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2413,7 +2477,7 @@ declare global {
         }
 
         interface Siren extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationSiren"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Siren"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTorch} */
@@ -2427,7 +2491,7 @@ declare global {
         }
 
         interface Pulse extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationPulse"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Pulse"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animatePulse} */
@@ -2440,8 +2504,22 @@ declare global {
           colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
 
+        interface ReactivePulse extends LightSourceAnimationConfig {
+          /** @defaultValue `"LIGHT.ANIMATION.ReactivePulse"` */
+          label: string;
+
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateSoundPulse} */
+          animation: BaseLightSource.LightAnimationFunction;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.PulseIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.PulseColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        }
+
         interface Chroma extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationChroma"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Chroma"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2452,7 +2530,7 @@ declare global {
         }
 
         interface Wave extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationWave"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Wave"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2466,7 +2544,7 @@ declare global {
         }
 
         interface Fog extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationFog"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Fog"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2477,7 +2555,7 @@ declare global {
         }
 
         interface Sunburst extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationSunburst"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Sunburst"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2491,7 +2569,7 @@ declare global {
         }
 
         interface Dome extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationLightDome"` */
+          /** @defaultValue `"LIGHT.ANIMATION.LightDome"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2502,7 +2580,7 @@ declare global {
         }
 
         interface Emanation extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationEmanation"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Emanation"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2513,7 +2591,7 @@ declare global {
         }
 
         interface Hexa extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationHexaDome";` */
+          /** @defaultValue `"LIGHT.ANIMATION.HexaDome";` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2524,7 +2602,7 @@ declare global {
         }
 
         interface Ghost extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationGhostLight"` */
+          /** @defaultValue `"LIGHT.ANIMATION.GhostLight"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2538,7 +2616,7 @@ declare global {
         }
 
         interface Energy extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationEnergyField"` */
+          /** @defaultValue `"LIGHT.ANIMATION.EnergyField"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2549,7 +2627,7 @@ declare global {
         }
 
         interface Vortex extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationVortex"` */
+          /** @defaultValue `"LIGHT.ANIMATION.Vortex"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2563,7 +2641,7 @@ declare global {
         }
 
         interface WitchWave extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
+          /** @defaultValue `"LIGHT.ANIMATION.BewitchingWave"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2577,7 +2655,7 @@ declare global {
         }
 
         interface RainbowSwirl extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
+          /** @defaultValue `"LIGHT.ANIMATION.SwirlingRainbow"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2588,7 +2666,7 @@ declare global {
         }
 
         interface RadialRainbow extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
+          /** @defaultValue `"LIGHT.ANIMATION.RadialRainbow"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
@@ -2599,7 +2677,7 @@ declare global {
         }
 
         interface Fairy extends LightSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationFairyLight"` */
+          /** @defaultValue `"LIGHT.ANIMATION.FairyLight"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.LightSource.prototype.animateTime} */
@@ -2609,6 +2687,42 @@ declare global {
           illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
           /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.FairyLightColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        }
+
+        interface Grid extends LightSourceAnimationConfig {
+          /** @defaultValue `"LIGHT.ANIMATION.ForceGrid"` */
+          label: string;
+
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.ForceGridColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        }
+
+        interface StarLight extends LightSourceAnimationConfig {
+          /** @defaultValue `"LIGHT.ANIMATION.StarLight"` */
+          label: string;
+
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.StarLightColorationShader} */
+          colorationShader: AdaptiveColorationShader.AnyConstructor;
+        }
+
+        interface SmokePatch extends LightSourceAnimationConfig {
+          /** @defaultValue `"LIGHT.ANIMATION.SmokePatch"` */
+          label: string;
+
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointLightSource.prototype.animateTime} */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SmokePatchIlluminationShader} */
+          illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.SmokePatchColorationShader} */
           colorationShader: AdaptiveColorationShader.AnyConstructor;
         }
       }
@@ -2624,11 +2738,12 @@ declare global {
         magicalGloom: DarknessAnimations.MagicalGloom;
         roiling: DarknessAnimations.Roiling;
         hole: DarknessAnimations.Hole;
+        denseSmoke: DarknessAnimations.DenseSmoke;
       }
 
       namespace DarknessAnimations {
         interface MagicalGloom extends DarknessSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
+          /** @defaultValue `"LIGHT.ANIMATION.MagicalGloom"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
@@ -2639,7 +2754,7 @@ declare global {
         }
 
         interface Roiling extends DarknessSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
+          /** @defaultValue `"LIGHT.ANIMATION.RoilingMass"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
@@ -2650,7 +2765,7 @@ declare global {
         }
 
         interface Hole extends DarknessSourceAnimationConfig {
-          /** @defaultValue `"LIGHT.AnimationBlackHole"` */
+          /** @defaultValue `"LIGHT.ANIMATION.BlackHole"` */
           label: string;
 
           /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
@@ -2659,6 +2774,215 @@ declare global {
           /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.BlackHoleDarknessShader} */
           darknessShader: AdaptiveDarknessShader.AnyConstructor;
         }
+
+        interface DenseSmoke extends DarknessSourceAnimationConfig {
+          /** @defaultValue `"LIGHT.ANIMATION.DenseSmoke"` */
+          label: string;
+
+          /** @defaultValue {@linkcode foundry.canvas.sources.PointDarknessSource.prototype.animateTime} */
+          animation: RenderedEffectSource.AnimationFunction;
+
+          /** @defaultValue {@linkcode foundry.canvas.rendering.shaders.DenseSmokeDarknessShader} */
+          darknessShader: AdaptiveDarknessShader.AnyConstructor;
+        }
+      }
+
+      interface SceneTransitionDefinition {
+        id: string;
+
+        label: string;
+
+        filterClass: foundry.canvas.rendering.filters.AbstractBaseFilter.AnyConstructor;
+
+        filterType: string;
+
+        defaultDuration?: number | undefined;
+      }
+
+      interface SceneTransitions {
+        [transitionID: Brand<string, "CONFIG.Canvas.sceneTransitions">]: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "fade",
+         *   label: "SCENE.Transition.Types.fade",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.FADE,
+         *   defaultDuration: 1500
+         * }
+         * ```
+         */
+        fade: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "swirl",
+         *   label: "SCENE.Transition.Types.swirl",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.SWIRL,
+         *   defaultDuration: 2000
+         * }
+         * ```
+         */
+        swirl: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "waterDrop",
+         *   label: "SCENE.Transition.Types.waterDrop",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.WATER_DROP,
+         *   defaultDuration: 2000
+         * }
+         * ```
+         */
+        waterDrop: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "morph",
+         *   label: "SCENE.Transition.Types.morph",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.MORPH,
+         *   defaultDuration: 2000
+         * }
+         * ```
+         */
+        morph: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "crosshatch",
+         *   label: "SCENE.Transition.Types.crosshatch",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.CROSSHATCH,
+         *   defaultDuration: 1500
+         * }
+         * ```
+         */
+        crosshatch: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "wind",
+         *   label: "SCENE.Transition.Types.wind",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.WIND,
+         *   defaultDuration: 1500
+         * }
+         * ```
+         */
+        wind: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "waves",
+         *   label: "SCENE.Transition.Types.waves",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.WAVES,
+         *   defaultDuration: 1000
+         * }
+         * ```
+         */
+        waves: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "whiteNoise",
+         *   label: "SCENE.Transition.Types.whiteNoise",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.WHITE_NOISE,
+         *   defaultDuration: 1000
+         * }
+         * ```
+         */
+        whiteNoise: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "hologram",
+         *   label: "SCENE.Transition.Types.hologram",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.HOLOGRAM,
+         *   defaultDuration: 1000
+         * }
+         * ```
+         */
+        hologram: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "hole",
+         *   label: "SCENE.Transition.Types.hole",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.HOLE,
+         *   defaultDuration: 2500
+         * }
+         * ```
+         */
+        hole: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "holeSwirl",
+         *   label: "SCENE.Transition.Types.holeSwirl",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.HOLE_SWIRL,
+         *   defaultDuration: 2000
+         * }
+         * ```
+         */
+        holeSwirl: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "glitch",
+         *   label: "SCENE.Transition.Types.glitch",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.GLITCH,
+         *   defaultDuration: 1500
+         * }
+         * ```
+         */
+        glitch: SceneTransitionDefinition;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   id: "dots",
+         *   label: "SCENE.Transition.Types.dots",
+         *   filterClass: foundry.canvas.rendering.filters.TextureTransitionFilter,
+         *   filterType: foundry.canvas.rendering.filters.TextureTransitionFilter.TYPES.DOTS,
+         *   defaultDuration: 1500
+         * }
+         * ```
+         */
+        dots: SceneTransitionDefinition;
       }
 
       interface Pings {
@@ -3173,18 +3497,10 @@ declare global {
     /** @internal */
     interface _StatusEffect {
       /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.name}
-       * @deprecated "`StatusEffectConfig#label` has been deprecated in favor of {@linkcode StatusEffect.name | StatusEffect#name}"
-       * (since v12, until v14)
+       * An integer indicating the order
+       * @defaultValue `0`
        */
-      label: string;
-
-      /**
-       * DEPRECATED alias for {@linkcode ActiveEffect.CreateData.img}
-       * @deprecated "`StatusEffectConfig#icon` has been deprecated in favor of {@linkcode StatusEffect.img | StatusEffect#img}"
-       * (since v12, until v14)
-       */
-      icon: string;
+      order: number;
 
       /**
        * Should this effect appear in the Token HUD? This effect is only selectable in the Token HUD
@@ -3260,9 +3576,15 @@ declare global {
        * In operations involving the document index, search prefixes must have at least this many characters to avoid too
        * large a search space. Languages that have hundreds or thousands of characters will typically have very shallow
        * search trees, so it should be safe to lower this number in those cases.
-       * @defaultValue `4`
+       * @defaultValue `3`
        */
       searchMinimumCharacterLength: number;
+
+      /**
+       * Stop words used in Document and other textual searches
+       * @defaultValue `new Set(["an", "and", "of", "or", "the"])`
+       */
+      searchStopWords: Set<string>;
     }
 
     interface WeatherEffects {
@@ -3276,11 +3598,20 @@ declare global {
        *   label: "WEATHER.AutumnLeaves",
        *   effects: [{
        *     id: "leavesParticles",
-       *     effectClass: foundry.canvas.containers.AutumnLeavesWeatherEffect
+       *     particles: [{
+       *       textures: Array.fromRange(6).map(n => `ui/particles/leaf${n + 1}.png`),
+       *       count: 200,
+       *       lifetime: 10000,
+       *       viewPadding: 0.1,
+       *       velocity: {speed: [12, 60], angle: [80, 100]},
+       *       rotation: {speed: [100, 200]},
+       *       alpha: [0.5, 0.9],
+       *       scale: [0.1, 0.4],
+       *       fade: {out: 0.3}
+       *     }]
        *   }]
        * }
        * ```
-       * @remarks See {@linkcode layers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
        */
       leaves: layers.WeatherEffects.AmbienceConfiguration;
 
@@ -3496,6 +3827,9 @@ declare global {
 
       /** @defaultValue `"icons/svg/wall-direction.svg"` */
       wallDirection: string;
+
+      /** @defaultValue `"icons/svg/levels.svg"` */
+      levels: string;
     }
 
     interface FontDefinitions {
@@ -3635,6 +3969,36 @@ declare global {
     }
 
     namespace Token {
+      interface BarConfig {
+        /**
+         * @defaultValue
+         * ```ts
+         * { colors: { empty: foundry.utils.Color.from("#FF0000"), full: foundry.utils.Color.from("#7FFF00") } }
+         * ```
+         */
+        bar1: Token.BarConfig.Bar;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * { colors: { empty: foundry.utils.Color.from("#00007F"), full: foundry.utils.Color.from("#7FB2FF") } }
+         * ```
+         */
+        bar2: Token.BarConfig.Bar;
+      }
+
+      namespace BarConfig {
+        interface Bar {
+          colors: Colors;
+        }
+
+        interface Colors {
+          empty: foundry.utils.Color;
+
+          full: foundry.utils.Color;
+        }
+      }
+
       interface Movement {
         /** @defaultValue {@linkcode foundry.data.TerrainData} */
         TerrainData: foundry.data.BaseTerrainData.Internal.AnyConstructor;
@@ -3687,16 +4051,21 @@ declare global {
           segment: TokenDocument.MovementSegmentData,
         ) => number;
 
-        interface _ActionConfig {
+        /**
+         * The members shared by the resolved config and the descriptor written into
+         * {@linkcode CONFIG.Token.movement.actions}.
+         * @internal
+         */
+        interface _ActionConfigCommon {
+          /**
+           * The label of the movement action.
+           */
+          label: string;
+
           /**
            * The FontAwesome icon class.
            */
           icon: string;
-
-          /**
-           * An image filename. Takes precedence over the icon if both are supplied.
-           */
-          img: string;
 
           /**
            * The number that is used to sort the movement actions / movement action configs.
@@ -3707,7 +4076,7 @@ declare global {
 
           /**
            * Is teleportation? If true, the movement does not go through all grid spaces
-           * between the origin and destination: it goes from teh origin immediately to the destination grid space.
+           * between the origin and destination: it goes from the origin immediately to the destination grid space.
            * @defaultValue `false`
            */
           teleport: boolean;
@@ -3720,10 +4089,10 @@ declare global {
           measure: boolean;
 
           /**
-           * The type of walls that block this movement, if any.
+           * The type of walls and surfaces that block this movement, if any.
            * @defaultValue `"move"`
            */
-          walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
+          walls: CONST.EDGE_RESTRICTION_TYPES | null;
 
           /**
            * Is segment of the movement visualized by the ruler?
@@ -3733,16 +4102,8 @@ declare global {
 
           /**
            * Get the default animation options for this movement action.
-           * @defaultValue `() => ({})`
            */
-          getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
-
-          /**
-           * Can the current User select this movement action for the given Token? If selectable, the movement action of the
-           * Token can be set to this movement action by the User via the UI and when cycling.
-           * @defaultValue `() => true`
-           */
-          canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
+          getAnimationOptions: (token: TokenDocument.Implementation) => AnimationOptions;
 
           /**
            * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
@@ -3754,7 +4115,6 @@ declare global {
 
           /**
            * The cost modification function.
-           * @defaultValue `() => cost => cost`
            */
           getCostFunction: (
             token: TokenDocument.Implementation,
@@ -3762,15 +4122,78 @@ declare global {
           ) => MovementActionCostFunction;
         }
 
-        interface ActionConfig extends InexactPartial<_ActionConfig> {
+        /**
+         * A movement action config after {@linkcode foundry.Game.initializeConfig | Game#initializeConfig} has filled
+         * in every default and replaced `speedMultiplier`, `terrainAction`, and `costMultiplier` with the functions
+         * they stand in for.
+         */
+        interface ActionConfig extends _ActionConfigCommon {
+          /**
+           * An image filename. Takes precedence over the icon if both are supplied.
+           */
+          img: string | null;
+
+          /**
+           * Can the current User select this movement action for the given Token? If selectable, the movement action of the
+           * Token can be set to this movement action by the User via the UI and when cycling.
+           */
+          canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
+        }
+
+        /** @internal */
+        interface _ActionConfigDescriptor extends _ActionConfigCommon {
+          /**
+           * An image filename. Takes precedence over the `icon` if both are supplied.
+           */
+          img: string;
+
+          /**
+           * Can the current User select this movement action for the given Token? If selectable, the movement action of the
+           * Token can be set to this movement action by the User via the UI and when cycling.
+           * @defaultValue `true`
+           */
+          canSelect: boolean | ((token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean);
+
+          /**
+           * The movement speed multiplier. This property is ignored if `getAnimationOptions` is defined.
+           */
+          speedMultiplier: number;
+
+          /**
+           * Derive the terrain difficulty from this movement action. If `null`, the terrain difficulty is always 1.
+           * This property is ignored if `deriveTerrainDifficulty` is defined.
+           */
+          terrainAction: string | null;
+
+          /**
+           * The cost multiplier. This property is ignored if `getCostFunction` is defined.
+           * @defaultValue `1`
+           */
+          costMultiplier: number;
+        }
+
+        /**
+         * The shape a movement action is registered in. `label` and `icon` are the only members
+         * {@linkcode foundry.Game.initializeConfig | Game#initializeConfig} will not supply, and it throws if either
+         * is missing.
+         */
+        interface ActionConfigDescriptor extends InexactPartial<_ActionConfigDescriptor> {
           /**
            * The label of the movement action.
            */
           label: string;
         }
 
+        /**
+         * @remarks A movement action is registered as an {@linkcode ActionConfigDescriptor};
+         * {@linkcode foundry.Game.initializeConfig | Game#initializeConfig} resolves it in place into an
+         * {@linkcode ActionConfig} between the `init` and `setup` hooks, filling in every default and replacing
+         * `speedMultiplier`, `terrainAction`, and `costMultiplier` with the functions they stand in for.
+         */
+        type ActionEntry = InitializedOn<ActionConfig, "setup", ActionConfigDescriptor>;
+
         interface Actions {
-          [action: string]: ActionConfig;
+          [action: string]: ActionEntry;
 
           /**
            * @defaultValue
@@ -3783,7 +4206,7 @@ declare global {
            * }
            * ```
            */
-          walk: ActionConfig;
+          walk: ActionEntry;
 
           /**
            * @defaultValue
@@ -3796,7 +4219,7 @@ declare global {
            * }
            * ```
            */
-          fly: ActionConfig;
+          fly: ActionEntry;
 
           /**
            * @defaultValue
@@ -3806,11 +4229,11 @@ declare global {
            *   icon: "fa-solid fa-person-swimming",
            *   img: "icons/svg/whale.svg",
            *   order: 2,
-           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
+           *   speedMultiplier: 0.5
            * }
            * ```
            */
-          swim: ActionConfig;
+          swim: ActionEntry;
 
           /**
            * @defaultValue
@@ -3823,7 +4246,7 @@ declare global {
            * }
            * ```
            */
-          burrow: ActionConfig;
+          burrow: ActionEntry;
 
           /**
            * @defaultValue
@@ -3833,13 +4256,13 @@ declare global {
            *   icon: "fa-solid fa-person-praying",
            *   img: "icons/svg/leg.svg",
            *   order: 4,
-           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-           *   deriveTerrainDifficulty: ({walk}) => walk,
-           *   getCostFunction: () => cost => cost * 2
+           *   speedMultiplier: 0.5,
+           *   terrainAction: "walk",
+           *   costMultiplier: 2
            * }
            * ```
            */
-          crawl: ActionConfig;
+          crawl: ActionEntry;
 
           /**
            * @defaultValue
@@ -3849,13 +4272,13 @@ declare global {
            *   icon: "fa-solid fa-person-through-window",
            *   img: "icons/svg/ladder.svg",
            *   order: 5,
-           *   getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
-           *   deriveTerrainDifficulty: ({walk}) => walk,
-           *   getCostFunction: () => cost => cost * 2
+           *   speedMultiplier: 0.5,
+           *   terrainAction: "walk",
+           *   costMultiplier: 2
            * }
            * ```
            */
-          climb: ActionConfig;
+          climb: ActionEntry;
 
           /**
            * @defaultValue
@@ -3866,11 +4289,11 @@ declare global {
            *   img: "icons/svg/jump.svg",
            *   order: 6,
            *   deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
-           *   getCostFunction: () => cost => cost * 2
+           *   costMultiplier: 2
            * }
            * ```
            */
-          jump: ActionConfig;
+          jump: ActionEntry;
 
           /**
            * @defaultValue
@@ -3881,12 +4304,12 @@ declare global {
            *   img: "icons/svg/teleport.svg",
            *   order: 7,
            *   teleport: true,
-           *   getAnimationOptions: () => ({duration: 0}),
-           *   deriveTerrainDifficulty: () => 1
+           *   speedMultiplier: Infinity,
+           *   terrainAction: null
            * }
            * ```
            */
-          blink: ActionConfig;
+          blink: ActionEntry;
 
           /**
            * @defaultValue
@@ -3900,14 +4323,14 @@ declare global {
            *   measure: false,
            *   walls: null,
            *   visualize: false,
-           *   getAnimationOptions: () => ({duration: 0}),
-           *   canSelect: () => false,
-           *   deriveTerrainDifficulty: () => 1,
-           *   getCostFunction: () => () => 0
+           *   speedMultiplier: Infinity,
+           *   canSelect: false,
+           *   terrainAction: null,
+           *   costMultiplier: 0
            * }
            * ```
            */
-          displace: ActionConfig;
+          displace: ActionEntry;
         }
       }
 
@@ -3941,13 +4364,13 @@ declare global {
       earthCalendarClass: typeof foundry.data.CalendarData;
 
       /**
-       * The number of seconds which automatically elapse at the end of a Combat turn.
+       * The number of seconds that automatically elapse at the end of a Combat turn.
        * @defaultValue `0`
        */
       turnTime: number;
 
       /**
-       * The number of seconds which automatically elapse at the end of a Combat round.
+       * The number of seconds that automatically elapse at the end of a Combat round.
        * @defaultValue `0`
        */
       roundTime: number;
@@ -3960,11 +4383,12 @@ declare global {
       interface formatters {
         [formatterName: string]: foundry.data.CalendarData.TimeFormatter;
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
+        duration: typeof foundry.data.CalendarData.formatDuration;
         ago: typeof foundry.data.CalendarData.formatAgo;
       }
     }
 
-    interface ActiveEffect extends _Document<"ActiveEffect">, _HasTypes<"ActiveEffect"> {
+    interface ActiveEffect extends _Document<"ActiveEffect">, _HasTypes<"ActiveEffect">, _HasEmbedHandlers {
       /** @defaultValue `"ui/banners/active-effect-banner.webp"` */
       compendiumBanner: string;
 
@@ -4039,13 +4463,14 @@ declare global {
 
     interface ActorDelta extends _Document<"ActorDelta">, _HasNoTypes<"ActorDelta"> {}
 
-    interface Card extends _Document<"Card">, _HasTypes<"Card"> {}
+    interface Card extends _Document<"Card">, _HasTypes<"Card">, _HasEmbedHandlers {}
 
-    interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult"> {}
+    interface TableResult extends _Document<"TableResult">, _HasNoTypes<"TableResult">, _HasEmbedHandlers {}
 
-    interface JournalEntryCategory extends _Document<"JournalEntryCategory">, _HasNoTypes<"JournalEntryCategory"> {}
+    interface JournalEntryCategory
+      extends _Document<"JournalEntryCategory">, _HasNoTypes<"JournalEntryCategory">, _HasEmbedHandlers {}
 
-    interface JournalEntryPage extends _Document<"JournalEntryPage">, _HasTypes<"JournalEntryPage"> {
+    interface JournalEntryPage extends _Document<"JournalEntryPage">, _HasTypes<"JournalEntryPage">, _HasEmbedHandlers {
       /**
        * @defaultValue
        * ```ts
@@ -4066,7 +4491,7 @@ declare global {
       sidebarIcon: string;
     }
 
-    interface PlaylistSound extends _Document<"PlaylistSound">, _HasNoTypes<"PlaylistSound"> {
+    interface PlaylistSound extends _Document<"PlaylistSound">, _HasNoTypes<"PlaylistSound">, _HasEmbedHandlers {
       /** @defaultValue `"fa-solid fa-music"` */
       sidebarIcon: string;
     }
@@ -4091,9 +4516,9 @@ declare global {
       sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.AmbientSoundTab>;
     }
 
-    interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant"> {}
+    interface Combatant extends _Document<"Combatant">, _HasTypes<"Combatant">, _HasEmbedHandlers {}
 
-    interface CombatantGroup extends _Document<"CombatantGroup">, _HasTypes<"CombatantGroup"> {}
+    interface CombatantGroup extends _Document<"CombatantGroup">, _HasTypes<"CombatantGroup">, _HasEmbedHandlers {}
 
     interface Drawing extends _Document<"Drawing">, _HasNoTypes<"Drawing">, _CanvasDoc<"Drawing"> {
       /**
@@ -4175,6 +4600,8 @@ declare global {
       typeIcons: _HasTypes<"RegionBehavior">["typeIcons"];
     }
 
+    interface Level extends _Document<"Level">, _HasNoTypes<"Level"> {}
+
     interface Tile extends _Document<"Tile">, _HasNoTypes<"Tile">, _CanvasDoc<"Tile"> {
       /**
        * @defaultValue {@linkcode foundry.applications.hud.TileHUD}
@@ -4190,8 +4617,6 @@ declare global {
        */
       sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.TileTab>;
     }
-
-    interface Level extends _Document<"Level">, _HasNoTypes<"Level"> {}
 
     interface Token extends _Document<"Token">, _HasNoTypes<"Token">, _CanvasDoc<"Token"> {
       /**
@@ -4225,6 +4650,9 @@ declare global {
 
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
+
+      /** Configuration for token resource bars. */
+      barConfig: Token.BarConfig;
 
       /**
        * @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()`
@@ -4304,7 +4732,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.FuturisticFast",
+         *   label: "WALL.DoorSounds.FuturisticFast",
          *   close: "sounds/doors/futuristic/close-fast.ogg",
          *   lock: "sounds/doors/futuristic/lock.ogg",
          *   open: "sounds/doors/futuristic/open-fast.ogg",
@@ -4319,7 +4747,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.FuturisticHydraulic",
+         *   label: "WALL.DoorSounds.FuturisticHydraulic",
          *   close: "sounds/doors/futuristic/close-hydraulic.ogg",
          *   lock: "sounds/doors/futuristic/lock.ogg",
          *   open: "sounds/doors/futuristic/open-hydraulic.ogg",
@@ -4334,7 +4762,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.FuturisticForcefield",
+         *   label: "WALL.DoorSounds.FuturisticForcefield",
          *   close: "sounds/doors/futuristic/close-forcefield.ogg",
          *   lock: "sounds/doors/futuristic/lock.ogg",
          *   open: "sounds/doors/futuristic/open-forcefield.ogg",
@@ -4349,7 +4777,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.Industrial",
+         *   label: "WALL.DoorSounds.Industrial",
          *   close: "sounds/doors/industrial/close.ogg",
          *   lock: "sounds/doors/industrial/lock.ogg",
          *   open: "sounds/doors/industrial/open.ogg",
@@ -4364,7 +4792,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.IndustrialCreaky",
+         *   label: "WALL.DoorSounds.IndustrialCreaky",
          *   close: "sounds/doors/industrial/close-creaky.ogg",
          *   lock: "sounds/doors/industrial/lock.ogg",
          *   open: "sounds/doors/industrial/open-creaky.ogg",
@@ -4379,7 +4807,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.Jail",
+         *   label: "WALL.DoorSounds.Jail",
          *   close: "sounds/doors/jail/close.ogg",
          *   lock: "sounds/doors/jail/lock.ogg",
          *   open: "sounds/doors/jail/open.ogg",
@@ -4394,7 +4822,37 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.MagicDoor",
+         *   label: "WALL.DoorSounds.JailCreaky",
+         *   close: "sounds/doors/jail/close-creaky.ogg",
+         *   lock: "sounds/doors/jail/lock.ogg",
+         *   open: "sounds/doors/jail/open-creaky.ogg",
+         *   test: "sounds/doors/jail/test.ogg",
+         *   unlock: "sounds/doors/jail/unlock.ogg"
+         * }
+         * ```
+         */
+        jailCreaky: DoorSoundConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALL.DoorSounds.JailHeavy",
+         *   close: "sounds/doors/jail/close-heavy.ogg",
+         *   lock: "sounds/doors/jail/lock.ogg",
+         *   open: "sounds/doors/jail/open-heavy.ogg",
+         *   test: "sounds/doors/jail/test.ogg",
+         *   unlock: "sounds/doors/jail/unlock.ogg"
+         * }
+         * ```
+         */
+        jailHeavy: DoorSoundConfig;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALL.DoorSounds.MagicDoor",
          *   close: "sounds/doors/magic/door-close.ogg",
          *   lock: "sounds/doors/magic/lock.ogg",
          *   open: "sounds/doors/magic/door-open.ogg",
@@ -4409,7 +4867,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.MagicWall",
+         *   label: "WALL.DoorSounds.MagicWall",
          *   close: "sounds/doors/magic/wall-close.ogg",
          *   lock: "sounds/doors/magic/lock.ogg",
          *   open: "sounds/doors/magic/wall-open.ogg",
@@ -4424,7 +4882,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.Metal",
+         *   label: "WALL.DoorSounds.Metal",
          *   close: "sounds/doors/metal/close.ogg",
          *   lock: "sounds/doors/metal/lock.ogg",
          *   open: "sounds/doors/metal/open.ogg",
@@ -4439,7 +4897,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.SlidingMetal",
+         *   label: "WALL.DoorSounds.SlidingMetal",
          *   close: "sounds/doors/shutter/close.ogg",
          *   lock: "sounds/doors/shutter/lock.ogg",
          *   open: "sounds/doors/shutter/open.ogg",
@@ -4469,7 +4927,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.SlidingModern",
+         *   label: "WALL.DoorSounds.SlidingModern",
          *   close: "sounds/doors/sliding/close.ogg",
          *   lock: "sounds/doors/sliding/lock.ogg",
          *   open: "sounds/doors/sliding/open.ogg",
@@ -4484,7 +4942,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.SlidingWood",
+         *   label: "WALL.DoorSounds.SlidingWood",
          *   close: "sounds/doors/sliding/close-wood.ogg",
          *   lock: "sounds/doors/sliding/lock.ogg",
          *   open: "sounds/doors/sliding/open-wood.ogg",
@@ -4499,7 +4957,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.StoneBasic",
+         *   label: "WALL.DoorSounds.StoneBasic",
          *   close: "sounds/doors/stone/close.ogg",
          *   lock: "sounds/doors/stone/lock.ogg",
          *   open: "sounds/doors/stone/open.ogg",
@@ -4514,7 +4972,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.StoneRocky",
+         *   label: "WALL.DoorSounds.StoneRocky",
          *   close: "sounds/doors/stone/close-rocky.ogg",
          *   lock: "sounds/doors/stone/lock.ogg",
          *   open: "sounds/doors/stone/open-rocky.ogg",
@@ -4529,7 +4987,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.StoneSandy",
+         *   label: "WALL.DoorSounds.StoneSandy",
          *   close: "sounds/doors/stone/close-sandy.ogg",
          *   lock: "sounds/doors/stone/lock.ogg",
          *   open: "sounds/doors/stone/open-sandy.ogg",
@@ -4544,7 +5002,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.WoodBasic",
+         *   label: "WALL.DoorSounds.WoodBasic",
          *   close: "sounds/doors/wood/close.ogg",
          *   lock: "sounds/doors/wood/lock.ogg",
          *   open: "sounds/doors/wood/open.ogg",
@@ -4559,7 +5017,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.WoodCreaky",
+         *   label: "WALL.DoorSounds.WoodCreaky",
          *   close: "sounds/doors/wood/close-creaky.ogg",
          *   lock: "sounds/doors/wood/lock.ogg",
          *   open: "sounds/doors/wood/open-creaky.ogg",
@@ -4574,7 +5032,7 @@ declare global {
          * @defaultValue
          * ```ts
          * {
-         *   label: "WALLS.DoorSound.WoodHeavy",
+         *   label: "WALL.DoorSounds.WoodHeavy",
          *   close: "sounds/doors/wood/close-heavy.ogg",
          *   lock: "sounds/doors/wood/lock.ogg",
          *   open: "sounds/doors/wood/open-heavy.ogg",
