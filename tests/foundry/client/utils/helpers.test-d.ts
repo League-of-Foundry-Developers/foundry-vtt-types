@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
+expectTypeOf(foundry.utils.cleanHTML("<p>foo")).toEqualTypeOf<string>();
+
 expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
 
 declare const file: File;
@@ -8,6 +10,10 @@ expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>
 
 expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
 expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
+
+expectTypeOf(foundry.utils.getPlaceableObjectClass("Token")).toEqualTypeOf<
+  foundry.canvas.placeables.Token.ImplementationClass | undefined
+>();
 
 expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Stored | null>>;
 expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Stored | null>>;
@@ -47,3 +53,23 @@ declare const input: SortingStructure;
 expectTypeOf(foundry.utils.performIntegerSort(input, {})).toEqualTypeOf<
   Array<{ target: SortingStructure; update: { sort: number } }>
 >();
+expectTypeOf(
+  foundry.utils.performIntegerSort(input, {
+    target: null,
+    siblings: [input],
+    sortKey: "order",
+    sortBefore: undefined,
+  }),
+).toEqualTypeOf<Array<{ target: SortingStructure; update: { order: number } }>>();
+
+expectTypeOf(foundry.utils.timeSince(new Date())).toEqualTypeOf<string>();
+expectTypeOf(foundry.utils.timeSince("2026-01-01")).toEqualTypeOf<string>();
+
+expectTypeOf(foundry.utils.parseHTML("<p>foo</p>")).toEqualTypeOf<HTMLCollection | HTMLElement | null>();
+
+expectTypeOf(foundry.utils.getCacheBustURL("https://example.com/foo.png")).toEqualTypeOf<string | false>();
+
+expectTypeOf(foundry.utils.fetchResource("foo.png")).toEqualTypeOf<Promise<Blob>>();
+expectTypeOf(foundry.utils.fetchResource("foo.png", {})).toEqualTypeOf<Promise<Blob>>();
+expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: true })).toEqualTypeOf<Promise<Blob>>();
+expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: undefined })).toEqualTypeOf<Promise<Blob>>();
