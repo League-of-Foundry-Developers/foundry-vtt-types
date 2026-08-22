@@ -1688,6 +1688,17 @@ declare namespace Scene {
     manager?: foundry.canvas.SceneManager | null | undefined;
   }
 
+  /**
+   * The interface for passing to {@linkcode Scene.moveTokens | Scene#moveTokens}.
+   * @remarks `movement` and `_movementArguments` are omitted because they're supplied to the
+   * `#updateEmbeddedDocuments` call *after* spreading in this object. `id` is omitted because each instruction
+   * carries its own, and `animation` comes from {@linkcode TokenDocument.MovementOptions | MovementOptions}.
+   */
+  interface MoveTokensOptions
+    extends
+      Omit<TokenDocument.Database.UpdateManyDocumentsOperation, "movement" | "_movementArguments" | "animation">,
+      Omit<TokenDocument.MovementOptions, "id"> {}
+
   /** @internal */
   interface _GetSurfacesOptions {
     /** Only return surfaces that restrict this type */
@@ -1991,18 +2002,64 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    */
   _updateRegionShapeConstraints(region: RegionDocument.Implementation): void;
 
-  // FIXME: `moveTokens` takes a record of `TokenDocument.MovementInstruction | TokenDocument.ResizingInstruction`,
-  // neither of which can be written until the V14 token movement option types
-  // (`TokenConstrainMovementPathOptions` and friends, currently `unknown` in `client/_types.d.mts`) are ported.
-  // /**
-  //  * Move/resize multiple Tokens.
-  //  * @param instructions - The movement/resizing instructions, keyed by Token ID
-  //  * @returns Whether each Token's movement/resizing completed, keyed by Token ID
-  //  */
-  // moveTokens(
-  //   instructions: Record<string, TokenDocument.MovementInstruction | TokenDocument.ResizingInstruction>,
-  //   options?: TokenDocument.Database.UpdateDocumentsOperation,
-  // ): Promise<Record<string, boolean>>;
+  /**
+   * Move/resize multiple Tokens.
+   * @param instructions - The movement/resizing instructions, keyed by Token ID
+   * @param options      - Parameters of the update and movement operation
+   * @returns Whether each Token's movement/resizing completed, keyed by Token ID
+   * @see {@linkcode TokenDocument.move | foundry.documents.TokenDocument#move}
+   * @see {@linkcode TokenDocument.resize | foundry.documents.TokenDocument#resize}
+   * @example
+   * ```js
+   * const results = await scene.moveTokens({
+   *    // Moving the token to new position including additional token data
+   *   "cGYT0rR0YbtFkhzT": {
+   *     destination: {x: 100, y: 200, rotation: 45, texture: {tint: "#ff0000"}},
+   *     showRuler: false, // This overrides `options.showRuler`
+   *   },
+   *   // Moving the token to along a path with multiple waypoints
+   *   "wBFpJuZuleEtVNw1": {
+   *     waypoints: [
+   *       {x: 100, y: 200}, // Move to the position (100, 200)
+   *       {elevation: 5, explicit: true}, // Move to elevation 5 indicating that the user placed this waypoint
+   *       {x: 500, y: 500, checkpoint: true}, // Move to (500, 500): the movement can be stopped/paused here
+   *       {width: 2, height: 2, depth: 2}, // Change size
+   *       {x: 1000, action: "swim"}, // Swim to (1000, 500)
+   *       {x: 0, y: 0, snapped: true}, // Move to (0, 0) indicating that (0, 0) is a snapped position for the token
+   *       {elevation: 10} // Move to elevation 10 (the last waypoint is always a checkpoint automatically)
+   *     ],
+   *     autoRotate: true,
+   *     constrainOptions: {ignoreWalls: true, ignoreCost: true} // Allow the token to move through walls, surfaces, and
+   *                                                             // impassable terrain
+   *   },
+   *   // Resizing the token including additional token data
+   *   "VupAIbzpX6SHqtaH": {
+   *     dimensions: {width: 3, height: 3, depth: 3, rotation: 45, texture: {tint: "#ff0000"}}
+   *   }
+   * }, {
+   *   showRuler: true // This applies to all instructions that do not define `showRuler`
+   * })
+   * if ( results["cGYT0rR0YbtFkhzT"] ) {
+   *   // The movement of Token [cGYT0rR0YbtFkhzT] was completed: it arrived at the destination
+   * } else {
+   *   // The movement of Token [cGYT0rR0YbtFkhzT] was stopped or prevented
+   * }
+   * if ( results["wBFpJuZuleEtVNw1"] ) {
+   *   // The movement of Token [wBFpJuZuleEtVNw1] was completed: it arrived at the destination
+   * } else {
+   *   // The movement of Token [wBFpJuZuleEtVNw1] was stopped or prevented
+   * }
+   * if ( results["VupAIbzpX6SHqtaH"] ) {
+   *   // The resizing of Token [VupAIbzpX6SHqtaH] was completed
+   * } else {
+   *   // The resizing of Token [VupAIbzpX6SHqtaH] was prevented
+   * }
+   * ```
+   */
+  moveTokens(
+    instructions: Record<string, TokenDocument.MovementInstruction | TokenDocument.ResizingInstruction>,
+    options?: Scene.MoveTokensOptions,
+  ): Promise<Record<string, boolean>>;
 
   /**
    * Invalidate cached surface data.
