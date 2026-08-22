@@ -65,3 +65,32 @@ class TestTokenDocument extends TokenDocument {
 }
 
 expectTypeOf(new TestTokenDocument()).toEqualTypeOf<TestTokenDocument>();
+
+expectTypeOf<TokenDocument.ProcessedMovementWaypoint>().toEqualTypeOf<
+  Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "subpathId" | "cost">
+>();
+expectTypeOf<TokenDocument.MeasurableMovementWaypoint["cost"]>().toEqualTypeOf<
+  number | TokenDocument.MovementCostFunction | undefined
+>();
+
+declare const movementCost: TokenDocument.MovementCostFunction;
+const measurableWaypointWithFixedCost: TokenDocument.MeasurableMovementWaypoint = { cost: 5 };
+const measurableWaypointWithCalculatedCost: TokenDocument.MeasurableMovementWaypoint = { cost: movementCost };
+expectTypeOf(measurableWaypointWithFixedCost).toEqualTypeOf<TokenDocument.MeasurableMovementWaypoint>();
+expectTypeOf(measurableWaypointWithCalculatedCost).toEqualTypeOf<TokenDocument.MeasurableMovementWaypoint>();
+
+declare const preMovement: TokenDocument.PreUpdateMovement;
+preMovement.autoRotate = true;
+preMovement.showRuler = false;
+// @ts-expect-error Cannot assign to 'id' because it is a read-only property.
+preMovement.id = "replacement-id";
+
+expectTypeOf<TokenDocument.ResumeMovementCallback>().toEqualTypeOf<() => Promise<boolean>>();
+expectTypeOf(someToken.pauseMovement()).toEqualTypeOf<TokenDocument.ResumeMovementCallback | null>();
+expectTypeOf(someToken.pauseMovement("region-behavior-id")).toEqualTypeOf<Promise<boolean> | null>();
+
+declare const movementRegion: RegionDocument.Implementation;
+declare const segmentizeWaypoints: TokenDocument.SegmentizeMovementWaypoint[];
+expectTypeOf(someToken.segmentizeRegionMovementPath(movementRegion, segmentizeWaypoints)).toEqualTypeOf<
+  TokenDocument.RegionMovementSegment[]
+>();

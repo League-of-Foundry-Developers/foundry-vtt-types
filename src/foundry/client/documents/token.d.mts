@@ -818,47 +818,47 @@ declare namespace TokenDocument {
    * @remarks TSGo doesn't properly merge the JSDoc yet, but assuming it eventually will, this is the most-DRY way to write this.
    * @internal
    */
-  interface _GetCompleteMovementPathWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {
+  interface _GetCompleteMovementPathWaypoint extends ProcessedMovementWaypoint {
     /** @defaultValue The previous or source x-coordinate. */
-    x: MeasuredMovementWaypoint["x"];
+    x: ProcessedMovementWaypoint["x"];
 
     /** @defaultValue The previous or source y-coordinate. */
-    y: MeasuredMovementWaypoint["y"];
+    y: ProcessedMovementWaypoint["y"];
 
     /** @defaultValue The previous or source elevation. */
-    elevation: MeasuredMovementWaypoint["elevation"];
+    elevation: ProcessedMovementWaypoint["elevation"];
 
     /** @defaultValue The previous or source width. */
-    width: MeasuredMovementWaypoint["width"];
+    width: ProcessedMovementWaypoint["width"];
 
     /** @defaultValue The previous or source height. */
-    height: MeasuredMovementWaypoint["height"];
+    height: ProcessedMovementWaypoint["height"];
 
     /** @defaultValue The previous or source shape. */
-    shape: MeasuredMovementWaypoint["shape"];
+    shape: ProcessedMovementWaypoint["shape"];
 
     /** @defaultValue The previous or prepared movement action. */
-    action: MeasuredMovementWaypoint["action"];
+    action: ProcessedMovementWaypoint["action"];
 
     /** @defaultValue `null` */
-    terrain: MeasuredMovementWaypoint["terrain"];
+    terrain: ProcessedMovementWaypoint["terrain"];
 
     /** @defaultValue `false` */
-    snapped: MeasuredMovementWaypoint["snapped"];
+    snapped: ProcessedMovementWaypoint["snapped"];
 
     /** @defaultValue `false` */
-    explicit: MeasuredMovementWaypoint["explicit"];
+    explicit: ProcessedMovementWaypoint["explicit"];
 
     /** @defaultValue `false` */
-    checkpoint: MeasuredMovementWaypoint["checkpoint"];
+    checkpoint: ProcessedMovementWaypoint["checkpoint"];
 
     /** @defaultValue `false` */
-    intermediate: MeasuredMovementWaypoint["intermediate"];
+    intermediate: ProcessedMovementWaypoint["intermediate"];
   }
 
   interface GetCompleteMovementPathWaypoint extends InexactPartial<_GetCompleteMovementPathWaypoint> {}
 
-  interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
+  interface CompleteMovementWaypoint extends ProcessedMovementWaypoint {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
@@ -1234,8 +1234,10 @@ declare namespace TokenDocument {
       /**
        * @remarks Unless this is explicitly `false`, position updates that put a token outside the viewport will cause the camera to pan
        * to that token's center. See `Token##panCanvas`.
+       *
+       * Passing an object forwards it to {@linkcode Token.panCanvas | Token#panCanvas} as its options.
        */
-      pan?: boolean;
+      pan?: boolean | TokenDocument.PanningOptions;
 
       /**
        * @remarks If a token's {@linkcode TokenDocument.actorId | actorId} is being updated,
@@ -1950,8 +1952,18 @@ declare namespace TokenDocument {
 
   interface MovementWaypoint extends Omit<
     MeasuredMovementWaypoint,
-    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+    "terrain" | "intermediate" | "userId" | "movementId" | "subpathId" | "cost"
   > {}
+
+  type MovementTerrain = MeasuredMovementWaypoint["terrain"];
+
+  interface ProcessedMovementWaypoint extends MovementWaypoint {
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is this waypoint intermediate? */
+    intermediate: boolean;
+  }
 
   /** @remarks Used for passing to {@linkcode TokenDocument.move | TokenDocument#move}. */
   interface PartialMovementWaypoint extends InexactPartial<MovementWaypoint> {}
@@ -1962,6 +1974,34 @@ declare namespace TokenDocument {
   > {
     actionConfig: CONFIG.Token.Movement.ActionConfig;
     teleport: boolean;
+  }
+
+  interface MeasurableMovementWaypointData {
+    /** A predetermined cost (nonnegative) or cost function to be used instead of `options.cost`. */
+    cost?: number | MovementCostFunction | undefined;
+  }
+
+  interface MeasurableMovementWaypoint
+    extends InexactPartial<ProcessedMovementWaypoint>, MeasurableMovementWaypointData {}
+
+  interface RegionMovementSegment {
+    /** The type of this segment (see {@linkcode CONST.REGION_MOVEMENT_SEGMENTS}). */
+    type: CONST.REGION_MOVEMENT_SEGMENTS;
+
+    /** The waypoint that this segment starts from. */
+    from: Position;
+
+    /** The waypoint that this segment goes to. */
+    to: Position;
+
+    /** The movement action between the waypoints. */
+    action: string;
+
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is the destination snapped to the grid? */
+    snapped: boolean;
   }
 
   interface MovementSectionData {
@@ -2208,8 +2248,193 @@ declare namespace TokenDocument {
 
   interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
 
+  /**
+   * The options shared by {@linkcode MovementInstruction} and {@linkcode ResizingInstruction}.
+   * @internal
+   */
+  interface _MovementInstructionOptions {
+    /**
+     * The movement ID, which must be unique.
+     * @defaultValue auto-generated
+     */
+    id: string;
+
+    /**
+     * The method of movement.
+     * @defaultValue {@linkcode MovementOptions.method | MovementOptions#method}
+     */
+    method: TokenDocument.MovementMethod;
+
+    /**
+     * Automatically rotate the token in the direction of movement?
+     * @defaultValue {@linkcode MovementOptions.autoRotate | MovementOptions#autoRotate}
+     */
+    autoRotate: boolean;
+
+    /**
+     * Show the ruler during the movement animation of the token?
+     * @defaultValue {@linkcode MovementOptions.showRuler | MovementOptions#showRuler}
+     */
+    showRuler: boolean;
+
+    /**
+     * The terrain movement options.
+     * @defaultValue {@linkcode MovementOptions.terrainOptions | MovementOptions#terrainOptions}
+     */
+    terrainOptions: Omit<Token.CreateTerrainMovementPathOptions, "preview">;
+
+    /**
+     * The options to constrain movement.
+     * @defaultValue {@linkcode MovementOptions.constrainOptions | MovementOptions#constrainOptions}
+     */
+    constrainOptions: TokenDocument.ConstrainOptions;
+
+    /**
+     * The options to measure movement.
+     * @defaultValue {@linkcode MovementOptions.measureOptions | MovementOptions#measureOptions}
+     */
+    measureOptions: Omit<Token.MeasureMovementPathOptions, "preview">;
+
+    /**
+     * Start a new subpath?
+     * @defaultValue {@linkcode MovementOptions.split | MovementOptions#split}
+     */
+    split: boolean;
+
+    /**
+     * Don't start the movement yet?
+     * @defaultValue {@linkcode MovementOptions.planned | MovementOptions#planned}
+     */
+    planned: boolean;
+  }
+
+  interface MovementInstructionOptions extends InexactPartial<_MovementInstructionOptions> {}
+
+  interface MovementInstructionDestination {
+    /** The destination which may include additional token data. */
+    destination: TokenDocument.UpdateData & InexactPartial<MovementWaypoint>;
+  }
+
+  interface MovementInstructionWaypoints {
+    /** The waypoints to move the token through. */
+    waypoints: PartialMovementWaypoint[];
+  }
+
+  /**
+   * A single movement instruction passed to {@linkcode Scene.moveTokens | Scene#moveTokens}, which either names a
+   * destination or a path of waypoints.
+   */
+  type MovementInstruction = (MovementInstructionDestination | MovementInstructionWaypoints) &
+    MovementInstructionOptions;
+
+  /**
+   * @remarks Foundry pins `autoRotate`, `showRuler`, `terrainOptions`, `constrainOptions`, and `measureOptions` to
+   * literal types here rather than reusing {@linkcode _MovementInstructionOptions}: resizing never auto rotates,
+   * never shows the ruler, doesn't move through terrain, doesn't cost anything, and always ignores walls, surfaces
+   * and impassable terrain.
+   * @internal
+   */
+  interface _ResizingInstruction extends Pick<_MovementInstructionOptions, "id" | "method" | "split" | "planned"> {
+    /** Resizing never auto rotates. */
+    autoRotate: false;
+
+    /** Resizing never shows the ruler. */
+    showRuler: false;
+
+    /** Resizing doesn't move through terrain. */
+    terrainOptions: EmptyObject;
+
+    /** Resizing always ignores walls, surfaces and impassable terrain. */
+    constrainOptions: {
+      ignoreWalls: true;
+      ignoreCost: true;
+    };
+
+    /** Resizing doesn't cost anything. */
+    measureOptions: EmptyObject;
+  }
+
+  /**
+   * Resize the Token such that its center point remains (almost) unchanged. The center point might change slightly
+   * because the new `(x, y)` position is rounded.
+   */
+  interface ResizingInstruction extends InexactPartial<_ResizingInstruction> {
+    /** The new dimensions and additional data. */
+    dimensions: Omit<TokenDocument.UpdateData & InexactPartial<MovementWaypoint>, "x" | "y" | "elevation">;
+  }
+
+  /**
+   * @remarks Foundry documents only these four keys for movement, even though the value ultimately reaches the same
+   * pipeline as {@linkcode Token.AnimateOptions}.
+   */
+  interface MovementAnimationOptions extends Pick<
+    Token.AnimateOptions,
+    "duration" | "movementSpeed" | "linkToMovement" | "easing"
+  > {}
+
+  /**
+   * The defaults that individual {@linkcode MovementInstruction}s fall back to.
+   * @internal
+   */
+  interface _MovementOptions extends Omit<
+    _MovementInstructionOptions,
+    "method" | "autoRotate" | "showRuler" | "split" | "planned"
+  > {
+    /**
+     * The method of movement.
+     * @defaultValue `"api"`
+     */
+    method: TokenDocument.MovementMethod;
+
+    /**
+     * Automatically rotate the token in the direction of movement?
+     * @defaultValue `game.settings.get("core", "tokenAutoRotate")` if `method` is `"dragging"` or `"keyboard"`,
+     * otherwise `false`
+     */
+    autoRotate: boolean;
+
+    /**
+     * Show the ruler during the movement animation of the token?
+     * @defaultValue `true` if `method` is `"dragging"`, otherwise `false`
+     */
+    showRuler: boolean;
+
+    /**
+     * Start a new subpath?
+     * @defaultValue `false` if it's movement without history or keyboard movement that follows keyboard movement,
+     * otherwise `true`
+     */
+    split: boolean;
+
+    /**
+     * Don't start the movement yet?
+     * @defaultValue `false`
+     */
+    planned: boolean;
+
+    /**
+     * Pan the canvas (with transition animation) to the destination if the token is controlled?
+     * @defaultValue `true`
+     */
+    pan: boolean | TokenDocument.PanningOptions;
+
+    /**
+     * Animate movement.
+     * @defaultValue `true`
+     */
+    animate: boolean;
+
+    /** The animation options. */
+    animation: TokenDocument.MovementAnimationOptions;
+  }
+
+  interface MovementOptions extends InexactPartial<_MovementOptions> {}
+
+  /** A callback that resumes paused movement. */
+  type ResumeMovementCallback = () => Promise<boolean>;
+
   type PauseMovementReturn<Key extends string | undefined> =
-    | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
+    | (Key extends string ? Promise<boolean> : ResumeMovementCallback)
     | null;
 
   /**
@@ -3146,7 +3371,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   segmentizeRegionMovementPath(
     region: RegionDocument.Implementation,
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
-  ): RegionDocument.MovementSegment[];
+  ): TokenDocument.RegionMovementSegment[];
 
   protected override _preCreateDescendantDocuments(...args: TokenDocument.PreCreateDescendantDocumentsArgs): void;
 

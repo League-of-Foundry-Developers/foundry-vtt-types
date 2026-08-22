@@ -55,7 +55,7 @@ type RegionBehaviorViewedEvent = RegionEvent<{}>;
 
 type RegionBehaviorUnviewedEvent = RegionEvent<{}>;
 
-type RegionTokenEnterExitEventData = unknown;
+type RegionTokenEnterExitEventData = RegionDocument.TokenEnterExitEventData;
 
 type RegionTokenEnterExitEvent = RegionEvent<RegionTokenEnterExitEventData>;
 
@@ -63,7 +63,7 @@ type RegionTokenEnterEvent = RegionTokenEnterExitEvent;
 
 type RegionTokenExitEvent = RegionTokenEnterExitEvent;
 
-type RegionTokenMoveEventData = unknown;
+type RegionTokenMoveEventData = RegionDocument.TokenMoveEventData;
 
 type RegionTokenMoveEvent = RegionEvent<RegionTokenMoveEventData>;
 
@@ -73,7 +73,7 @@ type RegionTokenMoveOutEvent = RegionTokenMoveEvent;
 
 type RegionTokenMoveWithinEvent = RegionTokenMoveEvent;
 
-type RegionTokenAnimateEventData = unknown;
+type RegionTokenAnimateEventData = RegionDocument.TokenAnimateEventData;
 
 type RegionTokenAnimateEvent = RegionEvent<RegionTokenAnimateEventData>;
 
@@ -81,7 +81,7 @@ type RegionTokenAnimateInEvent = RegionTokenAnimateEvent;
 
 type RegionTokenAnimateOutEvent = RegionTokenAnimateEvent;
 
-type RegionTokenTurnEventData = unknown;
+type RegionTokenTurnEventData = RegionDocument.TokenTurnEventData;
 
 type RegionTokenTurnEvent = RegionEvent<RegionTokenTurnEventData>;
 
@@ -89,7 +89,7 @@ type RegionTokenTurnStartEvent = RegionTokenTurnEvent;
 
 type RegionTokenTurnEndEvent = RegionTokenTurnEvent;
 
-type RegionTokenRoundEventData = unknown;
+type RegionTokenRoundEventData = RegionDocument.TokenRoundEventData;
 
 type RegionTokenRoundEvent = RegionEvent<RegionTokenRoundEventData>;
 
@@ -111,23 +111,28 @@ type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
 type TokenMovementWaypoint = TokenDocument.MovementWaypoint;
 
-type _TokenProcessedMovementWaypoint = unknown;
+type _TokenProcessedMovementWaypoint = Pick<TokenDocument.ProcessedMovementWaypoint, "terrain" | "intermediate">;
 
-type TokenProcessedMovementWaypoint = unknown;
+type TokenProcessedMovementWaypoint = TokenDocument.ProcessedMovementWaypoint;
 
-type _TokenMeasuredMovementWaypoint = unknown;
+type _TokenMeasuredMovementWaypoint = Pick<
+  TokenDocument.MeasuredMovementWaypoint,
+  "userId" | "movementId" | "subpathId" | "cost"
+>;
 
 type TokenMeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
 
 type TokenMovementSegmentData = TokenDocument.MovementSegmentData;
 
-type TokenMeasurableMovementWaypointData = unknown;
+type TokenMeasurableMovementWaypointData = TokenDocument.MeasurableMovementWaypointData;
+
+type TokenMeasurableMovementWaypoint = TokenDocument.MeasurableMovementWaypoint;
 
 type TokenMovementCostFunction = TokenDocument.MovementCostFunction;
 
 type TokenMovementCostAggregator = TokenDocument.MovementCostAggregator;
 
-type TokenRegionMovementSegment = unknown;
+type TokenRegionMovementSegment = TokenDocument.RegionMovementSegment;
 
 type TokenMovementSectionData = TokenDocument.MovementSectionData;
 
@@ -139,25 +144,27 @@ type TokenMovementState = TokenDocument.MovementState;
 
 type TokenMovementData = TokenDocument.MovementData;
 
-type TokenPreMovementOperation = unknown;
+type TokenPreMovementOperation = TokenDocument.PreUpdateMovement;
 
 type TokenMovementOperation = TokenDocument.MovementOperation;
 
-type TokenMovementInstructionOptions = unknown;
+type TokenMovementInstructionOptions = TokenDocument.MovementInstructionOptions;
 
-type TokenMovementInstructionDestination = unknown;
+type TokenMovementInstructionDestination = TokenDocument.MovementInstructionDestination;
 
-type TokenMovementInstructionWaypoints = unknown;
+type TokenMovementInstructionWaypoints = TokenDocument.MovementInstructionWaypoints;
 
-type TokenResizingInstruction = unknown;
+type TokenMovementInstruction = TokenDocument.MovementInstruction;
 
-type TokenMovementOptions = unknown;
+type TokenResizingInstruction = TokenDocument.ResizingInstruction;
+
+type TokenMovementOptions = TokenDocument.MovementOptions;
 
 type TokenMovementContinuationData = TokenDocument.MovementContinuationData;
 
 type TokenMovementContinuationHandle = TokenDocument.MovementContinuationHandle;
 
-type TokenResumeMovementCallback = unknown;
+type TokenResumeMovementCallback = TokenDocument.ResumeMovementCallback;
 
 type WallCategory = WallDocument.Category;
 
