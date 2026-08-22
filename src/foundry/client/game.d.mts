@@ -34,7 +34,7 @@ type SimpleInitializedOn<
  */
 declare class InternalGame<RunEvents extends InitializationHook> {
   /**
-   * * Initialize a singleton Game instance for a specific view using socket data retrieved from the server.
+   * Initialize a singleton Game instance for a specific view using socket data retrieved from the server.
    * @param view   - The named view which is active for this game instance.
    * @param data   - An object of all the World data vended by the server when the client first connects
    * @param socket - The open web-socket which should be used to transact game-state data
