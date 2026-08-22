@@ -1,15 +1,22 @@
-import type { AnyObject, DeepReadonly } from "#utils";
+import type { AnyObject, DeepReadonly, Mixin } from "#utils";
+import type { DataModel } from "#common/abstract/data.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type * as data from "#common/data/data.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { PolygonTree } from "./polygon-tree.d.mts";
 
-/**
- * @privateRemarks Foundry declares this class inside the unexported `ClientShapeDataMixin`. Declaration merging is
- * used instead of a mixin call so each shape class keeps its own `Schema` type parameter; since an interface can't
- * merge with `protected`/`private` members, those hooks are public here and a private brand replaces them.
- */
-declare class _ClientShapeData {
+declare class ClientShapeData {
+  /** @privateRemarks All mixin classes should accept anything for their constructor. */
+  constructor(...args: any[]);
+
+  /**
+   * Convert a path to a clipper path.
+   * @param path - A path
+   * @internal
+   */
+  static _toClipperPath(path: PIXI.Polygon.ClipperPath | Canvas.Point[] | number[]): PIXI.Polygon.ClipperPath;
+
   /**
    * The scene that this shape is placed in, if any.
    */
@@ -74,6 +81,11 @@ declare class _ClientShapeData {
   get bounds(): PIXI.Rectangle;
 
   /**
+   * The origin of this shape.
+   */
+  get origin(): Readonly<Canvas.Point>;
+
+  /**
    * The center point of this shape.
    */
   get center(): Readonly<Canvas.Point>;
@@ -102,18 +114,30 @@ declare class _ClientShapeData {
    */
   get controlHandles(): DeepReadonly<ClientShapeData.ControlHandles>;
 
+  // Mixin override.
+  // The composed base supplies the schema-specific signature.
+  //
+  // protected _updateCommit(
+  //   copy: SchemaField.SourceData<Schema>,
+  //   diff: SchemaField.UpdateData<Schema>,
+  //   options: DataModel.UpdateOptions,
+  //   _state: DataField.UpdateState,
+  // ): void;
+  //
+  // clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext<ExtraConstructorOptions>): this;
+
   /**
    * Called when the shape was changed.
    * This function is not called when just the hole state is changed.
    * This function is not called if grid-based is changed and the grid is gridless.
    */
-  _onShapeChange(): void;
+  protected _onShapeChange(): void;
 
   /**
    * Called when the grid this shape is placed in changes.
    * @param changed - The changes to the grid.
    */
-  _onGridChange(changed: AnyObject): void;
+  protected _onGridChange(changed: AnyObject): void;
 
   /**
    * Is this shape currently affected by the grid?
@@ -177,22 +201,22 @@ declare class _ClientShapeData {
    * @remarks
    * @throws If not overridden.
    */
-  _createClipperPolyTree(): ClipperLib.PolyTree | PIXI.Polygon.ClipperPath | Canvas.Point[] | number[];
+  protected _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
 
   /**
    * Create the origin point of this shape.
    */
-  _createOrigin(): Canvas.Point;
+  protected _createOrigin(): Canvas.Point;
 
   /**
    * Create the center point of this shape.
    */
-  _createCenter(): Canvas.Point;
+  protected _createCenter(): Canvas.Point;
 
   /**
    * Calculate the area of this shape.
    */
-  _calculateArea(): number;
+  protected _calculateArea(): number;
 
   /**
    * Move the shape to the given origin.
@@ -212,7 +236,7 @@ declare class _ClientShapeData {
    * Rotate the shape by the given angle in degrees around the origin.
    * @param angle - The angle in degrees.
    */
-  _rotate(angle: number): void;
+  protected _rotate(angle: number): void;
 
   /**
    * Draw the shape into the Graphics element.
@@ -252,7 +276,7 @@ declare class _ClientShapeData {
    * @remarks
    * @throws If not overridden.
    */
-  _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+  protected _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
 
   /**
    * Get the control handles for this shape.
@@ -280,8 +304,7 @@ declare class _ClientShapeData {
    * @param alignment   - The alignment of the axis.
    * @param destination - The handle destination.
    * @param snap        - Snap?
-   * @param allowZero   - Allow zero size?
-   *                      (default: `false`)
+   * @param allowZero   - Allow zero size? (default: `false`)
    * @param max         - The maximum value.
    * @internal
    */
@@ -345,26 +368,13 @@ declare class _ClientShapeData {
    * @throws If the shape is empty.
    */
   sampleBoundary(out?: Canvas.Point): Canvas.Point;
-}
 
-/**
- * @privateRemarks Split from {@linkcode _ClientShapeData} because {@linkcode PolygonShapeData} and
- * {@linkcode GridShapeData} register an `origin` schema field that the mixin's getter shadows with a narrower type.
- */
-declare class ClientShapeData extends _ClientShapeData {
-  /**
-   * The origin of this shape.
-   */
-  get origin(): Readonly<Canvas.Point>;
+  #ClientShapeData: true;
+  static #ClientShapeDataStatic: true;
 }
 
 declare namespace ClientShapeData {
-  /**
-   * Convert a path to a clipper path.
-   * @param path - A path
-   * @internal
-   */
-  type ToClipperPath = (path: PIXI.Polygon.ClipperPath | Canvas.Point[] | number[]) => PIXI.Polygon.ClipperPath;
+  type CreateClipperPolyTreeReturn = ClipperLib.PolyTree | PIXI.Polygon.ClipperPath | Canvas.Point[] | number[];
 
   /**
    * The winding order of a measured segment. If the winding order is ...
@@ -454,30 +464,63 @@ declare namespace ClientShapeData {
 }
 
 /**
+ * Mixin a BaseShapeData subclass.
+ * @privateRemarks Foundry does not export this function or its inner `ClientShapeData` class.
+ * They are declared here to share members across the exported shape classes.
+ */
+declare function ClientShapeDataMixin<BaseClass extends ClientShapeDataMixin.BaseClass>(
+  ShapeData: BaseClass,
+): ClientShapeDataMixin.Mix<BaseClass>;
+
+declare namespace ClientShapeDataMixin {
+  type BaseClass = data.BaseShapeData.AnyConstructor;
+  type Mix<BaseClass extends ClientShapeDataMixin.BaseClass> = Mixin<typeof ClientShapeData, BaseClass>;
+}
+
+/**
  * The data model for a rectangle shape.
  */
 declare class RectangleShapeData<
   Schema extends data.RectangleShapeData.Schema = data.RectangleShapeData.Schema,
-> extends data.RectangleShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.RectangleShapeData)<Schema> {
   /**
    * Get the rays for both axes.
    * @internal
    */
   _getRays(): RectangleShapeData.Rays;
 
+  override get isEmpty(): boolean;
+
+  override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
+
+  protected override _onShapeChange(): void;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createCenter(): Canvas.Point;
+
+  protected override _calculateArea(): number;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override sampleBoundary(out?: Canvas.Point): Canvas.Point;
+
+  override drawShape(graphics: PIXI.Graphics): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
   #RectangleShapeData: true;
 }
-
-declare interface RectangleShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.RectangleShapeData.Schema = data.RectangleShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace RectangleShapeData {
   type Schema = data.RectangleShapeData.Schema;
@@ -498,18 +541,33 @@ declare namespace RectangleShapeData {
  */
 declare class CircleShapeData<
   Schema extends data.CircleShapeData.Schema = data.CircleShapeData.Schema,
-> extends data.CircleShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-}
+> extends ClientShapeDataMixin(data.CircleShapeData)<Schema> {
+  override get isEmpty(): boolean;
 
-declare interface CircleShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.CircleShapeData.Schema = data.CircleShapeData.Schema,
-> extends ClientShapeData {}
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _calculateArea(): number;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override sampleBoundary(out?: Canvas.Point): Canvas.Point;
+
+  protected override _rotate(angle: number): void;
+
+  override drawShape(graphics: PIXI.Graphics): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+}
 
 declare namespace CircleShapeData {
   type Schema = data.CircleShapeData.Schema;
@@ -524,26 +582,41 @@ declare namespace CircleShapeData {
  */
 declare class EllipseShapeData<
   Schema extends data.EllipseShapeData.Schema = data.EllipseShapeData.Schema,
-> extends data.EllipseShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.EllipseShapeData)<Schema> {
   /**
    * Get the rays for both axes.
    * @internal
    */
   _getRays(): EllipseShapeData.Rays;
 
+  override get isEmpty(): boolean;
+
+  override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
+
+  protected override _onShapeChange(): void;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _calculateArea(): number;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override drawShape(graphics: PIXI.Graphics): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
   #EllipseShapeData: true;
 }
-
-declare interface EllipseShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.EllipseShapeData.Schema = data.EllipseShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace EllipseShapeData {
   type Schema = data.EllipseShapeData.Schema;
@@ -564,26 +637,39 @@ declare namespace EllipseShapeData {
  */
 declare class ConeShapeData<
   Schema extends data.ConeShapeData.Schema = data.ConeShapeData.Schema,
-> extends data.ConeShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.ConeShapeData)<Schema> {
   /**
    * Get the left, center, and right rays of this cone.
    * @internal
    */
   _getRays(): ConeShapeData.Rays;
 
+  override get isEmpty(): boolean;
+
+  override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
+
+  protected override _onShapeChange(): void;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createCenter(): Canvas.Point;
+
+  protected override _calculateArea(): number;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
   #ConeShapeData: true;
 }
-
-declare interface ConeShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.ConeShapeData.Schema = data.ConeShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace ConeShapeData {
   type Schema = data.ConeShapeData.Schema;
@@ -606,20 +692,41 @@ declare namespace ConeShapeData {
  */
 declare class RingShapeData<
   Schema extends data.RingShapeData.Schema = data.RingShapeData.Schema,
-> extends data.RingShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
+> extends ClientShapeDataMixin(data.RingShapeData)<Schema> {
+  override get isEmpty(): boolean;
+
+  override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
+
+  protected override _onShapeChange(): void;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _calculateArea(): number;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override sampleBoundary(out?: Canvas.Point): Canvas.Point;
+
+  protected override _rotate(angle: number): void;
+
+  override drawShape(graphics: PIXI.Graphics): void;
+
+  override drawReferenceLines(graphics: PIXI.Graphics): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
 
   #RingShapeData: true;
 }
-
-declare interface RingShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.RingShapeData.Schema = data.RingShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace RingShapeData {
   type Schema = data.RingShapeData.Schema;
@@ -634,26 +741,43 @@ declare namespace RingShapeData {
  */
 declare class LineShapeData<
   Schema extends data.LineShapeData.Schema = data.LineShapeData.Schema,
-> extends data.LineShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.LineShapeData)<Schema> {
   /**
    * Get the rays for both axes.
    * @internal
    */
   _getRays(): LineShapeData.Rays;
 
+  override get isEmpty(): boolean;
+
+  override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
+
+  protected override _onShapeChange(): void;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createCenter(): Canvas.Point;
+
+  protected override _calculateArea(): number;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override sampleBoundary(out?: Canvas.Point): Canvas.Point;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
   #LineShapeData: true;
 }
-
-declare interface LineShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.LineShapeData.Schema = data.LineShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace LineShapeData {
   type Schema = data.LineShapeData.Schema;
@@ -674,20 +798,39 @@ declare namespace LineShapeData {
  */
 declare class EmanationShapeData<
   Schema extends data.EmanationShapeData.Schema = data.EmanationShapeData.Schema,
-> extends data.EmanationShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
+> extends ClientShapeDataMixin(data.EmanationShapeData)<Schema> {
+  override get isEmpty(): boolean;
+
+  protected override _onShapeChange(): void;
+
+  override get isAffectedByGrid(): boolean;
+
+  override get hasRotationalSymmetry(): boolean;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createOrigin(): Canvas.Point;
+
+  override move(origin: Canvas.Point, options?: ClientShapeData.MoveOptions): void;
+
+  protected override _rotate(angle: number): void;
+
+  override drawReferenceLines(graphics: PIXI.Graphics): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
 
   #EmanationShapeData: true;
 }
-
-declare interface EmanationShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.EmanationShapeData.Schema = data.EmanationShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace EmanationShapeData {
   type Schema = data.EmanationShapeData.Schema;
@@ -702,28 +845,45 @@ declare namespace EmanationShapeData {
  */
 declare class PolygonShapeData<
   Schema extends data.PolygonShapeData.Schema = data.PolygonShapeData.Schema,
-> extends data.PolygonShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.PolygonShapeData)<Schema> {
   /**
    * The origin of this shape.
    * @remarks Shadows the `origin` schema field: the getter returns `_source.origin` when it is set and
    * the polygon's centre of mass otherwise, so it is never `null`.
    */
+  // fake type override
   override readonly origin: Readonly<Canvas.Point>;
 
-  #PolygonShapeData: true;
-  static #PolygonShapeDataStatic: true;
-}
+  override get hasRotationalSymmetry(): boolean;
 
-declare interface PolygonShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.PolygonShapeData.Schema = data.PolygonShapeData.Schema,
-> extends _ClientShapeData {}
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createOrigin(): Canvas.Point;
+
+  override _getSnappedPoint(point: Canvas.Point): Canvas.Point;
+
+  override _calculateSize(length: number, direction: number, options?: ClientShapeData.CalculateSizeOptions): number;
+
+  override move(origin: Canvas.Point, options?: ClientShapeData.MoveOptions): void;
+
+  protected override _rotate(angle: number): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragStart(event: PIXI.FederatedEvent): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
+  #PolygonShapeData: true;
+}
 
 declare namespace PolygonShapeData {
   type Schema = data.PolygonShapeData.Schema;
@@ -738,13 +898,7 @@ declare namespace PolygonShapeData {
  */
 declare class TokenShapeData<
   Schema extends data.TokenShapeData.Schema = data.TokenShapeData.Schema,
-> extends data.TokenShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.TokenShapeData)<Schema> {
   /**
    * Get the token shape.
    * @internal
@@ -753,13 +907,40 @@ declare class TokenShapeData<
    */
   _getTokenShape(): TokenShapeData.ResolvedShape;
 
+  override get isEmpty(): boolean;
+
+  override get polygonTree(): PolygonTree;
+
+  override sampleInterior(out?: Canvas.Point): Canvas.Point;
+
+  override sampleBoundary(out?: Canvas.Point): Canvas.Point;
+
+  protected override _onShapeChange(): void;
+
+  override get isAffectedByGrid(): boolean;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createOrigin(): Canvas.Point;
+
+  override move(origin: Canvas.Point, options?: ClientShapeData.MoveOptions): void;
+
+  protected override _rotate(angle: number): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
+
   #TokenShapeData: true;
 }
-
-declare interface TokenShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.TokenShapeData.Schema = data.TokenShapeData.Schema,
-> extends ClientShapeData {}
 
 declare namespace TokenShapeData {
   type Schema = data.TokenShapeData.Schema;
@@ -776,27 +957,50 @@ declare namespace TokenShapeData {
  */
 declare class GridShapeData<
   Schema extends data.GridShapeData.Schema = data.GridShapeData.Schema,
-> extends data.GridShapeData<Schema> {
-  /**
-   * Convert a path to a clipper path.
-   * @internal
-   */
-  static _toClipperPath: ClientShapeData.ToClipperPath;
-
+> extends ClientShapeDataMixin(data.GridShapeData)<Schema> {
   /**
    * The origin of this shape.
    * @remarks Shadows the `origin` schema field: the getter returns `_source.origin` when it is set and
    * the centre of the first grid offset otherwise, so it is never `null`.
    */
+  // fake type override
   override readonly origin: Readonly<Canvas.Point>;
+
+  override get isEmpty(): boolean;
+
+  override get isAffectedByGrid(): boolean;
+
+  override get hasRotationalSymmetry(): boolean;
+
+  protected override _onShapeChange(): void;
+
+  override testPoint(point: Canvas.Point): boolean;
+
+  protected override _createClipperPolyTree(): ClientShapeData.CreateClipperPolyTreeReturn;
+
+  protected override _createOrigin(): Canvas.Point;
+
+  override move(origin: Canvas.Point, options?: ClientShapeData.MoveOptions): void;
+
+  /**
+   * @see {@link https://www.redblobgames.com/grids/hexagons/implementation.html#rotation}
+   */
+  protected override _rotate(angle: number): void;
+
+  protected override _createMeasuredSegments(): ClientShapeData.MeasuredSegment[];
+
+  override _createControlHandles(): ClientShapeData.ControlHandles;
+
+  override moveControlHandle(
+    name: string,
+    destination: Canvas.Point,
+    options?: ClientShapeData.MoveControlHandleOptions,
+  ): void;
+
+  override _onDragMove(event: PIXI.FederatedEvent): void;
 
   #GridShapeData: true;
 }
-
-declare interface GridShapeData<
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Schema extends data.GridShapeData.Schema = data.GridShapeData.Schema,
-> extends _ClientShapeData {}
 
 declare namespace GridShapeData {
   type Schema = data.GridShapeData.Schema;
