@@ -3,6 +3,7 @@ import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAmbientSound } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { CircleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -931,12 +932,10 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     context?: AmbientSoundDocument.ConstructionContext,
   );
 
-  // FIXME: `CircleShapeData` is `foundry.data.CircleShapeData` from `client/data/shapes.mjs`, which has
-  // not been ported yet. Restore this declaration once that module exists.
-  // /**
-  //  * The circle shape of this AmbientSound document.
-  //  */
-  // shape: CircleShapeData;
+  /**
+   * The circle shape of this AmbientSound document.
+   */
+  shape: CircleShapeData;
 
   override prepareDerivedData(): void;
 
