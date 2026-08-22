@@ -1,11 +1,12 @@
-import type { MaybeArray, Merge } from "#utils";
-import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { RegionShape } from "#client/data/region-shapes/_module.d.mts";
 import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -24,15 +25,9 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
 
   /**
-   * The shapes of this Region.
-   *
-   * The value of this property must not be mutated.
-   *
-   * This property is updated only by a document update.
-   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime; A reference to the private,
-   * but unfrozen, array is returned.
+   * Does this Region have a single shape that is not a hole?
    */
-  get regionShapes(): RegionShape.Any[];
+  get isSingleShape(): boolean;
 
   /**
    * The polygons of this Region.
@@ -66,6 +61,13 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
 
   /**
+   * The Clipper polygon tree of this Region.
+   *
+   * The value of this property must not be mutated.
+   */
+  get clipperPolyTree(): ClipperLib.PolyTree;
+
+  /**
    * The triangulation of this Region.
    *
    * The value of this property must not be mutated.
@@ -87,6 +89,13 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   get bounds(): PIXI.Rectangle;
 
   /**
+   * The area of this Region.
+   *
+   * Alias for `this.polygonTree.area`.
+   */
+  get area(): number;
+
+  /**
    * The tokens inside this region.
    * @remarks Marked by foundry as `@readonly`, but remains fully mutable at runtime.
    */
@@ -94,12 +103,47 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   override prepareBaseData(): void;
 
+  /** @remarks Shares the cached polygon trees with the clone when neither shapes nor constraints changed. */
+  override clone<Save extends boolean | undefined = false>(
+    data?: RegionDocument.CreateData,
+    context?: Document.CloneContext<Save>,
+  ): Document.Clone<this, Save>;
+
   /**
-   * Test whether the given point (at the given elevation) is inside this Region.
+   * Clamp the given elevation (of a token with a depth) to the elevation range of this Region.
+   *
+   * The elevation is clamped such that the head of the token is in the range if possible, but
+   * the feet are never outside of the range.
+   * @param elevation - The elevation (of the token)
+   * @param depth     - The depth of the token (default: `0`)
+   * @returns The clamped elevation
+   */
+  clampElevation(elevation: number, depth?: number): number;
+
+  /**
+   * Test whether the given point is inside this Region.
    * @param point - The point.
-   * @returns Is this point inside this Region?
+   * @returns Is the point inside this Region?
    */
   testPoint(point: Canvas.ElevatedPoint): boolean;
+
+  /**
+   * Test whether the given elevation is within the elevation range of this Region.
+   * @param elevationRange - The elevation range.
+   * @param elevation      - The elevation.
+   * @returns Is the elevation within the elevation range of this Region?
+   * @internal
+   */
+  static _testElevation(elevationRange: RegionDocument.ElevationRange, elevation: number): boolean;
+
+  /**
+   * Create the Clipper polygon tree for this Region.
+   * @internal
+   */
+  _createClipperPolyTree(
+    shapes: fields.ShapesField.InitializedElementType[],
+    shapeConstraints: number[][] | null,
+  ): ClipperLib.PolyTree;
 
   /**
    * Split the movement path into its segments.
@@ -117,8 +161,43 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     tolerance?: number,
   ): RegionDocument.MovementSegment[];
 
+  /**
+   * Update the shape constraints of this Region. If `save` is true, the shape constraints are updated
+   * only if the current User is designated for it.
+   * @param options - Additional options
+   * @remarks
+   * @throws If `save` is passed for a non-persisted Region.
+   */
+  updateShapeConstraints(options?: RegionDocument.UpdateShapeConstraintsOptions): void;
+
+  /**
+   * Update the point sources of this Region document.
+   * @param changes - The changes that will be applied to this Region. (default: `{}`)
+   * @returns The computed shape constraint for each shape, if restricted/possible.
+   * @internal
+   */
+  _computeShapeConstraints(changes?: RegionDocument.UpdateData): number[][] | null;
+
+  /**
+   * Compute the shape constraint for the given origin and config.
+   * @param origin - The origin of the constraint.
+   * @param config - The config of the constraint.
+   * @returns The shape constraint.
+   */
+  protected _computeShapeConstraint(
+    origin: Canvas.ElevatedPoint,
+    config: PointSourcePolygon.Config,
+  ): PointSourcePolygon.Any;
+
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _updateCommit(
+  //   copy: RegionDocument.Source,
+  //   diff: RegionDocument.UpdateData,
+  //   options: foundry.abstract.DataModel.UpdateOptions,
+  //   _state: fields.DataField.UpdateState,
+  // ): void;
 
   // protected override _onUpdate(
   //   changed: RegionDocument.UpdateData,
@@ -145,16 +224,146 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   // ): Promise<void>;
 
   /**
+   * Called when the scene's grid is changed.
+   * @param changed - The changes to the grid.
+   * @internal
+   */
+  _onGridChange(changed: Scene.UpdateData["grid"]): void;
+
+  /**
+   * Clear the polygon tree.
+   * @internal
+   */
+  _clearPolygonTree(): void;
+
+  /**
+   * Called when the polygon tree of the Region has changed.
+   * @remarks Core's implementation is a no-op, this is soft abstract.
+   */
+  protected _onPolygonTreeChange(): void;
+
+  /**
+   * @remarks Dispatches {@linkcode CONST.REGION_EVENTS.BEHAVIOR_VIEWED} or
+   * {@linkcode CONST.REGION_EVENTS.BEHAVIOR_UNVIEWED} when the rendered state actually flips.
+   */
+  protected override _refreshViewedState(): Promise<void>;
+
+  /**
+   * Create an emanation Region for the Token and attach it to the Token.
+   * @param token      - The Token to attach the emanation Region to
+   * @param range      - The range of the emanation in grid units
+   * @param regionData - The Region data of the emanation
+   * @param options    - Additional options
+   * @returns The created Region document unless the creation was prevented
+   * @remarks
+   * @throws If `token` is not persisted.
+   */
+  static createTokenEmanation(
+    token: TokenDocument.Implementation,
+    range: number,
+    regionData: RegionDocument.EmanationData,
+    options?: RegionDocument.CreateTokenEmanationOptions,
+  ): Promise<RegionDocument.Stored | undefined>;
+
+  /**
    * Teleport a Token into this Region.
+   *
    * The Token may be in the same Scene as this Region, or in a different Scene.
-   * The current User must be an owner of the Token Document in order to teleport it
+   * The current User must be an owner of the Token Document in order to teleport it.
    * For teleportation to a different Scene the current User requires `TOKEN_CREATE` and
    * `TOKEN_DELETE` permissions. If the Token is teleported to different Scene, it is deleted
    * and a new Token Document in the other Scene is created.
+   *
+   * This function can work with ephemeral (non-persisted) Region documents.
    * @param token - An existing Token Document to teleport
    * @returns The same Token Document if teleported within the same Scene, or a new Token Document if teleported to a different Scene
+   * @throws If failed to teleport the Token document.
    */
-  teleportToken(token: TokenDocument.Stored): Promise<TokenDocument.Stored>;
+  teleportToken(
+    token: TokenDocument.Implementation,
+    options?: RegionDocument.TeleportTokenOptions,
+  ): Promise<TokenDocument.Implementation>;
+
+  /**
+   * Teleport Tokens into this Region.
+   *
+   * The Tokens may be in the same Scene as this Region, or in a different Scene.
+   * The current User must be an owner of the Token Documents in order to teleport them.
+   * For teleportation to a different Scene the current User requires `TOKEN_CREATE` and
+   * `TOKEN_DELETE` permissions. If a Token is teleported to different Scene, it is deleted
+   * and a new Token Document in the other Scene is created.
+   *
+   * This function can work ephemeral (non-persisted) Region documents.
+   * @param tokens  - Existing Token Documents to teleport.
+   * @param options - Additional options.
+   * @returns The mapping of deleted to created Token Documents.
+   * @example Teleport multiple tokens with random rotation
+   * ```js
+   * const updateData = new Map();
+   * for ( const token of tokens ) {
+   *   updateData.set(token, {
+   *     rotation: Math.random() * 360
+   *   });
+   * }
+   * await region.teleportTokens(tokens, {updateData});
+   * ```
+   * @throws If this Region is in a compendium, if the current User lacks the necessary permissions, if Token
+   * Documents could not be created/updated/deleted, or if there is no valid placement.
+   */
+  teleportTokens(
+    tokens: Iterable<TokenDocument.Implementation>,
+    options?: RegionDocument.TeleportTokensOptions,
+  ): Promise<Map<TokenDocument.Implementation, TokenDocument.Implementation>>;
+
+  /**
+   * Spawn Tokens into this Region.
+   *
+   * The current User must be an owner of the Token Documents and have the `TOKEN_CREATE` permission
+   * in order to spawn them.
+   *
+   * This function can work ephemeral (non-persisted) Region documents.
+   * @param tokenData - The Token data or Token Documents to spawn.
+   * @param options   - Additional options.
+   * @throws If this Region is in a compendium, if the current User lacks the `TOKEN_CREATE` permission, or if
+   * there is no valid placement.
+   * @example Spawn 10 tokens with random actor and random rotation in a placed circle with 30 grid units radius.
+   * ```js
+   * ui.notifications.info("Choose the placement for the spawn area.");
+   * const spawnArea = await canvas.regions.placeRegion({
+   *   name: "Spawn Area",
+   *   shapes: [{
+   *     type: "circle",
+   *     x: 0,
+   *     y: 0,
+   *     radius: canvas.dimensions.distancePixels * 30
+   *   }],
+   *   restriction: {enabled: true},
+   *   levels: [canvas.level.id]
+   * }, {create: false});
+   * if ( spawnArea ) {
+   *   const {count: numTokensToSpawn=0} = await foundry.applications.api.DialogV2.input({
+   *    window: {
+   *       title: "How many tokens to you want to spawn?"
+   *    },
+   *    content: `<input type="number" name="count" min="0" step="1" value="10">`
+   *   }) ?? {};
+   *   const actors = game.actors.contents;
+   *   const tokensToSpawn = [];
+   *   for ( let i = 0; i < numTokensToSpawn; i++ ) {
+   *     const actor = actors[Math.floor(Math.random() * actors.length)];
+   *     const token = await actor.getTokenDocument({
+   *       rotation: Math.random() * 360
+   *     }, {parent: spawnArea.parent});
+   *     tokensToSpawn.push(token);
+   *   }
+   *   const spawnedTokens = await spawnArea.spawnTokens(tokensToSpawn);
+   * }
+   * ```
+   */
+  spawnTokens(
+    tokenData: Iterable<TokenDocument.CreateData | TokenDocument.Implementation>,
+    options?: RegionDocument.SpawnTokensOptions,
+  ): Promise<TokenDocument.Implementation[]>;
 
   /**
    * Activate the Socket event listeners.
@@ -210,6 +419,27 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs): void;
 
   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
+
+  /**
+   * Present a Dialog form to confirm the removal of a shape.
+   * @param shapeOrIndex - The shape or shape index.
+   * @param options      - Additional options passed to {@linkcode DialogV2.confirm} (default: `{}`)
+   * @remarks
+   * @throws If the shape does not belong to this Region, or the index is out of bounds.
+   */
+  removeShapeDialog(
+    shapeOrIndex: fields.ShapesField.InitializedElementType | number,
+    options?: DialogV2.ConfirmConfig,
+  ): Promise<boolean>;
+
+  /**
+   * @deprecated "`RegionDocument#regionShapes` is deprecated. Use {@linkcode RegionDocument.shapes | RegionDocument#shapes}
+   * instead." (since v14, until v16)
+   */
+  get regionShapes(): RegionShape.Any[];
+
+  /** @remarks The {@linkcode RegionShape} wrappers of this Region's shapes, rebuilt whenever `shapes` changes. */
+  get _regionShapes(): RegionShape.Any[];
 
   /*
    * After this point these are not really overridden methods.
@@ -286,9 +516,6 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected static _updateTokens(regions: never, options?: never): never;
-
   #RegionDocument: true;
 }
 
@@ -297,6 +524,48 @@ declare namespace RegionDocument {
    * The document's name.
    */
   type Name = "Region";
+
+  /**
+   * One of the horizontal planes a Region contributes to its Scene, produced by its `defineSurface` behaviors.
+   * @remarks Foundry's `RegionSurface` typedef omits `darkness`, which `Scene##updateSurfaces` does populate.
+   */
+  interface Surface {
+    /** A key that uniquely identifies the surface */
+    key: string;
+
+    /** The region of the surface */
+    region: RegionDocument.Implementation;
+
+    /** The elevation of the surface */
+    elevation: number;
+
+    /** Does the surface restrict light? */
+    light: boolean;
+
+    /**
+     * Does the surface restrict darkness?
+     * @remarks Absent from the `RegionSurface` typedef in Foundry's `_types.mjs`.
+     */
+    darkness: boolean;
+
+    /** Does the surface restrict movement? */
+    move: boolean;
+
+    /** Does the surface restrict sight? */
+    sight: boolean;
+
+    /** Does the surface restrict sound? */
+    sound: boolean;
+
+    /** Does the surface cause occlusion? */
+    occlusion: boolean;
+
+    /** Does the surface cause exposure? */
+    exposure: boolean;
+
+    /** Does the surface cause culling? */
+    culling: boolean;
+  }
 
   /**
    * The context used to create a `RegionDocument`.
@@ -333,7 +602,8 @@ declare namespace RegionDocument {
       labelPlural: "DOCUMENT.Regions";
       isEmbedded: true;
       embedded: Metadata.Embedded;
-      schemaVersion: "13.341";
+      permissions: Metadata.Permissions;
+      schemaVersion: "14.361";
     }>
   > {}
 
@@ -343,6 +613,15 @@ declare namespace RegionDocument {
      */
     interface Embedded {
       RegionBehavior: "behaviors";
+    }
+
+    /**
+     * The permissions for whether a certain user can create, update, or delete this document.
+     */
+    interface Permissions {
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -569,7 +848,7 @@ declare namespace RegionDocument {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
-     * The color used to highlight the Region
+     * The color used to highlight the Region. A random color by default.
      * @defaultValue `Color.fromHSV([Math.random(), 0.8, 0.8]).css`
      */
     color: fields.ColorField<{
@@ -579,12 +858,13 @@ declare namespace RegionDocument {
     }>;
 
     /**
-     * The shapes that make up the Region
+     * The shapes that make up the Region.
+     * @defaultValue `[]`
      */
-    shapes: fields.ArrayField<fields.TypedSchemaField<BaseShapeData.Types>>;
+    shapes: fields.ShapesField;
 
     /**
-     * A RegionElevation object which defines the elevation levels where the Region takes effect
+     * The elevation range of the Region.
      * @defaultValue see properties
      */
     elevation: fields.SchemaField<
@@ -596,18 +876,39 @@ declare namespace RegionDocument {
     >;
 
     /**
-     * A collection of embedded RegionBehavior objects
+     * The IDs of the Scene levels that the Region is part of.
+     * @defaultValue `new Set()`
+     */
+    levels: fields.SceneLevelsSetField;
+
+    /**
+     * The configuration of the constraint that walls impose on the shapes of the Region.
+     * @defaultValue see properties
+     */
+    restriction: fields.SchemaField<RestrictionSchema>;
+
+    /**
+     * The configuration of the attachment of the Region to a placeable.
+     * @defaultValue see properties
+     */
+    attachment: fields.SchemaField<AttachmentSchema>;
+
+    /**
+     * A collection of embedded RegionBehavior objects.
      */
     behaviors: fields.EmbeddedCollectionField<
       typeof foundry.documents.BaseRegionBehavior,
       RegionDocument.Implementation
     >;
 
-    /** @defaultValue `CONST.REGION_VISIBILITY.LAYER` */
+    /**
+     * The visibility of the Region, from CONST.REGION_VISIBILITY.
+     * @defaultValue {@linkcode CONST.REGION_VISIBILITY.LAYER_UNLOCKED}
+     */
     visibility: fields.NumberField<
       {
         required: true;
-        initial: typeof CONST.REGION_VISIBILITY.LAYER;
+        initial: typeof CONST.REGION_VISIBILITY.LAYER_UNLOCKED;
         choices: CONST.REGION_VISIBILITY[];
       },
       CONST.REGION_VISIBILITY | null | undefined,
@@ -615,13 +916,220 @@ declare namespace RegionDocument {
       CONST.REGION_VISIBILITY | null
     >;
 
-    /** @defaultValue `false` */
+    /**
+     * Whether the true shapes of the Region or the grid spaces that it covers are highlighted.
+     * @defaultValue `"shapes"`
+     */
+    highlightMode: fields.StringField<
+      {
+        required: true;
+        initial: "shapes";
+        choices: Record<RegionDocument.HighlightMode, string>;
+      },
+      // FIXME: Without these overrides, the literal union from `choices` is not respected, and the field types as `string`
+      RegionDocument.HighlightMode | null | undefined,
+      RegionDocument.HighlightMode,
+      RegionDocument.HighlightMode
+    >;
+
+    /**
+     * Are measurements displayed for the Region?
+     * @defaultValue `false`
+     */
+    displayMeasurements: fields.BooleanField;
+
+    /**
+     * Is the Region currently hidden from player view?
+     * @defaultValue `false`
+     */
+    hidden: fields.BooleanField;
+
+    /**
+     * Whether this region is locked.
+     * @defaultValue `false`
+     */
     locked: fields.BooleanField;
+
+    /**
+     * An object which configures ownership of this Region.
+     * @defaultValue `{}`
+     */
+    ownership: fields.DocumentOwnershipField;
 
     /**
      * An object of optional key/value flags
      */
     flags: fields.DocumentFlagsField<Name>;
+
+    /**
+     * @defaultValue `null`
+     * @internal
+     * @remarks The cached polygon constraints computed from the Region's restriction settings, recomputed by
+     * {@linkcode RegionDocument._computeShapeConstraints | RegionDocument#_computeShapeConstraints}.
+     */
+    _shapeConstraints: fields.ArrayField<
+      fields.ArrayField<fields.NumberField<{ required: true; nullable: false; initial: undefined }>>,
+      { nullable: true; initial: null }
+    >;
+  }
+
+  /** The registered {@linkcode RegionDocument.Schema.highlightMode | highlightMode} choices. */
+  interface HighlightModeChoices {
+    shapes: "REGION.HIGHLIGHT_MODES.shapes.label";
+    coverage: "REGION.HIGHLIGHT_MODES.coverage.label";
+  }
+
+  type HighlightMode = keyof HighlightModeChoices;
+
+  /**
+   * The elevation range {@linkcode RegionDocument._testElevation} tests against, which is
+   * {@linkcode RegionDocument.elevation | RegionDocument#elevation} after
+   * {@linkcode RegionDocument.prepareBaseData | prepareBaseData} has substituted the infinities.
+   */
+  interface ElevationRange {
+    bottom: number;
+    top: number;
+    topInclusive: boolean;
+  }
+
+  /** @internal */
+  interface UpdateShapeConstraintsOptions {
+    /**
+     * Persist the shape constraints changes?
+     * @defaultValue `false`
+     */
+    save?: boolean | undefined;
+  }
+
+  /** The Region data of an emanation; {@linkcode RegionDocument.createTokenEmanation} supplies the rest. */
+  interface EmanationData extends Omit<RegionDocument.CreateData, "shapes" | "elevation"> {}
+
+  /** @internal */
+  interface CreateTokenEmanationOptions {
+    /**
+     * Exclude the Token's own shape from the area of the emanation?
+     * @defaultValue `false`
+     */
+    excludeToken?: boolean | undefined;
+
+    /**
+     * Should the emanation conform to the grid's metric?
+     * @defaultValue `false`
+     */
+    gridBased?: boolean | undefined;
+
+    /**
+     * Optional creation options
+     * @defaultValue `{}`
+     */
+    createOptions?: InexactPartial<Omit<DatabaseBackend.CreateOperation<CreateInput, Parent>, "parent">> | undefined;
+  }
+
+  /** @internal */
+  interface _TokenPlacementOptions {
+    /**
+     * The placement.
+     * @defaultValue `"random"`
+     */
+    placement: "random" | "center" | "relative";
+
+    /**
+     * Attempt to place the tokens at a snapped position.
+     * @defaultValue `true`
+     */
+    snap: boolean;
+
+    /** The relative offset position. */
+    offset: Canvas.Point;
+
+    /**
+     * Avoid occupied grid spaces when placing randomly with snapping.
+     * @defaultValue `true`
+     */
+    avoidOccupied: boolean;
+
+    /**
+     * The destination Level ID, which must be a Level this Region is in.
+     * @defaultValue the Level of the Region if it is in only one Level
+     */
+    level: string;
+  }
+
+  /** @internal */
+  interface _TeleportTokensOptions extends _TokenPlacementOptions {
+    /**
+     * Pan the canvas (with transition animation) to the destination if the token is controlled?
+     * @defaultValue `true`
+     */
+    pan: boolean | TokenDocument.PanningOptions;
+
+    /** Additonal update data. */
+    updateData: Map<TokenDocument.Implementation, TokenDocument.UpdateData>;
+  }
+
+  interface TeleportTokensOptions extends InexactPartial<_TeleportTokensOptions> {}
+
+  /**
+   * {@linkcode RegionDocument.teleportToken | RegionDocument#teleportToken} takes update data for the one Token
+   * it is given rather than a Map.
+   */
+  interface TeleportTokenOptions extends InexactPartial<Omit<_TeleportTokensOptions, "updateData">> {
+    /** Additonal Token update data. */
+    updateData?: TokenDocument.UpdateData | undefined;
+  }
+
+  /** @internal */
+  interface _SpawnTokensOptions extends _TokenPlacementOptions {
+    /**
+     * Create the Token Documents in the database?
+     * @defaultValue `true`
+     */
+    create: boolean;
+
+    /** Optional creation options */
+    createOptions: Partial<
+      Omit<DatabaseBackend.CreateOperation<TokenDocument.CreateInput, Scene.Implementation>, "parent">
+    >;
+  }
+
+  interface SpawnTokensOptions extends InexactPartial<_SpawnTokensOptions> {}
+
+  interface RestrictionSchema extends fields.DataSchema {
+    /**
+     * Does this Region restrict its {@linkcode RestrictionSchema.type | type} at its boundary?
+     * @defaultValue `false`
+     */
+    enabled: fields.BooleanField;
+
+    /**
+     * The single edge restriction type this Region imposes.
+     * @defaultValue `"move"`
+     */
+    type: fields.StringField<
+      { required: true; choices: typeof CONST.EDGE_RESTRICTION_TYPES; initial: "move" },
+      CONST.EDGE_RESTRICTION_TYPES | null | undefined,
+      CONST.EDGE_RESTRICTION_TYPES,
+      CONST.EDGE_RESTRICTION_TYPES
+    >;
+
+    /**
+     * Higher-priority restrictions take precedence over lower-priority ones where they overlap.
+     * @defaultValue `0`
+     */
+    priority: fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0; min: 0 }>;
+  }
+
+  interface RestrictionData extends fields.SchemaField.InitializedData<RestrictionSchema> {}
+
+  interface AttachmentSchema extends fields.DataSchema {
+    /**
+     * The `_id` of the Token this Region is attached to, moving with it.
+     * @defaultValue `null`
+     */
+    token: fields.ForeignDocumentField<
+      typeof foundry.documents.BaseToken,
+      { idOnly: true; nullable: true; initial: null }
+    >;
   }
 
   interface ElevationSchema extends fields.DataSchema {
@@ -638,6 +1146,12 @@ declare namespace RegionDocument {
      * @defaultValue `null`
      */
     top: fields.NumberField<{ required: true }>;
+
+    /**
+     * @defaultValue `false`
+     * @remarks Does the Region include its own {@linkcode ElevationSchema.top | top} elevation?
+     */
+    topInclusive: fields.BooleanField;
   }
 
   namespace Database {
@@ -1310,10 +1824,6 @@ declare namespace RegionDocument {
     /** Teleport between the waypoints? */
     teleport: boolean;
   }
-
-  /** @deprecated The method this interface was for was made hard private in v13. This type will be removed in v14. */
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
-  type UpdateTokensOptions = {};
 
   /**
    * The arguments to construct the document.

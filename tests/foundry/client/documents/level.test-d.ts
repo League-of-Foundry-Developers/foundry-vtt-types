@@ -47,3 +47,8 @@ describe("Level Tests", () => {
     expectTypeOf(level.flags.core?.sheetClass).toEqualTypeOf<string | undefined>();
   });
 });
+
+declare const someOtherLevel: Level.Stored;
+
+expectTypeOf(someOtherLevel.updateRegionShapeConstraints()).toEqualTypeOf<void>();
+expectTypeOf(someOtherLevel.updateRegionShapeConstraints(["move", "sight"])).toEqualTypeOf<void>();

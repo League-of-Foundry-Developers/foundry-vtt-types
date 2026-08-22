@@ -121,7 +121,7 @@ expectTypeOf(myNote.texture).toEqualTypeOf<
 expectTypeOf(myNote.iconSize).toBeNumber();
 expectTypeOf(myNote.text).toEqualTypeOf<string | undefined>();
 expectTypeOf(myNote.fontFamily).toBeString();
-expectTypeOf(myNote.fontSize).toEqualTypeOf<number | null>();
+expectTypeOf(myNote.fontSize).toBeNumber();
 expectTypeOf(myNote.textAnchor).toEqualTypeOf<CONST.TEXT_ANCHOR_POINTS | null>();
 expectTypeOf(myNote.textColor).toEqualTypeOf<Color>();
 expectTypeOf(myNote.global).toBeBoolean();

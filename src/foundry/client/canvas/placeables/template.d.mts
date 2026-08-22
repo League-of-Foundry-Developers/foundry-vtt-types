@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
@@ -16,9 +17,8 @@ declare module "#configuration" {
 }
 
 /**
- * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
- * @see {@linkcode foundry.documents.MeasuredTemplateDocument}
- * @see {@linkcode foundry.canvas.layers.TemplateLayer}
+ * @deprecated "MeasuredTemplate is deprecated because the MeasuredTemplate document has been merged into the
+ * functionality of the Region document." (since v14, until v16)
  */
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
   // fake type override

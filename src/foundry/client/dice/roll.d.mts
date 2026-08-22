@@ -677,6 +677,7 @@ declare namespace Roll {
      * @deprecated "The rollMode option of Roll#toMessage is deprecated in favor of messageMode, a string value in
      * CONFIG.ChatMessage.modes" (since v14, until v16)
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     rollMode?: ChatMessage.PassableRollMode | null | undefined;
 
     /**

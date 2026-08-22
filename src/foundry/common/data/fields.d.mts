@@ -2734,6 +2734,17 @@ declare namespace TypedObjectField {
   type MergedOptions<Options extends TypedObjectField.Options<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
 
   /**
+   * {@linkcode ObjectField.getInitialValue | ObjectField#getInitialValue} substitutes `{}` for a required field
+   * with no `initial`, which a `TypedObjectField` inherits.
+   * @internal
+   */
+  type _EffectiveOptions<Options extends TypedObjectField.Options<AnyObject>> =
+    MergedOptions<Options> extends { readonly initial: undefined }
+      ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        SimpleMerge<MergedOptions<Options>, { initial: {} }>
+      : MergedOptions<Options>;
+
+  /**
    * A shorthand for the assignment type of a ObjectField class.
    * @template Options - the options that override the default options
    *
@@ -2749,7 +2760,7 @@ declare namespace TypedObjectField {
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       [K in ValidKey<Options>]: DataField.AssignmentTypeFor<Element>;
     },
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 
   /**
@@ -2763,7 +2774,7 @@ declare namespace TypedObjectField {
     {
       [K in ValidKey<Options>]: DataField.InitializedTypeFor<Element>;
     },
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 }
 

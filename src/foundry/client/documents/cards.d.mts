@@ -70,7 +70,7 @@ declare namespace Cards {
     }
 
     interface Permissions {
-      create: "OWNER";
+      create: "CARDS_CREATE";
       delete: "OWNER";
     }
   }
@@ -1304,15 +1304,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   recall(options?: Cards.RecallOptions): Promise<this>;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _resetDeck(options?: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _resetStack(options?: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _postChatNotification(source: never, action: never, context: never): never;
-
   /**
    * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
    * @param a - The card being sorted
@@ -1380,7 +1371,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Cards.Database.DeleteOneDocumentOperation,
   ): Promise<Cards.DeleteDialogReturn<Options>>;
 
   /**
@@ -1392,7 +1382,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Cards.Database.DeleteOneDocumentOperation,
   ): Promise<Cards.DeleteDialogReturn<Options>>;
 
   static override createDialog<Options extends Cards.CreateDialogOptions | undefined = undefined>(

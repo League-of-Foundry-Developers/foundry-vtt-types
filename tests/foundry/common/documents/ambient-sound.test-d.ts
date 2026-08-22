@@ -122,9 +122,11 @@ const mySound = new TestBaseAmbientSound({ effects: undefined });
 expectTypeOf(mySound).toEqualTypeOf<TestBaseAmbientSound>();
 
 expectTypeOf(mySound._id).toEqualTypeOf<string | null>();
+expectTypeOf(mySound.name).toEqualTypeOf<string | undefined>();
 expectTypeOf(mySound.x).toBeNumber();
 expectTypeOf(mySound.y).toBeNumber();
 expectTypeOf(mySound.elevation).toBeNumber();
+expectTypeOf(mySound.levels).toEqualTypeOf<Set<string>>();
 expectTypeOf(mySound.radius).toBeNumber();
 expectTypeOf(mySound.path).toEqualTypeOf<string | null>();
 expectTypeOf(mySound.repeat).toBeBoolean();
@@ -132,12 +134,13 @@ expectTypeOf(mySound.volume).toBeNumber();
 expectTypeOf(mySound.walls).toBeBoolean();
 expectTypeOf(mySound.easing).toBeBoolean();
 expectTypeOf(mySound.hidden).toBeBoolean();
+expectTypeOf(mySound.locked).toBeBoolean();
 expectTypeOf(mySound.darkness.min).toBeNumber();
 expectTypeOf(mySound.darkness.max).toBeNumber();
 expectTypeOf(mySound.effects.base.type).toEqualTypeOf<string | undefined>();
-expectTypeOf(mySound.effects.base.intensity).toEqualTypeOf<number | null>();
+expectTypeOf(mySound.effects.base.intensity).toBeNumber();
 expectTypeOf(mySound.effects.muffled.type).toEqualTypeOf<string | undefined>();
-expectTypeOf(mySound.effects.muffled.intensity).toEqualTypeOf<number | null>();
+expectTypeOf(mySound.effects.muffled.intensity).toBeNumber();
 expectTypeOf(mySound.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
 
 expectTypeOf(mySound.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();

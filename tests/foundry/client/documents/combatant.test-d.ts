@@ -36,3 +36,8 @@ test("createCombatant parent required", () => {
     expectTypeOf(options.parent).toEqualTypeOf<Combat.Implementation>();
   });
 });
+
+declare const someCombatant: Combatant.Stored;
+
+expectTypeOf(someCombatant.turnNumber).toEqualTypeOf<number | null>();
+expectTypeOf(someCombatant.roundJoined).toBeNumber();

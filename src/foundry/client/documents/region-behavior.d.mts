@@ -53,6 +53,9 @@ declare namespace RegionBehavior {
       labelPlural: "DOCUMENT.RegionBehaviors";
       coreTypes: [
         "adjustDarknessLevel",
+        "applyActiveEffect",
+        "changeLevel",
+        "defineSurface",
         "displayScrollingText",
         "executeMacro",
         "executeScript",
@@ -65,7 +68,7 @@ declare namespace RegionBehavior {
       hasTypeData: true;
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.352";
     }>
   > {}
 
@@ -76,6 +79,7 @@ declare namespace RegionBehavior {
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -927,10 +931,13 @@ declare class RegionBehavior<
    */
   get scene(): Scene.Implementation | null;
 
-  /** A RegionBehavior is active if and only if it was created, hasn't been deleted yet, and isn't disabled. */
+  /**
+   * A RegionBehavior is active if and only if it was created, hasn't been deleted yet, isn't disabled,
+   * and its Region isn't hidden.
+   */
   get active(): boolean;
 
-  /** A RegionBehavior is viewed if and only if it is active and the Scene of its Region is viewed. */
+  /** A RegionBehavior is viewed if and only if it is active and the Region is viewed. */
   get viewed(): boolean;
 
   override prepareBaseData(): void;
