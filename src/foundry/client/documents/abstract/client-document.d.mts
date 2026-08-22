@@ -41,7 +41,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
-   * Return a reference to the parent Collection instance which contains this Document.
+   * Return a reference to the parent Collection/Document instance that contains/is this Document.
    */
   get collection(): ClientDocument.CollectionForName<DocumentName>;
 
@@ -55,6 +55,18 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Is this document in a compendium? A stricter check than {@linkcode Document.inCompendium | Document#inCompendium}.
    */
   get inCompendium(): Document.InCompendium<DocumentName>;
+
+  /**
+   * Is this Document persisted?
+   *
+   * A document is persisted if it has a nonnull UUID that resolves to a document with `fromUuid`.
+   * In particular, clones of persisted Documents are also persisted Documents if they have the same ID as the
+   * original.
+   *
+   * This property is false until this document and all its ancestors up to the root document have been initialized
+   * and added to their collections.
+   */
+  get persisted(): boolean;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
@@ -84,7 +96,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @example
    * ```typescript
    * game.user.id; // "dkasjkkj23kjf"
-   * actor.data.permission; // {default: 1, "dkasjkkj23kjf": 2};
+   * actor.ownership; // {default: 1, dkasjkkj23kjf: 2}
    * actor.permission; // 2
    * ```
    */
@@ -173,12 +185,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @returns The Document after it has been re-sorted
    */
   sortRelative(options?: ClientDocument.SortOptions<this>): Promise<this>;
-
-  /**
-   * Construct a UUID relative to another document.
-   * @param doc - The document to compare against.
-   */
-  getRelativeUUID(relative: ClientDocument): string;
 
   /**
    * Create a content link for this document
@@ -462,9 +468,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Present a Dialog form to create a new Document of this type.
    * Choose a name and a type from a select menu of types.
-   * @param data          - Document creation data               (default: `{}`)
-   * @param createOptions - Document creation options            (default: `{}`)
-   * @param options       - Options forwarded to DialogV2.prompt (default: `{}`)
+   * @param data          - Document creation data                                 (default: `{}`)
+   * @param createOptions - Document creation options                              (default: `{}`)
+   * @param options       - Options forwarded to DialogV2.prompt                   (default: `{}`)
+   * @param renderOptions - Options to forward to the document sheet's render call (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
    *
    * @remarks
@@ -480,7 +487,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * This returns `Promise<unknown>` here because as of 13.350 there's a bug ({@link https://github.com/foundryvtt/foundryvtt/issues/13545})
    * in {@linkcode Folder.createDialog}.
    */
-  static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
+  static createDialog(
+    data: never,
+    createOptions: never,
+    options?: never,
+    renderOptions?: ApplicationV2.RenderOptions,
+  ): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -632,6 +644,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLDocumentEmbedElement | null>;
+
+  /**
+   * @deprecated "ClientDocument#getRelativeUUID has been deprecated in favor of {@linkcode foundry.utils.buildRelativeUuid}"
+   * (since v14, until v16)
+   */
+  getRelativeUUID(relative: ClientDocument): string;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
@@ -732,16 +750,25 @@ declare global {
       clearFolder: boolean;
 
       /**
-       * Clear document ownership
+       * Clear document ownership (recursive)
        * @defaultValue `true`
+       * @remarks Also clears `author`. A numeric `ownership.default` is preserved.
        */
       clearOwnership: boolean;
 
       /**
-       * Clear fields which store document state
+       * Clear fields which store document state (recursive)
        * @defaultValue `true`
        */
       clearState: boolean;
+
+      /**
+       * In cases where necessary, prompt the user with a confirmation dialog
+       * @defaultValue `false`
+       * @remarks Read by {@linkcode DocumentCollection.importDocument | DocumentCollection#importDocument}, not by
+       * {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} itself.
+       */
+      dialog: boolean;
 
       /**
        * Retain the current Document id
@@ -788,7 +815,7 @@ declare global {
           | ClientDocument._OmitProperty<Options["clearFlags"], false, "flags">
           | ClientDocument._OmitProperty<Options["clearSort"], true, "sort" | "navigation" | "navOrder"> // helping out Scene
           | ClientDocument._OmitProperty<Options["clearFolder"], true, "folder">
-          | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership">
+          | ClientDocument._OmitProperty<Options["clearOwnership"], true, "ownership" | "author">
           | ClientDocument._OmitProperty<Options["clearState"], true, "active" | "playing"> // helping out Playlist, Scene
           | (Options["keepId"] extends true ? never : "_id")
         >

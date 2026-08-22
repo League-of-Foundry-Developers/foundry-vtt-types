@@ -50,7 +50,7 @@ declare namespace AmbientSoundDocument {
       label: "DOCUMENT.AmbientSound";
       labelPlural: "DOCUMENT.AmbientSounds";
       isEmbedded: true;
-      schemaVersion: "13.341";
+      schemaVersion: "14.354";
     }>
   > {}
 
@@ -213,6 +213,12 @@ declare namespace AmbientSoundDocument {
     _id: fields.DocumentIdField;
 
     /**
+     * An optional name.
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField<{ textSearch: true }>;
+
+    /**
      * The x-coordinate position of the origin of the sound.
      * @defaultValue `0`
      */
@@ -225,10 +231,16 @@ declare namespace AmbientSoundDocument {
     y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
-     * The elevation of the sound.
+     * The elevation
      * @defaultValue `0`
      */
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * @defaultValue `new Set()`
+     * @remarks The IDs of the Scene levels that this sound is part of.
+     */
+    levels: fields.SceneLevelsSetField;
 
     /**
      * The radius of the emitted sound.
@@ -261,7 +273,7 @@ declare namespace AmbientSoundDocument {
     volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
 
     /**
-     * Whether or not this sound source is constrained by Walls.
+     * Whether or not this sound source is constrained by Walls and surfaces
      * @defaultValue `true`
      */
     walls: fields.BooleanField<{ initial: true }>;
@@ -280,40 +292,50 @@ declare namespace AmbientSoundDocument {
     hidden: fields.BooleanField;
 
     /**
+     * @defaultValue `false`
+     * @remarks Is the sound source currently locked?
+     */
+    locked: fields.BooleanField;
+
+    /**
      * A darkness range (min and max) for which the source should be active
      * @defaultValue see properties
      */
-    darkness: fields.SchemaField<{
-      /** @defaultValue `0` */
-      min: fields.AlphaField<{ initial: 0 }>;
-
-      /** @defaultValue `1` */
-      max: fields.AlphaField<{ initial: 1 }>;
-    }>;
+    darkness: fields.SchemaField<DarknessSchema>;
 
     /**
      * Special effects to apply to the sound
      * @defaultValue see properties
      */
-    effects: fields.SchemaField<{
-      /**
-       * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
-       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
-       */
-      base: fields.SchemaField<EffectsConfigSchema>;
-
-      /**
-       * An effect configuration to apply to the sound when muffled by walls
-       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
-       */
-      muffled: fields.SchemaField<EffectsConfigSchema>;
-    }>;
+    effects: fields.SchemaField<EffectsSchema>;
 
     /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
     flags: fields.DocumentFlagsField<Name>;
+  }
+
+  interface EffectsSchema extends fields.DataSchema {
+    /**
+     * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
+     * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
+     */
+    base: fields.SchemaField<EffectsConfigSchema>;
+
+    /**
+     * An effect configuration to apply to the sound when muffled by walls
+     * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
+     */
+    muffled: fields.SchemaField<EffectsConfigSchema>;
+  }
+
+  interface DarknessSchema extends fields.DataSchema {
+    /** @defaultValue `0` */
+    min: fields.AlphaField<{ initial: 0 }>;
+
+    /** @defaultValue `1` */
+    max: fields.AlphaField<{ initial: 1 }>;
   }
 
   interface EffectsConfigSchema extends fields.DataSchema {
@@ -324,7 +346,15 @@ declare namespace AmbientSoundDocument {
     type: fields.StringField;
 
     /** @defaultValue `5` */
-    intensity: fields.NumberField<{ required: true; integer: true; initial: 5; min: 1; max: 10 }>;
+    intensity: fields.NumberField<{
+      required: true;
+      nullable: false;
+      integer: true;
+      initial: 5;
+      min: 1;
+      max: 10;
+      step: 1;
+    }>;
   }
 
   namespace Database {
@@ -900,6 +930,15 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     data?: AmbientSoundDocument.CreateData,
     context?: AmbientSoundDocument.ConstructionContext,
   );
+
+  // FIXME: `CircleShapeData` is `foundry.data.CircleShapeData` from `client/data/shapes.mjs`, which has
+  // not been ported yet. Restore this declaration once that module exists.
+  // /**
+  //  * The circle shape of this AmbientSound document.
+  //  */
+  // shape: CircleShapeData;
+
+  override prepareDerivedData(): void;
 
   /*
    * After this point these are not really overridden methods.

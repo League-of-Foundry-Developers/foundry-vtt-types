@@ -279,6 +279,7 @@ export import Macros = globalThis.Macros;
 export import MagicalGloomDarknessShader = globalThis.MagicalGloomDarknessShader;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 export import MeasuredTemplate = globalThis.MeasuredTemplate;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import MeasuredTemplateDocument = globalThis.MeasuredTemplateDocument;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 export import Messages = globalThis.Messages;

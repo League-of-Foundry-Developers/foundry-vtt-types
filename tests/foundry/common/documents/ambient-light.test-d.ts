@@ -146,9 +146,11 @@ const myLight = new TestBaseAmbientLight({
 expectTypeOf(myLight).toEqualTypeOf<TestBaseAmbientLight>();
 
 expectTypeOf(myLight._id).toEqualTypeOf<string | null>();
+expectTypeOf(myLight.name).toEqualTypeOf<string | undefined>();
 expectTypeOf(myLight.x).toBeNumber();
 expectTypeOf(myLight.y).toBeNumber();
 expectTypeOf(myLight.elevation).toBeNumber();
+expectTypeOf(myLight.levels).toEqualTypeOf<Set<string>>();
 expectTypeOf(myLight.rotation).toBeNumber();
 expectTypeOf(myLight.walls).toBeBoolean();
 expectTypeOf(myLight.vision).toBeBoolean();
@@ -157,6 +159,7 @@ expectTypeOf(myLight.vision).toBeBoolean();
 expectTypeOf(myLight.config).toEqualTypeOf<foundry.data.LightData>();
 
 expectTypeOf(myLight.hidden).toBeBoolean();
+expectTypeOf(myLight.locked).toBeBoolean();
 expectTypeOf(myLight.flags).toEqualTypeOf<
   foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
     InterfaceToObject<BaseAmbientLight.CoreFlags> & InterfaceToObject<Document.CoreFlags>

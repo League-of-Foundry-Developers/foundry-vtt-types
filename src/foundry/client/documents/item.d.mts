@@ -50,6 +50,7 @@ declare namespace Item {
       name: "Item";
       collection: "items";
       hasTypeData: true;
+      baseTypeAllowed: false;
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
@@ -1051,6 +1052,11 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   constructor(data: Item.CreateData<SubType>, context?: Item.ConstructionContext);
 
+  protected override _initializeSource(
+    data: this | Item.CreateData,
+    options?: Document.InitializeSourceOptions,
+  ): Item.Source;
+
   /**
    * A convenience alias of Item#parent which is more semantically intuitive
    */
@@ -1088,17 +1094,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   //   user: User.Stored,
   // ): Promise<boolean | void>;
 
-  // protected static override _onCreateOperation(
-  //   documents: Item.Stored[],
-  //   operation: Item.Database.OnCreateOperation,
-  //   user: User.Stored,
-  // ): Promise<void>;
-
-  // protected static override _onDeleteOperation(
-  //   documents: Item.Stored[],
-  //   operation: Item.Database.OnDeleteOperation,
-  //   user: User.Stored,
-  // ): Promise<void>;
+  // protected override _onDelete(options: Item.Database.OnDeleteOptions, userId: string): void;
 
   /*
    * After this point these are not really overridden methods.

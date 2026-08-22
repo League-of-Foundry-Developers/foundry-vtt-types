@@ -243,7 +243,7 @@ declare namespace PlaylistSound {
     path: fields.FilePathField<{ categories: ["AUDIO"] }>;
 
     /**
-     * A channel in CONST.AUDIO_CHANNELS where this sound is are played
+     * A channel in CONST.AUDIO_CHANNELS where this sound is played
      * @defaultValue `""`
      */
     channel: fields.StringField<{ required: true; choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
@@ -268,7 +268,7 @@ declare namespace PlaylistSound {
 
     /**
      * The audio volume of the sound, from 0 to 1
-     * @defaultValue `1`
+     * @defaultValue `0.5`
      */
     volume: fields.AlphaField<{ initial: 0.5; step: 0.01 }>;
 
@@ -950,13 +950,6 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * @remarks Core's implementation is a no-op, this is soft abstract
    */
   protected _onStop(): Promise<void>;
-
-  /**
-   * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
-   * @deprecated "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume}
-   * directly" (since v12 until v14)
-   */
-  get effectiveVolume(): number;
 
   /*
    * After this point these are not really overridden methods.

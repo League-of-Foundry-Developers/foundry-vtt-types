@@ -53,9 +53,10 @@ declare namespace ChatMessage {
       label: "DOCUMENT.ChatMessage";
       labelPlural: "DOCUMENT.ChatMessages";
       hasTypeData: true;
+      baseTypeAllowed: true;
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.352";
     }>
   > {}
 
@@ -289,7 +290,10 @@ declare namespace ChatMessage {
      */
     _id: fields.DocumentIdField;
 
-    /** @defaultValue `"base"` */
+    /**
+     * The type of this chat message, in BaseChatMessage.metadata.types
+     * @defaultValue `"base"`
+     */
     type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
     /**
@@ -298,7 +302,7 @@ declare namespace ChatMessage {
     system: fields.TypeDataField<typeof BaseChatMessage>;
 
     /**
-     * The message type from CONST.CHAT_MESSAGE_STYLES
+     * The message style from {@linkcode CONST.CHAT_MESSAGE_STYLES}
      * @defaultValue `CONST.CHAT_MESSAGE_STYLES.OTHER`
      */
     // FIXME: overrides to enforce the branded type
@@ -324,13 +328,19 @@ declare namespace ChatMessage {
      * The timestamp at which point this message was generated
      * @defaultValue `Date.now()`
      */
-    timestamp: fields.NumberField<{ required: true; nullable: false; initial: typeof Date.now }>;
+    timestamp: fields.NumberField<{ required: true; nullable: true; initial: null }>;
 
     /**
      * An optional flavor text message which summarizes this message
      * @defaultValue `""`
      */
     flavor: fields.HTMLField;
+
+    /**
+     * An optional title used if the message is popped-out
+     * @defaultValue `undefined`
+     */
+    title: fields.StringField;
 
     /**
      * The HTML content of this chat message
@@ -387,6 +397,9 @@ declare namespace ChatMessage {
      */
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
 
+    /**
+     * An object of creation and access information
+     */
     _stats: fields.DocumentStatsField;
   }
 
@@ -459,10 +472,20 @@ declare namespace ChatMessage {
      */
     interface CreateOperation extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent> {
       /**
-       * @remarks Only affects messages whose {@link ChatMessage.isRoll | `#isRoll` getter} returns true. If this is passed,
-       * {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} will call {@linkcode ChatMessage.applyRollMode} with it, affecting the
-       * {@linkcode ChatMessage.whisper | whisper} and {@linkcode ChatMessage.blind | blind} properties of the to-be-created message.
+       * @remarks If this is passed, {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} will call
+       * {@linkcode ChatMessage.applyMode} with it, affecting the {@linkcode ChatMessage.whisper | whisper},
+       * {@linkcode ChatMessage.blind | blind}, and {@linkcode ChatMessage.style | style} properties of the
+       * to-be-created message, and defaulting {@linkcode chatBubble} to whether the mode is `"ic"`.
        */
+      messageMode?: ChatMessage.Mode;
+
+      /**
+       * @deprecated "The rollMode option provided as an option to ChatMessage creation is deprecated in favor of the
+       * `messageMode` option, a string key of `CONFIG.ChatMessage.modes`" (since v14, until v16)
+       *
+       * @remarks Only read for messages whose {@link ChatMessage.isRoll | `#isRoll` getter} returns true.
+       */
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       rollMode?: ChatMessage.PassableRollMode;
 
       /**
@@ -1020,7 +1043,7 @@ declare namespace ChatMessage {
 
   /**
    * @remarks Serves two purposes:
-   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@linkcode ChatMessage._renderRollContent | ChatMessage#_renderRollContent}
+   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to `ChatMessage##renderRollContent`
    * - Context passed to the {@linkcode Hooks.StaticCallbacks.renderChatMessage | `renderChatMessage`} hook.
    */
   interface MessageData {
@@ -1060,7 +1083,12 @@ declare namespace ChatMessage {
 
   type Mode = keyof CONFIG.ChatMessage.Modes;
 
-  /** @remarks `"roll"` means "use the current rollMode" */
+  /**
+   * @deprecated Roll modes have been replaced by message visibility modes; use {@linkcode ChatMessage.Mode} instead.
+   * This type will be removed in v16.
+   *
+   * @remarks `"roll"` means "use the current rollMode"
+   */
   type PassableRollMode = foundry.dice.Roll.Mode | "roll";
 
   /**
@@ -1165,27 +1193,34 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   /**
    * Transform a provided object of ChatMessage data by applying a certain roll mode to the data object.
-   *  - Public: `whisper` is set to `[]` and `blind` is set to `false`.
-   *  - Self: `whisper` is set to `[game.user.id]` and `blind` is set to `false`.
-   *  - Private: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `false`.
-   *  - Blind: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `true`.
-   * @param chatData - The object of ChatMessage data
-   * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
-   * @returns The modified ChatMessage data with the roll mode applied
-   * @remarks Passing `"roll"` for `rollMode` uses the user's currently selected roll mode in the chat log.
+   *  - `public`: `whisper` is set to `[]` and `blind` is set to `false`.
+   *  - `self`: `whisper` is set to `[game.user.id]` and `blind` is set to `false`.
+   *  - `gm`: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `false`.
+   *  - `blind`: `whisper` is set to the GM users unless `whisper` is nonempty and `blind` is set to `true`.
+   * @param chatData - Candidate ChatMessage data which should be customized
+   * @param mode     - The message visibility mode to apply, otherwise apply the default mode stored in client settings.
+   *                   (default: `game.settings.get("core", "messageMode")`)
+   * @returns Modified ChatMessage data with the message visibility mode applied
+   * @remarks A mode not registered in {@linkcode CONFIG.ChatMessage.modes} falls back to the client's default mode, and
+   * `"ic"` falls back to `"public"` when the data has no speaker actor or token, or carries rolls.
    */
-  static applyRollMode(
-    chatData: ChatMessage.CreateData,
-    rollMode: ChatMessage.PassableRollMode,
-  ): ChatMessage.CreateData;
+  static applyMode(chatData: ChatMessage.CreateData, mode?: ChatMessage.Mode): ChatMessage.CreateData;
 
   /**
-   * Update the data of a ChatMessage instance to apply a requested roll mode.
-   * This function calls {@link ChatMessage.applyRollMode} and updates the source of the ChatMessage.
-   * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
+   * Update the data of a ChatMessage instance to apply a message visibility mode
+   * This function calls {@link ChatMessage.applyMode} and updates the source of the ChatMessage.
+   * @param mode - The message visibility mode to apply to this message
    * @remarks Only calls `this.updateSource`, core uses it on temporary documents before proper creation.
    */
-  applyRollMode(rollMode: ChatMessage.PassableRollMode): void;
+  applyMode(mode?: ChatMessage.Mode): void;
+
+  /**
+   * Return the HTML content to display for this message when its content is not visible to the current user.
+   * Document subtype owners may override this in their system data model to customize the display.
+   * @remarks Forwards to `this.system._getHiddenContent()` when the subtype model defines it, otherwise
+   * returns `"<p>???</p>"`.
+   */
+  protected _getHiddenContent(): string;
 
   /**
    * Attempt to determine who is the speaking character (and token) for a certain Chat Message
@@ -1194,21 +1229,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @returns The identified speaker data
    */
   static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected static _getSpeakerFromToken(options: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected static _getSpeakerFromActor(options: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected static _getSpeakerFromUser(options: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _renderRollContent(messageData: never): never;
-
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _renderRollHTML(isPrivate?: never): never;
 
   /**
    * Obtain an Actor instance which represents the speaker of this message (if any)
@@ -1270,6 +1290,23 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * which now returns an `HTMLElement` instead of a jQuery object." (since v13, until v15)
    */
   getHTML(): Promise<JQuery>;
+
+  /**
+   * @deprecated "`ChatMessage#applyRollMode` is deprecated in favor of {@linkcode ChatMessage.applyMode | ChatMessage#applyMode}."
+   * (since v14, until v16)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  applyRollMode(mode: ChatMessage.PassableRollMode): void;
+
+  /**
+   * @deprecated "`ChatMessage.applyRollMode` is deprecated in favor of {@linkcode ChatMessage.applyMode}."
+   * (since v14, until v16)
+   */
+  static applyRollMode(
+    chatData: ChatMessage.CreateData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    mode: ChatMessage.PassableRollMode,
+  ): ChatMessage.CreateData;
 
   /*
    * After this point these are not really overridden methods.

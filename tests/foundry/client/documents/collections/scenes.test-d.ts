@@ -67,21 +67,21 @@ describe("Scenes Tests", async () => {
   });
 
   test("preload", () => {
-    expectTypeOf(scenes.preload("ID")).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
-    expectTypeOf(scenes.preload("ID", undefined)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    expectTypeOf(scenes.preload("ID")).toEqualTypeOf<Promise<Array<Sound | undefined> | undefined>>();
+    expectTypeOf(scenes.preload("ID", undefined)).toEqualTypeOf<Promise<Array<Sound | undefined> | undefined>>();
     expectTypeOf(scenes.preload("ID", { broadcast: true, level: "some level ID" })).toEqualTypeOf<
-      Promise<Array<Sound | undefined>>
+      Promise<Array<Sound | undefined> | undefined>
     >();
     expectTypeOf(scenes.preload("ID", { broadcast: undefined, level: undefined })).toEqualTypeOf<
-      Promise<Array<Sound | undefined>>
+      Promise<Array<Sound | undefined> | undefined>
     >();
 
     // deprecated signature, since v14 until v16:
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(scenes.preload("ID", true)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    expectTypeOf(scenes.preload("ID", true)).toEqualTypeOf<Promise<Array<Sound | undefined> | undefined>>();
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(scenes.preload("ID", false)).toEqualTypeOf<Promise<Array<Sound | undefined>>>();
+    expectTypeOf(scenes.preload("ID", false)).toEqualTypeOf<Promise<Array<Sound | undefined> | undefined>>();
   });
 
   test("Getting", () => {

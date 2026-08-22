@@ -12,9 +12,13 @@ export {};
 
 type AdventureImportData = Adventure.ImportData;
 
+type AdventurePreImportCallback = Adventure.PreImportCallback;
+
 type AdventureImportOptions = Adventure.ImportOptions;
 
 type AdventureImportResult = Adventure.ImportResult;
+
+type AdventurePostImportCallback = Adventure.PostImportCallback;
 
 type _ActiveEffectChangeData = ActiveEffect.ChangeData;
 
@@ -40,6 +44,8 @@ type CombatRoundEventContext = Combat.RoundEventContext;
 type RegionEvent<Data> = RegionDocument.RegionEvent;
 
 type RegionRegionBoundaryEvent = RegionEvent<{}>;
+
+type RegionRegionAnimationEvent = RegionEvent<{}>;
 
 type RegionBehaviorActivatedEvent = RegionEvent<{}>;
 
@@ -99,29 +105,27 @@ type RollTableDraw = RollTable.Draw;
 
 type SceneDimensions = Scene.Dimensions;
 
-type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
+type SceneViewOptions = Scene.ViewOptions;
 
-type TokenMeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
+type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
 type TokenMovementWaypoint = TokenDocument.MovementWaypoint;
 
+type _TokenProcessedMovementWaypoint = unknown;
+
+type TokenProcessedMovementWaypoint = unknown;
+
+type _TokenMeasuredMovementWaypoint = unknown;
+
+type TokenMeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
+
 type TokenMovementSegmentData = TokenDocument.MovementSegmentData;
 
-type TokenMeasureMovementPathWaypoint = unknown;
-
-type TokenMeasureMovementPathOptions = foundry.canvas.placeables.Token.MeasureMovementPathOptions;
+type TokenMeasurableMovementWaypointData = unknown;
 
 type TokenMovementCostFunction = TokenDocument.MovementCostFunction;
 
 type TokenMovementCostAggregator = TokenDocument.MovementCostAggregator;
-
-type TokenGetCompleteMovementPathWaypoint = TokenDocument.GetCompleteMovementPathWaypoint;
-
-type TokenCompleteMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
-
-type TokenSegmentizeMovementWaypoint = TokenDocument.SegmentizeMovementWaypoint;
-
-type TokenRegionMovementWaypoint = unknown;
 
 type TokenRegionMovementSegment = unknown;
 
@@ -135,8 +139,26 @@ type TokenMovementState = TokenDocument.MovementState;
 
 type TokenMovementData = TokenDocument.MovementData;
 
+type TokenPreMovementOperation = unknown;
+
 type TokenMovementOperation = TokenDocument.MovementOperation;
+
+type TokenMovementInstructionOptions = unknown;
+
+type TokenMovementInstructionDestination = unknown;
+
+type TokenMovementInstructionWaypoints = unknown;
+
+type TokenResizingInstruction = unknown;
+
+type TokenMovementOptions = unknown;
 
 type TokenMovementContinuationData = TokenDocument.MovementContinuationData;
 
 type TokenMovementContinuationHandle = TokenDocument.MovementContinuationHandle;
+
+type TokenResumeMovementCallback = unknown;
+
+type WallCategory = WallDocument.Category;
+
+type RegionSurface = RegionDocument.Surface;

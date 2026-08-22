@@ -48,10 +48,19 @@ declare namespace Adventure {
     Readonly<{
       name: "Adventure";
       collection: "adventures";
-      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      compendiumIndexFields: [
+        "_id",
+        "name",
+        "caption",
+        "description",
+        "img",
+        "sort",
+        "folder",
+        "flags.core.sheetClass",
+      ];
       label: "DOCUMENT.Adventure";
       labelPlural: "DOCUMENT.Adventures";
-      schemaVersion: "13.341";
+      schemaVersion: "14.353";
     }>
   > {}
 
@@ -243,65 +252,69 @@ declare namespace Adventure {
     }>;
 
     /**
-     * An array of Actor documents which are included in the adventure
+     * An array of included Actor documents
      * @defaultValue `new Set()`
      */
     actors: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseActor>>;
 
     /**
-     * An array of Combat documents which are included in the adventure
+     * An array of included Combat documents
      * @defaultValue `new Set()`
      */
     combats: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseCombat>>;
 
     /**
-     * An array of Item documents which are included in the adventure
+     * An array of included Item documents
      * @defaultValue `new Set()`
      */
     items: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseItem>>;
 
     /**
-     * An array of JournalEntry documents which are included in the adventure
+     * An array of included JournalEntry documents
      * @defaultValue `new Set()`
      */
     journal: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseJournalEntry>>;
 
     /**
-     * An array of Scene documents which are included in the adventure
+     * An array of included Scene documents
      * @defaultValue `new Set()`
      */
     scenes: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseScene>>;
 
     /**
-     * An array of RollTable documents which are included in the adventure
+     * An array of included RollTable documents
      * @defaultValue `new Set()`
      */
     tables: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseRollTable>>;
 
     /**
-     * An array of Macro documents which are included in the adventure
+     * An array of included Macro documents
      * @defaultValue `new Set()`
      */
     macros: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseMacro>>;
 
     /**
-     * An array of Cards documents which are included in the adventure
+     * An array of included Cards documents
      * @defaultValue `new Set()`
      */
     cards: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseCards>>;
 
     /**
-     * An array of Playlist documents which are included in the adventure
+     * An array of included Playlist documents
      * @defaultValue `new Set()`
      */
     playlists: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BasePlaylist>>;
 
     /**
-     * An array of Folder documents which are included in the adventure
+     * An array of included Folder documents
      * @defaultValue `new Set()`
      */
     folders: fields.SetField<fields.EmbeddedDataField<typeof foundry.documents.BaseFolder>>;
 
+    /**
+     * The _id of a Folder which contains this Adventure
+     * @defaultValue `null`
+     */
     folder: fields.ForeignDocumentField<typeof foundry.documents.BaseFolder>;
 
     /**
@@ -876,14 +889,29 @@ declare namespace Adventure {
   type ContainedDocumentType = Exclude<Extract<Folder.SubType, Document.Type>, "Adventure"> | "Folder";
 
   interface ImportData {
+    /** Arrays of document data to create, organized by document name */
     toCreate: DocumentDataRecord;
+
+    /** Arrays of document data to update, organized by document name */
     toUpdate: DocumentDataRecord;
+
+    /** The total count of documents to import */
     documentCount: number;
   }
 
   interface ImportResult {
+    /** Documents created as a result of the import, grouped by document name */
     created: DocumentResult;
+
+    /** Documents updated as a result of the import, grouped by document name */
     updated: DocumentResult;
+
+    /**
+     * The server-side timestamp when the content was imported.
+     * @remarks `undefined` when the import created no documents, as this is read back out of the
+     * create operation Foundry passes to {@linkcode Document.createDocuments}.
+     */
+    importedTime: number | undefined;
   }
 
   /** @internal */
@@ -903,13 +931,25 @@ declare namespace Adventure {
     /**
      * An array of awaited pre-import callbacks
      */
-    preImport: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
+    preImport: Adventure.PreImportCallback[];
 
     /**
      * An array of awaited post-import callbacks
      */
-    postImport: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
+    postImport: Adventure.PostImportCallback[];
   }
+
+  /**
+   * A callback function that is invoked and awaited during import data preparation before the adventure import
+   * proceeds. This can be used to perform custom pre-processing on the import data.
+   */
+  type PreImportCallback = (data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>;
+
+  /**
+   * A callback function that is invoked and awaited after import but before the overall import workflow concludes.
+   * This can be used to perform additional custom adventure setup steps.
+   */
+  type PostImportCallback = (result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>;
 
   interface ImportOptions extends InexactPartial<_ImportOptions> {}
 
@@ -959,10 +999,10 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   /**
    * Perform a full import workflow of this Adventure.
    * Create new and update existing documents within the World.
-   * @param options - Options which configure and customize the import process
+   * @param importOptions - Options which configure and customize the import process
    * @returns The import result
    */
-  import(options?: Adventure.ImportOptions): Promise<Adventure.ImportResult>;
+  import(importOptions?: Adventure.ImportOptions): Promise<Adventure.ImportResult>;
 
   /**
    * Prepare Adventure data for import into the World.
