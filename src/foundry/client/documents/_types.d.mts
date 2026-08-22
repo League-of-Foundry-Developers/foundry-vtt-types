@@ -143,15 +143,17 @@ type TokenPreMovementOperation = unknown;
 
 type TokenMovementOperation = TokenDocument.MovementOperation;
 
-type TokenMovementInstructionOptions = unknown;
+type TokenMovementInstructionOptions = TokenDocument.MovementInstructionOptions;
 
-type TokenMovementInstructionDestination = unknown;
+type TokenMovementInstructionDestination = TokenDocument.MovementInstructionDestination;
 
-type TokenMovementInstructionWaypoints = unknown;
+type TokenMovementInstructionWaypoints = TokenDocument.MovementInstructionWaypoints;
 
-type TokenResizingInstruction = unknown;
+type TokenMovementInstruction = TokenDocument.MovementInstruction;
 
-type TokenMovementOptions = unknown;
+type TokenResizingInstruction = TokenDocument.ResizingInstruction;
+
+type TokenMovementOptions = TokenDocument.MovementOptions;
 
 type TokenMovementContinuationData = TokenDocument.MovementContinuationData;
 
