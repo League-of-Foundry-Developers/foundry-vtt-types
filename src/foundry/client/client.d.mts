@@ -5,6 +5,7 @@ import type { Mutable } from "#utils";
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
 import "#common/primitives/_module.mjs";
+import "#common/global.d.mts";
 import * as _CONST from "#common/constants.mjs";
 import * as _abstract from "#common/abstract/_module.mjs";
 import * as _documents from "#client/documents/_module.mjs";
