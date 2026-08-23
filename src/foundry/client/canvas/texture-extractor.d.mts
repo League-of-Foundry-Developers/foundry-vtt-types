@@ -47,7 +47,7 @@ declare class TextureExtractor {
 
   /**
    * Extract a rectangular block of pixels from the texture (without un-pre-multiplying).
-   * @param options - Options with configure base64 extraction behaviour
+   * @param options - Options which configure base64 extraction behavior
    * @returns The base64 string or undefined if there's no change compared
    * to the last time base64 was extracted and the control hash option is enabled.
    */
@@ -84,7 +84,7 @@ declare namespace TextureExtractor {
     callerName: string;
 
     /**
-     * Should ues control hash?
+     * Should use control hash?
      * @defaultValue `false`
      */
     controlHash: boolean;
@@ -118,7 +118,11 @@ declare namespace TextureExtractor {
 
   /** @internal */
   interface _PixelsExtractOptions {
-    /** The optional output buffer to write the pixels to. May be detached. */
+    /**
+     * The optional output buffer to write the pixels to.
+     * May be detached.
+     * The (new) output buffer is returned.
+     */
     out: ArrayBuffer;
   }
 

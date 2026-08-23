@@ -2,10 +2,7 @@
 
 import type { AnyConcreteConstructor, AnyConstructor, AnyFunction } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { Document } from "./abstract/_module.d.mts";
 
-import ClientSettings = foundry.helpers.ClientSettings;
-import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
 import SocketInterface = foundry.helpers.SocketInterface;
 
 export {};
@@ -17,7 +14,7 @@ export {};
 // them here because it has poor discoverability. The names Foundry has chosen
 // also overlaps with other existing names, such as SettingConfig vs. ClientSetting.SettingConfig
 
-type DocumentConstructionContext = Document.ConstructionContext<Document.Any | null>;
+type SetElement<T extends Set<unknown>> = T extends Set<infer U> ? U : never;
 
 /**
  * Make all properties in T recursively readonly.
@@ -52,6 +49,24 @@ type DeepReadonly<T> = Readonly<{
  */
 type Constructor = new (...args: any[]) => any;
 
+type Builtin = Date | AnyFunction | Uint8Array | string | number | boolean | symbol | null | undefined;
+
+type SerializableBuiltin = string | number | boolean | object | null;
+
+/**
+ * A recursively-partial object
+ * @privateRemarks We have our own `DeepPartial` in `#utils`
+ */
+type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends object
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
+
 type Point = Canvas.Point;
 
 type PointArray = Canvas.PointTuple;
@@ -60,23 +75,9 @@ type ElevatedPoint = Canvas.ElevatedPoint;
 
 type Rectangle = Canvas.Rectangle;
 
-type BuiltinTypes = typeof Number | typeof String | typeof Boolean;
+type BuiltinType = typeof Number | typeof String | typeof Boolean | typeof Object;
 
 type ColorSource = foundry.utils.Color.Source;
-
-type SettingConfig = ClientSettings.SettingConfig;
-
-type SettingSubmenuConfig = ClientSettings.SettingSubmenuConfig;
-
-type KeyBindingActionConfig = ClientKeybindings.StoredKeybindingActionConfig;
-
-type KeybindingActionBinding = ClientKeybindings.StoredKeybindingActionBinding;
-
-type KeybindingAction = ClientKeybindings.KeybindingAction;
-
-type KeyboardEventContext = foundry.helpers.interaction.KeyboardManager.KeyboardEventContext;
-
-type ConnectedGamepad = foundry.helpers.interaction.GamepadManager.ConnectedGamepad;
 
 type RequestData = SocketInterface.RequestData;
 

@@ -241,7 +241,7 @@ export declare const CHAT_MESSAGE_STYLES: Readonly<{
 export type CHAT_MESSAGE_STYLES = Brand<number, "constants.CHAT_MESSAGE_STYLES">;
 
 /**
- * Define the set of languages which have built-in support in the core software
+ * Define the set of languages which have built-in support in the core software.
  */
 export declare const CORE_SUPPORTED_LANGUAGES: readonly ["en"];
 export type CORE_SUPPORTED_LANGUAGES = ValueOf<typeof CORE_SUPPORTED_LANGUAGES>;
@@ -304,7 +304,7 @@ export type LIGHTING_LEVELS = Brand<number, "constants.LIGHTING_LEVELS">;
  * The CSS themes which are currently supported for the V11 Setup menu.
  */
 export declare const CSS_THEMES: Readonly<{
-  foundry: "THEME.foundry";
+  dark: "THEME.foundry";
   fantasy: "THEME.fantasy";
   scifi: "THEME.scifi";
 }>;
@@ -317,7 +317,7 @@ export declare const DEFAULT_TOKEN: "icons/svg/mystery-man.svg";
 export type DEFAULT_TOKEN = typeof DEFAULT_TOKEN;
 
 /**
- * Define the allowed Document class types.
+ * The primary Document types.
  */
 export declare const PRIMARY_DOCUMENT_TYPES: readonly [
   "ActiveEffect",
@@ -563,6 +563,9 @@ export declare const MOVEMENT_DIRECTIONS: Readonly<{
 
   /** @remarks `0x2 | 0x8` */
   DOWN_RIGHT: 0xa & MOVEMENT_DIRECTIONS;
+
+  DESCEND: 0x10 & MOVEMENT_DIRECTIONS;
+  ASCEND: 0x20 & MOVEMENT_DIRECTIONS;
 }>;
 export type MOVEMENT_DIRECTIONS = Brand<number, "constants.MOVEMENT_DIRECTIONS">;
 
@@ -826,7 +829,6 @@ export type PLAYLIST_MODES = Brand<number, "constants.PLAYLIST_MODES">;
 export declare const PLAYLIST_SORT_MODES: Readonly<{
   /**
    * Sort sounds alphabetically.
-   * @defaultValue
    */
   ALPHABETICAL: "a";
 
@@ -1057,7 +1059,7 @@ export declare const OCCLUSION_MODES: Readonly<{
 
   /**
    * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
-   * This is useful for roofs on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
+   * This is useful for rooves on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
    */
   VISION: 8 & OCCLUSION_MODES;
 }>;
@@ -1075,7 +1077,6 @@ export declare const TILE_OCCLUSION_MODES: Readonly<{
 
   /**
    * Causes the whole tile to fade when an actor token moves under it.
-   * @defaultValue
    */
   FADE: 1 & TILE_OCCLUSION_MODES;
 
@@ -1091,7 +1092,7 @@ export declare const TILE_OCCLUSION_MODES: Readonly<{
 
   /**
    * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
-   * This is useful for roofs on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
+   * This is useful for rooves on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
    */
   VISION: 8 & TILE_OCCLUSION_MODES;
 }>;
@@ -1270,7 +1271,7 @@ export declare const USER_ROLES: Readonly<{
 
   /**
    * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions
-   * like create drawings, or even to (optionally) upload media files to the server.
+   * like create drawings or even to (optionally) upload media files to the server.
    */
   TRUSTED: 2 & USER_ROLES;
 
@@ -1308,7 +1309,7 @@ export declare const USER_ROLE_NAMES: Readonly<{
 
   /**
    * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions
-   * like create drawings, measured templates, or even to (optionally) upload media files to the server.
+   * like create drawings or even to (optionally) upload media files to the server.
    */
   "2": "TRUSTED";
 
@@ -1700,6 +1701,10 @@ export declare const EDGE_SENSE_TYPES: Readonly<{
 }>;
 export type EDGE_SENSE_TYPES = Brand<number, "constants.EDGE_SENSE_TYPES">;
 
+/**
+ * The allowed directions of effect that a Edge can have
+ * @see {@link https://foundryvtt.com/article/walls/}
+ */
 export declare const EDGE_DIRECTIONS: Readonly<{
   /**
    * The edge collides from both directions.
@@ -1962,11 +1967,14 @@ interface _UPLOADABLE_FILE_EXTENSIONS
     Identity<typeof TEXTURE_FILE_EXTENSIONS>,
     Identity<typeof GRAPHICS_FILE_EXTENSIONS> {}
 
+/**
+ * A consolidated mapping of all extensions permitted for upload.
+ */
 export declare const UPLOADABLE_FILE_EXTENSIONS: Readonly<_UPLOADABLE_FILE_EXTENSIONS>;
 export type UPLOADABLE_FILE_EXTENSIONS = keyof typeof UPLOADABLE_FILE_EXTENSIONS;
 
 /**
- * An enumeration of file type categories which can be selected
+ * An enumeration of file type categories which can be selected.
  */
 export declare const FILE_CATEGORIES: Readonly<{
   HTML: typeof HTML_FILE_EXTENSIONS;
@@ -2475,7 +2483,7 @@ export declare const REGION_EVENTS: Readonly<{
   /**
    * Triggered when a Token moves within a Region.
    *
-   * A Token moves whenever its x, y, elevation, width, height, depth, shape, or level is changed.
+   * A token moves whenever its x, y, elevation, width, height, depth, shape, or level is changed.
    *
    * @see {@linkcode foundry.documents.types.RegionTokenMoveWithinEvent}
    */
@@ -2578,6 +2586,9 @@ export declare const REGION_VISIBILITY: Readonly<{
 }>;
 export type REGION_VISIBILITY = Brand<number, "constants.REGION_VISIBILITY">;
 
+/**
+ * The types of a Region movement segment.
+ */
 export declare const REGION_MOVEMENT_SEGMENTS: Readonly<{
   /**
    * The segment crosses the boundary of the Region and exits it.
@@ -2585,12 +2596,12 @@ export declare const REGION_MOVEMENT_SEGMENTS: Readonly<{
   EXIT: -1 & REGION_MOVEMENT_SEGMENTS;
 
   /**
-   * The segment does not cross the boundary of the region and is contained within it.
+   * The segment does not cross the boundary of the Region and is contained within it.
    */
   MOVE: 0 & REGION_MOVEMENT_SEGMENTS;
 
   /**
-   * The segment crosses the boundary of the region and enters it.
+   * The segment crosses the boundary of the Region and enters it.
    */
   ENTER: 1 & REGION_MOVEMENT_SEGMENTS;
 }>;

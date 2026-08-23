@@ -4,7 +4,7 @@ import System = foundry.packages.System;
 import ClientPackageMixin = foundry.packages.ClientPackageMixin;
 
 declare const system: System;
-expectTypeOf(system.favorite).toEqualTypeOf<false>();
+expectTypeOf(system.favorite).toEqualTypeOf<boolean>();
 expectTypeOf(system.getVersionBadge()).toEqualTypeOf<ClientPackageMixin.CompatibilityBadge | null>();
 expectTypeOf(system.install()).toEqualTypeOf<void>();
 expectTypeOf(system.uninstall()).toEqualTypeOf<void>();
