@@ -38,9 +38,10 @@ interface _FromUuidOptions {
 export interface FromUuidOptions extends InexactPartial<_FromUuidOptions> {}
 
 /**
- * Retrieve an Entity or Embedded Entity by its Universally Unique Identifier (uuid).
- * @param uuid    - The uuid of the Entity or Embedded Entity to retrieve
+ * Retrieve a Document by its Universally Unique Identifier (uuid).
+ * @param uuid    - The uuid of the Document to retrieve.
  * @param options - Options to configure how a UUID is resolved.
+ * @returns Returns the Document if it could be found, otherwise null.
  */
 export function fromUuid<ConcreteDocument extends Document.Any = __UnsetDocument, const Uuid extends string = string>(
   uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
@@ -64,7 +65,7 @@ export interface FromUuidSyncOptions extends InexactPartial<_FromUuidOptions>, I
  * @param uuid    - The uuid of the Document to retrieve.
  * @param options - Options to configure how a UUID is resolved.
  * @returns The Document or its index entry if it resides in a Compendium, otherwise null.
- * @throws If the uuid resolves to a Document that cannot be retrieved synchronously.
+ * @throws If the uuid resolves to a Document that cannot be retrieved synchronously, and the strict option is true.
  */
 export function fromUuidSync<
   ConcreteDocument extends Document.Any = __UnsetDocument,
@@ -97,7 +98,7 @@ type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string
 /**
  * Return a reference to the Document class implementation which is configured for use.
  * @param documentName - The canonical Document name, for example "Actor"
- * @returns configured Document class implementation
+ * @returns The configured Document class implementation
  * @privateRemarks Foundry types this as `| undefined` but they can't enforce passing a valid Document type
  */
 export function getDocumentClass<Name extends Document.Type>(documentName: Name): Document.ImplementationClassFor<Name>;
@@ -120,22 +121,20 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
   target?: T | null | undefined;
 
   /**
-   * The sorted Array of siblings which share the same sorted container
+   * The Array of siblings which the source should be sorted within
    * @defaultValue `[]`
    */
   siblings?: T[] | undefined;
 
   /**
-   * The name of the data property within the source object which defines the sort key
+   * The property name within the source object which defines the sort key
    * @defaultValue `"sort"`
    */
   sortKey?: SortKey | undefined;
 
   /**
-   * Whether to explicitly sort before (true) or sort after (false). If nothing is passed
-   * the sort order will be automatically determined, preferring before.
-   *
-   * @defaultValue `true`
+   * Explicitly sort before (true) or sort after( false).
+   * If undefined the sort order will be automatically determined.
    */
   sortBefore?: boolean | undefined;
 }
@@ -152,7 +151,7 @@ export interface SortOptions<T, SortKey extends string = "sort"> {
  * }
  * ```
  *
- * @param source  - source object being sorted
+ * @param source  - The source object being sorted
  * @param options - Options which modify the sort behavior
  * @template T   - the type of the source and target object
  *
@@ -169,7 +168,8 @@ export function performIntegerSort<T, SortKey extends string = "sort">(
 }>;
 
 /**
- * Express a timestamp as a relative string
+ * Express a timestamp as a relative string.
+ * This helper internally uses GameTime#format using the relative formatter and the Earth calendar.
  * @param timeStamp - A timestamp string or Date object to be formatted as a relative time
  * @returns A string expression for the relative time
  */
@@ -179,8 +179,9 @@ export function timeSince(timeStamp: Date | string): string;
  * Parse an HTML string, returning a processed HTMLElement or HTMLCollection.
  * A single HTMLElement is returned if the provided string contains only a single top-level element.
  * An HTMLCollection is returned if the provided string contains multiple top-level elements.
+ * If no element was parsable, the return is `null`.
  */
-export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
+export function parseHTML(htmlString: string): HTMLCollection | HTMLElement | null;
 
 /**
  * Return a URL with a cache-busting query parameter appended.

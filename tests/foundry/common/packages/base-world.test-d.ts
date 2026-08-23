@@ -20,6 +20,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.data.validation.DataModelValidationFailure | void>();
 
 // schema fields
+expectTypeOf(baseWorld.type).toEqualTypeOf<"world">();
 expectTypeOf(baseWorld.system).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.background).toEqualTypeOf<string | null>();
 expectTypeOf(baseWorld.joinTheme).toEqualTypeOf<keyof typeof foundry.CONST.WORLD_JOIN_THEMES | undefined>();

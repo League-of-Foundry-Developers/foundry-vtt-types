@@ -436,7 +436,7 @@ expectTypeOf(token["_removeAllFilterEffects"]()).toBeVoid();
 expectTypeOf(
   token["_onCreate"](
     doc.toObject(),
-    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    { action: "create", documentName: "Token", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -451,13 +451,24 @@ expectTypeOf(
 
       flags: { core: { sheetLock: true } },
     },
-    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
+    {
+      action: "update",
+      documentName: "Token",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      diff: true,
+      recursive: true,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  token["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  token["_onDelete"](
+    { action: "delete", documentName: "Token", parent: scene, modifiedTime: 7, render: true },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value

@@ -16,16 +16,20 @@ declare class EmbeddedCollectionDelta<
 > extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
   /**
    * A convenience getter to return the corresponding base collection.
-   * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}
+   * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}.
+   *
+   * `undefined` when the parent {@linkcode TokenDocument} has no `baseActor`.
    */
-  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Stored>;
+  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Stored> | undefined;
 
   /**
    * A convenience getter to return the corresponding synthetic collection.
    * @remarks This returns the version of this collection on the constructed, synthetic
-   * {@linkcode TokenDocument.Implementation.actor | actor}
+   * {@linkcode TokenDocument.Implementation.actor | actor}.
+   *
+   * `undefined` when {@linkcode ActorDelta.syntheticActor | ActorDelta#syntheticActor} is `null`.
    */
-  get syntheticCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation>;
+  get syntheticCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation> | undefined;
 
   override manages(id: string): boolean;
 
@@ -43,13 +47,13 @@ declare class EmbeddedCollectionDelta<
    */
   override createDocument(
     data: Document.CreateDataForName<ContainedDocument["documentName"]>,
-    context: EmbeddedCollection.DocumentConstructionContext,
+    context?: EmbeddedCollection.DocumentConstructionContext,
   ): Document.ImplementationFor<ContainedDocument["documentName"]>;
 
   /**
    * Restore a Document so that it is no longer managed by the collection delta and instead inherits from the base Document.
-   * @param id - The Document ID
-   * @returns The restored Document
+   * @param id - The Document ID.
+   * @returns The restored Document.
    *
    * @remarks This is a thin wrapper around {@linkcode EmbeddedCollectionDelta.restoreDocuments | #restoreDocuments}.
    *
@@ -83,7 +87,7 @@ declare class EmbeddedCollectionDelta<
    * those via the chain starting at {@linkcode ActorDelta.updateSource | ActorDelta#updateSource}
    */
   _prepareDeltaUpdate(
-    changes: Document.UpdateDataForName<ContainedDocument["documentName"]>,
+    changes: Document.UpdateDataForName<ContainedDocument["documentName"]>[],
     options?: DataModel.UpdateOptions,
   ): void;
 
@@ -141,6 +145,6 @@ declare namespace EmbeddedCollectionDelta {
 
 export default EmbeddedCollectionDelta;
 
-declare class AnyEmbeddedCollectionDelta extends EmbeddedCollectionDelta<Document.Any, Document.Any> {
+declare abstract class AnyEmbeddedCollectionDelta extends EmbeddedCollectionDelta<Document.Any, Document.Any> {
   constructor(...args: never);
 }

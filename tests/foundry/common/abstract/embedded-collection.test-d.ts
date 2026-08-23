@@ -30,6 +30,7 @@ describe("EmbeddedCollection Tests", async () => {
 
   const onItemCreateOperation = {
     action: "create",
+    documentName: "Item",
     data: [itemCreateData],
     modifiedTime: 7,
     parent: null,
@@ -38,6 +39,7 @@ describe("EmbeddedCollection Tests", async () => {
 
   const onItemUpdateOperation = {
     action: "update",
+    documentName: "Item",
     diff: true,
     modifiedTime: 7,
     parent: null,
@@ -47,6 +49,7 @@ describe("EmbeddedCollection Tests", async () => {
 
   const onItemDeleteOperation = {
     action: "delete",
+    documentName: "Item",
     deleteAll: false,
     ids: ["XXXXXITEMIDXXXXX"],
     modifiedTime: 7,
@@ -55,6 +58,7 @@ describe("EmbeddedCollection Tests", async () => {
 
   const onSceneUpdateOperation = {
     action: "update",
+    documentName: "Scene",
     diff: true,
     modifiedTime: 7,
     parent: null,
@@ -96,22 +100,22 @@ describe("EmbeddedCollection Tests", async () => {
     expectTypeOf(ec.initialize({ dropInvalidEmbedded: true, fallback: false, strict: true })).toBeVoid();
     expectTypeOf(ec.initialize({ dropInvalidEmbedded: undefined, fallback: undefined, strict: undefined })).toBeVoid();
 
-    expectTypeOf(ec["_initializeDocument"](itemSource)).toBeVoid();
-    expectTypeOf(ec["_initializeDocument"](itemSource, {})).toBeVoid();
+    expectTypeOf(ec["_initializeDocument"](itemSource)).toEqualTypeOf<Item.Stored | null>();
+    expectTypeOf(ec["_initializeDocument"](itemSource, {})).toEqualTypeOf<Item.Stored | null>();
     expectTypeOf(
       ec["_initializeDocument"](itemSource, {
         dropInvalidEmbedded: false,
         fallback: true,
         strict: false,
       }),
-    ).toBeVoid();
+    ).toEqualTypeOf<Item.Stored | null>();
     expectTypeOf(
       ec["_initializeDocument"](itemSource, {
         dropInvalidEmbedded: undefined,
         fallback: undefined,
         strict: undefined,
       }),
-    ).toBeVoid();
+    ).toEqualTypeOf<Item.Stored | null>();
 
     expectTypeOf(ec.createDocument(itemSource)).toEqualTypeOf<Item.Implementation>();
     expectTypeOf(ec.createDocument(itemSource, {})).toEqualTypeOf<Item.Implementation>();

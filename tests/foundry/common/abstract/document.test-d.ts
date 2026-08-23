@@ -67,6 +67,9 @@ if (item) {
 
   expectTypeOf(item.update(item.toObject())).toEqualTypeOf<UpdatedUnion<Item.Stored>>();
   expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
+
+  // @ts-expect-error `deleteAll` is only valid for the static deleteDocuments workflow.
+  item.delete({ deleteAll: true });
 }
 
 declare module "fvtt-types/configuration" {
@@ -152,3 +155,34 @@ class _TestDocumentUpdateDiff extends Actor {
     return super._updateDiff(copy, changes, options, _state);
   }
 }
+
+// `Document#uuid` returns `string | null` as of v14; a `Stored` document narrows it back to `string`.
+declare const _temporaryActor: Actor.Implementation;
+declare const _storedActor: Actor.Stored;
+expectTypeOf(_temporaryActor.uuid).toEqualTypeOf<string | null>();
+expectTypeOf(_storedActor.uuid).toEqualTypeOf<string>();
+
+declare const _constructionContext: Document.ConstructionContext;
+expectTypeOf(_constructionContext.creation).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(_constructionContext.modifiedTime).toEqualTypeOf<number | undefined>();
+expectTypeOf(_constructionContext.parentCollection).toEqualTypeOf<string | undefined>();
+
+// `Document._preCleanData` is a real static override point in v14.
+class _TestDocumentPreCleanData extends Actor {
+  protected static override _preCleanData(
+    data: object,
+    options: fields.DataField.CleanOptions,
+    _state: fields.DataField.UpdateState,
+  ): void {
+    super._preCleanData(data, options, _state);
+  }
+}
+
+// `deleteAll` must not survive into the single-document delete operation, but stays on the static one.
+expectTypeOf<Actor.Database.DeleteOperation["deleteAll"]>().toEqualTypeOf<boolean>();
+
+// Foundry documents `noHook` per write operation; none of them reach `GetOperation`.
+expectTypeOf<Actor.Database.CreateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+expectTypeOf<Actor.Database.UpdateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+expectTypeOf<Actor.Database.DeleteOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+expectTypeOf<foundry.abstract.DatabaseBackend.GetOperation>().not.toHaveProperty("noHook");

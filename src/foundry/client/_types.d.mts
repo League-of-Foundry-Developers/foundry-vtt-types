@@ -52,7 +52,7 @@ type TokenMovementActionCostFunction = CONFIG.Token.Movement.MovementActionCostF
 
 type TokenMovementActionConfig = CONFIG.Token.Movement.ActionConfig;
 
-type CanvasViewPosition = Canvas.PartialViewPosition;
+type CanvasViewPosition = Canvas.ViewPosition;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 

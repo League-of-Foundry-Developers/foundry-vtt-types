@@ -20,15 +20,17 @@ declare namespace BaseWorld {
  */
 declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
   // fake type override
-  static override type: "world";
-
-  // fake type override
   static override get collection(): `${typeof BaseWorld.type}s`;
 
   // fake type override
   override get type(): typeof BaseWorld.type;
 
   static override defineSchema(): BaseWorld.Schema;
+
+  /** @defaultValue `["PACKAGE", "WORLD"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  static override type: "world";
 
   /**
    * The default icon used for this type of Package.
@@ -39,12 +41,13 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
   /**
    * @remarks
    * Migrations:
+   * - {@linkcode BasePackage.migrateData | super}'s
    * - Enforces `compatibility` being an object
    * - `compatibility.maximum === "1.0.0"` to `undefined`
    * - If `coreVersion` but no `compatibility.verified`, sets both `compatibility.verified` and `.minimum` to `coreVersion`
    * - Sets `background` to `null` if it's a `string` that doesn't end in a {@linkcode CONST.FILE_CATEGORIES.IMAGE} extension.
    */
-  static override migrateData(data: object): object;
+  static override migrateData(data: object, options?: BasePackage.MigrateDataOptions): object;
 
   static override testAvailability(
     data: BaseWorld.ManifestData | BaseWorld,

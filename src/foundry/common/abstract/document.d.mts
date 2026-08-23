@@ -203,7 +203,7 @@ declare abstract class Document<
    * ```typescript
    * {
    *   name: "Document",
-   *   label: "DOCUMENT.Document"
+   *   label: "DOCUMENT.Document",
    *   coreTypes: [BASE_DOCUMENT_TYPE],
    *   collection: "documents",
    *   embedded: {},
@@ -211,12 +211,12 @@ declare abstract class Document<
    *   indexed: false,
    *   compendiumIndexFields: [],
    *   permissions: {
-   *     view: "LIMITED"       // At least limited permission is required to view the Document
+   *     view: "LIMITED",      // At least limited permission is required to view the Document
    *     create: "ASSISTANT",  // Assistants or Gamemasters can create Documents
-   *     update: "ASSISTANT",  // Document owners can update Documents (this includes GM users)
-   *     delete: "ASSISTANT"   // Assistants or Gamemasters can create Documents
+   *     update: "OWNER",      // Document owners can update Documents (this includes GM users)
+   *     delete: "ASSISTANT"   // Assistants or Gamemasters can delete Documents
    *   },
-   *   preserveOnImport: ["_id", "sort", "ownership", folder],
+   *   preserveOnImport: ["_id", "sort", "ownership", "folder"],
    *   schemaVersion: undefined
    * }
    * ```
@@ -226,12 +226,12 @@ declare abstract class Document<
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
-   * The database backend used to execute operations and handle results
+   * The database backend used to execute operations and handle results.
    */
   static get database(): CONFIG["DatabaseBackend"];
 
   /**
-   * Return a reference to the implemented subclass of this base document type.
+   * Return a reference to the configured subclass of this base Document type.
    */
   static get implementation(): Document.Internal.Constructor;
 
@@ -261,7 +261,7 @@ declare abstract class Document<
   get documentName(): DocumentName;
 
   /**
-   * The allowed types which may exist for this Document class
+   * The allowed types which may exist for this Document class.
    */
   static get TYPES(): string[];
 
@@ -279,18 +279,22 @@ declare abstract class Document<
   static readonly hierarchy: Readonly<Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>>;
 
   /**
-   * Identify the collection in a parent Document that this Document exists belongs to, if any.
+   * Identify the collection in a parent Document that this Document belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
    * @remarks If passed a value for `parentCollection`, simply returns that value.
    * @internal
    */
   _getParentCollection(parentCollection?: string | null): string | null;
 
+  /**
+   * The document identifier, unique within its Collection, or null if the Document has not yet been assigned an
+   * identifier
+   */
   // TODO: is this fake property necessary?
   _id: string | null;
 
   /**
-   * The canonical identifier for this Document
+   * The canonical identifier for this Document.
    */
   get id(): string | null;
 
@@ -302,7 +306,7 @@ declare abstract class Document<
   abstract get compendium(): unknown;
 
   /**
-   * Test whether this Document is embedded within a parent Document
+   * Is this document embedded within a parent document?
    */
   get isEmbedded(): boolean;
 
@@ -419,8 +423,8 @@ declare abstract class Document<
   override toObject(source?: boolean): SchemaField.SourceData<Schema>;
 
   /**
-   * @throws If `changes.type` differs from `copy.type` and `changes.system` is not a `ForcedReplacement` operator.
    * @remarks Requires full replacement of system data if the document type changes.
+   * @throws If `changes.type` differs from `copy.type` and `changes.system` is not a `ForcedReplacement` operator.
    */
   protected override _updateDiff(
     copy: SchemaField.SourceData<Schema>,
@@ -523,6 +527,7 @@ declare abstract class Document<
    * @param ids       - An array of string ids for the documents to be deleted (default: `[]`)
    * @param operation - Parameters of the database deletion operation (default: `{}`)
    * @returns An array of deleted Document instances
+   * @throws If an invalid operation is attempted.
    *
    * @example
    * Delete a single Document
@@ -570,7 +575,7 @@ declare abstract class Document<
    * @see {@linkcode Document.createDocuments}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
    * @param operation - Parameters of the creation operation (default: `{}`)
-   * @returns The created Document instance
+   * @returns The created Document instance(s)
    *
    * @example
    * Create a World-level Item
@@ -607,7 +612,7 @@ declare abstract class Document<
    * @see {@linkcode Document.updateDocuments}
    * @param data      - Differential update data which modifies the existing values of this document data (default: `{}`)
    * @param operation - Parameters of the update operation (default: `{}`)
-   * @returns The updated Document instance
+   * @returns The updated Document instance, or undefined not updated
    *
    * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
    * returned.
@@ -619,7 +624,7 @@ declare abstract class Document<
    * Delete this Document, removing it from the database.
    * @see {@linkcode Document.deleteDocuments}
    * @param operation - Parameters of the deletion operation (default: `{}`)
-   * @returns The deleted Document instance
+   * @returns The deleted Document instance, or undefined if not deleted
    *
    * @remarks If the document deletion is skipped by a hook or `_preDelete` then `undefined` is
    * returned.
@@ -630,7 +635,7 @@ declare abstract class Document<
   /**
    * Get a World-level Document of this type by its id.
    * @param documentId - The Document ID
-   * @param operation  - Additional options which customize the request
+   * @param operation  - Parameters of the get operation
    * @returns The retrieved Document, or null
    *
    * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, but this will return the
@@ -673,7 +678,8 @@ declare abstract class Document<
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
    *
-   * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
+   * @remarks Foundry types the return as `Collection<string, Document>` as of v14. In practice this is usually some
+   * form of {@linkcode EmbeddedCollection}, but not always (e.g. `Token["actors"]`).
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
   getEmbeddedCollection(embeddedName: never): unknown;
@@ -792,13 +798,13 @@ declare abstract class Document<
   setFlag(scope: never, key: never, value: never): Promise<this | undefined>;
 
   /**
-   * Remove a flag assigned to the document
+   * Remove a flag assigned to the document.
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
    * @returns The updated document instance
    *
-   * @remarks This method is a wrapper on {@linkcode Document.delete | #delete}, so it can return `undefined` if the update
-   * is cancelled by {@linkcode Document._preDelete | #_preDelete} or the associated hook.
+   * @remarks This method is a wrapper on {@linkcode Document.update | #update}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preUpdate | #_preUpdate} or the associated hook.
    */
   unsetFlag(scope: never, key: never): Promise<this | undefined>;
 
@@ -831,7 +837,7 @@ declare abstract class Document<
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
    * {@linkcode Document.updateSource | Document#updateSource}.
-   * @param documents - Pending document instances ot be created
+   * @param documents - Pending document instances to be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
    * @returns Return false to cancel the creation operation entirely
@@ -862,17 +868,20 @@ declare abstract class Document<
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
-   * Pre-update operations only occur for the client which requested the operation.
-   * @param changed - The differential data that is changed relative to the documents prior values
+   * Pre-process an update operation for a single Document instance. Pre-operation events only occur for the client
+   * which requested the operation.
+   *
+   * @param changes - The candidate changes to the Document
    * @param options - Additional options which modify the update request
    * @param user    - The User requesting the document update
-   * @returns A return value of false indicates the update operation should be cancelled
+   * @returns A return value of false indicates the update operation should be cancelled.
    */
-  protected _preUpdate(changed: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preUpdate(changes: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
-   * Perform follow-up operations after a Document of this type is updated.
-   * Post-update operations occur for all clients after the update is broadcast.
+   * Post-process an update operation for a single Document instance. Post-operation events occur for all connected
+   * clients.
+   *
    * @param changed - The differential data that was changed relative to the documents prior values
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
@@ -887,7 +896,6 @@ declare abstract class Document<
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
@@ -920,16 +928,19 @@ declare abstract class Document<
 
   /**
    * Perform preliminary operations before a Document of this type is deleted.
-   * Pre-delete operations only occur for the client which requested the operation.
+   * Pre-process a deletion operation for a single Document instance. Pre-operation events only occur for the client
+   * which requested the operation.
+   *
    * @param options - Additional options which modify the deletion request
    * @param user    - The User requesting the document deletion
-   * @returns A return value of false indicates the delete operation should be cancelled
+   * @returns A return value of false indicates the deletion operation should be cancelled.
    */
   protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
 
   /**
-   * Perform follow-up operations after a Document of this type is deleted.
-   * Post-deletion operations occur for all clients after the deletion is broadcast.
+   * Post-process a deletion operation for a single Document instance. Post-operation events occur for all connected
+   * clients.
+   *
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
@@ -949,14 +960,13 @@ declare abstract class Document<
    * @param operation - Parameters of the database update operation
    * @param user      - The User requesting the deletion operation
    * @returns Return false to cancel the deletion operation entirely
-   * @internal
    */
   // Note: This uses `never` because it's unsound to try to do `Document._preDeleteOperation` directly.
   protected static _preDeleteOperation(
     documents: never,
     operation: never,
     user: User.Internal.Implementation,
-  ): Promise<unknown>;
+  ): Promise<boolean | void>;
 
   /**
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
@@ -1056,6 +1066,8 @@ declare abstract class Document<
     fieldNames: string[],
     options?: Document.ClearFieldsRecursivelyOptions,
   ): void;
+
+  #Document: true;
 
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
@@ -2111,13 +2123,25 @@ declare namespace Document {
     strict: boolean;
 
     /**
-     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-     * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
-     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-     * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+     * The name of the parent Document's collection that would contain this one
+     * @privateRemarks Included in the construction context rather than `ConfigureOptions` because
+     * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument} passes it to construction. See
      * {@linkcode Document.parentCollection | Document#parentCollection}.
      */
     parentCollection: string;
+
+    /**
+     * In a ServerDocument context, is this document being created?
+     * @remarks Reaches the client as well: {@linkcode DataModel._initializeSource | DataModel#_initializeSource}
+     * forwards it into the cleaning state.
+     */
+    creation: boolean;
+
+    /** In a ServerDocument context, the timestamp of creation */
+    modifiedTime: number;
+
+    /** In a ServerDocument context, the User performing the construction */
+    user: User.Internal.Implementation;
   }
 
   /**
@@ -2325,6 +2349,10 @@ declare namespace Document {
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly hasTypeData?: boolean;
+
+    /**
+     * If the Document class has type data, can users normally create instances of the "base" type?
+     */
     readonly baseTypeAllowed?: boolean;
     readonly indexed: boolean;
     readonly compendiumIndexFields: readonly string[];
@@ -2470,6 +2498,7 @@ declare namespace Document {
      * object ({@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}):
      *
      * - `action`: set in `DatabaseBackend##configureCreate`. Only the one possible value.
+     * - `documentName`: set in `DatabaseBackend##configureOperation`
      * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
      *
      * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
@@ -2484,7 +2513,7 @@ declare namespace Document {
      * {@linkcode Document._onCreateOperation}, or {@link Hooks.CreateDocument | the `create[Document]` hook}.
      */
     type BackendCreateOperation<BaseOperation extends DatabaseBackend.CreateOperation> = InexactPartialExcept<
-      Omit<BaseOperation, "action" | "modifiedTime">,
+      Omit<BaseOperation, "action" | "documentName" | "modifiedTime">,
       "data"
     >;
 
@@ -2664,6 +2693,7 @@ declare namespace Document {
      * object ({@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}):
      *
      * - `action`: set in `DatabaseBackend##configureUpdate`. Only the one possible value.
+     * - `documentName`: set in `DatabaseBackend##configureOperation`
      * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
      *
      * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
@@ -2678,7 +2708,7 @@ declare namespace Document {
      * {@linkcode Document._onUpdateOperation}, or {@link Hooks.UpdateDocument | the `update[Document]` hook}.
      */
     type BackendUpdateOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = InexactPartialExcept<
-      Omit<BaseOperation, "action" | "modifiedTime">,
+      Omit<BaseOperation, "action" | "documentName" | "modifiedTime">,
       "updates"
     >;
 
@@ -2833,7 +2863,7 @@ declare namespace Document {
      */
     type DeleteOneDocumentOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
       DeleteManyDocumentsOperation<BaseOperation>,
-      "pack" | "parent" | "parentUuid"
+      "deleteAll" | "pack" | "parent" | "parentUuid"
     >;
 
     /**
@@ -2863,6 +2893,7 @@ declare namespace Document {
      * object ({@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}):
      *
      * - `action`: set in `DatabaseBackend##configureDelete`. Only the one possible value.
+     * - `documentName`: set in `DatabaseBackend##configureOperation`
      * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
      *
      * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
@@ -2877,7 +2908,7 @@ declare namespace Document {
      * {@linkcode Document._onDeleteOperation}, or {@link Hooks.DeleteDocument | the `delete[Document]` hook}.
      */
     type BackendDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = InexactPartialExcept<
-      Omit<BaseOperation, "action" | "modifiedTime">,
+      Omit<BaseOperation, "action" | "documentName" | "modifiedTime">,
       "ids"
     >;
 

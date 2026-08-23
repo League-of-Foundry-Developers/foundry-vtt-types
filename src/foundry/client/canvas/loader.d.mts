@@ -1,8 +1,9 @@
 import type { Identity, InexactPartial } from "#utils";
 import type { TranscoderWorker } from "@pixi/basis";
+import type { Level } from "#client/documents/_module.d.mts";
 
 /**
- * A Loader class which helps with loading video and image textures
+ * A Loader class which helps with loading video and image textures.
  */
 declare class TextureLoader {
   /**
@@ -23,34 +24,27 @@ declare class TextureLoader {
   static initializeBasisTranscoder(): TextureLoader.InitializeBasisTranscoderReturn;
 
   /**
-   * Check if a source has a text file extension.
-   * @param src - The source.
-   * @returns If the source has a text extension or not.
-   */
-  static hasTextExtension(src: string): boolean;
-
-  /**
    * Use the texture to create a cached mapping of pixel alpha and cache it.
    * Cache the bounding box of non-transparent pixels for the un-rotated shape.
-   * @param texture    - The provided texture
-   * @param resolution - Resolution of the texture data output (default: `1`)
+   * @param texture    - The provided texture.
+   * @param resolution - Resolution of the texture data output. (default: `1`)
    * @returns The texture data if the texture is valid, else undefined.
    */
-  static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | void;
+  static getTextureAlphaData(texture: PIXI.Texture, resolution?: number): TextureLoader.TextureAlphaData | undefined;
 
   /**
-   * Load all the textures which are required for a particular Scene
-   * @param scene   - The Scene to load
-   * @param options - Additional options that configure texture loading (default: `{}`)
+   * Load all the textures which are required for a particular Scene or Level.
+   * @param sceneOrLevel - The Scene or Level to load
+   * @param options      - Additional options that configure texture loading (default: `{}`)
    */
   static loadSceneTextures(
-    scene: Scene.Implementation,
+    sceneOrLevel: Scene.Implementation | Level.Implementation,
     options?: TextureLoader.LoadSceneTexturesOptions,
   ): Promise<void>;
 
   /**
    * Load an Array of provided source URL paths.
-   * Paths which begin with a special character "#" are ignored as texture references
+   * Paths which begin with a special character "#" are ignored as texture references.
    * @param sources - The source URLs to load
    * @param options - Additional options which modify loading (default: `{}`)
    * @returns A Promise which resolves once all textures are loaded
@@ -58,25 +52,16 @@ declare class TextureLoader {
   load(sources: string[], options?: TextureLoader.LoadOptions): Promise<void>;
 
   /**
-   * Load a single texture on-demand from a given source URL path
+   * Load a single texture or spritesheet on-demand from a given source URL path
    * @param src - The source texture path to load
    * @returns The loaded texture object
    */
   loadTexture(src: string): Promise<TextureLoader.LoadTextureReturn>;
 
   /**
-   * Use the Fetch API to retrieve a resource and return a Blob instance for it.
-   * @param src     - The resource URL
-   * @param options - Options to configure the loading behaviour.
-   * @returns A Blob containing the loaded data
-   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.fetchResource}; Foundry comments "TODO \@deprecated in v14"
-   */
-  static fetchResource(src: string, options?: TextureLoader.FetchResourceOptions): Promise<Blob>;
-
-  /**
    * Add an image or a sprite sheet url to the assets cache. Include an approximate memory size in the stored data.
-   * @param src - The source URL
-   * @param tex - The readied texture
+   * @param src   - The source URL.
+   * @param asset - The asset
    */
   setCache(src: string, asset: PIXI.BaseTexture | PIXI.Spritesheet): void;
 
@@ -91,14 +76,6 @@ declare class TextureLoader {
    * Expire and unload assets from the cache which have not been used for more than CACHE_TTL milliseconds.
    */
   expireCache(options?: TextureLoader.ExpireCacheOptions): Promise<void>;
-
-  /**
-   * Return a URL with a cache-busting query parameter appended.
-   * @param src - The source URL being attempted
-   * @returns The new URL, or false on a failure.
-   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.getCacheBustURL}; Foundry comments "TODO \@deprecated in v14"
-   */
-  static getCacheBustURL(src: string): string | false;
 
   /**
    * A public getter to expose the total approximate memory usage.
@@ -119,11 +96,21 @@ declare class TextureLoader {
   static unpinSource(src: string): void;
 
   /**
-   * @deprecated "`TextureLoader.textureBufferDataMap` is deprecated without replacement.
-   * Use {@linkcode TextureLoader.getTextureAlphaData} to create a texture data map and
-   * cache it automatically, or create your own caching system" (since v12, will be removed in v14)
+   * @deprecated "TextureLoader.hasTextExtension has been deprecated without replacement." (since v14, until v16)
    */
-  static get textureBufferDataMap(): Map<unknown, unknown>;
+  static hasTextExtension(src: string): boolean;
+
+  /**
+   * @deprecated "TextureLoader.fetchResource is deprecated. Please use foundry.utils.fetchResource instead."
+   * (since v14, until v16)
+   */
+  static fetchResource(src: string, options?: TextureLoader.FetchResourceOptions): Promise<Blob>;
+
+  /**
+   * @deprecated "TextureLoader.getCacheBustURL is deprecated. Please use foundry.utils.getCacheBustURL instead."
+   * (since v14, until v16)
+   */
+  static getCacheBustURL(src: string): string | false;
 
   static #TextureLoader: true;
 }
@@ -254,25 +241,18 @@ declare namespace TextureLoader {
 }
 
 /**
- * Test whether a file source exists by performing a HEAD request against it
- * @param src - The source URL or path to test
- * @returns Does the file exist at the provided url?
- * @remarks As of v13, simply forwards to {@linkcode foundry.utils.srcExists}; Foundry comments "TODO \@deprecated in v14"
- */
-export declare function srcExists(src: string): Promise<boolean>;
-
-/**
  * Get a single texture or sprite sheet from the cache.
- * @param src - The texture path to load.
+ * @param src - The texture path to load. This may be a standard texture path or a "virtual texture" beginning
+ *              with the "#" character that is retrieved from canvas.sceneTextures.
  * @returns A texture, a sprite sheet or null if not found in cache.
  */
 export declare function getTexture(src: string): loadTexture.Return;
 
 /**
  * Load a single asset and return a Promise which resolves once the asset is ready to use
- * @param src      - The requested texture source. This may be a standard texture path or a "virtual texture" beginning with
- *                   the "#" character that is retrieved from canvas.sceneTextures.
- * @param options  - Additional options which modify asset loading
+ * @param src     - The requested texture source. This may be a standard texture path or a "virtual texture" beginning
+ *                  with the "#" character that is retrieved from canvas.sceneTextures.
+ * @param options - Additional options which modify asset loading
  * @returns The loaded Texture or sprite sheet, or null if loading failed with no fallback
  */
 declare function loadTexture(src: string, options?: loadTexture.Options): Promise<loadTexture.Return>;
@@ -288,6 +268,12 @@ declare namespace loadTexture {
 
   interface Options extends InexactPartial<_Options> {}
 }
+
+/**
+ * @deprecated "foundry.canvas.srcExists is deprecated. Please use foundry.utils.srcExists instead."
+ * (since v14, until v16)
+ */
+export declare function srcExists(src: string): Promise<boolean>;
 
 declare global {
   namespace LoadTexture {

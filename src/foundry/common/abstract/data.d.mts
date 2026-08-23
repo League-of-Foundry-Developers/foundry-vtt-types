@@ -1,5 +1,5 @@
 import type { AnyObject, Identity, InexactPartial, MaybeArray } from "#utils";
-import type { DataField, SchemaField, DataSchema } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField, SchemaField, DataSchema } from "#common/data/fields.d.mts";
 import type { DataModelValidationFailure } from "#common/data/validation-failure.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
@@ -47,7 +47,7 @@ declare abstract class DataModel<
   /**
    * @param data    - Initial data used to construct the data object. The provided object will be owned by the
    * constructed model instance and may be mutated.
-   * @param options - Options which affect `DataModel` construction
+   * @param options - Context and data validation options which affects initial model construction.
    * @remarks Passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
    * by FVTT-Types at this time. If you need this for your project, come talk to us on the project discord.
    */
@@ -136,7 +136,7 @@ declare abstract class DataModel<
   static defineSchema(): DataSchema;
 
   /**
-   * Define the data schema for documents of this type.
+   * The Data Schema for all instances of this DataModel.
    */
   static get schema(): SchemaField.Any;
 
@@ -215,9 +215,8 @@ declare abstract class DataModel<
    * One-time migrations and initial cleaning operations are applied to the source data.
    * @param data    - The candidate source data from which the model will be constructed
    * @param options - Options provided to the model constructor
-   *                  (unused)
-   * @returns Migrated and cleaned source data which will be stored to the model instance
-   * @remarks `options` is unused in `DataModel`
+   * @returns Migrated and cleaned source data which will be stored to the model instance,
+   * which is the same object as the `data` argument
    */
   protected _initializeSource(
     data: SchemaField.CreateData<Schema> | this,
@@ -226,14 +225,14 @@ declare abstract class DataModel<
 
   /**
    * Clean a data source object to conform to a specific provided schema.
-   * @param source  - The source data object
-   * @param options - Additional options which are passed to field cleaning methods
+   * @param data    - Provided model data that requires cleaning
+   * @param options - Options that configure how data cleaning is performed
    * @param _state  - Internal options used during cleaning recursion
-   * @returns The cleaned source data, which is the same object as the `source` argument
+   * @returns Cleaned data which is suitable for validation and usage
    * @privateRemarks `object` is used because {@linkcode CreateData} isn't assignable to {@linkcode AnyMutableObject}, which would otherwise
    * be used here for both
    */
-  static cleanData(source?: object, options?: DataField.CleanOptions, _state?: DataField.UpdateState): object;
+  static cleanData(data?: object, options?: DataField.CleanOptions, _state?: DataField.UpdateState): object;
 
   /**
    * Apply preliminary model-specific cleaning rules or alter cleaning options or initial state.
@@ -278,7 +277,6 @@ declare abstract class DataModel<
 
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
-   * @yields {@linkcode DataField}
    */
   protected _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -299,10 +297,8 @@ declare abstract class DataModel<
    * Clone a model, creating a new data model by combining current data with provided overrides.
    * @param data    - Additional data which overrides current document data at the time of creation
    * @param context - Context options passed to the data model constructor
-   * @returns The cloned Document [sic] instance
-   * @remarks Obviously returns not necessarily a `Document`, just a `DataModel`.
-   *
-   * **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
+   * @returns The cloned instance
+   * @remarks **NOTE:** At the type level, the returned model will necessarily have the same parent as the instance `#clone()` is being called
    * on; Accurate typing of `#parent` requires a cast.
    * @privateRemarks Foundry types `context` as simply `object`, but going by core usage, it's a {@linkcode DataModel.ConstructionContext}.
    *
@@ -315,11 +311,19 @@ declare abstract class DataModel<
   clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext<ExtraConstructorOptions>): this;
 
   /**
-   * Validate the data contained in the document to check for type and content
-   * This function throws an error if data within the document is not valid
+   * Validate the data contained in the document to check for type and content.
+   * This method is intended to validate complete model records, verifying both individual field validation as well
+   * as joint model validity.
    *
-   * @param options - Optional parameters which customize how validation occurs.
-   * @returns An indicator for whether the document contains valid data
+   * For validating sets of partial model changes, it is preferred to call DataModel#updateSource as a `dryRun`. This
+   * method provides a convenience alias for such a workflow if `changes` are provided.
+   *
+   * Warning: if fallback handling is allowed, this process will mutate provided changes or model source data.
+   *
+   * @param options - Options which modify how the model is validated
+   * @returns Whether the data source or proposed change is reported as valid.
+   * A boolean is always returned if validation is non-strict.
+   * @throws An error thrown if validation is strict and a failure occurs.
    */
   validate(options?: DataModel.ValidateOptions<Schema>): boolean;
 
@@ -337,13 +341,15 @@ declare abstract class DataModel<
 
   /**
    * Update the `DataModel` locally by applying an object of changes to its source data.
-   * The provided changes are cleaned, validated, and stored to the source data object for this model.
+   * The provided changes are expanded, cleaned, validated, and stored to the source data object for this model.
+   * The provided changes argument is mutated in this process.
    * The source data is then re-initialized to apply those changes to the prepared data.
    * The method returns an object of differential changes which modified the original data.
    *
    * @param changes - New values which should be applied to the data model
    * @param options - Options which determine how the new data is merged
-   * @returns An object containing the changed keys and values
+   * @returns An object containing differential keys and values that were changed
+   * @throws An error if the requested data model changes were invalid
    */
   // TODO: This should allow dotkeys to be passed
   // TODO: Without widening changes and the return type, the ActorDelta override is impossible to make correct
@@ -411,7 +417,7 @@ declare abstract class DataModel<
 
   /**
    * Create a new instance of this `DataModel` from a source record.
-   * The source is presumed to be trustworthy and is not strictly validated.
+   * The source data is presumed trustworthy and is not strictly validated unless explicitly requested.
    * @param source  - Initial document data which comes from a trusted source.
    * @param context - Model construction context
    * @remarks Returns `new this()` so needs an override per subclass:
@@ -453,10 +459,10 @@ declare abstract class DataModel<
   static fromJSON(json: string): DataModel.Any;
 
   /**
-   * Wrap data migration in a try/catch which attempts it safely
-   * @param source  - The candidate source data from which the model will be constructed
+   * Wrap data migration in a try/catch which attempts it safely.
+   * @param source  - Candidate source data for the module, before further cleaning
    * @param options - Additional options for how the field is cleaned
-   * @returns Migrated source data, which is the same object as the `source` argument
+   * @returns Migrated source data, ready for further cleaning
    * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
    * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
    * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
@@ -465,9 +471,9 @@ declare abstract class DataModel<
 
   /**
    * Migrate candidate source data for this `DataModel` which may require initial cleaning or transformations.
-   * @param source  - The candidate source data from which the model will be constructed
+   * @param source  - Candidate source data for the module, before further cleaning
    * @param options - Additional options for how the field is cleaned
-   * @returns Migrated source data, which is the same object as the `source` argument
+   * @returns Migrated source data, ready for further cleaning
    * @remarks As of v13 this is no longer guaranteed to be passed an object by design, to support migration of radically bad data,
    * however passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
    * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
@@ -550,13 +556,27 @@ declare namespace DataModel {
   type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ReturnType<ConcreteClass["defineSchema"]>;
 
   /**
-   * {@linkcode ValidateOptions} has already had `InexactPartial` applied, so this inherits that optionality/nullishness.
+   * The `...options` rest of the constructor's context parameter — everything except `parent`, `schema`, and `strict`,
+   * each of which is destructured out before the remainder is forwarded on.
+   * @internal
+   */
+  interface _ConfigureOptions extends _ValidationFallbackOptions {
+    /**
+     * Configuration of data cleaning steps applied to user input data. This can be explicitly passed as `false` to
+     * skip preprocessing when using data that is known to already be fully cleaned.
+     */
+    clean: CleanOption;
+  }
+
+  /**
+   * The portion of the construction context that {@linkcode DataModel._initializeSource | #_initializeSource} and
+   * {@linkcode DataModel._initialize | #_initialize} receive; they get `strict` on top of the plain rest.
    * @internal
    */
   type _ConstructionContext<
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     ExtraConstructionOptions extends object = {},
-  > = Pick<ValidateOptions<DataSchema>, "strict" | "fallback" | "dropInvalidEmbedded"> & ExtraConstructionOptions;
+  > = InexactPartial<_ConfigureOptions & _StrictOption> & ExtraConstructionOptions;
 
   type ConstructionContext<
     Parent extends DataModel.Any | null = DataModel.Any | null,
@@ -568,6 +588,15 @@ declare namespace DataModel {
      * @defaultValue `null`
      */
     parent?: Parent | undefined;
+
+    /**
+     * If we are constructing an embedded model, it may be provided by the constructing DataModelSchemaField with an
+     * instance-specific schema to use
+     *
+     * @remarks Stored on the instance with `defineProperty`, shadowing the class-level {@linkcode DataModel.schema}.
+     * @throws If passed anything other than a {@linkcode DataModelSchemaField} instance.
+     */
+    schema?: DataModelSchemaField.Any | undefined;
   };
 
   type CloneContext<
@@ -587,42 +616,21 @@ declare namespace DataModel {
     parent?: DataModel.Any | null | undefined;
   };
 
-  /** @internal */
-  interface _ValidateOptions<Schema extends DataSchema> {
-    /**
-     * Validate each individual field?
-     * @defaultValue `true`
-     */
-    fields: boolean;
+  /**
+   * Configuration of data cleaning steps applied to user input data, shared by the construction context,
+   * {@linkcode DataModel.ValidateOptions}, and {@linkcode DataModel.UpdateOptions}.
+   *
+   * @remarks `partial` is excluded because each consuming workflow forces its own value for it.
+   */
+  type CleanOption = Omit<DataField.CleanOptions, "partial"> | boolean;
 
-    /**
-     * Perform joint validation on the full data model?
-     * Joint validation will be performed by default if no changes are passed.
-     * Joint validation will be disabled by default if changes are passed.
-     * Joint validation can be performed on a complete set of changes (for example, testing a complete data model) by explicitly passing true.
-     * @remarks If nullish, defaults to `!changes`
-     */
-    joint: boolean;
-
-    /**
-     * A specific set of proposed changes to validate, rather than the full source data of the model.
-     * @remarks If not passed or nullish, `validate` will operate on `this._source` instead
-     */
-    changes: SchemaField.UpdateData<Schema>;
-
-    /**
-     * If changes are provided, attempt to clean the changes before validating them?
-     * @defaultValue `false`
-     * @remarks Only has any effect if a `changes` has been passed with it
-     */
-    clean: boolean;
-
-    /**
-     * Throw an error if validation fails.
-     * @defaultValue `true`
-     */
-    strict: boolean;
-
+  /**
+   * The fallback behaviour that {@linkcode DataModel.ConstructionContext} shares with
+   * {@linkcode DataModel.ValidateOptions}; the constructor forwards these straight to
+   * {@linkcode DataModel.validate | DataModel#validate}.
+   * @internal
+   */
+  interface _ValidationFallbackOptions {
     /**
      * Allow replacement of invalid values with valid defaults? This option mutates the provided changes.
      * @defaultValue `false`
@@ -639,10 +647,66 @@ declare namespace DataModel {
     dropInvalidEmbedded: boolean;
   }
 
+  /**
+   * Split out from the rest of the construction context because the constructor destructures `strict` separately, and
+   * so {@linkcode DataModel._configure | #_configure} never sees it.
+   * @internal
+   */
+  interface _StrictOption {
+    /**
+     * Throw an error if validation fails.
+     * @defaultValue `true`
+     */
+    strict: boolean;
+  }
+
+  /** @internal */
+  interface _ValidateOptions<Schema extends DataSchema> extends _ValidationFallbackOptions, _StrictOption {
+    /**
+     * Validate each field. Ignored if changes are passed.
+     * @defaultValue `true`
+     */
+    fields: boolean;
+
+    /**
+     * Perform joint validation on the full data model.
+     * Ignored if changes are passed.
+     * @defaultValue `true`
+     */
+    joint: boolean;
+
+    /**
+     * A specific set of proposed changes to validate, rather than the full source data of the model. This type of
+     * validation is redirected to DataModel#updateSource as a dry-run.
+     * @remarks If not passed or nullish, `validate` will operate on `this._source` instead
+     */
+    changes: SchemaField.UpdateData<Schema>;
+
+    /**
+     * Configuration of data cleaning steps applied to user input data. This can be explicitly passed as `false`
+     * which requires the provided data to already be clean.
+     * @remarks Only has any effect if `changes` has been passed with it. Passing `true` additionally enables
+     * `addTypes` and model-level cleaning.
+     */
+    clean: CleanOption;
+
+    /**
+     * For Array-like fields, control whether an invalid element is allowed to be removed from the data in lieu of
+     * fallback replacement.
+     * @defaultValue `false`
+     */
+    dropInvalidElements: boolean;
+
+    /**
+     * The data model instance being validated. This is automatically populated during the model validation flow.
+     */
+    model: DataModel.Any;
+  }
+
   interface ValidateOptions<Schema extends DataSchema> extends InexactPartial<_ValidateOptions<Schema>> {}
 
   /**
-   * `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to
+   * `DataModel#constructor` pulls `parent` and `schema` out of the passed `ConstructionContext` before forwarding to
    * {@linkcode DataModel._initializeSource | #_initializeSource}.
    */
   type InitializeSourceOptions<
@@ -651,15 +715,16 @@ declare namespace DataModel {
   > = _ConstructionContext<ExtraConstructionOptions>;
 
   /**
-   * `DataModel#constructor` pulls `parent` and `strict` out of the passed `ConstructionContext` before forwarding to
-   * {@linkcode DataModel._configure | #_configure}.
+   * `DataModel#constructor` pulls `parent`, `schema`, and `strict` out of the passed `ConstructionContext` before
+   * forwarding to {@linkcode DataModel._configure | #_configure}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  type ConfigureOptions<ExtraConstructionOptions extends object = {}> = Omit<_ConstructionContext, "strict"> &
-    ExtraConstructionOptions;
+  type ConfigureOptions<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ExtraConstructionOptions extends object = {},
+  > = InexactPartial<_ConfigureOptions> & ExtraConstructionOptions;
 
   /**
-   * `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to
+   * `DataModel#constructor` pulls `parent` and `schema` out of the passed `ConstructionContext` before forwarding to
    * {@linkcode DataModel._initialize #_initialize}.
    */
   type InitializeOptions<
@@ -678,25 +743,41 @@ declare namespace DataModel {
 
   /** @internal */
   interface _UpdateOptions {
-    /** Do not finally apply the change, but instead simulate the update workflow  */
+    /**
+     * Configuration of data cleaning steps applied to user input data. This can be explicitly passed as `false` to
+     * skip preprocessing when using data that is known to already be fully cleaned.
+     * @remarks {@linkcode DataModel._preUpdateSource | DataModel#_preUpdateSource} replaces anything but `false` with
+     * a fully-populated option object, so downstream code sees the merged result rather than what was passed.
+     */
+    clean: CleanOption;
+
+    /**
+     * Do not finally apply the change, but instead simulate the update workflow
+     * @defaultValue `false`
+     */
     dryRun: boolean;
 
     /**
      * Allow automatic fallback to a valid initial value if the value provided for a field
      * in the model is invalid.
+     * @defaultValue `false`
      */
     fallback: boolean;
 
     /**
-     * Apply changes to inner objects recursively rather than replacing the top-level object
+     * Apply changes to inner objects recursively rather than replacing the top-level object. This is automatically
+     * re-interpreted as every key of the update being defined as a ForcedReplacement operator.
      * @defaultValue `true`
-     * @remarks No actual default is applied to this property anywhere in Foundry code, but behaviour depending on this option uses  `=== false`
+     * @remarks No actual default is applied to this property anywhere in Foundry code, but behaviour depending on this option uses `=== false`
      * checks, so it effectively is `true` by default
      */
     recursive: boolean;
 
     /** An advanced option used specifically and internally by the ActorDelta model */
     restoreDelta: boolean;
+
+    /** Used only by the server to understand update context */
+    user: User.Implementation;
   }
 
   interface UpdateOptions extends InexactPartial<_UpdateOptions> {}

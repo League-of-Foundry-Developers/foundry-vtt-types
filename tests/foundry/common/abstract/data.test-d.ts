@@ -96,3 +96,27 @@ declare const v14DataModel: _V14DataModelTest;
 expectTypeOf(v14DataModel.getFieldForProperty("name")).toEqualTypeOf<fields.DataField.Unknown | undefined>();
 expectTypeOf(v14DataModel.getFieldForProperty(["name"])).toEqualTypeOf<fields.DataField.Unknown | undefined>();
 expectTypeOf(_V14DataModelTest.cleanData({}, {}, { creation: true })).toEqualTypeOf<object>();
+
+// The constructor destructures `parent`, `schema`, and `strict` out of the context before forwarding the remainder.
+declare const constructionContext: DataModel.ConstructionContext;
+expectTypeOf(constructionContext.schema).toEqualTypeOf<fields.DataModelSchemaField.Any | undefined>();
+expectTypeOf(constructionContext.clean).toEqualTypeOf<DataModel.CleanOption | undefined>();
+
+declare const configureOptions: DataModel.ConfigureOptions;
+expectTypeOf(configureOptions).not.toHaveProperty("parent");
+expectTypeOf(configureOptions).not.toHaveProperty("schema");
+expectTypeOf(configureOptions).not.toHaveProperty("strict");
+expectTypeOf(configureOptions.clean).toEqualTypeOf<DataModel.CleanOption | undefined>();
+
+declare const initializeSourceOptions: DataModel.InitializeSourceOptions;
+expectTypeOf(initializeSourceOptions.strict).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(initializeSourceOptions).not.toHaveProperty("schema");
+
+declare const validateOptions: DataModel.ValidateOptions<TestSchema>;
+expectTypeOf(validateOptions.clean).toEqualTypeOf<DataModel.CleanOption | undefined>();
+expectTypeOf(validateOptions.dropInvalidElements).toEqualTypeOf<boolean | undefined>();
+expectTypeOf(validateOptions.model).toEqualTypeOf<DataModel.Any | undefined>();
+
+declare const updateOptions: DataModel.UpdateOptions;
+expectTypeOf(updateOptions.clean).toEqualTypeOf<DataModel.CleanOption | undefined>();
+expectTypeOf(updateOptions.user).toEqualTypeOf<User.Implementation | undefined>();

@@ -15,6 +15,8 @@ import SoundsLayer = foundry.canvas.layers.SoundsLayer;
 import RenderedCanvasGroup = foundry.canvas.groups.RenderedCanvasGroup;
 import TransitionContainer = foundry.canvas.TransitionContainer;
 import WallsLayer = foundry.canvas.layers.WallsLayer;
+import CanvasEdges = foundry.canvas.geometry.edges.CanvasEdges;
+import Level = foundry.documents.Level;
 
 const myCanvas = new Canvas();
 declare const someScene: Scene.Implementation;
@@ -83,3 +85,25 @@ expectTypeOf(myCanvas.notes).toEqualTypeOf<foundry.canvas.layers.NotesLayer.Impl
 expectTypeOf(myCanvas.tokens).toEqualTypeOf<foundry.canvas.layers.TokenLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.walls).toEqualTypeOf<foundry.canvas.layers.WallsLayer.Implementation | undefined>();
 expectTypeOf(myCanvas.weather).toEqualTypeOf<foundry.canvas.layers.WeatherEffects.Implementation | undefined>();
+
+expectTypeOf(myCanvas.root).toEqualTypeOf<PIXI.Container | undefined>();
+expectTypeOf(myCanvas._frameId).toEqualTypeOf<number>();
+expectTypeOf(myCanvas._viewOptions).toEqualTypeOf<Canvas.ViewOptions>();
+
+expectTypeOf(myCanvas.mousePositionVisible).toEqualTypeOf<boolean>();
+expectTypeOf(myCanvas._mousePositionVisible).toEqualTypeOf<boolean>();
+expectTypeOf(myCanvas.mousePositionExplored).toEqualTypeOf<boolean>();
+
+expectTypeOf(myCanvas.level).toEqualTypeOf<Level.Implementation | null>();
+expectTypeOf(myCanvas.edges).toEqualTypeOf<CanvasEdges | null>();
+
+expectTypeOf(Canvas._determineInitialLevel(someScene, null)).toEqualTypeOf<string>();
+
+expectTypeOf(myCanvas.inferLevelFromElevation(20)).toEqualTypeOf<Level.Implementation | null>();
+expectTypeOf(myCanvas.inferLevelFromElevation(20, {})).toEqualTypeOf<Level.Implementation | null>();
+expectTypeOf(
+  myCanvas.inferLevelFromElevation(20, { levels: new Set(["abc"]) }),
+).toEqualTypeOf<Level.Implementation | null>();
+expectTypeOf(myCanvas.inferLevelFromElevation(20, { levels: undefined })).toEqualTypeOf<Level.Implementation | null>();
+
+expectTypeOf(myCanvas._constrainView({ x: 100 })).toEqualTypeOf<Canvas.PanPosition>();

@@ -92,7 +92,14 @@ expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Impl
 expectTypeOf(
   template["_onCreate"](
     doc.toObject(),
-    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    {
+      action: "create",
+      documentName: "MeasuredTemplate",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      renderSheet: false,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -101,13 +108,24 @@ expectTypeOf(
   template["_onUpdate"](
     // partial source data
     { elevation: 30, texture: "path/to/tex.webp", direction: 234, flags: { core: { sheetLock: true } } },
-    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
+    {
+      action: "update",
+      documentName: "MeasuredTemplate",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      diff: true,
+      recursive: true,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  template["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  template["_onDelete"](
+    { action: "delete", documentName: "MeasuredTemplate", parent: scene, modifiedTime: 7, render: true },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 declare const someUser: User.Implementation;
