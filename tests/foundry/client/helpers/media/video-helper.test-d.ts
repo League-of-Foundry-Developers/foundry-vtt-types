@@ -38,7 +38,6 @@ expectTypeOf(
 expectTypeOf(videoHelper.stop(videoElement)).toEqualTypeOf<void>();
 expectTypeOf(videoHelper.awaitFirstGesture()).toEqualTypeOf<void>();
 
-expectTypeOf(videoHelper.createThumbnail("some/path/image.webp")).toEqualTypeOf<Promise<string>>();
 expectTypeOf(videoHelper.createThumbnail("some/path/image.webp", {})).toEqualTypeOf<Promise<string>>();
 expectTypeOf(
   videoHelper.createThumbnail("some/path/image.webp", {

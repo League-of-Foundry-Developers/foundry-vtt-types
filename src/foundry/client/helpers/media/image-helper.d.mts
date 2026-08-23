@@ -8,12 +8,12 @@ declare class ImageHelper {
   /**
    * Create thumbnail preview for a provided image path.
    * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
-   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method (default: `{}`)
+   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method
    * @returns The parsed and converted thumbnail data
    */
   static createThumbnail(
     src: string | PIXI.DisplayObject,
-    options?: ImageHelper.CreateThumbnailOptions,
+    options: ImageHelper.CreateThumbnailOptions,
   ): Promise<ImageHelper.ThumbnailReturn | null>;
 
   /**

@@ -8,9 +8,6 @@ declare const texture: PIXI.Texture;
 declare const htmlCanvas: HTMLCanvasElement;
 declare const pixels: Uint8ClampedArray;
 
-expectTypeOf(ImageHelper.createThumbnail("some/path/image.webp")).toEqualTypeOf<
-  Promise<ImageHelper.ThumbnailReturn | null>
->();
 expectTypeOf(ImageHelper.createThumbnail("some/path/image.webp", {})).toEqualTypeOf<
   Promise<ImageHelper.ThumbnailReturn | null>
 >();
