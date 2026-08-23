@@ -5,6 +5,7 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
 /** @privateRemarks `EmbeddedDocumentField` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { EmbeddedDocumentField } from "#common/data/fields.d.mts";
+
 /** @privateRemarks `ActorDeltaField` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ActorDeltaField } from "#common/documents/token.mjs";
@@ -25,7 +26,7 @@ declare class SingletonEmbeddedCollection<
    * @throws If a second element is attempted to be set:
    * `Cannot create singleton embedded ${embeddedName} [${key}] in parent ${parentName} [${this.model.id}] as it already has one assigned.`
    */
-  set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
+  override set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
 
   protected override _set(key: string, value: ContainedDocument): void;
 
