@@ -2,9 +2,14 @@
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
+import type * as placeables from "./placeables/_module.mjs";
+
+export * as types from "./_types.mjs";
+
 export { default as Canvas } from "./board.mjs";
 export { default as SceneManager } from "./scene-manager.mjs";
 export { default as KTX2Parser } from "./ktx2-parser.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as TextureLoader, getTexture, loadTexture, srcExists } from "./loader.mjs";
 export { default as TextureExtractor } from "./texture-extractor.mjs";
 export { default as FramebufferSnapshot } from "./framebuffer-snapshot.mjs";
@@ -24,3 +29,12 @@ export * as rendering from "./rendering/_module.mjs";
 export * as sources from "./sources/_module.mjs";
 export * as vfx from "./vfx/_module.mjs";
 export * as workers from "./workers/_module.mjs";
+
+/**
+ * @deprecated "You are accessing "foundry.canvas.tokens" which is now namespaced under
+ * foundry.canvas.placeables.tokens" (since v13, until v15)
+ */
+declare const tokens: typeof placeables.tokens;
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+export { tokens };
