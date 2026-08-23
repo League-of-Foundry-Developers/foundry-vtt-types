@@ -84,7 +84,7 @@ expectTypeOf(myCanvas.weather).toEqualTypeOf<foundry.canvas.layers.WeatherEffect
 
 expectTypeOf(myCanvas.root).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(myCanvas._frameId).toEqualTypeOf<number>();
-expectTypeOf(myCanvas._viewOptions).toEqualTypeOf<Canvas.ViewOptions>();
+expectTypeOf(myCanvas._viewOptions).toEqualTypeOf<Scene.ViewOptions>();
 
 expectTypeOf(myCanvas.mousePositionVisible).toEqualTypeOf<boolean>();
 expectTypeOf(myCanvas._mousePositionVisible).toEqualTypeOf<boolean>();
