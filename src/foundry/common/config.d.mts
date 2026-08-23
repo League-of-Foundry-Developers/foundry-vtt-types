@@ -22,6 +22,9 @@ declare namespace ServerSettings {
     /** The absolute path of the user data directory (obscured) */
     dataPath: fields.StringField;
 
+    /** A custom path where downloaded package archives are temporarily stored during extraction. */
+    tempDir: fields.StringField;
+
     deleteNEDB: fields.BooleanField;
 
     /** Whether the application should automatically start in fullscreen mode?  */
@@ -44,14 +47,20 @@ declare namespace ServerSettings {
     /** The port on which the server is listening */
     port: fields.NumberField<{
       required: true;
-      nullable: false;
-      integer: true;
-      min: 0;
+      nullable: true;
       initial: 30000;
       validate: (value: unknown) => void; // ServerSettings.#validatePort
     }>;
 
-    /**The Internet Protocol version to use, either 4 or 6. */
+    /** A file path to a Unix domain socket to listen on instead of `port`. */
+    unixSocket: fields.StringField<{
+      required: true;
+      nullable: true;
+      blank: false;
+      validate: (value: unknown) => void; // ServerSettings.#validateUDS
+    }>;
+
+    /** The Internet Protocol version to use, either 4 or 6. */
     protocol: fields.NumberField<{ integer: true; choices: [4, 6]; nullable: true }>;
 
     /** An external-facing proxied port used for invitation addresses and URLs */
@@ -117,15 +126,7 @@ declare class ServerSettings extends DataModel<ServerSettings.Schema> {
    * - `awsConfig === true` to `""` (since v11)
    * - `cssTheme` converted from `"foundry"` to `"dark"` (since v13)
    */
-  static override migrateData(source: object): object;
-
-  /**
-   * Validate a port assignment.
-   * @param port - The requested port
-   * @throws An error if the requested port is invalid
-   * @deprecated This was made hard private in v13. This warning will be removed in v14.
-   */
-  static _validatePort(port: never): never;
+  static override migrateData(source: object, options?: fields.DataField.CleanOptions): object;
 
   /* DataModel overrides */
 
