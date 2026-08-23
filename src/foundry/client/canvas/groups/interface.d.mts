@@ -1,5 +1,6 @@
 import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
@@ -25,7 +26,6 @@ declare class InterfaceCanvasGroup<
    * Add a PrimaryGraphics to the group.
    * @param drawing - The Drawing being added
    * @returns The created Graphics instance
-   * @remarks
    */
   addDrawing(drawing: Drawing.Implementation): PIXI.Graphics;
 
@@ -42,14 +42,14 @@ declare class InterfaceCanvasGroup<
    * @param origin  - An origin point where the text should first emerge
    * @param content - The text content to display
    * @param options - Options which customize the text animation (default: `{}`)
-   * @returns The created {@linkcode PreciseText} object which is scrolling
-   * @remarks Only returns `undefined` if the core `scrollingStatusText` setting is falsey
+   * @returns A promise that resolves after the scrolling text animation ended.
+   * @remarks Returns early, without creating any text, if the core `scrollingStatusText` setting is falsey
    */
   createScrollingText(
     origin: Canvas.Point,
     content: string,
     options?: InterfaceCanvasGroup.CreateScrollingTextOptions,
-  ): Promise<PreciseText | undefined>;
+  ): Promise<void>;
 
   #InterfaceCanvasGroup: true;
 }
@@ -77,6 +77,12 @@ declare namespace InterfaceCanvasGroup {
    */
   interface _CreateScrollingTextOptions extends InexactPartial<PIXI.ITextStyle> {
     /**
+     * The duration of the scrolling effect in milliseconds
+     * @defaultValue `2000`
+     */
+    duration: number;
+
+    /**
      * The distance in pixels that the scrolling text should travel
      * @defaultValue Double the width or height of the text, depending on direction
      */
@@ -100,12 +106,6 @@ declare namespace InterfaceCanvasGroup {
      * @remarks Only used if truthy
      */
     jitter: number;
-
-    /**
-     * The duration of the scrolling effect in milliseconds
-     * @defaultValue `2000`
-     */
-    duration: number;
   }
 
   interface CreateScrollingTextOptions extends InexactPartial<_CreateScrollingTextOptions> {}

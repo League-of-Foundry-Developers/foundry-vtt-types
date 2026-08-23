@@ -1,4 +1,4 @@
-import type { EmptyObject, FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
+import type { EmptyObject, FixedInstanceType, HandleEmptyObject, Identity, InexactPartial, MaybeArray } from "#utils";
 import type { Canvas } from "#client/canvas/_module.mjs";
 import type { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
@@ -44,6 +44,12 @@ declare class CanvasVisibility<
   vision: CanvasVisionMask.CanvasVisionContainer | undefined;
 
   /**
+   * The surface exposure.
+   * @remarks Only `undefined` prior to first draw
+   */
+  surfaceExposure: PIXI.Container | undefined;
+
+  /**
    * The exploration container which tracks exploration progress.
    * @remarks Only `undefined` prior to first draw
    */
@@ -86,13 +92,19 @@ declare class CanvasVisibility<
   lightingVisibility: CanvasVisibility.LightingVisibility;
 
   /**
+   * The maximum allowable visibility texture size.
+   * @defaultValue `4096`
+   * @internal
+   */
+  static _MAXIMUM_VISIBILITY_TEXTURE_SIZE: number;
+
+  /**
    * A status flag for whether the group initialization workflow has succeeded.
    */
   get initialized(): boolean;
 
   /**
-   * Indicates whether containment filtering is required when rendering vision into a texture
-   * @internal
+   * Indicates whether containment filtering is required when rendering vision into a texture.
    */
   get needsContainment(): boolean;
 
@@ -111,10 +123,9 @@ declare class CanvasVisibility<
 
   /**
    * Optional overrides for exploration sprite dimensions.
-   * @privateRemarks Only `x`, `y`, `width`, and `height` are ever checked, and this is never even set by core anywhere,
-   * but they type it as a `PIXI.Rectangle` so might as well match.
+   * @privateRemarks Never set by core anywhere.
    */
-  set explorationRect(rect: PIXI.Rectangle | undefined);
+  set explorationRect(rect: Canvas.Rectangle | undefined);
 
   /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
   get explorationRect(): undefined;
@@ -131,7 +142,7 @@ declare class CanvasVisibility<
 
   protected override _draw(options?: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: TearDownOptions): Promise<void>;
 
   /**
    * Update the display of the visibility group.
@@ -157,21 +168,25 @@ declare class CanvasVisibility<
 
   /**
    * Test whether a target point on the Canvas is visible based on the current vision and LOS polygons.
-   * @param point   - The point in space to test
+   * @param points  - The point or points in space to test
    * @param options - Additional options which modify visibility testing.
    * @returns Whether the point is currently visible.
    */
-  testVisibility(point: Canvas.PossiblyElevatedPoint, options?: CanvasVisibility.TestVisibilityOptions): boolean;
+  testVisibility(
+    points: MaybeArray<Canvas.PossiblyElevatedPoint>,
+    options?: CanvasVisibility.TestVisibilityOptions,
+  ): boolean;
 
   /**
    * Create the visibility test config.
-   * @param point   - The point in space to test, an object with coordinates x and y.
+   * @param points  - The points in space to test
    * @param options - Additional options which modify visibility testing.
    * @internal
-   * @remarks If a Point is passed without elevation, uses the `object`'s if it's a `Token`, otherwise defaults to `0`
+   * @remarks Shared elevation comes from the first point, falling back to the `object`'s movement origin
+   * elevation if it's a `Token`, then to `canvas.level.elevation.base`.
    */
   protected _createVisibilityTestConfig(
-    point: Canvas.PossiblyElevatedPoint,
+    points: Canvas.PossiblyElevatedPoint[],
     options?: CanvasVisibility.CreateTestConfigOptions,
   ): CanvasVisibility.TestConfig;
 

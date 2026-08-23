@@ -25,6 +25,13 @@ describe("CanvasGroupMixin tests", () => {
     expectTypeOf(myGroup.name).toBeString();
     expectTypeOf(myGroup.hookName).toBeString();
 
+    expectTypeOf<CanvasGroupMixin.TearDownOptions["nextScene"]>().toEqualTypeOf<
+      Scene.Implementation | null | undefined
+    >();
+    expectTypeOf<CanvasGroupMixin.TearDownOptions["nextLevel"]>().toEqualTypeOf<
+      Level.Implementation | null | undefined
+    >();
+
     expectTypeOf(myGroup.draw()).toEqualTypeOf<Promise<typeof myGroup>>();
     // There are no option keys in use in core
     expectTypeOf(myGroup.draw({})).toEqualTypeOf<Promise<typeof myGroup>>();
@@ -33,9 +40,9 @@ describe("CanvasGroupMixin tests", () => {
     expectTypeOf(myGroup["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
     expectTypeOf(myGroup.tearDown()).toEqualTypeOf<Promise<typeof myGroup>>();
-    // There are no option keys in use in core
     expectTypeOf(myGroup.tearDown({})).toEqualTypeOf<Promise<typeof myGroup>>();
-    // @ts-expect-error #draw always passes an options object, even if it will always be empty in core
+    expectTypeOf(myGroup.tearDown({ nextScene: null, nextLevel: undefined })).toEqualTypeOf<Promise<typeof myGroup>>();
+    // @ts-expect-error #tearDown always passes an options object
     myGroup["_tearDown"]();
     expectTypeOf(myGroup["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
   });

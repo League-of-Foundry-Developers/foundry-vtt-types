@@ -45,7 +45,7 @@ declare class HiddenCanvasGroup<
 
   protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: TearDownOptions): Promise<void>;
 
   #HiddenCanvasGroup: true;
 }
