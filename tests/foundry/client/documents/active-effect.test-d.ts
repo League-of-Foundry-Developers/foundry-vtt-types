@@ -206,12 +206,14 @@ export const operations = {
   minimalPreCreateOptions: () =>
     ({
       ...database.minimalPreCreateOptionsBase,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreCreateOptions,
 
   preCreateOptions: () =>
     ({
       ...database.preCreateOptionsBase,
       ...docCreateOpProps,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreCreateOptions,
 
   minimalPreCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
@@ -219,6 +221,7 @@ export const operations = {
       ...database.minimalPreCreateOperationBase,
       data,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreCreateOperation,
 
   preCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
@@ -227,12 +230,14 @@ export const operations = {
       ...docCreateOpProps,
       data,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreCreateOperation,
 
   minimalOnCreateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
     ({
       ...database.minimalOnCreateOptionsBase,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnCreateOptions,
 
   onCreateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
@@ -240,6 +245,7 @@ export const operations = {
       ...database.onCreateOptionsBase,
       ...docCreateOpProps,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnCreateOptions,
 
   minimalOnCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
@@ -247,6 +253,7 @@ export const operations = {
       ...database.minimalOnCreateOperationBase,
       data,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnCreateOperation,
 
   onCreateOperation: ({ data, parent = null }: { data: CreateData[]; parent?: Parent }) =>
@@ -255,6 +262,7 @@ export const operations = {
       ...database.onCreateOperationBase,
       data,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnCreateOperation,
 
   // -----------------
@@ -293,16 +301,24 @@ export const operations = {
     }) satisfies ActiveEffect.Database.BackendUpdateOperation,
 
   minimalPreUpdateOptions: () =>
-    ({ ...database.minimalPreUpdateOptionsBase }) satisfies ActiveEffect.Database.PreUpdateOptions,
+    ({
+      ...database.minimalPreUpdateOptionsBase,
+      documentName: "ActiveEffect",
+    }) satisfies ActiveEffect.Database.PreUpdateOptions,
 
   preUpdateOptions: () =>
-    ({ ...database.preUpdateOptionsBase, ..._docUpdateProps }) satisfies ActiveEffect.Database.PreUpdateOptions,
+    ({
+      ...database.preUpdateOptionsBase,
+      ..._docUpdateProps,
+      documentName: "ActiveEffect",
+    }) satisfies ActiveEffect.Database.PreUpdateOptions,
 
   minimalPreUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
     ({
       ...database.minimalPreUpdateOperationBase,
       parent,
       updates,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreUpdateOperation,
 
   preUpdateOperation: ({ parent = null, updates }: { updates: UpdateData[]; parent?: Parent }) =>
@@ -311,12 +327,14 @@ export const operations = {
       ...docUpdateOpProps,
       parent,
       updates,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreUpdateOperation,
 
   minimalOnUpdateOptions: ({ parent = null }: { parent?: Parent } = {}) =>
     ({
       ...database.minimalOnUpdateOptionsBase,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnUpdateOptions,
 
   onUpdateOptions: ({ parent = null }: { parent?: Parent }) =>
@@ -324,6 +342,7 @@ export const operations = {
       ...database.onUpdateOptionsBase,
       ...docUpdateOpProps,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnUpdateOptions,
 
   minimalOnUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
@@ -331,6 +350,7 @@ export const operations = {
       ...database.minimalOnUpdateOperationBase,
       parent,
       updates,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnUpdateOperation,
 
   onUpdateOperation: ({ parent = null, updates }: { parent?: Parent; updates: UpdateData[] }) =>
@@ -339,6 +359,7 @@ export const operations = {
       ...docUpdateOpProps,
       parent,
       updates,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnUpdateOperation,
 
   // -----------------
@@ -379,12 +400,14 @@ export const operations = {
   minimalPreDeleteOptions: () =>
     ({
       ...database.minimalPreDeleteOptionsBase,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreDeleteOptions,
 
   preDeleteOptions: () =>
     ({
       ...database.preDeleteOptionsBase,
       ...docDeleteOpProps,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreDeleteOptions,
 
   minimalPreDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
@@ -392,6 +415,7 @@ export const operations = {
       ...database.minimalPreDeleteOperationBase,
       ids,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreDeleteOperation,
 
   preDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
@@ -400,12 +424,14 @@ export const operations = {
       ...docDeleteOpProps,
       ids,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.PreDeleteOperation,
 
   minimalOnDeleteOptions: ({ parent = null }: { parent?: Parent }) =>
     ({
       ...database.minimalOnDeleteOptionsBase,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnDeleteOptions,
 
   onDeleteOptions: ({ parent = null }: { parent?: Parent }) =>
@@ -413,6 +439,7 @@ export const operations = {
       ...database.onDeleteOptionsBase,
       ...docDeleteOpProps,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnDeleteOptions,
 
   minimalOnDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
@@ -420,6 +447,7 @@ export const operations = {
       ...database.minimalOnDeleteOperationBase,
       ids,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnDeleteOperation,
 
   onDeleteOperation: ({ ids, parent = null }: { ids: string[]; parent?: Parent }) =>
@@ -428,6 +456,7 @@ export const operations = {
       ...docDeleteOpProps,
       ids,
       parent,
+      documentName: "ActiveEffect",
     }) satisfies ActiveEffect.Database.OnDeleteOperation,
 };
 

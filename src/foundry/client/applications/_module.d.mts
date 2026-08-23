@@ -33,4 +33,4 @@ export const detached: DetachedWindowManager;
  * @deprecated "You are accessing foundry.applications.parseHTML, which is now found at foundry.utils.parseHTML" (since v13, until v15)
  * @see {@linkcode foundry.utils.parseHTML}
  */
-export function parseHTML(htmlString: string): HTMLCollection | HTMLElement;
+export function parseHTML(htmlString: string): HTMLCollection | HTMLElement | null;

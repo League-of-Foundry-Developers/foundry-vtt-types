@@ -30,7 +30,7 @@ declare class World extends ClientPackageMixin(BaseWorld) {
   // fake type override
   protected static override _formatIncompatibleSystemsTooltip(
     data: World.ManifestData | World,
-    deps: Iterable<RelatedPackage.Data>,
+    relationships: Iterable<RelatedPackage.Data>,
     options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
   ): string;
 }
@@ -89,9 +89,14 @@ declare namespace World {
    */
   interface Schema extends BasePackage.Schema {
     /**
+     * The package type among world, system, and module
+     */
+    type: fields.StringField<{ required: true; choices: ["world"]; initial: "world" }>;
+
+    /**
      * The game system name which this world relies upon
      */
-    system: fields.StringField<{ required: true; blank: false }>;
+    system: fields.StringField<{ required: true; blank: false; validate: typeof BasePackage.validateId }>;
 
     /**
      * A web URL or local file path which provides a background banner image

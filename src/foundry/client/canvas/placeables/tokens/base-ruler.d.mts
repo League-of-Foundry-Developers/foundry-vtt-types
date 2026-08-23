@@ -43,13 +43,13 @@ declare abstract class BaseTokenRuler {
 
   /**
    * Draw the ruler.
-   * Called in {@linkcode Token.draw | foundry.canvas.placeables.Token#_draw}.
+   * Called in {@linkcode Token._draw | foundry.canvas.placeables.Token#_draw}.
    */
   abstract draw(): Promise<void>;
 
   /**
    * Clear the ruler.
-   * Called in {@linkcode Token.clear | foundry.canvas.placeables.Token#clear}.
+   * Called in {@linkcode Token._clear | foundry.canvas.placeables.Token#_clear}.
    */
   abstract clear(): void;
 

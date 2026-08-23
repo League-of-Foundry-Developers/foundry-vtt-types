@@ -18,3 +18,24 @@ declare module "fvtt-types/configuration" {
 }
 
 expectTypeOf(CONFIG.Item.documentClass).toEqualTypeOf<typeof CustomItemClass>();
+
+// This is a regression test for the error:
+// "Type 'CustomCombatantClass<SubType>' recursively references itself as a base type."
+// See https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3744.
+// Note: This only errors on TS 5.7.
+declare class CustomCombatantClass<SubType extends Combatant.SubType> extends Combatant<SubType> {
+  configured: true;
+}
+
+declare module "fvtt-types/configuration" {
+  interface DocumentClassConfig {
+    Combatant: typeof CustomCombatantClass;
+  }
+
+  interface ConfiguredCombatant<SubType extends Combatant.SubType> {
+    document: CustomCombatantClass<SubType>;
+  }
+}
+
+expectTypeOf(CONFIG.Combatant.documentClass).toEqualTypeOf<typeof CustomCombatantClass>();
+expectTypeOf<Combatant.Implementation>().toEqualTypeOf<CustomCombatantClass<Combatant.SubType>>();

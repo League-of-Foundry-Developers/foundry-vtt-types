@@ -78,7 +78,14 @@ expectTypeOf(light["_refreshState"]()).toBeVoid();
 expectTypeOf(
   light["_onCreate"](
     doc.toObject(),
-    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    {
+      action: "create",
+      documentName: "AmbientLight",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      renderSheet: false,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -87,13 +94,24 @@ expectTypeOf(
   light["_onUpdate"](
     // partial source data
     { config: { bright: 20, dim: 50, color: "#AB9435" }, flags: { core: { sheetLock: true } } },
-    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
+    {
+      action: "update",
+      documentName: "AmbientLight",
+      parent: scene,
+      modifiedTime: 7,
+      render: true,
+      diff: true,
+      recursive: true,
+    },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  light["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+  light["_onDelete"](
+    { action: "delete", documentName: "AmbientLight", parent: scene, modifiedTime: 7, render: true },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(light.initializeLightSource()).toBeVoid();

@@ -9,10 +9,10 @@
 
 export {};
 
-type RingColorBand = foundry.canvas.placeables.tokens.TokenRing.ColorBand;
+type KTX2ParserInitOptions = foundry.canvas.KTX2Parser.InitOptions;
 
-type DynamicRingId = string;
+type KTX2ParserParseOptions = foundry.canvas.KTX2Parser.ParseOptions;
 
-type RingData = foundry.canvas.placeables.tokens.TokenRing.RingData;
+type KTX2Header = foundry.canvas.KTX2Parser.Header;
 
-type RegionAnimationState = foundry.canvas.placeables.Region.AnimationState;
+type KTX2TranscodeTarget = foundry.canvas.KTX2Parser.TranscodeTarget;
