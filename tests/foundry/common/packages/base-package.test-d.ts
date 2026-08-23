@@ -21,6 +21,10 @@ expectTypeOf(basePackage.owned).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.tags).toEqualTypeOf<string[]>();
 expectTypeOf(basePackage.type).toEqualTypeOf<CONST.PACKAGE_TYPES>();
 expectTypeOf(basePackage.unavailable).toEqualTypeOf<boolean>();
+expectTypeOf(basePackage._unknownKeys).toEqualTypeOf<string[]>();
+expectTypeOf(basePackage.incompatibleWithCoreVersion).toEqualTypeOf<boolean>();
+
+new BasePackage({ id: "foobar", title: "Test Package" }, { installed: false });
 
 declare const modules: Collection<Module>;
 expectTypeOf(basePackage._testRequiredDependencies(modules)).toEqualTypeOf<Promise<boolean>>();
@@ -47,6 +51,7 @@ expectTypeOf(
 expectTypeOf(foundry.packages.BasePackage.cleanData()).toEqualTypeOf<object>();
 expectTypeOf(foundry.packages.BasePackage.validateId("")).toEqualTypeOf<void>();
 expectTypeOf(foundry.packages.BasePackage.migrateData({})).toEqualTypeOf<object>();
+expectTypeOf(foundry.packages.BasePackage.migrateData({}, { migrate: true })).toEqualTypeOf<object>();
 expectTypeOf(foundry.packages.BasePackage.fromRemoteManifest("", { strict: true })).toEqualTypeOf<Promise<never>>();
 
 const packageCompendia: foundry.data.fields.SchemaField.InitializedData<{ ownership: CompendiumOwnershipField }> = {

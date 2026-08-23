@@ -51,6 +51,7 @@ describe("DocumentCollection Tests", async () => {
 
   const onItemCreateOperation = {
     action: "create",
+    documentName: "Item",
     data: [itemCreateData],
     modifiedTime: 7,
     parent: null,
@@ -59,6 +60,7 @@ describe("DocumentCollection Tests", async () => {
 
   const onItemUpdateOperation = {
     action: "update",
+    documentName: "Item",
     diff: true,
     modifiedTime: 7,
     parent: null,
@@ -68,6 +70,7 @@ describe("DocumentCollection Tests", async () => {
 
   const onItemDeleteOperation = {
     action: "delete",
+    documentName: "Item",
     deleteAll: false,
     ids: ["XXXXXITEMIDXXXXX"],
     modifiedTime: 7,
@@ -76,6 +79,7 @@ describe("DocumentCollection Tests", async () => {
 
   const onSceneUpdateOperation = {
     action: "update",
+    documentName: "Scene",
     diff: true,
     modifiedTime: 7,
     parent: null,

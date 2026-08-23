@@ -9,6 +9,10 @@ expectTypeOf<ServerSettings.Source["adminUsername"]>().toEqualTypeOf<string | nu
 expectTypeOf<ServerSettings.InitializedData["adminUsername"]>().toEqualTypeOf<string | null>();
 expectTypeOf<ServerSettings.CreateData["adminUsername"]>().toEqualTypeOf<string | null | undefined>();
 
+expectTypeOf(serverSettings.tempDir).toEqualTypeOf<string | undefined>();
+expectTypeOf(serverSettings.unixSocket).toEqualTypeOf<string | null>();
+expectTypeOf(serverSettings.port).toEqualTypeOf<number | null>();
+
 const myRelease = new foundry.config.ReleaseData({
   build: 315,
   // @ts-expect-error "foobar" is not a valid release channel

@@ -18,6 +18,9 @@ declare class DocumentSocketResponse<Action extends DatabaseBackend.DatabaseActi
   /** The database action that was performed. */
   action: Action | undefined;
 
+  /** The time the response was sent in milliseconds. */
+  timestamp: number | undefined;
+
   /** Was this response broadcast to other connected clients? */
   broadcast: boolean | undefined;
 
@@ -30,7 +33,15 @@ declare class DocumentSocketResponse<Action extends DatabaseBackend.DatabaseActi
   /** The result of the request. Present if successful */
   result: AnyObject[] | readonly string[] | undefined;
 
-  /** An error that occurred. Present if unsuccessful */
+  /**
+   * Is this a side effect?
+   * @defaultValue `false`
+   */
+  sideEffect: boolean;
+
+  /**
+   * An error that occurred. Present if unsuccessful
+   */
   error: Error | undefined;
 }
 

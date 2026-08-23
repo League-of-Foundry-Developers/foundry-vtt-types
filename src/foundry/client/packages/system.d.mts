@@ -4,7 +4,6 @@ import type { AdditionalTypesField, BasePackage, BaseSystem, RelatedPackage } fr
 import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { ClientPackageMixin } from "#client/packages/_module.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
-import type Game from "#client/game.d.mts";
 
 declare class System extends ClientPackageMixin(BaseSystem) {
   // This would require a specific `ConstructionContext` interface, but `options.strictDataCleaning` is *always* overwritten by the property
@@ -40,14 +39,9 @@ declare class System extends ClientPackageMixin(BaseSystem) {
   // fake type override
   protected static override _formatIncompatibleSystemsTooltip(
     data: System.ManifestData | System,
-    deps: Iterable<RelatedPackage.Data>,
+    relationships: Iterable<RelatedPackage.Data>,
     options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
   ): string;
-
-  /**
-   * @deprecated "`System#template` is deprecated in favor of {@linkcode System.documentTypes | System#documentTypes}" (since v12, until v14)
-   */
-  get template(): Game["model"];
 }
 
 declare namespace System {
@@ -112,6 +106,11 @@ declare namespace System {
       initial: "0";
       validate: typeof BasePackage.validateVersion;
     }>;
+
+    /**
+     * The package type among world, system, and module
+     */
+    type: fields.StringField<{ required: true; choices: ["system"]; initial: "system" }>;
 
     /**
      * Additional document subtypes provided by this system.
