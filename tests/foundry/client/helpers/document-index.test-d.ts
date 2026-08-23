@@ -7,7 +7,7 @@ import StringTree = foundry.utils.StringTree;
 const docIndex = new DocumentIndex();
 
 expectTypeOf(docIndex.trees).toEqualTypeOf<DocumentIndex.WordTrees>();
-expectTypeOf(docIndex.uuids).toEqualTypeOf<Record<string, StringTree.Node<DocumentIndex.Leaf>>>();
+expectTypeOf(docIndex.uuids).toEqualTypeOf<Record<string, StringTree.Node<DocumentIndex.Leaf>[]>>();
 expectTypeOf(docIndex.ready).toEqualTypeOf<Promise<void> | null>();
 expectTypeOf(docIndex.index()).toEqualTypeOf<Promise<void>>();
 
@@ -43,10 +43,10 @@ expectTypeOf(docIndex.removeDocument(je)).toEqualTypeOf<void>();
 expectTypeOf(docIndex.replaceDocument(je)).toEqualTypeOf<void>();
 
 declare const someCompendium: foundry.documents.collections.CompendiumCollection<"JournalEntry">;
-expectTypeOf(docIndex["_addLeaf"](je)).toBeVoid();
-expectTypeOf(docIndex["_addLeaf"](je, {})).toBeVoid();
-expectTypeOf(docIndex["_addLeaf"](je, { pack: someCompendium })).toBeVoid();
-expectTypeOf(docIndex["_addLeaf"](je, { pack: undefined })).toBeVoid();
+expectTypeOf(docIndex["_addLeaves"](je)).toBeVoid();
+expectTypeOf(docIndex["_addLeaves"](je, {})).toBeVoid();
+expectTypeOf(docIndex["_addLeaves"](je, { pack: someCompendium })).toBeVoid();
+expectTypeOf(docIndex["_addLeaves"](je, { pack: undefined })).toBeVoid();
 
 expectTypeOf(docIndex["_indexCompendium"](someCompendium)).toBeVoid();
 expectTypeOf(docIndex["_indexEmbeddedDocuments"](je)).toBeVoid();
