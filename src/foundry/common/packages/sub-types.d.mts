@@ -20,9 +20,9 @@ declare class AdditionalTypesField<
   AdditionalTypesField.DocumentTypesConfiguration,
   AdditionalTypesField.DocumentTypesConfiguration
 > {
-  static get _defaults(): DataField.Options<AnyObject>;
+  static override get _defaults(): DataField.Options<AnyObject>;
 
-  protected _validateType(
+  protected override _validateType(
     value: AdditionalTypesField.DocumentTypesConfiguration,
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;

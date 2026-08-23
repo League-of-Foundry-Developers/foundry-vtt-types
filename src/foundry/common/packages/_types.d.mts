@@ -43,4 +43,10 @@ type SystemManifestData = foundry.packages.System.ManifestData;
 
 type ModuleManifestData = foundry.packages.Module.ManifestData;
 
+type QuickstartManifestData = foundry.packages.Module.QuickstartData;
+
+type QuickstartAdventureData = foundry.packages.Module.QuickstartAdventureData;
+
+type SystemCompatibility = foundry.packages.BasePackage.SystemCompatibility;
+
 type WorldManifestData = foundry.packages.World.ManifestData;

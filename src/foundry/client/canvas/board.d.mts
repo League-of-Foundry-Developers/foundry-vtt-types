@@ -97,6 +97,13 @@ declare class Canvas extends _InternalCanvas {
   static MOUSE_MOVE_HANDLER_PRIORITIES: Readonly<Canvas.MouseMoveHandlerPriorities>;
 
   /**
+   * Frame ID. Each frame has its own unique value, incremented each frame.
+   * @internal
+   * @defaultValue `0`
+   */
+  _frameId: number;
+
+  /**
    * A set of blur filter instances which are modified by the zoom level and the "soft shadows" setting
    * @defaultValue `[]`
    */
@@ -207,6 +214,13 @@ declare class Canvas extends _InternalCanvas {
   initializing: Promise<void> | null;
 
   /**
+   * The view options.
+   * @internal
+   * @defaultValue `{}`
+   */
+  _viewOptions: Scene.ViewOptions;
+
+  /**
    * The singleton {@linkcode PIXI.Application} instance rendered on the Canvas.
    * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
    * which happens only once, between the `setup` and `ready` hooks.
@@ -227,6 +241,15 @@ declare class Canvas extends _InternalCanvas {
   readonly stage: PIXI.Container | undefined;
 
   /**
+   * The root container
+   * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
+   * which happens only once, between the `setup` and `ready` hooks.
+   *
+   * @privateRemarks Unlike its siblings this is a plain assignment in `Canvas##createGroups`, so it stays writable.
+   */
+  root: PIXI.Container | undefined;
+
+  /**
    * The {@link RenderedCanvasGroup | rendered canvas group} which render the environment canvas group and the interface canvas group.
    * @see {@linkcode Canvas.environment | Canvas#environment}
    * @see {@linkcode Canvas.interface | Canvas#interface}
@@ -237,12 +260,6 @@ declare class Canvas extends _InternalCanvas {
    * `{ writable: false }` in `Canvas##createGroups`.
    */
   readonly rendered: InitializedOn<RenderedCanvasGroup.Implementation, "ready">;
-
-  /**
-   * A singleton CanvasEdges instance.
-   * @privateRemarks Defined in the class body but not initialized, then `defineProperty`'d in construction with no options.
-   */
-  edges: CanvasEdges;
 
   /**
    * The singleton FogManager instance.
@@ -347,8 +364,21 @@ declare class Canvas extends _InternalCanvas {
    */
   previousMousePosition: PIXI.Point;
 
-  /** @deprecated This was made hard private in v13. This warning will be removed in v14. */
-  protected _panTime: never;
+  /**
+   * Is the mouse position visible?
+   */
+  get mousePositionVisible(): boolean;
+
+  /**
+   * @internal
+   * @defaultValue `false`
+   */
+  _mousePositionVisible: boolean;
+
+  /**
+   * Is the mouse position explored?
+   */
+  get mousePositionExplored(): boolean;
 
   /**
    * Force snapping to grid vertices?
@@ -366,6 +396,16 @@ declare class Canvas extends _InternalCanvas {
    * A reference to the currently displayed Scene document, or null if the Canvas is currently blank.
    */
   get scene(): Scene.Implementation | null;
+
+  /**
+   * A reference to the currently displayed Level document, or null if the Canvas is currently blank.
+   */
+  get level(): Level.Implementation | null;
+
+  /**
+   * A reference to the edges of the currently displayed Level document.
+   */
+  get edges(): CanvasEdges | null;
 
   /**
    * A SceneManager instance which adds behaviors to this Scene, or null if there is no manager.
@@ -436,9 +476,6 @@ declare class Canvas extends _InternalCanvas {
    */
   initialize(): void;
 
-  /** @deprecated Foundry made this hard private in v13. This warning will be removed in v14. */
-  protected _initializeBlur(options?: never): never;
-
   /**
    * Configure performance settings for hte canvas application based on the selected performance mode.
    * @internal
@@ -463,14 +500,25 @@ declare class Canvas extends _InternalCanvas {
   tearDown(options?: Canvas.TearDownOptions): Promise<void>;
 
   /**
-   * Create a SceneManager instance used for this Scene, if any.
+   * Get a SceneManager instance used for this Scene, if any.
+   * The SceneManager is created by this function if the entry in {@linkcode CONFIG.Canvas.managedScenes} is a class.
    */
   static getSceneManager(scene: Scene.Implementation): SceneManager.Any | null;
 
   /**
+   * Determine an initial level based on what tokens the user has visibility of.
+   * This choice may be delegated to a SceneManager, if present.
+   * @param scene   - The Scene that is about to be drawn next.
+   * @param manager - The SceneManager for this scene.
+   * @returns The Level ID.
+   * @internal
+   */
+  static _determineInitialLevel(scene: Scene.Implementation, manager: SceneManager.Any | null): string;
+
+  /**
    * Get the value of a GL parameter
    * @param parameter - The GL parameter to retrieve
-   * @returns The returned value type depends of the parameter to retrieve
+   * @returns The GL parameter value
    */
   getGLParameter(parameter: string): unknown;
 
@@ -494,6 +542,18 @@ declare class Canvas extends _InternalCanvas {
   getCollectionLayer<Name extends string>(collectionName: Name): Canvas.GetCollectionLayerReturn<Name>;
 
   /**
+   * Infer the Level for a given elevation. The inferred Level is always a visible one.
+   * Returns the viewed Level if there's no Level with the given elevation in range,
+   * or null if there's no viewed Level.
+   * @param elevation - The elevation
+   * @param options   - Additional options
+   */
+  inferLevelFromElevation(
+    elevation: number,
+    options?: Canvas.InferLevelFromElevationOptions,
+  ): Level.Implementation | null;
+
+  /**
    * Activate framerate tracking by adding an HTML element to the display and refreshing it every frame.
    */
   activateFPSMeter(): void;
@@ -504,17 +564,17 @@ declare class Canvas extends _InternalCanvas {
   deactivateFPSMeter(): void;
 
   /**
-   * Pan the canvas to a certain \{x,y\} coordinate and a certain zoom level
-   * @param position - The canvas position to pan to
+   * Pan the canvas to a certain position and a certain zoom level.
+   * @param position - The canvas position to pan to.
    */
-  pan(position?: Canvas.PartialViewPosition): void;
+  pan(position?: Canvas.PartialPanPosition): void;
 
   /**
    * Animate panning the canvas to a certain destination coordinate and zoom scale
    * Customize the animation speed with additional options
    * Returns a Promise which is resolved once the animation has completed
    *
-   * @param view - The desired view parameters
+   * @param view - The desired view and animation parameters.
    *               (default: `{}`)
    * @returns A Promise which resolves once the animation has been completed
    */
@@ -522,10 +582,10 @@ declare class Canvas extends _InternalCanvas {
 
   /**
    * Recenter the canvas with a pan animation that ends in the center of the canvas rectangle.
-   * @param initial - A desired initial position from which to begin the animation
-   * @returns A Promise which resolves once the animation has been completed
+   * @param initial - A desired initial position from which to begin the animation.
+   * @returns A Promise which resolves once the animation has been completed.
    */
-  recenter(initial?: Canvas.PartialViewPosition): CanvasAnimation.AnimateReturn;
+  recenter(initial?: Canvas.PartialPanPosition): CanvasAnimation.AnimateReturn;
 
   /**
    * Highlight objects on any layers which are visible
@@ -546,11 +606,11 @@ declare class Canvas extends _InternalCanvas {
 
   /**
    * Get the constrained zoom scale parameter which is allowed by the maxZoom parameter
-   * @param position - The unconstrained camera position
-   * @returns The constrained position
+   * @param position - The unconstrained camera position.
+   * @returns The constrained position.
    * @internal
    */
-  _constrainView(position: Canvas.PartialViewPosition): Canvas.ViewPosition;
+  _constrainView(position: Canvas.PartialPanPosition): Canvas.PanPosition;
 
   /**
    * Create a BlurFilter instance and register it to the array for updates when the zoom level changes.
@@ -681,12 +741,6 @@ declare class Canvas extends _InternalCanvas {
    * with `{ writable: false, configurable: true }` options.
    */
   readonly pendingRenderFlags: Canvas.PendingRenderFlags | undefined;
-
-  /**
-   * @deprecated "`Canvas#colorManager` is deprecated and replaced by {@linkcode Canvas.environment | Canvas#environment}"
-   * (since v12, until v14)
-   */
-  get colorManager(): this["environment"];
 
   #Canvas: true;
 }
@@ -844,44 +898,64 @@ declare namespace Canvas {
 
   interface ViewPosition {
     /**
-     * The x-coordinate which becomes stage.pivot.x
+     * The x-coordinate which becomes `stage.pivot.x`
      * @defaultValue `canvas.stage.pivot.x`
      */
     x: number;
 
     /**
-     * The y-coordinate which becomes stage.pivot.y
+     * The y-coordinate which becomes `stage.pivot.y`
      * @defaultValue `canvas.stage.pivot.y`
      */
     y: number;
 
     /**
-     * The zoom level up to {@linkcode CONFIG.Canvas.maxZoom} which becomes stage.scale.x and y
+     * The zoom level which becomes `stage.scale.x` and `y`
      * @defaultValue `canvas.stage.scale.x`
      */
     scale: number;
+
+    /** The last-viewed level ID for the scene. */
+    level: string | null;
   }
 
   interface PartialViewPosition extends InexactPartial<ViewPosition> {}
 
+  /**
+   * The camera half of a {@linkcode ViewPosition}, which the panning methods take and return.
+   * @remarks Foundry writes this as `Omit<CanvasViewPosition, "level">`.
+   */
+  interface PanPosition extends Omit<ViewPosition, "level"> {}
+
+  interface PartialPanPosition extends InexactPartial<PanPosition> {}
+
   interface _AnimatePanOptions {
     /**
-     * The total duration of the animation in milliseconds; used if speed is not set
+     * The total duration of the animation in milliseconds; used if `speed` is not set.
      * @defaultValue `250`
      */
     duration?: number;
 
-    /** The speed of animation in pixels per second; overrides duration if set */
+    /** The speed of animation in pixels per second; overrides `duration` if set. */
     speed?: number;
 
     /**
-     * An easing function passed to CanvasAnimation animate
+     * An easing function passed to {@linkcode CanvasAnimation.animate}.
      * @defaultValue {@linkcode CanvasAnimation.easeInOutCosine}
      */
     easing?: CanvasAnimation.EasingFunction;
   }
 
-  interface AnimatePanOptions extends InexactPartial<ViewPosition>, InexactPartial<_AnimatePanOptions> {}
+  /**
+   * @privateRemarks Foundry's JSDoc requires the {@linkcode PanPosition} half, but every key is destructured with a
+   * fallback and {@linkcode Canvas.recenter | Canvas#recenter} calls this without `scale`.
+   */
+  interface AnimatePanOptions extends InexactPartial<PanPosition>, InexactPartial<_AnimatePanOptions> {}
+
+  interface InferLevelFromElevationOptions {
+    /** Restrict to these Levels (empty means all Levels) */
+    levels?: Set<string> | undefined;
+  }
 
   // TODO: do we really need this type separate from Point?
   interface DropPosition {

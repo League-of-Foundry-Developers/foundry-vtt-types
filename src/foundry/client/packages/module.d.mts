@@ -33,7 +33,7 @@ declare class Module extends ClientPackageMixin(BaseModule) {
   // fake type override
   protected static override _formatIncompatibleSystemsTooltip(
     data: Module.ManifestData | Module,
-    deps: Iterable<RelatedPackage.Data>,
+    relationships: Iterable<RelatedPackage.Data>,
     options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
   ): string;
 }
@@ -75,6 +75,39 @@ declare namespace Module {
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+  interface QuickstartAdventureSchema extends fields.DataSchema {
+    /** The UUID of the adventure. */
+    uuid: fields.StringField<{ required: true; blank: false }>;
+  }
+
+  interface QuickstartWorldSchema extends fields.DataSchema {
+    /** The world's background image for the join page. If omitted, the first adventure's image is used. */
+    background: fields.FilePathField<{ categories: ["IMAGE"]; required: false }>;
+
+    /** The cover image for the world on the setup page. If omitted, the first adventure's image is used. */
+    cover: fields.FilePathField<{ categories: ["IMAGE"]; required: false }>;
+
+    /** The world's description. If omitted, the first adventure's description is used. */
+    description: fields.HTMLField<{ required: false }>;
+  }
+
+  interface QuickstartSchema extends fields.DataSchema {
+    /** A mapping of system IDs to an adventure to import for that system. */
+    adventures: fields.TypedObjectField<
+      fields.SchemaField<QuickstartAdventureSchema>,
+      { expandKeys: false; validateKey: typeof BasePackage.validateId }
+    >;
+
+    /**
+     * Whether the adventure(s) requires post-import operations. Non-GMs will be blocked from joining the World while
+     * post-import operations are still pending.
+     */
+    postImport: fields.BooleanField;
+
+    /** Configuration for the auto-created world. */
+    world: fields.SchemaField<QuickstartWorldSchema>;
+  }
+
   /**
    * The schema for {@linkcode Module}. This is the source of truth for how an Module document
    * must be structured.
@@ -99,6 +132,11 @@ declare namespace Module {
     }>;
 
     /**
+     * The package type among world, system, and module
+     */
+    type: fields.StringField<{ required: true; choices: ["module"]; initial: "module" }>;
+
+    /**
      * Does this module provide a translation for the core software?
      */
     coreTranslation: fields.BooleanField;
@@ -112,7 +150,16 @@ declare namespace Module {
      * Additional document sub-types provided by this module.
      */
     documentTypes: AdditionalTypesField;
+
+    /**
+     * The Quick-Start configuration.
+     */
+    quickstart: fields.SchemaField<QuickstartSchema, { required: false; initial: undefined }>;
   }
+
+  interface QuickstartAdventureData extends fields.SchemaField.InitializedData<QuickstartAdventureSchema> {}
+
+  interface QuickstartData extends fields.SchemaField.InitializedData<QuickstartSchema> {}
 
   interface ManifestData extends BasePackage.ManifestData<Schema> {
     /** Is this package currently active? */

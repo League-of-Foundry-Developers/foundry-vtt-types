@@ -57,7 +57,7 @@ type TokenMovementActionConfigDescriptor = CONFIG.Token.Movement.ActionConfigDes
 
 type TokenMovementActionConfig = CONFIG.Token.Movement.ActionConfig;
 
-type CanvasViewPosition = Canvas.PartialViewPosition;
+type CanvasViewPosition = Canvas.ViewPosition;
 
 type CanvasAnimationPanOptions = Canvas.AnimatePanOptions;
 
