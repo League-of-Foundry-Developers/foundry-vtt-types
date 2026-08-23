@@ -54,7 +54,7 @@ type TokenMovementActionConfig = unknown;
 
 type TokenPanningOptions = TokenDocument.PanningOptions;
 
-type CanvasViewPosition = Canvas.PartialViewPosition;
+type CanvasViewPosition = Canvas.ViewPosition;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 

@@ -4,8 +4,7 @@
 
 import type { performIntegerSort } from "./helpers.mjs";
 
-// eslint-disable-next-line import-x/export
-export * from "./_types.mjs";
+export * as types from "./_types.mjs";
 export * from "#common/utils/_module.mjs";
 export * from "./helpers.mjs";
 

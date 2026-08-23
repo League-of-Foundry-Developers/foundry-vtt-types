@@ -5,6 +5,7 @@ import type { Mutable } from "#utils";
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
 import "#common/primitives/_module.mjs";
+import "#common/global.d.mts";
 import * as _CONST from "#common/constants.mjs";
 import * as _abstract from "#common/abstract/_module.mjs";
 import * as _documents from "#client/documents/_module.mjs";
@@ -924,6 +925,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode srcExists} which is now namespaced under {@linkcode foundry.canvas.srcExists}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import srcExists = foundry.canvas.srcExists;
 
   /**
