@@ -19,9 +19,6 @@ declare namespace BaseModule {
  */
 declare class BaseModule extends BasePackage<BaseModule.Schema> {
   // fake type override
-  static override type: "module";
-
-  // fake type override
   static override get collection(): `${typeof BaseModule.type}s`;
 
   // fake type override
@@ -31,6 +28,8 @@ declare class BaseModule extends BasePackage<BaseModule.Schema> {
   override version: string;
 
   static override defineSchema(): BaseModule.Schema;
+
+  static override type: "module";
 
   /**
    * The default icon used for this type of Package.

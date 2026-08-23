@@ -10,8 +10,9 @@ declare class ClientPackage {
   /**
    * Is this package marked as a favorite?
    * This boolean is currently only populated as true in the /setup view of the software.
+   * @defaultValue `false`
    */
-  favorite: false;
+  favorite: boolean;
 
   /**
    * Associate package availability with certain badge for client-side display.
@@ -54,13 +55,15 @@ declare class ClientPackage {
   ): string;
 
   /**
-   * List missing dependencies and format them for display.
-   * @param availability - The availability level.
-   * @param data         - The compatibility data.
+   * List any installed systems that are incompatible with this module's systems relationship, and format them for
+   * display.
+   * @param data          - The compatibility data.
+   * @param relationships - The system relationships.
+   * @remarks `data` is unused in `ClientPackage`.
    */
   protected static _formatIncompatibleSystemsTooltip(
     data: BasePackage.ManifestData | ClientPackageMixin.AnyMixed,
-    deps: Iterable<RelatedPackage.Data>,
+    relationships: Iterable<RelatedPackage.Data>,
     options?: ClientPackageMixin.FormatIncompatibleSystemsTooltipOptions,
   ): string;
 
@@ -114,11 +117,8 @@ declare namespace ClientPackageMixin {
   type BaseClass = BasePackage.Internal.Constructor;
 
   interface CompatibilityBadge {
-    /**
-     * A type in "safe", "unsafe", "warning", "neutral" applied as a CSS class
-     * @remarks Despite the above list in the description, core never returns `"unsafe"` but does return `"error"`.
-     */
-    type: "safe" | "warning" | "neutral" | "error";
+    /** A CSS class applied to the badge */
+    type: "success" | "warning" | "neutral" | "error";
 
     /** A tooltip string displayed when hovering over the badge */
     tooltip: string;
