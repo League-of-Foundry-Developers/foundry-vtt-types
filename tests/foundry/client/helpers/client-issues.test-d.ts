@@ -4,6 +4,7 @@ import ClientIssues = foundry.helpers.ClientIssues;
 
 const issues = new ClientIssues();
 declare const actor: Actor.Implementation;
+declare const scene: Scene.Implementation;
 
 expectTypeOf(issues["_detectWebGLIssues"]()).toBeVoid();
 
@@ -38,3 +39,12 @@ expectTypeOf(issues["_onDeleteInvalid"]("Item", ["XXXXXSomeIDXXXXX"], { parent: 
 expectTypeOf(
   issues["_onDeleteInvalid"]("Item", ["XXXXXSomeIDXXXXX"], { parent: undefined, pack: undefined }),
 ).toBeVoid();
+
+// The context is correlated with the Document name: `Item` is parented by an `Actor`, never a `Scene`.
+// @ts-expect-error `Scene` is not a possible parent of an `Item`
+issues["_onDeleteInvalid"]("Item", ["XXXXXSomeIDXXXXX"], { parent: scene });
+
+// `Setting` can neither live in a compendium nor be embedded in a Document that can.
+// @ts-expect-error `Setting` documents are never in a compendium pack
+issues["_onDeleteInvalid"]("Setting", ["XXXXXSomeIDXXXXX"], { pack: "some.pack" });
+expectTypeOf(issues["_onDeleteInvalid"]("Setting", ["XXXXXSomeIDXXXXX"], { parent: null, pack: null })).toBeVoid();

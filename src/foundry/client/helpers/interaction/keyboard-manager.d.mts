@@ -16,6 +16,9 @@ declare class KeyboardManager {
   /**
    * Begin listening to keyboard events.
    * @param document - The document to bind listeners to. (default: `window.document`)
+   * @internal
+   *
+   * @remarks The DOM {@linkcode Document}, not a {@linkcode foundry.abstract.Document}.
    */
   protected _activateListeners(document?: Document): void;
 

@@ -72,10 +72,10 @@ declare class ClientIssues {
    * @param context      - The context
    * @internal
    */
-  protected _onDeleteInvalid(
-    documentName: Document.Type,
+  protected _onDeleteInvalid<Name extends Document.Type>(
+    documentName: Name,
     invalidIds: string[],
-    context?: ClientIssues.OnDeleteInvalidContext,
+    context?: ClientIssues.OnDeleteInvalidContext<Name>,
   ): void;
 
   #ClientIssues: true;
@@ -100,12 +100,15 @@ declare namespace ClientIssues {
 
   interface CountDocumentSubTypesOptions extends InexactPartial<_CountDocumentSubTypesOptions> {}
 
-  interface OnDeleteInvalidContext {
+  interface OnDeleteInvalidContext<Name extends Document.Type = Document.Type> {
     /** The Documents' parent, if any */
-    parent?: Document.Any | null | undefined;
+    parent?: Document.ParentForName<Name> | undefined;
 
-    /** The Documents' compendium pack, if applicable */
-    pack?: string | null | undefined;
+    /**
+     * The Documents' compendium pack, if applicable
+     * @remarks Only a Document that can be in a compendium (directly or embedded) is ever deleted with a `pack`.
+     */
+    pack?: (Document.InCompendium<Name> extends false ? never : string) | null | undefined;
   }
 
   interface ValidationFailure {
