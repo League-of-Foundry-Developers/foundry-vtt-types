@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { AnyObject, Identity, InexactPartial } from "#utils";
 import type Collection from "../utils/collection.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
@@ -50,7 +50,7 @@ declare class EmbeddedCollection<
   readonly name: string;
 
   /**
-   * The parent `DataModel` to which this `EmbeddedCollection` instance belongs.
+   * The parent Document to which this `EmbeddedCollection` instance belongs.
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly model: ParentDocument;
@@ -81,25 +81,34 @@ declare class EmbeddedCollection<
   get documentsByType(): Record<string, ContainedDocument[]>;
 
   /**
-   * Initialize the `EmbeddedCollection` object by constructing its contained Document instances
-   * @param options - Initialization options (default: `{}`)
+   * Initialize the EmbeddedCollection by synchronizing its Document instances with existing _source data.
+   * Importantly, this method does not make any modifications to the _source array.
+   * It is responsible for creating, updating, or removing Documents from the Collection.
+   * @param options - Initialization options. (default: `{}`)
    */
   initialize(options?: EmbeddedCollection.InitializeOptions): void;
 
   /**
    * Initialize an embedded document and store it in the collection.
+   * The document may already exist, in which case we are reinitializing it with new _source data.
+   * The document may not yet exist, in which case we create a new Document instance using the provided source.
+   *
    * @param data    - The Document data.
-   * @param options - Options to configure Document initialization.
+   * @param options - Initialization options.
+   * @returns The initialized document or null if no document was initialized
    *
    * @remarks `options` doesn't have a parameter default, but it's only passed to places that do, so it's optional here
    */
   protected _initializeDocument(
     data: Document.SourceForName<ContainedDocument["documentName"]>,
     options?: EmbeddedCollection.InitializeDocumentOptions,
-  ): void;
+  ): ContainedDocument | null;
 
   /**
    * Instantiate a Document for inclusion in the Collection
+   * @param data    - The Document data.
+   * @param context - Document creation context.
+   *
    * @remarks `parent`, `parentCollection`, and `pack` are overwritten, see {@linkcode EmbeddedCollection.DocumentConstructionContext}.
    *
    * @privateRemarks Can't just return `ContainedDocument`, as that should be a `Stored` type, while this returns a temporary document.
@@ -116,7 +125,7 @@ declare class EmbeddedCollection<
    * @param options - Options to configure invalid Document handling.
    */
   protected _handleInvalidDocument(
-    data: object,
+    data: AnyObject,
     err: Error,
     options?: EmbeddedCollection.HandleInvalidDocumentOptions,
   ): void;
@@ -336,6 +345,8 @@ declare namespace EmbeddedCollection {
      * Get a document from the EmbeddedCollection by its ID.
      * @param id      - The ID of the Embedded Document to retrieve.
      * @param options - Additional options to configure retrieval.
+     * @returns The retrieved document instance, or undefined
+     * @throws If strict is true and the Embedded Document cannot be found.
      */
     get<Options extends EmbeddedCollection.GetOptions | undefined = undefined>(
       id: string,

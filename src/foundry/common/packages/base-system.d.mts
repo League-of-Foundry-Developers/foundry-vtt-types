@@ -19,9 +19,6 @@ declare namespace BaseSystem {
  */
 declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
   // fake type override
-  static override type: "system";
-
-  // fake type override
   static override get collection(): `${typeof BaseSystem.type}s`;
 
   // fake type override
@@ -31,6 +28,8 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
   override version: string;
 
   static override defineSchema(): BaseSystem.Schema;
+
+  static override type: "system";
 
   /**
    * The default icon used for this type of Package.
@@ -43,40 +42,6 @@ declare class BaseSystem extends BasePackage<BaseSystem.Schema> {
    * @defaultValue `false`
    */
   strictDataCleaning: boolean;
-
-  /**
-   * @deprecated "You are accessing `BaseSystem#gridDistance` which has been migrated to
-   * {@linkcode BaseSystem.grid | BaseSystem#grid}`.distance`" (since v12, until v14)
-   */
-  get gridDistance(): number;
-
-  set gridDistance(number);
-
-  /**
-   * @deprecated "You are accessing `BaseSystem#gridUnits` which has been migrated to {@linkcode BaseSystem.grid | BaseSystem#grid}`.units`"
-   * (since v12, until v14)
-   */
-  get gridUnits(): number;
-
-  set gridUnits(number);
-
-  /**
-   * @remarks
-   * Migrations:
-   * - {@linkcode BasePackage.migrateData | super}'s
-   * - `gridDistance` to `grid.distance` (since v12, until v14)
-   * - `gridUnits` to `grid.units` (since v12, until v14)
-   */
-  static override migrateData(data: object, options?: BasePackage.MigrateDataOptions): object;
-
-  /**
-   * @remarks
-   * Shims:
-   * - {@linkcode BasePackage.shimData | super}'s
-   * - `gridDistance` to `grid.distance` (since v12, until v14)
-   * - `gridUnits` to `grid.units` (since v12, until v14)
-   */
-  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   // fake type override
   static override testAvailability(

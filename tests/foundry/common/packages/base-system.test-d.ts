@@ -12,6 +12,7 @@ expectTypeOf(baseSystem.strictDataCleaning).toEqualTypeOf<boolean>();
 
 // schema fields
 expectTypeOf(baseSystem.version).toEqualTypeOf<string>();
+expectTypeOf(baseSystem.type).toEqualTypeOf<"system">();
 expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AdditionalTypesField.DocumentTypesConfiguration>();
 expectTypeOf(baseSystem.documentTypes.Actor["character"]).toEqualTypeOf<
   AdditionalTypesField.ServerSanitizationFields | undefined

@@ -52,7 +52,7 @@ type TokenMovementActionCostFunction = unknown;
 
 type TokenMovementActionConfig = unknown;
 
-type CanvasViewPosition = Canvas.PartialViewPosition;
+type CanvasViewPosition = Canvas.ViewPosition;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 
