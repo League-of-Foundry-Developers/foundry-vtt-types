@@ -41,10 +41,11 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    *     CombatantGroup: "groups"
    *   },
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.361"
    * })
    * ```
    */

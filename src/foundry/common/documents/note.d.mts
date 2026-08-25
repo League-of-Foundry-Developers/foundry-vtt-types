@@ -33,10 +33,10 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    *   label: "DOCUMENT.Note",
    *   labelPlural: "DOCUMENT.Notes",
    *   permissions: {
-   *     create: BaseNote.#canCreate,
+   *     create: "NOTE_CREATE",
    *     delete: "OWNER"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.358"
    * })
    * ```
    */
@@ -53,9 +53,9 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
   static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.

@@ -35,12 +35,13 @@ declare abstract class BaseChatMessage<
    *   label: "DOCUMENT.ChatMessage",
    *   labelPlural: "DOCUMENT.ChatMessages",
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
    *   isPrimary: true,
    *   permissions: {
    *     create: this.#canCreate,
    *     delete: "OWNER"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.352"
    * })
    * ```
    */
@@ -50,26 +51,12 @@ declare abstract class BaseChatMessage<
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `user` to `author` (since v12, no specified end)
-   * - existing numeric `type`s to `style`, setting `type` to `"base"` (since v12, no specified end)
-   */
-  static override migrateData(source: object): object;
-
-  /**
-   * @remarks
-   * Shims:
-   * - `user` to `author` (since v12, until v14)
-   */
-  static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks Replaced by `author`
-   */
-  get user(): this["author"];
+  /** @remarks Deletes a non-numeric `changed.timestamp`, as `null` cannot be persisted. */
+  protected override _preUpdate(
+    changed: BaseChatMessage.UpdateData,
+    options: BaseChatMessage.Database.PreUpdateOptions,
+    user: User.Stored,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -197,11 +184,7 @@ declare abstract class BaseChatMessage<
     user: User.Stored,
   ): Promise<void>;
 
-  protected override _preUpdate(
-    changed: BaseChatMessage.UpdateData,
-    options: BaseChatMessage.Database.PreUpdateOptions,
-    user: User.Stored,
-  ): Promise<boolean | void>;
+  // `_preUpdate` omitted from template due to actual override above.
 
   protected override _onUpdate(
     changed: BaseChatMessage.UpdateData,

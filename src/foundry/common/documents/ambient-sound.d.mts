@@ -33,7 +33,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    *   label: "DOCUMENT.AmbientSound",
    *   labelPlural: "DOCUMENT.AmbientSounds",
    *   isEmbedded: true,
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.354"
    * })
    * ```
    */
@@ -43,6 +43,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   /** @defaultValue `["DOCUMENT", "AMBIENT_SOUND"]` */
   static override LOCALIZATION_PREFIXES: string[];
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -70,7 +72,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,

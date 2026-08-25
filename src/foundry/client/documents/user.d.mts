@@ -896,8 +896,15 @@ declare namespace User {
   /** Used by {@linkcode BaseUser.hasRole | BaseUser#hasRole}. */
   interface HasRoleOptions extends InexactPartial<_HasRoleOptions> {}
 
+  /**
+   * Used by {@linkcode BaseUser.hasPermission | BaseUser#hasPermission}.
+   * @remarks `"TEMPLATE_CREATE"` is still accepted, but logs a compatibility warning and is treated as
+   * `"REGION_CREATE"` (since v14, until v16).
+   */
+  type Permission = keyof typeof CONST.USER_PERMISSIONS | "TEMPLATE_CREATE";
+
   /** Used by {@linkcode BaseUser.can | BaseUser#can}. */
-  type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+  type ActionPermission = Permission | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
 
   /**
    * A callback for {@linkcode User.isDesignated | User#isDesignated}. Will be passed to

@@ -35,6 +35,7 @@ declare abstract class BaseCombatantGroup<
    *   labelPlural: "DOCUMENT.CombatantGroups",
    *   isEmbedded: true,
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
    *   schemaVersion: "13.341"
    * })
    * ```

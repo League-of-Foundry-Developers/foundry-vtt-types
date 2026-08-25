@@ -31,10 +31,10 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * mergeObject(super.metadata, {
    *   name: "Adventure",
    *   collection: "adventures",
-   *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
+   *   compendiumIndexFields: ["_id", "name", "caption", "description", "img", "sort", "folder", "flags.core.sheetClass"],
    *   label: "DOCUMENT.Adventure",
    *   labelPlural: "DOCUMENT.Adventures",
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.353"
    * })
    * ```
    */
