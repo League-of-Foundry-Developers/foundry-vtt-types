@@ -337,8 +337,8 @@ declare namespace ClientSettings {
    */
   interface SettingConfig<T extends Type = (value: unknown) => unknown> extends _SettingConfig<
     ToRuntimeType<T>,
-    ToSettingInitializedType<T>,
-    ToSettingCreateData<T>
+    ToSettingCreateData<T>,
+    ToSettingInitializedType<T>
   > {}
 
   /**
