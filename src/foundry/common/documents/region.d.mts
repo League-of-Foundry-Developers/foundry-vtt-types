@@ -1,6 +1,6 @@
 import type { MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.mjs";
+import type { DataModelSchemaField } from "#common/data/fields.mjs";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
 
 /**
@@ -268,9 +268,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseRegion.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseRegion>;
 
-  static override get schema(): SchemaField<BaseRegion.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseRegion>;
 
   static override validateJoint(data: BaseRegion.Source): void;
 

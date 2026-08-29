@@ -1,6 +1,6 @@
 import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
@@ -386,9 +386,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseToken.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseToken>;
 
-  static override get schema(): SchemaField<BaseToken.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseToken>;
 
   static override validateJoint(data: BaseToken.Source): void;
 

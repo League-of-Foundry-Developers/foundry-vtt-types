@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Setting Document.
@@ -228,9 +228,9 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseSetting.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseSetting>;
 
-  static override get schema(): SchemaField<BaseSetting.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseSetting>;
 
   static override validateJoint(data: BaseSetting.Source): void;
 

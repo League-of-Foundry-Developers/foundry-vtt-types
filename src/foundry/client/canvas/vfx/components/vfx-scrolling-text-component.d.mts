@@ -41,9 +41,9 @@ declare class VFXScrollingTextComponent<
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXScrollingTextComponent.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXScrollingTextComponent>;
 
-  static override get schema(): fields.SchemaField<VFXScrollingTextComponent.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXScrollingTextComponent>;
 
   static override validateJoint(data: VFXScrollingTextComponent.SourceData): void;
 

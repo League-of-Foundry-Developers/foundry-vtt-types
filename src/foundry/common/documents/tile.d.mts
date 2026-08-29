@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Tile.
@@ -223,9 +223,9 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseTile.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseTile>;
 
-  static override get schema(): SchemaField<BaseTile.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseTile>;
 
   static override validateJoint(data: BaseTile.Source): void;
 

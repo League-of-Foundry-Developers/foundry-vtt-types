@@ -41,9 +41,9 @@ declare class VFXShakeComponent<
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXShakeComponent.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXShakeComponent>;
 
-  static override get schema(): fields.SchemaField<VFXShakeComponent.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXShakeComponent>;
 
   static override validateJoint(data: VFXShakeComponent.SourceData): void;
 

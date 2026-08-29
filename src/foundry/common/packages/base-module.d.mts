@@ -45,9 +45,9 @@ declare class BaseModule extends BasePackage<BaseModule.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<BaseModule.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof BaseModule>;
 
-  static override get schema(): fields.SchemaField<BaseModule.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof BaseModule>;
 
   static override validateJoint(data: BaseModule.Source): void;
 

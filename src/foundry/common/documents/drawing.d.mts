@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Drawing.
@@ -222,9 +222,9 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseDrawing.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseDrawing>;
 
-  static override get schema(): SchemaField<BaseDrawing.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseDrawing>;
 
   static override fromSource(
     source: BaseDrawing.CreateData,

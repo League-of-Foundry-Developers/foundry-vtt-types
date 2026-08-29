@@ -181,9 +181,11 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<DetectionMode.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof DetectionMode>;
 
-  static override get schema(): fields.SchemaField<DetectionMode.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof DetectionMode>;
+
+  override get schema(): typeof DetectionMode.schema;
 
   static override validateJoint(data: DetectionMode.Source): void;
 

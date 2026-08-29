@@ -184,10 +184,10 @@ declare class LightData extends DataModel<LightData.Schema, LightData.Parent> {
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<LightData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof LightData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<LightData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof LightData>;
 
   // fake type override
   static override validateJoint(data: LightData.Source): void;
@@ -262,10 +262,10 @@ declare class ShapeData extends DataModel<ShapeData.Schema> {
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<ShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof ShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<ShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof ShapeData>;
 
   // fake type override
   static override validateJoint(data: ShapeData.Source): void;
@@ -443,10 +443,10 @@ declare class RectangleShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<RectangleShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof RectangleShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<RectangleShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof RectangleShapeData>;
 
   // fake type override
   static override validateJoint(data: RectangleShapeData.Source): void;
@@ -516,10 +516,10 @@ declare class CircleShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<CircleShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof CircleShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<CircleShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof CircleShapeData>;
 
   // fake type override
   static override validateJoint(data: CircleShapeData.Source): void;
@@ -601,10 +601,10 @@ declare class EllipseShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<EllipseShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof EllipseShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<EllipseShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof EllipseShapeData>;
 
   // fake type override
   static override validateJoint(data: EllipseShapeData.Source): void;
@@ -667,10 +667,10 @@ declare class EmanationShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<EmanationShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof EmanationShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<EmanationShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof EmanationShapeData>;
 
   // fake type override
   static override validateJoint(data: EmanationShapeData.Source): void;
@@ -770,10 +770,10 @@ declare class ConeShapeData<Schema extends ConeShapeData.Schema = ConeShapeData.
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<ConeShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof ConeShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<ConeShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof ConeShapeData>;
 
   // fake type override
   static override fromSource(source: ConeShapeData.CreateData, context?: DataModel.FromSourceOptions): ConeShapeData;
@@ -847,10 +847,10 @@ declare class RingShapeData<Schema extends RingShapeData.Schema = RingShapeData.
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<RingShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof RingShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<RingShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof RingShapeData>;
 
   // fake type override
   static override validateJoint(data: RingShapeData.Source): void;
@@ -927,10 +927,10 @@ declare class LineShapeData<Schema extends LineShapeData.Schema = LineShapeData.
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<LineShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof LineShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<LineShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof LineShapeData>;
 
   // fake type override
   static override validateJoint(data: LineShapeData.Source): void;
@@ -994,10 +994,10 @@ declare class PolygonShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<PolygonShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof PolygonShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<PolygonShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof PolygonShapeData>;
 
   // fake type override
   static override validateJoint(data: PolygonShapeData.Source): void;
@@ -1071,10 +1071,10 @@ declare class TokenShapeData<
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<TokenShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof TokenShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<TokenShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof TokenShapeData>;
 
   // fake type override
   static override validateJoint(data: TokenShapeData.Source): void;
@@ -1131,10 +1131,10 @@ declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<GridShapeData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof GridShapeData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<GridShapeData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof GridShapeData>;
 
   // fake type override
   static override validateJoint(data: GridShapeData.Source): void;
@@ -1465,10 +1465,10 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<PrototypeToken.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof PrototypeToken>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<PrototypeToken.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof PrototypeToken>;
 
   // fake type override
   static override validateJoint(data: PrototypeToken.Source): void;
@@ -1522,10 +1522,10 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<PrototypeTokenOverrides.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof PrototypeTokenOverrides>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<PrototypeTokenOverrides.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof PrototypeTokenOverrides>;
 
   // fake type override
   static override validateJoint(data: PrototypeTokenOverrides.Source): void;
@@ -1702,10 +1702,10 @@ declare class TombstoneData extends DataModel<TombstoneData.Schema> {
   /* DataModel overrides */
 
   // fake type override
-  static override _schema: fields.SchemaField<TombstoneData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof TombstoneData>;
 
   // fake type override
-  static override get schema(): fields.SchemaField<TombstoneData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof TombstoneData>;
 
   // fake type override
   static override validateJoint(data: TombstoneData.Source): void;

@@ -51,9 +51,9 @@ declare class VFXSingleImpactComponent<
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXSingleImpactComponent.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXSingleImpactComponent>;
 
-  static override get schema(): fields.SchemaField<VFXSingleImpactComponent.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXSingleImpactComponent>;
 
   static override validateJoint(data: VFXSingleImpactComponent.SourceData): void;
 

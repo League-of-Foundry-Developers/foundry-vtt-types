@@ -104,9 +104,9 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXComponent.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXComponent>;
 
-  static override get schema(): fields.SchemaField<VFXComponent.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXComponent>;
 
   static override validateJoint(data: VFXComponent.SourceData): void;
 

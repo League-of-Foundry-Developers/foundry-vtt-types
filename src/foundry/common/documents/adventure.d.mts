@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
@@ -222,9 +222,9 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseAdventure.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseAdventure>;
 
-  static override get schema(): SchemaField<BaseAdventure.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseAdventure>;
 
   static override validateJoint(data: BaseAdventure.Source): void;
 

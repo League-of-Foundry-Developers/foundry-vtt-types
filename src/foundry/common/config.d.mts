@@ -130,9 +130,9 @@ declare class ServerSettings extends DataModel<ServerSettings.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<ServerSettings.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof ServerSettings>;
 
-  static override get schema(): fields.SchemaField<ServerSettings.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof ServerSettings>;
 
   static override validateJoint(data: ServerSettings.Source): void;
 
@@ -232,9 +232,9 @@ declare class ReleaseData extends DataModel<ReleaseData.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<ReleaseData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof ReleaseData>;
 
-  static override get schema(): fields.SchemaField<ReleaseData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof ReleaseData>;
 
   static override validateJoint(data: ReleaseData.Source): void;
 

@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The FogExploration Document.
@@ -213,9 +213,9 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseFogExploration.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseFogExploration>;
 
-  static override get schema(): SchemaField<BaseFogExploration.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseFogExploration>;
 
   static override validateJoint(data: BaseFogExploration.Source): void;
 

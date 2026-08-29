@@ -30,6 +30,7 @@ import type {
 } from "#utils";
 import type {
   DataField,
+  DataModelSchemaField,
   DataSchema,
   DocumentStatsField,
   EmbeddedCollectionField,
@@ -193,7 +194,7 @@ declare abstract class Document<
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static override get schema(): SchemaField.Any;
+  static override get schema(): DataModelSchemaField.Any;
 
   protected override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 

@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { DataModelSchemaField } from "../data/fields.d.mts";
 
 /**
  * The ChatMessage Document.
@@ -225,9 +225,9 @@ declare abstract class BaseChatMessage<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseChatMessage.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseChatMessage>;
 
-  static override get schema(): SchemaField<BaseChatMessage.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseChatMessage>;
 
   static override validateJoint(data: BaseChatMessage.Source): void;
 

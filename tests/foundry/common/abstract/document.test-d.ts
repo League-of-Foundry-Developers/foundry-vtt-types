@@ -23,6 +23,8 @@ if (item) {
   >();
 }
 
+type _x = (typeof BaseActiveEffect)["schema"]["fields"];
+
 expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).branded.toEqualTypeOf<
   Promise<Macro.Stored | undefined>
 >();

@@ -86,7 +86,7 @@ declare abstract class DataModel<
    * @internal
    * @remarks Only `undefined` until the first time {@linkcode DataModel.schema} is accessed.
    */
-  static _schema: SchemaField.Any | undefined;
+  static _schema: DataModelSchemaField.Any | undefined;
 
   /**
    * An immutable reverse-reference to a parent `DataModel` to which this model belongs.
@@ -138,12 +138,12 @@ declare abstract class DataModel<
   /**
    * The Data Schema for all instances of this DataModel.
    */
-  static get schema(): SchemaField.Any;
+  static get schema(): DataModelSchemaField.Any;
 
   /**
    * Define the data schema for this document instance.
    */
-  get schema(): SchemaField<Schema>;
+  get schema(): DataModelSchemaField<typeof DataModel<Schema>>;
 
   /**
    * Is the current state of this `DataModel` invalid?

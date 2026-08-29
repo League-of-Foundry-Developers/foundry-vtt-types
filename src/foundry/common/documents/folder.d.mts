@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Folder Document.
@@ -226,9 +226,9 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseFolder.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseFolder>;
 
-  static override get schema(): SchemaField<BaseFolder.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseFolder>;
 
   static override fromSource(
     source: BaseFolder.CreateData,

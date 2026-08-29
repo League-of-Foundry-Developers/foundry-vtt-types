@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -203,9 +203,9 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseAmbientLight.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseAmbientLight>;
 
-  static override get schema(): SchemaField<BaseAmbientLight.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseAmbientLight>;
 
   static override validateJoint(data: BaseAmbientLight.Source): void;
 

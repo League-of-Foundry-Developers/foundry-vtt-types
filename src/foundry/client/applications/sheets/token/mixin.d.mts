@@ -208,8 +208,8 @@ declare namespace TokenApplicationMixin {
 
   /** @remarks The schema fields of whichever DataModel a Token application configures. */
   type FieldsFor<ConcreteToken extends TokenApplicationMixin.Token> = GetKey<
-    ConcreteToken,
-    " __fvtt_types_internal_schema",
+    ConcreteToken["schema"],
+    "fields",
     DataSchema
   >;
 

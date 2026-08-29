@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The TableResult Document.
@@ -251,9 +251,9 @@ declare abstract class BaseTableResult<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseTableResult.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseTableResult>;
 
-  static override get schema(): SchemaField<BaseTableResult.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseTableResult>;
 
   static override validateJoint(data: BaseTableResult.Source): void;
 

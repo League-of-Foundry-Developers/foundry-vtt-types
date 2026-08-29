@@ -45,9 +45,9 @@ declare class VFXPositionalSoundComponent<
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXPositionalSoundComponent.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXPositionalSoundComponent>;
 
-  static override get schema(): fields.SchemaField<VFXPositionalSoundComponent.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXPositionalSoundComponent>;
 
   static override validateJoint(data: VFXPositionalSoundComponent.SourceData): void;
 

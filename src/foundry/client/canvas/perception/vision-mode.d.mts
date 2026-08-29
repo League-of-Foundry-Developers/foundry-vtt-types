@@ -76,9 +76,11 @@ declare class VisionMode extends DataModel<
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VisionMode.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VisionMode>;
 
-  static override get schema(): fields.SchemaField<VisionMode.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VisionMode>;
+
+  override get schema(): typeof VisionMode.schema;
 
   static override validateJoint(data: VisionMode.Source): void;
 

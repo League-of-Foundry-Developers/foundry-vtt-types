@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The User Document.
@@ -246,9 +246,9 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseUser.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseUser>;
 
-  static override get schema(): SchemaField<BaseUser.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseUser>;
 
   static override validateJoint(data: BaseUser.Source): void;
 

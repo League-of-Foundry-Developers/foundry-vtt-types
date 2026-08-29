@@ -1,7 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
-import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -261,9 +261,9 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseJournalEntry.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseJournalEntry>;
 
-  static override get schema(): SchemaField<BaseJournalEntry.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseJournalEntry>;
 
   static override validateJoint(data: BaseJournalEntry.Source): void;
 

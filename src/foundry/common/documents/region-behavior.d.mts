@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.mjs";
+import type { DataModelSchemaField } from "#common/data/fields.mjs";
 
 /**
  * The RegionBehavior Document.
@@ -238,9 +238,9 @@ declare abstract class BaseRegionBehavior<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseRegionBehavior.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseRegionBehavior>;
 
-  static override get schema(): SchemaField<BaseRegionBehavior.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseRegionBehavior>;
 
   static override validateJoint(data: BaseRegionBehavior.Source): void;
 

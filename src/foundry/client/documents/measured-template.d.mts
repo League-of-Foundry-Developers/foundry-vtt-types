@@ -1,7 +1,7 @@
 import type { MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -1110,9 +1110,9 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseMeasuredTemplate>;
 
-  static override get schema(): SchemaField<BaseMeasuredTemplate.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseMeasuredTemplate>;
 
   static override validateJoint(data: BaseMeasuredTemplate.Source): void;
 

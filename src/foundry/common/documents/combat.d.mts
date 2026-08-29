@@ -1,6 +1,6 @@
 import type { MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Combat Document.
@@ -270,9 +270,9 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseCombat.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseCombat>;
 
-  static override get schema(): SchemaField<BaseCombat.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseCombat>;
 
   static override validateJoint(data: BaseCombat.Source): void;
 

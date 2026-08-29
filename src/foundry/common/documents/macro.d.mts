@@ -1,7 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
-import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -250,9 +250,9 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseMacro.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseMacro>;
 
-  static override get schema(): SchemaField<BaseMacro.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseMacro>;
 
   static override fromSource(source: BaseMacro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 

@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -261,9 +261,9 @@ declare abstract class BaseActiveEffect<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseActiveEffect.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseActiveEffect>;
 
-  static override get schema(): SchemaField<BaseActiveEffect.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseActiveEffect>;
 
   static override validateJoint(data: BaseActiveEffect.Source): void;
 

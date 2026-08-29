@@ -1,7 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
-import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, DataModelSchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -256,9 +256,9 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseRollTable.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseRollTable>;
 
-  static get schema(): SchemaField<BaseRollTable.Schema>;
+  static get schema(): DataModelSchemaField<typeof BaseRollTable>;
 
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
   static validateJoint(data: BaseRollTable.Source): void;

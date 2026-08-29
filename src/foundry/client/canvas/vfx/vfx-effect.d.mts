@@ -78,9 +78,9 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<VFXEffect.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof VFXEffect>;
 
-  static override get schema(): fields.SchemaField<VFXEffect.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof VFXEffect>;
 
   static override validateJoint(data: VFXEffect.SourceData): void;
 

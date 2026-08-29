@@ -309,8 +309,8 @@ expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull(
 expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // shim methods and _logDataFieldMigration have no type changes from Document
 
-expectTypeOf(TestActiveEffect._schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
-expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
+expectTypeOf(TestActiveEffect._schema).toEqualTypeOf<fields.DataModelSchemaField<ActiveEffect.Schema>>();
+expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.DataModelSchemaField<ActiveEffect.Schema>>();
 
 expectTypeOf(
   TestActiveEffect.validateJoint({

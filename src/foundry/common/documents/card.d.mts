@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Card Document.
@@ -229,9 +229,9 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseCard.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseCard>;
 
-  static override get schema(): SchemaField<BaseCard.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseCard>;
 
   static override validateJoint(data: BaseCard.Source): void;
 

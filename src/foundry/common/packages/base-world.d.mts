@@ -56,9 +56,9 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<BaseWorld.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof BaseWorld>;
 
-  static override get schema(): fields.SchemaField<BaseWorld.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof BaseWorld>;
 
   static override validateJoint(data: BaseWorld.Source): void;
 

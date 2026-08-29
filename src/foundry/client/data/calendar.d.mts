@@ -340,9 +340,9 @@ declare class CalendarData<Components extends CalendarData.TimeComponents> exten
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<CalendarData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof CalendarData>;
 
-  static override get schema(): fields.SchemaField<CalendarData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof CalendarData>;
 
   static override validateJoint(data: CalendarData.Source): void;
 

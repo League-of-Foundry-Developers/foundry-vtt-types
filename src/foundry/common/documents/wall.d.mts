@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Wall.
@@ -225,9 +225,9 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseWall.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseWall>;
 
-  static override get schema(): SchemaField<BaseWall.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseWall>;
 
   static override validateJoint(data: BaseWall.Source): void;
 

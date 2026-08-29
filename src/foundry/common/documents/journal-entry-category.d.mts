@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * An embedded Document that represents a category in a JournalEntry.
@@ -209,9 +209,9 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseJournalEntryCategory.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseJournalEntryCategory>;
 
-  static override get schema(): SchemaField<BaseJournalEntryCategory.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseJournalEntryCategory>;
 
   static override validateJoint(data: BaseJournalEntryCategory.Source): void;
 

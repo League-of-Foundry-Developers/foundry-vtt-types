@@ -1,6 +1,6 @@
 import type { Identity, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DataModelSchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -316,9 +316,9 @@ declare abstract class BaseActorDelta<
 
   /* DataModel overrides */
 
-  static override _schema: SchemaField<BaseActorDelta.Schema>;
+  static override _schema: DataModelSchemaField<typeof BaseActorDelta>;
 
-  static override get schema(): SchemaField<BaseActorDelta.Schema>;
+  static override get schema(): DataModelSchemaField<typeof BaseActorDelta>;
 
   static override validateJoint(data: BaseActorDelta.Source): void;
 

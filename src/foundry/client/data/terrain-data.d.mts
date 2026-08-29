@@ -83,9 +83,9 @@ declare class TerrainData<Schema extends TerrainData.Schema = TerrainData.Schema
 
   /* DataModel overrides */
 
-  static override _schema: fields.SchemaField<TerrainData.Schema>;
+  static override _schema: fields.DataModelSchemaField<typeof TerrainData>;
 
-  static override get schema(): fields.SchemaField<TerrainData.Schema>;
+  static override get schema(): fields.DataModelSchemaField<typeof TerrainData>;
 
   static override validateJoint(data: TerrainData.Source): void;
 
