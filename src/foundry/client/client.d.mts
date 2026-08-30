@@ -218,7 +218,7 @@ declare global {
 
   /**
    * A convenience alias of {@linkcode game.i18n.localize}
-   * @see {@link Localization#localize}
+   * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
    * @remarks While it is pointless to call this prior to `i18nInit`, it is available by the time `init` is set up.
    * Seemingly the only reason it isn't defined immediately is that this reference needs to be bound to `game.i18n`.
    */
