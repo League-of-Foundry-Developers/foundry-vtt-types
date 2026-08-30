@@ -24,12 +24,8 @@ declare class ModuleManagement<
   Configuration extends ModuleManagement.Configuration = ModuleManagement.Configuration,
   RenderOptions extends ModuleManagement.RenderOptions = ModuleManagement.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  /**
-   * The named game setting which persists module configuration.
-   *
-   * @defaultValue `"moduleConfiguration"`
-   */
-  static readonly SETTING: string;
+  /** The named game setting which persists module configuration. */
+  static readonly SETTING: "moduleConfiguration";
 
   /**
    * @defaultValue

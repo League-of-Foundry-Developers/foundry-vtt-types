@@ -20,9 +20,8 @@ declare class CompendiumArt extends Map<string, CompendiumArt.Info> {
 
   /**
    * The key for the setting used to store the World's art preferences.
-   * @defaultValue `"compendiumArtConfiguration"`
    */
-  SETTING: string;
+  SETTING: "compendiumArtConfiguration";
 
   /**
    * Whether art application is enabled. This should be switched off when performing client-side compendium migrations

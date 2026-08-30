@@ -40,10 +40,8 @@ declare class FontConfig<
 
   /**
    * The Foundry game setting key storing the world's fonts.
-   *
-   * @defaultValue `"fonts"`
    */
-  static SETTING: string;
+  static SETTING: "fonts";
 
   /**
    * @defaultValue

@@ -13,7 +13,7 @@ const compendiumArt = new foundry.helpers.media.CompendiumArt([
   ["2", { token: "a/path" }],
 ]);
 expectTypeOf(compendiumArt.FLAG).toEqualTypeOf<string>();
-expectTypeOf(compendiumArt.SETTING).toEqualTypeOf<string>();
+expectTypeOf(compendiumArt.SETTING).toEqualTypeOf<"compendiumArtConfiguration">();
 expectTypeOf(compendiumArt.enabled).toEqualTypeOf<boolean>();
 expectTypeOf(
   compendiumArt.applyArt(Actor.implementation, { _id: "XXXXXSomeIDXXXXX" }),
