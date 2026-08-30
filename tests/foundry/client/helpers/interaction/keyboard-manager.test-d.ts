@@ -56,6 +56,7 @@ const kbdManager = new KeyboardManager();
 expectTypeOf(kbdManager["_activateListeners"]()).toBeVoid();
 expectTypeOf(kbdManager.downKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(kbdManager.moveKeys).toEqualTypeOf<Set<string>>();
+expectTypeOf(kbdManager.panKeys).toEqualTypeOf<Set<string>>();
 expectTypeOf(kbdManager.hasFocus).toEqualTypeOf<boolean>();
 expectTypeOf(kbdManager.isModifierActive("ALT")).toEqualTypeOf<boolean>();
 expectTypeOf(kbdManager.isCoreActionKeyActive("")).toEqualTypeOf<boolean>();

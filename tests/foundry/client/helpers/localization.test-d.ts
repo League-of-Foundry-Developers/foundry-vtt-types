@@ -36,7 +36,11 @@ expectTypeOf(localization.setLanguage("de")).toEqualTypeOf<Promise<void>>();
 expectTypeOf(localization.has("WORLD.DetailTab")).toEqualTypeOf<boolean>();
 expectTypeOf(localization.has("WORLD.DetailTab", true)).toEqualTypeOf<boolean>();
 
+expectTypeOf(localization.pluralRules).toEqualTypeOf<Intl.PluralRules>();
+
 expectTypeOf(localization.localize("WORLD.DetailTab")).toEqualTypeOf<string>();
+expectTypeOf(localization.localize("DICE.ErrorNonNumeric", { formula: "2d10" })).toEqualTypeOf<string>();
+expectTypeOf(localization.localize("DICE.ErrorNonNumeric", undefined)).toEqualTypeOf<string>();
 
 expectTypeOf(localization.format("DICE.ErrorNonNumeric")).toEqualTypeOf<string>();
 expectTypeOf(localization.format("DICE.ErrorNonNumeric", { formula: "2d10" })).toEqualTypeOf<string>();
