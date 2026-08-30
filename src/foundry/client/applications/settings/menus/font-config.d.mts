@@ -40,6 +40,7 @@ declare class FontConfig<
 
   /**
    * The Foundry game setting key storing the world's fonts.
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   static SETTING: "fonts";
 

@@ -1497,8 +1497,11 @@ declare class PrototypeTokenOverrides extends DataModel<PrototypeTokenOverrides.
   /** @defaultValue `["TOKEN"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** The named of the world setting that stores the prototype token overrides */
-  static SETTING: PrototypeTokenOverrides.SETTING;
+  /**
+   * The named of the world setting that stores the prototype token overrides
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
+   */
+  static SETTING: "prototypeTokenOverrides";
 
   /** A cached copy of the currently-configured overrides */
   static get overrides(): PrototypeTokenOverrides;
@@ -1662,7 +1665,8 @@ declare namespace PrototypeTokenOverrides {
 
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
-  type SETTING = "prototypeTokenOverrides";
+  /** @deprecated Use `typeof PrototypeTokenOverrides.SETTING` instead. This type will be removed in v15. */
+  type SETTING = (typeof PrototypeTokenOverrides)["SETTING"];
 }
 
 declare namespace TombstoneData {

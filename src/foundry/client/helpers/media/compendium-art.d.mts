@@ -20,6 +20,7 @@ declare class CompendiumArt extends Map<string, CompendiumArt.Info> {
 
   /**
    * The key for the setting used to store the World's art preferences.
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   SETTING: "compendiumArtConfiguration";
 
