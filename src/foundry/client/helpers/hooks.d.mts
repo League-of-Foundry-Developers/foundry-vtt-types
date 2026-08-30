@@ -154,13 +154,13 @@ declare global {
        * The level at which to log the error to console (if at all).
        * @defaultValue `null`
        */
-      notify?: keyof NonNullable<typeof ui.notifications> | null | undefined;
+      log?: keyof typeof console | null | undefined;
 
       /**
        * The level at which to spawn a notification in the UI (if at all).
        * @defaultValue `null`
        */
-      log?: keyof typeof console | null | undefined;
+      notify?: keyof NonNullable<typeof ui.notifications> | null | undefined;
     }
   }
 }

@@ -15,8 +15,12 @@ declare class KeyboardManager {
 
   /**
    * Begin listening to keyboard events.
+   * @param document - The document to bind listeners to. (default: `window.document`)
+   * @internal
+   *
+   * @remarks The DOM {@linkcode Document}, not a {@linkcode foundry.abstract.Document}.
    */
-  protected _activateListeners(): void;
+  protected _activateListeners(document?: Document): void;
 
   /**
    * The set of key codes which are currently depressed (down)
@@ -27,6 +31,11 @@ declare class KeyboardManager {
    * The set of movement keys which were recently pressed
    */
   moveKeys: Set<string>;
+
+  /**
+   * The set of panning keys which were recently pressed
+   */
+  panKeys: Set<string>;
 
   /**
    * Is logical keybindings active?
@@ -80,6 +89,8 @@ declare class KeyboardManager {
    *   Comma: ",",
    *   Control: this.CONTROL_KEY_STRING,
    *   Equal: "=",
+   *   IntlBackslash: "\\",
+   *   IntlRo: "/",
    *   Meta: isMac ? "⌘" : "⊞",
    *   MetaLeft: isMac ? "⌘" : "⊞",
    *   MetaRight: isMac ? "⌘" : "⊞",
@@ -168,9 +179,6 @@ declare class KeyboardManager {
    */
   isCoreActionKeyActive(action: string): boolean;
 
-  /** @deprecated Removed in v13 (this warning will be removed in v14) */
-  protected static _getContextDisplayString(context: never, includeModifiers: never): never;
-
   /**
    * Given a keyboard-event context, return every registered keybinding that matches it (may be empty).
    * @internal
@@ -178,12 +186,6 @@ declare class KeyboardManager {
   protected static _getMatchingActions(
     context: KeyboardManager.KeyboardEventContext,
   ): ClientKeybindings.KeybindingAction[];
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _testContext(action: never, context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _executeKeybind(keybind: never, context: never): never;
 
   /**
    * Processes a keyboard event context, checking it against registered keybinding actions
@@ -195,19 +197,10 @@ declare class KeyboardManager {
     options?: KeyboardManager.ProcessKeyboardContextOptions,
   ): void;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _reset(): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _handleKeyboardEvent(event: never, up: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _onCompositionEnd(event: never): never;
-
   /**
    * Emulate a key-up event for any currently down keys. When emulating, we go backwards such that combinations such as
    * "CONTROL + S" emulate the "S" first in order to capture modifiers.
-   * @param force - Force the keyup events to be handled.
+   * @param options - Options to configure behavior.
    */
   releaseKeys(options?: KeyboardManager.ReleaseKeysOptions): void;
 
@@ -218,6 +211,8 @@ declare class KeyboardManager {
   protected _onFocusIn(event: FocusEvent): void;
 
   #KeyboardManager: true;
+
+  static #KeyboardManagerStatic: true;
 }
 
 declare namespace KeyboardManager {
