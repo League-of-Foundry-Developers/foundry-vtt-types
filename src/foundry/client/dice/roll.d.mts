@@ -39,9 +39,11 @@ declare class Roll<D extends AnyObject = EmptyObject> {
 
   /**
    * Dice Configuration setting name.
-   * @defaultValue `"diceConfiguration"`
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
+   *
+   * Foundry marks `@readonly` but does nothing to that effect at runtime.
    */
-  static readonly DICE_CONFIGURATION_SETTING: "diceConfiguration";
+  static DICE_CONFIGURATION_SETTING: "diceConfiguration";
 
   /**
    * The original provided data object which substitutes into attributes of the roll formula

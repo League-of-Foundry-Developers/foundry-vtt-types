@@ -47,8 +47,7 @@ declare class DefaultSheetsConfig<
 
   /**
    * The Default Sheets setting name
-   * @remarks This is mutable at runtime, but Foundry types it as the literal, and it is not intended to ever change.
-   * @defaultValue `"sheetClasses"`
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   static SETTING: "sheetClasses";
 
