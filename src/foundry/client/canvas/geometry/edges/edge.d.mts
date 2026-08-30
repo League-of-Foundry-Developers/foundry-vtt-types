@@ -34,10 +34,10 @@ declare class Edge {
   id: string | undefined;
 
   /**
-   * A PlaceableObject that is responsible for this edge, if any
+   * The Document/PlaceableObject the edge belongs to, if any.
    * @remarks This property is never read by Foundry, so it being nullish won't break anything as of 12.331
    */
-  object: PlaceableObject.Any | undefined;
+  object: PlaceableObject.AnyCanvasDocument | PlaceableObject.Any | undefined;
 
   /**
    * The type of edge
@@ -196,10 +196,10 @@ declare namespace Edge {
     id: string | null;
 
     /**
-     * A PlaceableObject that is responsible for this edge, if any
+     * A Document/PlaceableObject that is responsible for this edge, if any
      * @remarks `Edge#object` is never read by Foundry, so this being nullish won't break anything as of 12.331
      */
-    object: PlaceableObject.Any;
+    object: PlaceableObject.AnyCanvasDocument | PlaceableObject.Any;
 
     /**
      * The type of edge

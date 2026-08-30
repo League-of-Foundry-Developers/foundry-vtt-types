@@ -81,7 +81,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * ```
    * @internal
    */
-  protected static _LEVELS_PROPERTY_MAP: readonly (readonly [sceneProperty: string, levelProperty: string])[];
+  protected static _LEVELS_PROPERTY_MAP: readonly [sceneProperty: string, levelProperty: string][];
 
   /**
    * The default grid defined by the system.

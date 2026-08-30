@@ -65,7 +65,7 @@ declare class VideoHelper {
    * @param video   - The VIDEO element to play
    * @param options - Additional options for modifying video playback (default: `{}`)
    */
-  play(video: HTMLVideoElement, options?: VideoHelper.PlayOptions): void;
+  play(video: HTMLVideoElement, options?: VideoHelper.PlayOptions): Promise<void>;
 
   /**
    * Stop a single video source
@@ -88,7 +88,7 @@ declare class VideoHelper {
    * @returns The created and cached base64 thumbnail image, or a placeholder image if the canvas is
    *          disabled and no thumbnail can be generated.
    */
-  createThumbnail(src: string, options?: ImageHelper.CreateThumbnailOptions): Promise<string>;
+  createThumbnail(src: string, options: ImageHelper.CreateThumbnailOptions): Promise<string>;
 
   /**
    * Lazily-load the YouTube API and retrieve a Player instance for a given iframe.
