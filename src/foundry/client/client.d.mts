@@ -1,4 +1,4 @@
-import type { InitializedOn, Mutable } from "#utils";
+import type { Mutable } from "#utils";
 
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
@@ -219,10 +219,10 @@ declare global {
   /**
    * A convenience alias of {@linkcode game.i18n.localize}
    * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
-   * @remarks While it is pointless to call this prior to `i18nInit`, it is available by the time `init` is set up.
-   * Seemingly the only reason it isn't defined immediately is that this reference needs to be bound to `game.i18n`.
+   * @remarks While it is pointless to call this prior to `i18nInit`, it is available immediately upon `Game` construction.
+   * This reference is bound to {@linkcode game.i18n}.
    */
-  let _loc: InitializedOn<typeof foundry.helpers.Localization.prototype.localize, "init">;
+  const _loc: typeof foundry.helpers.Localization.prototype.localize;
 
   /**
    * A reference for ForcedReplacement.create that can be easily referenced.
