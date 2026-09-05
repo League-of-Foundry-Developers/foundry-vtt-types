@@ -1,6 +1,7 @@
 import { expectTypeOf, test } from "vitest";
 import DataModel = foundry.abstract.DataModel;
 import type { ValueOf } from "fvtt-types/utils";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 const myLight = new foundry.data.LightData();
 
@@ -54,7 +55,10 @@ declare const myEllipse: foundry.data.EllipseShapeData;
 expectTypeOf(myEllipse.gridBased).toBeBoolean();
 
 declare const myPolygon: foundry.data.PolygonShapeData;
-expectTypeOf(myPolygon.origin).toEqualTypeOf<{ x: number; y: number } | null>();
+// `foundry.data.PolygonShapeData` is the `client/data/shapes.mjs` class, whose `origin` getter shadows the
+// nullable `origin` schema field and always resolves to a point.
+expectTypeOf(myPolygon.origin).toEqualTypeOf<Readonly<Canvas.Point>>();
+expectTypeOf(myPolygon._source.origin).toEqualTypeOf<{ x: number; y: number } | null>();
 
 declare const myEmanation: foundry.data.EmanationShapeData;
 expectTypeOf(myEmanation.type).toEqualTypeOf<"emanation">();
@@ -83,7 +87,8 @@ expectTypeOf(myTokenShape.shape).toBeNumber();
 
 declare const myGridShape: foundry.data.GridShapeData;
 expectTypeOf(myGridShape.type).toEqualTypeOf<"grid">();
-expectTypeOf(myGridShape.origin).toEqualTypeOf<{ x: number; y: number } | null>();
+expectTypeOf(myGridShape.origin).toEqualTypeOf<Readonly<Canvas.Point>>();
+expectTypeOf(myGridShape._source.origin).toEqualTypeOf<{ x: number; y: number } | null>();
 
 // Every `BaseShapeData` subclass takes a `Schema` parameter so a system can extend one with its own
 // fields and still have the instance side see them. Without it the subclass would be stuck with the
