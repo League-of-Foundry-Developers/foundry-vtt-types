@@ -696,7 +696,7 @@ declare namespace Game {
     Key extends string,
     Options extends Collection.GetOptions | undefined,
   > = Key extends CONST.WORLD_DOCUMENT_TYPES
-    ? // While `game.collections` itself is created at construction, it's not populated until the `initializeDocuments`
+    ? // While `game.collections` itself is created at construction, it's not populated until `initializeDocuments` is called before `setup`.
       InitializedOn<WorldCollection.ForName<Key>, "setup">
     : Collection._GetReturn<WorldCollection.Any, Options>;
 
