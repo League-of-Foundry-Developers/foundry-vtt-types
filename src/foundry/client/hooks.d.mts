@@ -1,5 +1,5 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { AnyMutableObject, DeepPartial, EmptyObject, ValueOf } from "#utils";
+import type { AnyMutableObject, DeepPartial, EmptyObject, HandleEmptyObject, ValueOf } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
@@ -70,6 +70,10 @@ type ApplicationV2Name = {
     : never;
 }[keyof ApplicationV2Config];
 
+type PreRenderApplicationV2Hooks = {
+  [K in ApplicationV2Name as `preRender${K}`]: Hooks.PreRenderApplicationV2<ApplicationV2Config[K]>;
+};
+
 type RenderApplicationV2Hooks = {
   [K in ApplicationV2Name as `render${K}`]: Hooks.RenderApplicationV2<ApplicationV2Config[K]>;
 };
@@ -86,8 +90,14 @@ type CloseApplicationV2Hooks = {
   [K in ApplicationV2Name as `close${K}`]: Hooks.CloseApplicationV2<ApplicationV2Config[K]>;
 };
 
+type GetPlaceableContextOptionsHooks = {
+  [K in Document.PlaceableType as `get${K}PlaceableContextOptions`]: Hooks.GetPlaceableContextOptions;
+};
+
 interface ApplicationV2Hooks
   extends
+    PreRenderApplicationV2Hooks,
+    GetPlaceableContextOptionsHooks,
     RenderApplicationV2Hooks,
     GetHeaderControlsApplicationV2Hooks,
     GetApplicationV2ContextOptionsHooks,
@@ -371,10 +381,11 @@ export interface AllHooks extends DynamicHooks {
 
   /**
    * A hook event that fires when the Canvas is deactivated.
-   * @param canvas - The Canvas instance being deactivated
+   * @param canvas  - The Canvas instance being deactivated.
+   * @param options - Options which configure how the canvas is deconstructed.
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  canvasTearDown: (canvas: Canvas) => void;
+  canvasTearDown: (canvas: Canvas, options: Canvas.TearDownOptions) => void;
 
   /**
    * A hook event that fires when the Canvas is beginning to draw the canvas groups.
@@ -402,10 +413,11 @@ export interface AllHooks extends DynamicHooks {
   highlightObjects: (active: boolean) => void;
 
   /**
-   * A hook event that fires when canvas edges are being initialized.
+   * A hook event that fires when canvas edges for a Scene are being initialized.
+   * @param scene - The Scene the edges are initialized for
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeEdges: () => void;
+  initializeEdges: (scene: Scene.Implementation) => void;
 
   /* Application */
 
@@ -539,7 +551,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode foundry.applications.sidebar.tabs.JournalDirectory._onFirstRender | JournalDirectory#_onFirstRender}
    */
-  getJournalContextOptions: (
+  getJournalEntryContextOptions: (
     app: foundry.applications.sidebar.tabs.JournalDirectory.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
@@ -718,7 +730,9 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires for every Token document that is about to me moved before the conclusion of
    * an update workflow. This hook only fires for the client who is initiating the update request.
    * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
-   * @param document  - The existing Document which was updated
+   * entirely by explicitly returning false. The ONLY writable properties of `movement` are `autoRotate`
+   * and `showRuler`.
+   * @param document  - The existing Token document which is updated
    * @param movement  - The pending movement of the Token
    * @param operation - The update operation that contains the movement
    * @returns If false, the movement is prevented
@@ -733,40 +747,43 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires for every Token document that was moved after conclusion of an update
    * workflow. This hook fires for all connected clients after the update has been processed.
-   * @param document  - The existing TokenDocument which was updated
+   * @param document  - The existing Token document which was updated
    * @param movement  - The movement of the Token
    * @param operation - The update operation that contains the movement
    * @param user      - The User that requested the update operation
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   *
-   * @privateRemarks Foundry types `movement` as `DeepReadonly`, which appears to be true at runtime, despite there being no `seal` or
-   * `freeze` calls after the client gets the operation back from the server; `movement` has therefore been given the pre-server type in
-   * lieu of more complete understanding.
    */
   moveToken: (
     document: TokenDocument.Implementation,
-    movement: TokenDocument.PreUpdateMovement,
+    movement: TokenDocument.MovementOperation,
     operation: TokenDocument.Database.OnUpdateOptions,
     user: User.Stored,
   ) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is stopped.
-   * @param document - The TokenDocument whose movement was stopped
+   * @param document - The Token document whose movement was stopped
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   stopToken: (document: TokenDocument.Implementation) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is paused.
-   * @param document - The TokenDocument whose movement was paused
+   * @param document - The Token document whose movement was paused
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   pauseToken: (document: TokenDocument.Implementation) => void;
 
   /**
+   * A hook event that fires when the current movement of a Token document is planned.
+   * @param document - The Token document whose movement was planned
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  planToken: (document: TokenDocument.Implementation) => void;
+
+  /**
    * A hook event that fires when the movement of a Token document is recorded or cleared.
-   * @param document - The TokenDocument whose movement was recorded or cleared
+   * @param document - The Token document whose movement was recorded or cleared
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   recordToken: (document: TokenDocument.Implementation) => void;
@@ -1095,7 +1112,7 @@ export interface AllHooks extends DynamicHooks {
    * @param config - The drop-down config.
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  getProseMirrorMenuDropdowns: (
+  getProseMirrorMenuDropDowns: (
     menu: ProseMirrorMenu,
     config: {
       format: ProseMirrorDropDown.Config;
@@ -1137,9 +1154,29 @@ export interface AllHooks extends DynamicHooks {
    */
   hotReload: (data: Hooks.HotReloadData) => boolean | void;
 
-  // TODO: chatInput
+  /**
+   * A hook event that fires during handling of user chat input.
+   * @param event   - The triggering event.
+   * @param options - Additional options to configure handling of chat input if default behavior is suppressed.
+   * @returns Returning false will prevent default chat input behavior.
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  chatInput: (event: KeyboardEvent, options: Hooks.ChatInputOptions) => boolean | void;
 
-  // TODO: renderChatInput
+  /**
+   * A hook event that fires when the chat input element is adopted by a different DOM element.
+   * @param app      - The application that performed the adoption.
+   * @param elements - A mapping of CSS selectors to the elements that were moved.
+   * @param context  - Additional hook context.
+   * @param options  - The options passed to the render or close operation which triggered the adoption, if any.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  renderChatInput: (
+    app: foundry.applications.sidebar.tabs.ChatLog.Any,
+    elements: Record<string, HTMLElement>,
+    context: Hooks.RenderChatInputContext,
+    options: Hooks.RenderChatInputOptions,
+  ) => void;
 
   /**
    * A hook event that fires when a user sends a message through the ChatLog.
@@ -1167,12 +1204,12 @@ export interface AllHooks extends DynamicHooks {
    * This hook allows for final customization of the message HTML before it is added to the log.
    * @param message - The ChatMessage document being rendered.
    * @param html    - The pending HTML.
-   * @param context - The rendering context.
+   * @param context - The rendering context. This is only provided when the core chat message template is rendered.
    */
   renderChatMessageHTML: (
     message: ChatMessage.Implementation,
     html: HTMLElement,
-    context: ChatMessage.MessageData,
+    context?: ChatMessage.MessageData,
   ) => void;
 
   /* Audio-Video */
@@ -1243,6 +1280,19 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   initializeDynamicTokenRingConfig: (ringConfig: TokenRingConfig) => void;
+
+  /* Deprecations & Compatibility */
+
+  /**
+   * A hook event that fires when the button to activate an editor is pressed. This hook will be removed when
+   * ApplicationV1 completes its deprecation period in v16.
+   * @param editor         - The editor instance.
+   * @param options        - Options to configure activation.
+   * @param initialContent - The initial editor content.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @deprecated since v14 until v16
+   */
+  activateEditorLegacy: (editor: unknown, options: AnyMutableObject, initialContent: string) => void;
 }
 
 declare global {
@@ -1284,6 +1334,28 @@ declare global {
    * ```
    */
   namespace Hooks {
+    interface ChatInputOptions {
+      /**
+       * Record the user's keystroke as pending. If the hook returns false and otherwise prevents the keystroke
+       * appearing in the chat input, this option should also be set to false in order to prevent chat history from
+       * becoming out-of-sync.
+       */
+      recordPending: boolean;
+    }
+
+    interface RenderChatInputContext {
+      /** The element the chat input was moved out of. */
+      previousParent: HTMLElement;
+    }
+
+    /** @internal */
+    interface _RenderChatInputClosing {
+      closing?: boolean | undefined;
+    }
+
+    interface RenderChatInputOptions
+      extends ApplicationV2.RenderOptions, ApplicationV2.ClosingOptions, _RenderChatInputClosing {}
+
     interface HotReloadData {
       /** The type of package which was modified */
       packageType: string;
@@ -1312,6 +1384,20 @@ declare global {
     type StaticCallbacks = HookConfigs.HookConfig;
 
     /** Application */
+
+    /**
+     * A hook event that fires prior to an ApplicationV2 being rendered. Substitute the "Application" in the hook event to
+     * target a specific ApplicationV2 type, for example "preRenderMyApplication". Each ApplicationV2 class in the
+     * inheritance chain will also fire this hook, i.e. "preRenderApplicationV2" will also fire.
+     * @param application - The Application instance being rendered.
+     * @param context     - The application rendering context data.
+     * @param options     - The application rendering options.
+     */
+    type PreRenderApplicationV2<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
+      application: Application,
+      context: ApplicationV2.RenderContextOf<Application>,
+      options: ApplicationV2.RenderOptionsOf<Application>,
+    ) => void;
 
     /**
      * A hook event that fires whenever an ApplicationV2 is rendered. Substitute the "ApplicationV2" in the hook event to
@@ -1349,6 +1435,18 @@ declare global {
     type GetApplicationV2ContextOptions<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
       application: Application,
       controls: ContextMenu.Entry<JQuery | HTMLElement>[],
+    ) => void;
+
+    /**
+     * A hook event that fires when a context menu related to a certain placeable type is being prepared.
+     * The placeable's Document name is included in the hook name. For example, for Tokens, the hook would be
+     * "getTokenPlaceableContextOptions".
+     * @param application - The Application instance that the context menu is constructed within.
+     * @param menuItems   - An array of prepared menu items which should be mutated by the hook.
+     */
+    type GetPlaceableContextOptions<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
+      application: Application,
+      menuItems: ContextMenu.Entry<JQuery | HTMLElement>[],
     ) => void;
 
     /**
@@ -1409,34 +1507,50 @@ declare global {
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is drawn.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
-     * @param group - The group being drawn
+     * @param group   - The group being drawn.
+     * @param options - Options which configure how the group is drawn.
      */
-    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
+      group: G,
+      options: HandleEmptyObject<CanvasGroupMixin.DrawOptions>,
+    ) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
-     * @param group - The group being deconstructed
+     * @param group   - The group being deconstructed.
+     * @param options - Options which configure how the group is deconstructed.
      */
-    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
+    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
+      group: G,
+      options: HandleEmptyObject<CanvasGroupMixin.TearDownOptions>,
+    ) => void;
 
     /** CanvasLayer */
 
     /**
      * A hook event that fires when a {@linkcode CanvasLayer} is initially drawn.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
-     * @param layer - The layer being drawn
+     * @param layer   - The layer being drawn.
+     * @param options - Options which configure how the layer is drawn.
      * @template L - the type of the CanvasLayer
      */
-    type DrawLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
+    type DrawLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (
+      layer: L,
+      options: HandleEmptyObject<layers.CanvasLayer.DrawOptions>,
+    ) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasLayer} is deconstructed.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
-     * @param layer - The layer being deconstructed
+     * @param layer   - The layer being deconstructed.
+     * @param options - Options which configure how the layer is deconstructed.
      * @template L - the type of the CanvasLayer
      */
-    type TearDownLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
+    type TearDownLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (
+      layer: L,
+      options: HandleEmptyObject<layers.CanvasLayer.TearDownOptions>,
+    ) => void;
 
     /**
      * A hook event that fires when any PlaceableObject is pasted onto the Scene.

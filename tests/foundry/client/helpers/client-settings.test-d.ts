@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 import ClientSettings = foundry.helpers.ClientSettings;
 import SettingsConfig = foundry.applications.settings.SettingsConfig;
@@ -115,5 +116,32 @@ expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeO
 >();
 
 expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<foundry.dice.Roll.Mode>();
+
+// Settings registered with a `DataModel` subclass as their `type` initialize to an instance of it.
+expectTypeOf(
+  clientSettings.get("core", "prototypeTokenOverrides"),
+).toEqualTypeOf<foundry.data.PrototypeTokenOverrides>();
+
+// `TypedObjectField` settings initialize to a record keyed by the validated key.
+expectTypeOf(clientSettings.get("core", "adventureImports")).toEqualTypeOf<
+  Record<
+    string,
+    {
+      coreVersion: string | null;
+      importedTime: number | null;
+      moduleVersion: string | null;
+      options: AnyMutableObject;
+      quickstart: { postImport: boolean; quickstarted: boolean };
+      systemVersion: string | null;
+    }
+  >
+>();
+
+expectTypeOf(clientSettings.get("core", "gridDiagonals")).toEqualTypeOf<CONST.GRID_DIAGONALS>();
+expectTypeOf(clientSettings.get("core", "favoritePaths")).toEqualTypeOf<
+  Record<string, foundry.applications.apps.FilePicker.FavoriteFolder>
+>();
+expectTypeOf(clientSettings.get("core", "unconstrainedMovement")).toEqualTypeOf<boolean>();
+expectTypeOf(clientSettings.get("core", "tourProgress")).toEqualTypeOf<Record<string, Record<string, number>>>();
 
 expectTypeOf(clientSettings.get("data-field", "setting")).toEqualTypeOf<number[]>();

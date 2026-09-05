@@ -1,4 +1,5 @@
 import { test, expectTypeOf } from "vitest";
+import type { InexactPartial } from "#utils";
 
 import Token = foundry.canvas.placeables.Token;
 import Region = foundry.canvas.placeables.Region;
@@ -393,6 +394,44 @@ const waypoints = [
   { x: 50, y: 50, elevation: 0 },
   { x: 70, y: 90, elevation: 60 },
 ];
+
+expectTypeOf<Token.PlannedMovementWaypoint>().toEqualTypeOf<
+  Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "subpathId">
+>();
+
+declare const measuredHistory: TokenDocument.MeasuredMovementWaypoint[];
+const constrainOptions: Token.ConstrainMovementPathOptions = {
+  history: measuredHistory,
+  maxCost: 20,
+  maxDistance: 30,
+  measureOptions: {},
+};
+expectTypeOf(constrainOptions).toEqualTypeOf<Token.ConstrainMovementPathOptions>();
+
+const findOptions: Token.FindMovementPathOptions = {
+  preview: true,
+  delay: 100,
+  terrainOptions: {},
+  constrainOptions: { ignoreWalls: true, maxCost: 20 },
+  measureOptions: {},
+};
+expectTypeOf(token.findMovementPath(waypoints, findOptions)).toEqualTypeOf<Token.FindMovementPathJob>();
+
+expectTypeOf<Token.DragContext>().toEqualTypeOf<{
+  token: Token.Implementation;
+  clonedToken: Token.Implementation;
+  origin: TokenDocument.Position;
+  destination: TokenDocument.MovementWaypoint;
+  waypoints: InexactPartial<TokenDocument.MovementWaypoint>[];
+  foundPath: TokenDocument.MovementWaypoint[];
+  unreachableWaypoints: TokenDocument.MovementWaypoint[];
+  hidden: boolean;
+  updating: boolean;
+  search: Token.FindMovementPathJob | null;
+  searching: boolean;
+  searchId: number;
+}>();
+
 expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints)).toEqualTypeOf<RegionDocument.MovementSegment[]>();
 expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, {})).toEqualTypeOf<
   RegionDocument.MovementSegment[]

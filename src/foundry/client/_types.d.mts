@@ -1,5 +1,8 @@
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import Token = foundry.canvas.placeables.Token;
+import Ruler = foundry.canvas.interaction.Ruler;
+import WorldCollection = foundry.documents.abstract.WorldCollection;
+import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // After seeing that none of these types add anything or are even exported a
@@ -12,49 +15,51 @@ import Token = foundry.canvas.placeables.Token;
 // eslint-disable-next-line import-x/export
 export * from "#common/_types.mjs";
 
+type ActorTrackableAttributes = CONFIG.Actor.TrackableAttribute;
+
 type HotReloadData = Hooks.HotReloadData;
 
-type RulerWaypoint = unknown;
+type RulerWaypoint = Ruler.Waypoint;
 
-type TokenFindMovementPathWaypoint = unknown;
+type TokenMeasureMovementPathOptions = Token.MeasureMovementPathOptions;
 
-type TokenConstrainMovementPathWaypoint = Token.ConstrainMovementPathWaypoint;
+type TokenConstrainMovementPathOptions = Token.ConstrainMovementPathOptions;
 
-type TokenConstrainMovementPathOptions = unknown;
+type TokenCreateTerrainMovementPathOptions = Token.CreateTerrainMovementPathOptions;
 
-type TokenFindMovementPathOptions = unknown;
+type TokenFindMovementPathOptions = Token.FindMovementPathOptions;
 
-type TokenFindMovementPathJob = unknown;
-
-type TokenGetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
-
-type TokenTerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
+type TokenFindMovementPathJob = Token.FindMovementPathJob;
 
 type TokenRulerData = foundry.canvas.placeables.tokens.TokenRuler.Data;
 
-type TokenPlannedMovement = Token.PlannedMovement;
+type TokenPlannedMovementWaypoint = Token.PlannedMovementWaypoint;
 
-type TokenRulerWaypointData = foundry.canvas.placeables.tokens.TokenRuler.WaypointData;
+type TokenPlannedMovement = Token.PlannedMovement;
 
 type TokenRulerWaypoint = foundry.canvas.placeables.tokens.TokenRuler.Waypoint;
 
-type TokenDragContext = unknown;
+type TokenDragContext = Token.DragContext;
 
-type TokenAnimationData = unknown;
+type TokenAnimationData = Token.AnimationData;
 
-type TokenAnimationContext = unknown;
+type TokenAnimationContext = Token.AnimationContext;
 
-type TokenAnimationOptions = unknown;
+type TokenAnimationOptions = Token.AnimateOptions;
 
-type TokenAnimationTransition = unknown;
-
-type TokenMovementActionCostFunction = unknown;
-
-type TokenMovementActionConfig = unknown;
+type TokenAnimationTransition = Token.AnimationTransition;
 
 type TokenPanningOptions = TokenDocument.PanningOptions;
 
+type TokenMovementActionCostFunction = CONFIG.Token.Movement.MovementActionCostFunction;
+
+type TokenMovementActionConfigDescriptor = CONFIG.Token.Movement.ActionConfigDescriptor;
+
+type TokenMovementActionConfig = CONFIG.Token.Movement.ActionConfig;
+
 type CanvasViewPosition = Canvas.ViewPosition;
+
+type CanvasAnimationPanOptions = Canvas.AnimatePanOptions;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 
@@ -62,27 +67,27 @@ type CanvasVisibilityTestConfiguration = foundry.canvas.groups.CanvasVisibility.
 
 type CanvasVisibilityTextureConfiguration = foundry.canvas.groups.CanvasVisibility.TextureConfiguration;
 
-type ReticuleOptions = unknown;
+type ReticuleOptions = Token.ReticuleOptions;
 
-type ActivityData = unknown;
+type ActivityData = User.ActivityData;
 
 type CanvasPerformanceSettings = Canvas.PerformanceSettings;
 
 type CanvasSupportedComponents = Canvas.SupportedComponents;
 
-type CanvasDimensions = unknown;
+type CanvasDimensions = Canvas.Dimensions;
 
 type JournalEntryPageHeading = JournalEntryPage.Heading;
 
 type SearchableField = foundry.data.fields.DataField.Any | Record<string, foundry.data.fields.DataField.Any>;
 
-type FromCompendiumOptions = unknown;
+type FromCompendiumOptions = WorldCollection.FromCompendiumOptions;
 
-type RollTableHTMLEmbedConfig = unknown;
+type ToCompendiumOptions = ClientDocument.ToCompendiumOptions;
 
-type ManageCompendiumRequest = unknown;
+type ManageCompendiumRequest = CompendiumCollection.ManageCompendiumRequest;
 
-type ManageCompendiumResponse = unknown;
+type ManageCompendiumResponse = CompendiumCollection.ManageCompendiumResponse;
 
 type WorldCompendiumPackConfiguration = foundry.documents.collections.CompendiumCollection.Configuration;
 
@@ -101,3 +106,7 @@ type KeybindingAction = foundry.helpers.interaction.ClientKeybindings.Keybinding
 type KeyboardEventContext = foundry.helpers.interaction.KeyboardManager.KeyboardEventContext;
 
 type ConnectedGamepad = foundry.helpers.interaction.GamepadManager.ConnectedGamepad;
+
+type ClipperPoint = PIXI.Polygon.ClipperPoint;
+
+type CanvasTearDownOptions = Canvas.TearDownOptions;

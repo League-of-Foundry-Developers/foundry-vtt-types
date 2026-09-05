@@ -1162,9 +1162,11 @@ declare namespace Token {
     cost?: number | TokenDocument.MovementCostFunction | undefined;
   }
 
+  type PlannedMovementWaypoint = Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "subpathId">;
+
   interface PlannedMovement {
-    foundPath: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
-    unreachableWaypoints: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
+    foundPath: PlannedMovementWaypoint[];
+    unreachableWaypoints: PlannedMovementWaypoint[];
     history: TokenDocument.MeasuredMovementWaypoint[];
     hidden: boolean;
     searching: boolean;
@@ -1346,6 +1348,8 @@ declare namespace Token {
   }
 
   interface PrepareAnimationOptions extends InexactPartial<_PrepareAnimationOptions> {}
+
+  type AnimationTransition = TextureTransitionFilter.TYPES;
 
   /** @internal */
   interface _AnimateOptions extends Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "ontick"> {
@@ -1565,12 +1569,21 @@ declare namespace Token {
      */
     ignoreCost: boolean;
 
+    /** The maximum cumulative cost. */
+    maxCost: number;
+
+    /** The maximum cumulative distance. */
+    maxDistance: number;
+
     /**
      * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
      * @defaultValue `false`
      * @remarks marked by foundry as readonly
      */
     history: boolean | TokenDocument.MeasuredMovementWaypoint[];
+
+    /** The measurement options. */
+    measureOptions: Omit<Token.MeasureMovementPathOptions, "preview">;
   }> {}
 
   type ConstrainedMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
@@ -1646,30 +1659,29 @@ declare namespace Token {
     preview?: boolean | undefined;
 
     /**
-     * Ignore walls?
-     * @defaultValue `false`
-     */
-    ignoreWalls?: boolean | undefined;
-
-    /**
-     * Ignore cost?
-     * @defaultValue `false`
-     */
-    ignoreCost?: boolean | undefined;
-
-    /**
-     * Consider movement history? If true, uses the current movement history.
-     * If waypoints are passed, use those as the history.
-     * @defaultValue `false`
-     */
-    history?: boolean | TokenDocument.MeasuredMovementWaypoint[] | undefined;
-
-    /**
      * Unless the path can be found instantly, delay the start of the pathfinding
      * computation by this number of milliseconds.
      * @defaultValue `0`
      */
     delay?: number | undefined;
+
+    /** The terrain options. */
+    terrainOptions?: Omit<Token.CreateTerrainMovementPathOptions, "preview"> | undefined;
+
+    /** The constrain options. */
+    constrainOptions?: Omit<Token.ConstrainMovementPathOptions, "preview" | "measureOptions"> | undefined;
+
+    /** The measure options. */
+    measureOptions?: Omit<Token.MeasureMovementPathOptions, "preview"> | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    ignoreWalls?: boolean | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    ignoreCost?: boolean | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    history?: boolean | TokenDocument.MeasuredMovementWaypoint[] | undefined;
   }
 
   interface FindMovementPathJob {
@@ -1691,6 +1703,21 @@ declare namespace Token {
      * yet, the job is cancelled.
      */
     cancel: () => void;
+  }
+
+  interface DragContext {
+    token: Token.Implementation;
+    clonedToken: Token.Implementation;
+    origin: TokenDocument.Position;
+    destination: TokenDocument.MovementWaypoint;
+    waypoints: InexactPartial<TokenDocument.MovementWaypoint>[];
+    foundPath: TokenDocument.MovementWaypoint[];
+    unreachableWaypoints: TokenDocument.MovementWaypoint[];
+    hidden: boolean;
+    updating: boolean;
+    search: Token.FindMovementPathJob | null;
+    searching: boolean;
+    searchId: number;
   }
 
   /** A waypoint used as input to {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */

@@ -167,3 +167,15 @@ describe("Game Tests", () => {
     expectTypeOf(_loc).toEqualTypeOf<typeof foundry.helpers.Localization.prototype.localize>();
   });
 });
+
+expectTypeOf(Game.create).toBeCallableWith("game");
+expectTypeOf(Game.connect).toBeCallableWith();
+
+expectTypeOf(aGame.raceWithWindowHidden(Promise.resolve(1))).toEqualTypeOf<Promise<void>>();
+
+expectTypeOf(aGame.activateListeners).toBeCallableWith();
+expectTypeOf(aGame.activateListeners).toBeCallableWith(window.document);
+
+expectTypeOf(aGame.combat).toEqualTypeOf<foundry.documents.Combat.Implementation | null>();
+
+expectTypeOf(aGame.activeTool).toEqualTypeOf<string | null>();

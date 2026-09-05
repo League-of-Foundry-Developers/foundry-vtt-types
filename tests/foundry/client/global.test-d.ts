@@ -44,3 +44,5 @@ expectTypeOf(ui.placeablesPalette).toEqualTypeOf<
 const myColor = Color.from("foobar");
 
 expectTypeOf(myColor).toEqualTypeOf<Color>();
+expectTypeOf(_loc).toEqualTypeOf<foundry.helpers.Localization["localize"] | undefined>();
+expectTypeOf(animejs.createTimeline).toBeFunction();
