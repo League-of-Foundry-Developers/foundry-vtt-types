@@ -69,7 +69,7 @@ declare class VFXSingleAttackComponent<
   /**
    * The steps of the single attack sequence.
    */
-  static STEPS: ["charge", "projectile", "impact"];
+  static STEPS: VFXSingleAttackComponent.StepName[];
 
   /**
    * The configured origin point of the path.
