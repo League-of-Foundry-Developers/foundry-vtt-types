@@ -53,8 +53,6 @@ declare class VFXScrollingTextComponent<
   ): VFXScrollingTextComponent;
 
   static override fromJSON(json: string): VFXScrollingTextComponent;
-
-  #VFXScrollingTextComponent: true;
 }
 
 declare namespace VFXScrollingTextComponent {

@@ -32,6 +32,9 @@ declare abstract class BaseRegionBehavior<
    *   labelPlural: "DOCUMENT.RegionBehaviors",
    *   coreTypes: [
    *     "adjustDarknessLevel",
+   *     "applyActiveEffect",
+   *     "changeLevel",
+   *     "defineSurface",
    *     "displayScrollingText",
    *     "executeMacro",
    *     "executeScript",
@@ -45,9 +48,10 @@ declare abstract class BaseRegionBehavior<
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.352"
    * })
    * ```
    */
@@ -59,6 +63,12 @@ declare abstract class BaseRegionBehavior<
   static override LOCALIZATION_PREFIXES: string[];
 
   static override canUserCreate(user: User.Implementation): boolean;
+
+  /**
+   * @remarks Clamps the level returned by `super` to at most
+   * {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER} for non-gamemaster users.
+   */
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -96,7 +106,7 @@ declare abstract class BaseRegionBehavior<
 
   // `canUserCreate` omitted from template due to actual override above.
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,

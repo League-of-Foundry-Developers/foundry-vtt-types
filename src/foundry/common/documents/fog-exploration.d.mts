@@ -37,7 +37,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    *     update: this.#canModify,
    *     delete: this.#canModify
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.357"
    * })
    * ```
    */

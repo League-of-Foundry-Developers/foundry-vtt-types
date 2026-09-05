@@ -32,7 +32,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    *   collection: "lights",
    *   label: "DOCUMENT.AmbientLight",
    *   labelPlural: "DOCUMENT.AmbientLights",
-   *   schemaVersion: "13.341",
+   *   schemaVersion: "14.354",
    * })
    * ```
    */
@@ -42,6 +42,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   /** @defaultValue `["DOCUMENT", "AMBIENT_LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -69,7 +71,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,

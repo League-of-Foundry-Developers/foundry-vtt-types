@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Tile.
@@ -31,7 +31,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    *   collection: "tiles",
    *   label: "DOCUMENT.Tile",
    *   labelPlural: "DOCUMENT.Tiles",
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.355"
    * })
    * ```
    */
@@ -42,41 +42,22 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   /** @defaultValue `["DOCUMENT", "TILE"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   /**
    * @remarks
    * Migrations:
-   * - `z` to `sort` (since v12, no specified end)
-   * - `roof` to `restrictions.light` and `restrictions.weather` (since v12, no specified end)
+   * - `occlusion.mode` to `occlusion.modes`, as an array holding the old positive mode or empty (since v14)
    */
-  static override migrateData(source: object): object;
+  static override migrateData(data: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks
    * Shims:
-   * - `z` to `sort` (since v12, until v14)
+   * - `occlusion.mode` to `occlusion.modes`, reading back the first mode or
+   *   {@linkcode CONST.OCCLUSION_MODES.NONE} (since v14, until v16)
    */
   static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
-
-  /**
-   * @deprecated "You are accessing `roof` which has been migrated to `restrictions.{`
-   * {@linkcode TileDocument.RestrictionsData.light | light}`|`{@linkcode TileDocument.RestrictionsData.weather | weather}`}`"
-   * (since v12, until v14)
-   * @remarks Getter returns `this.restrictions.light && this.restrictions.weather`, setter sets both
-   */
-  set roof(value: boolean);
-
-  get roof();
-
-  /**
-   * @deprecated "You are accessing `z` which has been migrated to `sort`" (since v12, until v14)
-   */
-  get z(): this["sort"];
-
-  /**
-   * @deprecated "`BaseTile#overhead` is deprecated." (since v12, until v14)
-   * @remarks Returns `this.elevation >= this.parent?.foregroundElevation`
-   */
-  get overhead(): boolean;
 
   /*
    * After this point these are not really overridden methods.
@@ -110,7 +91,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,

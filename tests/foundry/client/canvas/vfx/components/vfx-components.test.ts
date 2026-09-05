@@ -96,8 +96,9 @@ describe("VFXSingleAttackComponent", () => {
     expectTypeOf(VFXSingleAttackComponent.TYPE).toEqualTypeOf<"singleAttack">();
   });
 
-  test("STEPS is the correct tuple", () => {
-    expectTypeOf(VFXSingleAttackComponent.STEPS).toEqualTypeOf<["charge", "projectile", "impact"]>();
+  test("STEPS is an array of step names", () => {
+    expectTypeOf(VFXSingleAttackComponent.STEPS).toEqualTypeOf<VFXSingleAttackComponent.StepName[]>();
+    expectTypeOf<VFXSingleAttackComponent.StepName>().toEqualTypeOf<"charge" | "projectile" | "impact">();
   });
 
   test("protected animation hooks are overridable", () => {

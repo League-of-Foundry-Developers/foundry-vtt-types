@@ -232,7 +232,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    * ```
    */
   placeTokens(
-    data: Iterable<Partial<Document.CreateDataForName<"Token">>>,
+    data: Iterable<TokenDocument.CreateData>,
     options?: TokenLayer.PlaceTokensOptions,
   ): Promise<TokenDocument.Implementation[]>;
 
@@ -406,7 +406,7 @@ declare namespace TokenLayer {
   interface CreateOptions extends InexactPartial<Omit<TokenDocument.Database.CreateOperation, "parent">> {}
 
   interface PlacementContext {
-    data: Iterable<Partial<Document.CreateDataForName<"Token">>>;
+    data: Iterable<TokenDocument.CreateData>;
     previews: Token.Implementation[];
     placed: TokenDocument.Implementation[];
     index: number;

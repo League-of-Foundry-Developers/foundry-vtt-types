@@ -64,9 +64,12 @@ declare class TooltipManager {
   static LOCKED_TOOLTIP_BUFFER_PX: number;
 
   /**
-   * Activate interactivity by listening for hover events on HTML elements which have a data-tooltip defined.
+   * Activate interactivity in the given document by listening for hover events on HTML elements which have a
+   * data-tooltip defined.
+   * @param document - The document to bind to. (default: `window.document`)
+   * @param options  - Additional options. (default: `{}`)
    */
-  activateEventListeners(): void;
+  activateListeners(document?: Document, options?: TooltipManager.ActivateListenersOptions): void;
 
   /**
    * Activate the tooltip for a hovered HTML element which defines a tooltip localization key.
@@ -153,6 +156,12 @@ declare class TooltipManager {
    */
   static get implementation(): TooltipManager.ImplementationClass;
 
+  /**
+   * @deprecated "TooltipManager#activateEventListeners is deprecated. Please use
+   * {@linkcode TooltipManager.activateListeners | TooltipManager#activateListeners} instead." (since v14, until v16)
+   */
+  activateEventListeners(): void;
+
   #TooltipManager: true;
 }
 
@@ -232,6 +241,14 @@ declare namespace TooltipManager {
   }
 
   interface ActivateOptions extends InexactPartial<_ActivateOptions> {}
+
+  interface ActivateListenersOptions {
+    /**
+     * @defaultValue `false`
+     * @internal
+     */
+    _deprecated?: boolean | undefined;
+  }
 
   /** @internal */
   interface _BasePosition {

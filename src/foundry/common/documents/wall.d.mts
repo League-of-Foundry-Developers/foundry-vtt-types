@@ -34,13 +34,16 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.353"
    * })
    * ```
    */
   static override metadata: BaseWall.Metadata;
 
   static override defineSchema(): BaseWall.Schema;
+
+  /** @defaultValue `["DOCUMENT", "WALL"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * Colors for each category of wall.
@@ -59,6 +62,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    * ```
    */
   static CATEGORY_COLORS: Record<WallDocument.Category, Color>;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -92,7 +97,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,

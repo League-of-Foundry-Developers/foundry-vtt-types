@@ -1,4 +1,4 @@
-import type { DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
+import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
@@ -40,10 +40,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    *   },
    *   permissions: {
    *     create: "TOKEN_CREATE",
-   *     update: this.#canUpdate,
    *     delete: "TOKEN_DELETE"
    *   },
-   *   schemaVersion: "13.341"
+   *   schemaVersion: "14.357"
    * })
    * ```
    */
@@ -54,7 +53,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   /** @defaultValue `["DOCUMENT", "TOKEN"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** @defaultValue `["x", "y", "elevation", "width", "height", "shape"]` */
+  /** @defaultValue `["x", "y", "elevation", "width", "height", "depth", "shape", "level"]` */
   static MOVEMENT_FIELDS: Readonly<string[]>;
 
   /**
@@ -67,6 +66,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @defaultValue {@linkcode CONST.DEFAULT_TOKEN}
    */
   static DEFAULT_ICON: string;
+
+  protected override _initializeSource(
+    data: BaseToken.CreateData,
+    options?: Document.InitializeSourceOptions,
+  ): BaseToken.Source;
 
   /**
    * Prepare changes to a descendent delta collection.
@@ -130,15 +134,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   getGridSpacePolygon(data?: TokenDocument.PartialDimensions): Canvas.Point[] | void;
 
   /**
-   * Get the offsets of grid spaces that are occupied by this Token at the current or given position.
-   * The grid spaces the Token occupies are those that are covered by the Token's shape in the snapped position.
-   * Returns an empty array in gridless grids.
-   * @param data - The position and dimensions
-   * @returns The offsets of occupied grid spaces
-   */
-  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions2D): BaseGrid.Offset2D[];
-
-  /**
    * Get the hexagonal offsets given the type, width, and height.
    * @param width   - The width of the Token (positive)
    * @param height  - The height of the Token (positive)
@@ -153,6 +148,22 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     columns: boolean,
   ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
 
+  /**
+   * Get the hexagonal shape given the type, width, and height.
+   * @param width   - The width of the Token (positive)
+   * @param height  - The height of the Token (positive)
+   * @param shape   - The shape (one of {@link CONST.TOKEN_SHAPES})
+   * @param columns - Column-based instead of row-based hexagonal grid?
+   * @returns The hexagonal shape or null if there is no shape for the given combination of arguments
+   * @internal
+   */
+  static _getHexagonalShape(
+    width: number,
+    height: number,
+    shape: CONST.TOKEN_SHAPES,
+    columns: boolean,
+  ): DeepReadonly<TokenDocument.HexagonalShapeData> | null;
+
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   // TODO: Update with the Delta conditionality
@@ -163,31 +174,15 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Migrations:
    * - `hexagonalShape` to `shape` (since v13, no specified end)
    */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks
    * Shims:
-   * - `effects` to nothing (since v12, until v14)
-   *   - "`TokenDocument#effects` is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated `Actor`")
-   * - `overlayEffect` to nothing (since v12, until v14)
-   *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
    * - `hexagonalShape` to `shape` (since v13, until v15)
    *   - "`TokenDocument#hexagonalShape` is deprecated in favor of `TokenDocument#shape`."
    */
   static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
-
-  /**
-   * @deprecated "TokenDocument#overlayEffect is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
-   * (since v12, until v14)
-   */
-  get effects(): [];
-
-  /**
-   * @deprecated "`TokenDocument#overlayEffect` is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
-   * (since v12, until v14)
-   */
-  get overlayEffect(): "";
 
   /**
    * @deprecated "TokenDocument#hexagonalShape is deprecated in favor of {@linkcode TokenDocument#shape}" (since v13, until v15)
@@ -421,6 +416,28 @@ export class ActorDeltaField<
   ):
     | fields.EmbeddedDocumentField.InitializedType<DocumentType, Options>
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);
+
+  /**
+   * @remarks Discards the update if the delta's parent Token is linked. If the delta was `null`, replaces
+   * `options._deltaModel` with a fresh model and stashes the old one in `options._deltaModelDeleted`.
+   */
+  override _updateCommit(
+    source: AnyMutableObject,
+    key: string,
+    value: unknown,
+    diff: unknown,
+    options?: DataModel.UpdateOptions,
+  ): void;
+
+  /**
+   * @remarks Diffs against `options._deltaModel` instead of `state.model`; no-ops if the delta's parent Token is linked.
+   */
+  override _updateDiff(
+    key: string,
+    value: unknown,
+    options: DataModel.UpdateOptions,
+    state: DataField.UpdateState,
+  ): void;
 }
 
 export default BaseToken;

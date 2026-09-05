@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-restricted-types, no-restricted-syntax */
 
 import type { documents } from "../foundry/client/client.d.mts";
+import type * as clientDocuments from "../foundry/client/documents/_module.d.mts";
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "#utils";
 import type * as configuration from "#configuration";
@@ -297,7 +298,7 @@ export interface CreateData {
   AmbientLight: documents.BaseAmbientLight.CreateData;
   AmbientSound: documents.BaseAmbientSound.CreateData;
   Drawing: documents.BaseDrawing.CreateData;
-  MeasuredTemplate: documents.BaseMeasuredTemplate.CreateData;
+  MeasuredTemplate: clientDocuments.BaseMeasuredTemplate.CreateData;
   Note: documents.BaseNote.CreateData;
   Region: documents.BaseRegion.CreateData;
   Tile: documents.BaseTile.CreateData;

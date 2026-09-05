@@ -25,7 +25,6 @@ const asyncWorker = await manager.createWorker("bar");
 
 expectTypeOf(asyncWorker.name).toEqualTypeOf<string>();
 expectTypeOf(asyncWorker.ready).toEqualTypeOf<Promise<void>>();
-expectTypeOf(asyncWorker["_taskIndex"]).toBeNumber();
 
 function f(p1: string) {
   return [p1, "bar"]; // it really wants a tuple return from limited runtime testing

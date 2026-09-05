@@ -44,6 +44,35 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
+  /**
+   * The settings that only full GMs can modify.
+   * @defaultValue `["core.permissions"]`
+   * @internal
+   */
+  protected static _GAMEMASTER_ONLY_KEYS: string[];
+
+  /**
+   * The settings that assistant GMs can modify regardless of their permission.
+   * @defaultValue
+   * ```js
+   * [
+   *   "core.time",
+   *   "core.combatTrackerConfig",
+   *   "core.sheetClasses",
+   *   "core.scrollingStatusText",
+   *   "core.tokenAutoRotate",
+   *   "core.tokenDragPreview",
+   *   "core.adventureImports",
+   *   "core.animateRollTable",
+   *   "core.gridDiagonals",
+   *   "core.gridTemplates", // deprecated since v14
+   *   "core.coneTemplateType", // deprecated since v14
+   * ]
+   * ```
+   * @internal
+   */
+  protected static _ALLOWED_ASSISTANT_KEYS: string[];
+
   static canUserCreate(user: User.Implementation): boolean;
 
   /*

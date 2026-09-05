@@ -15,8 +15,8 @@ declare class ClientIssues {
 
   /**
    * Add an invalid Document to the module-provided sub-type counts.
-   * @param cls               - The Document class.
-   * @param source            - The Document's source data.
+   * @param cls    - The Document class.
+   * @param source - The Document's source data.
    * @internal
    *
    * @remarks official documentation says "invalid", but the document can be valid, it is simply not yet validated.
@@ -25,19 +25,6 @@ declare class ClientIssues {
     cls: Document.AnyConstructor,
     source: AnyObject,
     options?: ClientIssues.CountDocumentSubTypesOptions,
-  ): void;
-
-  /**
-   * Track a validation failure that occurred in a WorldCollection.
-   * @param collection - The parent collection.
-   * @param source     - The Document's source data.
-   * @param error      - The validation error.
-   * @internal
-   */
-  protected _trackValidationFailures(
-    collection: foundry.documents.abstract.WorldCollection.Any,
-    source: AnyObject,
-    error: DataModelValidationError,
   ): void;
 
   /**
@@ -55,7 +42,7 @@ declare class ClientIssues {
   /**
    * Retrieve all sub-type counts in the world.
    */
-  getAllSubtypeCounts(): MapIterator<[string, ClientIssues.ModuleSubTypeCounts]>;
+  getAllSubTypeCounts(): MapIterator<[string, ClientIssues.ModuleSubTypeCounts]>;
 
   /**
    * Retrieve the tracked validation failures.
@@ -72,7 +59,28 @@ declare class ClientIssues {
    */
   get packageCompatibilityIssues(): foundry.Game.Data["packageWarnings"];
 
+  /**
+   * Track all world document validation failures and failures of their embedded documents.
+   * @internal
+   */
+  protected _detectDocumentIssues(): void;
+
+  /**
+   * Handle deletion of invalid documents.
+   * @param documentName - The Document name
+   * @param invalidIds   - The array of invalid IDs
+   * @param context      - The context
+   * @internal
+   */
+  protected _onDeleteInvalid<Name extends Document.Type>(
+    documentName: Name,
+    invalidIds: string[],
+    context?: ClientIssues.OnDeleteInvalidContext<Name>,
+  ): void;
+
   #ClientIssues: true;
+
+  static #ClientIssuesStatic: true;
 }
 
 declare namespace ClientIssues {
@@ -92,11 +100,31 @@ declare namespace ClientIssues {
 
   interface CountDocumentSubTypesOptions extends InexactPartial<_CountDocumentSubTypesOptions> {}
 
+  interface OnDeleteInvalidContext<Name extends Document.Type = Document.Type> {
+    /** The Documents' parent, if any */
+    parent?: Document.ParentForName<Name> | undefined;
+
+    /**
+     * The Documents' compendium pack, if applicable
+     * @remarks Only a Document that can be in a compendium (directly or embedded) is ever deleted with a `pack`.
+     */
+    pack?: (Document.InCompendium<Name> extends false ? never : string) | null | undefined;
+  }
+
   interface ValidationFailure {
-    name: string;
+    /** @remarks Omitted for Documents whose schema has no `name` field. */
+    name?: string | undefined;
+
+    /**
+     * @remarks Foundry types this `Error`; it is always the {@linkcode DataModelValidationError}
+     * produced by `DataModelValidationFailure#asError`.
+     */
     error: DataModelValidationError;
   }
 
+  /**
+   * @remarks Keyed by Document name, then by the invalid Document's UUID.
+   */
   interface TrackedValidationFailures extends Record<Document.Type, Record<string, ValidationFailure>> {}
 
   interface UsabilityIssues extends Record<string, UsabilityIssue> {}

@@ -26,10 +26,11 @@ declare class ModuleManagement<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   /**
    * The named game setting which persists module configuration.
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    *
-   * @defaultValue `"moduleConfiguration"`
+   * Foundry marks `@readonly` but does nothing to that effect at runtime.
    */
-  static readonly SETTING: string;
+  static SETTING: "moduleConfiguration";
 
   /**
    * @defaultValue
