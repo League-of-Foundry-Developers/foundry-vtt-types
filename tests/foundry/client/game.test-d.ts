@@ -161,4 +161,9 @@ describe("Game Tests", () => {
       ).toEqualTypeOf<foundry.documents.abstract.WorldCollection.Any>();
     }
   });
+
+  test("Globals", () => {
+    expectTypeOf(canvas).toEqualTypeOf<foundry.canvas.Canvas>();
+    expectTypeOf(_loc).toEqualTypeOf<typeof foundry.helpers.Localization.prototype.localize>();
+  });
 });
