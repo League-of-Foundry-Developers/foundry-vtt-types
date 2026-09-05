@@ -1943,8 +1943,7 @@ declare namespace TokenDocument {
         fields.SchemaField.InitializedData<Schema>["sight"],
         "color" | "attenuation" | "brightness" | "saturation" | "contrast"
       >
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    | {};
+    | EmptyObject;
 
   interface Dimensions2D extends InexactPartial<Canvas.Point>, InexactPartial<Dimensions> {}
 
