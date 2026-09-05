@@ -21,6 +21,7 @@ declare global {
 }
 
 expectTypeOf(game).toEqualTypeOf<UninitializedGame | I18nInitGame | InitGame | SetupGame | ReadyGame>();
+expectTypeOf(game.view).toEqualTypeOf<Game.View>();
 expectTypeOf(ui.menu).toEqualTypeOf<uiapps.MainMenu | undefined>();
 expectTypeOf(ui.sidebar).toEqualTypeOf<Sidebar | undefined>();
 expectTypeOf(ui.pause).toEqualTypeOf<uiapps.GamePause | undefined>();
