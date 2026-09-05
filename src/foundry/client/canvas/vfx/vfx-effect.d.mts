@@ -40,10 +40,7 @@ declare class VFXEffect extends DataModel<VFXEffect.Schema> {
    */
   attach(): void;
 
-  override clone(
-    data?: foundry.data.fields.SchemaField.UpdateData<VFXEffect.Schema>,
-    context?: DataModel.CloneContext,
-  ): this;
+  override clone(data?: VFXEffect.UpdateData, context?: DataModel.CloneContext): this;
 
   /**
    * Begin playback of a VFXEffect using provided reference data.

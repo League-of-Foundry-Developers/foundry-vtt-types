@@ -9,6 +9,7 @@ import fields = foundry.data.fields;
 declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent.Schema> extends DataModel<Schema> {
   /**
    * The type of this component. Must be overridden in the subclass.
+   * @defaultValue `""`
    */
   static TYPE: string;
 
@@ -26,8 +27,9 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
 
   /**
    * Is the animation for this component playing?
+   * @remarks `undefined` before {@linkcode VFXComponent.draw | VFXComponent#draw} has created the timeline.
    */
-  get playing(): boolean;
+  get playing(): boolean | undefined;
 
   /**
    * Asset paths required to be loaded for this component.
@@ -44,7 +46,7 @@ declare class VFXComponent<Schema extends VFXComponent.Schema.Any = VFXComponent
    * Entries in this list will be added to the primary canvas container when the component is attached and
    * removed when the component is destroyed.
    * @param object - The object to manage
-   * @param group  - A canvas group that should contain the object
+   * @param group  - A canvas group that should contain the object (default: `"primary"`)
    */
   addManagedDisplayObject<DisplayObject extends PIXI.DisplayObject>(
     object: DisplayObject,
@@ -143,6 +145,8 @@ declare namespace VFXComponent {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
   interface SourceData extends fields.SchemaField.SourceData<Schema> {}
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Data extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
    * A component-specific animation object with optional setup/teardown hooks.

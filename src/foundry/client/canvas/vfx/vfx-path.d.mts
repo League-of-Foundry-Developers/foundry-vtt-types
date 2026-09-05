@@ -7,6 +7,8 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 declare class VFXPath {
   /**
    * Construct a VFXPath by providing an array of base point data.
+   * @remarks
+   * @throws If `points` is not an array of at least two points.
    */
   constructor(points: VFXPath.BasePathPoint[]);
 
@@ -38,6 +40,7 @@ declare class VFXPath {
    * Get a configured path generator from CONFIG.Canvas.vfx.paths.
    * @param pathName - The named path type
    * @returns The path generator function
+   * @remarks
    * @throws If the named path generator has not been registered in `CONFIG.Canvas.vfx.paths`
    */
   static getPathGenerator(pathName: VFXPath.ConfiguredPath): VFXPath.Generator;
@@ -63,20 +66,33 @@ declare namespace VFXPath {
 
   /** Base point data accepted by the VFXPath constructor. */
   interface BasePathPoint extends Canvas.Point {
+    /** The elevation of the point */
     elevation: number;
+
+    /** The rotation at the point in radians */
     rotation?: number | undefined;
+
+    /** The sort order of the point */
     sort?: number | undefined;
+
+    /**
+     * The sort layer for the point
+     * @defaultValue `foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS`
+     */
     sortLayer?: number | undefined;
   }
 
   /** A fully-resolved path point with interpolated distance and index. */
-  interface PathPoint extends Canvas.Point {
+  interface PathPoint extends BasePathPoint {
     rotation: number;
+
     distance: number;
+
     index: number;
+
     elevation: number;
+
     sort: number;
-    sortLayer?: number | undefined;
   }
 
   /** A function that generates a VFXPath from a set of base points and parameters. */

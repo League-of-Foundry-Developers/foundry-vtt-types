@@ -22,8 +22,6 @@ declare class VFXReferencePointField<
   PersistedType = VFXReferencePointField.PersistedType<Options>,
 > extends VFXReferenceObjectField<VFXPointField, Options, AssignmentType, InitializedType, PersistedType> {
   constructor(options?: Options, context?: DataField.ConstructionContext);
-
-  #VFXReferencePointField: true;
 }
 
 declare namespace VFXReferencePointField {

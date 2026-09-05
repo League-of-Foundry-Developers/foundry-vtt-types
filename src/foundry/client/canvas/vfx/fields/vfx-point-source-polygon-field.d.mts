@@ -32,7 +32,11 @@ declare class VFXPointSourcePolygonField<
 > {
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   override initialize(
     value: PersistedType,
@@ -46,8 +50,6 @@ declare class VFXPointSourcePolygonField<
   ): boolean | DataModelValidationFailure | void;
 
   override resolve(value: AssignmentType, references: AnyObject): InitializedType;
-
-  #VFXPointSourcePolygonField: true;
 }
 
 declare namespace VFXPointSourcePolygonField {
