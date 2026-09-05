@@ -31,6 +31,7 @@ describe("WorldCollection Tests", async () => {
   const actorSource: Actor.Source = actor.toObject();
   const userSource: User.Source = new User.implementation({ name: "WorldCollection Test User" }).toObject();
   const sceneSource: Scene.Source = new Scene.implementation({ name: "WorldCollection Test User" }).toObject();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const templateSource: MeasuredTemplateDocument.Source = new MeasuredTemplateDocument.implementation().toObject();
   const itemSource: Item.Source = new Item.implementation({
     name: "WorldCollection Test Item",

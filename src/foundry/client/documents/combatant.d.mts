@@ -53,6 +53,7 @@ declare namespace Combatant {
       labelPlural: "DOCUMENT.Combatants";
       isEmbedded: true;
       hasTypeData: true;
+      baseTypeAllowed: true;
       schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
@@ -291,56 +292,61 @@ declare namespace Combatant {
      */
     _id: fields.DocumentIdField;
 
-    /** @defaultValue `"base"` */
+    /**
+     * The type of this Combatant.
+     */
     type: fields.DocumentTypeField<typeof BaseCombatant, { initial: typeof foundry.CONST.BASE_DOCUMENT_TYPE }>;
 
+    /**
+     * Game system data which is defined by system data models.
+     */
     system: fields.TypeDataField<typeof BaseCombatant>;
 
     /**
      * The _id of an Actor associated with this Combatant
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The _id of a Token associated with this Combatant
      * @defaultValue `null`
      */
-    tokenId: fields.ForeignDocumentField<typeof BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+    tokenId: fields.ForeignDocumentField<typeof BaseToken, { idOnly: true }>;
 
     /**
      * @defaultValue `null`
      */
-    sceneId: fields.ForeignDocumentField<typeof BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+    sceneId: fields.ForeignDocumentField<typeof BaseScene, { idOnly: true }>;
 
     /**
      * A customized name which replaces the name of the Token in the tracker
      * @defaultValue `undefined`
      */
-    name: fields.StringField<{ label: "COMBAT.CombatantName"; textSearch: true }>;
+    name: fields.StringField<{ textSearch: true }>;
 
     /**
      * A customized image which replaces the Token image in the tracker
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: ["IMAGE"]; label: "COMBAT.CombatantImage" }>;
+    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
      * The initiative score for the Combatant which determines its turn order
      */
-    initiative: fields.NumberField<{ required: true; label: "COMBAT.CombatantInitiative" }>;
+    initiative: fields.NumberField<{ required: true }>;
 
     /**
      * Is this Combatant currently hidden?
      * @defaultValue `false`
      */
-    hidden: fields.BooleanField<{ label: "COMBAT.CombatantHidden" }>;
+    hidden: fields.BooleanField;
 
     /**
      * Has this Combatant been defeated?
      * @defaultValue `false`
      */
-    defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
+    defeated: fields.BooleanField;
 
     /**
      * An optional group this Combatant belongs to.
@@ -349,11 +355,27 @@ declare namespace Combatant {
     group: fields.DocumentIdField<{ readonly: false }>;
 
     /**
+     * The round this Combatant joined Combat (i.e., was created). A Combatant
+     * created before the Combat starts is considered to have joined in round 1.
+     * @defaultValue `1`
+     */
+    roundJoined: fields.NumberField<{
+      required: true;
+      nullable: false;
+      integer: true;
+      positive: true;
+      initial: 1;
+    }>;
+
+    /**
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
     flags: fields.DocumentFlagsField<Name>;
 
+    /**
+     * An object of creation and access information.
+     */
     _stats: fields.DocumentStatsField;
   }
 
@@ -978,6 +1000,12 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    */
   get combat(): Combat.Implementation | null;
 
+  /**
+   * The combatant's turn number if the parent Combat exists and has started
+   * @defaultValue `null`
+   */
+  turnNumber: number | null;
+
   /** This is treated as a non-player combatant if it has no associated actor and no player users who can control it */
   get isNPC(): boolean;
 
@@ -1046,6 +1074,12 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Combatant.CreateData,
+  //   options: Combatant.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   // protected static override _preCreateOperation(
   //   documents: Combatant.Implementation[],

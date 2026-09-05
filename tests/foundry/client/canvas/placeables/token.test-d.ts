@@ -73,9 +73,7 @@ expectTypeOf(token.inCombat).toBeBoolean();
 expectTypeOf(token.combatant).toEqualTypeOf<Combatant.Stored | null>();
 expectTypeOf(token.isTargeted).toBeBoolean();
 expectTypeOf(token.isDragged).toBeBoolean();
-expectTypeOf(token.detectionModes).toEqualTypeOf<
-  { id: string | undefined; enabled: boolean; range: number | null }[]
->();
+expectTypeOf(token.detectionModes).toEqualTypeOf<Record<string, { enabled: boolean; range: number | null }>>();
 expectTypeOf(token.isVisible).toBeBoolean();
 expectTypeOf(token.animationName).toBeString();
 expectTypeOf(token.hasSight).toBeBoolean();

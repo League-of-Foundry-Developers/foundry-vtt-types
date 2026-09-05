@@ -21,3 +21,13 @@ expectTypeOf(adventure.importContent({ toCreate: {}, toUpdate: {}, documentCount
 expectTypeOf(adventure.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 expectTypeOf(Adventure.fromSource({ name: "My adventure" })).toEqualTypeOf<Adventure.Implementation>();
+
+declare const importResult: Adventure.ImportResult;
+
+expectTypeOf(importResult.importedTime).toEqualTypeOf<number | undefined>();
+expectTypeOf<Adventure.PreImportCallback>().toEqualTypeOf<
+  (data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>
+>();
+expectTypeOf<Adventure.PostImportCallback>().toEqualTypeOf<
+  (result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>
+>();

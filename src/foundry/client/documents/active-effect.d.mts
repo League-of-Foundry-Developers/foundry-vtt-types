@@ -324,7 +324,7 @@ declare namespace ActiveEffect {
     _id: fields.DocumentIdField;
 
     /**
-     * The name of the ActiveEffect
+     * The name which describes the ActiveEffect
      * @defaultValue `""`
      */
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
@@ -333,7 +333,7 @@ declare namespace ActiveEffect {
      * An icon image path used to depict the ActiveEffect
      * @defaultValue {@linkcode BaseActiveEffect.DEFAULT_ICON | ActiveEffect.implementation.DEFAULT_ICON}
      */
-    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
+    img: fields.FilePathField<{ categories: ["IMAGE"]; initial: () => string }>;
 
     /**
      * The document type
@@ -485,7 +485,12 @@ declare namespace ActiveEffect {
      * value and expiry are null.
      * @defaultValue `"turnStart"` if `duration.value` is a number, otherwise `null`
      */
-    expiry: fields.StringField<{ required: true; blank: false; nullable: true }>;
+    expiry: fields.StringField<{
+      required: true;
+      blank: false;
+      nullable: true;
+      initial: (data: unknown) => "turnStart" | null;
+    }>;
 
     /**
      * Is this ActiveEffect expired?
@@ -1099,6 +1104,18 @@ declare namespace ActiveEffect {
 
     /** An internal flag used determine when to recompute turns-based duration */
     _combatTime?: number | undefined;
+
+    /**
+     * @deprecated "You are accessing `ActiveEffectDuration#type`, which is now at
+     * {@linkcode ActiveEffect.Duration.units | ActiveEffectDuration#units}." (since v14, until v16)
+     */
+    type?: ActiveEffect.Duration["units"] | "none";
+
+    /**
+     * @deprecated "You are accessing `ActiveEffectDuration#duration`, which is now at
+     * {@linkcode ActiveEffect.Duration.seconds | ActiveEffectDuration#seconds}." (since v14, until v16)
+     */
+    duration?: number | null;
   }
 
   /**

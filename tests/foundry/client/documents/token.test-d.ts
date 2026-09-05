@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "fvtt-types/utils";
 
 declare const scene: foundry.documents.Scene;
 const doc = new TokenDocument.implementation({}, { parent: scene });
@@ -15,4 +16,81 @@ expectTypeOf(doc.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(doc.getEmbeddedCollection("Item")).toEqualTypeOf<foundry.utils.Collection<Item.Implementation>>();
 expectTypeOf(doc.getEmbeddedCollection("ActiveEffect")).toEqualTypeOf<
   foundry.utils.Collection<ActiveEffect.Implementation>
+>();
+
+declare const someToken: TokenDocument.Stored;
+declare const someLevel: Level.Implementation;
+
+expectTypeOf(TokenDocument.implementation._preventActorDeltaAccess).toBeBoolean();
+expectTypeOf(someToken.scene).toEqualTypeOf<Scene.Implementation | null>();
+expectTypeOf(someToken.isLazyDelta).toBeBoolean();
+expectTypeOf(someToken.attachments.regions).toEqualTypeOf<Set<RegionDocument.Implementation>>();
+expectTypeOf(someToken._returnedMovementPromises).toEqualTypeOf<Map<string, Promise<boolean>>>();
+expectTypeOf(someToken.level).toBeString();
+expectTypeOf(someToken.depth).toBeNumber();
+expectTypeOf(someToken.includedInLevel(someLevel)).toBeBoolean();
+expectTypeOf(someToken.locatedInLevel("someLevelId")).toBeBoolean();
+expectTypeOf(someToken.prepareData()).toEqualTypeOf<void>();
+expectTypeOf(someToken.startMovement()).toEqualTypeOf<Promise<boolean>>();
+expectTypeOf(someToken.startMovement("aMovementId")).toEqualTypeOf<Promise<boolean>>();
+expectTypeOf(someToken.getOccupiedGridSpaceOffsets()).toEqualTypeOf<foundry.grid.BaseGrid.Offset3D[]>();
+expectTypeOf(someToken.getMaxOccupiedGridSpaceCount({ width: 2, height: 2 })).toBeNumber();
+expectTypeOf(someToken.getMovementOrigin()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint>();
+expectTypeOf(someToken.getLightOrigin()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint>();
+expectTypeOf(someToken.getVisionOrigin()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint>();
+expectTypeOf(someToken.getSoundOrigin()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint>();
+expectTypeOf(someToken.getListenerPosition()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint>();
+expectTypeOf(someToken.getContainmentTestPoints()).toEqualTypeOf<foundry.canvas.Canvas.Point[]>();
+expectTypeOf(someToken.getVisibilityTestPoints()).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint[]>();
+expectTypeOf(someToken.getOcclusionTestPoints()).toEqualTypeOf<foundry.canvas.Canvas.Point[]>();
+expectTypeOf(someToken.applyActiveEffects("initial")).toEqualTypeOf<void>();
+
+class TestTokenDocument extends TokenDocument {
+  protected override _onMovementPlanned(): void {}
+
+  protected override _onOverrideSize(_changes: TokenDocument.PartialDimensions): Promise<void> {
+    return Promise.resolve();
+  }
+
+  protected override _getReplacementData(): AnyObject {
+    return {};
+  }
+
+  protected override _prepareBars(): void {}
+
+  protected override _constrainTestPoints(
+    _points: (foundry.canvas.Canvas.Point | foundry.canvas.Canvas.ElevatedPoint)[],
+    _data: TokenDocument.TestPointsData,
+  ): void {}
+}
+
+expectTypeOf(new TestTokenDocument()).toEqualTypeOf<TestTokenDocument>();
+
+expectTypeOf<TokenDocument.ProcessedMovementWaypoint>().toEqualTypeOf<
+  Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "subpathId" | "cost">
+>();
+expectTypeOf<TokenDocument.MeasurableMovementWaypoint["cost"]>().toEqualTypeOf<
+  number | TokenDocument.MovementCostFunction | undefined
+>();
+
+declare const movementCost: TokenDocument.MovementCostFunction;
+const measurableWaypointWithFixedCost: TokenDocument.MeasurableMovementWaypoint = { cost: 5 };
+const measurableWaypointWithCalculatedCost: TokenDocument.MeasurableMovementWaypoint = { cost: movementCost };
+expectTypeOf(measurableWaypointWithFixedCost).toEqualTypeOf<TokenDocument.MeasurableMovementWaypoint>();
+expectTypeOf(measurableWaypointWithCalculatedCost).toEqualTypeOf<TokenDocument.MeasurableMovementWaypoint>();
+
+declare const preMovement: TokenDocument.PreUpdateMovement;
+preMovement.autoRotate = true;
+preMovement.showRuler = false;
+// @ts-expect-error Cannot assign to 'id' because it is a read-only property.
+preMovement.id = "replacement-id";
+
+expectTypeOf<TokenDocument.ResumeMovementCallback>().toEqualTypeOf<() => Promise<boolean>>();
+expectTypeOf(someToken.pauseMovement()).toEqualTypeOf<TokenDocument.ResumeMovementCallback | null>();
+expectTypeOf(someToken.pauseMovement("region-behavior-id")).toEqualTypeOf<Promise<boolean> | null>();
+
+declare const movementRegion: RegionDocument.Implementation;
+declare const segmentizeWaypoints: TokenDocument.SegmentizeMovementWaypoint[];
+expectTypeOf(someToken.segmentizeRegionMovementPath(movementRegion, segmentizeWaypoints)).toEqualTypeOf<
+  TokenDocument.RegionMovementSegment[]
 >();

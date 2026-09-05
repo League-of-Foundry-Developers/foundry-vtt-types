@@ -184,3 +184,7 @@ class BoilerplateItem extends Item {
 
 declare const configuredItem: BoilerplateItem;
 expectTypeOf(configuredItem.actor).toEqualTypeOf<Actor.Implementation | null>();
+
+declare const someItem: Item.Stored;
+
+expectTypeOf(someItem["_initializeSource"](someItem)).toEqualTypeOf<Item.Source>();

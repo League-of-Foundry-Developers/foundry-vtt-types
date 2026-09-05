@@ -28,6 +28,7 @@ expectTypeOf(MeasuredTemplate.getConeShape(5, 270, 60)).toEqualTypeOf<PIXI.Polyg
 expectTypeOf(MeasuredTemplate.getRectShape(5, 90)).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(MeasuredTemplate.getRayShape(5, 180, 2)).toEqualTypeOf<PIXI.Polygon>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const doc: MeasuredTemplateDocument.Stored;
 const template = new CONFIG.MeasuredTemplate.objectClass(doc);
 

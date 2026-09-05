@@ -49,7 +49,7 @@ declare namespace Playlist {
       name: "Playlist";
       collection: "playlists";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      compendiumIndexFields: ["_id", "name", "description", "sort", "folder"];
       embedded: Metadata.Embedded;
       label: "DOCUMENT.Playlist";
       labelPlural: "DOCUMENT.Playlists";
@@ -313,7 +313,12 @@ declare namespace Playlist {
      * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
      * @defaultValue `"music"`
      */
-    channel: fields.StringField<{ choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: false }>;
+    channel: fields.StringField<{
+      required: true;
+      choices: typeof CONST.AUDIO_CHANNELS;
+      initial: string;
+      blank: false;
+    }>;
 
     /**
      * The playback mode for sounds in this playlist
@@ -1028,9 +1033,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param context - Construction context options
    */
   constructor(data: Playlist.CreateData, context?: Playlist.ConstructionContext);
-
-  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  protected _playbackOrder: never;
 
   /**
    * The order in which sounds within this playlist will be played (if sequential or shuffled)

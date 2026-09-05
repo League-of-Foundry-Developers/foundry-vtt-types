@@ -61,3 +61,7 @@ expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.S
 expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+
+declare const someMacro: Macro.Stored;
+
+expectTypeOf(someMacro.author).toEqualTypeOf<User.Stored | null>();

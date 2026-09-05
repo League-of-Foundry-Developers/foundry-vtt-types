@@ -23,3 +23,7 @@ expectTypeOf(actorDelta.updateSource({})).toEqualTypeOf<ActorDelta.UpdateData>()
 expectTypeOf(actorDelta.reset()).toEqualTypeOf<void>();
 expectTypeOf(actorDelta.updateSyntheticActor()).toEqualTypeOf<void>();
 expectTypeOf(actorDelta.restore()).toEqualTypeOf<Promise<Actor.Stored>>();
+
+declare const someDelta: ActorDelta.Stored;
+
+expectTypeOf(someDelta.id).toBeString();

@@ -1,5 +1,6 @@
 import type {
   AnyArray,
+  AnyMutableObject,
   AnyObject,
   DeepReadonly,
   EmptyObject,
@@ -74,7 +75,7 @@ declare namespace TokenDocument {
       isEmbedded: true;
       embedded: TokenDocument.Metadata.Embedded;
       permissions: TokenDocument.Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.357";
     }>
   > {}
 
@@ -91,11 +92,6 @@ declare namespace TokenDocument {
      */
     interface Permissions {
       create: "TOKEN_CREATE";
-      update(
-        user: User.Internal.Implementation,
-        doc: TokenDocument.Implementation,
-        data: BaseToken.UpdateData,
-      ): boolean;
       delete: "TOKEN_DELETE";
     }
   }
@@ -346,7 +342,7 @@ declare namespace TokenDocument {
     height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: 1 }>;
 
     /**
-     * The depth in grid spaces (nonnegative).
+     * The depth of the Token in grid units
      * @defaultValue `1`
      */
     depth: fields.NumberField<{ required: true; nullable: false; min: 0; initial: 1 }>;
@@ -424,35 +420,13 @@ declare namespace TokenDocument {
      * The configuration of the Token's primary resource bar
      * @defaultValue see property
      */
-    bar1: fields.SchemaField<{
-      /**
-       * The attribute path within the Token's Actor data which should be displayed
-       * @defaultValue `game?.system.primaryTokenAttribute || null`
-       */
-      attribute: fields.StringField<{
-        required: true;
-        nullable: true;
-        blank: false;
-        initial: () => string | null;
-      }>;
-    }>;
+    bar1: fields.SchemaField<BarSchema>;
 
     /**
      * The configuration of the Token's secondary resource bar
      * @defaultValue see property
      */
-    bar2: fields.SchemaField<{
-      /**
-       * The attribute path within the Token's Actor data which should be displayed
-       * @defaultValue `game?.system.secondaryTokenAttribute || null`
-       */
-      attribute: fields.StringField<{
-        required: true;
-        nullable: true;
-        blank: false;
-        initial: () => string | null;
-      }>;
-    }>;
+    bar2: fields.SchemaField<BarSchema>;
 
     /**
      * Configuration of the light source that this Token emits
@@ -463,158 +437,34 @@ declare namespace TokenDocument {
     /**
      * Configuration of sight and vision properties for the Token
      * @defaultValue see properties
-     * @privateRemarks Foundry has this split out into its own `@typedef TokenSightData`, but it's never
-     * referenced outside `@typedef TokenData`, so no need for a separate interface
      */
-    sight: fields.SchemaField<{
-      /**
-       * Should vision computation and rendering be active for this Token?
-       * @defaultValue `true`, when the token's sight range is greater than 0
-       */
-      enabled: fields.BooleanField<{ initial: (data: unknown) => boolean }>;
-
-      /**
-       * How far in distance units the Token can see without the aid of a light source
-       * @defaultValue `0`
-       */
-      range: fields.NumberField<{ required: true; nullable: true; min: 0; step: 0.01; initial: 0 }>;
-
-      /**
-       * An angle at which the Token can see relative to their direction of facing
-       * @defaultValue `360`
-       */
-      angle: fields.AngleField<{ initial: 360; normalize: false }>;
-
-      /**
-       * The vision mode which is used to render the appearance of the visible area
-       * @defaultValue `"basic"`
-       */
-      visionMode: fields.StringField<{
-        required: true;
-        blank: false;
-        initial: "basic";
-      }>;
-
-      /**
-       * A special color which applies a hue to the visible area
-       * @defaultValue `null`
-       */
-      color: fields.ColorField;
-
-      /**
-       * A degree of attenuation which gradually fades the edges of the visible area
-       * @defaultValue `0.1`
-       */
-      attenuation: fields.AlphaField<{
-        initial: 0.1;
-      }>;
-
-      /**
-       * An advanced customization for the perceived brightness of the visible area
-       * @defaultValue `0`
-       */
-      brightness: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-      }>;
-
-      /**
-       * An advanced customization of color saturation within the visible area
-       * @defaultValue `0`
-       */
-      saturation: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-      }>;
-
-      /**
-       * An advanced customization for contrast within the visible area
-       * @defaultValue `0`
-       */
-      contrast: fields.NumberField<{
-        required: true;
-        nullable: false;
-        initial: 0;
-        min: -1;
-        max: 1;
-      }>;
-    }>;
+    sight: fields.SchemaField<SightSchema>;
 
     /**
      * An array of detection modes which are available to this Token
      * @defaultValue `[]`
      * @remarks The validation function is a `BaseToken.#validateDetectionModes` reference, which throws if there's a duplicate mode ID
      */
-    detectionModes: fields.ArrayField<
-      fields.SchemaField<DetectionModeSchema>,
-      {
-        validate: () => void;
-      }
-    >;
+    detectionModes: fields.TypedObjectField<fields.SchemaField<DetectionModeSchema>>;
 
     /**
+     * Configuration of occlusion options
      * @defaultValue see properties
      */
-    occludable: fields.SchemaField<{
-      /**
-       * @defaultValue `0`
-       */
-      radius: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
-    }>;
+    occludable: fields.SchemaField<OcclusionSchema>;
 
     /**
+     * Configuration of the Dynamic Token Ring
      * @defaultValue see properties
      */
-    ring: fields.SchemaField<{
-      /**
-       * @defaultValue `false`
-       */
-      enabled: fields.BooleanField;
-
-      /**
-       * @defaultValue see properties
-       */
-      colors: fields.SchemaField<{
-        /**
-         * @defaultValue `null`
-         */
-        ring: fields.ColorField;
-
-        /**
-         * @defaultValue `null`
-         */
-        background: fields.ColorField;
-      }>;
-
-      /**
-       * @defaultValue `1`
-       */
-      effects: fields.NumberField<{ required: true; initial: 1; min: 0; max: 0x7fffff; integer: true }>;
-
-      /**
-       * @defaultValue see properties
-       */
-      subject: fields.SchemaField<{
-        /**
-         * @defaultValue `1`
-         */
-        scale: fields.NumberField<{ required: true; nullable: false; initial: 1; min: 0.5 }>;
-
-        /**
-         * @defaultValue `null`
-         */
-        texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
-      }>;
-    }>;
+    ring: fields.SchemaField<RingSchema>;
 
     turnMarker: fields.SchemaField<TurnMarkerSchema>;
 
+    /**
+     * The token's current movement from the keys of CONFIG.Token.movement.actions.
+     * A value of null means the movement mode is inferred.
+     */
     movementAction: fields.StringField<{
       required: true;
       blank: false;
@@ -628,6 +478,153 @@ declare namespace TokenDocument {
      * @defaultValue `{}`
      */
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
+  }
+
+  interface RingColorsSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `null`
+     */
+    ring: fields.ColorField;
+
+    /**
+     * @defaultValue `null`
+     */
+    background: fields.ColorField;
+  }
+
+  interface RingSubjectSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `1`
+     */
+    scale: fields.NumberField<{ required: true; nullable: false; initial: 1; min: 0.5 }>;
+
+    /**
+     * @defaultValue `null`
+     */
+    texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
+  }
+
+  interface RingSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `false`
+     */
+    enabled: fields.BooleanField;
+
+    /**
+     * @defaultValue see properties
+     */
+    colors: fields.SchemaField<RingColorsSchema>;
+
+    /**
+     * @defaultValue `1`
+     */
+    effects: fields.NumberField<{ required: true; initial: 1; min: 0; max: 0x7fffff; integer: true }>;
+
+    /**
+     * @defaultValue see properties
+     */
+    subject: fields.SchemaField<RingSubjectSchema>;
+  }
+
+  interface OcclusionSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `0`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; min: 0; step: 0.01; initial: 0 }>;
+  }
+
+  interface SightSchema extends fields.DataSchema {
+    /**
+     * Should vision computation and rendering be active for this Token?
+     * @defaultValue `true`, when the token's sight range is greater than 0
+     */
+    enabled: fields.BooleanField<{ initial: (data: unknown) => boolean }>;
+
+    /**
+     * How far in distance units the Token can see without the aid of a light source
+     * @defaultValue `0`
+     */
+    range: fields.NumberField<{ required: true; nullable: true; min: 0; step: 0.01; initial: 0 }>;
+
+    /**
+     * An angle at which the Token can see relative to their direction of facing
+     * @defaultValue `360`
+     */
+    angle: fields.AngleField<{ initial: 360; normalize: false }>;
+
+    /**
+     * The vision mode which is used to render the appearance of the visible area
+     * @defaultValue `"basic"`
+     */
+    visionMode: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: "basic";
+    }>;
+
+    /**
+     * A special color which applies a hue to the visible area
+     * @defaultValue `null`
+     */
+    color: fields.ColorField;
+
+    /**
+     * A degree of attenuation which gradually fades the edges of the visible area
+     * @defaultValue `0.1`
+     */
+    attenuation: fields.AlphaField<{
+      initial: 0.1;
+    }>;
+
+    /**
+     * An advanced customization for the perceived brightness of the visible area
+     * @defaultValue `0`
+     */
+    brightness: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: -1;
+      max: 1;
+    }>;
+
+    /**
+     * An advanced customization of color saturation within the visible area
+     * @defaultValue `0`
+     */
+    saturation: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: -1;
+      max: 1;
+    }>;
+
+    /**
+     * An advanced customization for contrast within the visible area
+     * @defaultValue `0`
+     */
+    contrast: fields.NumberField<{
+      required: true;
+      nullable: false;
+      initial: 0;
+      min: -1;
+      max: 1;
+    }>;
+  }
+
+  interface BarSchema extends fields.DataSchema {
+    /**
+     * The attribute path within the Token's Actor data which should be displayed
+     * @defaultValue `game?.system.primaryTokenAttribute || null` for {@linkcode Schema.bar1 | bar1},
+     * `game?.system.secondaryTokenAttribute || null` for {@linkcode Schema.bar2 | bar2}
+     */
+    attribute: fields.StringField<{
+      required: true;
+      nullable: true;
+      blank: false;
+      initial: () => string | null;
+    }>;
   }
 
   interface TurnMarkerSchema extends fields.DataSchema {
@@ -656,12 +653,6 @@ declare namespace TokenDocument {
   }
 
   interface DetectionModeSchema extends fields.DataSchema {
-    /**
-     * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
-     * @defaultValue `""`
-     */
-    id: fields.StringField;
-
     /**
      * Whether or not this detection mode is presently enabled
      * @defaultValue `true`
@@ -709,6 +700,12 @@ declare namespace TokenDocument {
     height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
 
     /**
+     * The depth in grid units (nonnegative).
+     * @defaultValue `undefined`
+     */
+    depth: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
+
+    /**
      * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
      * @defaultValue `undefined`
      */
@@ -723,6 +720,12 @@ declare namespace TokenDocument {
       CONST.TOKEN_SHAPES,
       CONST.TOKEN_SHAPES
     >;
+
+    /**
+     * The `_id` of the Scene Level of this waypoint.
+     * @defaultValue `undefined`
+     */
+    level: fields.DocumentIdField<{ required: true; nullable: false; readonly: false; initial: undefined }>;
 
     /**
      * The movement action from the previous to this waypoint.
@@ -781,10 +784,21 @@ declare namespace TokenDocument {
     }>;
 
     /**
+     * The ID of the subpath of the movement that this waypoint belongs to.
+     * @defaultValue `undefined`
+     */
+    subpathId: fields.StringField<{
+      required: true;
+      blank: false;
+      initial: undefined;
+      validate: (value: string) => void;
+    }>;
+
+    /**
      * The movement cost from the previous to this waypoint (nonnegative).
      * @defaultValue `undefined`
      */
-    cost: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
+    cost: fields.NumberField<{ required: true; nullable: true; min: 0; initial: undefined }>;
   }
 
   interface MeasuredMovementWaypoint extends fields.SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
@@ -804,47 +818,47 @@ declare namespace TokenDocument {
    * @remarks TSGo doesn't properly merge the JSDoc yet, but assuming it eventually will, this is the most-DRY way to write this.
    * @internal
    */
-  interface _GetCompleteMovementPathWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {
+  interface _GetCompleteMovementPathWaypoint extends ProcessedMovementWaypoint {
     /** @defaultValue The previous or source x-coordinate. */
-    x: MeasuredMovementWaypoint["x"];
+    x: ProcessedMovementWaypoint["x"];
 
     /** @defaultValue The previous or source y-coordinate. */
-    y: MeasuredMovementWaypoint["y"];
+    y: ProcessedMovementWaypoint["y"];
 
     /** @defaultValue The previous or source elevation. */
-    elevation: MeasuredMovementWaypoint["elevation"];
+    elevation: ProcessedMovementWaypoint["elevation"];
 
     /** @defaultValue The previous or source width. */
-    width: MeasuredMovementWaypoint["width"];
+    width: ProcessedMovementWaypoint["width"];
 
     /** @defaultValue The previous or source height. */
-    height: MeasuredMovementWaypoint["height"];
+    height: ProcessedMovementWaypoint["height"];
 
     /** @defaultValue The previous or source shape. */
-    shape: MeasuredMovementWaypoint["shape"];
+    shape: ProcessedMovementWaypoint["shape"];
 
     /** @defaultValue The previous or prepared movement action. */
-    action: MeasuredMovementWaypoint["action"];
+    action: ProcessedMovementWaypoint["action"];
 
     /** @defaultValue `null` */
-    terrain: MeasuredMovementWaypoint["terrain"];
+    terrain: ProcessedMovementWaypoint["terrain"];
 
     /** @defaultValue `false` */
-    snapped: MeasuredMovementWaypoint["snapped"];
+    snapped: ProcessedMovementWaypoint["snapped"];
 
     /** @defaultValue `false` */
-    explicit: MeasuredMovementWaypoint["explicit"];
+    explicit: ProcessedMovementWaypoint["explicit"];
 
     /** @defaultValue `false` */
-    checkpoint: MeasuredMovementWaypoint["checkpoint"];
+    checkpoint: ProcessedMovementWaypoint["checkpoint"];
 
     /** @defaultValue `false` */
-    intermediate: MeasuredMovementWaypoint["intermediate"];
+    intermediate: ProcessedMovementWaypoint["intermediate"];
   }
 
   interface GetCompleteMovementPathWaypoint extends InexactPartial<_GetCompleteMovementPathWaypoint> {}
 
-  interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
+  interface CompleteMovementWaypoint extends ProcessedMovementWaypoint {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
@@ -888,6 +902,12 @@ declare namespace TokenDocument {
     shape: fields.NumberField<{ initial: typeof CONST.TOKEN_SHAPES.RECTANGLE_1; choices: CONST.TOKEN_SHAPES[] }>;
 
     /**
+     * The level ID
+     * @defaultValue {@linkcode Scene.Metadata.defaultLevelId | Scene.metadata.defaultLevelId}
+     */
+    level: fields.DocumentIdField<{ required: true; nullable: false; readonly: false; initial: string }>;
+
+    /**
      * The x-coordinate of the top-left corner of the Token
      * @defaultValue `0`
      */
@@ -906,7 +926,7 @@ declare namespace TokenDocument {
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
-     * The z-index of this token relative to other siblings
+     * The sort order
      * @defaultValue `0`
      */
     sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
@@ -1214,8 +1234,10 @@ declare namespace TokenDocument {
       /**
        * @remarks Unless this is explicitly `false`, position updates that put a token outside the viewport will cause the camera to pan
        * to that token's center. See `Token##panCanvas`.
+       *
+       * Passing an object forwards it to {@linkcode Token.panCanvas | Token#panCanvas} as its options.
        */
-      pan?: boolean;
+      pan?: boolean | TokenDocument.PanningOptions;
 
       /**
        * @remarks If a token's {@linkcode TokenDocument.actorId | actorId} is being updated,
@@ -1262,9 +1284,6 @@ declare namespace TokenDocument {
        * {@linkcode TokenLayer.storeHistory | TokenLayer#storeHistory} and `TokenDocument##preUpdateMovement` and `##onUpdateMovement`.
        */
       _clearMovementHistory?: boolean;
-
-      /** @deprecated Removed in v13. This warning will be removed in v14. */
-      _priorPosition?: never;
     }
 
     /**
@@ -1822,6 +1841,36 @@ declare namespace TokenDocument {
 
   type MovementMethod = "api" | "config" | "dragging" | "keyboard" | "paste" | "undo";
 
+  interface PanningOptions {
+    /**
+     * The type of the transition animation.
+     * @defaultValue `null` (no transition animation)
+     */
+    transitionType?: string | undefined;
+
+    /**
+     * The duration of the pan or transition animation.
+     * @defaultValue `250` for panning, or the default duration of the given transition type
+     */
+    duration?: number | undefined;
+
+    /** The speed of the panning animation in pixels per second; overrides `duration` if set. */
+    speed?: number | undefined;
+
+    /**
+     * The easing function used for the panning animation.
+     * @defaultValue `"easeInOutCosine"`
+     */
+    easing?: foundry.canvas.animation.CanvasAnimation.EasingFunction | undefined;
+
+    /**
+     * If false, the canvas is not panned to the token if the token is already onscreen. Otherwise the canvas is
+     * panned such that the token is in the center of the screen.
+     * @defaultValue `false`
+     */
+    force?: boolean | undefined;
+  }
+
   interface Position {
     /**
      * The top-left x-coordinate in pixels (integer).
@@ -1849,12 +1898,24 @@ declare namespace TokenDocument {
     height: number;
 
     /**
+     * The depth in grid spaces (nonnegative).
+     */
+    depth: number;
+
+    /**
      * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
      */
     shape: CONST.TOKEN_SHAPES;
+
+    /**
+     * The level ID.
+     */
+    level: string;
   }
 
-  interface Dimensions extends Pick<Position, "width" | "height" | "shape"> {}
+  interface Coordinates extends Pick<Position, "x" | "y" | "elevation" | "level"> {}
+
+  interface Dimensions extends Pick<Position, "width" | "height" | "depth" | "shape"> {}
 
   interface PartialDimensions extends InexactPartial<Dimensions> {}
 
@@ -1862,14 +1923,46 @@ declare namespace TokenDocument {
 
   interface GetSizeDimensions extends InexactPartial<ShapelessDimensions> {}
 
+  /** The attachments of a Token; the inner sets are mutated by the attached documents. */
+  interface Attachments {
+    regions: Set<RegionDocument.Implementation>;
+  }
+
+  /**
+   * The position and dimensions accepted by the `get*TestPoints` methods, defaulting to the prepared document's
+   * values rather than its source.
+   */
+  interface TestPointsData extends InexactPartial<Canvas.ElevatedPoint>, InexactPartial<Position> {}
+
+  /**
+   * The sight defaults a vision-mode ActiveEffect change contributes, or an empty object when the change was not
+   * applied.
+   */
+  type InflatedVisionModeChange =
+    | Pick<
+        fields.SchemaField.InitializedData<Schema>["sight"],
+        "color" | "attenuation" | "brightness" | "saturation" | "contrast"
+      >
+    | EmptyObject;
+
   interface Dimensions2D extends InexactPartial<Canvas.Point>, InexactPartial<Dimensions> {}
 
   interface Dimensions3D extends InexactPartial<Canvas.ElevatedPoint>, InexactPartial<Dimensions> {}
 
   interface MovementWaypoint extends Omit<
     MeasuredMovementWaypoint,
-    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+    "terrain" | "intermediate" | "userId" | "movementId" | "subpathId" | "cost"
   > {}
+
+  type MovementTerrain = MeasuredMovementWaypoint["terrain"];
+
+  interface ProcessedMovementWaypoint extends MovementWaypoint {
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is this waypoint intermediate? */
+    intermediate: boolean;
+  }
 
   /** @remarks Used for passing to {@linkcode TokenDocument.move | TokenDocument#move}. */
   interface PartialMovementWaypoint extends InexactPartial<MovementWaypoint> {}
@@ -1880,6 +1973,34 @@ declare namespace TokenDocument {
   > {
     actionConfig: CONFIG.Token.Movement.ActionConfig;
     teleport: boolean;
+  }
+
+  interface MeasurableMovementWaypointData {
+    /** A predetermined cost (nonnegative) or cost function to be used instead of `options.cost`. */
+    cost?: number | MovementCostFunction | undefined;
+  }
+
+  interface MeasurableMovementWaypoint
+    extends InexactPartial<ProcessedMovementWaypoint>, MeasurableMovementWaypointData {}
+
+  interface RegionMovementSegment {
+    /** The type of this segment (see {@linkcode CONST.REGION_MOVEMENT_SEGMENTS}). */
+    type: CONST.REGION_MOVEMENT_SEGMENTS;
+
+    /** The waypoint that this segment starts from. */
+    from: Position;
+
+    /** The waypoint that this segment goes to. */
+    to: Position;
+
+    /** The movement action between the waypoints. */
+    action: string;
+
+    /** The terrain data of this segment. */
+    terrain: MovementTerrain;
+
+    /** Is the destination snapped to the grid? */
+    snapped: boolean;
   }
 
   interface MovementSectionData {
@@ -2126,8 +2247,193 @@ declare namespace TokenDocument {
 
   interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
 
+  /**
+   * The options shared by {@linkcode MovementInstruction} and {@linkcode ResizingInstruction}.
+   * @internal
+   */
+  interface _MovementInstructionOptions {
+    /**
+     * The movement ID, which must be unique.
+     * @defaultValue auto-generated
+     */
+    id: string;
+
+    /**
+     * The method of movement.
+     * @defaultValue {@linkcode MovementOptions.method | MovementOptions#method}
+     */
+    method: TokenDocument.MovementMethod;
+
+    /**
+     * Automatically rotate the token in the direction of movement?
+     * @defaultValue {@linkcode MovementOptions.autoRotate | MovementOptions#autoRotate}
+     */
+    autoRotate: boolean;
+
+    /**
+     * Show the ruler during the movement animation of the token?
+     * @defaultValue {@linkcode MovementOptions.showRuler | MovementOptions#showRuler}
+     */
+    showRuler: boolean;
+
+    /**
+     * The terrain movement options.
+     * @defaultValue {@linkcode MovementOptions.terrainOptions | MovementOptions#terrainOptions}
+     */
+    terrainOptions: Omit<Token.CreateTerrainMovementPathOptions, "preview">;
+
+    /**
+     * The options to constrain movement.
+     * @defaultValue {@linkcode MovementOptions.constrainOptions | MovementOptions#constrainOptions}
+     */
+    constrainOptions: TokenDocument.ConstrainOptions;
+
+    /**
+     * The options to measure movement.
+     * @defaultValue {@linkcode MovementOptions.measureOptions | MovementOptions#measureOptions}
+     */
+    measureOptions: Omit<Token.MeasureMovementPathOptions, "preview">;
+
+    /**
+     * Start a new subpath?
+     * @defaultValue {@linkcode MovementOptions.split | MovementOptions#split}
+     */
+    split: boolean;
+
+    /**
+     * Don't start the movement yet?
+     * @defaultValue {@linkcode MovementOptions.planned | MovementOptions#planned}
+     */
+    planned: boolean;
+  }
+
+  interface MovementInstructionOptions extends InexactPartial<_MovementInstructionOptions> {}
+
+  interface MovementInstructionDestination {
+    /** The destination which may include additional token data. */
+    destination: TokenDocument.UpdateData & InexactPartial<MovementWaypoint>;
+  }
+
+  interface MovementInstructionWaypoints {
+    /** The waypoints to move the token through. */
+    waypoints: PartialMovementWaypoint[];
+  }
+
+  /**
+   * A single movement instruction passed to {@linkcode Scene.moveTokens | Scene#moveTokens}, which either names a
+   * destination or a path of waypoints.
+   */
+  type MovementInstruction = (MovementInstructionDestination | MovementInstructionWaypoints) &
+    MovementInstructionOptions;
+
+  /**
+   * @remarks Foundry pins `autoRotate`, `showRuler`, `terrainOptions`, `constrainOptions`, and `measureOptions` to
+   * literal types here rather than reusing {@linkcode _MovementInstructionOptions}: resizing never auto rotates,
+   * never shows the ruler, doesn't move through terrain, doesn't cost anything, and always ignores walls, surfaces
+   * and impassable terrain.
+   * @internal
+   */
+  interface _ResizingInstruction extends Pick<_MovementInstructionOptions, "id" | "method" | "split" | "planned"> {
+    /** Resizing never auto rotates. */
+    autoRotate: false;
+
+    /** Resizing never shows the ruler. */
+    showRuler: false;
+
+    /** Resizing doesn't move through terrain. */
+    terrainOptions: EmptyObject;
+
+    /** Resizing always ignores walls, surfaces and impassable terrain. */
+    constrainOptions: {
+      ignoreWalls: true;
+      ignoreCost: true;
+    };
+
+    /** Resizing doesn't cost anything. */
+    measureOptions: EmptyObject;
+  }
+
+  /**
+   * Resize the Token such that its center point remains (almost) unchanged. The center point might change slightly
+   * because the new `(x, y)` position is rounded.
+   */
+  interface ResizingInstruction extends InexactPartial<_ResizingInstruction> {
+    /** The new dimensions and additional data. */
+    dimensions: Omit<TokenDocument.UpdateData & InexactPartial<MovementWaypoint>, "x" | "y" | "elevation">;
+  }
+
+  /**
+   * @remarks Foundry documents only these four keys for movement, even though the value ultimately reaches the same
+   * pipeline as {@linkcode Token.AnimateOptions}.
+   */
+  interface MovementAnimationOptions extends Pick<
+    Token.AnimateOptions,
+    "duration" | "movementSpeed" | "linkToMovement" | "easing"
+  > {}
+
+  /**
+   * The defaults that individual {@linkcode MovementInstruction}s fall back to.
+   * @internal
+   */
+  interface _MovementOptions extends Omit<
+    _MovementInstructionOptions,
+    "method" | "autoRotate" | "showRuler" | "split" | "planned"
+  > {
+    /**
+     * The method of movement.
+     * @defaultValue `"api"`
+     */
+    method: TokenDocument.MovementMethod;
+
+    /**
+     * Automatically rotate the token in the direction of movement?
+     * @defaultValue `game.settings.get("core", "tokenAutoRotate")` if `method` is `"dragging"` or `"keyboard"`,
+     * otherwise `false`
+     */
+    autoRotate: boolean;
+
+    /**
+     * Show the ruler during the movement animation of the token?
+     * @defaultValue `true` if `method` is `"dragging"`, otherwise `false`
+     */
+    showRuler: boolean;
+
+    /**
+     * Start a new subpath?
+     * @defaultValue `false` if it's movement without history or keyboard movement that follows keyboard movement,
+     * otherwise `true`
+     */
+    split: boolean;
+
+    /**
+     * Don't start the movement yet?
+     * @defaultValue `false`
+     */
+    planned: boolean;
+
+    /**
+     * Pan the canvas (with transition animation) to the destination if the token is controlled?
+     * @defaultValue `true`
+     */
+    pan: boolean | TokenDocument.PanningOptions;
+
+    /**
+     * Animate movement.
+     * @defaultValue `true`
+     */
+    animate: boolean;
+
+    /** The animation options. */
+    animation: TokenDocument.MovementAnimationOptions;
+  }
+
+  interface MovementOptions extends InexactPartial<_MovementOptions> {}
+
+  /** A callback that resumes paused movement. */
+  type ResumeMovementCallback = () => Promise<boolean>;
+
   type PauseMovementReturn<Key extends string | undefined> =
-    | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
+    | (Key extends string ? Promise<boolean> : ResumeMovementCallback)
     | null;
 
   /**
@@ -2285,9 +2591,42 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   constructor(data?: TokenDocument.CreateData, context?: TokenDocument.ConstructionContext);
 
   /**
+   * A global guard which prevents ActorDelta documents from materializing until after all world documents are first
+   * initialized. While true, the `TokenDocument#actor` getter will return null instead of the synthetic Actor
+   * instance. This guard is released upon completion of `Game#initializeDocuments`.
+   * @defaultValue `true`
+   * @internal
+   */
+  static _preventActorDeltaAccess: boolean;
+
+  /**
+   * Property overrides copied from this TokenDocument's associated Actor
+   * @defaultValue `{}`
+   */
+  protected overrides: Record<string, unknown>;
+
+  /**
+   * Old overrides for synthetic actors, kept separately due to particularities of ActorDelta data re-initialization
+   * @defaultValue `null`
+   * @private
+   * @remarks It is read by {@linkcode TokenDocument._renderActiveEffectChanges | TokenDocument#_renderActiveEffectChanges}.
+   */
+  protected _priorOverrides: Record<string, unknown> | null;
+
+  /**
+   * A semantically-intuitive alias of {@linkcode TokenDocument.parent | TokenDocument#parent}
+   */
+  get scene(): Scene.Implementation | null;
+
+  /**
    * The current movement data of this Token document.
    */
   get movement(): DeepReadonly<TokenDocument.MovementData>;
+
+  /**
+   * @internal
+   */
+  _movement: DeepReadonly<TokenDocument.MovementData> | undefined;
 
   /**
    * The movement continuation state of this Token document.
@@ -2307,6 +2646,20 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * ```
    */
   protected _movementContinuation: TokenDocument.MovementContinuationData;
+
+  /**
+   * The movement promises with their resolvers.
+   * @defaultValue `new Map()`
+   * @internal
+   */
+  _returnedMovementPromises: Map<string, Promise<boolean>>;
+
+  /**
+   * The attachments of this Token.
+   * @defaultValue `Object.freeze({regions: new Set()})`
+   * @remarks Frozen at construction, but the inner `regions` set stays mutable.
+   */
+  readonly attachments: TokenDocument.Attachments;
 
   /**
    * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.
@@ -2334,6 +2687,26 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * A convenient reference for whether this TokenDocument is linked to the Actor it represents, or is a synthetic copy
    */
+
+  /**
+   * Test whether this TokenDocument would produce an ActorDelta if materialized.
+   */
+  get isLazyDelta(): boolean;
+
+  /**
+   * Force construction of the ActorDelta for this unlinked TokenDocument, bypassing the initialization guard.
+   * @internal
+   * @remarks
+   * @throws If this TokenDocument is not a lazy delta.
+   */
+  _forceDeltaActor(): Actor.Implementation | null;
+
+  /**
+   * A workflow which occurs when the ActorDelta for an unlinked TokenDocument is materialized for the first time.
+   * At the point this method is called, the delta property has transitioned from a lazy getter to a concrete value.
+   */
+  protected _onDeltaMaterialized(): void;
+
   get isLinked(): boolean;
 
   /**
@@ -2367,12 +2740,18 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   regions: Set<RegionDocument.Implementation> | null;
 
+  override includedInLevel(level: string | Level.Implementation): boolean;
+
+  override locatedInLevel(level: string | Level.Implementation): boolean;
+
   protected override _initializeSource(
     data: TokenDocument.CreateData,
     options?: Document.InitializeSourceOptions,
   ): TokenDocument.Source;
 
   protected override _initialize(options?: Document.InitializeOptions): void;
+
+  override prepareData(): void;
 
   override prepareBaseData(): void;
 
@@ -2395,6 +2774,12 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * Prepare detection modes which are available to the Token.
    * Ensure that every Token has the basic sight detection mode configured.
    */
+
+  /**
+   * Extend data in attribute-bar properties.
+   */
+  protected _prepareBars(): void;
+
   protected _prepareDetectionModes(): void;
 
   /**
@@ -2413,9 +2798,106 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * Move the Token through the given waypoint(s).
-   * @param waypoints - The waypoint(s) to move the Token through
-   * @param options   - Parameters of the update operation
-   * @returns A Promise that resolves to true if the Token was moved, otherwise resolves to false
+   *
+   * ## Movement API
+   *
+   * ### Movement Control
+   * - {@linkcode TokenDocument.movement | TokenDocument#movement}
+   * - {@linkcode TokenDocument.movementHistory | TokenDocument#movementHistory}
+   * - {@linkcode TokenDocument.move | TokenDocument#move}
+   * - {@linkcode TokenDocument.resize | TokenDocument#resize}
+   * - {@linkcode TokenDocument.startMovement | TokenDocument#startMovement}
+   * - {@linkcode TokenDocument.pauseMovement | TokenDocument#pauseMovement}
+   * - {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}
+   * - {@linkcode TokenDocument.stopMovement | TokenDocument#stopMovement}
+   * - {@linkcode TokenDocument.clearMovementHistory | TokenDocument#clearMovementHistory}
+   * - {@linkcode TokenDocument.revertRecordedMovement | TokenDocument#revertRecordedMovement}
+   * - {@linkcode TokenDocument._shouldRecordMovementHistory | TokenDocument#_shouldRecordMovementHistory}
+   * - {@linkcode foundry.documents.Scene.moveTokens | foundry.documents.Scene#moveTokens}
+   *
+   * ### Hook Events / Document Event Handlers
+   * - {@linkcode hookEvents.preMoveToken} / {@linkcode TokenDocument._preUpdateMovement | TokenDocument#_preUpdateMovement}
+   * - {@linkcode hookEvents.moveToken} / {@linkcode TokenDocument._onUpdateMovement | TokenDocument#_onUpdateMovement}
+   * - {@linkcode hookEvents.pauseToken} / {@linkcode TokenDocument._onMovementPaused | TokenDocument#_onMovementPaused}
+   * - {@linkcode hookEvents.stopToken} / {@linkcode TokenDocument._onMovementStopped | TokenDocument#_onMovementStopped}
+   * - {@linkcode hookEvents.recordToken} / {@linkcode TokenDocument._onMovementRecorded | TokenDocument#_onMovementRecorded}
+   * - {@linkcode hookEvents.planToken} / {@linkcode TokenDocument._onMovementPlanned | TokenDocument#_onMovementPlanned}
+   *
+   * ### Movement Action
+   * - {@linkcode CONFIG.Token.movement | CONFIG.Token.movement.actions}
+   * - {@linkcode CONFIG.Token.movement | CONFIG.Token.movement.defaultAction}
+   * - {@linkcode TokenData.movementAction | TokenData#movementAction}
+   * - {@linkcode TokenDocument._inferMovementAction | TokenDocument#_inferMovementAction}
+   * - {@linkcode foundry.canvas.placeables.Token._getDragMovementAction | foundry.canvas.placeables.Token#_getDragMovementAction}
+   * - {@linkcode foundry.canvas.placeables.Token._getHUDMovementAction | foundry.canvas.placeables.Token#_getHUDMovementAction}
+   * - {@linkcode foundry.canvas.placeables.Token._getKeyboardMovementAction | foundry.canvas.placeables.Token#_getKeyboardMovementAction}
+   *
+   * ### Movement Cost
+   * - {@linkcode CONFIG.Token.movement | CONFIG.Token.movement.costAggregator}
+   * - {@linkcode TokenDocument.measureMovementPath | TokenDocument#measureMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token.measureMovementPath | foundry.canvas.placeables.Token#measureMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token._getMovementCostFunction | foundry.canvas.placeables.Token#_getMovementCostFunction}
+   *
+   * ### Movement Constraints, Terrain, and Pathfinding
+   * - {@linkcode CONFIG.Token.movement | CONFIG.Token.movement.TerrainData}
+   * - {@linkcode TokenDocument.getCompleteMovementPath | TokenDocument#getCompleteMovementPath}
+   * - {@linkcode TokenDocument.segmentizeRegionMovementPath | TokenDocument#segmentizeRegionMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token.findMovementPath | foundry.canvas.placeables.Token#findMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token.constrainMovementPath | foundry.canvas.placeables.Token#constrainMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token.recalculatePlannedMovementPath | foundry.canvas.placeables.Token#recalculatePlannedMovementPath}
+   * - {@linkcode foundry.canvas.placeables.Token.createTerrainMovementPath | foundry.canvas.placeables.Token#createTerrainMovementPath}
+   * - {@linkcode foundry.data.TerrainData}
+   * - {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}
+   *
+   * ### Movement Animation
+   * - {@linkcode CONFIG.Token.movement | CONFIG.Token.movement.defaultSpeed}
+   * - {@linkcode foundry.documents.types.TokenMovementData.animation | foundry.documents.types.TokenMovementData#animation}
+   * - {@linkcode foundry.canvas.placeables.Token.movementAnimationName | foundry.canvas.placeables.Token#movementAnimationName}
+   * - {@linkcode foundry.canvas.placeables.Token.movementAnimationPromise | foundry.canvas.placeables.Token#movementAnimationPromise}
+   * - {@linkcode foundry.canvas.placeables.Token._getAnimationMovementSpeed | foundry.canvas.placeables.Token#_getAnimationMovementSpeed}
+   * - {@linkcode foundry.canvas.placeables.Token._modifyAnimationMovementSpeed | foundry.canvas.placeables.Token#_modifyAnimationMovementSpeed}
+   *
+   * @param waypoints - The waypoint(s) to move the Token through. If a single waypoint is provided, it may include
+   * addition token data.
+   * @param options   - Parameters of the update and movement operation.
+   * @returns A Promise that resolves to true if the entire movement was completed, and otherwise resolves to false
+   * if the movement was stopped or prevented. While the movement is paused, this promise does not resolve.
+   * @example Moving the token to new position including additional token data
+   * ```js
+   * const completed = await token.move({x: 100, y: 200, rotation: 45, texture: {tint: "#ff0000"}}, {showRuler: true});
+   * if ( completed ) {
+   *   // Movement was completed: the token arrived at the destination
+   * } else {
+   *   // Movement was stopped or prevented
+   * }
+   *
+   * // The following is equivalent except for the return value
+   * await token.update({x: 100, y: 200, rotation: 45,  texture: {tint: "#ff0000"}, {showRuler: true});
+   * ```
+   * @example Moving the token to along a path with multiple waypoints
+   * ```js
+   * const completed = await token.move(
+   *   [
+   *     {x: 100, y: 200}, // Move to the position (100, 200)
+   *     {elevation: 5, explicit: true}, // Move to elevation 5 indicating that the user placed this waypoint
+   *     {x: 500, y: 500, checkpoint: true}, // Move to (500, 500): the movement can be stopped/paused here
+   *     {width: 2, height: 2, depth: 2}, // Change size
+   *     {x: 1000, action: "swim"}, // Swim to (1000, 500)
+   *     {x: 0, y: 0, snapped: true}, // Move to (0, 0) indicating that (0, 0) is a snapped position for the token
+   *     {elevation: 10} // Move to elevation 10 (the last waypoint is always a checkpoint automatically)
+   *   ],
+   *   {
+   *     autoRotate: true, // Enable auto rotation
+   *     constrainOptions: {ignoreWalls: true, ignoreCost: true} // Allow the token to move through walls, surfaces, and
+   *                                                             // impassable terrain
+   *   }
+   * );
+   * if ( completed ) {
+   *   // Movement was completed: the token arrived at the destination
+   * } else {
+   *   // Movement was stopped or prevented
+   * }
+   * ```
    */
   move(
     waypoints: MaybeArray<TokenDocument.PartialMovementWaypoint>,
@@ -2493,6 +2975,17 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param movementId - The movement ID
    * @param key        - The key that was passed to {@linkcode TokenDocument.pauseMovement | TokenDocument#pauseMovement}
    */
+
+  /**
+   * Start the currently planned movement or the planned movement corresponding to given movement ID.
+   * Only owners of the Token can start the movement.
+   * @param movementId - The movement ID
+   * @returns True if the movement was started, false otherwise
+   * @remarks
+   * @throws If the current User is not an owner of this Token.
+   */
+  startMovement(movementId?: string): Promise<boolean>;
+
   resumeMovement(movementId: string, key: string): void;
 
   /**
@@ -2514,6 +3007,24 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   getCompleteMovementPath(
     waypoints: TokenDocument.GetCompleteMovementPathWaypoint[],
   ): TokenDocument.CompleteMovementWaypoint[];
+
+  /**
+   * Get the offsets of grid spaces that are occupied by this Token at the current or given position.
+   * The grid spaces the Token occupies are those that are covered by the Token's shape in the snapped position.
+   * Walls and surfaces are considered.
+   * Returns an empty array in gridless grids.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The offsets of occupied grid spaces
+   */
+  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions3D): foundry.grid.BaseGrid.Offset3D[];
+
+  /**
+   * Get the number the grid spaces that this Token can occupy at most with the current or given dimensions.
+   * Returns 0 in gridless grids.
+   * @param data - The dimensions (default: `{}`)
+   * @returns The number the grid spaces that this Token can occupy at most
+   */
+  getMaxOccupiedGridSpaceCount(data?: TokenDocument.PartialDimensions): number;
 
   /**
    * Add or remove this Token from a Combat encounter.
@@ -2669,6 +3180,12 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   protected _onMovementPaused(): void;
 
   /**
+   * Called when the current movement is planned.
+   * @remarks Core's implementation is a no-op, this is soft abstract.
+   */
+  protected _onMovementPlanned(): void;
+
+  /**
    * Called when the movement is recorded or cleared.
    */
   protected _onMovementRecorded(): void;
@@ -2739,6 +3256,95 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   testInsideRegion(region: RegionDocument.Implementation, data?: TokenDocument.Dimensions3D): boolean;
 
   /**
+   * Get the movement origin of this Token.
+   * This point is used to test collision with walls and surfaces.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The movement origin
+   */
+  getMovementOrigin(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
+
+  /**
+   * Get the origin of the light source of this Token.
+   *
+   * The default implementation returns the movement origin.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The vision origin
+   */
+  getLightOrigin(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
+
+  /**
+   * Get the origin of the vision source of this Token.
+   *
+   * The default implementation returns the movement origin.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The light origin
+   */
+  getVisionOrigin(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
+
+  /**
+   * Get the origin of the sound source of this Token.
+   *
+   * The default implementation returns the movement origin.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The light origin
+   */
+  getSoundOrigin(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
+
+  /**
+   * Get the listener position of this Token.
+   *
+   * The default implementation returns the movement origin.
+   * @param data - The position and dimensions (default: `{}`)
+   * @returns The listener position
+   */
+  getListenerPosition(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
+
+  /**
+   * Get the points that are used to test region containment/segmentation (unless overridden)
+   * for this Token. The test points are within the shape of the Token.
+   *
+   * Implementations of this function must use the prepared position and dimensions of this Token.
+   * @param data - The position and dimensions. Defaults to the values of the prepared document, not the document
+   *               source. (default: `{}`)
+   * @returns The test points.
+   */
+  getContainmentTestPoints(data?: TokenDocument.TestPointsData): Canvas.Point[];
+
+  /**
+   * Get the points that are used to test visibility for this Token. The test points are within the shape of the
+   * Token.
+   *
+   * Implementations of this function must use the prepared position and dimensions of this Token.
+   * @param data - The position and dimensions. Defaults to the values of the prepared document, not the document
+   *               source. (default: `{}`)
+   * @returns The test points.
+   */
+  getVisibilityTestPoints(data?: TokenDocument.TestPointsData): Canvas.ElevatedPoint[];
+
+  /**
+   * Get the points that are used to test occlusion for this Token. The test points are within the shape of the
+   * Token.
+   *
+   * Implementations of this function must use the prepared position and dimensions of this Token.
+   * @param data - The position and dimensions. Defaults to the values of the prepared document, not the document
+   *               source. (default: `{}`)
+   * @returns The test points.
+   */
+  getOcclusionTestPoints(data?: TokenDocument.TestPointsData): Canvas.Point[];
+
+  /**
+   * Constrain the test points by walls and surfaces. The passed array of test points are modified in place.
+   * If all points are discarded, the movement origin is added to the array of test points.
+   * @param points - The test points, which are modified in place.
+   * @param data   - The position and dimensions. Defaults to the values of the prepared document, not the document
+   *                 source.
+   */
+  protected _constrainTestPoints(
+    points: (Canvas.Point | Canvas.ElevatedPoint)[],
+    data: TokenDocument.TestPointsData,
+  ): void;
+
+  /**
    * Split the Token movement path through the Region into its segments.
    * The Token and the Region must be in the same Scene.
    *
@@ -2764,7 +3370,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   segmentizeRegionMovementPath(
     region: RegionDocument.Implementation,
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
-  ): RegionDocument.MovementSegment[];
+  ): TokenDocument.RegionMovementSegment[];
 
   protected override _preCreateDescendantDocuments(...args: TokenDocument.PreCreateDescendantDocumentsArgs): void;
 
@@ -2793,6 +3399,38 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     update?: TokenDocument.OnRelatedUpdateData,
     operation?: TokenDocument.OnRelatedUpdateOperation,
   ): void;
+
+  /**
+   * Refresh this TokenDocument's overrides and transmit changes, if any, to its PlaceableObject for rendering.
+   * @param phase - The application phase under which changes are to be applied
+   */
+  applyActiveEffects(phase: ActiveEffect.ChangePhase): void;
+
+  /**
+   * Acquire the defaults of a vision mode set by an Active Effect change and create additional overrides from them.
+   * @remarks Foundry marks this `@private`. Returns an empty object when the change was not applied.
+   */
+  protected _inflateVisionModeChange(modeId: string): TokenDocument.InflatedVisionModeChange;
+
+  /**
+   * Send emulated update data to the Token PlaceableObject
+   * @param priorOverrides - Overrides prior to data reinitialization
+   */
+  protected _renderActiveEffectChanges(priorOverrides: AnyMutableObject): void;
+
+  /**
+   * Callback invoked when {@linkcode TokenDocument._onRelatedUpdate | #_onRelatedUpdate} detects overrides of at
+   * least one Token dimension. Enacting such changes requires a server update and may involve nuances particular to
+   * a given system. While this method is async, it is not awaited by the caller.
+   * @remarks Core's implementation is a no-op, this is soft abstract.
+   */
+  protected _onOverrideSize(changes: TokenDocument.PartialDimensions): Promise<void>;
+
+  /**
+   * Get replacement data for ActiveEffect change application to this Token.
+   * @remarks Returns the Actor's roll data, or `{}` when this Token has no Actor.
+   */
+  protected _getReplacementData(): AnyObject;
 
   /**
    * Get an Array of attribute choices which could be tracked for Actors in the Combat Tracker
@@ -2842,16 +3480,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   static getTrackedAttributeChoices(
     attributes?: TokenDocument.TrackedAttributesDescription | null,
   ): TokenDocument.TrackedAttributesChoice[];
-
-  /**
-   * A helper function to toggle a status effect which includes an Active Effect template
-   * @param effectData - The Active Effect data, including statusId
-   * @param options    - Options to configure application of the Active Effect (default: `{}`)
-   * @returns Whether the Active Effect is now on or off
-   * @deprecated "`TokenDocument#toggleActiveEffect` is deprecated in favor of
-   * {@linkcode Actor.toggleStatusEffect | Actor#toggleStatusEffect}" (since v12, until v14)
-   */
-  toggleActiveEffect(effectData: CONFIG.StatusEffect, options?: Actor.ToggleStatusEffectOptions): Promise<boolean>;
 
   /*
    * After this point these are not really overridden methods.

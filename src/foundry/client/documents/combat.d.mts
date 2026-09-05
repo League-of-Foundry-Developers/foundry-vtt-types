@@ -57,8 +57,9 @@ declare namespace Combat {
       labelPlural: "DOCUMENT.Combats";
       embedded: Metadata.Embedded;
       hasTypeData: true;
+      baseTypeAllowed: true;
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.361";
     }>
   > {}
 
@@ -358,8 +359,20 @@ declare namespace Combat {
      */
     _id: fields.DocumentIdField;
 
+    /**
+     * @defaultValue `""`
+     * @remarks The name of this Combat encounter.
+     */
+    name: fields.StringField<{ required: true; blank: true; textSearch: true }>;
+
+    /**
+     * The type of this Combat.
+     */
     type: fields.DocumentTypeField<typeof BaseCombat, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
+    /**
+     * Game system data which is defined by system data models.
+     */
     system: fields.TypeDataField<typeof BaseCombat>;
 
     /**
@@ -1166,10 +1179,25 @@ declare namespace Combat {
     formula: string | null;
 
     /**
+     * A message visibility mode to apply to the resulting chat message, a key of
+     * {@link CONFIG.ChatMessage.modes}
+     */
+    messageMode: ChatMessage.Mode;
+
+    /**
      * Additional options with which to customize created Chat Messages
      * @defaultValue `{}`
      */
-    messageOptions: ChatMessage.CreateData;
+    messageOptions: ChatMessage.CreateData & {
+      /**
+       * @deprecated "The rollMode option of `Combat#rollInitiative` messageOptions is deprecated in favor of the
+       * `messageMode` option, a string key of {@linkcode CONFIG.ChatMessage.modes}" (since v14, until v16)
+       * @remarks Mapped through {@linkcode foundry.dice.Roll._mapLegacyRollMode} into `messageMode`, then deleted
+       * from `messageOptions`.
+       */
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      rollMode?: ChatMessage.PassableRollMode;
+    };
   }
 
   interface InitiativeOptions extends InexactPartial<_InitiativeOptions> {}
@@ -1322,9 +1350,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   /**
    * Reset all combatant initiative scores, setting the turn back to zero
    * @param options - Additional options
-   * @remarks As of 14.360 Foundry claims this should return a `Promise<this>` but it returns `Promise<void>`.
    */
-  resetAll(options?: Combat.ResetAllOptions): Promise<void>;
+  resetAll(options?: Combat.ResetAllOptions): Promise<this>;
 
   /**
    * Roll initiative for one or multiple Combatants within the Combat document
@@ -1376,9 +1403,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   protected _playCombatSound(announcement: CONST.COMBAT_ANNOUNCEMENTS): void;
 
   /**
-   * Define how the array of Combatants is sorted in the displayed list of the tracker.
-   * This method can be overridden by a system or module which needs to display combatants in an alternative order.
-   * The default sorting rules sort in descending order of initiative using combatant IDs for tiebreakers.
+   * Define how the array of Combatants is sorted. By default, combatants are sorted into descending order of
+   * initiative scores and, in the case of ties, by comparison of combatant IDs.
    * @param  a - Some combatant
    * @param  b - Some other combatant
    */
@@ -1534,14 +1560,16 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   ): void;
 
   /**
-   * @deprecated Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
-   * (Since v12, no stated end)
+   * @deprecated "`Combat#getCombatantByActor` is deprecated. Please use
+   * {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead." (since v14, until v15)
+   * @remarks Returns the first match only.
    */
   getCombatantByActor(actor: string | Actor.Stored): Combatant.Stored | null;
 
   /**
-   * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
+   * @deprecated "`Combat#getCombatantByToken` is deprecated. Please use
+   * {@linkcode Combat.getCombatantsByToken | Combat#getCombatantsByToken} instead." (since v14, until v15)
+   * @remarks Returns the first match only.
    */
   getCombatantByToken(token: string | TokenDocument.Stored): Combatant.Stored | null;
 

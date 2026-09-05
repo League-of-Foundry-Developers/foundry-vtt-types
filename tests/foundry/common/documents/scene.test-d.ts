@@ -30,9 +30,8 @@ expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument.St
 expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument.Stored, Scene.Implementation>>();
 expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument.Stored, Scene.Implementation>>();
 expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.templates).toEqualTypeOf<
-  EmbeddedCollection<MeasuredTemplateDocument.Stored, Scene.Implementation>
->();
+expectTypeOf(scene.levels).toEqualTypeOf<EmbeddedCollection<Level.Stored, Scene.Implementation>>();
+expectTypeOf(scene.regions).toEqualTypeOf<EmbeddedCollection<RegionDocument.Stored, Scene.Implementation>>();
 expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument.Stored, Scene.Implementation>>();
 expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument.Stored, Scene.Implementation>>();
 expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument.Stored, Scene.Implementation>>();
@@ -52,24 +51,26 @@ expectTypeOf(
     navigation: undefined,
     navOrder: undefined,
     navName: undefined,
-    background: undefined,
-    foreground: undefined,
     thumb: undefined,
     width: undefined,
     height: undefined,
     padding: undefined,
+    shiftX: undefined,
+    shiftY: undefined,
     initial: undefined,
-    backgroundColor: undefined,
+    initialLevel: undefined,
     grid: undefined,
     tokenVision: undefined,
     fog: null,
     environment: null,
+    transition: undefined,
     drawings: undefined,
     tokens: undefined,
+    levels: undefined,
     lights: undefined,
     notes: undefined,
     sounds: undefined,
-    templates: undefined,
+    regions: undefined,
     tiles: undefined,
     walls: undefined,
     playlist: undefined,
@@ -90,24 +91,26 @@ expectTypeOf(
     navigation: null,
     navOrder: null,
     navName: null,
-    background: null,
-    foreground: null,
     thumb: null,
     width: null,
     height: null,
     padding: null,
+    shiftX: null,
+    shiftY: null,
     initial: null,
-    backgroundColor: null,
+    initialLevel: null,
     grid: null,
     tokenVision: null,
     fog: null,
     environment: null,
+    transition: null,
     drawings: null,
     tokens: null,
+    levels: null,
     lights: null,
     notes: null,
     sounds: null,
-    templates: null,
+    regions: null,
     tiles: null,
     walls: null,
     playlist: null,

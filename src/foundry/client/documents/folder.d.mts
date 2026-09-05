@@ -1117,11 +1117,14 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   /**
    * Provide a dialog form that allows for exporting the contents of a Folder into an eligible Compendium pack.
-   * @param pack    - A pack ID to set as the default choice in the select input
-   * @param options - Additional options passed to the Dialog.prompt method (default: `{}`)
-   * @returns A Promise which resolves or rejects once the dialog has been submitted or closed.
+   * @param pack    - A pack ID to set as the default choice in the select input (default: `null`)
+   * @param options - Additional options which customize how content is exported (default: `{}`)
+   * @returns A Promise which resolves or rejects once the dialog has been submitted or closed
    */
-  exportDialog(pack?: string | null, options?: Folder.ExportDialogOptions): Promise<Folder.ExportDialogReturn<SubType>>;
+  exportDialog(
+    pack?: string | CompendiumCollection.Any | null,
+    options?: Folder.ExportDialogOptions,
+  ): Promise<Folder.ExportDialogReturn<SubType>>;
 
   /**
    * Get the Folder documents which are sub-folders of the current folder, either direct children or recursively.
