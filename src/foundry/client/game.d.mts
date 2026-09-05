@@ -907,7 +907,7 @@ declare global {
   /**
    * A convenience alias of {@linkcode game.i18n.localize}
    * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
-   * @remarks While it is pointless to call this prior to `i18nInit`, it is available immediately upon `Game` construction.
+   * @remarks While this simply passes through the passed string prior to `i18nInit`, it is available immediately upon `Game` construction.
    * This reference is bound to {@linkcode game.i18n}.
    */
   const _loc: typeof foundry.helpers.Localization.prototype.localize;
