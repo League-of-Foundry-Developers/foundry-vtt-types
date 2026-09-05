@@ -1,5 +1,8 @@
 import type { FixedInstanceType, HandleEmptyObject, InexactPartial, IntentionalPartial, RequiredProps } from "#utils";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import ShapeObjectMixin from "#client/canvas/placeables/mixins/shapes.mjs";
+import type { AmbientSoundShapeControls } from "#client/canvas/placeables/sounds/_module.d.mts";
+import type { PreciseText } from "#client/canvas/containers/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
 import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
@@ -18,7 +21,7 @@ declare module "#configuration" {
  * @see {@linkcode foundry.documents.AmbientSoundDocument}
  * @see {@linkcode foundry.canvas.layers.SoundsLayer}
  */
-declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implementation> {
+declare class AmbientSound extends ShapeObjectMixin(PlaceableObject<AmbientSoundDocument.Implementation>) {
   // fake type override
   static override get implementation(): AmbientSound.ImplementationClass;
 
@@ -49,12 +52,25 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
    */
   field: PIXI.Graphics | undefined;
 
+  /**
+   * The shape controls.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw.
+   */
+  controls: AmbientSoundShapeControls | undefined;
+
+  /**
+   * The tooltip.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw.
+   */
+  tooltip: PreciseText | undefined;
+
   static override embeddedName: "AmbientSound";
 
   static override RENDER_FLAGS: AmbientSound.RENDER_FLAGS;
 
-  // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
-  // `RENDER_FLAGS` and so it has to be adjusted here.
+  // fake type override
   renderFlags: RenderFlags<AmbientSound.RENDER_FLAGS>;
 
   /**
@@ -67,27 +83,29 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
    */
   applyEffects(options?: AmbientSound.ApplyEffectsOptions): void;
 
+  override get isInteractable(): boolean;
+
   /**
    * Is this ambient sound is currently audible based on its hidden state and the darkness level of the Scene?
    */
   get isAudible(): boolean;
-
-  override get bounds(): PIXI.Rectangle;
 
   /**
    * A convenience accessor for the sound radius in pixels
    */
   get radius(): number;
 
+  protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
+
   /**
-   * Toggle playback of the sound depending on whether or not it is audible
+   * Toggle playback of the sound depending on whether it is audible.
    * @param isAudible - Is the sound audible?
    * @param volume    - The target playback volume
    * @param options   - Additional options which affect sound synchronization
    */
-  sync(isAudible: boolean, volume: number, options?: AmbientSound.SyncOptions): void;
+  sync(isAudible: boolean, volume: number, options?: AmbientSound.SyncOptions): Promise<void>;
 
-  override clear(): this;
+  protected override _clear(): void;
 
   protected override _draw(options: HandleEmptyObject<AmbientSound.DrawOptions>): Promise<void>;
 
@@ -106,19 +124,28 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
   protected _refreshPosition(): void;
 
   /**
-   * Refresh the state of the light. Called when the disabled state or darkness conditions change.
+   * Refresh the size of the AmbientSound.
    */
-  protected _refreshState(): void;
+  protected _refreshSize(): void;
+
+  protected override _refreshState(): void;
 
   /**
-   * Refresh the display of the ControlIcon for this AmbientSound source
+   * Refresh the tooltip.
    */
-  refreshControl(): void;
+  protected _refreshTooltip(): void;
 
   /**
-   * Refresh the elevation of the control icon.
+   * Return the text which should be displayed in the tooltip.
    */
-  protected _refreshElevation(): void;
+  protected _getTooltipText(): string;
+
+  /**
+   * Get the text style that should be used for the tooltip.
+   */
+  protected _getTextStyle(): PIXI.TextStyle;
+
+  protected override _getMeasuredShapes(): foundry.data.BaseShapeData[];
 
   /**
    * Compute the field-of-vision for an object, determining its effective line-of-sight and field-of-vision polygons
@@ -145,30 +172,20 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
 
   protected override _onDelete(options: AmbientSoundDocument.Database.OnDeleteOptions, userId: string): void;
 
+  override _hasShapeChanged(changed: AmbientSoundDocument.UpdateData): boolean;
+
   protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // Always returns `false` ("Double-right does nothing")
   protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onControl(options: AmbientSound.ControlOptions): void;
+
+  protected override _onRelease(options: HandleEmptyObject<AmbientSound.ReleaseOptions>): void;
 
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragEnd(): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
-
-  /**
-   * @deprecated "`AmbientSound#updateSource` has been deprecated in favor of
-   * {@linkcode AmbientSound.initializeSoundSource | AmbientSound#initializeSoundSource}" (since v12, until v14)
-   * @privateRemarks The `defer` parameter exists in this signature but is not used by `#initializeSoundSource`,
-   * so we can just reuse that method's options interface.
-   */
-  updateSource(options?: AmbientSound.InitializeSoundSourceOptions): void;
+  protected override _updateDragPreviews(event: Canvas.Event.Pointer): void;
 
   #AmbientSound: true;
 }
@@ -192,7 +209,7 @@ declare namespace AmbientSound {
    */
   type ImplementationClass = PlaceableObject.ImplementationClassFor<"AmbientSound">;
 
-  interface RENDER_FLAGS {
+  interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
@@ -205,8 +222,11 @@ declare namespace AmbientSound {
     /** @defaultValue `{}` */
     refreshPosition: RenderFlag<this, "refreshPosition">;
 
-    /** @defaultValue `{}` */
+    /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
     /** @defaultValue `{}` */
     refreshElevation: RenderFlag<this, "refreshElevation">;

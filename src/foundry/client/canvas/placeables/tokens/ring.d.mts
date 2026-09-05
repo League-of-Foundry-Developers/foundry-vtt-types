@@ -197,18 +197,6 @@ declare class TokenRing {
    * @returns The eased animation progress on [0,1].
    */
   static easePingPong(pt: number): number;
-
-  /**
-   * To avoid breaking dnd5e.
-   * @deprecated No deprecation warning or end of deprecation period provided, but this doesn't exist in v14. (since v12, until v14)
-   */
-  configureMesh(): void;
-
-  /**
-   * To avoid breaking dnd5e.
-   * @deprecated No deprecation warning or end of deprecation period provided, but this doesn't exist in v14. (since v12, until v14)
-   */
-  configureNames(): void;
 }
 
 declare namespace TokenRing {
@@ -258,7 +246,7 @@ declare namespace TokenRing {
      * @defaultValue `1600`
      * @remarks If photosensitive mode is active, this gets `Math.max(1000, duration)`ed, preventing flashes faster than 1 second.
      */
-    duration?: number;
+    duration?: number | undefined;
 
     /**
      * A priority in {@linkcode PIXI.UPDATE_PRIORITY} which defines when the animation should be evaluated related to others
@@ -302,7 +290,7 @@ declare namespace TokenRing {
      * private array, but is stripped out of the return of {@linkcode TokenRing.getRingDataBySize}, and thus never gets
      * assigned as a property to the `TokenRing` instance in {@linkcode TokenRing.configureSize | TokenRing#configureSize}
      */
-    gridTarget?: number;
+    gridTarget?: number | undefined;
 
     /** Default color for the ring in little-endian BBGGRR format, or null if not set */
     defaultRingColorLittleEndian: number | null;
@@ -349,12 +337,6 @@ declare namespace TokenRing {
 
     COLOR_OVER_SUBJECT: 0x20 & EFFECTS;
   }
-
-  /** @deprecated Replaced by {@linkcode TokenRing.ImplementationClass}. This type will be removed in v14. */
-  type ConfiguredClass = ImplementationClass;
-
-  /** @deprecated Replaced by {@linkcode TokenRing.Implementation}. This type will be removed in v14. */
-  type ConfiguredInstance = Implementation;
 }
 
 declare abstract class AnyTokenRing extends TokenRing {

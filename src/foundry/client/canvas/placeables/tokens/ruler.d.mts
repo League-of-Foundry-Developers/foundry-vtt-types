@@ -33,6 +33,32 @@ declare class TokenRuler extends BaseTokenRuler {
 
   destroy(): void;
 
+  /**
+   * Prepare the path.
+   * @param path - The path.
+   */
+  protected _preparePath(path: TokenRuler.Waypoint[]): void;
+
+  /**
+   * Should the ruler waypoint be rendered?
+   * @param waypoint - The waypoint.
+   * @remarks Foundry types `waypoint` as `DeepReadonly<TokenRuler.Waypoint>`
+   */
+  protected _shouldRenderWaypoint(waypoint: TokenRuler.Waypoint): boolean;
+
+  /**
+   * Accumulate waypoint data. Skipped waypoints and the next rendered waypoint are accumulated.
+   *
+   * The base implementation accumulates the waypoint cost.
+   * @param accumulator - The accumulated waypoint data.
+   * @param waypoint    - A waypoint to be accumulated.
+   * @remarks Foundry types `waypoint` as `DeepReadonly<TokenRuler.Waypoint>`
+   */
+  protected _accumulateWaypointData(
+    accumulator: InexactPartial<TokenRuler.Waypoint>,
+    waypoint: TokenRuler.Waypoint,
+  ): void;
+
   refresh(rulerData: TokenRuler.Data): void;
 
   /**
@@ -48,7 +74,7 @@ declare class TokenRuler extends BaseTokenRuler {
    * @param waypoint - The waypoint
    * @returns The radius, color, and alpha of the waypoint. If the radius is 0, no waypoint marker is drawn.
    */
-  protected _getWaypointStyle(waypoint: TokenRuler.Waypoint): Ruler.WaypointStyle;
+  protected _getWaypointStyle(waypoint: TokenRuler.Waypoint): TokenRuler.WaypointStyle;
 
   /**
    * Get the style of the segment from the previous to the given waypoint.
@@ -183,7 +209,20 @@ declare namespace TokenRuler {
   interface State {
     initialized?: boolean | undefined;
     hasElevation?: boolean | undefined;
-    previousElevation?: number;
+    previousElevation?: number | undefined;
+  }
+
+  interface WaypointStyle extends Ruler.WaypointStyle {
+    shape?:
+      | "circle"
+      | "square"
+      | "diamond"
+      | "triangleUp"
+      | "triangleDown"
+      | "hexagonFlat"
+      | "hexagonPointy"
+      | "octagon"
+      | undefined;
   }
 
   /**

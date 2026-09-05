@@ -14,3 +14,5 @@ type RingColorBand = foundry.canvas.placeables.tokens.TokenRing.ColorBand;
 type DynamicRingId = string;
 
 type RingData = foundry.canvas.placeables.tokens.TokenRing.RingData;
+
+type RegionAnimationState = foundry.canvas.placeables.Region.AnimationState;

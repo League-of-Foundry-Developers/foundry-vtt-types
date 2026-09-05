@@ -8,7 +8,8 @@ import type {
   FixedInstanceType,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { Token, Wall } from "./_module.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
+import type { Region, Token, Wall } from "./_module.d.mts";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import {
@@ -91,8 +92,7 @@ declare abstract class PlaceableObject<
    */
   static override RENDER_FLAGS: InterfaceToObject<PlaceableObject.RENDER_FLAGS>;
 
-  // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
-  // `RENDER_FLAGS` and so it has to be adjusted here.
+  // fake type override
   renderFlags: RenderFlags<PlaceableObject.RENDER_FLAGS>;
 
   /**
@@ -106,9 +106,24 @@ declare abstract class PlaceableObject<
   get isOwner(): boolean;
 
   /**
+   * Is this placeable currently visible?
+   */
+  get isVisible(): boolean;
+
+  /**
+   * Is the placeable currently interactable?
+   */
+  get isInteractable(): boolean;
+
+  /**
    * The mouse interaction state of this placeable.
    */
   get interactionState(): MouseInteractionManager.INTERACTION_STATES | undefined;
+
+  /**
+   * Is this object is excluded by the current filter in the placeable tab.
+   */
+  get isFilteredOut(): boolean;
 
   /**
    * The bounding box for this PlaceableObject.
@@ -139,6 +154,17 @@ declare abstract class PlaceableObject<
    * @remarks For temporary documents this will (usually) be `"Token.null.preview"` (unless you create a temporary doc with an ID).
    */
   get sourceId(): string;
+
+  /**
+   * The preview type, if any.
+   */
+  get previewType(): PlaceableObject.PreviewType;
+
+  /**
+   * The preview type, if any.
+   * @internal
+   */
+  _previewType: PlaceableObject.PreviewType;
 
   /**
    * Is this placeable object a temporary preview?
@@ -199,14 +225,11 @@ declare abstract class PlaceableObject<
    * Get the data of the copied object pasted at the position given by the offset.
    * Called by {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects} for each copied object.
    * @param offset - The offset relative from the current position to the destination
-   * @param options - Options of `PlaceablesLayer#pasteObjects`
-   * @returns The update data
+   * @param options - Options of {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects}
+   * @returns The create or update data
    * @internal
    */
-  _pasteObject(
-    offset: Canvas.Point,
-    options?: PlaceablesLayer.PasteOptions,
-  ): Document.SourceForName<CanvasDocument["documentName"]>;
+  _pasteObject(offset: Canvas.Point, options?: PlaceableObject.PasteObjectOptions): PlaceableObject.AnyPasteObjectData;
 
   override applyRenderFlags(): void;
 
@@ -217,10 +240,22 @@ declare abstract class PlaceableObject<
   protected _applyRenderFlags(flags: PlaceableObject.RenderFlags): void;
 
   /**
-   * Clear the display of the existing object
-   * @returns The cleared object
+   * Refresh the visibility of the placeable.
    */
-  clear(): this;
+  protected _refreshVisibility(): void;
+
+  /**
+   * Refresh the displayed state of the placeable.
+   * Used to update aspects of the placeable which change based on the user interaction state.
+   */
+  protected _refreshState(): void;
+
+  /**
+   * Clear the display of the existing object on redraw.
+   * This function is called in {@linkcode PlaceableObject.draw | PlaceableObject#draw} before the
+   * {@linkcode PlaceableObject._draw | #_draw} call.
+   */
+  protected _clear(): void;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
@@ -303,6 +338,7 @@ declare abstract class PlaceableObject<
 
   /**
    * Define additional steps taken when an existing placeable object of this type is deleted
+   * @remarks The implementation in {@linkcode PlaceableObject} is a no-op.
    */
   protected _onDelete(
     options: Document.Database.OnDeleteOptionsForName<CanvasDocument["documentName"]>,
@@ -313,6 +349,8 @@ declare abstract class PlaceableObject<
    * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors
    * @param options - Additional options which modify the control request (default: `{}`)
    * @returns A flag denoting whether control was successful
+   * @remarks
+   * @throws If this object {@linkcode isPreview | is a preview}.
    */
   control(options?: PlaceableObject.ControlOptions): boolean;
 
@@ -327,6 +365,8 @@ declare abstract class PlaceableObject<
    * Release control over a PlaceableObject, removing it from the controlled set
    * @param options - Options which modify the releasing workflow (default: `{}`)
    * @returns A Boolean flag confirming the object was released.
+   * @remarks
+   * @throws If this object {@linkcode isPreview | is a preview}.
    */
   release(options?: HandleEmptyObject<PlaceableObject.ReleaseOptions>): boolean;
 
@@ -401,8 +441,9 @@ declare abstract class PlaceableObject<
 
   /**
    * Create a standard MouseInteractionManager for the PlaceableObject
+   * @remarks Returns `null` if this object {@linkcode isPreview | is a preview}.
    */
-  protected _createInteractionManager(): MouseInteractionManager<this>;
+  protected _createInteractionManager(): MouseInteractionManager<this> | null;
 
   /**
    * Test whether a user can perform a certain interaction regarding a Placeable Object
@@ -472,9 +513,10 @@ declare abstract class PlaceableObject<
   /**
    * Does the User have permission to hover on this Placeable Object?
    * @param user  - The User performing the action. Always equal to `game.user`.
-   * @param event - The pointer event if this function was called by {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
+   * @param event - The DOM interaction event or pointer event if this function was called by
+   * {@linkcode foundry.canvas.interaction.MouseInteractionManager}.
    */
-  protected _canHover(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
+  protected _canHover(user: User.Implementation, event?: Canvas.Event.Pointer | Event): boolean;
 
   /**
    * Does the User have permission to update the underlying Document?
@@ -659,6 +701,12 @@ declare abstract class PlaceableObject<
    */
   protected _onLongPress(event: Canvas.Event.Pointer, origin: PIXI.Point): void;
 
+  /**
+   * @deprecated "`PlaceableObject#clear` has been deprecated without replacement. It no longer performs any action."
+   * (since v14, until v16)
+   */
+  clear(): this;
+
   #PlaceableObject: true;
 }
 
@@ -684,6 +732,7 @@ declare namespace PlaceableObject {
     AmbientLight: typeof foundry.canvas.placeables.AmbientLight;
     AmbientSound: typeof foundry.canvas.placeables.AmbientSound;
     Drawing: typeof foundry.canvas.placeables.Drawing;
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     MeasuredTemplate: typeof foundry.canvas.placeables.MeasuredTemplate;
     Note: typeof foundry.canvas.placeables.Note;
     Region: typeof foundry.canvas.placeables.Region;
@@ -711,8 +760,11 @@ declare namespace PlaceableObject {
     /** @defaultValue `{ propagate: ["refreshState"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{}` */
+    /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
   }
 
   // TODO: deprecate and simplify `get sheet()`
@@ -730,18 +782,80 @@ declare namespace PlaceableObject {
 
   interface ControlOptions {
     /**
-     * Release any other controlled objects first
-     * @remarks No default, so effectively defaults `true`. Can't be undefined because it's checked via `!== false` in
-     * {@linkcode PlaceableObject.control | PlaceableObject#control}.
+     * Release any other controlled objects first.
+     * @defaultValue `true`
      */
-    releaseOthers?: boolean;
+    releaseOthers?: boolean | undefined;
+
+    /**
+     * Re-render the sidebar.
+     * @defaultValue `true`
+     */
+    renderSidebar?: boolean | undefined;
+
+    /**
+     * Was this object just created?
+     * @defaultValue `false`
+     */
+    isNew?: boolean | undefined;
+
+    /**
+     * Control the object even if it is not interactable?
+     * @defaultValue `false`
+     */
+    force?: boolean | undefined;
+
+    /**
+     * Pan to this Token? Only applies to Token.
+     * @defaultValue `false`
+     */
+    pan?: boolean | TokenPanningOptions | undefined;
+
+    /**
+     * Control all Walls that are linked with this Wall. Only applies to Wall.
+     * @defaultValue `false`
+     */
+    chain?: boolean | undefined;
   }
 
-  /**
-   * @remarks As of 13.351, no placeable uses any options for `#release`
-   */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface ReleaseOptions {}
+  interface TokenPanningOptions {
+    /**
+     * The type of the transition animation.
+     * @defaultValue `null` (no transition animation)
+     */
+    transitionType?: string | null | undefined;
+
+    /**
+     * The duration of the pan or transition animation.
+     * @defaultValue `250` for panning or the default duration of the given transition type
+     */
+    duration?: number | undefined;
+
+    /**
+     * The speed of the panning animation in pixels per second; overrides `duration` if set.
+     */
+    speed?: number | undefined;
+
+    /**
+     * The easing function used for the panning animation.
+     * @defaultValue `"easeInOutCosine"`
+     */
+    easing?: CanvasAnimation.EasingFunction | undefined;
+
+    /**
+     * If false, the canvas is not panned to the token if the token is already onscreen. Otherwise the canvas
+     * is panned such that the token is in the center of the screen.
+     * @defaultValue `false`
+     */
+    force?: boolean | undefined;
+  }
+
+  interface ReleaseOptions {
+    /**
+     * Re-render the sidebar.
+     */
+    renderSidebar?: boolean | undefined;
+  }
 
   interface UpdateRotationOptionsWithAngle extends Pick<
     PlaceablesLayer.RotateManyOptionsWithAngle,
@@ -818,12 +932,6 @@ declare namespace PlaceableObject {
     _id: string;
     x: number;
     y: number;
-
-    /**
-     * @remarks Possibly `undefined` as this is set to `clone.document.rotation` and not all canvas documents
-     * have a `rotation` field.
-     */
-    rotation: number | undefined;
   }
 
   interface PasteObjectOptions {
@@ -838,12 +946,39 @@ declare namespace PlaceableObject {
      * @defaultValue `true`
      */
     snap?: boolean | undefined;
+
+    /**
+     * Is cut operation?
+     * @defaultValue `false`
+     */
+    cut?: boolean | undefined;
   }
+
+  /**
+   * @remarks The create or update data returned by {@linkcode PlaceableObject._pasteObject | PlaceableObject#_pasteObject}.
+   */
+  interface PasteObjectData {
+    x: number;
+    y: number;
+    hidden: boolean;
+
+    /**
+     * @remarks Only set if the document's schema has a `levels` field.
+     */
+    levels: string[] | undefined;
+  }
+
+  type AnyPasteObjectData = PasteObjectData | Region.PasteObjectData | Token.PasteObjectData | Wall.PasteObjectData;
 
   /** @deprecated Use {@linkcode Document.SourceForName} directly instead. This type will be removed in v15. */
   type PasteObjectReturn<CanvasDocument extends PlaceableObject.AnyCanvasDocument> = Document.SourceForName<
     CanvasDocument["documentName"]
   >;
+
+  /**
+   * The preview type, if any.
+   */
+  type PreviewType = "dragging" | "controls" | "wheel" | "creation" | "config" | "api" | null;
 
   /** @deprecated Use {@linkcode PlaceablesLayer.ImplementationClassFor} instead. This type will be removed in v15. */
   type Layer<CanvasDocument extends AnyCanvasDocument> = PlaceablesLayer.ImplementationFor<

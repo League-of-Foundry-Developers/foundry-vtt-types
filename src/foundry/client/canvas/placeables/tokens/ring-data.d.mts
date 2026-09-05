@@ -111,9 +111,9 @@ declare class ClassReferenceField<
 
   static override get _defaults(): DataField.Options.Any;
 
-  protected override _validateType(value: unknown): void;
+  protected override _validateType(value: InitializedType, options?: DataField.ValidateOptions<this>): void;
 
-  override getInitialValue(data?: unknown): InitializedType;
+  override getInitialValue(source?: unknown): InitializedType;
 
   #ClassReferenceField: true;
 }
@@ -127,7 +127,7 @@ declare namespace ClassReferenceField {
     /**
      *The base class linked to this data field.
      */
-    baseClass?: BaseClass;
+    baseClass?: BaseClass | undefined;
   }
 
   type DefaultOptions = SimpleMerge<
