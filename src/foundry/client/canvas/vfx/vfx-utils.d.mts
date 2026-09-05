@@ -8,6 +8,9 @@ import type VFXComponent from "./vfx-component.mjs";
  */
 export function interpolateRotation(r1: number, r2: number, i: number): number;
 
+/**
+ * Rotation options accepted by {@linkcode parseRotation}.
+ */
 export interface ParseRotationData {
   /** Initial rotation in degrees */
   angle?: number | undefined;
