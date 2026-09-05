@@ -7,7 +7,7 @@ import Sidebar = foundry.applications.sidebar.Sidebar;
 
 type _UninitializedGame = { [K in Exclude<keyof Game, "view">]?: never };
 
-// TODO: 
+// TODO: find a way to use the existing type rather than reimplementing once head.d.mts is removed/refactored.
 interface UninitializedGame extends _UninitializedGame {
   view: foundry.Game.View;
 }
