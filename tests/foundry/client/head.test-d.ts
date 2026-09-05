@@ -5,7 +5,12 @@ import uiapps = foundry.applications.ui;
 import tabs = foundry.applications.sidebar.tabs;
 import Sidebar = foundry.applications.sidebar.Sidebar;
 
-type UninitializedGame = { [K in keyof Game]?: never };
+type _UninitializedGame = { [K in Exclude<keyof Game, "view">]?: never };
+
+// TODO: 
+interface UninitializedGame extends _UninitializedGame {
+  view: foundry.Game.View;
+}
 
 declare global {
   namespace CONFIG {
