@@ -163,7 +163,7 @@ describe("Game Tests", () => {
   });
 
   test("Globals", () => {
-    expectTypeOf(canvas).toEqualTypeOf<foundry.canvas.Canvas>();
-    expectTypeOf(_loc).toEqualTypeOf<typeof foundry.helpers.Localization.prototype.localize>();
+    expectTypeOf(canvas).toEqualTypeOf<foundry.canvas.Canvas | undefined>();
+    expectTypeOf(_loc).toEqualTypeOf<typeof foundry.helpers.Localization.prototype.localize | undefined>();
   });
 });

@@ -2,9 +2,11 @@ import type { EarlierHook, FixedInstanceType, InitializationHook } from "#utils"
 
 type ValidRanHooks = Extract<keyof AssumeHookRan, InitializationHook>;
 
-type _UninitializedGame = { [K in keyof foundry.Game]?: never };
+type _UninitializedGame = { [K in Exclude<keyof foundry.Game, "view">]?: never };
 
-interface UninitializedGame extends _UninitializedGame {}
+interface UninitializedGame extends _UninitializedGame {
+  view: foundry.Game.View;
+}
 
 // These type aliases are used for intellisense reasons so that the type displays `UninitializedGame | InitGame | ...` instead of a too complex looking type.
 interface Games {

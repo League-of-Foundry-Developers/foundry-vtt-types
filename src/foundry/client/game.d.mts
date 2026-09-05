@@ -902,15 +902,20 @@ declare namespace Game {
 }
 
 declare global {
-  const canvas: Canvas;
+  /**
+   * The singleton game Canvas
+   * @remarks This is defined at Game construction, for which `init` is the earliest hook we have.
+   */
+  const canvas: InitializedOn<Canvas, "init">;
 
   /**
    * A convenience alias of {@linkcode game.i18n.localize}
    * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
    * @remarks While this simply passes through the passed string prior to `i18nInit`, it is available immediately upon `Game` construction.
+   * Unfortunately, that happens after top level package code runs, so this must be delayed to `init`.
    * This reference is bound to {@linkcode game.i18n}.
    */
-  const _loc: typeof foundry.helpers.Localization.prototype.localize;
+  const _loc: InitializedOn<typeof foundry.helpers.Localization.prototype.localize, "init">;
 }
 
 type ConfiguredCollectionClassForName<Name extends CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
