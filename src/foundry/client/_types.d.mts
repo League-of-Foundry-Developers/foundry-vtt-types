@@ -14,17 +14,17 @@ export * from "#common/_types.mjs";
 
 type HotReloadData = Hooks.HotReloadData;
 
-type RulerWaypoint = unknown;
+type RulerWaypoint = foundry.canvas.interaction.Ruler.Waypoint;
 
-type TokenFindMovementPathWaypoint = unknown;
+type TokenFindMovementPathWaypoint = Token.FindMovementPathWaypoint;
 
 type TokenConstrainMovementPathWaypoint = Token.ConstrainMovementPathWaypoint;
 
-type TokenConstrainMovementPathOptions = unknown;
+type TokenConstrainMovementPathOptions = Token.ConstrainMovementPathOptions;
 
-type TokenFindMovementPathOptions = unknown;
+type TokenFindMovementPathOptions = Token.FindMovementPathOptions;
 
-type TokenFindMovementPathJob = unknown;
+type TokenFindMovementPathJob = Token.FindMovementPathJob;
 
 type TokenGetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
 
@@ -40,17 +40,17 @@ type TokenRulerWaypoint = foundry.canvas.placeables.tokens.TokenRuler.Waypoint;
 
 type TokenDragContext = unknown;
 
-type TokenAnimationData = unknown;
+type TokenAnimationData = Token.AnimationData;
 
-type TokenAnimationContext = unknown;
+type TokenAnimationContext = Token.AnimationContext;
 
-type TokenAnimationOptions = unknown;
+type TokenAnimationOptions = Token.AnimateOptions;
 
 type TokenAnimationTransition = unknown;
 
-type TokenMovementActionCostFunction = unknown;
+type TokenMovementActionCostFunction = CONFIG.Token.Movement.MovementActionCostFunction;
 
-type TokenMovementActionConfig = unknown;
+type TokenMovementActionConfig = CONFIG.Token.Movement.ActionConfig;
 
 type CanvasViewPosition = Canvas.ViewPosition;
 
@@ -60,7 +60,7 @@ type CanvasVisibilityTestConfiguration = foundry.canvas.groups.CanvasVisibility.
 
 type CanvasVisibilityTextureConfiguration = foundry.canvas.groups.CanvasVisibility.TextureConfiguration;
 
-type ReticuleOptions = unknown;
+type ReticuleOptions = Token.ReticuleOptions;
 
 type ActivityData = unknown;
 

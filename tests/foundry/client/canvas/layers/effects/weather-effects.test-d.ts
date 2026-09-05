@@ -4,6 +4,7 @@ import AbstractWeatherShader = foundry.canvas.rendering.shaders.AbstractWeatherS
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+import ParticleGenerator = foundry.canvas.animation.ParticleGenerator;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 import WeatherEffects = foundry.canvas.layers.WeatherEffects;
@@ -47,7 +48,7 @@ expectTypeOf(layer.suppression).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"effects">();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.effects).toEqualTypeOf<Map<string, (ParticleEffect | WeatherShaderEffect)[]>>();
+expectTypeOf(layer.effects).toEqualTypeOf<Map<string, ParticleEffect | WeatherShaderEffect | ParticleGenerator>>();
 expectTypeOf(layer.terrainMaskConfig).toEqualTypeOf<WeatherEffects.MaskConfiguration | undefined>();
 expectTypeOf(layer.occlusionMaskConfig).toEqualTypeOf<WeatherEffects.MaskConfiguration | undefined>();
 
@@ -78,11 +79,13 @@ expectTypeOf(
       enabled: false,
     },
     effects: [
-      // @ts-expect-error `AutumnLeavesWeatherEffect` does not take a config object as it overrides that path and uses its `static LEAF_CONFIG` instead
       {
         id: "leaves2",
         effectClass: SomeLeavesEffect,
-        config: {},
+      },
+      {
+        id: "someParticleGenerator",
+        particles: [{ textures: ["ui/particles/leaf1.png"], count: 20, lifetime: 1000 }],
       },
       {
         id: "someParticleEffect",

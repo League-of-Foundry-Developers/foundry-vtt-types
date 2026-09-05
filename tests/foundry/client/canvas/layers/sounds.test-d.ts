@@ -27,9 +27,9 @@ expectTypeOf(layer["_activate"]()).toBeVoid();
 
 expectTypeOf(layer.initializeSources()).toBeVoid();
 
-expectTypeOf(layer.refresh()).toEqualTypeOf<number | void>();
-expectTypeOf(layer.refresh({ fade: undefined })).toEqualTypeOf<number | void>();
-expectTypeOf(layer.refresh({ fade: 500 })).toEqualTypeOf<number | void>();
+expectTypeOf(layer.refresh()).toBeVoid();
+expectTypeOf(layer.refresh({ fade: undefined })).toBeVoid();
+expectTypeOf(layer.refresh({ fade: 500 })).toBeVoid();
 
 expectTypeOf(layer.previewSound({ x: 500, y: 500 })).toBeVoid();
 expectTypeOf(layer.stopAll()).toBeVoid();

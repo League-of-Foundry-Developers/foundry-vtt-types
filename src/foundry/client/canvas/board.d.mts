@@ -1144,23 +1144,6 @@ declare namespace Canvas {
 
       /**
        * @privateRemarks Set in:
-       * - {@linkcode DrawingsLayer._onClickLeft2 | DrawingsLayer#_onClickLeft2}
-       * - {@linkcode DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
-       * - {@linkcode DrawingsLayer._onDragLeftMove | DrawingsLayer#_onDragLeftMove}
-       * - {@linkcode DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
-       * - {@linkcode DrawingsLayer._onDragLeftCancel | DrawingsLayer#_onDragLeftCancel}
-       */
-      drawingsState: PlaceablesLayer.CREATION_STATES;
-
-      /**
-       * @privateRemarks Set in:
-       * - {@linkcode SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
-       * - {@linkcode SoundsLayer._onDragLeftMove | SoundsLayer#_onDragLeftMove}
-       */
-      soundState: PlaceablesLayer.CREATION_STATES;
-
-      /**
-       * @privateRemarks Set in:
        * - {@linkcode PlaceableObject._onDragLeftDrop | PlaceableObject#_onDragLeftDrop}
        * - {@linkcode PlaceablesLayer._onDragLeftDrop | PlaceablesLayer#_onDragLeftDrop}
        * - {@linkcode DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}

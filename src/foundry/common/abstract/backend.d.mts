@@ -740,7 +740,16 @@ declare namespace DatabaseBackend {
   }
 
   /** @internal */
-  interface _CommonCanvasDocumentCreateProperties extends _IsUndo {}
+  interface _ControlObject {
+    /**
+     * Control the object of any created Documents
+     * @defaultValue `false`
+     */
+    controlObject?: boolean;
+  }
+
+  /** @internal */
+  interface _CommonCanvasDocumentCreateProperties extends _IsUndo, _ControlObject {}
 
   interface _CommonCanvasDocumentUpdateProperties extends _IsUndo, _IsPaste {}
 }

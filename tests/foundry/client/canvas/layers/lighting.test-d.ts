@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 import LightingLayer = foundry.canvas.layers.LightingLayer;
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
@@ -31,5 +32,8 @@ expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toEqualTypeOf<Promise<AmbientLight.Implementation>>();
+expectTypeOf(layer["_createDragShapeData"](pointerEvent)).toEqualTypeOf<AnyMutableObject>();
+expectTypeOf(layer["_updateDragPreview"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
+expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toBeVoid();
 expectTypeOf(layer._onDarknessChange(darknessChangeEvent)).toBeVoid();

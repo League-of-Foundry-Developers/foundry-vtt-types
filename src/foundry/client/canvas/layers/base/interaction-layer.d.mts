@@ -8,6 +8,11 @@ import type { SceneControls } from "#client/applications/ui/_module.d.mts";
  */
 declare class InteractionLayer extends CanvasLayer {
   /**
+   * The shared palette tool.
+   */
+  static get TOGGLE_PALETTE(): Partial<SceneControls.Tool>;
+
+  /**
    * Is this layer currently active
    */
   get active(): boolean;
@@ -28,7 +33,6 @@ declare class InteractionLayer extends CanvasLayer {
    * ```js
    * Object.assign(super.layerOptions, {
    *   baseClass: InteractionLayer,
-   *   zIndex: 0,
    * });
    * ```
    */
@@ -62,12 +66,8 @@ declare class InteractionLayer extends CanvasLayer {
   // fake type override
   override draw(options?: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<this>;
 
+  // fake type override
   protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
-
-  /**
-   * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
-   */
-  getZIndex(): number;
 
   /**
    * Prepare data used by SceneControls to register tools used by this layer.
@@ -229,8 +229,6 @@ declare namespace InteractionLayer {
   interface AnyConstructor extends Identity<typeof AnyInteractionLayer> {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
-    zIndex: number;
-
     baseClass: InteractionLayer.AnyConstructor;
   }
 

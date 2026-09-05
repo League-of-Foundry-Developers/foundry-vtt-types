@@ -3,6 +3,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { NotePalette } from "#client/applications/sheets/palette/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -24,7 +25,9 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
    * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "notes",
-   *  zIndex: 800
+   *  controllableObjects: true,
+   *  zIndex: 800,
+   *  confirmBeforeCreation: true
    * })
    * ```
    */
@@ -34,6 +37,8 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
   override options: NotesLayer.LayerOptions;
 
   static override documentName: "Note";
+
+  static override paletteClass: typeof NotePalette;
 
   /**
    * The named core setting which tracks the toggled visibility state of map notes
@@ -55,13 +60,15 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 
   protected override _draw(options: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<void>;
 
+  // fake type override
+  override tearDown(options?: NotesLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: NotesLayer.TearDownOptions): Promise<void>;
+
   /**
    * Register game settings used by the NotesLayer
    */
   static registerSettings(): void;
-
-  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  hintMapNotes(): never;
 
   /**
    * Pan to a given note on the layer.
@@ -104,14 +111,16 @@ declare namespace NotesLayer {
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {
     name: "notes";
+    controllableObjects: true;
 
     /** @defaultValue `800` */
     zIndex: number;
+
+    confirmBeforeCreation: true;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
-  // `NotesLayer` has no `_tearDown` override, this exists for consistency
   interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   /** @internal */
