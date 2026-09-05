@@ -34,8 +34,6 @@ declare class VFXReferenceObjectField<
   override resolve(value: AssignmentType, references: AnyObject): InitializedType;
 
   static override isReference(value: unknown): value is VFXReferenceObjectField.ReferenceData;
-
-  #VFXReferenceObjectField: true;
 }
 
 declare namespace VFXReferenceObjectField {

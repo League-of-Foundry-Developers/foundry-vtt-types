@@ -34,6 +34,7 @@ export function parseRotation(data: ParseRotationData): number;
  * Resolves a component animation by name.
  * @param functionName - Name of the animation object in `foundry.vfx.CONFIG.animations`
  * @returns The resolved animations object
+ * @remarks
  * @throws If the named animation has not been registered in `CONFIG.Canvas.vfx.animations`
  */
 export function resolveAnimation(functionName: keyof CONFIG.Canvas.VFX.Animations): VFXComponent.Animation;
@@ -43,6 +44,7 @@ export function resolveAnimation(functionName: keyof CONFIG.Canvas.VFX.Animation
  * @param functionName - Name of the easing function
  * @param easingParams - Optional positional parameters to initialize the easing function
  * @returns The resolved easing function
+ * @remarks
  * @throws If no such animejs easing function exists, or if it requires parameters that were not provided
  */
 export function resolveEasing(
@@ -76,7 +78,7 @@ export function generateHermiteSegment(
  * @param t         - Interpolation parameter
  * @param auxiliary - An array of auxiliary numeric attributes to interpolate. These attributes must be
  * present all points. Attributes are either interpolated or carried forward from
- * their last-observed value.
+ * their last-observed value. (default: `[]`)
  * @returns Interpolated auxiliary properties
  */
 export function interpolateProperties(

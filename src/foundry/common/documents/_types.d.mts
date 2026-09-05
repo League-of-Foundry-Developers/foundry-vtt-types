@@ -11,6 +11,8 @@ export {};
 
 type ActiveEffectData = ActiveEffect.InitializedData;
 
+type EffectStartData = ActiveEffect.StartData;
+
 type EffectDurationData = ActiveEffect.DurationData;
 
 type EffectChangeData = ActiveEffect.ChangeData;
@@ -66,8 +68,6 @@ type JournalEntryPageTitleData = JournalEntryPage.InitializedData["title"];
 type JournalEntryPageData = JournalEntryPage.InitializedData;
 
 type MacroData = Macro.InitializedData;
-
-type MeasuredTemplateData = MeasuredTemplateDocument.InitializedData;
 
 type NoteData = NoteDocument.InitializedData;
 
@@ -137,3 +137,7 @@ type UserData = User.InitializedData;
 type WallData = WallDocument.InitializedData;
 
 type WallThresholdData = WallDocument.ThresholdData;
+
+type LevelTexture = Level.InitializedData["foreground"];
+
+type LevelData = Level.InitializedData;

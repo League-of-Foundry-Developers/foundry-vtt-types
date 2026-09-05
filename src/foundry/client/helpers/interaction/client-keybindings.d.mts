@@ -26,20 +26,9 @@ declare class ClientKeybindings {
    */
   bindings: Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _registered: never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _moveTime: never;
-
   static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
 
   static ZOOM_DIRECTIONS: ClientKeybindings.ZoomDirections;
-
-  /**
-   * An alias of the movement key set tracked by the keyboard
-   */
-  get moveKeys(): Set<string>;
 
   /**
    * Initializes the keybinding values for all registered actions
@@ -118,12 +107,6 @@ declare class ClientKeybindings {
   /** Reset all client keybindings back to their default configuration. */
   resetDefaults(): Promise<void>;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _validateBindings(values: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _validateModifiers(keys: never): never;
-
   /**
    * Compares two Keybinding Actions based on their Order
    * @param a - The first Keybinding Action
@@ -141,58 +124,15 @@ declare class ClientKeybindings {
    */
   protected _registerCoreKeybindings(view: foundry.Game.View): void;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onSelectAllObjects(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onCycleView(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onDismiss(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onToggleCharacterSheet(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onTarget(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _handleMovement(context: never, layer: never): never;
-
-  /** @deprecated Removed in v13 (this warning will be removed in v14) */
-  protected static _onMeasuredRulerMovement(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onPause(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onHighlight(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _onPan(context: never, movementDirections: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onMacroExecute(context: never, number: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onMacroPageSwap(context: never, page: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onCopy(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onPaste(context: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onUndo(context: never): never;
-
-  /** @deprecated Removed in v13 (this warning will be removed in v14) */
-  protected static _onZoom(context: never, zoomDirection: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected static _onFocusChat(context: never): never;
+  /**
+   * @deprecated "ClientKeybindings#moveKeys is deprecated in favor of {@linkcode foundry.helpers.interaction.KeyboardManager.moveKeys | game.keyboard.moveKeys}."
+   * (since v14, until v16)
+   */
+  get moveKeys(): Set<string>;
 
   #ClientKeybindings: true;
+
+  static #ClientKeybindingsStatic: true;
 }
 
 declare namespace ClientKeybindings {

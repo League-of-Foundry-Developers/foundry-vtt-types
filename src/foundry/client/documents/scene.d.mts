@@ -8,7 +8,6 @@ import type {
   BaseFolder,
   BaseJournalEntry,
   BaseJournalEntryPage,
-  BaseMeasuredTemplate,
   BaseNote,
   BasePlaylist,
   BasePlaylistSound,
@@ -18,6 +17,7 @@ import type {
   BaseToken,
   BaseWall,
 } from "#common/documents/_module.d.mts";
+import type { BaseMeasuredTemplate } from "#client/documents/measured-template.d.mts";
 import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";

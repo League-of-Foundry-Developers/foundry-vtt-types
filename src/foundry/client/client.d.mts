@@ -216,8 +216,6 @@ declare global {
    */
   let _del: foundry.data.operators.ForcedDeletion;
 
-  // TODO: _loc
-
   /**
    * A reference for ForcedReplacement.create that can be easily referenced.
    * @privateRemarks `let` because it is created by `defineProperties` without `writable: false`

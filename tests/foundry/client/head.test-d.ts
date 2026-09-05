@@ -5,7 +5,12 @@ import uiapps = foundry.applications.ui;
 import tabs = foundry.applications.sidebar.tabs;
 import Sidebar = foundry.applications.sidebar.Sidebar;
 
-type UninitializedGame = { [K in keyof Game]?: never };
+type _UninitializedGame = { [K in Exclude<keyof Game, "view">]?: never };
+
+// TODO: find a way to use the existing type rather than reimplementing once head.d.mts is removed/refactored.
+interface UninitializedGame extends _UninitializedGame {
+  view: foundry.Game.View;
+}
 
 declare global {
   namespace CONFIG {
@@ -16,6 +21,7 @@ declare global {
 }
 
 expectTypeOf(game).toEqualTypeOf<UninitializedGame | I18nInitGame | InitGame | SetupGame | ReadyGame>();
+expectTypeOf(game.view).toEqualTypeOf<Game.View>();
 expectTypeOf(ui.menu).toEqualTypeOf<uiapps.MainMenu | undefined>();
 expectTypeOf(ui.sidebar).toEqualTypeOf<Sidebar | undefined>();
 expectTypeOf(ui.pause).toEqualTypeOf<uiapps.GamePause | undefined>();

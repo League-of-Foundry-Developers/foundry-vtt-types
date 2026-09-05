@@ -32,7 +32,11 @@ declare class VFXReferenceField<
 
   valueField: ValueField;
 
-  protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
+  protected override _cleanType(
+    value: InitializedType,
+    options?: DataField.CleanOptions,
+    _state?: DataField.UpdateState,
+  ): InitializedType;
 
   protected override _validateType(
     value: InitializedType,
@@ -57,8 +61,6 @@ declare class VFXReferenceField<
    * Test whether a value is a reference.
    */
   static isReference(value: unknown): value is VFXReferenceField.ReferenceData;
-
-  #VFXReferenceField: true;
 }
 
 declare namespace VFXReferenceField {

@@ -1,5 +1,5 @@
 import type { Identity, AnyMutableObject } from "#utils";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { DataField, DataSchema } from "#common/data/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type VFXComponent from "../vfx-component.d.mts";
 
@@ -51,7 +51,7 @@ declare class VFXParticleGeneratorComponent<
 
   static override defineSchema(): VFXParticleGeneratorComponent.Schema;
 
-  static override migrateData(source: AnyMutableObject): AnyMutableObject;
+  static override migrateData(source: AnyMutableObject, options?: DataField.CleanOptions): AnyMutableObject;
 
   protected override _load(): Promise<void>;
 

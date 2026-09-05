@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { InterfaceToObject } from "fvtt-types/utils";
+import type { DeepReadonly, InterfaceToObject } from "fvtt-types/utils";
 
 import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import BaseToken = foundry.documents.BaseToken;
@@ -182,3 +182,7 @@ expectTypeOf(myToken.ring.colors.ring).toEqualTypeOf<Color | null>();
 expectTypeOf(myToken.ring.colors.background).toEqualTypeOf<Color | null>();
 expectTypeOf(myToken.ring.effects).toEqualTypeOf<number | null>();
 expectTypeOf(myToken.ring.subject.scale).toEqualTypeOf<number>();
+
+expectTypeOf(
+  foundry.documents.BaseToken._getHexagonalShape(2, 2, CONST.TOKEN_SHAPES.ELLIPSE_1, false),
+).toEqualTypeOf<DeepReadonly<TokenDocument.HexagonalShapeData> | null>();
