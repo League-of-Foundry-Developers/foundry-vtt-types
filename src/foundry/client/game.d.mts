@@ -903,6 +903,14 @@ declare namespace Game {
 
 declare global {
   const canvas: Canvas;
+
+  /**
+   * A convenience alias of {@linkcode game.i18n.localize}
+   * @see {@linkcode foundry.helpers.Localization.localize | Localization#localize}
+   * @remarks While it is pointless to call this prior to `i18nInit`, it is available immediately upon `Game` construction.
+   * This reference is bound to {@linkcode game.i18n}.
+   */
+  const _loc: typeof foundry.helpers.Localization.prototype.localize;
 }
 
 type ConfiguredCollectionClassForName<Name extends CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
