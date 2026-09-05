@@ -43,7 +43,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
 
   /**
    * The named view which is currently active.
-   * @remarks The full type includes `"join"|"setup"|"players"|"license"` but these views do not run package code.
+   * @remarks The full type includes `"join"|"setup"|"players"|"license"|"auth"|"update"`, but these views do not run package code.
    */
   readonly view: Game.View;
 
