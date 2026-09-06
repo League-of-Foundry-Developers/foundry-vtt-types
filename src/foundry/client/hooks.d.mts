@@ -1409,16 +1409,24 @@ declare global {
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is drawn.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
-     * @param group - The group being drawn
+     * @param group   - The group being drawn
+     * @param options - Options which configure how the group is drawn
      */
-    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
+    type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
+      group: G,
+      options: CanvasGroupMixin.DrawOptions,
+    ) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
-     * @param group - The group being deconstructed
+     * @param group   - The group being deconstructed
+     * @param options - Options which configure how the group is deconstructed
      */
-    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (group: G) => void;
+    type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
+      group: G,
+      options: CanvasGroupMixin.TearDownOptions,
+    ) => void;
 
     /** CanvasLayer */
 

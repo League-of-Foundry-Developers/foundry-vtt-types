@@ -3,7 +3,6 @@ import { describe, expectTypeOf, test } from "vitest";
 import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
 import Drawing = foundry.canvas.placeables.Drawing;
 import InterfaceCanvasGroup = foundry.canvas.groups.InterfaceCanvasGroup;
-import PreciseText = foundry.canvas.containers.PreciseText;
 import layers = foundry.canvas.layers;
 
 declare const someDrawing: Drawing.Implementation;
@@ -27,7 +26,7 @@ describe("InterfaceCanvasGroup tests", () => {
     expectTypeOf(myInterfaceGroup["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
     expectTypeOf(myInterfaceGroup.createScrollingText({ x: 0, y: 0 }, "Scrolling! Text!")).toEqualTypeOf<
-      Promise<PreciseText | undefined>
+      Promise<void>
     >();
     expectTypeOf(
       myInterfaceGroup.createScrollingText({ x: 0, y: 0 }, "Scrolling! Text!", {
@@ -41,7 +40,7 @@ describe("InterfaceCanvasGroup tests", () => {
         fontFamily: "serif",
         strokeThickness: 4,
       }),
-    ).toEqualTypeOf<Promise<PreciseText | undefined>>();
+    ).toEqualTypeOf<Promise<void>>();
   });
 
   test("Layers", () => {

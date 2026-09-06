@@ -26,6 +26,10 @@ describe("CanvasVisibility tests", () => {
     expectTypeOf(CanvasVisibility.groupName).toEqualTypeOf<"visibility">();
   });
 
+  test("Statics", () => {
+    expectTypeOf(CanvasVisibility._MAXIMUM_VISIBILITY_TEXTURE_SIZE).toBeNumber();
+  });
+
   test("Construction", () => {
     new CanvasVisibility();
     new CONFIG.Canvas.groups.visibility.groupClass();
@@ -35,6 +39,7 @@ describe("CanvasVisibility tests", () => {
 
   test("Miscellaneous", () => {
     expectTypeOf(myVisibilityGroup.vision).toEqualTypeOf<layers.CanvasVisionMask.CanvasVisionContainer | undefined>();
+    expectTypeOf(myVisibilityGroup.surfaceExposure).toEqualTypeOf<PIXI.Container | undefined>();
     expectTypeOf(myVisibilityGroup.explored).toEqualTypeOf<PIXI.Container | undefined>();
     expectTypeOf(myVisibilityGroup.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
     expectTypeOf(myVisibilityGroup.filter).toEqualTypeOf<VisibilityFilter.Implementation | undefined>();
@@ -77,14 +82,16 @@ describe("CanvasVisibility tests", () => {
       }),
     ).toBeBoolean();
 
+    expectTypeOf(myVisibilityGroup.testVisibility([point, elevatedPoint])).toBeBoolean();
+
     expectTypeOf(
-      myVisibilityGroup["_createVisibilityTestConfig"]({ x: 0, y: 0 }),
+      myVisibilityGroup["_createVisibilityTestConfig"]([{ x: 0, y: 0 }]),
     ).toEqualTypeOf<CanvasVisibility.TestConfig>();
     expectTypeOf(
-      myVisibilityGroup["_createVisibilityTestConfig"](possiblyElevatedPoint, {}),
+      myVisibilityGroup["_createVisibilityTestConfig"]([possiblyElevatedPoint], {}),
     ).toEqualTypeOf<CanvasVisibility.TestConfig>();
     expectTypeOf(
-      myVisibilityGroup["_createVisibilityTestConfig"](possiblyElevatedPoint, {
+      myVisibilityGroup["_createVisibilityTestConfig"]([possiblyElevatedPoint], {
         object: null,
         tolerance: undefined,
       }),

@@ -2,7 +2,6 @@ import { describe, expectTypeOf, test } from "vitest";
 
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 import Canvas = foundry.canvas.Canvas;
-import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 import sources = foundry.canvas.sources;
 import layers = foundry.canvas.layers;
@@ -153,14 +152,6 @@ describe("EffectsCanvasGroup tests", () => {
   });
 
   test("Deprecated", () => {
-    // Since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myEffectGroup.visibility).toEqualTypeOf<CanvasVisibility.Implementation>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myEffectGroup.globalLightSource).toEqualTypeOf<sources.GlobalLightSource.Implementation>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myEffectGroup.updateGlobalLightSource()).toBeVoid();
-
     // Since v13, until v15
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(myEffectGroup.initializeDarknessSources()).toBeVoid();
