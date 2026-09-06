@@ -1512,19 +1512,19 @@ declare namespace Token {
      * The arrows' border style configuration.
      * @defaultValue see properties
      */
-    border: InexactPartial<{
+    border: {
       /**
        * The border color.
        * @defaultValue `0`
        */
-      color: number;
+      color?: number | undefined;
 
       /**
        * The border width.
        * @defaultValue `2`
        */
-      width: number;
-    }>;
+      width?: number | undefined;
+    };
   }
 
   interface ReticuleOptions extends InexactPartial<_ReticuleOptions> {}
@@ -1825,52 +1825,46 @@ declare namespace Token {
   > {}
 
   /** {@linkcode ConstrainMovementPathOptions} minus `preview`, `history` and `measureOptions`, which core sets. */
-  interface MovementConstrainOptions extends InexactPartial<{
+  interface MovementConstrainOptions {
     /**
      * Ignore walls?
      * @defaultValue `false`
      */
-    ignoreWalls: boolean;
+    ignoreWalls?: boolean | undefined;
 
     /**
      * Ignore cost?
      * @defaultValue `false`
      */
-    ignoreCost: boolean;
+    ignoreCost?: boolean | undefined;
 
     /** The maximum cumulative cost. */
-    maxCost: number;
+    maxCost?: number | undefined;
 
     /** The maximum cumulative distance. */
-    maxDistance: number;
-  }> {}
+    maxDistance?: number | undefined;
+  }
 
   /** {@linkcode ConstrainMovementPathOptions} minus `preview` and `measureOptions`, which core sets. */
-  interface MovementConstrainHistoryOptions
-    extends
-      MovementConstrainOptions,
-      InexactPartial<{
-        /**
-         * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
-         * @defaultValue `false`
-         * @remarks marked by foundry as readonly
-         */
-        history: boolean | TokenDocument.MeasuredMovementWaypoint[];
-      }> {}
+  interface MovementConstrainHistoryOptions extends MovementConstrainOptions {
+    /**
+     * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
+     * @defaultValue `false`
+     * @remarks marked by foundry as readonly
+     */
+    history?: boolean | TokenDocument.MeasuredMovementWaypoint[] | undefined;
+  }
 
-  interface ConstrainMovementPathOptions
-    extends
-      MovementConstrainHistoryOptions,
-      InexactPartial<{
-        /**
-         * Constrain a preview path?
-         * @defaultValue `false`
-         */
-        preview: boolean;
+  interface ConstrainMovementPathOptions extends MovementConstrainHistoryOptions {
+    /**
+     * Constrain a preview path?
+     * @defaultValue `false`
+     */
+    preview?: boolean | undefined;
 
-        /** The measurement options. */
-        measureOptions: Token.MovementMeasureOptions;
-      }> {}
+    /** The measurement options. */
+    measureOptions?: Token.MovementMeasureOptions | undefined;
+  }
 
   type ConstrainedMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
@@ -2014,22 +2008,22 @@ declare namespace Token {
     measureOptions: MovementMeasureOptions;
   }
 
-  interface DragWaypointPositionOptions extends InexactPartial<{
+  interface DragWaypointPositionOptions {
     /**
      * Snap the destination?
      * @defaultValue `false`
      */
-    snap: boolean;
-  }> {}
+    snap?: boolean | undefined;
+  }
 
-  interface ChangeDragElevationOptions extends InexactPartial<{
+  interface ChangeDragElevationOptions {
     /**
      * Round elevations to multiples of the grid distance divided by
      * `CONFIG.Canvas.elevationSnappingPrecision`? If false, rounds to multiples of the grid distance.
      * @defaultValue `false`
      */
-    precise: boolean;
-  }> {}
+    precise?: boolean | undefined;
+  }
 
   type DragWaypointPosition = Pick<TokenDocument.Position, "x" | "y" | "elevation"> & Partial<TokenDocument.Dimensions>;
 }
