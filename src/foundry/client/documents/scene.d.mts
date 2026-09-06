@@ -1759,9 +1759,14 @@ declare namespace Scene {
     level: Level.Implementation | string;
   }
 
-  type TestSurfaceCollisionReturn<Config extends TestSurfaceCollisionConfig> = Config["mode"] extends "all"
+  type TestSurfaceCollisionReturn<Config extends TestSurfaceCollisionConfig> = _TestSurfaceCollisionReturn<
+    Config["mode"]
+  >;
+
+  /** @internal */
+  type _TestSurfaceCollisionReturn<Mode extends _TestSurfaceCollisionConfig["mode"] | undefined> = Mode extends "all"
     ? Canvas.ElevatedPoint[]
-    : Config["mode"] extends "closest"
+    : Mode extends "closest"
       ? Canvas.ElevatedPoint | null
       : boolean;
 
