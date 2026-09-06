@@ -64,8 +64,11 @@ declare namespace JournalEntryPage {
   > {}
 
   namespace Metadata {
+    /**
+     * The permissions for whether a certain user can create, update, or delete this document.
+     */
     interface Permissions {
-      create: "OWNER";
+      create(user: User.Internal.Implementation, doc: Implementation): boolean;
       delete: "OWNER";
     }
   }
@@ -226,6 +229,94 @@ declare namespace JournalEntryPage {
   interface ImageSource extends fields.SchemaField.SourceData<ImageSchema> {}
 
   /** The schema specific to image journal entry pages. */
+  interface VideoSchema extends fields.DataSchema {
+    /**
+     * Show player controls for this video?
+     * @defaultValue `true`
+     */
+    controls: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * Automatically loop the video?
+     * @defaultValue `undefined`
+     */
+    loop: fields.BooleanField<{ required: false; initial: undefined }>;
+
+    /**
+     * Should the video play automatically?
+     * @defaultValue `undefined`
+     */
+    autoplay: fields.BooleanField<{ required: false; initial: undefined }>;
+
+    /**
+     * The volume level of any audio that the video file contains.
+     * @defaultValue `0.5`
+     */
+    volume: fields.AlphaField<{ required: true; step: 0.01; initial: 0.5 }>;
+
+    /**
+     * The starting point of the video, in seconds.
+     * @defaultValue `undefined`
+     */
+    timestamp: fields.NumberField<{ required: false; min: 0; initial: undefined }>;
+
+    /**
+     * The width of the video, otherwise it will fill the available container width.
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
+
+    /**
+     * The height of the video, otherwise it will use the aspect ratio of the source video, or 16:9 if that aspect
+     * ratio is not available.
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
+  }
+
+  interface TextSchema extends fields.DataSchema {
+    /**
+     * The content of the JournalEntryPage in a format appropriate for its type.
+     * @defaultValue `undefined`
+     */
+    content: fields.HTMLField<{ required: false; initial: undefined; textSearch: true }>;
+
+    /**
+     * The original markdown source, if applicable.
+     * @defaultValue `undefined`
+     */
+    markdown: fields.StringField<{ required: false; initial: undefined }>;
+
+    /**
+     * The format of the page's content, in {@linkcode CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
+     * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
+     */
+    format: fields.NumberField<
+      {
+        initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
+        choices: CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
+      },
+      // FIXME: overrides required to enforce branded type
+      CONST.JOURNAL_ENTRY_PAGE_FORMATS | null | undefined,
+      CONST.JOURNAL_ENTRY_PAGE_FORMATS,
+      CONST.JOURNAL_ENTRY_PAGE_FORMATS
+    >;
+  }
+
+  interface TitleSchema extends fields.DataSchema {
+    /**
+     * Whether to render the page's title in the overall journal view.
+     * @defaultValue `true`
+     */
+    show: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * The heading level to render this page's title at in the overall journal view.
+     * @defaultValue `1`
+     */
+    level: fields.NumberField<{ required: true; initial: 1; min: 1; max: 6; integer: true; nullable: false }>;
+  }
+
   interface ImageSchema extends fields.DataSchema {
     /**
      * A caption for the image.
@@ -308,10 +399,10 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
-     * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
+     * The type of this page.
      * @defaultValue `"text"`
      */
     type: fields.DocumentTypeField<typeof BaseJournalEntryPage, { initial: "text" }>;
@@ -325,19 +416,7 @@ declare namespace JournalEntryPage {
     /**
      * Data that control's the display of this page's title.
      */
-    title: fields.SchemaField<{
-      /**
-       * Whether to render the page's title in the overall journal view.
-       * @defaultValue `true`
-       */
-      show: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The heading level to render this page's title at in the overall journal view.
-       * @defaultValue `1`
-       */
-      level: fields.NumberField<{ required: true; initial: 1; min: 1; max: 6; integer: true; nullable: false }>;
-    }>;
+    title: fields.SchemaField<TitleSchema>;
 
     /**
      * Data particular to image journal entry pages.
@@ -347,95 +426,18 @@ declare namespace JournalEntryPage {
     /**
      * Data particular to text journal entry pages.
      */
-    text: fields.SchemaField<{
-      /**
-       * The content of the JournalEntryPage in a format appropriate for its type.
-       * @defaultValue `undefined`
-       */
-      content: fields.HTMLField<{ required: false; initial: undefined; textSearch: true }>;
-
-      /**
-       * The original markdown source, if applicable.
-       * @defaultValue `undefined`
-       */
-      markdown: fields.StringField<{ required: false; initial: undefined }>;
-
-      /**
-       * The format of the page's content, in {@linkcode CONST.JOURNAL_ENTRY_PAGE_FORMATS}.
-       * @defaultValue `CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML`
-       */
-      format: fields.NumberField<
-        {
-          label: "JOURNALENTRYPAGE.Format";
-          initial: typeof CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML;
-          choices: CONST.JOURNAL_ENTRY_PAGE_FORMATS[];
-        },
-        // FIXME: overrides required to enforce branded type
-        CONST.JOURNAL_ENTRY_PAGE_FORMATS | null | undefined,
-        CONST.JOURNAL_ENTRY_PAGE_FORMATS,
-        CONST.JOURNAL_ENTRY_PAGE_FORMATS
-      >;
-    }>;
+    text: fields.SchemaField<TextSchema>;
 
     /**
      * Data particular to video journal entry pages.
      */
-    video: fields.SchemaField<{
-      /**
-       * Show player controls for this video?
-       * @defaultValue `true`
-       */
-      controls: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * Automatically loop the video?
-       * @defaultValue `undefined`
-       */
-      loop: fields.BooleanField<{ required: false; initial: undefined }>;
-
-      /**
-       * Should the video play automatically?
-       * @defaultValue `undefined`
-       */
-      autoplay: fields.BooleanField<{ required: false; initial: undefined }>;
-
-      /**
-       * The volume level of any audio that the video file contains.
-       * @defaultValue `0.5`
-       */
-      volume: fields.AlphaField<{ required: true; step: 0.01; initial: 0.5 }>;
-
-      /**
-       * The starting point of the video, in seconds.
-       * @defaultValue `undefined`
-       */
-      timestamp: fields.NumberField<{ required: false; min: 0; initial: undefined }>;
-
-      /**
-       * The width of the video, otherwise it will fill the available container width.
-       * @defaultValue `undefined`
-       */
-      width: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
-
-      /**
-       * The height of the video, otherwise it will use the aspect ratio of the source video, or 16:9 if that aspect
-       * ratio is not available.
-       * @defaultValue `undefined`
-       */
-      height: fields.NumberField<{ required: false; positive: true; integer: true; initial: undefined }>;
-    }>;
+    video: fields.SchemaField<VideoSchema>;
 
     /**
      * The URI of the image or other external media to be used for this page.
      * @defaultValue `null`
      */
-    src: fields.StringField<{
-      required: false;
-      blank: false;
-      nullable: true;
-      initial: null;
-      label: "JOURNALENTRYPAGE.Source";
-    }>;
+    src: fields.StringField<{ required: false; blank: false; nullable: true; initial: null }>;
 
     /**
      * An optional category that this page belongs to.
@@ -463,6 +465,9 @@ declare namespace JournalEntryPage {
      */
     flags: fields.DocumentFlagsField<Name>;
 
+    /**
+     * An object of creation and access information
+     */
     _stats: fields.DocumentStatsField;
   }
 

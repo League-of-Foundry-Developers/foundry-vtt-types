@@ -141,7 +141,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
       if (!movementTypes.has("teleport")) return style;
       const value =
         (foundry.utils.getProperty(this, "token.document.actor.system.movement.teleport") as number | null) ?? 0;
-      const index = waypoint.cost > value ? 2 : 0;
+      const index = (waypoint.cost ?? 0) > value ? 2 : 0;
       style.color = colors[index];
     } else {
       const value =
@@ -198,6 +198,7 @@ const rulerWaypoint = {
   size: { width: 100, height: 100 },
   snapped: true,
   stage: "planned",
+  subpathId: "ARandomIDForTest",
   terrain: null,
   unreachable: false,
   userId: "ARandomIDForTest",

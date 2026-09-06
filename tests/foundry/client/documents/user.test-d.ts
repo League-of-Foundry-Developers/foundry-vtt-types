@@ -85,3 +85,11 @@ test("partial update of flags allowed", () => {
     },
   });
 });
+
+declare const someUser: User.Stored;
+
+expectTypeOf(someUser.idle).toBeBoolean();
+expectTypeOf(someUser.viewedLevel).toEqualTypeOf<string | null>();
+expectTypeOf(
+  User.queryMany([someUser], "dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig),
+).toEqualTypeOf<Promise<Map<User.Implementation, PromiseSettledResult<User.QueryReturn<"dialog">>>>>();

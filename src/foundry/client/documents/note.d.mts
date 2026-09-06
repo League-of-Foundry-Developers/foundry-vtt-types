@@ -1,7 +1,7 @@
 import type { MaybeArray, Merge } from "#utils";
 import type { fields, TextureData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
-import type { BaseJournalEntryPage, BaseJournalEntry, BaseNote } from "#client/documents/_module.d.mts";
+import type { BaseJournalEntryPage, BaseJournalEntry, BaseNote, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -50,7 +50,7 @@ declare namespace NoteDocument {
       label: "DOCUMENT.Note";
       labelPlural: "DOCUMENT.Notes";
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.358";
     }>
   > {}
 
@@ -59,7 +59,7 @@ declare namespace NoteDocument {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      create: "NOTE_CREATE";
       delete: "OWNER";
     }
   }
@@ -221,6 +221,12 @@ declare namespace NoteDocument {
     _id: fields.DocumentIdField;
 
     /**
+     * @defaultValue `game.user?.id`
+     * @remarks The `_id` of the User who created this Note.
+     */
+    author: fields.DocumentAuthorField<typeof BaseUser, { nullable: true }>;
+
+    /**
      * The _id of a JournalEntry document which this Note represents
      * @defaultValue `null`
      */
@@ -245,16 +251,28 @@ declare namespace NoteDocument {
     y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
-     * The elevation of the note
+     * The elevation
      * @defaultValue `0`
      */
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
-     * The z-index of this note relative to other siblings
+     * The IDs of the Scene levels that this note is part of.
+     * @defaultValue `new Set()`
+     */
+    levels: fields.SceneLevelsSetField;
+
+    /**
+     * The sort order
      * @defaultValue `0`
      */
     sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
+
+    /**
+     * Is the note currently locked?
+     * @defaultValue `false`
+     */
+    locked: fields.BooleanField;
 
     /**
      * An image icon used to represent this note
@@ -293,7 +311,7 @@ declare namespace NoteDocument {
      * The font family used to display the text label on this note, defaults to CONFIG.defaultFontFamily
      * @defaultValue `globalThis.CONFIG?.defaultFontFamily || "Signika"`
      */
-    fontFamily: fields.StringField<{ required: true; initial: () => string }>;
+    fontFamily: fields.StringField<{ required: true; blank: true }>;
 
     /**
      * The font size used to display the text label on this note
@@ -301,6 +319,7 @@ declare namespace NoteDocument {
      */
     fontSize: fields.NumberField<{
       required: true;
+      nullable: false;
       integer: true;
       min: 8;
       max: 128;
@@ -944,6 +963,13 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
    * The text label used to annotate this Note
    */
   get label(): string;
+
+  /**
+   * Is the current User the author of this note?
+   */
+  get isAuthor(): boolean;
+
+  override prepareDerivedData(): void;
 
   /*
    * After this point these are not really overridden methods.

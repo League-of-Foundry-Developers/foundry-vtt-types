@@ -397,7 +397,7 @@ declare namespace ActorDelta {
     ownership: fields.DocumentOwnershipField<{ required: false; nullable: true; initial: null }>;
 
     /**
-     * An object of actor flag overrides.
+     * An object of optional key/value flags
      */
     flags: fields.DocumentFlagsField<"Actor">;
   }
@@ -1090,6 +1090,9 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   protected override _initialize(options?: ActorDelta.InitializeOptions): void;
+
+  /** @remarks Falls back to the parent Token's `id` when this delta has no `_id` of its own. */
+  override get id(): string;
 
   /** Pass-through the type from the synthetic Actor, if it exists. */
   get type(): SubType;

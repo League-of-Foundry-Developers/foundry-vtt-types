@@ -39,6 +39,7 @@ interface DefaultDocumentClasses {
   AmbientLight: typeof AmbientLightDocument;
   AmbientSound: typeof AmbientSoundDocument;
   Drawing: typeof DrawingDocument;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   MeasuredTemplate: typeof MeasuredTemplateDocument;
   Region: typeof RegionDocument;
   Note: typeof NoteDocument;
@@ -77,6 +78,7 @@ interface DefaultDocumentInstance {
   AmbientLight: AmbientLightDocument;
   AmbientSound: AmbientSoundDocument;
   Drawing: DrawingDocument;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   MeasuredTemplate: MeasuredTemplateDocument;
   Note: NoteDocument;
   Region: RegionDocument;
@@ -247,6 +249,7 @@ export interface ConfiguredMetadata {
   JournalEntry: JournalEntry.Metadata;
   Level: Level.Metadata;
   Macro: Macro.Metadata;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   MeasuredTemplate: MeasuredTemplateDocument.Metadata;
   Note: NoteDocument.Metadata;
   PlaylistSound: PlaylistSound.Metadata;
@@ -298,6 +301,7 @@ export interface CreateData {
   AmbientLight: documents.BaseAmbientLight.CreateData;
   AmbientSound: documents.BaseAmbientSound.CreateData;
   Drawing: documents.BaseDrawing.CreateData;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   MeasuredTemplate: clientDocuments.BaseMeasuredTemplate.CreateData;
   Note: documents.BaseNote.CreateData;
   Region: documents.BaseRegion.CreateData;
@@ -342,6 +346,7 @@ interface MisconfiguredUser extends ConformToDocumentConstructor<typeof User> {}
 interface MisconfiguredAmbientLight extends ConformToDocumentConstructor<typeof AmbientLightDocument> {}
 interface MisconfiguredAmbientSound extends ConformToDocumentConstructor<typeof AmbientSoundDocument> {}
 interface MisconfiguredDrawing extends ConformToDocumentConstructor<typeof DrawingDocument> {}
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 interface MisconfiguredMeasuredTemplate extends ConformToDocumentConstructor<typeof MeasuredTemplateDocument> {}
 interface MisconfiguredNote extends ConformToDocumentConstructor<typeof NoteDocument> {}
 interface MisconfiguredRegion extends ConformToDocumentConstructor<typeof RegionDocument> {}

@@ -1,6 +1,6 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
-import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { DeepReadonly, InexactPartial, MaybeArray, Merge, OverlapsWith } from "#utils";
+import type { LightData, fields } from "#common/data/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type {
   BaseAmbientLight,
   BaseAmbientSound,
@@ -8,6 +8,7 @@ import type {
   BaseFolder,
   BaseJournalEntry,
   BaseJournalEntryPage,
+  BaseLevel,
   BaseNote,
   BasePlaylist,
   BasePlaylistSound,
@@ -17,7 +18,6 @@ import type {
   BaseToken,
   BaseWall,
 } from "#common/documents/_module.d.mts";
-import type { BaseMeasuredTemplate } from "#client/documents/measured-template.d.mts";
 import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -71,9 +71,10 @@ declare namespace Scene {
       compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
       embedded: Metadata.Embedded;
       label: "DOCUMENT.Scene";
-      labelPlural: "Document.Scenes";
-      preserveOnImport: ["_id", "sort", "ownership", "active"];
-      schemaVersion: "13.341";
+      labelPlural: "DOCUMENT.Scenes";
+      preserveOnImport: ["_id", "sort", "ownership", "folder", "active"];
+      defaultLevelId: "defaultLevel0000";
+      schemaVersion: "14.354";
     }>
   > {}
 
@@ -85,10 +86,9 @@ declare namespace Scene {
       AmbientLight: "lights";
       AmbientSound: "sounds";
       Drawing: "drawings";
-      Level: "levels";
-      MeasuredTemplate: "templates";
       Note: "notes";
       Region: "regions";
+      Level: "levels";
       Tile: "tiles";
       Token: "tokens";
       Wall: "walls";
@@ -110,7 +110,6 @@ declare namespace Scene {
     | "AmbientSound"
     | "Drawing"
     | "Level"
-    | "MeasuredTemplate"
     | "Note"
     | "Region"
     | "Tile"
@@ -126,7 +125,6 @@ declare namespace Scene {
     | AmbientSoundDocument.Stored
     | DrawingDocument.Stored
     | Level.Stored
-    | MeasuredTemplateDocument.Stored
     | NoteDocument.Stored
     | RegionDocument.Stored
     | TileDocument.Stored
@@ -142,7 +140,6 @@ declare namespace Scene {
     | AmbientSoundDocument.ImplementationClass
     | DrawingDocument.ImplementationClass
     | Level.ImplementationClass
-    | MeasuredTemplateDocument.ImplementationClass
     | NoteDocument.ImplementationClass
     | RegionDocument.ImplementationClass
     | TileDocument.ImplementationClass
@@ -445,28 +442,7 @@ declare namespace Scene {
      * A string which overrides Scene name for display in the navigation bar
      * @defaultValue `""`
      */
-    navName: fields.HTMLField<{ textSearch: true }>;
-
-    /**
-     * An image or video file that provides the background texture for the scene.
-     * @defaultValue see {@linkcode TextureData}
-     */
-    background: TextureData;
-
-    /**
-     * An image or video file path providing foreground media for the scene
-     * @defaultValue `null`
-     */
-    foreground: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
-
-    /**
-     * The elevation of the foreground layer where overhead tiles reside
-     * @defaultValue `null`
-     * @remarks If falsey, {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} initializes this to `this.grid.distance * 4`, with the comment:
-     *
-     * "A temporary assumption until a more robust long-term solution when we implement Scene Levels."
-     */
-    foregroundElevation: fields.NumberField<{ required: false; positive: true; integer: true }>;
+    navName: fields.StringField<{ textSearch: true }>;
 
     /**
      * A thumbnail image which depicts the scene at lower resolution
@@ -494,24 +470,35 @@ declare namespace Scene {
     padding: fields.NumberField<{ required: true; nullable: false; min: 0; max: 0.5; step: 0.05; initial: 0.25 }>;
 
     /**
-     * The initial view coordinates for the scene
+     * The shift of the scene rect in x-direction (pixels)
+     * @defaultValue `0`
      */
-    initial: fields.SchemaField<{
-      /** @defaultValue `null` */
-      x: fields.NumberField<{ integer: true; required: true }>;
-
-      /** @defaultValue `null` */
-      y: fields.NumberField<{ integer: true; required: true }>;
-
-      /** @defaultValue `0.5` */
-      scale: fields.NumberField<{ required: true; positive: true }>;
-    }>;
+    shiftX: fields.NumberField<{ required: true; integer: true; initial: 0 }>;
 
     /**
-     * The color of the canvas displayed behind the scene background
-     * @defaultValue `"#999999"`
+     * The shift of the scene rect in y-direction (pixels)
+     * @defaultValue `0`
      */
-    backgroundColor: fields.ColorField<{ nullable: false; initial: "#999999" }>;
+    shiftY: fields.NumberField<{ required: true; integer: true; initial: 0 }>;
+
+    /**
+     * The initial view coordinates for the scene
+     */
+    initial: fields.SchemaField<InitialViewSchema>;
+
+    /**
+     * @defaultValue `null`
+     * @remarks Stores the `_id` of the Level the Scene opens on, but
+     * {@linkcode BaseScene.initialLevel | BaseScene#initialLevel} is a class getter that shadows the field's
+     * initialized value with the resolved Level, falling back to
+     * {@linkcode BaseScene.firstLevel | BaseScene#firstLevel} when unset or unresolvable.
+     */
+    initialLevel: fields.DocumentIdField<
+      { readonly: false },
+      string | null | undefined,
+      Level.Implementation,
+      string | null
+    >;
 
     /**
      * Grid configuration for the scene
@@ -544,49 +531,54 @@ declare namespace Scene {
     environment: fields.SchemaField<EnvironmentSchema>;
 
     /**
+     * @remarks The animation played when a User's view moves to or within this Scene.
+     */
+    transition: fields.SchemaField<TransitionSchema>;
+
+    /**
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
      */
     drawings: fields.EmbeddedCollectionField<typeof BaseDrawing, Scene.Implementation>;
 
     /**
-     * A collection of embedded Tile objects.
+     * A collection of embedded Token objects.
      * @defaultValue `[]`
      */
     tokens: fields.EmbeddedCollectionField<typeof BaseToken, Scene.Implementation>;
 
     /**
-     * A collection of embedded Token objects.
+     * A collection of embedded Level objects.
      * @defaultValue `[]`
      */
-    lights: fields.EmbeddedCollectionField<typeof BaseAmbientLight, Scene.Implementation>;
+    levels: fields.EmbeddedCollectionField<typeof BaseLevel, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientLight objects.
      * @defaultValue `[]`
      */
-    notes: fields.EmbeddedCollectionField<typeof BaseNote, Scene.Implementation>;
+    lights: fields.EmbeddedCollectionField<typeof BaseAmbientLight, Scene.Implementation>;
 
     /**
      * A collection of embedded Note objects.
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof BaseAmbientSound, Scene.Implementation>;
-
-    /**
-     * A collection of embedded Region documents.
-     * @defaultValue `[]`
-     */
-    regions: fields.EmbeddedCollectionField<typeof BaseRegion, Scene.Implementation>;
+    notes: fields.EmbeddedCollectionField<typeof BaseNote, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */
-    templates: fields.EmbeddedCollectionField<typeof BaseMeasuredTemplate, Scene.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BaseAmbientSound, Scene.Implementation>;
 
     /**
-     * A collection of embedded MeasuredTemplate objects.
+     * A collection of embedded Region objects.
+     * @defaultValue `[]`
+     */
+    regions: fields.EmbeddedCollectionField<typeof BaseRegion, Scene.Implementation>;
+
+    /**
+     * A collection of embedded Tile objects.
      * @defaultValue `[]`
      */
     tiles: fields.EmbeddedCollectionField<typeof BaseTile, Scene.Implementation>;
@@ -662,24 +654,68 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
+  interface InitialViewSchema extends fields.DataSchema {
+    /** @defaultValue `null` */
+    x: fields.NumberField<{ integer: true; required: true }>;
+
+    /** @defaultValue `null` */
+    y: fields.NumberField<{ integer: true; required: true }>;
+
+    /** @defaultValue `null` */
+    scale: fields.NumberField<{ required: true; positive: true; step: 0.001 }>;
+  }
+
+  interface TransitionSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `null`
+     * @remarks The key of a registered scene transition, or `null` for no transition.
+     */
+    type: fields.StringField<{ required: true; nullable: true; blank: false; initial: null }>;
+
+    /**
+     * @defaultValue `1500`
+     * @remarks The transition duration in milliseconds.
+     */
+    duration: fields.NumberField<{
+      required: true;
+      nullable: false;
+      integer: true;
+      initial: 1500;
+      min: 500;
+      max: 10000;
+      step: 100;
+    }>;
+
+    /**
+     * @defaultValue `false`
+     * @remarks Only play the transition when moving to the active Scene.
+     */
+    activeOnly: fields.BooleanField;
+  }
+
   interface FogSchema extends fields.DataSchema {
     /**
-     * Should fog exploration progress be tracked for this Scene?
-     * @defaultValue `true`
+     * How fog exploration progress is tracked for this Scene.
+     * @defaultValue {@linkcode CONST.FOG_EXPLORATION_MODES.INDIVIDUAL}
      */
-    exploration: fields.BooleanField<{ initial: true }>;
+    mode: fields.NumberField<
+      {
+        required: true;
+        choices: CONST.FOG_EXPLORATION_MODES[];
+        initial: typeof CONST.FOG_EXPLORATION_MODES.INDIVIDUAL;
+        validationError: "must be a value in CONST.FOG_EXPLORATION_MODES";
+      },
+      // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+      CONST.FOG_EXPLORATION_MODES | null | undefined,
+      CONST.FOG_EXPLORATION_MODES,
+      CONST.FOG_EXPLORATION_MODES
+    >;
 
     /**
      * The timestamp at which fog of war was last reset for this Scene.
      * @defaultValue `undefined`
      */
     reset: fields.NumberField<{ required: false; initial: undefined }>;
-
-    /**
-     * A special overlay image or video texture which is used for fog of war
-     * @defaultValue `null`
-     */
-    overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
     /**
      * Fog-exploration coloration data
@@ -1551,6 +1587,10 @@ declare namespace Scene {
      * A background image to use for thumbnail creation, otherwise the current scene
      * background is used.
      *
+     * @deprecated "The img parameter of `Scene#createThumbnail` is deprecated. Instead create a clone of the Scene
+     * with the necessary changes to the Level textures and then use `Scene#createThumbnail` on the cloned Scene."
+     * (since v14, until v16)
+     *
      * @remarks This cannot be `null` because Foundry writes `const newImage = img !== undefined;`.
      */
     img: string;
@@ -1585,6 +1625,172 @@ declare namespace Scene {
 
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
+  interface ViewTransition {
+    /** The type of the transition animation */
+    type?: string | undefined;
+
+    /** The duration of the transition animation */
+    duration?: number | undefined;
+  }
+
+  interface ViewOptions {
+    /** The ID of the Level to view */
+    level?: string | undefined;
+
+    /** The IDs of initially controlled tokens */
+    controlledTokens?: string[] | undefined;
+
+    /** The transition animation to used when viewing the scene */
+    transition?: ViewTransition | undefined;
+  }
+
+  /**
+   * The shape of the deprecated {@linkcode Scene.background | Scene#background} getter, reconstructed from the
+   * first Level plus the Scene's `shiftX`/`shiftY`.
+   */
+  interface DeprecatedBackgroundData {
+    src: string | null | undefined;
+    tint: Color | undefined;
+    alphaThreshold: number | undefined;
+    anchorX: number | undefined;
+    anchorY: number | undefined;
+    fit: CONST.TEXTURE_DATA_FIT_MODES | undefined;
+    scaleX: number | undefined;
+    scaleY: number | undefined;
+    rotation: number | undefined;
+    offsetX: number;
+    offsetY: number;
+  }
+
+  interface ActivateOptions {
+    /** The view options */
+    viewOptions?: ViewOptions | undefined;
+
+    /** Pull all Users to this Scene if it is already active? */
+    pullUsers?: boolean | undefined;
+
+    /** Additional update data */
+    updateData?: Omit<Scene.UpdateData, "active"> | undefined;
+
+    /** The update operation options */
+    updateOptions?:
+      | InexactPartial<Omit<DatabaseBackend.UpdateOperation<Scene.UpdateData, null>, "updates">>
+      | undefined;
+  }
+
+  interface GetAvailableLevelsOptions {
+    /**
+     * A SceneManager whose
+     * {@linkcode foundry.canvas.SceneManager._getAvailableLevels | SceneManager#_getAvailableLevels}
+     * override should be applied to the base set.
+     * @defaultValue `null`
+     */
+    manager?: foundry.canvas.SceneManager | null | undefined;
+  }
+
+  /**
+   * The interface for passing to {@linkcode Scene.moveTokens | Scene#moveTokens}.
+   * @remarks `movement` and `_movementArguments` are omitted because they're supplied to the
+   * `#updateEmbeddedDocuments` call *after* spreading in this object. `id` is omitted because each instruction
+   * carries its own, and `animation` comes from {@linkcode TokenDocument.MovementOptions | MovementOptions}.
+   */
+  interface MoveTokensOptions
+    extends
+      Omit<TokenDocument.Database.UpdateManyDocumentsOperation, "movement" | "_movementArguments" | "animation">,
+      Omit<TokenDocument.MovementOptions, "id"> {}
+
+  /** @internal */
+  interface _GetSurfacesOptions {
+    /** Only return surfaces that restrict this type */
+    type: CONST.EDGE_RESTRICTION_TYPES;
+
+    /** Only return surfaces that are included in this Level */
+    level: Level.Implementation | string;
+
+    /** Only return surfaces that have this value as {@linkcode RegionDocument.Surface.occlusion | occlusion} */
+    occlusion: boolean;
+
+    /** Only return surfaces that have this value as {@linkcode RegionDocument.Surface.exposure | exposure} */
+    exposure: boolean;
+
+    /** Only return surfaces that have this value as {@linkcode RegionDocument.Surface.culling | culling} */
+    culling: boolean;
+  }
+
+  interface GetSurfacesOptions extends InexactPartial<_GetSurfacesOptions> {}
+
+  /** @internal */
+  interface _TestSurfaceCollisionConfig {
+    /**
+     * The restriction type.
+     * @defaultValue `"move"`
+     */
+    type: CONST.EDGE_RESTRICTION_TYPES;
+
+    /**
+     * The collision mode.
+     * @defaultValue `"any"`
+     */
+    mode: "any" | "all" | "closest";
+
+    /**
+     * The side of the surface that counts as colliding when the ray originates on the surface.
+     * @defaultValue `"below"`
+     * @remarks `"below"` treats the surface as solid in the negative z-direction, so a ray originating on the
+     * surface collides only when pointing downward; `"above"` is the mirror image.
+     */
+    side: "below" | "above";
+
+    /**
+     * Intersections of the ray and a surface with t-value less than `tMin` are not considered collisions.
+     * @defaultValue `0`
+     */
+    tMin: number;
+
+    /**
+     * Intersections of the ray and a surface with t-value greater than `tMax` are not considered collisions.
+     * @defaultValue `1`
+     */
+    tMax: number;
+  }
+
+  interface TestSurfaceCollisionConfig extends InexactPartial<_TestSurfaceCollisionConfig> {
+    /** The Level or Level ID to test collision in. */
+    level: Level.Implementation | string;
+  }
+
+  type TestSurfaceCollisionReturn<Config extends TestSurfaceCollisionConfig> = _TestSurfaceCollisionReturn<
+    Config["mode"]
+  >;
+
+  /** @internal */
+  type _TestSurfaceCollisionReturn<Mode extends _TestSurfaceCollisionConfig["mode"] | undefined> = Mode extends "all"
+    ? Canvas.ElevatedPoint[]
+    : Mode extends "closest"
+      ? Canvas.ElevatedPoint | null
+      : boolean;
+
+  /** A texture of a {@linkcode Level} configured for rendering in the currently viewed Level. */
+  interface LevelTexture extends fields.SchemaField.InitializedData<Level.BackgroundSchema> {
+    /** The Level the texture belongs to */
+    level: Level.Implementation;
+
+    /** Either `"background"` or `"foreground"` */
+    name: string;
+
+    /** The elevation the texture is rendered at */
+    elevation: number;
+
+    sort: number;
+
+    zIndex: number;
+
+    isBackground: boolean;
+
+    /** Is the texture above the currently viewed Level? */
+    isUpper: boolean;
+  }
+
   /**
    * The arguments to construct the document.
    *
@@ -1618,11 +1824,11 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   _viewPosition: Canvas.PartialViewPosition;
 
   /**
-   * Track whether the scene is the active view
-   * @defaultValue `this.active`
+   * Track whether the scene is the active view and which level is viewed
+   * @defaultValue `null`
    * @internal
    */
-  protected _view: boolean;
+  protected _view: string | null;
 
   /**
    * The grid instance.
@@ -1631,11 +1837,34 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   grid: foundry.grid.BaseGrid;
 
   /**
+   * The gridless version of the grid instance.
+   */
+  gridlessGrid: foundry.grid.GridlessGrid;
+
+  /**
    * Determine the canvas dimensions this Scene would occupy, if rendered
    * @defaultValue `{}`
    * @remarks Technically `undefined` prior to the first time {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} is called
    */
   dimensions: Scene.Dimensions;
+
+  /**
+   * Have the edges of this Scene been initialized already?
+   *
+   * The property becomes true we moment {@linkcode Scene.initializeEdges | Scene#initializeEdges} is called.
+   */
+  get initializedEdges(): boolean;
+
+  /**
+   * The levels that are available to this User. By default GMs and scenes without token vision can access all levels;
+   * players can only access levels where they have OBSERVER of a Token.
+   * A SceneManager may override this via
+   * {@linkcode foundry.canvas.SceneManager._getAvailableLevels | SceneManager#_getAvailableLevels}.
+   */
+  get availableLevels(): Set<Level.Implementation>;
+
+  /** @remarks Cleared by {@linkcode Scene.prepareEmbeddedDocuments | Scene#prepareEmbeddedDocuments}. */
+  protected _availableLevels: Set<Level.Implementation> | null;
 
   /**
    * Provide a thumbnail image path used to represent this document.
@@ -1647,23 +1876,43 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    */
   get isView(): boolean;
 
-  /**
-   * Pull the specified users to this Scene.
-   * @param users - An array of User documents or IDs.
-   */
-  pullUsers(users?: (User.Stored | string)[]): void;
+  protected override _configure(options?: Document.ConfigureOptions): void;
+
+  protected override _updateCommit(
+    copy: Scene.Source,
+    diff: Scene.UpdateData,
+    options: DataModel.UpdateOptions,
+    _state: fields.DataField.UpdateState,
+  ): void;
 
   /**
-   * Set this scene as currently active
-   * @returns A Promise which resolves to the current scene once it has been successfully activated
+   * Pull the specified users to this Scene.
+   * @param users       - The User documents or IDs.
+   * @param viewOptions - The view options (default: `{}`)
+   * @example Pull all users to the viewed scene.
+   * ```js
+   * canvas.scene.pullUsers(game.users);
+   * ```
+   * @remarks
+   * @throws If the calling User is not a GM.
    */
-  activate(): Promise<this | undefined>;
+  pullUsers(users: Iterable<User.Implementation | string>, viewOptions?: Scene.ViewOptions): void;
+
+  /**
+   * Set this Scene as currently active.
+   * @param options - Additional options
+   * @returns A Promise which resolves to this Scene once it has been successfully activated
+   * @remarks
+   * @throws If the calling User is not a GM.
+   */
+  activate(options?: Scene.ActivateOptions): Promise<this>;
 
   /**
    * Set this scene as the current view
+   * @param options - The view options (default: `{}`)
    * @remarks Returns a warning notification when the canvas is already loading.
    */
-  view(): Promise<this | Notifications.Notification<"warning">>;
+  view(options?: Scene.ViewOptions): Promise<this | Notifications.Notification<"warning">>;
 
   /**
    * Unview the current Scene, clearing the game canvas.
@@ -1688,9 +1937,23 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * - Transforms `this.grid` from source data to a {@linkcode BaseGrid} (or subclass) instance
    * - Sets `this.dimensions` to `this.getDimensions()`
    * - If a `playlist` is set, attempts to initialize `this.playlistSound` to a Document reference (it's an `idOnly` field in the schema)
-   * - Sets `this.foregroundElevation` to `this.grid.distance * 4` if its otherwise falsey
    */
   override prepareBaseData(): void;
+
+  /**
+   * @remarks Sorts {@linkcode Scene.levels | this.levels} and defines `sorted`, `reverseSorted`, and each Level's
+   * {@linkcode Level.index | index} from that ordering.
+   */
+  override prepareEmbeddedDocuments(): void;
+
+  /** @remarks Defines a `fog.overlay` getter that reads the first Level's `fog.src`. */
+  override prepareDerivedData(): void;
+
+  /**
+   * The levels that are available to this User in ascending order. By default GMs and scenes without token vision
+   * can access all levels; players can only access levels where they have OBSERVER of a Token.
+   */
+  protected _getAvailableLevels(options?: Scene.GetAvailableLevelsOptions): Set<Level.Implementation>;
 
   /**
    * Get the Canvas dimensions which would be used to display this Scene.
@@ -1722,6 +1985,130 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @returns The array of Tokens whose regions changed
    */
   updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Stored[]>;
+
+  /**
+   * Update the shape constraints of all Regions the current User is designated for
+   * (for the given restriction types).
+   * @param types - The types to update. (default: `CONST.EDGE_RESTRICTION_TYPES`)
+   * @remarks
+   * @throws If this Scene is not persisted.
+   */
+  updateRegionShapeConstraints(types?: Iterable<CONST.EDGE_RESTRICTION_TYPES>): void;
+
+  /**
+   * Update the shape constraints of the given Regions if the current User is designated for it.
+   * @internal
+   */
+  _updateRegionShapeConstraints(region: RegionDocument.Implementation): void;
+
+  /**
+   * Move/resize multiple Tokens.
+   * @param instructions - The movement/resizing instructions, keyed by Token ID
+   * @param options      - Parameters of the update and movement operation
+   * @returns Whether each Token's movement/resizing completed, keyed by Token ID
+   * @see {@linkcode TokenDocument.move | foundry.documents.TokenDocument#move}
+   * @see {@linkcode TokenDocument.resize | foundry.documents.TokenDocument#resize}
+   * @example
+   * ```js
+   * const results = await scene.moveTokens({
+   *    // Moving the token to new position including additional token data
+   *   "cGYT0rR0YbtFkhzT": {
+   *     destination: {x: 100, y: 200, rotation: 45, texture: {tint: "#ff0000"}},
+   *     showRuler: false, // This overrides `options.showRuler`
+   *   },
+   *   // Moving the token to along a path with multiple waypoints
+   *   "wBFpJuZuleEtVNw1": {
+   *     waypoints: [
+   *       {x: 100, y: 200}, // Move to the position (100, 200)
+   *       {elevation: 5, explicit: true}, // Move to elevation 5 indicating that the user placed this waypoint
+   *       {x: 500, y: 500, checkpoint: true}, // Move to (500, 500): the movement can be stopped/paused here
+   *       {width: 2, height: 2, depth: 2}, // Change size
+   *       {x: 1000, action: "swim"}, // Swim to (1000, 500)
+   *       {x: 0, y: 0, snapped: true}, // Move to (0, 0) indicating that (0, 0) is a snapped position for the token
+   *       {elevation: 10} // Move to elevation 10 (the last waypoint is always a checkpoint automatically)
+   *     ],
+   *     autoRotate: true,
+   *     constrainOptions: {ignoreWalls: true, ignoreCost: true} // Allow the token to move through walls, surfaces, and
+   *                                                             // impassable terrain
+   *   },
+   *   // Resizing the token including additional token data
+   *   "VupAIbzpX6SHqtaH": {
+   *     dimensions: {width: 3, height: 3, depth: 3, rotation: 45, texture: {tint: "#ff0000"}}
+   *   }
+   * }, {
+   *   showRuler: true // This applies to all instructions that do not define `showRuler`
+   * })
+   * if ( results["cGYT0rR0YbtFkhzT"] ) {
+   *   // The movement of Token [cGYT0rR0YbtFkhzT] was completed: it arrived at the destination
+   * } else {
+   *   // The movement of Token [cGYT0rR0YbtFkhzT] was stopped or prevented
+   * }
+   * if ( results["wBFpJuZuleEtVNw1"] ) {
+   *   // The movement of Token [wBFpJuZuleEtVNw1] was completed: it arrived at the destination
+   * } else {
+   *   // The movement of Token [wBFpJuZuleEtVNw1] was stopped or prevented
+   * }
+   * if ( results["VupAIbzpX6SHqtaH"] ) {
+   *   // The resizing of Token [VupAIbzpX6SHqtaH] was completed
+   * } else {
+   *   // The resizing of Token [VupAIbzpX6SHqtaH] was prevented
+   * }
+   * ```
+   */
+  moveTokens(
+    instructions: Record<string, TokenDocument.MovementInstruction | TokenDocument.ResizingInstruction>,
+    options?: Scene.MoveTokensOptions,
+  ): Promise<Record<string, boolean>>;
+
+  /**
+   * Invalidate cached surface data.
+   * @internal
+   */
+  _invalidateSurfaces(): void;
+
+  /**
+   * Get all surfaces or surfaces matching the filter, ordered by elevation in ascending order.
+   * @param options - Additional options (default: `{}`)
+   */
+  getSurfaces(options?: Scene.GetSurfacesOptions): DeepReadonly<RegionDocument.Surface[]>;
+
+  /**
+   * Test for surface collision for a movement between two points.
+   * @param origin      - The origin.
+   * @param destination - The destination.
+   * @param config      - Configuration.
+   * @returns The collision result depends on the mode of the test:
+   * - `"any"`: Returns a boolean for whether any collision occurred.
+   * - `"all"`: Returns a sorted array of `ElevatedPoint` instances.
+   * - `"closest"`: Returns an `ElevatedPoint` instance or null.
+   */
+  testSurfaceCollision<const Config extends Scene.TestSurfaceCollisionConfig>(
+    origin: Canvas.ElevatedPoint,
+    destination: Canvas.ElevatedPoint,
+    config: Config,
+  ): Scene.TestSurfaceCollisionReturn<Config>;
+
+  /**
+   * Cycle the currently viewed Level for this Scene.
+   */
+  cycleLevel(direction: -1 | 1): Promise<void>;
+
+  /**
+   * Get textures that should be used for the currently active level.
+   * @internal
+   */
+  _configureLevelTextures(): Scene.LevelTexture[];
+
+  /**
+   * Reset the edges of this Scene.
+   * @internal
+   */
+  _resetEdges(): void;
+
+  /**
+   * Initialize the edges of this Scene unless they already have been inititalized.
+   */
+  initializeEdges(): void;
 
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
@@ -1761,10 +2148,14 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   // protected override _onDelete(options: Scene.Database.OnDeleteOptions, userId: string): void;
 
   /**
-   * Handle Scene activation workflow if the active state is changed to true
-   * @param active - Is the scene now active?
+   * Handle Scene activation workflow if the active state is changed to true.
+   * @param active    - Is the scene now active?
+   * @param operation - The database operation
    */
-  protected _onActivate(active: boolean): void;
+  protected _onActivate(
+    active: boolean,
+    operation: Scene.Database.CreateOperation | Scene.Database.UpdateOperation,
+  ): void;
 
   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs): void;
 
@@ -1772,12 +2163,38 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
+  protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs): void;
+
   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
+
+  protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<"Scene", Options>;
+
+  /**
+   * @deprecated "Scene#templates is deprecated without replacement." (since v14, until v16)
+   */
+  static override getCollectionName(name: "MeasuredTemplate"): "templates";
+
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseScene.Embedded.CollectionName>,
+  ): BaseScene.Embedded.GetCollectionNameReturn<Name>;
+
+  /**
+   * @deprecated "Scene#templates is deprecated because the MeasuredTemplate document has been merged into the
+   * functionality of the Region document." (since v14, until v16)
+   */
+  override getEmbeddedCollection(
+    embeddedName: "MeasuredTemplate",
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+  ): EmbeddedCollection<MeasuredTemplateDocument.Implementation, Scene.Implementation>;
+
+  override getEmbeddedCollection<EmbeddedName extends BaseScene.Embedded.CollectionName>(
+    embeddedName: EmbeddedName,
+  ): BaseScene.Embedded.CollectionFor<EmbeddedName>;
 
   /**
    * Create a 300px by 100px thumbnail image for this scene background
@@ -1786,8 +2203,36 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    */
   createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _repositionObject(sceneUpdateData: never): never;
+  /**
+   * @deprecated "`Scene#templates` is deprecated because the MeasuredTemplate document has been merged into the
+   * functionality of the Region document." (since v14, until v16)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  get templates(): EmbeddedCollection<MeasuredTemplateDocument.Implementation, Scene.Implementation>;
+
+  /**
+   * @deprecated "`Scene#background` is deprecated. Use {@linkcode Level.background | Level#background} and
+   * {@linkcode Level.textures | Level#textures} instead." (since v14, until v16)
+   */
+  get background(): Scene.DeprecatedBackgroundData;
+
+  /**
+   * @deprecated "`Scene#backgroundColor` is deprecated. Use {@linkcode Level.background | Level#background#color}
+   * instead." (since v14, until v16)
+   */
+  get backgroundColor(): Color | undefined;
+
+  /**
+   * @deprecated "`Scene#foreground` is deprecated. Use {@linkcode Level.foreground | Level#foreground.src} instead."
+   * (since v14, until v16)
+   */
+  get foreground(): string | null | undefined;
+
+  /**
+   * @deprecated "`Scene#foregroundElevation` is deprecated. Use {@linkcode Level.elevation | Level#elevation.top}
+   * instead." (since v14, until v16)
+   */
+  get foregroundElevation(): number | null | undefined;
 
   /*
    * After this point these are not really overridden methods.
@@ -1802,10 +2247,6 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   // ClientDocument overrides
 
   // Other Descendant Document operations are actually overridden above
-
-  protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs): void;
-
-  protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Scene.DefaultNameContext): string;
 

@@ -1073,10 +1073,18 @@ declare class User extends BaseUser.Internal.ClientDocument {
   constructor(data: User.CreateData, context?: User.ConstructionContext);
 
   /**
-   * Track whether the user is currently active in the game
+   * Is the User currently logged into the game World?
    * @defaultValue `false`
    */
   active: boolean;
+
+  /**
+   * Is this User currently considered idle?
+   * @defaultValue `false`
+   * @remarks `defineProperty`'d as non-writable in the constructor, then redefined by
+   * {@linkcode User.broadcastActivity | User#broadcastActivity} and the players UI; not settable directly.
+   */
+  readonly idle: boolean;
 
   /**
    * Track references to the current set of Tokens which are targeted by the User
@@ -1089,6 +1097,12 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @defaultValue `null`
    */
   viewedScene: string | null;
+
+  /**
+   * Track the ID of the Scene Level that is currently being viewed by the User
+   * @defaultValue `null`
+   */
+  viewedLevel: string | null;
 
   /**
    * Track the Token documents that this User is currently moving.
@@ -1215,6 +1229,21 @@ declare class User extends BaseUser.Internal.ClientDocument {
     queryData: User.QueryData<QueryName>,
     queryOptions?: User.QueryOptions,
   ): Promise<User.QueryReturn<QueryName>>;
+
+  /**
+   * Query many Users.
+   * @param users        - The users that are queried.
+   * @param queryName    - The query name (must be registered in `CONFIG.queries`)
+   * @param queryData    - The query data (must be JSON-serializable)
+   * @param queryOptions - The query options
+   * @returns The query results
+   */
+  static queryMany<QueryName extends User.QueryName>(
+    users: Iterable<User.Implementation>,
+    queryName: QueryName,
+    queryData: User.QueryData<QueryName>,
+    queryOptions?: User.QueryOptions,
+  ): Promise<Map<User.Implementation, PromiseSettledResult<User.QueryReturn<QueryName>>>>;
 
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.

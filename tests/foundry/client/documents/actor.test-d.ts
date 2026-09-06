@@ -94,3 +94,9 @@ Hooks.on("updateActor", (_doc, update) => {
     ForcedReplacement<System | null | undefined> & DiscriminatedUnion<System | {}>
   >();
 });
+
+declare const someActor: Actor.Stored;
+
+expectTypeOf(someActor.tokenActiveEffectChanges).toEqualTypeOf<Record<string, ActiveEffect.ChangeData[]>>();
+expectTypeOf(someActor.prepareBaseData()).toEqualTypeOf<void>();
+expectTypeOf(someActor.getDependentTokens({ concreteOnly: true })).toEqualTypeOf<TokenDocument.Stored[]>();

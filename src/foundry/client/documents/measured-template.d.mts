@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -48,8 +49,8 @@ declare namespace MeasuredTemplateDocument {
     Readonly<{
       name: "MeasuredTemplate";
       collection: "templates";
-      label: "DOCUMENT.MeasuredTemplate";
-      labelPlural: "DOCUMENT.MeasuredTemplates";
+      label: "Measured Template";
+      labelPlural: "Measured Templates";
       isEmbedded: true;
       permissions: Metadata.Permissions;
       schemaVersion: "13.341";
@@ -235,18 +236,16 @@ declare namespace MeasuredTemplateDocument {
     t: fields.StringField<
       {
         required: true;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
+
         choices: CONST.MEASURED_TEMPLATE_TYPES[];
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
+
         initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
         validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
+
       CONST.MEASURED_TEMPLATE_TYPES | null | undefined,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.MEASURED_TEMPLATE_TYPES,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       CONST.MEASURED_TEMPLATE_TYPES
     >;
 
@@ -283,19 +282,20 @@ declare namespace MeasuredTemplateDocument {
       nullable: false;
       initial: 0;
       min: 0;
+      label: "MEASUREMENT.Distance";
     }>;
 
     /**
      * The angle of rotation for the measured template
      * @defaultValue `0`
      */
-    direction: fields.AngleField;
+    direction: fields.AngleField<{ label: "MEASUREMENT.Direction" }>;
 
     /**
      * The angle of effect of the measured template, applies to cone types
      * @defaultValue `0`
      */
-    angle: fields.AngleField<{ normalize: false }>;
+    angle: fields.AngleField<{ normalize: false; label: "MEASUREMENT.Angle" }>;
 
     /**
      * The width of the measured template, applies to ray types
@@ -307,7 +307,7 @@ declare namespace MeasuredTemplateDocument {
      * A color string used to tint the border of the template shape
      * @defaultValue `#000000`
      */
-    borderColor: fields.ColorField<{ nullable: false; initial: "#000000" }>;
+    borderColor: fields.ColorField<{ nullable: false; initial: "#000000"; label: "Border Color" }>;
 
     /**
      * A color string used to tint the fill of the template shape
@@ -873,16 +873,14 @@ declare namespace MeasuredTemplateDocument {
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
    * now recommended. This type will be removed in v14.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
+
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
- * The Document definition for a MeasuredTemplate.
- * Defines the DataSchema and common behaviors for a MeasuredTemplate which are shared between both client and server.
- *
- * @remarks Foundry marks this class `@deprecated since v14`; MeasuredTemplates have been merged into
- * {@linkcode RegionDocument}. Moved out of `foundry.documents.BaseMeasuredTemplate`'s `common/` home in v14.
+ * @deprecated since v14
+ * @remarks MeasuredTemplates have been merged into {@linkcode RegionDocument}. Moved out of
+ * `foundry.documents.BaseMeasuredTemplate`'s `common/` home in v14.
  */
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
@@ -907,8 +905,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * mergeObject(super.metadata, {
    *   name: "MeasuredTemplate",
    *   collection: "templates",
-   *   label: "DOCUMENT.MeasuredTemplate",
-   *   labelPlural: "DOCUMENT.MeasuredTemplates",
+   *   label: "Measured Template",
+   *   labelPlural: "Measured Templates",
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
@@ -922,7 +920,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
-  /** @defaultValue `["DOCUMENT", "TEMPLATE"]` */
+  /** @defaultValue `["DOCUMENT", "DRAWING"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
@@ -932,17 +930,17 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * Migrations:
    * - `user` to `author` (since v12, no specified end)
    */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks
    * Shims:
-   * - `user` to `author` (since v12, until v14)
+   * - `user` to `author` (since v12, until v16)
    */
   static override shimData(data: object, options?: DataModel.ShimDataOptions): object;
 
   /**
-   * @deprecated "You are accessing `user` which has been migrated to `author`" (since v12, until 14)
+   * @deprecated "You are accessing `user` which has been migrated to `author`" (since v12, until v16)
    */
   get user(): this["author"];
 
@@ -1130,7 +1128,7 @@ declare namespace BaseMeasuredTemplate {
   // All types really live in the full document and are mirrored here for convenience
   export import Name = MeasuredTemplateDocument.Name;
   export import ConstructionContext = MeasuredTemplateDocument.ConstructionContext;
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
+
   export import ConstructorArgs = MeasuredTemplateDocument.ConstructorArgs;
   export import Hierarchy = MeasuredTemplateDocument.Hierarchy;
   export import Metadata = MeasuredTemplateDocument.Metadata;
@@ -1151,7 +1149,7 @@ declare namespace BaseMeasuredTemplate {
   export import UpdateInput = MeasuredTemplateDocument.UpdateInput;
   export import Schema = MeasuredTemplateDocument.Schema;
   export import Database = MeasuredTemplateDocument.Database;
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
+
   export import TemporaryIf = MeasuredTemplateDocument.TemporaryIf;
   export import Flags = MeasuredTemplateDocument.Flags;
 
@@ -1166,10 +1164,8 @@ declare namespace BaseMeasuredTemplate {
 }
 
 /**
- * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate document model.
- *
- * @see {@linkcode Scene}                     The Scene document type which contains MeasuredTemplate documents
- * @see {@linkcode MeasuredTemplateConfig}    The MeasuredTemplate configuration application
+ * @deprecated "MeasuredTemplateDocument is deprecated because it has been merged into the functionality of the Region
+ * document." (since v14, until v16)
  */
 declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.CanvasDocument {
   /**
@@ -1179,14 +1175,44 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   constructor(data?: MeasuredTemplateDocument.CreateData, context?: MeasuredTemplateDocument.ConstructionContext);
 
   /**
-   * Rotation is an alias for direction
+   * @param region - The Region to project onto the deprecated MeasuredTemplate shape
+   * @internal
+   * @remarks Reads the Region's first {@linkcode RegionDocument.shapes | shape}; a Region with no shapes yields a
+   * zero-distance `"circle"`.
    */
-  get rotation(): number;
+  protected static _fromRegion(region: RegionDocument.Implementation): MeasuredTemplateDocument.Implementation;
 
   /**
-   * Is the current User the author of this template?
+   * @remarks Rewrites the data as {@linkcode RegionDocument} creations, then projects the created Regions back onto
+   * `MeasuredTemplateDocument`s; the returned documents are not the ones stored in the Scene.
    */
-  get isAuthor(): boolean;
+  static override createDocuments(
+    data?: MeasuredTemplateDocument.CreateInput[],
+    operation?: MeasuredTemplateDocument.Database.CreateDocumentsOperation,
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
+
+  /**
+   * @remarks Rewrites the updates as {@linkcode RegionDocument} updates, then projects the updated Regions back onto
+   * `MeasuredTemplateDocument`s; the returned documents are not the ones stored in the Scene.
+   *
+   * Updates targeting a Region whose `flags.core.MeasuredTemplate` is set are dropped, so an update to a
+   * `MeasuredTemplateDocument` that this class itself created is silently a no-op.
+   */
+  static override updateDocuments(
+    updates?: MeasuredTemplateDocument.UpdateInput[],
+    operation?: MeasuredTemplateDocument.Database.UpdateManyDocumentsOperation,
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
+
+  /**
+   * @remarks Deletes the corresponding {@linkcode RegionDocument}s, then projects them back onto
+   * `MeasuredTemplateDocument`s; the returned documents are not the ones that were stored in the Scene.
+   *
+   * @throws If `operation` is omitted, or if its `parent`/`pack` does not resolve to a Scene.
+   */
+  static override deleteDocuments(
+    ids: readonly string[],
+    operation?: MeasuredTemplateDocument.Database.DeleteManyDocumentsOperation,
+  ): Promise<MeasuredTemplateDocument.Stored[]>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1220,7 +1246,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    */
   static override createDialog<Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined>(
     data: MeasuredTemplateDocument.CreateDialogData | undefined,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
+
     createOptions: MeasuredTemplateDocument.CreateDialogDeprecatedOptions,
     options?: Options,
   ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Options>>;
@@ -1236,7 +1262,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    *
    * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
+
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
     operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,

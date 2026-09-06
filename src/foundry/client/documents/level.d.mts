@@ -63,6 +63,15 @@ declare class Level extends BaseLevel.Internal.ClientDocument {
    */
   clampElevation(elevation: number, depth?: number): number;
 
+  /**
+   * Update the shape constraints of all Regions in this Level the current User is designated for
+   * (for the given restriction types).
+   * @param types - The types to update. (default: `CONST.EDGE_RESTRICTION_TYPES`)
+   * @remarks
+   * @throws If this Level is not persisted.
+   */
+  updateRegionShapeConstraints(types?: Iterable<CONST.EDGE_RESTRICTION_TYPES>): void;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -165,7 +174,7 @@ declare namespace Level {
       label: "DOCUMENT.Level";
       labelPlural: "DOCUMENT.Levels";
       isEmbedded: true;
-      schemaVersion: "14.365";
+      schemaVersion: "14.364";
     }>
   > {}
 

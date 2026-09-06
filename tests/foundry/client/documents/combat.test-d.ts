@@ -28,7 +28,7 @@ expectTypeOf(combat.previousTurn()).toEqualTypeOf<Promise<Combat.Implementation>
 expectTypeOf(combat.endCombat()).toEqualTypeOf<Promise<Combat.Implementation>>();
 
 expectTypeOf(combat.toggleSceneLink()).toEqualTypeOf<Promise<Combat.Implementation>>();
-expectTypeOf(combat.resetAll()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(combat.resetAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 
 expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
@@ -63,3 +63,6 @@ class MyCombatDocumentSubclass extends Combat {
 }
 
 declare const _myCombat: MyCombatDocumentSubclass;
+
+expectTypeOf(combat.name).toBeString();
+expectTypeOf(combat.rollInitiative(["anId"], { messageMode: "gm" })).toEqualTypeOf<Promise<Combat.Implementation>>();

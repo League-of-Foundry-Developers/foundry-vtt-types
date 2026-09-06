@@ -292,10 +292,10 @@ declare namespace Macro {
     type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT }>;
 
     /**
-     * The _id of a User document which created this Macro *
+     * The _id of a User document which created this Macro
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser, { nullable: true }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro

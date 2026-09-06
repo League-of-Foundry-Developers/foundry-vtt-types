@@ -55,6 +55,13 @@ describe("ClientDocument Tests", async () => {
     expect(item.visible).toBe(true);
   });
 
+  test("Persistence", () => {
+    expectTypeOf(item.persisted).toBeBoolean();
+    expect(item.persisted).toBe(true);
+
+    expectTypeOf(tempItem.persisted).toBeBoolean();
+  });
+
   afterAll(async () => {
     await cleanupDocuments(docsToCleanUp);
   });
@@ -263,6 +270,7 @@ expectTypeOf(tempItem.sortRelative()).toEqualTypeOf<Promise<typeof tempItem>>();
 expectTypeOf(tempItem.sortRelative({})).toEqualTypeOf<Promise<typeof tempItem>>();
 expectTypeOf(tempItem.sortRelative({ updateData, ...sortOptions })).toEqualTypeOf<Promise<typeof tempItem>>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tempItem.getRelativeUUID(someActor)).toBeString();
 
 // The first argument is unused in core except in JournalEntryPage

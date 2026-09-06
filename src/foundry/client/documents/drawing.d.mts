@@ -51,7 +51,7 @@ declare namespace DrawingDocument {
       labelPlural: "DOCUMENT.Drawings";
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.355";
     }>
   > {}
 
@@ -222,6 +222,12 @@ declare namespace DrawingDocument {
     _id: fields.DocumentIdField;
 
     /**
+     * An optional name.
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField<{ textSearch: true }>;
+
+    /**
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
@@ -252,6 +258,12 @@ declare namespace DrawingDocument {
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
+     * @defaultValue `new Set()`
+     * @remarks The IDs of the Scene levels that this drawing is part of.
+     */
+    levels: fields.SceneLevelsSetField;
+
+    /**
      * The z-index of this drawing relative to other siblings
      * @defaultValue `0`
      */
@@ -267,12 +279,7 @@ declare namespace DrawingDocument {
      * An amount of bezier smoothing applied, between 0 and 1
      * @defaultValue `0`
      */
-    bezierFactor: fields.AlphaField<{
-      initial: 0;
-      label: "DRAWING.SmoothingFactor";
-      max: 0.5;
-      hint: "DRAWING.SmoothingFactorHint";
-    }>;
+    bezierFactor: fields.AlphaField<{ initial: 0; max: 0.5 }>;
 
     /**
      * The fill type of the drawing shape, a value from CONST.DRAWING_FILL_TYPES
@@ -283,8 +290,7 @@ declare namespace DrawingDocument {
         required: true;
         nullable: false;
         initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
-        choices: Record<CONST.DRAWING_FILL_TYPES, string>;
-        label: "DRAWING.FillTypes";
+        choices: CONST.DRAWING_FILL_TYPES[];
         validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
@@ -297,55 +303,49 @@ declare namespace DrawingDocument {
      * An optional color string with which to fill the drawing geometry
      * @defaultValue `game.user?.color.css || "#ffffff"`
      */
-    fillColor: fields.ColorField<{ nullable: false; initial: () => string; label: "DRAWING.FillColor" }>;
+    fillColor: fields.ColorField<{ nullable: false; initial: () => string }>;
 
     /**
      * The opacity of the fill applied to the drawing geometry
      * @defaultValue `0.5`
      */
-    fillAlpha: fields.AlphaField<{ initial: 0.5; label: "DRAWING.FillOpacity" }>;
+    fillAlpha: fields.AlphaField<{ initial: 0.5 }>;
 
     /**
      * The width in pixels of the boundary lines of the drawing geometry
      * @defaultValue `8`
      */
-    strokeWidth: fields.NumberField<{
-      nullable: false;
-      integer: true;
-      initial: 8;
-      min: 0;
-      label: "DRAWING.LineWidth";
-    }>;
+    strokeWidth: fields.NumberField<{ nullable: false; integer: true; initial: 8; min: 0 }>;
 
     /**
      * The color of the boundary lines of the drawing geometry
      * @defaultValue `game.user?.color.css || "#ffffff"`
      */
-    strokeColor: fields.ColorField<{ nullable: false; initial: () => string; label: "DRAWING.StrokeColor" }>;
+    strokeColor: fields.ColorField<{ nullable: false; initial: () => string }>;
 
     /**
      * The opacity of the boundary lines of the drawing geometry
      * @defaultValue `1`
      */
-    strokeAlpha: fields.AlphaField<{ initial: 1; label: "DRAWING.LineOpacity" }>;
+    strokeAlpha: fields.AlphaField<{ initial: 1 }>;
 
     /**
      * The path to a tiling image texture used to fill the drawing geometry
      * @defaultValue `null`
      */
-    texture: fields.FilePathField<{ categories: ["IMAGE"]; label: "DRAWING.FillTexture" }>;
+    texture: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
      * Optional text which is displayed overtop of the drawing
      * @defaultValue `undefined`
      */
-    text: fields.StringField<{ label: "DRAWING.TextLabel" }>;
+    text: fields.StringField;
 
     /**
      * The font family used to display text within this drawing, defaults to CONFIG.defaultFontFamily
-     * @defaultValue `globalThis.CONFIG?.defaultFontFamily || "Signika"`
+     * @defaultValue `""`
      */
-    fontFamily: fields.StringField<{ blank: false; label: "DRAWING.FontFamily"; initial: () => string }>;
+    fontFamily: fields.StringField<{ required: true; blank: true }>;
 
     /**
      * The font size used to display text within this drawing
@@ -357,21 +357,20 @@ declare namespace DrawingDocument {
       min: 8;
       max: 256;
       initial: 48;
-      label: "DRAWING.FontSize";
       validationError: "must be an integer between 8 and 256";
     }>;
 
     /**
      * The color of text displayed within this drawing
-     * @defaultValue `#FFFFFF`
+     * @defaultValue `"#ffffff"`
      */
-    textColor: fields.ColorField<{ nullable: false; initial: "#FFFFFF"; label: "DRAWING.TextColor" }>;
+    textColor: fields.ColorField<{ nullable: false; initial: "#ffffff" }>;
 
     /**
      * The opacity of text displayed within this drawing
      * @defaultValue `1`
      */
-    textAlpha: fields.AlphaField<{ label: "DRAWING.TextOpacity" }>;
+    textAlpha: fields.AlphaField;
 
     /**
      * Is the drawing currently hidden?
@@ -384,6 +383,12 @@ declare namespace DrawingDocument {
      * @defaultValue `false`
      */
     locked: fields.BooleanField;
+
+    /**
+     * @defaultValue `false`
+     * @remarks Is the drawing rendered in the interface layer, above the primary canvas group?
+     */
+    interface: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
@@ -987,10 +992,20 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    */
   static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 
+  // FIXME: `RectangleShapeData`, `EllipseShapeData` and `PolygonShapeData` are the `client/data/shapes.mjs`
+  // classes, which have not been ported yet. Restore this declaration once that module exists.
+  // /**
+  //  * The rectangle shape of this Tile document.
+  //  * @internal
+  //  */
+  // _shape: RectangleShapeData | EllipseShapeData | PolygonShapeData;
+
   /**
    * Is the current User the author of this drawing?
    */
   get isAuthor(): boolean;
+
+  override prepareDerivedData(): void;
 
   /*
    * After this point these are not really overridden methods.

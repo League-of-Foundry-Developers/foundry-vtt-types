@@ -50,6 +50,7 @@ declare namespace Card {
       name: "Card";
       collection: "cards";
       hasTypeData: true;
+      baseTypeAllowed: true;
       indexed: true;
       label: "DOCUMENT.Card";
       labelPlural: "DOCUMENT.CardPlural";

@@ -25,3 +25,19 @@ expectTypeOf(
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Implementation>();
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();
+expectTypeOf(doc.visible).toEqualTypeOf<boolean>();
+expectTypeOf(doc.viewed).toEqualTypeOf<boolean>();
+
+declare const level: Level.Implementation;
+expectTypeOf(doc.includedInLevel(level)).toEqualTypeOf<boolean>();
+expectTypeOf(doc.includedInLevel("someLevelId")).toEqualTypeOf<boolean>();
+expectTypeOf(doc.locatedInLevel(level)).toEqualTypeOf<boolean>();
+expectTypeOf(doc.locatedInLevel("someLevelId")).toEqualTypeOf<boolean>();
+
+class TestAmbientLightDocument extends AmbientLightDocument {
+  protected override async _refreshViewedState(): Promise<void> {
+    await super._refreshViewedState();
+  }
+}
+
+expectTypeOf(new TestAmbientLightDocument().viewed).toEqualTypeOf<boolean>();

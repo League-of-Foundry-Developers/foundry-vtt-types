@@ -39,8 +39,9 @@ declare class Scenes extends WorldCollection<"Scene"> {
    * Handle preloading the art assets for a Scene.
    * @param sceneId - The Scene ID to begin loading.
    * @param options - Additional options
+   * @remarks Returns `undefined` if `sceneId` names no Scene, or the Scene lacks the passed `level`.
    */
-  preload(sceneId: string, options?: Scenes.PreloadOptions): Promise<Array<Sound | undefined>>;
+  preload(sceneId: string, options?: Scenes.PreloadOptions): Promise<Array<Sound | undefined> | undefined>;
 
   /**
    * Handle pre-loading the art assets for a Scene
@@ -50,7 +51,7 @@ declare class Scenes extends WorldCollection<"Scene"> {
    * @deprecated "You are passing the legacy `push` boolean to `Scenes#preload`. This is replaced by the `broadcast` option,
    * for example `game.scenes.preload(sceneId, {broadcast: true})`." (since v14, until v16)
    */
-  preload(sceneId: string, push?: boolean): Promise<Array<Sound | undefined>>;
+  preload(sceneId: string, push?: boolean): Promise<Array<Sound | undefined> | undefined>;
 
   static _activateSocketListeners(socket: io.Socket): void;
 
