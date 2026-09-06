@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf } from "vitest";
 
 import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Canvas = foundry.canvas.Canvas;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;
@@ -14,6 +14,7 @@ expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "refresh"
       | "refreshState"
+      | "refreshVisibility"
       | "refreshPosition"
       | "refreshShape"
       | "refreshTemplate"
@@ -53,8 +54,6 @@ expectTypeOf(template["_destroy"]({ baseTexture: true, children: true, texture: 
 expectTypeOf(template["_destroy"](true)).toBeVoid();
 expectTypeOf(template["_destroy"](undefined)).toBeVoid();
 
-expectTypeOf(template.clear()).toEqualTypeOf<MeasuredTemplate.Implementation>();
-
 // @ts-expect-error an object must be passed
 expectTypeOf(template["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(template["_applyRenderFlags"]({})).toBeVoid();
@@ -74,6 +73,7 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
+expectTypeOf(template["_refreshVisibility"]()).toBeVoid();
 expectTypeOf(template["_refreshState"]()).toBeVoid();
 expectTypeOf(template["_refreshElevation"]()).toBeVoid();
 expectTypeOf(template["_getTargetAlpha"]()).toBeNumber();
@@ -135,21 +135,10 @@ expectTypeOf(template["_canHUD"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(template["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(template["_canView"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(template["_onHoverIn"](pointerEvent)).toBeVoid();
-expectTypeOf(template["_onHoverIn"](pointerEvent, {})).toBeVoid();
-expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
-
 expectTypeOf(template["_onClickRight"](pointerEvent)).toBeVoid();
-expectTypeOf(template["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<
-  PlaceableObject.DragLeftDropUpdate[]
->();
 
-// deprecated since v12, until v14
+// deprecated since v12, until v16
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.borderColor).toBeNumber();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.fillColor).toBeNumber();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.owner).toBeBoolean();

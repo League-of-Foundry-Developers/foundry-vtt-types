@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
 
 import Tile = foundry.canvas.placeables.Tile;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+import TileShapeControls from "#client/canvas/placeables/tiles/shape-controls.mjs";
 
 declare const doc: TileDocument.Stored;
 declare const scene: Scene.Stored;
@@ -13,18 +13,20 @@ expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
       | "refresh"
       | "refreshState"
+      | "refreshVisibility"
       | "refreshTransform"
       | "refreshPosition"
       | "refreshRotation"
+      | "refreshSize"
       | "refreshMesh"
       | "refreshFrame"
       | "refreshElevation"
       | "refreshPerception"
       | "refreshVideo"
-      | "refreshShape"
     >
   | undefined
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(Tile.createPreview(doc.toObject())).toEqualTypeOf<Tile.Implementation>();
 
 const tile = new CONFIG.Tile.objectClass(doc);
@@ -39,6 +41,7 @@ expectTypeOf(tile.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(tile.sourceElement).toEqualTypeOf<PIXI.ImageSource | null>();
 expectTypeOf(tile.isVideo).toBeBoolean();
 expectTypeOf(tile.isVisible).toBeBoolean();
+expectTypeOf(tile.controls).toEqualTypeOf<TileShapeControls | undefined>();
 expectTypeOf(tile.occluded).toBeBoolean();
 expectTypeOf(tile.playing).toBeBoolean();
 expectTypeOf(tile.volume).toBeNumber();
@@ -46,8 +49,6 @@ expectTypeOf(tile.volume).toBeNumber();
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(tile["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(tile["_draw"]({})).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(tile.clear()).toEqualTypeOf<typeof tile>();
 
 // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
 expectTypeOf(tile["_destroy"]()).toBeVoid();
@@ -69,12 +70,12 @@ expectTypeOf(
     refreshTransform: true,
     refreshPosition: true,
     refreshRotation: true,
+    refreshSize: true,
     refreshMesh: true,
     refreshFrame: true,
     refreshElevation: true,
     refreshPerception: true,
     refreshVideo: true,
-    refreshShape: true,
   }),
 ).toBeVoid();
 
@@ -84,10 +85,10 @@ expectTypeOf(tile["_refreshSize"]()).toBeVoid();
 expectTypeOf(tile["_refreshState"]()).toBeVoid();
 expectTypeOf(tile["_refreshMesh"]()).toBeVoid();
 expectTypeOf(tile["_refreshElevation"]()).toBeVoid();
-expectTypeOf(tile["_refreshFrame"]()).toBeVoid();
 expectTypeOf(tile["_refreshVideo"]()).toBeVoid();
-
-expectTypeOf(tile.activateListeners()).toBeVoid();
+expectTypeOf(tile["_refreshVisibility"]()).toBeVoid();
+expectTypeOf(tile["_clear"]()).toBeVoid();
+expectTypeOf(tile._hasShapeChanged({ rotation: 45 })).toBeBoolean();
 
 expectTypeOf(
   tile["_onCreate"](
@@ -125,29 +126,3 @@ expectTypeOf(
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
-
-declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
-
-expectTypeOf(tile["_onHoverIn"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](pointerEvent, {})).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toBeVoid();
-
-expectTypeOf(tile["_onClickLeft"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftDrop"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftCancel"](pointerEvent)).toBeVoid();
-
-expectTypeOf(tile["_onHandleHoverIn"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleHoverOut"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragStart"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragMove"](pointerEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragDrop"](pointerEvent)).toEqualTypeOf<Promise<Tile.Implementation>>();
-expectTypeOf(tile["_onHandleDragCancel"](pointerEvent)).toBeVoid();
-
-expectTypeOf(tile["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();

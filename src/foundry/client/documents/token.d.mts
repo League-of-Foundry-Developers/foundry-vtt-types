@@ -709,6 +709,12 @@ declare namespace TokenDocument {
     height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
 
     /**
+     * The depth in grid spaces (nonnegative).
+     * @defaultValue `undefined`
+     */
+    depth: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
+
+    /**
      * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
      * @defaultValue `undefined`
      */
@@ -723,6 +729,12 @@ declare namespace TokenDocument {
       CONST.TOKEN_SHAPES,
       CONST.TOKEN_SHAPES
     >;
+
+    /**
+     * The level ID.
+     * @defaultValue `undefined`
+     */
+    level: fields.DocumentIdField<{ required: true; nullable: false; readonly: false; initial: undefined }>;
 
     /**
      * The movement action from the previous to this waypoint.
@@ -820,8 +832,14 @@ declare namespace TokenDocument {
     /** @defaultValue The previous or source height. */
     height: MeasuredMovementWaypoint["height"];
 
+    /** @defaultValue The previous or source depth. */
+    depth: MeasuredMovementWaypoint["depth"];
+
     /** @defaultValue The previous or source shape. */
     shape: MeasuredMovementWaypoint["shape"];
+
+    /** @defaultValue The previous or source level ID. */
+    level: MeasuredMovementWaypoint["level"];
 
     /** @defaultValue The previous or prepared movement action. */
     action: MeasuredMovementWaypoint["action"];

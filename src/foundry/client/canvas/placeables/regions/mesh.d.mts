@@ -1,6 +1,7 @@
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type RegionGeometry from "./geometry.mjs";
 
 /** A mesh of a {@linkcode Region} */
 declare class RegionMesh extends PIXI.Container {
@@ -13,6 +14,10 @@ declare class RegionMesh extends PIXI.Container {
 
   /** The Region of this RegionMesh */
   get region(): Region.Implementation;
+
+  /** The geometry of this RegionMesh. */
+  get geometry(): RegionGeometry | PIXI.Geometry | undefined;
+  set geometry(value: RegionGeometry | PIXI.Geometry | undefined);
 
   /** The shader bound to this RegionMesh */
   get shader(): AbstractBaseShader.Any;

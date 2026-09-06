@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
@@ -16,11 +17,12 @@ declare module "#configuration" {
 }
 
 /**
- * A type of Placeable Object which highlights an area of the grid as covered by some area of effect.
- * @see {@linkcode foundry.documents.MeasuredTemplateDocument}
- * @see {@linkcode foundry.canvas.layers.TemplateLayer}
+ * @deprecated "MeasuredTemplate is deprecated because the MeasuredTemplate document has been merged into the
+ * functionality of the Region document." (since v14, until v16)
  */
 declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.Implementation> {
+  constructor(document: MeasuredTemplateDocument.Implementation);
+
   // fake type override
   static override get implementation(): MeasuredTemplate.ImplementationClass;
 
@@ -77,16 +79,9 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.
   override get bounds(): PIXI.Rectangle;
 
   /**
-   * Is this MeasuredTemplate currently visible on the Canvas?
-   */
-  get isVisible(): boolean;
-
-  /**
    * A unique identifier which is used to uniquely identify related objects like a template effect or grid highlight.
    */
   get highlightId(): string;
-
-  override draw(options?: HandleEmptyObject<MeasuredTemplate.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<MeasuredTemplate.DrawOptions>): Promise<void>;
 
@@ -94,11 +89,9 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.
 
   protected _applyRenderFlags(flags: MeasuredTemplate.RenderFlags): void;
 
-  /**
-   * Refresh the displayed state of the MeasuredTemplate.
-   * This refresh occurs when the user interaction state changes.
-   */
-  protected _refreshState(): void;
+  protected override _refreshVisibility(): void;
+
+  protected override _refreshState(): void;
 
   /**
    * Refresh the elevation of the control icon.
@@ -199,32 +192,24 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.
     userId: string,
   ): void;
 
-  protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
-
   protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   protected override _canView(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
-
   protected override _onClickRight(event: Canvas.Event.Pointer): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * @deprecated "`MeasuredTemplate#borderColor` has been deprecated. Use
-   * {@linkcode MeasuredTemplateDocument.borderColor | MeasuredTemplate#document#borderColor} instead." (since v12, until v14)
+   * {@linkcode MeasuredTemplateDocument.borderColor | MeasuredTemplate#document#borderColor} instead." (since v12, until v16)
    * @remarks Returns the {@linkcode Color.valueOf | Color#valueOf()} of the document's `borderColor`, not the `Color` itself.
    */
   get borderColor(): number;
 
   /**
    * @deprecated "`MeasuredTemplate#fillColor` has been deprecated. Use
-   * {@linkcode MeasuredTemplateDocument.fillColor | MeasuredTemplate#document#fillColor} instead." (since v12, until v14)
+   * {@linkcode MeasuredTemplateDocument.fillColor | MeasuredTemplate#document#fillColor} instead." (since v12, until v16)
    * @remarks Returns the {@linkcode Color.valueOf | Color#valueOf()} of the document's `fillColor`, not the `Color` itself.
    */
   get fillColor(): number;
@@ -232,7 +217,7 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.
   /**
    * A flag for whether the current User has full ownership over the MeasuredTemplate document.
    * @deprecated "`MeasuredTemplate#owner` has been deprecated. Use {@linkcode MeasuredTemplate.isOwner | MeasuredTemplate#isOwner} instead."
-   * (since v12, until v14)
+   * (since v12, until v16)
    */
   get owner(): this["isOwner"];
 
@@ -258,15 +243,18 @@ declare namespace MeasuredTemplate {
    */
   type ImplementationClass = PlaceableObject.ImplementationClassFor<"MeasuredTemplate">;
 
-  interface RENDER_FLAGS {
+  interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
     /** @defaultValue `{ propagate: ["refreshState", "refreshPosition", "refreshShape", "refreshElevation"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{}` */
+    /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
     /** @defaultValue `{ propagate: ["refreshGrid"] }` */
     refreshPosition: RenderFlag<this, "refreshPosition">;
