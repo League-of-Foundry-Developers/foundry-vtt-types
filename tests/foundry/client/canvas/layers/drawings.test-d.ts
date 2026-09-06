@@ -1,4 +1,7 @@
 import { expectTypeOf } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
+
+import DrawingPalette = foundry.applications.sheets.palette.DrawingPalette;
 
 import DrawingsLayer = foundry.canvas.layers.DrawingsLayer;
 import Canvas = foundry.canvas.Canvas;
@@ -10,7 +13,6 @@ expectTypeOf(DrawingsLayer.instance).toEqualTypeOf<DrawingsLayer | undefined>();
 expectTypeOf(DrawingsLayer.layerOptions).toEqualTypeOf<DrawingsLayer.LayerOptions>();
 expectTypeOf(DrawingsLayer.layerOptions.name).toEqualTypeOf<"drawings">();
 expectTypeOf(DrawingsLayer.layerOptions.objectClass).toEqualTypeOf<Drawing.ImplementationClass>();
-expectTypeOf(DrawingsLayer.DEFAULT_CONFIG_SETTING).toEqualTypeOf<"defaultDrawingConfig">();
 
 const layer = new DrawingsLayer();
 
@@ -24,7 +26,6 @@ expectTypeOf(layer.hookName).toEqualTypeOf<"DrawingsLayer">();
 
 declare const somePoint: PIXI.IPointData;
 expectTypeOf(layer.getSnappedPoint(somePoint)).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(layer.configureDefault()).toEqualTypeOf<void>();
 
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
@@ -32,17 +33,15 @@ expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer["_getNewDrawingData"](somePoint)).toEqualTypeOf<DrawingDocument.CreateData>();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
-expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickLeft2"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_createDragPreviewData"](pointerEvent)).toEqualTypeOf<DrawingDocument.CreateData>();
+expectTypeOf(layer["_createDragShapeData"](pointerEvent)).toEqualTypeOf<AnyMutableObject>();
+expectTypeOf(layer["_updateDragPreview"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
 
-// deprecated since v12 until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.gridPrecision).toEqualTypeOf<16 | 8 | 0>();
+expectTypeOf(DrawingsLayer.paletteClass).toEqualTypeOf<typeof DrawingPalette>();
+expectTypeOf(DrawingsLayer.layerOptions.allowedEmptyShapes).toEqualTypeOf<string[]>();
+expectTypeOf(DrawingsLayer.layerOptions.discardClosingPoint).toEqualTypeOf<false>();
 
 Hooks.on("pasteDrawing", (objects, data, options) => {
   expectTypeOf(objects).toEqualTypeOf<Drawing.Implementation[]>();

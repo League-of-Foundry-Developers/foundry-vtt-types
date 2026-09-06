@@ -49,6 +49,7 @@ describe("InterfaceCanvasGroup tests", () => {
     expectTypeOf(myInterfaceGroup.grid).toEqualTypeOf<layers.GridLayer.Implementation>();
     expectTypeOf(myInterfaceGroup.regions).toEqualTypeOf<layers.RegionLayer.Implementation>();
     expectTypeOf(myInterfaceGroup.drawings).toEqualTypeOf<layers.DrawingsLayer.Implementation>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(myInterfaceGroup.templates).toEqualTypeOf<layers.TemplateLayer.Implementation>();
     expectTypeOf(myInterfaceGroup.tiles).toEqualTypeOf<layers.TilesLayer.Implementation>();
     expectTypeOf(myInterfaceGroup.walls).toEqualTypeOf<layers.WallsLayer.Implementation>();

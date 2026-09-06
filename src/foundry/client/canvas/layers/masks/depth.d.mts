@@ -32,6 +32,7 @@ declare class CanvasDepthMask extends CachedContainer {
 
   /**
    * Update the elevation-to-depth mapping?
+   * @defaultValue `false`
    */
   protected _elevationDirty: boolean;
 
@@ -39,9 +40,11 @@ declare class CanvasDepthMask extends CachedContainer {
    * Map an elevation to a value in the range [0, 1] with 8-bit precision.
    * The depth-rendered object are rendered with these values into the render texture.
    * @param elevation - The elevation in distance units
+   * @param inclusive - If false, the value belonging to `elevation` minus epsilon is return instead.
+   *                    (default: `true`)
    * @returns The value for this elevation in the range [0, 1] with 8-bit precision
    */
-  mapElevation(elevation: number): number;
+  mapElevation(elevation: number, inclusive?: boolean): number;
 
   /**
    * Update the elevation-to-depth mapping.

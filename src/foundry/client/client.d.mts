@@ -1178,6 +1178,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode TemplateLayer} which is now namespaced under {@linkcode foundry.canvas.layers.TemplateLayer}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemplateLayer = foundry.canvas.layers.TemplateLayer;
 
   /**
@@ -1250,6 +1251,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode MeasuredTemplate} which is now namespaced under {@linkcode foundry.canvas.placeables.MeasuredTemplate}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
 
   /**

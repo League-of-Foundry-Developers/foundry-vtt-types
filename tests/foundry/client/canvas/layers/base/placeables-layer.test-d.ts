@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
 import BasePlaceableHUD = foundry.applications.hud.BasePlaceableHUD;
@@ -56,16 +57,22 @@ if (firstHistoryEntry.type === "create") {
 }
 
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
+expectTypeOf(layer.options.keyboardMovableObjects).toBeBoolean();
+expectTypeOf(layer.options.confirmBeforeCreation).toEqualTypeOf<PlaceablesLayer.EvaluatableBoolean>();
+expectTypeOf(layer.options.controlObjectAfterCreation).toEqualTypeOf<PlaceablesLayer.EvaluatableBoolean>();
 expectTypeOf(layer.objects).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.preview).toEqualTypeOf<PIXI.Container | null>();
 expectTypeOf(layer.quadtree).toExtend<CanvasQuadtree<AmbientLight.Implementation> | null>();
 expectTypeOf(layer.documentCollection).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | null>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.gridPrecision).toEqualTypeOf<number>();
 expectTypeOf(layer.hud).toEqualTypeOf<BasePlaceableHUD<CAL> | null>();
+expectTypeOf(layer.paletteCreateData).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
 expectTypeOf(layer.controlled).toEqualTypeOf<CAL[]>();
-expectTypeOf(layer.getDocuments()).toEqualTypeOf<EmbeddedCollection<SAL, Scene.Implementation> | []>();
+expectTypeOf(layer.viewedDocuments()).toEqualTypeOf<Generator<SAL, void, undefined>>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(layer.getDocuments()).toEqualTypeOf<SAL[]>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+expectTypeOf(PlaceablesLayer.CREATION_STATES).toEqualTypeOf<PlaceablesLayer.CreationStates>();
 
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 declare const someLight: CALDoc;
@@ -150,7 +157,7 @@ expectTypeOf(
       y: 10,
       width: 100,
       height: 200,
-      releaseOptions: { trigger: true },
+      releaseOptions: { renderSidebar: false },
       controlOptions: { releaseOthers: false },
     },
     { releaseOthers: false }, // yes this is the same key as above
@@ -173,3 +180,10 @@ expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true }))
 // @ts-expect-error An x and y coordinate is required
 // This actually currently errors just on unknown key, not x/y requiredness
 layer.updateAll({ no_light_data: 0 });
+
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+
+expectTypeOf(layer["_isCreationToolActive"]()).toBeBoolean();
+expectTypeOf(layer["_createDragPreviewData"](pointerEvent)).toEqualTypeOf<AmbientLightDocument.CreateData>();
+expectTypeOf(layer["_commitDragLeftDrop"](pointerEvent)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(layer._throttleRotateMany({ angle: 90 })).toEqualTypeOf<Promise<CAL[]>>();

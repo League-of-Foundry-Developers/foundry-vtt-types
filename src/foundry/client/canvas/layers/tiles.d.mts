@@ -1,8 +1,10 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
+import type { AnyMutableObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { CanvasDepthMask, PlaceablesLayer } from "./_module.d.mts";
+import type { PlaceablesLayer } from "./_module.d.mts";
+import type ShapeLayerMixin from "./mixins/shapes.d.mts";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { TilePalette } from "#client/applications/sheets/palette/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -15,11 +17,13 @@ declare module "#configuration" {
 /**
  * A PlaceablesLayer designed for rendering the visual Scene for a specific vertical cross-section.
  */
-declare class TilesLayer extends PlaceablesLayer<"Tile"> {
+declare class TilesLayer extends ShapeLayerMixin(PlaceablesLayer<"Tile">) {
   // Fake type override
   static get instance(): Canvas["tiles"];
 
   static override documentName: "Tile";
+
+  static override paletteClass: typeof TilePalette;
 
   /**
    * @defaultValue
@@ -29,6 +33,7 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    *    zIndex: 300,
    *    controllableObjects: true,
    *    rotatableObjects: true,
+   *    confirmBeforeCreation: true
    * })
    * ```
    */
@@ -46,28 +51,20 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    */
   get tiles(): Tile.Implementation[];
 
-  /**
-   * @remarks Only produces foreground or non-foreground tiles, depending on the state
-   * of the foreground layer toggle control
-   */
-  override controllableObjects(): Generator<Tile.Implementation, void, undefined>;
-
-  override getSnappedPoint(point: Canvas.Point): Canvas.Point;
-
   // fake type override
-  override tearDown(options?: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<this>;
+  override tearDown(options?: TilesLayer.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: TilesLayer.TearDownOptions): Promise<void>;
 
   static override prepareSceneControls(): SceneControls.Control;
 
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
+  protected override _createDragPreviewData(event: Canvas.Event.Pointer): TileDocument.CreateData;
 
-  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
+  protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
-  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
+  protected override _updateDragPreview(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
+  protected override _updateMouseWheelPreview(): void;
 
   /**
    * Handle drop events for Tile data on the Tiles Layer
@@ -86,19 +83,6 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    * @returns The prepared data to create
    */
   protected _getDropData(event: DragEvent, data: TilesLayer.DropData): Promise<TileDocument.CreateData>;
-
-  /**
-   * Get an array of overhead Tile objects which are roofs
-   * @deprecated "`TilesLayer#roofs` has been deprecated without replacement." (since v12, until v14)
-   */
-  get roofs(): Tile.Implementation[];
-
-  /**
-   * A convenience reference to the tile occlusion mask on the primary canvas group.
-   * @deprecated "`TilesLayer#depthMask` is deprecated without replacement. Use {@linkcode Canvas.masks | canvas.masks.depth} instead"
-   * (since v12, until v14)
-   */
-  get depthMask(): CanvasDepthMask.Any;
 }
 
 declare namespace TilesLayer {
@@ -122,7 +106,7 @@ declare namespace TilesLayer {
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.tiles.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ImplementationClass> {
+  interface LayerOptions extends ShapeLayerMixin.LayerOptions<Tile.ImplementationClass> {
     name: "tiles";
 
     /** @defaultValue `300` */
@@ -130,6 +114,7 @@ declare namespace TilesLayer {
 
     controllableObjects: true;
     rotatableObjects: true;
+    confirmBeforeCreation: true;
   }
 
   // `TilesLayer` has no `_draw` override, this exists for consistency.
@@ -139,14 +124,13 @@ declare namespace TilesLayer {
 
   // TODO(esheyw): This can probably be made cleaner with more research.
   /** @internal */
-  type _DropData = Required<Pick<TileDocument.CreateData, "elevation" | "height" | "width" | "sort">>;
+  type _DropData = Required<Pick<TileDocument.CreateData, "height" | "width" | "sort">>;
 
   interface DropData extends Canvas.DropPosition, _DropData {
     type: "Tile";
     fromFilePicker: boolean;
     tileSize: number;
     texture: { src: string };
-    occlusion: { mode: CONST.OCCLUSION_MODES };
   }
 }
 
