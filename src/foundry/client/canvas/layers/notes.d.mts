@@ -42,6 +42,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 
   /**
    * The named core setting which tracks the toggled visibility state of map notes
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   static TOGGLE_SETTING: "notesDisplayToggle";
 

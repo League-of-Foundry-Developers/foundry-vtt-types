@@ -21,7 +21,7 @@ describe("VFXComponent", () => {
     const comp = new MyComponent(myComponentData);
     expectTypeOf(comp.timeline).toEqualTypeOf<VFXComponent.Timeline>();
     expectTypeOf(comp.loaded).toEqualTypeOf<boolean>();
-    expectTypeOf(comp.playing).toEqualTypeOf<boolean>();
+    expectTypeOf(comp.playing).toEqualTypeOf<boolean | undefined>();
     expectTypeOf(comp.assetPaths).toEqualTypeOf<Set<string>>();
     expectTypeOf(comp.managedDisplayObjects).toEqualTypeOf<Record<string, PIXI.DisplayObject[]>>();
   });
@@ -45,6 +45,10 @@ describe("VFXComponent", () => {
     expectTypeOf(comp.stop()).toEqualTypeOf<Promise<void>>();
     expectTypeOf(comp.cancel()).toEqualTypeOf<Promise<void>>();
     comp.attach();
+  });
+
+  test("Data is the initialized schema data", () => {
+    expectTypeOf<VFXComponent.Data>().toEqualTypeOf<{ type: string }>();
   });
 
   test("Animation interface shape", () => {

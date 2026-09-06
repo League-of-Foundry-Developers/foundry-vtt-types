@@ -153,7 +153,3 @@ expectTypeOf(myDrawing.strokeColor).toEqualTypeOf<Color>();
 expectTypeOf(myDrawing.fontFamily).toEqualTypeOf<string>();
 expectTypeOf(myDrawing.fontSize).toEqualTypeOf<number>();
 expectTypeOf(myDrawing.textColor).toEqualTypeOf<Color>();
-
-// non-schema:
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myDrawing.z).toBeNumber();

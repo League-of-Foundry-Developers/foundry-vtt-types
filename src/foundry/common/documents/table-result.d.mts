@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The TableResult Document.
@@ -70,12 +70,11 @@ declare abstract class BaseTableResult<
   /**
    * @remarks
    * Migrations:
-   * - Numeric `type`s to their new — since v12 — string values
    * - `type: "pack"` -\> {@linkcode CONST.TABLE_RESULT_TYPES.DOCUMENT} (since v13)
    * - `documentId` and `documentCollection` -\> `documentUuid`
    * - `text` -\> `description` (since v13, until v15)
    */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /**
    * @remarks

@@ -12,7 +12,7 @@ declare class GameTime {
 
   /**
    * The amount of time to delay before re-syncing the official server time.
-   * @defaultValue `1000 * 60 * 5`
+   * @defaultValue `1000 * 30`
    */
   static SYNC_INTERVAL_MS: number;
 
@@ -69,9 +69,11 @@ declare class GameTime {
    * @param userId    - The ID of the User who advanced the time
    * @remarks This is (effectively, not directly) used as the `onChange` function for the `core.time` setting.
    */
-  onUpdateWorldTime(worldTime: number, options: ClientSettings.OnChangeOptions, userId: string): void;
+  onUpdateWorldTime(worldTime: number, options: ClientSettings.OnChangeOptions, userId: string): Promise<void>;
 
   #GameTime: true;
+
+  static #GameTimeStatic: true;
 }
 
 declare namespace GameTime {

@@ -107,3 +107,6 @@ baseUser.hasPermission(10);
 
 // @ts-expect-error "SHOW_RULERS" is not a valid permission.
 baseUser.hasPermission("SHOW_RULERS");
+
+// Deprecated but still accepted (since v14, until v16)
+baseUser.hasPermission("TEMPLATE_CREATE");

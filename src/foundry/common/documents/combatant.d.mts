@@ -36,6 +36,7 @@ declare abstract class BaseCombatant<
    *   labelPlural: "DOCUMENT.Combatants",
    *   isEmbedded: true,
    *   hasTypeData: true,
+   *   baseTypeAllowed: true,
    *   permissions: {
    *     create: "OWNER",
    *     update: this.#canUpdate,
@@ -48,6 +49,9 @@ declare abstract class BaseCombatant<
   static override metadata: BaseCombatant.Metadata;
 
   static override defineSchema(): BaseCombatant.Schema;
+
+  /** @defaultValue `["DOCUMENT", "COMBATANT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

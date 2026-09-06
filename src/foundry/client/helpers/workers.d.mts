@@ -14,19 +14,15 @@ declare class AsyncWorker extends Worker {
    */
   static WORKER_HARNESS_JS: string;
 
+  /**
+   * The name of this worker.
+   */
   name: string;
 
   /**
    * A Promise which resolves once the Worker is ready to accept tasks
    */
   get ready(): Promise<void>;
-
-  /**
-   * An auto-incrementing task index.
-   * @defaultValue `0`
-   * @internal
-   */
-  protected _taskIndex: number;
 
   /**
    * Load a function onto a given Worker.
@@ -49,6 +45,8 @@ declare class AsyncWorker extends Worker {
   executeFunction(functionName: string, args?: AnyArray, transfer?: AnyArray): Promise<unknown>;
 
   override terminate(): void;
+
+  #AsyncWorker: true;
 }
 
 declare namespace AsyncWorker {

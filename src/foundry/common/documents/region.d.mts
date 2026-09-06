@@ -1,6 +1,7 @@
 import type { MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.mjs";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
 
 /**
  * The Region Document.
@@ -32,13 +33,52 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    *   embedded: {
    *     RegionBehavior: "behaviors"
    *   },
-   *   schemaVersion: "13.341"
+   *   permissions: {
+   *     create: BaseRegion.#canCreate,
+   *     update: BaseRegion.#canUpdate,
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "14.361"
    * })
    * ```
    */
   static override metadata: BaseRegion.Metadata;
 
   static override defineSchema(): BaseRegion.Schema;
+
+  /** @defaultValue `["DOCUMENT", "REGION"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  /**
+   * @remarks Ignores the ownership inherited from the parent {@linkcode Scene}: an
+   * {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT | INHERIT} entry reads as
+   * {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE | NONE}.
+   */
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /**
+   * @remarks Does not call `super`. Deletes `changes._shapeConstraints` unless internally flagged via
+   * `options._updateShapeConstraints`.
+   */
+  protected override _preUpdate(
+    changes: BaseRegion.UpdateData,
+    options: BaseRegion.Database.PreUpdateOptions,
+    user: User.Stored,
+  ): Promise<boolean | void>;
+
+  /**
+   * Migrate MeasuredTemplate data to Region data.
+   * @param template - The MeasuredTemplate data
+   * @param context  - The migration context
+   * @returns The Region data
+   * @internal
+   */
+  static _migrateMeasuredTemplateData(
+    template: object,
+    context?: BaseRegion.MigrateMeasuredTemplateDataContext,
+  ): BaseRegion.CreateData;
 
   /*
    * After this point these are not really overridden methods.
@@ -70,9 +110,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override " fvtt_types_internal_document_parent": BaseRegion.Parent;
 
-  static override canUserCreate(user: User.Implementation): boolean;
+  // `canUserCreate` omitted from template due to actual override above.
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  // `getUserLevel` omitted from template due to actual override above.
 
   override testUserPermission(
     user: User.Implementation,
@@ -187,11 +227,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     user: User.Stored,
   ): Promise<void>;
 
-  protected override _preUpdate(
-    changed: BaseRegion.UpdateData,
-    options: BaseRegion.Database.PreUpdateOptions,
-    user: User.Stored,
-  ): Promise<boolean | void>;
+  // `_preUpdate` omitted from template due to actual override above.
 
   protected override _onUpdate(
     changed: BaseRegion.UpdateData,
@@ -276,6 +312,33 @@ declare namespace BaseRegion {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;
+
+  /** Used by {@linkcode BaseRegion._migrateMeasuredTemplateData}. */
+  interface MigrateMeasuredTemplateDataContext {
+    /**
+     * The grid
+     * @defaultValue {@linkcode foundry.documents.BaseScene.defaultGrid}
+     */
+    grid?: BaseGrid.Any | undefined;
+
+    /**
+     * Grid-shaped?
+     * @defaultValue `false`
+     */
+    gridTemplates?: boolean | undefined;
+
+    /**
+     * The cone curvature
+     * @defaultValue `"round"`
+     */
+    coneTemplateType?: "round" | "flat" | undefined;
+
+    /**
+     * The users
+     * @defaultValue `[]`
+     */
+    users?: User.Source[] | undefined;
+  }
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `RegionDocument` a name.

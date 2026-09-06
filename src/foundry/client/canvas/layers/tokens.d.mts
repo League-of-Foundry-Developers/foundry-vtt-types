@@ -232,7 +232,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    * ```
    */
   placeTokens(
-    data: Iterable<Partial<Document.CreateDataForName<"Token">>>,
+    data: Iterable<TokenDocument.CreateData>,
     options?: TokenLayer.PlaceTokensOptions,
   ): Promise<TokenDocument.Implementation[]>;
 
@@ -375,13 +375,10 @@ declare namespace TokenLayer {
     minDistance: number;
     maxDistance: number;
     preventDrop: boolean;
-    terrainOptions: Omit<Token.CreateTerrainMovementPathOptions, "preview">;
-    constrainOptions: Omit<Token.ConstrainMovementPathOptions, "preview" | "history" | "measureOptions">;
-    measureOptions: Omit<Token.MeasureMovementPathOptions, "preview">;
-    pathfindingOptions: Omit<
-      Token.FindMovementPathOptions,
-      "preview" | "terrainOptions" | "constrainOptions" | "measureOptions"
-    >;
+    terrainOptions: Token.MovementTerrainOptions;
+    constrainOptions: Token.MovementConstrainOptions;
+    measureOptions: Token.MovementMeasureOptions;
+    pathfindingOptions: Token.MovementPathfindingOptions;
     moveOptions: Omit<
       TokenDocument.MoveOptions,
       "id" | "method" | "terrainOptions" | "constrainOptions" | "measureOptions" | "planned"
@@ -406,7 +403,7 @@ declare namespace TokenLayer {
   interface CreateOptions extends InexactPartial<Omit<TokenDocument.Database.CreateOperation, "parent">> {}
 
   interface PlacementContext {
-    data: Iterable<Partial<Document.CreateDataForName<"Token">>>;
+    data: Iterable<TokenDocument.CreateData>;
     previews: Token.Implementation[];
     placed: TokenDocument.Implementation[];
     index: number;

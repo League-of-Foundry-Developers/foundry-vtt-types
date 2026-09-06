@@ -1233,6 +1233,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * The configuration setting used to record Combat preferences
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   static CONFIG_SETTING: "combatTrackerConfig";
 

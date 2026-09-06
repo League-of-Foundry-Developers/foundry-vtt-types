@@ -1,7 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
-import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
+import type { DataField, DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -36,6 +36,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    *   name: "Item",
    *   collection: "items",
    *   hasTypeData: true,
+   *   baseTypeAllowed: false,
    *   indexed: true,
    *   compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"],
    *   embedded: {ActiveEffect: "effects"},
@@ -75,7 +76,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static override canUserCreate(user: User.Implementation): boolean;
 
   /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
-  static override migrateData(source: object): object;
+  static override migrateData(source: object, options?: DataField.CleanOptions): object;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;

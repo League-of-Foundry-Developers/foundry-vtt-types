@@ -16,7 +16,12 @@ const tooltipManager = new TooltipManager();
 
 expectTypeOf(tooltipManager.tooltip).toEqualTypeOf<HTMLElement>();
 expectTypeOf(tooltipManager.element).toEqualTypeOf<HTMLElement | null>();
-expectTypeOf(tooltipManager.activateEventListeners()).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners()).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners(document)).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners(undefined)).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners(document, {})).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners(document, { _deprecated: true })).toEqualTypeOf<void>();
+expectTypeOf(tooltipManager.activateListeners(document, { _deprecated: undefined })).toEqualTypeOf<void>();
 
 expectTypeOf(tooltipManager.activate(element)).toEqualTypeOf<void>();
 expectTypeOf(tooltipManager.activate(element, {})).toEqualTypeOf<void>();

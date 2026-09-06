@@ -10,7 +10,7 @@ declare class CombatConfiguration {
 
   /**
    * The configuration setting used to record Combat preferences
-   * @defaultValue `"combatTrackerConfig"`
+   * @remarks This is typed as a literal because it is a core setting key, and so needs to be passable to {@linkcode game.settings.get}.
    */
   static CONFIG_SETTING: "combatTrackerConfig";
 

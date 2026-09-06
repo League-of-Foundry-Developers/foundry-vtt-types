@@ -8,12 +8,12 @@ declare class ImageHelper {
   /**
    * Create thumbnail preview for a provided image path.
    * @param src     - The string URL or DisplayObject of the texture to render to a thumbnail
-   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method (default: `{}`)
+   * @param options - Additional named options passed to the {@linkcode ImageHelper.compositeCanvasTexture} method
    * @returns The parsed and converted thumbnail data
    */
   static createThumbnail(
     src: string | PIXI.DisplayObject,
-    options?: ImageHelper.CreateThumbnailOptions,
+    options: ImageHelper.CreateThumbnailOptions,
   ): Promise<ImageHelper.ThumbnailReturn | null>;
 
   /**
@@ -110,7 +110,7 @@ declare namespace ImageHelper {
 
     /**
      * The desired height of the output texture
-     * @defaultValue The height of the object passed to {@linkcode ImageHelper.compositeCanvasTexture}
+     * @defaultValue The height of `object.getBounds()`
      */
     height: number;
 
@@ -128,7 +128,7 @@ declare namespace ImageHelper {
 
     /**
      * The desired width of the output texture
-     * @defaultValue The width of the object passed to {@linkcode ImageHelper.compositeCanvasTexture}
+     * @defaultValue The width of `object.getBounds()`
      */
     width: number;
   }
@@ -139,7 +139,26 @@ declare namespace ImageHelper {
    */
   interface CompositeOptions extends InexactPartial<_CompositeOptions> {}
 
-  interface CreateThumbnailOptions extends CompositeOptions, TextureToImageOptions {}
+  /**
+   * @internal
+   * @privateRemarks {@linkcode ImageHelper.createThumbnail} defaults `format` and `quality` differently from
+   * {@linkcode ImageHelper.textureToImage}, so it cannot reuse {@linkcode TextureToImageOptions}.
+   */
+  interface _CreateThumbnailOptions {
+    /**
+     * The desired output image format.
+     * @defaultValue `"image/webp"`
+     */
+    format: IMAGE_MIME_TYPES;
+
+    /**
+     * The desired output image quality.
+     * @defaultValue `0.8`
+     */
+    quality: number;
+  }
+
+  interface CreateThumbnailOptions extends CompositeOptions, InexactPartial<_CreateThumbnailOptions> {}
 
   /** @internal */
   interface _TextureToImageOptions {
@@ -150,7 +169,7 @@ declare namespace ImageHelper {
     format: IMAGE_MIME_TYPES;
 
     /**
-     * JPEG or WEBP compression from 0 to 1. Default is 0.92.
+     * JPEG or WEBP compression from 0 to 1.
      * @defaultValue `0.92`
      */
     quality: number;
@@ -186,31 +205,45 @@ declare namespace ImageHelper {
    */
   interface ThumbnailReturn {
     /**
-     * The height of the {@linkcode PIXI.Sprite}, created by {@linkcode ImageHelper.createThumbnail}
-     */
-    height: number;
-
-    /**
-     * The originally passed `string` URL or DisplayObject
-     */
-    src: string | PIXI.DisplayObject;
-
-    /**
-     * The Texture, returned from {@linkcode ImageHelper.compositeCanvasTexture}, with `destroy(true)` already called on it.
-     */
-    texture: PIXI.Texture;
-
-    /**
      * The base64 encoded image data, returned from {@linkcode ImageHelper.textureToImage}
      */
     thumb: string;
 
     /**
-     * The width of the {@linkcode PIXI.Sprite}, created by {@linkcode ImageHelper.createThumbnail}
+     * The width of the Texture returned from {@linkcode ImageHelper.compositeCanvasTexture}
      */
     width: number;
+
+    /**
+     * The height of the Texture returned from {@linkcode ImageHelper.compositeCanvasTexture}
+     */
+    height: number;
+
+    /**
+     * The image format the thumbnail was encoded in
+     */
+    format: IMAGE_MIME_TYPES;
+
+    /**
+     * The image quality the thumbnail was encoded at
+     */
+    quality: number;
+
+    /**
+     * @deprecated "The src property of the return value of ImageHelper#createThumbnail is deprecated. It is equal to
+     * the src argument." (since v14, until v16)
+     */
+    readonly src: string | PIXI.DisplayObject;
+
+    /**
+     * @deprecated "The texture property of the return value of ImageHelper#createThumbnail is deprecated without
+     * replacement." (since v14, until v16)
+     * @remarks `destroy(true)` has already been called on this Texture.
+     */
+    readonly texture: PIXI.Texture;
   }
 
+  /** @internal */
   interface _PixelsToCanvasOptions {
     /**
      * The element to use.

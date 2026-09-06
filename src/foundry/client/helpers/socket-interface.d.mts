@@ -8,15 +8,18 @@ import type { CompendiumCollection } from "#client/documents/collections/_module
  */
 declare class SocketInterface {
   /**
-   * Standardize the way that socket messages are dispatched and their results are handled
+   * Send a socket request to all other clients and handle their responses.
    * @param eventName - The socket event name being handled
    * @param request   - Request data provided to the Socket event
    * @returns A Promise which resolves to the SocketResponse
+   * @remarks Rejects with the `Error` returned by the server if the response carries one.
    */
   static dispatch<DatabaseAction extends DatabaseBackend.DatabaseAction>(
     eventName: string,
     request: DocumentSocketRequest<DatabaseAction> | CompendiumCollection.ManageCompendiumRequest,
   ): Promise<SocketInterface.SocketResponse>;
+
+  static #SocketInterface: true;
 }
 
 declare namespace SocketInterface {

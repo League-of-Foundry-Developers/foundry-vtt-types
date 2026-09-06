@@ -1,4 +1,4 @@
-import type { DotKeys, Identity, InexactPartial } from "#utils";
+import type { AnyObject, DotKeys, Identity, InexactPartial } from "#utils";
 
 /**
  * A helper class which assists with localization and string translation
@@ -33,6 +33,11 @@ declare class Localization {
    * @defaultValue `{}`
    */
   protected _fallback: Localization.Translations;
+
+  /**
+   * A reusable PluralRules instance
+   */
+  get pluralRules(): Intl.PluralRules;
 
   /**
    * Initialize the Localization module
@@ -72,18 +77,6 @@ declare class Localization {
    */
   setLanguage(lang: string): Promise<void>;
 
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _discoverSupportedLanguages(): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _getTranslations(lang: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _filterLanguagePaths(pkg: never, lang: never): never;
-
-  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
-  protected _loadTranslationFile(src: never): never;
-
   /**
    * Return whether a certain string has a known translation defined.
    * @param stringId - The string key being translated
@@ -92,49 +85,45 @@ declare class Localization {
   has(stringId: string, fallback?: boolean): boolean;
 
   /**
-   * Localize a string by drawing a translation from the available translations dictionary, if available
-   * If a translation is not available, the original string is returned
+   * Localize a string by drawing a translation from the available translations dictionary, if available. Variables can
+   * be included in the template enclosed in curly braces and will be substituted using those named keys.
    * @param stringId - The string ID to translate
-   * @returns The translated string
+   * @param data     - Data for variable formating: values can be anything meaningfully stringifiable.
+   * @returns The translated string, if a translation was found, or else the inputted stringId
    *
-   * @example <caption>Localizing a simple string in JavaScript</caption>
-   * ```typescript
+   * @example Localizing a simple string in JavaScript
+   * ```js
    * {
    *   "MYMODULE.MYSTRING": "Hello, this is my module!"
    * }
-   * game.i18n.localize("MYMODULE.MYSTRING"); // Hello, this is my module!
+   * _loc("MYMODULE.MYSTRING"); // Hello, this is my module!
    * ```
-   *
-   * @example <caption>Localizing a simple string in Handlebars</caption>
-   * ```handlebars
-   * {{localize "MYMODULE.MYSTRING"}} <!-- Hello, this is my module! -->
-   * ```
-   */
-  localize(stringId: string): string;
-
-  /**
-   * Localize a string including variable formatting for input arguments.
-   * Provide a string ID which defines the localized template.
-   * Variables can be included in the template enclosed in braces and will be substituted using those named keys.
-   *
-   * @param stringId - The string ID to translate
-   * @param data     - Provided input data (default: `{}`)
-   * @returns The translated and formatted string
-   *
-   * @example <caption>Localizing a formatted string in JavaScript</caption>
-   * ```typescript
+   * @example Localizing a formatted string in JavaScript
+   * ```js
    * {
    *   "MYMODULE.GREETING": "Hello {name}, this is my module!"
    * }
-   * game.i18n.format("MYMODULE.GREETING" {name: "Andrew"}); // Hello Andrew, this is my module!
+   * _loc("MYMODULE.GREETING" {name: "Andrew"}); // Hello Andrew, this is my module!
    * ```
    *
-   * @example <caption>Localizing a formatted string in Handlebars</caption>
-   * ```handlebars
+   * @example Localizing a simple string in Handlebars
+   * ```hbs
+   * {{localize "MYMODULE.MYSTRING"}} <!-- Hello, this is my module! -->
+   *
+   * ```
+   * @example Localizing a formatted string in Handlebars
+   * ```hbs
    * {{localize "MYMODULE.GREETING" name="Andrew"}} <!-- Hello, this is my module! -->
    * ```
    */
-  format(stringId: string, data?: Record<string, string>): string;
+  localize(stringId: string, data?: AnyObject): string;
+
+  /**
+   * @remarks An alias of {@linkcode Localization.localize | Localization#localize}, which took over variable
+   * formatting in v14.
+   * @privateRemarks Not declared in the class body; assigned to the prototype by `Object.defineProperties`.
+   */
+  format(stringId: string, data?: AnyObject): string;
 
   /**
    * Retrieve list formatter configured to the world's language setting.
@@ -150,6 +139,8 @@ declare class Localization {
   sortObjects<T extends object>(objects: Array<T>, key: DotKeys<T>): T[];
 
   #Localization: true;
+
+  static #LocalizationStatic: true;
 }
 
 declare namespace Localization {
@@ -160,19 +151,24 @@ declare namespace Localization {
     [K: string]: string | Translations;
   }
 
-  interface LocalizeDataModelOptions {
+  /** @internal */
+  interface _PrefixPathOptions {
+    /**
+     * A localization path prefix used to prefix all field names within this model. This is generally not required.
+     * @defaultValue `""`
+     */
+    prefixPath?: string | undefined;
+  }
+
+  interface LocalizeDataModelOptions extends _PrefixPathOptions {
     /**
      * An array of localization key prefixes to use. If not specified, prefixes
      * are learned from the DataModel.LOCALIZATION_PREFIXES static property.
      */
     prefixes?: string[] | undefined;
-
-    /**
-     * A localization path prefix used to prefix all field names within this model. This is generally not required.
-     */
-    prefixPath?: string | undefined;
   }
 
+  /** @internal */
   interface _LocalizeSchemaOptions {
     /**
      * @defaultValue `new Set()`
@@ -181,8 +177,7 @@ declare namespace Localization {
     seenFields: Set<foundry.data.fields.DataField.Any>;
   }
 
-  interface LocalizeSchemaOptions
-    extends InexactPartial<_LocalizeSchemaOptions>, Pick<LocalizeDataModelOptions, "prefixPath"> {}
+  interface LocalizeSchemaOptions extends InexactPartial<_LocalizeSchemaOptions>, _PrefixPathOptions {}
 
   interface GetListFormatterOptions {
     /**

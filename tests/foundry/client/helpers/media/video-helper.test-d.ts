@@ -26,19 +26,18 @@ expectTypeOf(videoHelper.getVideoSource(texture)).toEqualTypeOf<HTMLVideoElement
 
 expectTypeOf(videoHelper.cloneTexture(videoElement)).toEqualTypeOf<Promise<PIXI.Texture>>();
 
-expectTypeOf(videoHelper.play(videoElement)).toEqualTypeOf<void>();
-expectTypeOf(videoHelper.play(videoElement, {})).toEqualTypeOf<void>();
-expectTypeOf(
-  videoHelper.play(videoElement, { loop: false, offset: 30, playing: true, volume: 0.36 }),
-).toEqualTypeOf<void>();
+expectTypeOf(videoHelper.play(videoElement)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(videoHelper.play(videoElement, {})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(videoHelper.play(videoElement, { loop: false, offset: 30, playing: true, volume: 0.36 })).toEqualTypeOf<
+  Promise<void>
+>();
 expectTypeOf(
   videoHelper.play(videoElement, { loop: undefined, offset: undefined, playing: undefined, volume: undefined }),
-).toEqualTypeOf<void>();
+).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(videoHelper.stop(videoElement)).toEqualTypeOf<void>();
 expectTypeOf(videoHelper.awaitFirstGesture()).toEqualTypeOf<void>();
 
-expectTypeOf(videoHelper.createThumbnail("some/path/image.webp")).toEqualTypeOf<Promise<string>>();
 expectTypeOf(videoHelper.createThumbnail("some/path/image.webp", {})).toEqualTypeOf<Promise<string>>();
 expectTypeOf(
   videoHelper.createThumbnail("some/path/image.webp", {

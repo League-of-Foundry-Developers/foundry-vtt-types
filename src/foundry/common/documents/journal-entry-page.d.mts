@@ -35,7 +35,7 @@ declare abstract class BaseJournalEntryPage<
    *   coreTypes: ["text", "image", "pdf", "video"],
    *   compendiumIndexFields: ["name", "type", "sort"],
    *   permissions: {
-   *     create: "OWNER",
+   *     create: this.#canCreate,
    *     delete: "OWNER"
    *   },
    *   schemaVersion: "13.341"
@@ -45,6 +45,9 @@ declare abstract class BaseJournalEntryPage<
   static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
+
+  /** @defaultValue `["DOCUMENT", "JOURNALENTRYPAGE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.

@@ -10,7 +10,7 @@ import Module = foundry.packages.Module;
 declare const aGame: Game;
 
 expectTypeOf(aGame.combats).toEqualTypeOf<docCollections.CombatEncounters | undefined>();
-expectTypeOf(aGame.i18n).toEqualTypeOf<Localization | undefined>();
+expectTypeOf(aGame.i18n).toEqualTypeOf<Localization>();
 expectTypeOf(aGame.settings).toEqualTypeOf<ClientSettings>();
 
 declare global {
@@ -121,25 +121,37 @@ describe("Game Tests", () => {
   test("game.collections - World Collections", () => {
     /** See {@linkcode CONST.WORLD_DOCUMENT_TYPES} */
     if (game.collections) {
-      expectTypeOf(game.collections.get("Actor")).toEqualTypeOf<docCollections.Actors.Implementation>();
-      expectTypeOf(game.collections.get("Cards")).toEqualTypeOf<docCollections.CardStacks.Implementation>();
-      expectTypeOf(game.collections.get("ChatMessage")).toEqualTypeOf<docCollections.ChatMessages.Implementation>();
-      expectTypeOf(game.collections.get("Combat")).toEqualTypeOf<docCollections.CombatEncounters.Implementation>();
-      expectTypeOf(
-        game.collections.get("FogExploration"),
-      ).toEqualTypeOf<docCollections.FogExplorations.Implementation>();
-      expectTypeOf(game.collections.get("Item")).toEqualTypeOf<docCollections.Items.Implementation>();
-      expectTypeOf(game.collections.get("JournalEntry")).toEqualTypeOf<docCollections.Journal.Implementation>();
-      expectTypeOf(game.collections.get("Macro")).toEqualTypeOf<docCollections.Macros.Implementation>();
-      expectTypeOf(game.collections.get("Playlist")).toEqualTypeOf<docCollections.Playlists.Implementation>();
-      expectTypeOf(game.collections.get("RollTable")).toEqualTypeOf<docCollections.RollTables.Implementation>();
-      expectTypeOf(game.collections.get("Scene")).toEqualTypeOf<docCollections.Scenes.Implementation>();
-      expectTypeOf(game.collections.get("Setting")).toEqualTypeOf<docCollections.WorldSettings.Implementation>();
-      expectTypeOf(game.collections.get("User")).toEqualTypeOf<docCollections.Users.Implementation>();
+      expectTypeOf(game.collections.get("Actor")).toEqualTypeOf<docCollections.Actors.Implementation | undefined>();
+      expectTypeOf(game.collections.get("Cards")).toEqualTypeOf<docCollections.CardStacks.Implementation | undefined>();
+      expectTypeOf(game.collections.get("ChatMessage")).toEqualTypeOf<
+        docCollections.ChatMessages.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("Combat")).toEqualTypeOf<
+        docCollections.CombatEncounters.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("FogExploration")).toEqualTypeOf<
+        docCollections.FogExplorations.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("Item")).toEqualTypeOf<docCollections.Items.Implementation | undefined>();
+      expectTypeOf(game.collections.get("JournalEntry")).toEqualTypeOf<
+        docCollections.Journal.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("Macro")).toEqualTypeOf<docCollections.Macros.Implementation | undefined>();
+      expectTypeOf(game.collections.get("Playlist")).toEqualTypeOf<
+        docCollections.Playlists.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("RollTable")).toEqualTypeOf<
+        docCollections.RollTables.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("Scene")).toEqualTypeOf<docCollections.Scenes.Implementation | undefined>();
+      expectTypeOf(game.collections.get("Setting")).toEqualTypeOf<
+        docCollections.WorldSettings.Implementation | undefined
+      >();
+      expectTypeOf(game.collections.get("User")).toEqualTypeOf<docCollections.Users.Implementation | undefined>();
       // Known means known; no `undefined` even with strict explicitly false
-      expectTypeOf(
-        game.collections.get("User", { strict: false }),
-      ).toEqualTypeOf<docCollections.Users.Implementation>();
+      expectTypeOf(game.collections.get("User", { strict: false })).toEqualTypeOf<
+        docCollections.Users.Implementation | undefined
+      >();
 
       expectTypeOf(game.collections.get("UnknownKey")).toEqualTypeOf<
         foundry.documents.abstract.WorldCollection.Any | undefined
@@ -148,5 +160,10 @@ describe("Game Tests", () => {
         game.collections.get("UnknownKey", { strict: true }),
       ).toEqualTypeOf<foundry.documents.abstract.WorldCollection.Any>();
     }
+  });
+
+  test("Globals", () => {
+    expectTypeOf(canvas).toEqualTypeOf<foundry.canvas.Canvas | undefined>();
+    expectTypeOf(_loc).toEqualTypeOf<typeof foundry.helpers.Localization.prototype.localize | undefined>();
   });
 });

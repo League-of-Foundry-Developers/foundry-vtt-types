@@ -155,3 +155,5 @@ expectTypeOf(myWall.flags).toEqualTypeOf<
     InterfaceToObject<Document.CoreFlags> & InterfaceToObject<WallDocument.CoreFlags>
   >
 >();
+
+expectTypeOf(myWall.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
