@@ -13,12 +13,14 @@ import type { VFXPositionalSoundComponent } from "./components/_module.mjs";
 
 export {};
 
-type VFXBasePathPoint = VFXPath.BasePathPoint;
+type VFXComponentData = VFXComponent.Data;
 
-type VFXPathPoint = VFXPath.PathPoint;
+type VFXComponentAnimation = VFXComponent.Animation;
 
 type VFXPathGenerator = VFXPath.Generator;
 
-type VFXComponentAnimation = VFXComponent.Animation;
+type VFXBasePathPoint = VFXPath.BasePathPoint;
+
+type VFXPathPoint = VFXPath.PathPoint;
 
 type VFXPositionalSoundData = VFXPositionalSoundComponent.PositionalSoundData;

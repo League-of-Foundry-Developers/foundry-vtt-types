@@ -118,4 +118,17 @@ expectTypeOf(
     },
   ),
 ).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint[]>();
+
+declare const collisionMode: "all" | "closest";
+expectTypeOf(
+  scene.testSurfaceCollision(
+    { x: 0, y: 0, elevation: 0 },
+    { x: 5, y: 5, elevation: 5 },
+    {
+      level: "aLevelId",
+      mode: collisionMode,
+    },
+  ),
+).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint[] | foundry.canvas.Canvas.ElevatedPoint | null>();
+
 expectTypeOf(scene._configureLevelTextures()).toEqualTypeOf<Scene.LevelTexture[]>();

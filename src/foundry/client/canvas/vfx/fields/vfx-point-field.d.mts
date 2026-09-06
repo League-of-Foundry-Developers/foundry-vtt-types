@@ -21,8 +21,6 @@ declare class VFXPointField<
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   protected override _cast(value: unknown): AssignmentType;
-
-  #VFXPointField: true;
 }
 
 declare namespace VFXPointField {
