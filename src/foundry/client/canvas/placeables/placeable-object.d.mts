@@ -350,7 +350,7 @@ declare abstract class PlaceableObject<
    * @param options - Additional options which modify the control request (default: `{}`)
    * @returns A flag denoting whether control was successful
    * @remarks
-   * @throws If this object {@linkcode isPreview | is a preview}.
+   * @throws If this object {@linkcode PlaceableObject.isPreview | is a preview}.
    */
   control(options?: PlaceableObject.ControlOptions): boolean;
 
@@ -366,7 +366,7 @@ declare abstract class PlaceableObject<
    * @param options - Options which modify the releasing workflow (default: `{}`)
    * @returns A Boolean flag confirming the object was released.
    * @remarks
-   * @throws If this object {@linkcode isPreview | is a preview}.
+   * @throws If this object {@linkcode PlaceableObject.isPreview | is a preview}.
    */
   release(options?: HandleEmptyObject<PlaceableObject.ReleaseOptions>): boolean;
 
@@ -441,7 +441,7 @@ declare abstract class PlaceableObject<
 
   /**
    * Create a standard MouseInteractionManager for the PlaceableObject
-   * @remarks Returns `null` if this object {@linkcode isPreview | is a preview}.
+   * @remarks Returns `null` if this object {@linkcode PlaceableObject.isPreview | is a preview}.
    */
   protected _createInteractionManager(): MouseInteractionManager<this> | null;
 

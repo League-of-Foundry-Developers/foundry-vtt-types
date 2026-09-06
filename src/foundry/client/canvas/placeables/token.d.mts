@@ -1064,25 +1064,25 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * Get the terrain options used during the drag operation.
    * @returns The terrain options
    */
-  protected _getDragTerrainOptions(): Token.DragTerrainOptions;
+  protected _getDragTerrainOptions(): Token.MovementTerrainOptions;
 
   /**
    * Get the constrain options used during the drag operation.
    * @returns The constrain options
    */
-  protected _getDragConstrainOptions(): Token.DragConstrainOptions;
+  protected _getDragConstrainOptions(): Token.MovementConstrainOptions;
 
   /**
    * Get the measure options used during the drag operation.
    * @returns The measure options
    */
-  protected _getDragMeasureOptions(): Token.DragMeasureOptions;
+  protected _getDragMeasureOptions(): Token.MovementMeasureOptions;
 
   /**
    * Get the pathfinding options used during the drag operation to find the path of movement through the waypoints.
    * @returns The pathfinding options
    */
-  protected _getDragPathfindingOptions(): Token.DragPathfindingOptions;
+  protected _getDragPathfindingOptions(): Token.MovementPathfindingOptions;
 
   /**
    * Get the movement action for the waypoints placed during a drag operation.
@@ -1383,16 +1383,6 @@ declare namespace Token {
     searchId: number;
   }
 
-  type PlanMovementTerrainOptions = Omit<Token.CreateTerrainMovementPathOptions, "preview">;
-  type PlanMovementConstrainOptions = Omit<
-    Token.ConstrainMovementPathOptions,
-    "preview" | "history" | "measureOptions"
-  >;
-  type PlanMovementMeasureOptions = Omit<Token.MeasureMovementPathOptions, "preview">;
-  type PlanMovementPathfindingOptions = Omit<
-    Token.FindMovementPathOptions,
-    "preview" | "terrainOptions" | "constrainOptions" | "measureOptions"
-  >;
   interface PlanMovementMoveOptions {
     autoRotate?: boolean | undefined;
     showRuler?: boolean | undefined;
@@ -1410,10 +1400,10 @@ declare namespace Token {
     minDistance?: number | undefined;
     maxDistance?: number | undefined;
     preventDrop?: boolean | undefined;
-    terrainOptions?: PlanMovementTerrainOptions | undefined;
-    constrainOptions?: PlanMovementConstrainOptions | undefined;
-    measureOptions?: PlanMovementMeasureOptions | undefined;
-    pathfindingOptions?: PlanMovementPathfindingOptions | undefined;
+    terrainOptions?: MovementTerrainOptions | undefined;
+    constrainOptions?: MovementConstrainOptions | undefined;
+    measureOptions?: MovementMeasureOptions | undefined;
+    pathfindingOptions?: MovementPathfindingOptions | undefined;
     moveOptions?: PlanMovementMoveOptions | undefined;
   }
 
@@ -1700,7 +1690,9 @@ declare namespace Token {
    *
    * Not reported, as `testInsideRegion` is deprecated and thus untyped in v13.
    */
-  type TestablePosition = Canvas.Point & { elevation?: number | undefined };
+  interface TestablePosition extends Canvas.Point {
+    elevation?: number | undefined;
+  }
 
   interface _InitializeSourcesOptions {
     /**
@@ -1782,7 +1774,7 @@ declare namespace Token {
   interface DragLeftDropMovement {
     waypoints: TokenDocument.MovementWaypoint[];
     method: "dragging";
-    constrainOptions: Token.DragConstrainOptions;
+    constrainOptions: Token.MovementConstrainOptions;
   }
 
   interface DragLeftDropOperation extends DragLeftDropUpdateOptions {
@@ -1796,7 +1788,15 @@ declare namespace Token {
    */
   type DragLeftDropReturn = [updates: Token.DragLeftDropUpdate[], operation: Token.DragLeftDropOperation];
 
-  interface MeasureMovementPathOptions {
+  /**
+   * {@linkcode MeasureMovementPathOptions} minus `preview`, which core sets.
+   *
+   * @privateRemarks Empty as of 14.367.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface MovementMeasureOptions {}
+
+  interface MeasureMovementPathOptions extends MovementMeasureOptions {
     /**
      * Measure a preview path?
      * @defaultValue `false`
@@ -1824,13 +1824,8 @@ declare namespace Token {
     >
   > {}
 
-  interface ConstrainMovementPathOptions extends InexactPartial<{
-    /**
-     * Constrain a preview path?
-     * @defaultValue `false`
-     */
-    preview: boolean;
-
+  /** {@linkcode ConstrainMovementPathOptions} minus `preview`, `history` and `measureOptions`, which core sets. */
+  interface MovementConstrainOptions extends InexactPartial<{
     /**
      * Ignore walls?
      * @defaultValue `false`
@@ -1848,17 +1843,34 @@ declare namespace Token {
 
     /** The maximum cumulative distance. */
     maxDistance: number;
-
-    /**
-     * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
-     * @defaultValue `false`
-     * @remarks marked by foundry as readonly
-     */
-    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
-
-    /** The measurement options. */
-    measureOptions: Omit<Token.MeasureMovementPathOptions, "preview">;
   }> {}
+
+  /** {@linkcode ConstrainMovementPathOptions} minus `preview` and `measureOptions`, which core sets. */
+  interface MovementConstrainHistoryOptions
+    extends
+      MovementConstrainOptions,
+      InexactPartial<{
+        /**
+         * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
+         * @defaultValue `false`
+         * @remarks marked by foundry as readonly
+         */
+        history: boolean | TokenDocument.MeasuredMovementWaypoint[];
+      }> {}
+
+  interface ConstrainMovementPathOptions
+    extends
+      MovementConstrainHistoryOptions,
+      InexactPartial<{
+        /**
+         * Constrain a preview path?
+         * @defaultValue `false`
+         */
+        preview: boolean;
+
+        /** The measurement options. */
+        measureOptions: Token.MovementMeasureOptions;
+      }> {}
 
   type ConstrainedMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
@@ -1925,28 +1937,31 @@ declare namespace Token {
     checkpoint?: boolean | undefined;
   }
 
-  interface FindMovementPathOptions {
-    /**
-     * Find a preview path?
-     * @defaultValue `false`
-     */
-    preview?: boolean | undefined;
-
+  /** {@linkcode FindMovementPathOptions} minus `preview` and the three nested option bags, which core sets. */
+  interface MovementPathfindingOptions {
     /**
      * Unless the path can be found instantly, delay the start of the pathfinding
      * computation by this number of milliseconds.
      * @defaultValue `0`
      */
     delay?: number | undefined;
+  }
+
+  interface FindMovementPathOptions extends MovementPathfindingOptions {
+    /**
+     * Find a preview path?
+     * @defaultValue `false`
+     */
+    preview?: boolean | undefined;
 
     /** The terrain options. */
-    terrainOptions?: Omit<Token.CreateTerrainMovementPathOptions, "preview"> | undefined;
+    terrainOptions?: Token.MovementTerrainOptions | undefined;
 
     /** The constrain options. */
-    constrainOptions?: Omit<Token.ConstrainMovementPathOptions, "preview" | "measureOptions"> | undefined;
+    constrainOptions?: Token.MovementConstrainHistoryOptions | undefined;
 
     /** The measure options. */
-    measureOptions?: Omit<Token.MeasureMovementPathOptions, "preview"> | undefined;
+    measureOptions?: Token.MovementMeasureOptions | undefined;
   }
 
   interface FindMovementPathJob {
@@ -1973,8 +1988,16 @@ declare namespace Token {
   /** A waypoint used as input to {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
   type GetTerrainMovementPathWaypoint = Omit<TokenDocument.GetCompleteMovementPathWaypoint, "terrain">;
 
+  /**
+   * {@linkcode CreateTerrainMovementPathOptions} minus `preview`, which core sets.
+   *
+   * @privateRemarks Empty as of 14.367.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface MovementTerrainOptions {}
+
   /** Options for {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
-  interface CreateTerrainMovementPathOptions {
+  interface CreateTerrainMovementPathOptions extends MovementTerrainOptions {
     /**
      * Is this a preview path?
      * @defaultValue `false`
@@ -1985,21 +2008,10 @@ declare namespace Token {
   /** A waypoint in the terrain-annotated movement path returned by {@link Token.createTerrainMovementPath | `Token#createTerrainMovementPath`}. */
   type TerrainMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
 
-  type DragTerrainOptions = Omit<Token.CreateTerrainMovementPathOptions, "preview">;
-
-  type DragConstrainOptions = Omit<Token.ConstrainMovementPathOptions, "preview" | "history" | "measureOptions">;
-
-  type DragMeasureOptions = Omit<Token.MeasureMovementPathOptions, "preview">;
-
-  type DragPathfindingOptions = Omit<
-    Token.FindMovementPathOptions,
-    "preview" | "terrainOptions" | "constrainOptions" | "measureOptions"
-  >;
-
   interface DragLeftDropUpdateOptions {
-    terrainOptions: DragTerrainOptions;
-    constrainOptions: DragConstrainOptions;
-    measureOptions: DragMeasureOptions;
+    terrainOptions: MovementTerrainOptions;
+    constrainOptions: MovementConstrainOptions;
+    measureOptions: MovementMeasureOptions;
   }
 
   interface DragWaypointPositionOptions extends InexactPartial<{
