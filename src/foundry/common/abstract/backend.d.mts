@@ -262,6 +262,9 @@ declare namespace DatabaseBackend {
   type DatabaseAction = keyof DatabaseOperationMap;
   type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];
 
+  type WriteAction = Exclude<DatabaseAction, "get">;
+  type WriteOperation = DatabaseOperationMap[WriteAction];
+
   /**
    * The optional properties of this interface lack `| undefined` because such keys do not survive passage over the socket.
    * The interfaces users will most commonly be passing are `InexactPartial`ed in their entirety to allow passing `undefined`

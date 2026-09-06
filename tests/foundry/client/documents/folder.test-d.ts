@@ -19,3 +19,8 @@ expectTypeOf(folder.ancestors).toEqualTypeOf<Folder.Stored[]>();
 expectTypeOf(Folder.createDialog()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(folder.getSubfolders(true)).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();
 expectTypeOf(folder.getParentFolders()).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();
+
+declare const someFolder: Folder.Stored;
+expectTypeOf(someFolder.exportDialog)
+  .parameter(0)
+  .toEqualTypeOf<string | foundry.documents.collections.CompendiumCollection.Any | null | undefined>();

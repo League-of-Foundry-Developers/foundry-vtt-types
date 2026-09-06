@@ -3,6 +3,8 @@ import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseWall } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
+import type { Level } from "#client/documents/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -15,6 +17,15 @@ declare namespace WallDocument {
    * The document's name.
    */
   type Name = "Wall";
+
+  /** Options for {@linkcode WallDocument.initializeEdge | WallDocument#initializeEdge}. */
+  interface InitializeEdgeOptions {
+    /**
+     * Delete the edge of this Wall document?
+     * @defaultValue `false`
+     */
+    deleted?: boolean | undefined;
+  }
 
   /**
    * The context used to create a `WallDocument`.
@@ -57,7 +68,7 @@ declare namespace WallDocument {
       label: "DOCUMENT.Wall";
       labelPlural: "DOCUMENT.Walls";
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.353";
     }>
   > {}
 
@@ -274,7 +285,7 @@ declare namespace WallDocument {
    */
   interface Schema extends fields.DataSchema {
     /**
-     * The _id which uniquely identifies this BaseWall embedded document
+     * The _id which uniquely identifies the embedded Wall document
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
@@ -300,25 +311,26 @@ declare namespace WallDocument {
     >;
 
     /**
+     * @defaultValue `new Set()`
+     * @remarks The IDs of the Scene levels that this wall is part of.
+     */
+    levels: fields.SceneLevelsSetField;
+
+    /**
      * The illumination restriction type of this wall
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
+     * @defaultValue `CONST.EDGE_SENSE_TYPES.NORMAL` (`20`)
      */
     light: fields.NumberField<
       {
         required: true;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        choices: Record<CONST.WALL_SENSE_TYPES, string>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        choices: Record<CONST.EDGE_SENSE_TYPES, string>;
+        initial: typeof CONST.EDGE_SENSE_TYPES.NORMAL;
+        validationError: "must be a value in CONST.EDGE_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null | undefined,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null
+      CONST.EDGE_SENSE_TYPES | null | undefined,
+      CONST.EDGE_SENSE_TYPES | null,
+      CONST.EDGE_SENSE_TYPES | null
     >;
 
     /**
@@ -340,68 +352,53 @@ declare namespace WallDocument {
 
     /**
      * The visual restriction type of this wall
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
+     * @defaultValue `CONST.EDGE_SENSE_TYPES.NORMAL` (`20`)
      */
     sight: fields.NumberField<
       {
         required: true;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        choices: Record<CONST.WALL_SENSE_TYPES, string>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        choices: Record<CONST.EDGE_SENSE_TYPES, string>;
+        initial: typeof CONST.EDGE_SENSE_TYPES.NORMAL;
+        validationError: "must be a value in CONST.EDGE_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null | undefined,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null
+      CONST.EDGE_SENSE_TYPES | null | undefined,
+      CONST.EDGE_SENSE_TYPES | null,
+      CONST.EDGE_SENSE_TYPES | null
     >;
 
     /**
      * The auditory restriction type of this wall
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NORMAL` (`20`)
+     * @defaultValue `CONST.EDGE_SENSE_TYPES.NORMAL` (`20`)
      */
     sound: fields.NumberField<
       {
         required: true;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        choices: Record<CONST.WALL_SENSE_TYPES, string>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
-        validationError: "must be a value in CONST.WALL_SENSE_TYPES";
+        choices: Record<CONST.EDGE_SENSE_TYPES, string>;
+        initial: typeof CONST.EDGE_SENSE_TYPES.NORMAL;
+        validationError: "must be a value in CONST.EDGE_SENSE_TYPES";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null | undefined,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_SENSE_TYPES | null
+      CONST.EDGE_SENSE_TYPES | null | undefined,
+      CONST.EDGE_SENSE_TYPES | null,
+      CONST.EDGE_SENSE_TYPES | null
     >;
 
     /**
      * The direction of effect imposed by this wall
-     * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
+     * @defaultValue {@linkcode CONST.EDGE_DIRECTIONS.BOTH}
      */
     dir: fields.NumberField<
       {
         required: true;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        choices: Record<CONST.WALL_DIRECTIONS, string>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        initial: typeof CONST.WALL_DIRECTIONS.BOTH;
-        validationError: "must be a value in CONST.WALL_DIRECTIONS";
+        choices: Record<CONST.EDGE_DIRECTIONS, string>;
+        initial: typeof CONST.EDGE_DIRECTIONS.BOTH;
+        validationError: "must be a value in CONST.EDGE_DIRECTIONS";
       },
       // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_DIRECTIONS | null | undefined,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_DIRECTIONS | null,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      CONST.WALL_DIRECTIONS | null
+      CONST.EDGE_DIRECTIONS | null | undefined,
+      CONST.EDGE_DIRECTIONS | null,
+      CONST.EDGE_DIRECTIONS | null
     >;
 
     /**
@@ -439,8 +436,9 @@ declare namespace WallDocument {
     >;
 
     /**
-     * @remarks TThis isn't enforced by the field, but should be in `keyof CONFIG.Wall.doorSounds`
+     * The type of door sound to play, if any
      * @defaultValue `undefined`
+     * @remarks This isn't enforced by the field, but should be in `keyof CONFIG.Wall.doorSounds`
      */
     doorSound: fields.StringField<{ required: false; blank: true; initial: undefined }>;
 
@@ -1054,6 +1052,71 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    */
   readonly locked: false;
 
+  /**
+   * The Edge instance which represents this Wall.
+   * The Edge is re-created when data for the Wall changes.
+   */
+  get edge(): Edge | null;
+
+  /**
+   * The darkness edge sense type, which is the same value as {@linkcode WallDocument.Schema.light | WallDocument#light}.
+   */
+  get darkness(): CONST.EDGE_SENSE_TYPES | null;
+
+  /**
+   * Whether this Document represents a door.
+   */
+  get isDoor(): boolean;
+
+  /**
+   * Whether this Document represents an open door.
+   */
+  get isOpen(): boolean;
+
+  override prepareBaseData(): void;
+
+  /**
+   * Broadly classify a wall into one of several categories, based on its properties.
+   */
+  getWallCategory(): WallDocument.Category;
+
+  /**
+   * Initialize the edge which represents this Wall document.
+   * @param options - Options which modify how the edge is initialized
+   */
+  initializeEdge(options?: WallDocument.InitializeEdgeOptions): void;
+
+  /**
+   * Handle changes to the edge of this Wall document in a given level.
+   * @param level        - The level the edge is changed in
+   * @param newEdge      - The new edge in the level, unless removed from level
+   * @param priorEdge    - The prior edge in the level, unless added to level
+   * @param changedTypes - The affected edge restriction types
+   */
+  protected _onEdgeChange(
+    level: Level.Implementation,
+    newEdge: Edge | null,
+    priorEdge: Edge | null,
+    changedTypes: ReadonlySet<CONST.EDGE_RESTRICTION_TYPES>,
+  ): void;
+
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: WallDocument.CreateData,
+  //   options: WallDocument.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: WallDocument.UpdateData,
+  //   options: WallDocument.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: WallDocument.Database.OnDeleteOptions, userId: string): void;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -1119,10 +1182,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
 
   // Embedded document operations have been left out because Wall does not have any embedded documents.
 
-  /**
-   * Broadly classify a wall into one of several categories, based on its properties.
-   */
-  getWallCategory(): WallDocument.Category;
+  #WallDocument: true;
 }
 
 export default WallDocument;

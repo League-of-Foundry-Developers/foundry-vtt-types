@@ -50,7 +50,7 @@ declare namespace RollTable {
       name: "RollTable";
       collection: "tables";
       indexed: true;
-      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"];
       embedded: Metadata.Embedded;
       label: "DOCUMENT.RollTable";
       labelPlural: "DOCUMENT.RollTables";
@@ -303,7 +303,7 @@ declare namespace RollTable {
      * The HTML text description for this RollTable document
      * @defaultValue `""`
      */
-    description: fields.StringField<{ textSearch: true }>;
+    description: fields.HTMLField<{ textSearch: true }>;
 
     /**
      * A Collection of TableResult embedded documents which belong to this RollTable
@@ -1005,8 +1005,17 @@ declare namespace RollTable {
     displayChat: boolean;
 
     /**
-     * The chat roll mode to use when displaying the result
+     * A chat message visibility mode to apply to the resulting message
      */
+    messageMode: ChatMessage.Mode;
+
+    /**
+     * The chat roll mode to use when displaying the result
+     *
+     * @deprecated "The rollMode option of `RollTable#draw` is deprecated in favor of the `messageMode` option, a string
+     * key of `CONFIG.ChatMessage.modes`" (since v14, until v16)
+     */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     rollMode: ChatMessage.PassableRollMode;
   }
 
@@ -1050,6 +1059,13 @@ declare namespace RollTable {
 
     /** The label to use for the result column. */
     resultLabel: string;
+
+    /**
+     * @defaultValue `false`
+     * @remarks Include the table's enriched description at the head of the embed. Also settable by passing
+     * `"description"` in the config's `values`.
+     */
+    description: boolean;
   }
 
   interface HTMLEmbedConfig extends TextEditor.DocumentHTMLEmbedConfig, InexactPartial<_HTMLEmbedConfig> {}
@@ -1111,7 +1127,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param options - Optional arguments which customize the draw
    * @returns The drawn results
    */
-  drawMany(number: number, options?: RollTable.DrawOptions): Promise<RollTable.Draw>;
+  drawMany(number: number, options?: RollTable.DrawManyOptions): Promise<RollTable.Draw>;
 
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
@@ -1152,6 +1168,11 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @returns An Array of results
    */
   getResultsForRoll(value: number): TableResult.Stored[];
+
+  /**
+   * @remarks Fills in a `1d<total weight>` {@linkcode RollTable.formula | formula} when the table has none.
+   */
+  override prepareDerivedData(): void;
 
   /**
    * Create embedded roll table markup.

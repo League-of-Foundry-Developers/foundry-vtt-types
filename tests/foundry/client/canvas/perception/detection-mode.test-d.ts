@@ -37,7 +37,6 @@ describe("DetectionMode tests", () => {
 
   const dmData = {
     enabled: true,
-    id: "baz",
     range: 600,
   } satisfies TokenDocument.DetectionModeData;
 
@@ -72,7 +71,7 @@ describe("DetectionMode tests", () => {
     expectTypeOf(
       myDetectionMode.testVisibility(
         visionSource,
-        { id: "foobar", enabled: true, range: 3 },
+        { enabled: true, range: 3 },
         { object: token, level, tests: visibilityTests },
       ),
     ).toBeBoolean();

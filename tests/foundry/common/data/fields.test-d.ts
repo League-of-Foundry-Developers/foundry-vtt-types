@@ -32,6 +32,7 @@ await foundry.documents.BaseNote.create({ textAnchor: 999 });
 await foundry.documents.BaseNote.create({ textAnchor: CONST.TEXT_ANCHOR_POINTS.BOTTOM });
 
 // @ts-expect-error t cannot be an arbitrary string.
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
 // Flags

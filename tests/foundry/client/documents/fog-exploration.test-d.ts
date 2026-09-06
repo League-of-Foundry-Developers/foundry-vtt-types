@@ -16,3 +16,13 @@ const fogExploration = new FogExploration.implementation();
 expectTypeOf(fogExploration).toEqualTypeOf<FogExploration.Implementation>();
 
 expectTypeOf(fogExploration.getTexture()).toEqualTypeOf<PIXI.Texture | null>();
+
+declare const someScene: Scene.Stored;
+declare const someUser: User.Stored;
+
+expectTypeOf(FogExploration.load({ scene: someScene, user: someUser })).toEqualTypeOf<
+  Promise<FogExploration.Stored | null>
+>();
+expectTypeOf(FogExploration.load({ scene: "aSceneId", user: "aUserId" })).toEqualTypeOf<
+  Promise<FogExploration.Stored | null>
+>();

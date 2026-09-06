@@ -8,7 +8,6 @@ import type {
   FixedInstanceType,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { Region, Token, Wall } from "./_module.d.mts";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
@@ -809,45 +808,13 @@ declare namespace PlaceableObject {
      * Pan to this Token? Only applies to Token.
      * @defaultValue `false`
      */
-    pan?: boolean | TokenPanningOptions | undefined;
+    pan?: boolean | TokenDocument.PanningOptions | undefined;
 
     /**
      * Control all Walls that are linked with this Wall. Only applies to Wall.
      * @defaultValue `false`
      */
     chain?: boolean | undefined;
-  }
-
-  interface TokenPanningOptions {
-    /**
-     * The type of the transition animation.
-     * @defaultValue `null` (no transition animation)
-     */
-    transitionType?: string | null | undefined;
-
-    /**
-     * The duration of the pan or transition animation.
-     * @defaultValue `250` for panning or the default duration of the given transition type
-     */
-    duration?: number | undefined;
-
-    /**
-     * The speed of the panning animation in pixels per second; overrides `duration` if set.
-     */
-    speed?: number | undefined;
-
-    /**
-     * The easing function used for the panning animation.
-     * @defaultValue `"easeInOutCosine"`
-     */
-    easing?: CanvasAnimation.EasingFunction | undefined;
-
-    /**
-     * If false, the canvas is not panned to the token if the token is already onscreen. Otherwise the canvas
-     * is panned such that the token is in the center of the screen.
-     * @defaultValue `false`
-     */
-    force?: boolean | undefined;
   }
 
   interface ReleaseOptions {

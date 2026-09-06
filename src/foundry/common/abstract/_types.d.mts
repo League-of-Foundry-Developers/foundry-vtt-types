@@ -27,8 +27,14 @@ export type DatabaseOperationMap = DatabaseBackend.DatabaseOperationMap;
 /** @deprecated Use {@linkcode DatabaseBackend.DatabaseAction} instead. This type will cease being exported in v15. */
 export type DatabaseAction = DatabaseBackend.DatabaseAction;
 
-/** @deprecated Use {@linkcode DatabaseBackend.DatabaseAction} instead. This type will cease being exported in v15. */
+/** @deprecated Use {@linkcode DatabaseBackend.WriteAction} instead. This type will cease being exported in v15. */
+export type DatabaseWriteAction = DatabaseBackend.WriteAction;
+
+/** @deprecated Use {@linkcode DatabaseBackend.DatabaseOperation} instead. This type will cease being exported in v15. */
 export type DatabaseOperation = DatabaseBackend.DatabaseOperation;
+
+/** @deprecated Use {@linkcode DatabaseBackend.WriteOperation} instead. This type will cease being exported in v15. */
+export type DatabaseWriteOperation = DatabaseBackend.WriteOperation;
 
 export interface DocumentSocketRequest<Action extends DatabaseBackend.DatabaseAction> {
   /**

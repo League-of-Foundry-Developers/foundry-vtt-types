@@ -43,9 +43,51 @@ export { default as TableResult } from "./table-result.mjs";
 export { default as AmbientLightDocument } from "./ambient-light.mjs";
 export { default as AmbientSoundDocument } from "./ambient-sound.mjs";
 export { default as DrawingDocument } from "./drawing.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as MeasuredTemplateDocument, BaseMeasuredTemplate } from "./measured-template.mjs";
 export { default as NoteDocument } from "./note.mjs";
 export { default as RegionDocument } from "./region.mjs";
 export { default as TileDocument } from "./tile.mjs";
 export { default as TokenDocument } from "./token.mjs";
 export { default as WallDocument } from "./wall.mjs";
+
+/**
+ * Bundle multiple {@link Document}-modification operations into a single, batched request. The modifications
+ * are made in sequence without a network delay between each. This can be useful when, for example, it is desirable that
+ * there not be an unpredictable delay between operations due to latency. For certain operations there may also be a
+ * need to ensure there will never be a mixed state: either all must succeed, or all must fail.
+ *
+ * The nature of batched modifications does have some limitations:
+ * - Unlike with a sequence of unbatched operations, a batched operation is unable to reference the result of a prior
+ *   operation in the same batch.
+ * - A cancellation (via, for example, {@link Document#_preUpdate}) or exception thrown by a single operation will
+ *   cancel the entire batch. No changes will be made.
+ *
+ * @example Modify an Actor and two TokenDocuments
+ * Update an Actor's size category along with the dimensions of that Actor's related TokenDocuments across multiple
+ * Scenes.
+ * ```js
+ * foundry.documents.modifyBatch([
+ *   {
+ *     action: "update",
+ *     documentName: "Actor",
+ *     updates: [{_id: "Ay52yVxCgusBct1b", "system.size": "big"}],
+ *   },
+ *   {
+ *     action: "update",
+ *     documentName: "Token",
+ *     updates: [{_id: "30pnHJciHu4CvPnz", width: 2, height: 2}],
+ *     parent: sceneA
+ *   },
+ *   {
+ *     action: "update",
+ *     documentName: "Token",
+ *     updates: [{_id: "knSU5NQVXeIQQeHi", width: 2, height: 2}],
+ *     parent: sceneB
+ *   }
+ * ]);
+ * ```
+ */
+export function modifyBatch(
+  operations: foundry.abstract.DatabaseBackend.WriteOperation[],
+): Promise<foundry.abstract.Document.Any[][]>;

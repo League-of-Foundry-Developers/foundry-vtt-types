@@ -51,7 +51,7 @@ declare namespace FogExploration {
       labelPlural: "DOCUMENT.FogExplorations";
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.357";
     }>
   > {}
 
@@ -223,16 +223,22 @@ declare namespace FogExploration {
     _id: fields.DocumentIdField;
 
     /**
-     * The _id of the Scene document to which this fog applies
-     * @defaultValue `canvas?.scene?.id`
-     */
-    scene: fields.ForeignDocumentField<typeof BaseScene, { initial: () => string | undefined }>;
-
-    /**
      * The _id of the User document to which this fog applies
-     * @defaultValue `null`
+     * @defaultValue `game?.user?.id`
      */
     user: fields.ForeignDocumentField<typeof BaseUser, { initial: () => string }>;
+
+    /**
+     * The _id of the Scene document to which this fog applies
+     * @defaultValue `null`
+     */
+    scene: fields.ForeignDocumentField<typeof BaseScene, { initial: null }>;
+
+    /**
+     * @defaultValue `null`
+     * @remarks The `_id` of the Scene Level document to which this fog applies.
+     */
+    level: fields.DocumentIdField<{ readonly: false; initial: null }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon
@@ -241,7 +247,7 @@ declare namespace FogExploration {
     explored: fields.FilePathField<{ categories: ["IMAGE"]; required: true; base64: true }>;
 
     /**
-     * The object of scene positions which have been explored at a certain vision radius
+     * Optional custom exploration data
      * @defaultValue `{}`
      */
     positions: fields.ObjectField;
@@ -827,19 +833,16 @@ declare namespace FogExploration {
   /** @internal */
   interface _LoadQuery {
     /**
-     * A certain Scene ID
      * @defaultValue `canvas.scene`
-     * @remarks This is bugged in v13; Foundry types this as `string`, but due to bad parenthesis placement, it effectively takes a `Scene`.
-     * This is fixed in v14.
+     * @remarks A Scene, or the `_id` of one.
      */
-    // TODO: this is fixed in v14; return to `string`
     scene: Scene.Stored | string;
 
     /**
-     * A certain User ID
      * @defaultValue `game.user`
+     * @remarks A User, or the `_id` of one.
      */
-    user: string;
+    user: User.Stored | string;
   }
 
   interface LoadQuery extends InexactPartial<_LoadQuery> {}
@@ -871,10 +874,8 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   constructor(data?: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
 
   /**
-   * Obtain the fog of war exploration progress for a specific Scene and User.
-   * @param query      - Parameters for which FogExploration document is retrieved
-   * @param options    - Additional options passed to DatabaseBackend#get. (default: `{}`)
-   * @returns
+   * Obtain the fog of war exploration progress for a specific Scene, Level, and User.
+   * @param options - (default: `{}`)
    */
   static load(
     query?: FogExploration.LoadQuery,
@@ -902,20 +903,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // ): void;
 
   // protected override _onDelete(options: FogExploration.Database.OnDeleteOptions, userId: string): void;
-
-  static override get(
-    documentId: string,
-    operation?: FogExploration.Database.GetDocumentsOperation,
-  ): FogExploration.Stored | null;
-
-  /**
-   * @deprecated "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War
-   * exploration data, an operation which has been renamed to {@linkcode FogExploration.load}" (since v12, until v14)
-   */
-  static override get(
-    query: FogExploration.LoadQuery,
-    options?: FogExploration.LoadOptions,
-  ): Promise<FogExploration.Stored | null>;
 
   /*
    * After this point these are not really overridden methods.

@@ -994,7 +994,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @param options - Additional options (default: `{}`)
    * @returns Resolves once the panning/transition animation is complete.
    */
-  panCanvas(options?: PlaceableObject.TokenPanningOptions): Promise<void>;
+  panCanvas(options?: TokenDocument.PanningOptions): Promise<void>;
 
   /**
    * Handle changes to Token behavior when a significant status effect is applied
@@ -1387,7 +1387,7 @@ declare namespace Token {
     autoRotate?: boolean | undefined;
     showRuler?: boolean | undefined;
     split?: boolean | undefined;
-    pan?: boolean | PlaceableObject.TokenPanningOptions | undefined;
+    pan?: boolean | TokenDocument.PanningOptions | undefined;
     animate?: boolean | undefined;
     animation?: Pick<Token.AnimateOptions, "duration" | "movementSpeed" | "linkToMovement" | "easing"> | undefined;
   }
@@ -1432,7 +1432,7 @@ declare namespace Token {
   /** @internal */
   interface _ControlOptions {
     /** @defaultValue `false` */
-    pan: boolean | PlaceableObject.TokenPanningOptions;
+    pan: boolean | TokenDocument.PanningOptions;
   }
 
   interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}

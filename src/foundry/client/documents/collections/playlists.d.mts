@@ -26,8 +26,7 @@ declare class Playlists extends WorldCollection<"Playlist"> {
 
   /**
    * Handle changes to a Scene to determine whether to trigger changes to Playlist documents.
-   * @param scene      - The new active Scene
-   * @param priorScene - The previously active Scene
+   * @param scene - The new active Scene
    * @internal
    *
    * @remarks Called by {@linkcode Scene._onCreate | Scene#_onCreate}, {@linkcode Scene._onUpdate | Scene#_onUpdate},

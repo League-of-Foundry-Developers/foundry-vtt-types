@@ -49,7 +49,7 @@ declare namespace TileDocument {
       collection: "tiles";
       label: "DOCUMENT.Tile";
       labelPlural: "DOCUMENT.Tiles";
-      schemaVersion: "13.341";
+      schemaVersion: "14.355";
     }>
   > {}
 
@@ -213,30 +213,39 @@ declare namespace TileDocument {
     _id: fields.DocumentIdField;
 
     /**
+     * An optional name.
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField<{ textSearch: true }>;
+
+    /**
      * An image or video texture which this tile displays.
      */
-    texture: TextureData<{ initial: { anchorX: 0.5; anchorY: 0.5; alphaThreshold: 0.75 } }>;
+    texture: TextureData<{
+      categories: ["TEXTURE"];
+      initial: { anchorX: 0.5; anchorY: 0.5; alphaThreshold: 0.75 };
+    }>;
 
     /**
      * The pixel width of the tile
      */
     // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-    width: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
+    width: fields.NumberField<{ required: true; min: 0; integer: true; nullable: false }, number>;
 
     /**
      * The pixel height of the tile
      */
     // FIXME: This field is `required` with no `initial`, so actually required for construction; Currently an AssignmentType override is required to enforce this
-    height: fields.NumberField<{ required: true; min: 0; nullable: false; step: 0.1 }, number>;
+    height: fields.NumberField<{ required: true; min: 0; integer: true; nullable: false }, number>;
 
     /**
-     * The x-coordinate position of the top-left corner of the tile
+     * The x-coordinate of the origin of the tile
      * @defaultValue `0`
      */
     x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
-     * The y-coordinate position of the top-left corner of the tile
+     * The y-coordinate of the origin of the tile
      * @defaultValue `0`
      */
     y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
@@ -248,7 +257,13 @@ declare namespace TileDocument {
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
-     * The z-index of this tile relative to other siblings
+     * The IDs of the Scene levels that this tile is part of.
+     * @defaultValue `new Set()`
+     */
+    levels: fields.SceneLevelsSetField;
+
+    /**
+     * The z-index ordering of this tile relative to its siblings
      * @defaultValue `0`
      */
     sort: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
@@ -277,60 +292,26 @@ declare namespace TileDocument {
      */
     locked: fields.BooleanField;
 
-    /** @defaultValue see properties */
+    /**
+     * The tile's restrictions settings
+     * @defaultValue see properties
+     */
     restrictions: fields.SchemaField<RestrictionsSchema>;
 
     /**
      * The tile's occlusion settings
      * @defaultValue see properties
+     * @remarks {@linkcode TileDocument.prepareBaseData | TileDocument#prepareBaseData} defines an additional
+     * `mode` getter on this object, deprecated since v14 and untyped here; read
+     * {@linkcode OcclusionSchema.modes | occlusion.modes} instead.
      */
-    occlusion: fields.SchemaField<{
-      /**
-       * The occlusion mode from CONST.TILE_OCCLUSION_MODES
-       * @defaultValue `1`
-       */
-      mode: fields.NumberField<
-        {
-          choices: Record<CONST.OCCLUSION_MODES, string>;
-          initial: typeof CONST.OCCLUSION_MODES.NONE;
-          validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
-        },
-        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
-        CONST.OCCLUSION_MODES | null | undefined,
-        CONST.OCCLUSION_MODES | null,
-        CONST.OCCLUSION_MODES | null
-      >;
-
-      /**
-       * The occlusion alpha between 0 and 1
-       * @defaultValue `0`
-       */
-      alpha: fields.AlphaField<{ initial: 0 }>;
-    }>;
+    occlusion: fields.SchemaField<OcclusionSchema>;
 
     /**
      * The tile's video settings
      * @defaultValue see properties
      */
-    video: fields.SchemaField<{
-      /**
-       * Automatically loop the video?
-       * @defaultValue `true`
-       */
-      loop: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * Should the video play automatically?
-       * @defaultValue `true`
-       */
-      autoplay: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The volume level of any audio that the video file contains
-       * @defaultValue `0`
-       */
-      volume: fields.AlphaField<{ initial: 0; step: 0.01 }>;
-    }>;
+    video: fields.SchemaField<VideoSchema>;
 
     /**
      * An object of optional key/value flags
@@ -348,6 +329,52 @@ declare namespace TileDocument {
   }
 
   interface RestrictionsData extends fields.SchemaField.InitializedData<RestrictionsSchema> {}
+
+  interface OcclusionSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `new Set()`
+     * @remarks The occlusion modes to apply, drawn from {@linkcode CONST.OCCLUSION_MODES}; `NONE` is not an allowed
+     * choice, an empty set expresses it instead.
+     */
+    modes: fields.SetField<
+      fields.NumberField<
+        {
+          choices: Record<CONST.OCCLUSION_MODES, string>;
+          validationError: "must be a value in CONST.OCCLUSION_MODES";
+        },
+        // FIXME: Without these overrides, the branded type from `choices` is not respected, and the field types as `number`
+        CONST.OCCLUSION_MODES | null | undefined,
+        CONST.OCCLUSION_MODES | null,
+        CONST.OCCLUSION_MODES | null
+      >
+    >;
+
+    /**
+     * The occlusion alpha between 0 and 1
+     * @defaultValue `0`
+     */
+    alpha: fields.AlphaField<{ initial: 0 }>;
+  }
+
+  interface VideoSchema extends fields.DataSchema {
+    /**
+     * Automatically loop the video?
+     * @defaultValue `true`
+     */
+    loop: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * Should the video play automatically?
+     * @defaultValue `true`
+     */
+    autoplay: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * The volume level of any audio that the video file contains
+     * @defaultValue `0`
+     */
+    volume: fields.AlphaField<{ initial: 0; step: 0.01 }>;
+  }
 
   namespace Database {
     /* ***********************************************
@@ -933,6 +960,15 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
    * @param context - Construction context options
    */
   constructor(data: TileDocument.CreateData, context?: TileDocument.ConstructionContext);
+
+  // FIXME: `RectangleShapeData` is the `client/data/shapes.mjs` class, which has not been ported yet.
+  // Restore this declaration once that module exists.
+  // /**
+  //  * The rectangle shape of this Tile document.
+  //  */
+  // shape: RectangleShapeData;
+
+  override prepareBaseData(): void;
 
   override prepareDerivedData(): void;
 

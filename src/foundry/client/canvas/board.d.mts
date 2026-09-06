@@ -218,7 +218,7 @@ declare class Canvas extends _InternalCanvas {
    * @internal
    * @defaultValue `{}`
    */
-  _viewOptions: Canvas.ViewOptions;
+  _viewOptions: Scene.ViewOptions;
 
   /**
    * The singleton {@linkcode PIXI.Application} instance rendered on the Canvas.
@@ -955,29 +955,6 @@ declare namespace Canvas {
   interface InferLevelFromElevationOptions {
     /** Restrict to these Levels (empty means all Levels) */
     levels?: Set<string> | undefined;
-  }
-
-  /**
-   * @remarks The options passed to {@linkcode Scene.view | Scene#view} for the currently displayed Scene.
-   */
-  // TODO: relocate to the `Scene` namespace, matching Foundry's `SceneViewOptions`, once `Scene#view` is ported
-  interface ViewOptions {
-    /** The ID of the Level to view */
-    level?: string | undefined;
-
-    /** The IDs of initially controlled tokens */
-    controlledTokens?: string[] | undefined;
-
-    /** The transition animation to used when viewing the scene */
-    transition?: ViewTransition | undefined;
-  }
-
-  interface ViewTransition {
-    /** The type of the transition animation */
-    type?: string | undefined;
-
-    /** The duration of the transition animation */
-    duration?: number | undefined;
   }
 
   // TODO: do we really need this type separate from Point?

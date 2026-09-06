@@ -969,6 +969,8 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    */
   get sceneNote(): Note.Implementation | null;
 
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
   /**
    * Show the JournalEntry to connected players.
    * By default the entry will only be shown to players who have permission to observe it.
@@ -1071,8 +1073,6 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
     source: JournalEntry.Source,
     context?: Document.FromImportContext<JournalEntry.Parent>,
   ): Promise<JournalEntry.Implementation>;
-
-  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 }
 
 export default JournalEntry;

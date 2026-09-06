@@ -312,7 +312,7 @@ declare namespace TableResult {
     weight: fields.NumberField<{ required: true; integer: true; positive: true; nullable: false; initial: 1 }>;
 
     /**
-     * A length 2 array of ascending integers which defines the range of dice roll
+     * A length 2 array of ascending integers which defines the range of dice roll totals which produce this drawn result
      * @defaultValue `[]`
      */
     range: fields.ArrayField<
@@ -915,6 +915,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   /**
    * Prepare a string representation for this result.
+   * @returns The enriched text to display
    */
   getHTML(): Promise<string>;
 

@@ -59,10 +59,11 @@ declare namespace Actor {
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
       hasTypeData: true;
+      baseTypeAllowed: false;
       label: "DOCUMENT.Actor";
       labelPlural: "DOCUMENT.Actors";
       permissions: Metadata.Permissions;
-      schemaVersion: "13.341";
+      schemaVersion: "14.353";
     }>
   > {}
 
@@ -377,14 +378,14 @@ declare namespace Actor {
     /** The name of this Actor */
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
-    /** An Actor subtype which configures the system data model applied */
-    type: fields.DocumentTypeField<typeof BaseActor>;
-
     /**
      * An image file path which provides the artwork for this Actor
      * @defaultValue `Actor.DEFAULT_ICON`
      */
     img: fields.FilePathField<{ categories: ["IMAGE"]; initial: (data: unknown) => string }>;
+
+    /** An Actor subtype which configures the system data model applied */
+    type: fields.DocumentTypeField<typeof BaseActor>;
 
     /**
      * Data for an Actor subtype, defined by a System or Module
@@ -1114,6 +1115,13 @@ declare namespace Actor {
      * @defaultValue `false`
      */
     linked: boolean;
+
+    /**
+     * Limit the results to tokens that exist in their parent scene, excluding ephemeral/unpersisted tokens.
+     * This will become the default in v15.
+     * @defaultValue `false`
+     */
+    concreteOnly: boolean;
   }
 
   interface GetDependentTokensOptions extends InexactPartial<_GetDependentTokensOptions> {}
@@ -1191,6 +1199,14 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   _dependentTokens: IterableWeakMap<Scene.Implementation, IterableWeakSet<TokenDocument.Implementation>>;
 
+  /**
+   * Track completed core ActiveEffect application phases as a backward compatibility measure for packages calling
+   * Actor#applyActiveEffects without a phase argument.
+   * @private
+   * @remarks it is `defineProperty`'d in {@linkcode Actor._configure | Actor#_configure} and cleared by {@linkcode Actor._clearData | Actor#_clearData}.
+   */
+  protected _completedActiveEffectPhases: Set<ActiveEffect.ChangePhase>;
+
   /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
   protected override _initializeSource(
     data: this | Actor.CreateData,
@@ -1208,11 +1224,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   statuses: Set<string>;
 
-  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  protected _tokenImages: never;
-
-  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  protected _lastWildcard: never;
+  /**
+   * ActiveEffect changes to be applied to Tokens instead of Actors, with each key being a phase
+   * @defaultValue `{}`
+   */
+  tokenActiveEffectChanges: Record<string, ActiveEffect.ChangeData[]>;
 
   /**
    * Provide a thumbnail image path used to represent this document.
@@ -1293,9 +1309,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   ): Actor.GetActiveTokensReturn<ReturnDocument>;
 
   /**
-   * Get all ActiveEffects that may apply to this Actor.
-   * If CONFIG.ActiveEffect.legacyTransferral is true, this is equivalent to actor.effects.contents.
-   * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
+   * Get all ActiveEffects that may apply to this Actor. This will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
   allApplicableEffects(): Generator<ActiveEffect.Stored, void, undefined>;
@@ -1307,7 +1321,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   getRollData(): AnyObject;
 
   /**
-   * Create a new TokenData object which can be used to create a Token representation of the Actor.
+   * Create a new Token document, not yet saved to the database, that represents the Actor.
    * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
    * @returns The created TokenData instance
    * @privateRemarks `TokenDocument.CreateData` has no required properties and so needs no additional `Partial`ing.
@@ -1335,6 +1349,13 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   modifyTokenAttribute(attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this | undefined>;
 
   override prepareData(): void;
+
+  override prepareBaseData(): void;
+
+  /**
+   * Clear or replace properties not automatically reset by upstream initialization.
+   */
+  protected _clearData(): void;
 
   override prepareEmbeddedDocuments(): void;
 
@@ -1374,7 +1395,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param token - The Token
    * @internal
    */
-  _registerDependantToken(token: TokenDocument.Implementation): void;
+  _registerDependentToken(token: TokenDocument.Implementation): void;
 
   /**
    * Remove a token from this actor's dependents.

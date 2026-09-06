@@ -17,4 +17,4 @@ new TestBaseRollTable({});
 
 const myRollTable = new TestBaseRollTable({ name: "foo" });
 
-expectTypeOf(myRollTable.description).toEqualTypeOf<string | undefined>();
+expectTypeOf(myRollTable.description).toBeString();

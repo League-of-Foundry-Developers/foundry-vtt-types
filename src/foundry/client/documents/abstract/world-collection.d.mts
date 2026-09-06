@@ -1,4 +1,4 @@
-import type { DeepPartial, GetKey, Identity, InexactPartial, InitializedOn } from "#utils";
+import type { GetKey, Identity, InexactPartial, InitializedOn } from "#utils";
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
@@ -46,15 +46,11 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * @param pack       - The CompendiumCollection instance from which to import
    * @param id         - The ID of the compendium entry to import
    * @param updateData - Optional additional data used to modify the imported Document before it is created (default: `{}`)
-   * @param options    - Optional arguments passed to the {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and
-   * {@linkcode Document.create} methods (default: `{}`)
+   * @param options    - Options passed to {@linkcode WorldCollection.importDocument | WorldCollection#importDocument} (default: `{}`)
    * @returns The imported Document instance
    *
-   * @remarks The `updateData` parameter is {@link foundry.utils.mergeObject | merged} with the return of `WorldCollection#fromCompendium`,
-   * before being passed to `.create`, making the `DeepPartial<CreateData>` more correct than `UpdateData`.
-   *
-   * As noted in the parameter description, `options` is passed to both methods without alteration, and thus is typed as an intersection of
-   * the relevant interfaces.
+   * @remarks A non-empty `updateData` is applied by {@link Document.clone | cloning} the fetched compendium document with
+   * `keepId: true`, so it takes `UpdateData` rather than creation data.
    *
    * The returned document might not be stored if `temporary: true` is passed in `options`
    * TODO: Infer Document subtype from `updateData` if possible
@@ -62,7 +58,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
   importFromCompendium(
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
-    updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
+    updateData?: Document.UpdateDataForName<DocumentName>,
     options?: WorldCollection.ImportDocumentOptions<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName> | undefined>;
 
@@ -230,6 +226,14 @@ declare namespace WorldCollection {
      * @defaultValue `true`
      */
     clearState: boolean;
+
+    /**
+     * In cases where necessary, prompt the user with a confirmation dialog
+     * @defaultValue `false`
+     * @remarks Read by {@linkcode DocumentCollection.importDocument | DocumentCollection#importDocument}, not by
+     * {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} itself.
+     */
+    dialog: boolean;
   }
 
   interface FromCompendiumOptions extends InexactPartial<_FromCompendiumOptions> {}

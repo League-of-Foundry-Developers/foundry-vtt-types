@@ -201,7 +201,7 @@ declare namespace JournalEntryCategory {
    */
   interface Schema extends fields.DataSchema {
     /**
-     * The _id which uniquely identifies this JournalEntryCategory embedded document.
+     * The _id which uniquely identifies this JournalEntryCategory document.
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;

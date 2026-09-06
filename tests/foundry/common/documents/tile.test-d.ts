@@ -44,7 +44,7 @@ const myTile = new TestBaseTile({
     weather: false,
   },
   occlusion: {
-    mode: CONST.OCCLUSION_MODES.FADE,
+    modes: [CONST.OCCLUSION_MODES.FADE],
     alpha: 0.78,
   },
   video: {
@@ -86,7 +86,7 @@ new TestBaseTile({
     weather: null,
   },
   occlusion: {
-    mode: null,
+    modes: null,
     alpha: null,
   },
   video: {
@@ -132,7 +132,7 @@ new TestBaseTile({
     weather: undefined,
   },
   occlusion: {
-    mode: undefined,
+    modes: undefined,
     alpha: undefined,
   },
   video: {
@@ -154,6 +154,7 @@ new TestBaseTile({
 expectTypeOf(myTile).toEqualTypeOf<TestBaseTile>();
 
 expectTypeOf(myTile._id).toEqualTypeOf<string | null>();
+expectTypeOf(myTile.name).toEqualTypeOf<string | undefined>();
 
 // TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
 expectTypeOf(myTile.texture).toEqualTypeOf<
@@ -165,6 +166,7 @@ expectTypeOf(myTile.height).toBeNumber();
 expectTypeOf(myTile.x).toBeNumber();
 expectTypeOf(myTile.y).toBeNumber();
 expectTypeOf(myTile.elevation).toBeNumber();
+expectTypeOf(myTile.levels).toEqualTypeOf<Set<string>>();
 expectTypeOf(myTile.sort).toBeNumber();
 expectTypeOf(myTile.rotation).toBeNumber();
 expectTypeOf(myTile.alpha).toBeNumber();
@@ -172,7 +174,7 @@ expectTypeOf(myTile.hidden).toBeBoolean();
 expectTypeOf(myTile.locked).toBeBoolean();
 expectTypeOf(myTile.restrictions.light).toBeBoolean();
 expectTypeOf(myTile.restrictions.weather).toBeBoolean();
-expectTypeOf(myTile.occlusion.mode).toEqualTypeOf<CONST.OCCLUSION_MODES | null>();
+expectTypeOf(myTile.occlusion.modes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES | null>>();
 expectTypeOf(myTile.occlusion.alpha).toBeNumber();
 expectTypeOf(myTile.video.loop).toBeBoolean();
 expectTypeOf(myTile.video.autoplay).toBeBoolean();

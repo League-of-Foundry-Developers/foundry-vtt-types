@@ -1,6 +1,5 @@
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import Token = foundry.canvas.placeables.Token;
-import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // After seeing that none of these types add anything or are even exported a
@@ -49,7 +48,7 @@ type TokenAnimationOptions = Token.AnimateOptions;
 
 type TokenAnimationTransition = unknown;
 
-type TokenPanningOptions = PlaceableObject.TokenPanningOptions;
+type TokenPanningOptions = TokenDocument.PanningOptions;
 
 type TokenMovementActionCostFunction = CONFIG.Token.Movement.MovementActionCostFunction;
 

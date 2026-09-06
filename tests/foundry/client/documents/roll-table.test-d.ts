@@ -16,3 +16,9 @@ expectTypeOf(table.displayRoll).toEqualTypeOf<boolean>();
 
 declare const folder: Folder.Stored;
 expectTypeOf(await RollTable.fromFolder(folder)).toEqualTypeOf<RollTable.Stored | undefined>();
+
+declare const someTable: RollTable.Stored;
+
+expectTypeOf(someTable.prepareDerivedData()).toEqualTypeOf<void>();
+expectTypeOf(someTable.draw({ messageMode: "gm" })).toEqualTypeOf<Promise<RollTable.Draw>>();
+expectTypeOf(someTable.drawMany(2, { messageMode: "self" })).toEqualTypeOf<Promise<RollTable.Draw>>();

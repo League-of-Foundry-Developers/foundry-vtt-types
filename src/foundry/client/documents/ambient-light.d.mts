@@ -49,7 +49,7 @@ declare namespace AmbientLightDocument {
       collection: "lights";
       label: "DOCUMENT.AmbientLight";
       labelPlural: "DOCUMENT.AmbientLights";
-      schemaVersion: "13.341";
+      schemaVersion: "14.354";
     }>
   > {}
 
@@ -206,10 +206,16 @@ declare namespace AmbientLightDocument {
    */
   interface Schema extends fields.DataSchema {
     /**
-     * The _id which uniquely identifies this BaseAmbientLight embedded document
+     * The _id which uniquely identifies this AmbientLight document
      * @defaultValue `null`
      */
     _id: fields.DocumentIdField;
+
+    /**
+     * An optional name.
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField<{ textSearch: true }>;
 
     /**
      * The x-coordinate position of the origin of the light
@@ -224,10 +230,16 @@ declare namespace AmbientLightDocument {
     y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
-     * The elevation of the sound
+     * The elevation
      * @defaultValue `0`
      */
     elevation: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * @defaultValue `new Set()`
+     * @remarks The IDs of the Scene levels that this light is part of.
+     */
+    levels: fields.SceneLevelsSetField;
 
     /**
      * The angle of rotation for the tile between 0 and 360
@@ -236,7 +248,7 @@ declare namespace AmbientLightDocument {
     rotation: fields.AngleField;
 
     /**
-     * Whether or not this light source is constrained by Walls
+     * Whether or not this light source is constrained by Walls and surfaces
      * @defaultValue `true`
      */
     walls: fields.BooleanField<{ initial: true }>;
@@ -258,6 +270,12 @@ declare namespace AmbientLightDocument {
      * @defaultValue `false`
      */
     hidden: fields.BooleanField;
+
+    /**
+     * @defaultValue `false`
+     * @remarks Is the light source currently locked?
+     */
+    locked: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
@@ -820,7 +838,7 @@ declare namespace AmbientLightDocument {
 }
 
 /**
- * The client-side AmbientLight document which extends the common BaseAmbientLight model.
+ * The client-side AmbientLight document which extends the common BaseAmbientLight document model.
  *
  * @see {@linkcode Scene}                     The Scene document type which contains AmbientLight documents
  * @see {@linkcode AmbientLightConfig}        The AmbientLight configuration application
@@ -849,6 +867,15 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
    * Is this ambient light source global in nature?
    */
   get isGlobal(): boolean;
+
+  // FIXME: `CircleShapeData` and `ConeShapeData` are the `client/data/shapes.mjs` classes, which have
+  // not been ported yet. Restore this declaration once that module exists.
+  // /**
+  //  * The circle or cone shape of this AmbientLight document.
+  //  */
+  // shape: CircleShapeData | ConeShapeData;
+
+  override prepareDerivedData(): void;
 
   /*
    * After this point these are not really overridden methods.
