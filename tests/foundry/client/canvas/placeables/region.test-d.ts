@@ -3,6 +3,7 @@ import { expectTypeOf } from "vitest";
 import Region = foundry.canvas.placeables.Region;
 import ShapeObjectMixin from "#client/canvas/placeables/mixins/shapes.mjs";
 import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import RegionShape = foundry.data.regionShapes.RegionShape;
 import PolygonTree = foundry.data.PolygonTree;
 import type { DeepReadonly } from "fvtt-types/utils";

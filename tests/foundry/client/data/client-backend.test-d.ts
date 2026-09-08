@@ -30,7 +30,9 @@ describe("ClientDatabaseBackend Tests", () => {
   });
 
   test("Miscellaneous", () => {
-    expectTypeOf(cdb.activateSocketListeners(game.socket!)).toBeVoid();
+    expectTypeOf(cdb["_activateSocketListeners"](game.socket!)).toBeVoid();
+
+    expectTypeOf(cdb.modifyDocumentBatch([])).toEqualTypeOf<Promise<foundry.abstract.Document.Any[][]>>();
 
     expectTypeOf(cdb.getFlagScopes()).toEqualTypeOf<ClientDatabaseBackend.FlagScope[]>();
     expectTypeOf(cdb.getCompendiumScopes()).toEqualTypeOf<string[]>();

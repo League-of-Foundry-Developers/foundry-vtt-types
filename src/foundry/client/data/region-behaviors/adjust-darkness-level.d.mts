@@ -1,5 +1,6 @@
 import type RegionBehaviorType from "./base.d.mts";
-import type { Brand } from "#utils";
+import type { Brand, DeepPartial } from "#utils";
+import type { Document, TypeDataModel } from "#common/abstract/_module.d.mts";
 import fields = foundry.data.fields;
 import type { InvertObject } from "#common/utils/helpers.d.mts";
 
@@ -26,30 +27,55 @@ declare namespace AdjustDarknessLevelRegionBehaviorType {
   interface Schema extends foundry.data.fields.DataSchema {
     mode: fields.NumberField<{
       required: true;
+      blank: false;
       choices: InvertObject<Modes>;
       initial: typeof AdjustDarknessLevelRegionBehaviorType.MODES.OVERRIDE;
       validationError: string;
     }>;
-    modifier: fields.AlphaField<{ initial: number; step: number }>;
+
+    modifier: fields.AlphaField<{ initial: 0; step: 0.01 }>;
   }
+
+  interface OnUpdateData extends DeepPartial<
+    TypeDataModel.ParentAssignmentType<Schema, RegionBehavior.Implementation>
+  > {}
 }
 
-/** The data model for a behavior that allows to suppress weather effects within the Region */
+/**
+ * The data model for a behavior that allows to adjust the darkness level within the Region.
+ */
 declare class AdjustDarknessLevelRegionBehaviorType extends RegionBehaviorType<AdjustDarknessLevelRegionBehaviorType.Schema> {
-  #adjustDarknessLevelRegionBehaviorType: true;
-
   /** @defaultValue `["BEHAVIOR.TYPES.adjustDarknessLevel", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** Darkness level behavior modes. */
+  /**
+   * Darkness level behavior modes.
+   */
   static get MODES(): AdjustDarknessLevelRegionBehaviorType.Modes;
 
   static override defineSchema(): AdjustDarknessLevelRegionBehaviorType.Schema;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   [REGION_EVENTS.BEHAVIOR_VIEWED]: AdjustDarknessLevelRegionBehaviorType.#onBehaviorViewed,
+   *   [REGION_EVENTS.BEHAVIOR_UNVIEWED]: AdjustDarknessLevelRegionBehaviorType.#onBehaviorUnviewed,
+   *   [REGION_EVENTS.REGION_BOUNDARY]: AdjustDarknessLevelRegionBehaviorType.#onRegionBoundaryOrAnimation,
+   *   [REGION_EVENTS.REGION_ANIMATION]: AdjustDarknessLevelRegionBehaviorType.#onRegionBoundaryOrAnimation
+   * }
+   * ```
+   */
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
 
-  // _onUpdate is overridden but without signature changes.
-  // For type simplicity it is left off. Methods like this historically have been the source of a large amount of computation from tsc.
+  /** @remarks Pushes `mode` and `modifier` to this behavior's meshes if `system` changed and it is viewed. */
+  protected override _onUpdate(
+    changed: AdjustDarknessLevelRegionBehaviorType.OnUpdateData,
+    options: Document.Database.OnUpdateOptionsForName<"RegionBehavior">,
+    userId: string,
+  ): void;
+
+  static #AdjustDarknessLevelRegionBehaviorType: true;
 }
 
 export default AdjustDarknessLevelRegionBehaviorType;

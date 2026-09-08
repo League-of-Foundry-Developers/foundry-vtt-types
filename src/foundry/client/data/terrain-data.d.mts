@@ -1,6 +1,7 @@
 import type { DataModel } from "#common/abstract/_module.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
 import type { FixedInstanceType, Identity } from "#utils";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * The base TerrainData.
@@ -13,11 +14,15 @@ declare abstract class BaseTerrainData<Schema extends fields.DataSchema> extends
    * Ownership of the array is passed to this function.
    * This function must return null if the array of terrain effects is empty.
    * @param effects - An array of terrain effects
+   * @param options - Additional options
    * @returns The terrain data or null
    * @abstract
    * @remarks Unconditionally throws in {@linkcode BaseTerrainData}.
    */
-  static resolveTerrainEffects(effects: BaseTerrainData.TerrainEffect[]): BaseTerrainData.Internal.Any | null;
+  static resolveTerrainEffects(
+    effects: BaseTerrainData.TerrainEffect[],
+    options?: BaseTerrainData.ResolveTerrainEffectsOptions,
+  ): BaseTerrainData.Internal.Any | null;
 
   /**
    * Create the terrain movement cost function for the given token.
@@ -62,6 +67,8 @@ declare namespace BaseTerrainData {
 
   // TODO: Figure out if this is actually typeable beyond this, or if it just need to be defined in the subclass
   type TerrainEffect = object;
+
+  interface ResolveTerrainEffectsOptions extends Omit<Token.CreateTerrainMovementPathOptions, "preview"> {}
 }
 
 /**
@@ -70,7 +77,10 @@ declare namespace BaseTerrainData {
 declare class TerrainData<Schema extends TerrainData.Schema = TerrainData.Schema> extends BaseTerrainData<Schema> {
   static override defineSchema(): TerrainData.Schema;
 
-  static override resolveTerrainEffects(effects: TerrainData.TerrainEffect[]): TerrainData | null;
+  static override resolveTerrainEffects(
+    effects: TerrainData.TerrainEffect[],
+    options?: BaseTerrainData.ResolveTerrainEffectsOptions,
+  ): TerrainData | null;
 
   static override getMovementCostFunction(
     token: TokenDocument.Implementation,

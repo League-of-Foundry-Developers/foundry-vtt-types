@@ -4159,6 +4159,9 @@ declare global {
        * ```ts
        * {
        *   adjustDarknessLevel: "fa-solid fa-circle-half-stroke",
+       *   applyActiveEffect: "fa-solid fa-person-rays",
+       *   changeLevel: "fa-solid fa-stairs",
+       *   defineSurface: "fa-solid fa-person-arrow-down-to-line",
        *   displayScrollingText: "fa-solid fa-message-arrow-up",
        *   executeMacro: "fa-solid fa-code",
        *   executeScript: "fa-brands fa-js",
