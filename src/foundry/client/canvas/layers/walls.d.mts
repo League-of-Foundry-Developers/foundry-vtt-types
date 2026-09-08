@@ -3,6 +3,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { PlaceableObject, Wall } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { WallPalette } from "#client/applications/sheets/palette/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -31,21 +32,11 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   _chain: boolean;
 
   /**
-   * Track the most recently created or updated wall data for use with the clone tool
-   * @defaultValue `null`
-   * @internal
-   */
-  _cloneType: WallDocument.Source | null;
-
-  /**
    * Reference the last interacted wall endpoint for the purposes of chaining
    * @defaultValue `{ point: null }`
    * @internal
    */
   _last: WallsLayer.LastPoint;
-
-  /** @deprecated Foundry replaced with {@linkcode _last} in v13. This warning will be removed in v14. */
-  last: never;
 
   // Fake type override
   static get instance(): Canvas["walls"];
@@ -53,9 +44,10 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   /**
    * @defaultValue
    * ```js
-   * mergeObject(super.layerOptions, {
-   *  name: "walls"
+   * foundry.utils.mergeObject(super.layerOptions, {
+   *  name: "walls",
    *  controllableObjects: true,
+   *  controlObjectAfterCreation: false,
    *  zIndex: 700
    * })
    * ```
@@ -66,6 +58,8 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   override options: WallsLayer.LayerOptions;
 
   static override documentName: "Wall";
+
+  static override paletteClass: typeof WallPalette;
 
   override get hookName(): "WallsLayer";
 
@@ -93,9 +87,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 
   override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-  /**  @deprecated Removed without replacement in v13. This warning will be removed in v14. */
-  protected _panCanvasEdge(...args: never): never;
-
   /**
    * Get the wall endpoint coordinates for a given point.
    * @param  point - The candidate wall endpoint.
@@ -107,9 +98,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
     options?: WallsLayer.GetWallEndpointCoordinatesOptions,
   ): Canvas.PointTuple;
 
-  /** @deprecated Made hard private in v13. This warning will be removed in v14.*/
-  protected _getWallDataFromActiveTool(tool?: never): never;
-
   /**
    * Identify the interior enclosed by the given walls.
    * @param  walls - The walls that enclose the interior.
@@ -120,8 +108,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 
   static override prepareSceneControls(): SceneControls.Control;
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): Promise<Wall.Implementation>;
+  protected override _createDragPreviewData(event: Canvas.Event.Pointer): WallDocument.CreateData;
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
@@ -133,16 +120,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
    * Custom undo for wall creation while chaining is active.
    */
   protected override _onUndoCreate(event: PlaceablesLayer.CreationHistoryEntry<"Wall">): Promise<WallDocument.Stored[]>;
-
-  protected override _onClickRight(event: Canvas.Event.Pointer): void;
-
-  /**
-   * Initialization to identify all intersections between walls.
-   * These intersections are cached and used later when computing point source polygons.
-   * @deprecated "`WallsLayer#identifyWallIntersections` is deprecated in favor of
-   * {@linkcode foundry.canvas.geometry.edges.Edge.identifyEdgeIntersections} and has no effect." (since v12, until v14)
-   */
-  identifyWallIntersections(): void;
 
   #WallsLayer: true;
 }
@@ -171,7 +148,7 @@ declare namespace WallsLayer {
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ImplementationClass> {
     name: "walls";
     controllableObjects: true;
-    objectClass: Wall.ImplementationClass;
+    controlObjectAfterCreation: false;
 
     /** @defaultValue `700` */
     zIndex: number;

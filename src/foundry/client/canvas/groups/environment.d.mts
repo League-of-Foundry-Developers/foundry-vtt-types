@@ -27,7 +27,7 @@ declare class EnvironmentCanvasGroup<
 
   /**
    * The global light source attached to the environment
-   * @remarks This is `defineProperty`'d at construction with `configurable: false, enumerable: true, writable: false`
+   * @remarks Assigned in the constructor, then `defineProperty`'d with `configurable: false, enumerable: true, writable: false`
    *
    * Is {@linkcode GlobalLightSource.initialize | initialized} as part of {@linkcode initialize | GlobalLightSource#initialize}
    */
@@ -66,11 +66,6 @@ declare class EnvironmentCanvasGroup<
    * {@linkcode Canvas.Event.DarknessChange | DarknessChange} PIXI event.
    */
   initialize(config?: EnvironmentCanvasGroup.Config): void;
-
-  /**
-   * @deprecated "`EnvironmentCanvasGroup#darknessPenalty` is deprecated without replacement. The darkness penalty is no longer applied on light and vision sources." (since v12, will be removed in v14)
-   */
-  get darknessPenalty(): 0;
 
   #EnvironmentCanvasGroup: true;
 }
@@ -183,7 +178,7 @@ declare namespace EnvironmentCanvasGroup {
     /**
      * @remarks Only `undefined` prior to {@linkcode EnvironmentCanvasGroup.initialize | initialization}.
      *
-     * Once initialized, the default is {@linkcode Config.backgroundColor | backgroundColor}` ?? `{@linkcode Scene.backgroundColor | canvas.scene.backgroundColor}
+     * Once initialized, the default is {@linkcode Config.backgroundColor | backgroundColor}` ?? `{@linkcode Level.BackgroundSchema.color | canvas.level?.background?.color}
      * `?? EnvironmentCanvasGroup.#fallbackColors.backgroundColor` (that last being `0x999999`, matching the field's `initial`)
      */
     sceneBackground: Color | undefined;
@@ -259,12 +254,6 @@ declare namespace EnvironmentCanvasGroup {
      * as the `other`, with `overwrite: false`, so values here should not be `undefined` unless otherwise allowed by the Scene schema.
      */
     environment: DeepPartial<Scene.EnvironmentData>;
-
-    /**
-     * @deprecated "`config.darknessLevel` parameter into {@linkcode EnvironmentCanvasGroup.initialize | EnvironmentCanvasGroup#initialize} is deprecated.
-     * You should pass the darkness level into {@linkcode this.environment | config.environment.darknessLevel}" (since v12 until v14)
-     */
-    darknessLevel: number;
   }
 
   interface Config extends InexactPartial<_Config> {}

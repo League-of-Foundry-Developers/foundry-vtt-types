@@ -8,7 +8,15 @@ import Ray = foundry.canvas.geometry.Ray;
 expectTypeOf(Wall.implementation).toEqualTypeOf<Wall.ImplementationClass>();
 expectTypeOf(Wall.embeddedName).toEqualTypeOf<"Wall">();
 expectTypeOf(Wall.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  | Array<"refresh" | "refreshState" | "refreshLine" | "refreshEndpoints" | "refreshDirection" | "refreshHighlight">
+  | Array<
+      | "refresh"
+      | "refreshState"
+      | "refreshVisibility"
+      | "refreshLine"
+      | "refreshEndpoints"
+      | "refreshDirection"
+      | "refreshHighlight"
+    >
   | undefined
 >();
 
@@ -20,10 +28,10 @@ expectTypeOf(wall.controlIcon).toBeNull();
 expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.Implementation | null | undefined>();
 expectTypeOf(wall.line).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.endpoints).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | undefined>();
+expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | null | undefined>();
 expectTypeOf(wall.highlight).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.coords).toEqualTypeOf<Wall.Coordinates>();
-expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
+expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.geometry.edges.Edge | null>();
 expectTypeOf(wall.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(wall.isDoor).toBeBoolean();
 expectTypeOf(wall.isOpen).toBeBoolean();
@@ -33,9 +41,19 @@ expectTypeOf(wall.direction).toEqualTypeOf<number | null>();
 // @ts-expect-error "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
 expectTypeOf(wall.getSnappedPosition()).toBeNever();
 
+expectTypeOf(wall._pasteObject({ x: 50, y: 70 })).toEqualTypeOf<Wall.PasteObjectData>();
+expectTypeOf(
+  wall._pasteObject({ x: 50, y: 70 }, { hidden: true, snap: false, cut: true }),
+).toEqualTypeOf<Wall.PasteObjectData>();
+
+// deprecated since v14, until v16
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.initializeEdge()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.initializeEdge({})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.initializeEdge({ deleted: true })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.initializeEdge({ deleted: undefined })).toBeVoid();
 
 expectTypeOf(wall.toRay()).toEqualTypeOf<Ray>();
@@ -44,7 +62,6 @@ expectTypeOf(wall.toRay()).toEqualTypeOf<Ray>();
 expectTypeOf(wall["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(wall["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(wall.clear()).toEqualTypeOf<Wall.Implementation>();
 expectTypeOf(wall.control()).toBeBoolean();
 expectTypeOf(wall.control({})).toBeBoolean();
 expectTypeOf(wall.control({ releaseOthers: true, chain: true })).toBeBoolean();
@@ -56,6 +73,8 @@ expectTypeOf(wall["_destroy"]({})).toBeVoid();
 expectTypeOf(wall["_destroy"]({ baseTexture: true, children: true, texture: true })).toBeVoid();
 expectTypeOf(wall["_destroy"](true)).toBeVoid();
 expectTypeOf(wall["_destroy"](undefined)).toBeVoid();
+
+expectTypeOf(wall["_clear"]()).toBeVoid();
 
 expectTypeOf(wall.isDirectionBetweenAngles(60, 90)).toBeBoolean();
 declare const someRay: Ray;
@@ -96,7 +115,7 @@ expectTypeOf(wall.destroyDoorMeshes()).toBeVoid();
 expectTypeOf(wall["_playDoorSound"]("lock")).toBeVoid();
 expectTypeOf(wall.soundRadius).toBeNumber();
 
-expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.Implementation>();
+expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.Implementation | null>();
 expectTypeOf(wall.clearDoorControl()).toBeVoid();
 
 declare const someUser: User.Implementation;
@@ -120,27 +139,3 @@ expectTypeOf(wall["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(wall["_onDragLeftMove"](pointerEvent)).toBeVoid();
 
 expectTypeOf(wall["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.roof).toBeNull();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.hasActiveRoof).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.identifyInteriorState()).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.orientPoint({ x: 50, y: 79 })).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.applyThreshold("light", wall.center)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.applyThreshold("light", wall.center, 200)).toBeBoolean();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.applyThreshold("light", wall.center, null)).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.vertices).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.A).toEqualTypeOf<PIXI.Point>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.B).toEqualTypeOf<PIXI.Point>();

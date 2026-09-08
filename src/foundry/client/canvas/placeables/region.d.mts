@@ -1,8 +1,12 @@
-import type { FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
+import type { DeepReadonly, FixedInstanceType, HandleEmptyObject, InexactPartial } from "#utils";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import ShapeObjectMixin from "#client/canvas/placeables/mixins/shapes.mjs";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PolygonTree } from "#client/data/_module.d.mts";
+import type { BaseShapeData } from "#common/data/_module.d.mts";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -18,7 +22,7 @@ declare module "#configuration" {
  * @see {@linkcode RegionDocument}
  * @see {@linkcode RegionLayer}
  */
-declare class Region extends PlaceableObject<RegionDocument.Implementation> {
+declare class Region extends ShapeObjectMixin(PlaceableObject<RegionDocument.Implementation>) {
   // fake type override
   static override get implementation(): Region.ImplementationClass;
 
@@ -29,16 +33,13 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 
   static override RENDER_FLAGS: Region.RENDER_FLAGS;
 
-  // Note: This isn't a "real" override but `renderFlags` is set corresponding to the
-  // `RENDER_FLAGS` and so it has to be adjusted here.
+  // fake type override
   renderFlags: RenderFlags<Region.RENDER_FLAGS>;
 
   /**
    * The geometry of this Region.
    *
    * The value of this property must not be mutated.
-   *
-   * This property is updated only by a document update.
    */
   get geometry(): RegionGeometry;
 
@@ -46,8 +47,19 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 
   override get center(): PIXI.Point;
 
-  /** Is this Region currently visible on the Canvas? */
-  get isVisible(): boolean;
+  override get isVisible(): boolean;
+
+  override get isInteractable(): boolean;
+
+  /**
+   * The animation state of this Region.
+   */
+  get animationState(): DeepReadonly<Region.AnimationState>;
+
+  /**
+   * Is this Region currently animating?
+   */
+  get isAnimating(): boolean;
 
   /**
    * @remarks
@@ -55,29 +67,61 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
    */
   override getSnappedPosition(position?: never): never;
 
+  override _pasteObject(offset: Canvas.Point, options?: PlaceableObject.PasteObjectOptions): Region.PasteObjectData;
+
   // fake type override
   override draw(options?: HandleEmptyObject<Region.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<Region.DrawOptions>): Promise<void>;
 
-  // fake override; super has to account for misbehaving siblings returning void
-  override clear(): this;
+  /**
+   * Re-draw the shape controls.
+   * @internal
+   */
+  _redrawShapeControls(): void;
+
+  protected override _clear(): void;
+
+  protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
+
+  protected override _getMeasuredShapes(): BaseShapeData[];
 
   protected override _applyRenderFlags(flags: Region.RenderFlags): void;
 
-  /** Refresh the state of the Region. */
-  protected _refreshState(): void;
+  protected override _refreshVisibility(): void;
 
-  /** Refreshes the border of the Region. */
+  protected override _refreshState(): void;
+
+  /**
+   * Refresh the shapes of the Region.
+   */
+  protected _refreshShapes(): void;
+
+  /**
+   * Refresh the geometry of the Region.
+   */
+  protected _refreshGeometry(): void;
+
+  /** Refresh the border of the Region. */
   protected _refreshBorder(): void;
 
-  protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
+  /**
+   * Get the grid space offsets that are covered by this Region.
+   */
+  protected _getCoveredGridSpaceOffsets(): BaseGrid.Offset2D[];
+
+  /**
+   * Update the animation state of this Region based on the animation state.
+   * @internal
+   */
+  _onTokenAnimationFrame(): void;
+
+  /**
+   * Called when the animation state of the Region has changed.
+   */
+  protected _onAnimationStateChange(): void;
 
   protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
-
-  protected override _onControl(options: Region.ControlOptions): void;
-
-  protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
   /**
    * @remarks Throws when {@linkcode Region.HoverInOptions.updateLegend | options.updateLegend} is truthy: the
@@ -89,16 +133,19 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   /** @remarks See {@linkcode Region._onHoverIn | Region#_onHoverIn}. */
   protected override _onHoverOut(event?: Canvas.Event.Pointer | Event, options?: Region.HoverOutOptions): void;
 
+  protected override _onControl(options: Region.ControlOptions): void;
+
+  protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
+
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
+
+  protected override _updateDragPreviews(event: Canvas.Event.Pointer): void;
 
   protected override _onUpdate(
     changed: RegionDocument.UpdateData,
     options: RegionDocument.Database.OnUpdateOptions,
     userId: string,
   ): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * The scaling factor used for Clipper paths.
@@ -193,6 +240,30 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
 }
 
 declare namespace Region {
+  interface AnimationElevation {
+    bottom: number;
+    top: number;
+    topInclusive: boolean;
+  }
+
+  interface AnimationState {
+    shapes: readonly BaseShapeData[];
+    elevation: AnimationElevation;
+    polygons: PIXI.Polygon[];
+    polygonTree: PolygonTree;
+    clipperPaths: ClipperLib.Path[];
+    clipperPolyTree: ClipperLib.PolyTree;
+    triangulation: PolygonTree.Triangulation;
+    bounds: PIXI.Rectangle;
+    area: number;
+    testPoint: (point: Canvas.ElevatedPoint) => boolean;
+  }
+
+  interface PasteObjectData {
+    shapes: BaseShapeData.Source[];
+    levels: string[];
+  }
+
   /**
    * The implementation of the `Region` placeable configured through `CONFIG.Region.objectClass`
    * in Foundry and {@linkcode PlaceableObjectClassConfig} in fvtt-types.
@@ -211,15 +282,18 @@ declare namespace Region {
    */
   type ImplementationClass = PlaceableObject.ImplementationClassFor<"Region">;
 
-  interface RENDER_FLAGS {
+  interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
     /** @defaultValue `{ propagate: ["refreshState", "refreshBorder"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{}` */
+    /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
     /** @defaultValue `{}` */
     refreshBorder: RenderFlag<this, "refreshBorder">;
@@ -254,18 +328,6 @@ declare namespace Region {
   }
 
   interface SegmentizeMovementOptions extends InexactPartial<_SegmentizeMovementOptions> {}
-
-  /** @deprecated Use {@linkcode CONST.REGION_MOVEMENT_SEGMENTS} instead. This type will be removed in v14. */
-  type MOVEMENT_SEGMENT_TYPES = CONST.REGION_MOVEMENT_SEGMENTS;
-
-  /** @deprecated Use {@linkcode CONST.REGION_MOVEMENT_SEGMENTS} instead. This type will be removed in v14. */
-  type MovementSegmentTypes = typeof CONST.REGION_MOVEMENT_SEGMENTS;
-
-  /** @deprecated Use {@linkcode RegionDocument.MovementSegment} instead. This type will be removed in v14. */
-  type MovementSegment = RegionDocument.MovementSegment;
-
-  /** @deprecated Use {@linkcode RegionDocument.SegmentizeMovementPathWaypoint} instead. This type will be removed in v14. */
-  type MovementWaypoint = RegionDocument.SegmentizeMovementPathWaypoint;
 }
 
 export default Region;

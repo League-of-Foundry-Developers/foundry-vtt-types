@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 import Cursor = foundry.canvas.containers.Cursor;
-import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 import ControlsLayer = foundry.canvas.layers.ControlsLayer;
 import Ruler = foundry.canvas.interaction.Ruler;
 
@@ -12,7 +12,7 @@ expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOption
 
 const layer = new ControlsLayer();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<InteractionLayer.AnyConstructor>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<CanvasLayer.AnyConstructor>();
 expectTypeOf(layer.options).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 expectTypeOf(layer.doors).toEqualTypeOf<PIXI.Container>();
@@ -96,13 +96,5 @@ Hooks.on("drawControlsLayer", (layer) => {
 });
 
 Hooks.on("tearDownControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
-});
-
-Hooks.on("activateControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
-});
-
-Hooks.on("deactivateControlsLayer", (layer) => {
   expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
 });

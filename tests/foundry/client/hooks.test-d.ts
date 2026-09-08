@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { EmptyObject } from "fvtt-types/utils";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -10,7 +9,7 @@ Hooks.on("canvasTearDown", (canvas, options) => {
 
 Hooks.on("tearDownTokenLayer", (layer, options) => {
   expectTypeOf(layer).toEqualTypeOf<foundry.canvas.layers.TokenLayer.Implementation>();
-  expectTypeOf(options).toEqualTypeOf<EmptyObject>();
+  expectTypeOf(options).toEqualTypeOf<foundry.canvas.layers.CanvasLayer.TearDownOptions>();
 });
 
 Hooks.on("initializeEdges", (scene) => {

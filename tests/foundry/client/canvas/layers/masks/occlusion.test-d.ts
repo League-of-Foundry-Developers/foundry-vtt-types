@@ -19,12 +19,15 @@ expectTypeOf(myOcclusionMask.vision).toBeBoolean();
 myOcclusionMask.vision = false;
 expectTypeOf(myOcclusionMask.clear()).toEqualTypeOf<typeof myOcclusionMask>();
 expectTypeOf(myOcclusionMask.mapElevation(20)).toBeNumber();
-expectTypeOf(myOcclusionMask.updateOcclusion()).toBeVoid();
+expectTypeOf(myOcclusionMask.surfaces).toEqualTypeOf<PIXI.LegacyGraphics>();
+expectTypeOf(myOcclusionMask.occluded).toEqualTypeOf<Set<PrimaryCanvasObjectMixin.AnyMixed>>();
+expectTypeOf(myOcclusionMask._updateOccludableTokens()).toBeVoid();
 expectTypeOf(myOcclusionMask["_updateOcclusionMask"]()).toBeVoid();
-expectTypeOf(myOcclusionMask["_updateOcclusionStates"]()).toBeVoid();
+expectTypeOf(myOcclusionMask._updateOccludedObjects()).toBeVoid();
+expectTypeOf(myOcclusionMask._updateOccludedSurfaces({ refreshOcclusion: true })).toBeVoid();
 declare const someTokens: Token.Implementation[];
 expectTypeOf(myOcclusionMask["_identifyOccludedObjects"](someTokens));
 
-// deprecated since v11 until v13
+// deprecated since v14 until v16
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myOcclusionMask._identifyOccludedTiles()).toEqualTypeOf<Set<PrimaryCanvasObjectMixin.AnyMixed>>();
+expectTypeOf(myOcclusionMask.updateOcclusion()).toBeVoid();

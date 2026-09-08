@@ -70,28 +70,38 @@ declare class CanvasGroup<
   protected _createLayers(): CanvasGroupMixin.LayersFor<Group>;
 
   /**
-   * Draw the canvas group and all its component layers.
+   * Draw the canvas group and all its components.
+   * @param options - Options which configure how the group is drawn.
+   *                  Forwarded to {@linkcode CanvasLayer.draw | CanvasLayer#draw}.
+   * @returns A Promise which resolves once the group is fully drawn.
    * @remarks Fires the {@linkcode Hooks.DrawGroup | drawGroupName} hook where `GroupName` is replaced with {@linkcode hookName | this.hookName}
    */
   draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
   /**
    * Draw the canvas group and all its component layers.
+   * @param options - Options which configure how the group is drawn.
+   *                  Forwarded to {@linkcode CanvasLayer.draw | CanvasLayer#draw}.
+   * @returns A Promise which resolves once the group is fully drawn.
    * @remarks Will always be passed an options object by {@linkcode draw}
    */
   protected _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
   /**
    * Remove and destroy all layers from the base canvas.
+   * @param options - Options which configure how the group is deconstructed.
+   *                  Forwarded to {@linkcode CanvasLayer.tearDown | CanvasLayer#tearDown}
    * @remarks Fires the {@linkcode Hooks.TearDownGroup | tearDownGroupName} hook where `GroupName` is replaced with {@linkcode hookName | this.hookName}
    */
-  tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<this>;
+  tearDown(options?: TearDownOptions): Promise<this>;
 
   /**
    * Remove and destroy all layers from the base canvas.
-   * @remarks Will always be passed an options object by {@linkcode draw}
+   * @param options - Options which configure how the group is deconstructed.
+   *                  Forwarded to {@linkcode CanvasLayer.tearDown | CanvasLayer#tearDown}
+   * @remarks Will always be passed an options object by {@linkcode tearDown}
    */
-  protected _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+  protected _tearDown(options: TearDownOptions): Promise<void>;
 
   #CanvasGroup: true;
 }
@@ -118,13 +128,6 @@ declare function CanvasGroupMixin<
   Group extends CanvasGroupMixin.Group | NoLayerGroup = NoLayerGroup,
 >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
 
-declare global {
-  /**
-   * @deprecated "`BaseCanvasMixin` is deprecated in favor of {@linkcode foundry.canvas.groups.CanvasGroupMixin}" (since v12, until v14)
-   */
-  const BaseCanvasMixin: typeof CanvasGroupMixin;
-}
-
 declare namespace CanvasGroupMixin {
   // Note(LukeAbby): This doesn't just use `Mix` because piecing together an `AnyMixed` type is
   // more subtle than typical here. Specifically
@@ -138,11 +141,9 @@ declare namespace CanvasGroupMixin {
     Group extends CanvasGroupMixin.Group | NoLayerGroup,
   > = BaseClass & ApplyGroup<BaseClass, Group>;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DrawOptions {}
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface TearDownOptions {}
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   type Group = keyof typeof CONFIG.Canvas.groups;
 

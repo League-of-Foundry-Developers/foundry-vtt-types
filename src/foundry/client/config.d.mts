@@ -2191,6 +2191,7 @@ declare global {
          * }
          * ```
          */
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         templates: LayerDefinition<typeof layers.TemplateLayer, "interface">;
 
         /**

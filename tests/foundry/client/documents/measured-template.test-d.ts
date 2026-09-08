@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import TemplateLayer = foundry.canvas.layers.TemplateLayer;
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
@@ -11,6 +12,7 @@ import Document = foundry.abstract.Document;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 const doc = new MeasuredTemplateDocument.implementation();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(doc.layer).toEqualTypeOf<TemplateLayer>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplateDocument.createDocuments).returns.toEqualTypeOf<

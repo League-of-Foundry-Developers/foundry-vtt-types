@@ -1,9 +1,10 @@
 import type { FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import ShapeObjectMixin from "#client/canvas/placeables/mixins/shapes.mjs";
+import type { TileShapeControls } from "#client/canvas/placeables/tiles/_module.d.mts";
 import type { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import type { ResizeHandle } from "#client/canvas/containers/_module.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -18,7 +19,7 @@ declare module "#configuration" {
  * @see {@linkcode foundry.documents.TileDocument}
  * @see {@linkcode foundry.canvas.layers.TilesLayer}
  */
-declare class Tile extends PlaceableObject<TileDocument.Implementation> {
+declare class Tile extends ShapeObjectMixin(PlaceableObject<TileDocument.Implementation>) {
   // fake type override
   static override get implementation(): Tile.ImplementationClass;
 
@@ -39,6 +40,13 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    * @remarks Only `undefined` prior to first draw
    */
   frame: Tile.FrameContainer | undefined;
+
+  /**
+   * The shape controls.
+   * @defaultValue `undefined`
+   * @remarks Only `undefined` prior to first draw.
+   */
+  controls: TileShapeControls | undefined;
 
   /**
    * The primary tile image texture
@@ -65,8 +73,6 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    */
   get aspectRatio(): number;
 
-  override get bounds(): PIXI.Rectangle;
-
   /**
    * The HTML source element for the primary Tile texture
    */
@@ -76,11 +82,6 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    * Does this Tile depict an animated video texture?
    */
   get isVideo(): boolean;
-
-  /**
-   * Is this Tile currently visible on the Canvas?
-   */
-  get isVisible(): boolean;
 
   /**
    * Is this tile occluded?
@@ -97,20 +98,12 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    */
   get volume(): number;
 
-  protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
-
-  /**
-   * Create a preview tile with a background texture instead of an image
-   * @param data - Initial data with which to create the preview Tile
-   */
-  static createPreview(data: TileDocument.CreateData): Tile.Implementation;
-
   // fake type override
   override draw(options?: HandleEmptyObject<Tile.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<Tile.DrawOptions>): Promise<void>;
 
-  override clear(): this;
+  protected override _clear(): void;
 
   protected override _destroy(options: PIXI.IDestroyOptions | boolean | undefined): void;
 
@@ -131,11 +124,9 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
    */
   protected _refreshSize(): void;
 
-  /**
-   * Refresh the displayed state of the Tile.
-   * Updated when the tile interaction state changes, when it is hidden, or when its elevation changes.
-   */
-  protected _refreshState(): void;
+  protected override _refreshVisibility(): void;
+
+  protected override _refreshState(): void;
 
   /**
    * Refresh the appearance of the tile.
@@ -148,76 +139,22 @@ declare class Tile extends PlaceableObject<TileDocument.Implementation> {
   protected _refreshElevation(): void;
 
   /**
-   * Refresh the border frame that encloses the Tile.
-   */
-  protected _refreshFrame(): void;
-
-  /**
    * Refresh changes to the video playback state.
    */
   protected _refreshVideo(): void;
 
-  // _onUpdate is overridden but with no signature changes.
-  // For type simplicity it is left off. This method historically has been the source of a large amount of computation from tsc.
+  protected override _onUpdate(
+    changed: TileDocument.UpdateData,
+    options: TileDocument.Database.OnUpdateOptions,
+    userId: string,
+  ): void;
 
-  override activateListeners(): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
-
-  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
-
-  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
+  override _hasShapeChanged(changed: TileDocument.UpdateData): boolean;
 
   /**
-   * Handle mouse-over event on a control handle
-   * @param event - The mouseover event
+   * @deprecated "`Tile.createPreview` has been deprecated without replacement." (since v14, until v16)
    */
-  protected _onHandleHoverIn(event: PIXI.FederatedEvent<PointerEvent>): void;
-
-  /**
-   * Handle mouse-out event on a control handle
-   * @param event - The mouseout event
-   */
-  protected _onHandleHoverOut(event: PIXI.FederatedEvent<PointerEvent>): void;
-
-  /**
-   * Handle the beginning of a drag event on a resize handle
-   * @param event - The mousedown event
-   */
-  protected _onHandleDragStart(event: Canvas.Event.Pointer): void;
-
-  /**
-   * Handle mousemove while dragging a tile scale handler
-   * @param event - The mousemove event
-   */
-  protected _onHandleDragMove(event: Canvas.Event.Pointer): void;
-
-  /**
-   * Handle mouseup after dragging a tile scale handler
-   * @param event - The mouseup event
-   */
-  protected _onHandleDragDrop(event: Canvas.Event.Pointer): Promise<this>;
-
-  /**
-   * Handle cancellation of a drag event for one of the resizing handles
-   */
-  protected _onHandleDragCancel(event: Canvas.Event.Pointer): void;
-
-  // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
-
-  /**
-   * Is this tile a roof?
-   * @deprecated "`Tile#isRoof` has been deprecated without replacement." (since v12, until v14)
-   */
-  get isRoof(): boolean;
+  static createPreview(data: TileDocument.CreateData): Tile.Implementation;
 
   #Tile: true;
 }
@@ -241,15 +178,18 @@ declare namespace Tile {
    */
   type ImplementationClass = PlaceableObject.ImplementationClassFor<"Tile">;
 
-  interface RENDER_FLAGS {
+  interface RENDER_FLAGS extends PlaceableObject.RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
     /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshMesh", "refreshElevation", "refreshVideo"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{ propagate: ["refreshPerception"] }` */
+    /** @defaultValue `{ propagate: ["refreshVisibility", "refreshPerception"] }` */
     refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
     /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
     refreshTransform: RenderFlag<this, "refreshTransform">;
@@ -257,14 +197,14 @@ declare namespace Tile {
     /** @defaultValue `{ propagate: ["refreshPerception"] }` */
     refreshPosition: RenderFlag<this, "refreshPosition">;
 
-    /** @defaultValue `{ propagate: ["refreshPerception", "refreshFrame"] }` */
+    /** @defaultValue `{ propagate: ["refreshPerception"] }` */
     refreshRotation: RenderFlag<this, "refreshRotation">;
+
+    /** @defaultValue `{ propagate: ["refreshPerception"] }` */
+    refreshSize: RenderFlag<this, "refreshSize">;
 
     /** @defaultValue `{}` */
     refreshMesh: RenderFlag<this, "refreshMesh">;
-
-    /** @defaultValue `{}` */
-    refreshFrame: RenderFlag<this, "refreshFrame">;
 
     /** @defaultValue `{ propagate: ["refreshPerception"] }` */
     refreshElevation: RenderFlag<this, "refreshElevation">;
@@ -276,17 +216,10 @@ declare namespace Tile {
     refreshVideo: RenderFlag<this, "refreshVideo">;
 
     /**
-     * @defaultValue
-     * ```js
-     * {
-     *   propagate: ["refreshTransform", "refreshMesh", "refreshElevation"],
-     *   deprecated: { since: 12, until: 14, alias: true }
-     * }
-     * ```
-     * @deprecated since v12, until v14
-     * @remarks The `alias: true` should be a sibling of `deprecated`, not a child, this is a Foundry bug in 13.351
+     * @defaultValue `{ deprecated: { since: 14, until: 16 }, alias: true }`
+     * @deprecated since v14, until v16
      */
-    refreshShape: RenderFlag<this, "refreshShape">;
+    refreshFrame: RenderFlag<this, "refreshFrame">;
   }
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}

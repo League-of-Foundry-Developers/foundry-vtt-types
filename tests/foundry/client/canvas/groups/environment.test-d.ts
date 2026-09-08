@@ -54,7 +54,6 @@ describe("EnvironmentCanvasGroup tests", () => {
             coloration: 3,
           },
         },
-        darknessLevel: 5, // deprecated since v12 until v14
       }),
     ).toEqualTypeOf<void>();
 
@@ -96,11 +95,5 @@ describe("EnvironmentCanvasGroup tests", () => {
     });
 
     Hooks.on("initializeCanvasEnvironment", () => {});
-  });
-
-  test("Deprecated", () => {
-    // Deprecated since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myEnvironmentGroup.darknessPenalty).toEqualTypeOf<0>();
   });
 });

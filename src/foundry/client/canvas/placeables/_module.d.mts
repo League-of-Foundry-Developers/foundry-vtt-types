@@ -4,7 +4,10 @@
 
 export * as types from "./_types.mjs";
 
+export * as drawings from "./drawings/_module.mjs";
+export * as lights from "./lights/_module.mjs";
 export * as regions from "./regions/_module.mjs";
+export * as sounds from "./sounds/_module.mjs";
 export * as tokens from "./tokens/_module.mjs";
 
 export { default as PlaceableObject } from "./placeable-object.mjs";
@@ -13,6 +16,7 @@ export { default as Note } from "./note.mjs";
 export { default as Region } from "./region.mjs";
 export { default as Tile } from "./tile.mjs";
 export { default as Token } from "./token.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as MeasuredTemplate } from "./template.mjs";
 export { default as Wall } from "./wall.mjs";
 export { default as AmbientLight } from "./light.mjs";

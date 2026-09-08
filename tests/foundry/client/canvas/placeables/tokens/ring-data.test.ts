@@ -107,6 +107,21 @@ describe("DynamicRingData Tests", () => {
     expectTypeOf(fromJSON).toEqualTypeOf<DynamicRingData>();
     expect(fromJSON).toBeInstanceOf(DynamicRingData);
   });
+
+  test("ClassReferenceField", () => {
+    const ringClass = DynamicRingData.schema.fields.framework.fields.ringClass;
+    const shaderClass = DynamicRingData.schema.fields.framework.fields.shaderClass;
+
+    expectTypeOf(ringClass.getInitialValue()).toEqualTypeOf<typeof TokenRing>();
+    expectTypeOf(ringClass.getInitialValue({ ringClass: TypesTestTokenRing })).toEqualTypeOf<typeof TokenRing>();
+    expect(ringClass.getInitialValue()).toBe(TokenRing);
+
+    expectTypeOf(shaderClass.getInitialValue()).toEqualTypeOf<PrimaryBaseSamplerShader.AnyConstructor>();
+    expect(shaderClass.getInitialValue()).toBe(TokenRingSamplerShader);
+
+    expectTypeOf(ringClass["_validateType"](TypesTestTokenRing)).toBeVoid();
+    expectTypeOf(ringClass["_validateType"](TypesTestTokenRing, { partial: true })).toBeVoid();
+  });
 });
 
 const instance = new DynamicRingData({
