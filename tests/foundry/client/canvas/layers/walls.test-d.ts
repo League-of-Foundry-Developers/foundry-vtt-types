@@ -23,7 +23,6 @@ describe("WallsLayer Tests", () => {
   test("Miscellaneous", () => {
     expectTypeOf(layer.chain).toEqualTypeOf<PIXI.Graphics | null>();
     expectTypeOf(layer._chain).toBeBoolean();
-    expectTypeOf(layer._cloneType).toEqualTypeOf<WallDocument.Source | null>();
     expectTypeOf(layer._last).toEqualTypeOf<WallsLayer.LastPoint>();
 
     expectTypeOf(layer.doors).toEqualTypeOf<Wall.Implementation[]>();
@@ -62,24 +61,11 @@ describe("WallsLayer Tests", () => {
   });
 
   test("Event handlers", () => {
-    expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
+    expectTypeOf(layer["_createDragPreviewData"](pointerEvent)).toEqualTypeOf<WallDocument.CreateData>();
     expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
     expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
     expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
     expectTypeOf(layer["_onUndoCreate"](creationHistoryEntry)).toEqualTypeOf<Promise<WallDocument.Stored[]>>();
-
-    expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
-  });
-
-  test("Deprecated", () => {
-    // `initialize` and `identifyInteriorWalls` were removed in v14 (deprecated since v12, until v14)
-    // @ts-expect-error removed in v14
-    layer.initialize;
-    // @ts-expect-error removed in v14
-    layer.identifyInteriorWalls;
-
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.identifyWallIntersections()).toBeVoid();
   });
 });

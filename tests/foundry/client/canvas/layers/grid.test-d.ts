@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-import BaseGrid = foundry.grid.BaseGrid;
 import GridLayer = foundry.canvas.layers.GridLayer;
 import GridMesh = foundry.canvas.containers.GridMesh;
 import GridHighlight = foundry.canvas.containers.GridHighlight;
@@ -90,28 +89,3 @@ expectTypeOf(
     alpha: undefined,
   }),
 ).toEqualTypeOf<void>();
-
-// deprecated since v12 until v14
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.type).toEqualTypeOf<foundry.CONST.GRID_TYPES>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.size).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.grid).toEqualTypeOf<BaseGrid | null>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.isNeighbor(0, 1, 2, 3)).toEqualTypeOf<boolean>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.w).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.h).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.isHex).toEqualTypeOf<boolean>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.getTopLeft(8, 17)).toEqualTypeOf<[number, number]>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.getCenter(8, 17)).toEqualTypeOf<[number, number]>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.getSnappedPosition(10, 100, 2)).toEqualTypeOf<{ x: number; y: number }>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.measureDistance({ x: 8, y: 17 }, { x: 1100, y: 1200 })).toEqualTypeOf<number>();

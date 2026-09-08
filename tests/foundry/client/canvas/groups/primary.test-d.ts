@@ -4,6 +4,7 @@ import PrimaryCanvasGroup = foundry.canvas.groups.PrimaryCanvasGroup;
 
 import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
 import PrimaryCanvasGroupAmbienceFilter = foundry.canvas.rendering.filters.PrimaryCanvasGroupAmbienceFilter;
+import PrimaryCanvasObjectMixin = foundry.canvas.primary.PrimaryCanvasObjectMixin;
 import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 import SpriteMesh = foundry.canvas.containers.SpriteMesh;
@@ -48,8 +49,9 @@ describe("PrimaryCanvasGroup tests", () => {
 
     expectTypeOf(myPrimaryGroup.clearColor).toEqualTypeOf<Color.RGBAColorVector>();
     expectTypeOf(myPrimaryGroup["_backgroundColor"]).toEqualTypeOf<Color.RGBColorVector | undefined>();
+    expectTypeOf(myPrimaryGroup.objects).toEqualTypeOf<ReadonlyArray<PrimaryCanvasObjectMixin.AnyMixed>>();
     expectTypeOf(myPrimaryGroup.videoMeshes).toEqualTypeOf<Set<PrimarySpriteMesh.Any>>();
-    expectTypeOf(myPrimaryGroup.hoverFadeElevation).toBeNumber();
+    expectTypeOf(myPrimaryGroup.levelTextures).toEqualTypeOf<PrimarySpriteMesh[]>();
 
     expectTypeOf(PrimaryCanvasGroup.BACKGROUND_ELEVATION).toEqualTypeOf<number>();
 
@@ -106,8 +108,8 @@ describe("PrimaryCanvasGroup tests", () => {
   });
 
   test("Deprecated", () => {
-    // deprecated since v12, until v14
+    // deprecated since v14.361, until v16
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(myPrimaryGroup.mapElevationToDepth(20)).toEqualTypeOf<number>();
+    expectTypeOf(myPrimaryGroup.hoverFadeElevation).toBeNumber();
   });
 });

@@ -12,7 +12,6 @@ declare const user: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const wheelEvent: WheelEvent;
 declare const dragEvent: DragEvent;
-declare const combat: Combat.Implementation;
 declare const keyboardEvent: KeyboardEvent;
 declare const plannedMovement: Token.PlannedMovement;
 
@@ -133,6 +132,15 @@ describe("TokenLayer Tests", () => {
       Promise<foundry.applications.ui.Notifications.Notification<"warning"> | false | TokenDocument.Implementation>
     >();
 
+    expectTypeOf(
+      layer._onDropActiveEffect(dragEvent, {
+        type: "ActiveEffect",
+        uuid: "SomeUUID",
+        x: 20,
+        y: 30000,
+      }),
+    ).toEqualTypeOf<Promise<void>>();
+
     expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
     expectTypeOf(layer["_onClickLeft2"](pointerEvent)).toBeVoid();
     expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
@@ -141,19 +149,42 @@ describe("TokenLayer Tests", () => {
     expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
     expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toEqualTypeOf<Promise<Token.Implementation[]> | void>();
+
+    expectTypeOf(layer["_onDismissKey"](keyboardEvent)).toBeBoolean();
   });
 
-  test("Deprecated", () => {
-    // Deprecated since v12, until v14
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.gridPrecision).toEqualTypeOf<1>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.toggleCombat()).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.toggleCombat(false, null, { token: null })).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(layer.toggleCombat(true, combat, { token: token })).toEqualTypeOf<
-      Promise<Combatant.Implementation[]>
-    >();
+  test("Placement and movement planning", () => {
+    expectTypeOf(layer._movementPlanningContext).toEqualTypeOf<TokenLayer.MovementPlanningContext | null>();
+    expectTypeOf(layer._placementContext).toEqualTypeOf<TokenLayer.PlacementContext | null>();
+
+    expectTypeOf(layer.placeTokens([{ name: "Foo" }])).toEqualTypeOf<Promise<TokenDocument.Implementation[]>>();
+    expectTypeOf(
+      layer.placeTokens([{ name: "Foo" }], {
+        create: false,
+        allowRotation: false,
+        onMove: ({ event, preview, document, index, count, position, snap }) => {
+          expectTypeOf(event).toEqualTypeOf<PIXI.FederatedEvent>();
+          expectTypeOf(preview).toEqualTypeOf<Token.Implementation>();
+          expectTypeOf(document).toEqualTypeOf<TokenDocument.Implementation>();
+          expectTypeOf(index).toBeNumber();
+          expectTypeOf(count).toBeNumber();
+          expectTypeOf(position).toEqualTypeOf<Canvas.Point>();
+          expectTypeOf(snap).toBeBoolean();
+          return false;
+        },
+        onRotate: ({ event }) => {
+          expectTypeOf(event).toEqualTypeOf<WheelEvent>();
+        },
+        onChange: () => undefined,
+        preConfirm: () => true,
+        preSkip: () => true,
+        preCommit: async (documents) => {
+          expectTypeOf(documents).toEqualTypeOf<readonly TokenDocument.Implementation[]>();
+        },
+      }),
+    ).toEqualTypeOf<Promise<TokenDocument.Implementation[]>>();
+
+    expectTypeOf(layer._cancelPlacement()).toBeVoid();
+    expectTypeOf(layer._cancelMovementPlanning()).toBeVoid();
   });
 });

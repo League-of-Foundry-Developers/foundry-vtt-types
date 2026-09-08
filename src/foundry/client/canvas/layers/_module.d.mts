@@ -29,6 +29,7 @@ export { default as WallsLayer } from "./walls.mjs";
 export { default as TokenLayer } from "./tokens.mjs";
 export { default as RegionLayer } from "./regions.mjs";
 export { default as SoundsLayer } from "./sounds.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as TemplateLayer } from "./templates.mjs";
 export { default as ControlsLayer } from "./controls.mjs";
 export { default as GridLayer } from "./grid.mjs";

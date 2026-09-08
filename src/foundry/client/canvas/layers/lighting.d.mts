@@ -1,8 +1,10 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
+import type { AnyMutableObject, FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PlaceablesLayer } from "./_module.d.mts";
+import type PlaceablesLayer from "./base/placeables-layer.d.mts";
+import type ShapeLayerMixin from "./mixins/shapes.d.mts";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
+import type { AmbientLightPalette } from "#client/applications/sheets/palette/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -12,33 +14,35 @@ declare module "#configuration" {
   }
 }
 
+/** @privateRemarks Defers the effects-group circular base-expression resolution. */
+declare const LightingLayerBase: ShapeLayerMixin.Mix<typeof PlaceablesLayer>;
+
 /**
  * The Lighting Layer which ambient light sources as part of the CanvasEffectsGroup.
  */
-declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+declare class LightingLayer extends LightingLayerBase<"AmbientLight"> {
+  // fake type override
   static get instance(): Canvas["lighting"];
 
   static override documentName: "AmbientLight";
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
-  override options: LightingLayer.LayerOptions;
+  static override paletteClass: typeof AmbientLightPalette;
 
   /**
    * @defaultValue
    * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "lighting",
+   *  controllableObjects: true,
    *  rotatableObjects: true,
    *  zIndex: 900
    * })
    * ```
    */
   static override get layerOptions(): LightingLayer.LayerOptions;
+
+  // fake type override
+  override options: LightingLayer.LayerOptions;
 
   override get hookName(): "LightingLayer";
 
@@ -48,9 +52,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
   protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<this>;
+  override tearDown(options?: LightingLayer.TearDownOptions): Promise<this>;
 
-  protected override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: LightingLayer.TearDownOptions): Promise<void>;
 
   /**
    * Refresh the fields of all the ambient lights on this scene.
@@ -61,15 +65,13 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   static override prepareSceneControls(): SceneControls.Control;
 
-  protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
+  protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
-  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
+  protected override _updateDragPreview(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
+  protected override _updateMouseWheelPreview(): void;
 
   protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
-
-  protected _onMouseWheel(event: Canvas.Event.Wheel): Promise<AmbientLight.Implementation>;
 
   /**
    * Actions to take when the darkness level of the Scene is changed
@@ -102,8 +104,9 @@ declare namespace LightingLayer {
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.layers.lighting.layerClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {
+  interface LayerOptions extends ShapeLayerMixin.LayerOptions<AmbientLight.ImplementationClass> {
     name: "lighting";
+    controllableObjects: true;
     rotatableObjects: true;
 
     /** @defaultValue `900` */

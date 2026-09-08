@@ -700,7 +700,7 @@ declare namespace TokenDocument {
     height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
 
     /**
-     * The depth in grid units (nonnegative).
+     * The depth in grid spaces (nonnegative).
      * @defaultValue `undefined`
      */
     depth: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
@@ -722,7 +722,7 @@ declare namespace TokenDocument {
     >;
 
     /**
-     * The `_id` of the Scene Level of this waypoint.
+     * The level ID.
      * @defaultValue `undefined`
      */
     level: fields.DocumentIdField<{ required: true; nullable: false; readonly: false; initial: undefined }>;
@@ -834,8 +834,14 @@ declare namespace TokenDocument {
     /** @defaultValue The previous or source height. */
     height: ProcessedMovementWaypoint["height"];
 
+    /** @defaultValue The previous or source depth. */
+    depth: MeasuredMovementWaypoint["depth"];
+
     /** @defaultValue The previous or source shape. */
     shape: ProcessedMovementWaypoint["shape"];
+
+    /** @defaultValue The previous or source level ID. */
+    level: MeasuredMovementWaypoint["level"];
 
     /** @defaultValue The previous or prepared movement action. */
     action: ProcessedMovementWaypoint["action"];
@@ -1846,7 +1852,7 @@ declare namespace TokenDocument {
      * The type of the transition animation.
      * @defaultValue `null` (no transition animation)
      */
-    transitionType?: string | undefined;
+    transitionType?: string | null | undefined;
 
     /**
      * The duration of the pan or transition animation.

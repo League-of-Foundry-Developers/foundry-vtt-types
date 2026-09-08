@@ -18,17 +18,13 @@ const vis = myVisionMask.vision;
 if (vis) {
   expectTypeOf(vis.containmentFilter).toEqualTypeOf<VoidFilter>();
   expectTypeOf(vis.sight.preview).toEqualTypeOf<PIXI.LegacyGraphics>();
-  expectTypeOf(vis.darkness.darkness).toEqualTypeOf<PIXI.LegacyGraphics>();
+  expectTypeOf(vis.sight.surfaceExposure).toEqualTypeOf<PIXI.LegacyGraphics>();
+  expectTypeOf(vis.sight.shared).toEqualTypeOf<PIXI.LegacyGraphics>();
+  expectTypeOf(vis.darkness).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainerDarkness>();
   expectTypeOf(vis.light.global.meshes).toEqualTypeOf<PIXI.Container>();
-  // deprecated since v12 until v14
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  expectTypeOf(vis.light.tokens.tokens.tokens.tokens).toEqualTypeOf<typeof vis.light>();
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  expectTypeOf(vis.base).toEqualTypeOf<typeof vis.light.preview>();
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  expectTypeOf(vis.fov).toEqualTypeOf<typeof vis.light>();
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  expectTypeOf(vis.los).toEqualTypeOf<typeof vis.light.mask>();
+  expectTypeOf(vis.light.surfaceExposure).toEqualTypeOf<PIXI.LegacyGraphics>();
+  expectTypeOf(vis.light.mask.shared).toEqualTypeOf<PIXI.LegacyGraphics>();
+  expectTypeOf(vis.light.mask.surfaceExposure).toEqualTypeOf<PIXI.LegacyGraphics>();
 }
 
 expectTypeOf(myVisionMask.blurFilter).toEqualTypeOf<AlphaBlurFilter | undefined>();
