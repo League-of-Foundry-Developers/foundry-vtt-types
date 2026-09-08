@@ -466,7 +466,11 @@ declare namespace RenderedEffectSource {
    * @template LayerName - The particular layer being checked
    */
   type LayerMesh<Layers extends Record<string, LayerConfig>, LayerName extends string> =
-    LayerName extends ConcreteKeys<Layers> ? PointSourceMesh : undefined;
+    LayerName extends ConcreteKeys<Layers>
+      ? PointSourceMesh
+      : string extends keyof Layers
+        ? PointSourceMesh | undefined
+        : undefined;
 }
 
 export default RenderedEffectSource;
@@ -474,7 +478,7 @@ export default RenderedEffectSource;
 declare abstract class AnyRenderedEffectSource extends RenderedEffectSource<
   RenderedEffectSource.SourceData,
   PIXI.Polygon,
-  RenderedEffectSource.Layers
+  Record<string, RenderedEffectSource.LayerConfig>
 > {
   constructor(...args: never);
 }

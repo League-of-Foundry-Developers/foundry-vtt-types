@@ -27,7 +27,9 @@ expectTypeOf<CustomHotbar>().toExtend<foundry.applications.ui.Hotbar>();
 
 Hooks.on("getMacroContextOptions", (app, contextOptions) => {
   expectTypeOf(app).toEqualTypeOf<
-    foundry.applications.ui.Hotbar.Any | foundry.applications.sidebar.tabs.MacroDirectory.Any
+    | foundry.applications.ui.Hotbar.Any
+    | foundry.applications.sidebar.tabs.MacroDirectory.Any
+    | foundry.applications.sidebar.apps.Compendium.Any
   >();
   expectTypeOf(contextOptions).toEqualTypeOf<foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]>();
 });

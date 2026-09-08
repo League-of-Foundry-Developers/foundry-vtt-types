@@ -93,7 +93,12 @@ declare namespace ProseMirrorDropDown {
     children?: Entry[] | undefined;
   }
 
-  interface Config {
+  /**
+   * @remarks Every {@linkcode ConstructionOptions} property is honoured, not just the documented four.
+   * @privateRemarks Foundry's `ProseMirrorDropDownConfig` typedef documents only `title`, `cssClass`, `icon`,
+   * and `entries`.
+   */
+  interface Config extends ConstructionOptions {
     /** The default title of the drop-down. */
     title: string;
 
