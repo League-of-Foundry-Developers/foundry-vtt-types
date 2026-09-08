@@ -177,7 +177,20 @@ declare const pm: Token.PlannedMovement;
 
 const rulerWaypoint = {
   action: "displace",
-  actionConfig: { label: "foo" },
+  actionConfig: {
+    label: "foo",
+    icon: "fa-solid fa-person-walking",
+    img: null,
+    order: 0,
+    teleport: false,
+    measure: true,
+    walls: "move",
+    visualize: true,
+    getAnimationOptions: () => ({}),
+    canSelect: () => true,
+    deriveTerrainDifficulty: null,
+    getCostFunction: () => (cost) => cost,
+  },
   center: new PIXI.Point(50, 50),
   checkpoint: true,
   cost: 1,

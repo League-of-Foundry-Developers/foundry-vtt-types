@@ -60,7 +60,7 @@ Hooks.on("renderHBMixinTest", (application, element, context, options) => {
 
 Hooks.on("getHeaderControlsHBMixinTest", (application, controls) => {
   expectTypeOf(application).toEqualTypeOf<HBMixinTest>();
-  expectTypeOf(controls).toEqualTypeOf<ApplicationV2.HeaderControlsEntry>();
+  expectTypeOf(controls).toEqualTypeOf<ApplicationV2.HeaderControlsEntry[]>();
 });
 
 Hooks.on("getHBMixinTestContextOptions", (application, controls) => {

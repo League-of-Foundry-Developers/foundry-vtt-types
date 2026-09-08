@@ -1,4 +1,3 @@
-import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DefaultSheetsConfig, UIConfig } from "#client/applications/settings/menus/_module.d.mts";
 
@@ -254,6 +253,23 @@ export interface ModuleConfig {}
 export interface RequiredModules {}
 
 export interface SettingConfig {
+  "core.adventureImports": fields.TypedObjectField<
+    fields.SchemaField<{
+      coreVersion: fields.StringField<{ required: true; nullable: true; blank: false }>;
+      importedTime: fields.NumberField<{ required: true; integer: true }>;
+      moduleVersion: fields.StringField<{ required: true; nullable: true; blank: false }>;
+      options: fields.ObjectField;
+      quickstart: fields.SchemaField<{
+        postImport: fields.BooleanField;
+        quickstarted: fields.BooleanField;
+      }>;
+      systemVersion: fields.StringField<{ required: true; nullable: true; blank: false }>;
+    }>,
+    { expandKeys: false; validateKey: (uuid: string) => boolean | void }
+  >;
+
+  "core.ambientLightPalette": foundry.documents.AmbientLightDocument.CreateData;
+  "core.ambientSoundPalette": foundry.documents.AmbientSoundDocument.CreateData;
   "core.animateRollTable": fields.BooleanField<{ initial: true }>;
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
@@ -264,7 +280,68 @@ export interface SettingConfig {
   /** Registered with `type: Object`. */
   "core.collectionSearchModes": Record<string, CONST.DIRECTORY_SEARCH_MODES>;
   "core.combatTrackerConfig": fields.SchemaField<foundry.data.CombatConfiguration.ConfigSettingSchema>;
+
+  "core.compendiumArtConfiguration": Record<
+    string,
+    Pick<foundry.helpers.media.CompendiumArt.Descriptor, "priority"> & {
+      portraits: boolean;
+      tokens: boolean;
+      items: boolean;
+    }
+  >;
+
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
+  "core.drawingPalette": foundry.documents.DrawingDocument.CreateData;
+
+  "core.dynamicTokenRing": fields.StringField<{
+    required: true;
+    blank: false;
+    initial: "coreSteel";
+    choices: () => Record<string, string>;
+  }>;
+
+  "core.dynamicTokenRingFitMode": fields.StringField<{
+    required: true;
+    blank: false;
+    initial: "subject";
+    choices: Record<keyof foundry.canvas.placeables.tokens.TokenRingConfig.CoreTokenRingsFitModes, string>;
+  }>;
+
+  "core.editorAutosaveSecs": fields.NumberField<{
+    required: true;
+    min: 30;
+    max: 300;
+    step: 10;
+    initial: 60;
+  }>;
+
+  /** @remarks Registered as just `type: Object`. A grab bag of opt-in experimental behaviour. */
+  "core.experimental": { noBlur?: boolean | undefined };
+
+  /** @remarks Registered as just `type: Object`; the keys are the source and path joined by a `-`. */
+  "core.favoritePaths": Record<string, foundry.applications.apps.FilePicker.FavoriteFolder>;
+
+  "core.gridDiagonals": fields.NumberField<
+    {
+      required: true;
+      initial: CONST.GRID_DIAGONALS;
+      choices: {
+        // Note: these keys correspond to values of `GRID_DIAGONALS`. They are not used
+        // directly because the values are branded.
+        0: "SETTINGS.GridDiagonalsEquidistant";
+        1: "SETTINGS.GridDiagonalsExact";
+        2: "SETTINGS.GridDiagonalsApproximate";
+        3: "SETTINGS.GridDiagonalsRectilinear";
+        4: "SETTINGS.GridDiagonalsAlternating1";
+        5: "SETTINGS.GridDiagonalsAlternating2";
+        6: "SETTINGS.GridDiagonalsIllegal";
+      };
+    },
+    CONST.GRID_DIAGONALS | null | undefined,
+    CONST.GRID_DIAGONALS,
+    CONST.GRID_DIAGONALS
+  >;
+
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": fields.StringField<{
     required: true;
@@ -275,16 +352,6 @@ export interface SettingConfig {
       flat: "TEMPLATE.ConeTypeFlat";
     };
   }>;
-  "core.colorSchema": fields.StringField<{
-    required: true;
-    blank: true;
-    initial: "";
-    choices: {
-      "": "SETTINGS.ColorSchemeDefault";
-      dark: "SETTINGS.ColorSchemeDark";
-      light: "SETTINGS.ColorSchemeLight";
-    };
-  }>;
   "core.combatTheme": fields.StringField<{
     required: true;
     blank: false;
@@ -293,10 +360,7 @@ export interface SettingConfig {
       [K in keyof typeof CONFIG.Combat.sounds]: string;
     };
   }>;
-  "core.defaultDrawingConfig": MaybeEmpty<foundry.documents.BaseDrawing["_source"]>;
-  "core.defaultToken": DeepPartial<foundry.documents.BaseToken>;
   "core.diceConfiguration": Record<string, string>;
-  "core.disableResolutionScaling": boolean;
 
   /**
    * @remarks Registered under
@@ -305,11 +369,10 @@ export interface SettingConfig {
    */
   "core.fonts": Record<string, CONFIG.Font.FamilyDefinition>;
 
-  "core.fontSize": number;
-  "core.fpsMeter": boolean;
   "core.globalAmbientVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
   "core.globalInterfaceVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
   "core.globalPlaylistVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
+  "core.hotbarLock": fields.BooleanField<{ initial: false }>;
   "core.keybindings": Record<string, foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding[]>;
   "core.language": fields.StringField<{
     required: true;
@@ -320,9 +383,11 @@ export interface SettingConfig {
   "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
   "core.maxFPS": fields.NumberField<{ required: true; min: 10; max: 60; step: 10; initial: 60 }>;
+  "core.messageMode": fields.StringField<{ required: true; blank: false; initial: "public" }>;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;
+  "core.notePalette": foundry.documents.NoteDocument.CreateData;
   "core.notesDisplayToggle": fields.BooleanField<{ initial: true }>;
   "core.nue.shownTips": boolean;
   "core.performanceMode": fields.NumberField<{
@@ -339,26 +404,24 @@ export interface SettingConfig {
     };
   }>;
   "core.permissions": Game.Permissions;
+  "core.photosensitiveMode": fields.BooleanField<{ initial: false }>;
   "core.pixelRatioResolutionScaling": fields.BooleanField<{ initial: true }>;
   "core.playlist.playingLocation": "top" | "bottom";
+  "core.pmHighlightDocumentMatches": fields.BooleanField<{ initial: true }>;
+  "core.prototypeTokenOverrides": typeof foundry.data.PrototypeTokenOverrides;
+  "core.regionPalette": foundry.documents.RegionDocument.CreateData;
 
   /**
-   * @remarks `choices` is a type with the index signature of {@linkcode CONFIG.Dice.rollModes} removed.
-   * If you want to use a custom `rollMode`, you must register it in `CONFIG`.
+   * @deprecated "The `core.rollMode` client setting is deprecated in favor of `core.messageMode`"
+   * (since v14, until v16)
    */
   "core.rollMode": fields.StringField<
-    {
-      required: true;
-      blank: false;
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
-      choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
-    },
-    // Note(LukeAbby): This override is necessary because the `initial` wasn't removing `null`.
+    fields.StringField.DefaultOptions,
     foundry.dice.Roll.Mode | null | undefined,
     foundry.dice.Roll.Mode,
     foundry.dice.Roll.Mode
   >;
+
   "core.rtcClientSettings": AVSettings.SchemaFields["client"];
   "core.rtcWorldSettings": AVSettings.SchemaFields["world"];
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
@@ -372,13 +435,24 @@ export interface SettingConfig {
   /** @remarks Registered by {@linkcode foundry.Game.registerSettings | Game#registerSettings} as just `type: Object`. */
   "core.sheetThemes": Record<string, string>;
 
+  "core.showToolclips": fields.BooleanField<{ initial: true }>;
+  "core.tilePalette": foundry.documents.TileDocument.CreateData;
   "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+  "core.tokenAutoRotate": fields.BooleanField<{ initial: true }>;
   "core.tokenDragPreview": boolean;
+
+  /**
+   * @remarks Registered as just `type: Object`; outer keys are Tour namespaces, inner keys Tour IDs, values the step index reached.
+   */
+  "core.tourProgress": Record<string, Record<string, number>>;
 
   /** @remarks The schema is {@linkcode UIConfig.schema}, which is also what the submenu edits. */
   "core.uiConfig": UIConfig.SettingField;
 
+  "core.unconstrainedMovement": fields.BooleanField<{ initial: false }>;
+  "core.universalKeybindings": fields.BooleanField<{ initial: false }>;
   "core.visionAnimation": boolean;
+  "core.wallPalette": foundry.documents.WallDocument.CreateData;
 }
 
 /**

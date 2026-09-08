@@ -1,7 +1,7 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { AnyMutableObject, DeepPartial, EmptyObject, ValueOf } from "#utils";
+import type { AnyMutableObject, DeepPartial, EmptyObject, HandleEmptyObject, ValueOf } from "#utils";
+import type DataModel from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
@@ -70,6 +70,10 @@ type ApplicationV2Name = {
     : never;
 }[keyof ApplicationV2Config];
 
+type PreRenderApplicationV2Hooks = {
+  [K in ApplicationV2Name as `preRender${K}`]: Hooks.PreRenderApplicationV2<ApplicationV2Config[K]>;
+};
+
 type RenderApplicationV2Hooks = {
   [K in ApplicationV2Name as `render${K}`]: Hooks.RenderApplicationV2<ApplicationV2Config[K]>;
 };
@@ -78,16 +82,29 @@ type GetHeaderControlsApplicationV2Hooks = {
   [K in ApplicationV2Name as `getHeaderControls${K}`]: Hooks.GetHeaderControlsApplicationV2<ApplicationV2Config[K]>;
 };
 
+// `Compendium` supplies its own `hookName`, so its `get{}ContextOptions` event is
+// `get<documentName>ContextOptions` and never `getCompendiumContextOptions`, which
+// `CompendiumDirectory` emits instead.
 type GetApplicationV2ContextOptionsHooks = {
-  [K in ApplicationV2Name as `get${K}ContextOptions`]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
+  [
+    K in ApplicationV2Name as K extends "Compendium" ? never : `get${K}ContextOptions`
+  ]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
 };
 
 type CloseApplicationV2Hooks = {
   [K in ApplicationV2Name as `close${K}`]: Hooks.CloseApplicationV2<ApplicationV2Config[K]>;
 };
 
+type GetPlaceableContextOptionsHooks = {
+  [
+    K in Document.PlaceableType as `get${K}PlaceableContextOptions`
+  ]: Hooks.GetPlaceableContextOptions<foundry.applications.sidebar.tabs.PlaceableTab.Any>;
+};
+
 interface ApplicationV2Hooks
   extends
+    PreRenderApplicationV2Hooks,
+    GetPlaceableContextOptionsHooks,
     RenderApplicationV2Hooks,
     GetHeaderControlsApplicationV2Hooks,
     GetApplicationV2ContextOptionsHooks,
@@ -169,8 +186,12 @@ type CanvasGroupName = {
     : never;
 }[keyof CanvasGroupConfig];
 
+// `EffectsCanvasGroup#_draw` emits `drawEffectsCanvasGroup` with only the group, then the mixin's `draw` emits it
+// again with options, so a listener runs twice per draw and must tolerate `options` being absent.
 type DrawCanvasGroupHooks = {
-  [K in CanvasGroupName as `draw${K}`]: Hooks.DrawGroup<CanvasGroupConfig[K]>;
+  [K in CanvasGroupName as `draw${K}`]: K extends "EffectsCanvasGroup"
+    ? (group: CanvasGroupConfig[K], options?: HandleEmptyObject<CanvasGroupMixin.DrawOptions>) => void
+    : Hooks.DrawGroup<CanvasGroupConfig[K]>;
 };
 
 type TearDownCanvasGroupHooks = {
@@ -249,10 +270,72 @@ type PastePlaceableLayerHooks = {
 
 interface PlaceableLayerHooks extends PastePlaceableLayerHooks {}
 
+type CollectionErrorCallbacks = {
+  [K in keyof HookConfigs.DocumentCollectionConfig as K extends string ? `${K}#_initialize` : never]: [
+    location: K extends string ? `${K}#_initialize` : never,
+    err: Error,
+    data: Hooks.CollectionInitializationErrorData<HookConfigs.DocumentCollectionConfig[K]>,
+  ];
+};
+
+type EmbeddedCollectionErrorCallbacks = {
+  [K in keyof HookConfigs.EmbeddedCollectionConfig as K extends string ? `${K}#_initializeDocument` : never]: [
+    location: K extends string ? `${K}#_initializeDocument` : never,
+    err: Error,
+    data: Hooks.CollectionInitializationErrorData<HookConfigs.EmbeddedCollectionConfig[K]>,
+  ];
+};
+
+type ActivateApplicationHooks = {
+  [
+    K in ApplicationV2Name as ApplicationV2Config[K] extends
+      | foundry.applications.sidebar.AbstractSidebarTab.Any
+      | foundry.applications.ui.SceneControls.Any
+      ? `activate${K}`
+      : K extends "ApplicationV2" | "HandlebarsApplication"
+        ? `activate${K}`
+        : never
+  ]: ApplicationV2Config[K] extends foundry.applications.ui.SceneControls.Any
+    ? (app: ApplicationV2Config[K], change: foundry.applications.ui.SceneControls.ActivationChange) => void
+    : K extends "ApplicationV2" | "HandlebarsApplication"
+      ? (app: ApplicationV2Config[K], change?: foundry.applications.ui.SceneControls.ActivationChange) => void
+      : (app: ApplicationV2Config[K]) => void;
+};
+
+type DeactivateApplicationHooks = {
+  [
+    K in ApplicationV2Name as ApplicationV2Config[K] extends foundry.applications.sidebar.AbstractSidebarTab.Any
+      ? `deactivate${K}`
+      : K extends "ApplicationV2" | "HandlebarsApplication"
+        ? `deactivate${K}`
+        : never
+  ]: (app: ApplicationV2Config[K]) => void;
+};
+
+type CloseJournalViewHooks = {
+  [
+    K in ApplicationV2Name as ApplicationV2Config[K] extends foundry.applications.sheets.journal.JournalEntryPageSheet.Any
+      ? `closeView${K}`
+      : K extends "ApplicationV2" | "HandlebarsApplication" | "DocumentSheetV2"
+        ? `closeView${K}`
+        : never
+  ]: (app: ApplicationV2Config[K]) => void;
+};
+
+type InitializeSourceShadersHooks = {
+  [
+    K in keyof HookConfigs.RenderedEffectSourceConfig as K extends string ? `initialize${K}Shaders` : never
+  ]: Hooks.InitializeRenderedEffectSourceShaders<HookConfigs.RenderedEffectSourceConfig[K]>;
+};
+
 interface DynamicHooks
   extends
     ApplicationHooks,
     ApplicationV2Hooks,
+    ActivateApplicationHooks,
+    DeactivateApplicationHooks,
+    CloseJournalViewHooks,
+    InitializeSourceShadersHooks,
     DocumentHooks,
     PlaceableObjectHooks,
     CanvasGroupHooks,
@@ -340,7 +423,7 @@ export interface AllHooks extends DynamicHooks {
    * @param canvasConfig - Canvas configuration parameters that will be used to initialize the PIXI.Application
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  canvasConfig: (canvasConfig: ConstructorParameters<typeof PIXI.Application>[0]) => void;
+  canvasConfig: (canvasConfig: Hooks.CanvasConfig) => void;
 
   /**
    * A hook event that fires when the Canvas is initialized.
@@ -371,10 +454,11 @@ export interface AllHooks extends DynamicHooks {
 
   /**
    * A hook event that fires when the Canvas is deactivated.
-   * @param canvas - The Canvas instance being deactivated
+   * @param canvas  - The Canvas instance being deactivated.
+   * @param options - Options which configure how the canvas is deconstructed.
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  canvasTearDown: (canvas: Canvas) => void;
+  canvasTearDown: (canvas: Canvas, options: Canvas.TearDownOptions) => void;
 
   /**
    * A hook event that fires when the Canvas is beginning to draw the canvas groups.
@@ -402,10 +486,11 @@ export interface AllHooks extends DynamicHooks {
   highlightObjects: (active: boolean) => void;
 
   /**
-   * A hook event that fires when canvas edges are being initialized.
+   * A hook event that fires when canvas edges for a Scene are being initialized.
+   * @param scene - The Scene the edges are initialized for
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeEdges: () => void;
+  initializeEdges: (scene: Scene.Implementation) => void;
 
   /* Application */
 
@@ -426,9 +511,9 @@ export interface AllHooks extends DynamicHooks {
    * @param slot   - The target hotbar slot
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@linkcode Hotbar._onDrop | Hotbar#_onDrop}
+   * @remarks The slot is the string read from the target element's dataset.
    */
-  hotbarDrop: (hotbar: foundry.applications.ui.Hotbar.Any, data: Macro.DropData, slot: number) => boolean | void;
+  hotbarDrop: (hotbar: foundry.applications.ui.Hotbar.Any, data: AnyMutableObject, slot: string) => boolean | void;
 
   /* Document Directory Context Menu Hooks */
 
@@ -448,7 +533,10 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.SceneDirectory._onFirstRender | SceneDirectory#_onFirstRender}
    */
   getSceneContextOptions: (
-    app: foundry.applications.ui.SceneNavigation.Any | foundry.applications.sidebar.tabs.SceneDirectory.Any,
+    app:
+      | foundry.applications.ui.SceneNavigation.Any
+      | foundry.applications.sidebar.tabs.SceneDirectory.Any
+      | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -474,7 +562,10 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.MacroDirectory._onFirstRender | MacroDirectory#_onFirstRender}
    */
   getMacroContextOptions: (
-    app: foundry.applications.ui.Hotbar.Any | foundry.applications.sidebar.tabs.MacroDirectory.Any,
+    app:
+      | foundry.applications.ui.Hotbar.Any
+      | foundry.applications.sidebar.tabs.MacroDirectory.Any
+      | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -514,7 +605,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.ActorDirectory._onFirstRender | ActorDirectory#_onFirstRender}
    */
   getActorContextOptions: (
-    app: foundry.applications.sidebar.tabs.ActorDirectory.Any,
+    app: foundry.applications.sidebar.tabs.ActorDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -527,7 +618,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.ItemDirectory._onFirstRender | ItemDirectory#_onFirstRender}
    */
   getItemContextOptions: (
-    app: foundry.applications.sidebar.tabs.ItemDirectory.Any,
+    app: foundry.applications.sidebar.tabs.ItemDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -539,8 +630,8 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode foundry.applications.sidebar.tabs.JournalDirectory._onFirstRender | JournalDirectory#_onFirstRender}
    */
-  getJournalContextOptions: (
-    app: foundry.applications.sidebar.tabs.JournalDirectory.Any,
+  getJournalEntryContextOptions: (
+    app: foundry.applications.sidebar.tabs.JournalDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -553,7 +644,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory._onFirstRender | RollTableDirectory#_onFirstRender}
    */
   getRollTableContextOptions: (
-    app: foundry.applications.sidebar.tabs.RollTableDirectory.Any,
+    app: foundry.applications.sidebar.tabs.RollTableDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -566,7 +657,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.CardsDirectory._onFirstRender | CardsDirectory#_onFirstRender}
    */
   getCardsContextOptions: (
-    app: foundry.applications.sidebar.tabs.CardsDirectory.Any,
+    app: foundry.applications.sidebar.tabs.CardsDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -579,7 +670,7 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory._onFirstRender | PlaylistDirectory#_onFirstRender}
    */
   getPlaylistContextOptions: (
-    app: foundry.applications.sidebar.tabs.PlaylistDirectory.Any,
+    app: foundry.applications.sidebar.tabs.PlaylistDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -593,6 +684,34 @@ export interface AllHooks extends DynamicHooks {
    */
   getPlaylistSoundContextOptions: (
     app: foundry.applications.sidebar.tabs.PlaylistDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium}
+   * of Adventures is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @remarks Adventures only exist in compendium packs, so no sidebar directory emits this.
+   * @see {@linkcode foundry.applications.sidebar.DocumentDirectory._createContextMenus | DocumentDirectory#_createContextMenus}
+   */
+  getAdventureContextOptions: (
+    app: foundry.applications.sidebar.apps.Compendium.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium}
+   * of ActiveEffects is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @remarks ActiveEffects only exist in compendium packs, so no sidebar directory emits this.
+   * @see {@linkcode foundry.applications.sidebar.DocumentDirectory._createContextMenus | DocumentDirectory#_createContextMenus}
+   */
+  getActiveEffectContextOptions: (
+    app: foundry.applications.sidebar.apps.Compendium.Any,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
@@ -680,10 +799,12 @@ export interface AllHooks extends DynamicHooks {
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @remarks This is called by {@linkcode Hooks.call}.
+   * @remarks {@linkcode foundry.data.fields.DataField} also dispatches this hook, passing the
+   * {@linkcode foundry.abstract.DataModel | DataModel} that owns the field rather than an Actor.
    * @see {@linkcode ActiveEffect._applyCustom | ActiveEffect#_applyCustom}
    */
   applyActiveEffect: (
-    actor: Actor.Implementation,
+    actor: DataModel.Any,
     change: ActiveEffect.ChangeData,
     current: unknown,
     delta: unknown,
@@ -718,7 +839,9 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires for every Token document that is about to me moved before the conclusion of
    * an update workflow. This hook only fires for the client who is initiating the update request.
    * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
-   * @param document  - The existing Document which was updated
+   * entirely by explicitly returning false. The ONLY writable properties of `movement` are `autoRotate`
+   * and `showRuler`.
+   * @param document  - The existing Token document which is updated
    * @param movement  - The pending movement of the Token
    * @param operation - The update operation that contains the movement
    * @returns If false, the movement is prevented
@@ -733,40 +856,43 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires for every Token document that was moved after conclusion of an update
    * workflow. This hook fires for all connected clients after the update has been processed.
-   * @param document  - The existing TokenDocument which was updated
+   * @param document  - The existing Token document which was updated
    * @param movement  - The movement of the Token
    * @param operation - The update operation that contains the movement
    * @param user      - The User that requested the update operation
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   *
-   * @privateRemarks Foundry types `movement` as `DeepReadonly`, which appears to be true at runtime, despite there being no `seal` or
-   * `freeze` calls after the client gets the operation back from the server; `movement` has therefore been given the pre-server type in
-   * lieu of more complete understanding.
    */
   moveToken: (
     document: TokenDocument.Implementation,
-    movement: TokenDocument.PreUpdateMovement,
+    movement: TokenDocument.MovementOperation,
     operation: TokenDocument.Database.OnUpdateOptions,
     user: User.Stored,
   ) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is stopped.
-   * @param document - The TokenDocument whose movement was stopped
+   * @param document - The Token document whose movement was stopped
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   stopToken: (document: TokenDocument.Implementation) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is paused.
-   * @param document - The TokenDocument whose movement was paused
+   * @param document - The Token document whose movement was paused
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   pauseToken: (document: TokenDocument.Implementation) => void;
 
   /**
+   * A hook event that fires when the current movement of a Token document is planned.
+   * @param document - The Token document whose movement was planned
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  planToken: (document: TokenDocument.Implementation) => void;
+
+  /**
    * A hook event that fires when the movement of a Token document is recorded or cleared.
-   * @param document - The TokenDocument whose movement was recorded or cleared
+   * @param document - The Token document whose movement was recorded or cleared
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   recordToken: (document: TokenDocument.Implementation) => void;
@@ -799,14 +925,19 @@ export interface AllHooks extends DynamicHooks {
 
   /**
    * A hook event that fires when a token's resource bar attribute has been modified.
-   * @param data    - A object describing the modification
+   * @param data    - An object describing the modification
    * @param updates - The update delta that will be applied to the Token's actor
+   * @param actor   - The Actor associated with the Token
    * @returns whether the Actor should be updated
    * @remarks This is called by {@linkcode Hooks.call}.
    * @see {@linkcode Actor.modifyTokenAttribute | Actor#modifyTokenAttribute}
    * @see {@linkcode Actor.update | Actor#update}
    */
-  modifyTokenAttribute: (data: Actor.ModifyTokenAttributeData, updates: Record<string, number>) => boolean | void;
+  modifyTokenAttribute: (
+    data: Actor.ModifyTokenAttributeData,
+    updates: Record<string, number>,
+    actor: Actor.Implementation,
+  ) => boolean | void;
 
   /**
    * A hook event that fires when a token is targeted or un-targeted.
@@ -834,7 +965,7 @@ export interface AllHooks extends DynamicHooks {
     options:
       | foundry.appv1.sheets.JournalSheet.Options
       | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
-  ) => true | false;
+  ) => boolean | void;
 
   /* Cards */
 
@@ -877,12 +1008,11 @@ export interface AllHooks extends DynamicHooks {
    * @param source        - The Document's source data.
    * @param pack          - The Document's compendium.
    * @param art           - The art being applied.
-   * @remarks This is called by {@linkcode Hooks.callAll}. Currently only called, after data migration, cleaning, and shims, by
-   * {@linkcode Actor._initializeSource | Actor#_initializeSource}, though the comments are more generic.
+   * @remarks This is called by {@linkcode Hooks.callAll} for Actor and Item compendium art.
    */
   applyCompendiumArt: (
-    documentClass: Actor.ImplementationClass,
-    source: foundry.documents.BaseActor.CreateData,
+    documentClass: Actor.ImplementationClass | Item.ImplementationClass,
+    source: Actor.Source | Item.Source,
     pack: foundry.documents.collections.CompendiumCollection.Any,
     art: CompendiumArt.Info,
   ) => void;
@@ -900,8 +1030,50 @@ export interface AllHooks extends DynamicHooks {
   dropActorSheetData: (
     actor: Actor.Implementation,
     sheet: foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any,
-    data: foundry.appv1.sheets.ActorSheet.DropData,
+    data: AnyMutableObject,
   ) => boolean | void;
+
+  /**
+   * A hook event that fires when some useful data is dropped onto an
+   * {@linkcode foundry.applications.sheets.ItemSheetV2 | ItemSheetV2}.
+   * @param item  - The Item being dropped onto
+   * @param sheet - The ItemSheetV2 application
+   * @param data  - The data that has been dropped onto the sheet
+   * @remarks This is called by {@linkcode Hooks.call}.
+   * @remarks An explicit return value of `false` prevents the drop being handled.
+   * @see {@linkcode foundry.applications.sheets.ItemSheetV2._onDrop | ItemSheetV2#_onDrop}
+   */
+  dropItemSheetData: (
+    item: Item.Implementation,
+    sheet: foundry.applications.sheets.ItemSheetV2.Any,
+    data: AnyMutableObject,
+  ) => boolean | void;
+
+  /**
+   * A hook event that fires when the context menu for the compendium packs listed by a
+   * {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory | CompendiumDirectory} is constructed.
+   * @param app     - The Application instance that the context menu is constructed in
+   * @param entries - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory._onFirstRender | CompendiumDirectory#_onFirstRender}
+   */
+  getCompendiumContextOptions: (
+    app: foundry.applications.sidebar.tabs.CompendiumDirectory.Any,
+    entries: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for the levels of a
+   * {@linkcode foundry.applications.sheets.SceneConfig | SceneConfig} is constructed.
+   * @param app     - The Application instance that the context menu is constructed in
+   * @param entries - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sheets.SceneConfig._onFirstRender | SceneConfig#_onFirstRender}
+   */
+  getLevelContextOptions: (
+    app: foundry.applications.sheets.SceneConfig.Any,
+    entries: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
 
   /* EnvironmentCanvasGroup */
 
@@ -1095,13 +1267,7 @@ export interface AllHooks extends DynamicHooks {
    * @param config - The drop-down config.
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  getProseMirrorMenuDropdowns: (
-    menu: ProseMirrorMenu,
-    config: {
-      format: ProseMirrorDropDown.Config;
-      fonts: ProseMirrorDropDown.Config;
-    },
-  ) => void;
+  getProseMirrorMenuDropDowns: (menu: ProseMirrorMenu, config: ProseMirrorMenu.DropDowns) => void;
 
   /**
    * A hook even that fires when a ProseMirrorMenu's buttons are initialized.
@@ -1126,7 +1292,11 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode ProseMirrorEditor.create}
    */
-  createProseMirrorEditor: (uuid: string, plugins: Record<string, Plugin>, options: { state: EditorState }) => void;
+  createProseMirrorEditor: (
+    uuid: string,
+    plugins: Record<string, Plugin>,
+    options: Hooks.ProseMirrorEditorOptions,
+  ) => void;
 
   /**
    * A hook event that fires when a package that is being watched by the hot reload system has a file changed.
@@ -1137,9 +1307,29 @@ export interface AllHooks extends DynamicHooks {
    */
   hotReload: (data: Hooks.HotReloadData) => boolean | void;
 
-  // TODO: chatInput
+  /**
+   * A hook event that fires during handling of user chat input.
+   * @param event   - The triggering event.
+   * @param options - Additional options to configure handling of chat input if default behavior is suppressed.
+   * @returns Returning false will prevent default chat input behavior.
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  chatInput: (event: KeyboardEvent, options: Hooks.ChatInputOptions) => boolean | void;
 
-  // TODO: renderChatInput
+  /**
+   * A hook event that fires when the chat input element is adopted by a different DOM element.
+   * @param app      - The application that performed the adoption.
+   * @param elements - A mapping of CSS selectors to the elements that were moved.
+   * @param context  - Additional hook context.
+   * @param options  - The options passed to the render or close operation which triggered the adoption, if any.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  renderChatInput: (
+    app: foundry.applications.sidebar.tabs.ChatLog.Any,
+    elements: Record<string, HTMLElement>,
+    context: Hooks.RenderChatInputContext,
+    options: Hooks.RenderChatInputOptions,
+  ) => void;
 
   /**
    * A hook event that fires when a user sends a message through the ChatLog.
@@ -1153,13 +1343,7 @@ export interface AllHooks extends DynamicHooks {
   chatMessage: (
     chatLog: foundry.applications.sidebar.tabs.ChatLog,
     message: string,
-    chatData: {
-      /** The id of the User sending the message */
-      user: string;
-
-      /** The identified speaker data, see {@linkcode ChatMessage.getSpeaker} */
-      speaker: ReturnType<ChatMessage.ImplementationClass["getSpeaker"]>;
-    },
+    chatData: Hooks.ChatMessageData,
   ) => boolean | void;
 
   /**
@@ -1167,12 +1351,12 @@ export interface AllHooks extends DynamicHooks {
    * This hook allows for final customization of the message HTML before it is added to the log.
    * @param message - The ChatMessage document being rendered.
    * @param html    - The pending HTML.
-   * @param context - The rendering context.
+   * @param context - The rendering context. This is only provided when the core chat message template is rendered.
    */
   renderChatMessageHTML: (
     message: ChatMessage.Implementation,
     html: HTMLElement,
-    context: ChatMessage.MessageData,
+    context?: ChatMessage.MessageData,
   ) => void;
 
   /* Audio-Video */
@@ -1234,7 +1418,7 @@ export interface AllHooks extends DynamicHooks {
   dropRollTableSheetData: (
     table: RollTable.Implementation,
     config: foundry.applications.sheets.RollTableSheet.Any,
-    data: object,
+    data: AnyMutableObject,
   ) => boolean | void;
 
   /**
@@ -1243,6 +1427,23 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   initializeDynamicTokenRingConfig: (ringConfig: TokenRingConfig) => void;
+
+  /* Deprecations & Compatibility */
+
+  /**
+   * A hook event that fires when the button to activate an editor is pressed. This hook will be removed when
+   * ApplicationV1 completes its deprecation period in v16.
+   * @param editor         - The editor instance.
+   * @param options        - Options to configure activation.
+   * @param initialContent - The initial editor content.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @deprecated since v14 until v16
+   */
+  activateEditorLegacy: (
+    editor: foundry.appv1.api.FormApplication.FormApplicationEditor,
+    options: foundry.applications.ux.TextEditor.Options,
+    initialContent: string,
+  ) => void;
 }
 
 declare global {
@@ -1277,13 +1478,59 @@ declare global {
    * @example Using the `error` callback type
    * ```typescript
    * Hooks.on("error", (...args) => {
-   *   if (args[0] === "Canvas#draw")
-   *     args[2].layer // CanvasLayer
+   *   if (args[0] === "Actors#_initialize")
+   *     args[2].uuid // string
    *   // [...]
    * })
    * ```
    */
   namespace Hooks {
+    interface CanvasConfig extends Partial<PIXI.IApplicationOptions> {
+      width: number;
+      height: number;
+      transparent: boolean;
+      resolution: number;
+      autoDensity: boolean;
+      antialias: boolean;
+      powerPreference: WebGLPowerPreference;
+    }
+
+    interface ProseMirrorEditorOptions {
+      state: EditorState;
+    }
+
+    interface ChatMessageData {
+      /** The id of the User sending the message */
+      user: string;
+      /** The identified speaker data, see {@linkcode ChatMessage.getSpeaker} */
+      speaker: ChatMessage.SpeakerData;
+    }
+
+    interface ChatInputOptions {
+      /**
+       * Record the user's keystroke as pending. If the hook returns false and otherwise prevents the keystroke
+       * appearing in the chat input, this option should also be set to false in order to prevent chat history from
+       * becoming out-of-sync.
+       */
+      recordPending: boolean;
+    }
+
+    interface RenderChatInputContext {
+      /** The element the chat input was moved out of. */
+      previousParent: HTMLElement;
+    }
+
+    /** @internal */
+    interface _RenderChatInputClosing {
+      closing?: boolean | undefined;
+    }
+
+    interface RenderChatInputRenderOptions extends ApplicationV2.RenderOptions, _RenderChatInputClosing {}
+
+    interface RenderChatInputCloseOptions extends ApplicationV2.ClosingOptions, _RenderChatInputClosing {}
+
+    type RenderChatInputOptions = RenderChatInputRenderOptions | RenderChatInputCloseOptions;
+
     interface HotReloadData {
       /** The type of package which was modified */
       packageType: string;
@@ -1312,6 +1559,20 @@ declare global {
     type StaticCallbacks = HookConfigs.HookConfig;
 
     /** Application */
+
+    /**
+     * A hook event that fires prior to an ApplicationV2 being rendered. Substitute the "Application" in the hook event to
+     * target a specific ApplicationV2 type, for example "preRenderMyApplication". Each ApplicationV2 class in the
+     * inheritance chain will also fire this hook, i.e. "preRenderApplicationV2" will also fire.
+     * @param application - The Application instance being rendered.
+     * @param context     - The application rendering context data.
+     * @param options     - The application rendering options.
+     */
+    type PreRenderApplicationV2<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
+      application: Application,
+      context: ApplicationV2.RenderContextOf<Application>,
+      options: ApplicationV2.RenderOptionsOf<Application>,
+    ) => void;
 
     /**
      * A hook event that fires whenever an ApplicationV2 is rendered. Substitute the "ApplicationV2" in the hook event to
@@ -1343,12 +1604,24 @@ declare global {
      */
     type GetHeaderControlsApplicationV2<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
       application: Application,
-      controls: ApplicationV2.HeaderControlsEntry,
+      controls: ApplicationV2.HeaderControlsEntry[],
     ) => void;
 
     type GetApplicationV2ContextOptions<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
       application: Application,
       controls: ContextMenu.Entry<JQuery | HTMLElement>[],
+    ) => void;
+
+    /**
+     * A hook event that fires when a context menu related to a certain placeable type is being prepared.
+     * The placeable's Document name is included in the hook name. For example, for Tokens, the hook would be
+     * "getTokenPlaceableContextOptions".
+     * @param application - The Application instance that the context menu is constructed within.
+     * @param menuItems   - An array of prepared menu items which should be mutated by the hook.
+     */
+    type GetPlaceableContextOptions<Application extends ApplicationV2.Any = ApplicationV2.Any> = (
+      application: Application,
+      menuItems: ContextMenu.Entry<HTMLElement>[],
     ) => void;
 
     /**
@@ -1409,23 +1682,23 @@ declare global {
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is drawn.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "drawPrimaryCanvasGroup".
-     * @param group   - The group being drawn
-     * @param options - Options which configure how the group is drawn
+     * @param group   - The group being drawn.
+     * @param options - Options which configure how the group is drawn.
      */
     type DrawGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
       group: G,
-      options: CanvasGroupMixin.DrawOptions,
+      options: HandleEmptyObject<CanvasGroupMixin.DrawOptions>,
     ) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasGroup} is deconstructed.
      * The dispatched event name replaces "Group" with the named CanvasGroup subclass, i.e. "tearDownPrimaryCanvasGroup".
-     * @param group   - The group being deconstructed
-     * @param options - Options which configure how the group is deconstructed
+     * @param group   - The group being deconstructed.
+     * @param options - Options which configure how the group is deconstructed.
      */
     type TearDownGroup<G extends CanvasGroupMixin.AnyMixed = CanvasGroupMixin.AnyMixed> = (
       group: G,
-      options: CanvasGroupMixin.TearDownOptions,
+      options: HandleEmptyObject<CanvasGroupMixin.TearDownOptions>,
     ) => void;
 
     /** CanvasLayer */
@@ -1433,18 +1706,26 @@ declare global {
     /**
      * A hook event that fires when a {@linkcode CanvasLayer} is initially drawn.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "drawTokensLayer".
-     * @param layer - The layer being drawn
+     * @param layer   - The layer being drawn.
+     * @param options - Options which configure how the layer is drawn.
      * @template L - the type of the CanvasLayer
      */
-    type DrawLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
+    type DrawLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (
+      layer: L,
+      options: HandleEmptyObject<layers.CanvasLayer.DrawOptions>,
+    ) => void;
 
     /**
      * A hook event that fires when a {@linkcode CanvasLayer} is deconstructed.
      * The dispatched event name replaces "Layer" with the named CanvasLayer subclass, i.e. "tearDownTokensLayer".
-     * @param layer - The layer being deconstructed
+     * @param layer   - The layer being deconstructed.
+     * @param options - Options which configure how the layer is deconstructed.
      * @template L - the type of the CanvasLayer
      */
-    type TearDownLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (layer: L) => void;
+    type TearDownLayer<L extends layers.CanvasLayer.Any = layers.CanvasLayer.Any> = (
+      layer: L,
+      options: HandleEmptyObject<layers.CanvasLayer.TearDownOptions>,
+    ) => void;
 
     /**
      * A hook event that fires when any PlaceableObject is pasted onto the Scene.
@@ -1460,7 +1741,7 @@ declare global {
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
-      data: Document.SourceForName<P["document"]["documentName"]>,
+      data: Document.SourceForName<P["document"]["documentName"]>[],
       options: Hooks.PastePlaceableObjectOptions,
     ) => boolean | void;
 
@@ -1485,9 +1766,17 @@ declare global {
      * The dispatched event name replaces "Object" with the named PlaceableObject subclass, i.e. "refreshToken".
      * @param object - The object instance being refreshed
      * @template P  - the type of the PlaceableObject
+     * @remarks The second argument contains the render flags cleared for this refresh.
      * @remarks This is called by {@linkcode Hooks.callAll}
      */
-    type RefreshObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P) => void;
+    type RefreshObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
+      object: P,
+      flags: RefreshObjectFlags<P>,
+    ) => void;
+
+    type RefreshObjectFlags<P extends PlaceableObject.Any> = foundry.canvas.interaction.RenderFlags.Cleared<
+      P["renderFlags"]["flags"]
+    >;
 
     /**
      * A hook event that fires when a {@linkcode PlaceableObject} is destroyed.
@@ -1664,7 +1953,6 @@ declare global {
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
-    // TODO: this is currently unused and needs to be properly wired up
     type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;
@@ -1693,57 +1981,97 @@ declare global {
      * "getActorDirectoryEntryContext".
      * @param app          - The Application instance that the context menu is constructed in
      * @param entryOptions - The context menu entries
-     * @remarks This is called by {@linkcode Hooks.call}.
+     * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@linkcode ContextMenu.create}
      */
     type GetEntryContext<Application extends Application.Any = Application.Any> = (
       app: Application,
       entryOptions: ContextMenu.Entry<HTMLElement | JQuery>[],
-    ) => boolean | void;
+    ) => void;
 
-    interface ErrorCallbackParameters {
-      "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: layers.CanvasLayer }];
+    interface TranslationErrorData {
+      src: string;
+    }
+
+    interface DocumentCreationErrorData {
+      id: string | null | undefined;
+    }
+
+    interface DocumentUpdateErrorData {
+      id: string;
+    }
+
+    interface DocumentPreparationErrorData {
+      uuid: string;
+    }
+
+    interface CollectionInitializationErrorData<DocumentName extends Document.Type> {
+      uuid: string;
+      id: string | null | undefined;
+      documentName: DocumentName;
+    }
+
+    interface MacroErrorData {
+      command: string;
+    }
+
+    interface RollErrorData {
+      rollData: Roll.Data;
+    }
+
+    interface SceneErrorData {
+      scene: string;
+    }
+
+    interface SidebarErrorData {
+      name: string;
+    }
+
+    interface ChatErrorData {
+      message: string;
+    }
+
+    interface ErrorCallbackParameters extends CollectionErrorCallbacks, EmbeddedCollectionErrorCallbacks {
+      "Canvas#draw": [location: "Canvas#draw", err: Error, data: EmptyObject];
       "Application#render": [location: "Application#render", err: Error, data: Application.RenderOptions];
       "Localization#_loadTranslationFile": [
         location: "Localization#_loadTranslationFile",
         err: Error,
-        data: { src: string },
+        data: Hooks.TranslationErrorData,
       ];
-      "ClientDatabaseBackend#_preCreateDocumentArray": [
-        location: "ClientDatabaseBackend#_preCreateDocumentArray",
+      "ClientDatabaseBackend##preCreateDocumentArray": [
+        location: "ClientDatabaseBackend##preCreateDocumentArray",
         err: Error,
-        data: { id: string },
+        data: Hooks.DocumentCreationErrorData,
       ];
-      "ClientDatabaseBackend#_preUpdateDocumentArray": [
-        location: "ClientDatabaseBackend#_preUpdateDocumentArray",
+      "ClientDatabaseBackend##preUpdateDocumentArray": [
+        location: "ClientDatabaseBackend##preUpdateDocumentArray",
         err: Error,
-        data: { id: string },
+        data: Hooks.DocumentUpdateErrorData,
       ];
-      "WorldCollection#_initialize": [location: "WorldCollection#_initialize", err: Error, data: { id: string }];
       "ClientDocumentMixin#_initialize": [
         location: "ClientDocumentMixin#_initialize",
         err: Error,
-        data: { id: string },
+        data: Hooks.DocumentPreparationErrorData,
       ];
       "Actor#getTokenImages": [location: "Actor#getTokenImages", err: Error, data: EmptyObject];
-      "Macro#executeChat": [location: "Macro#executeChat", err: Error, data: { command: string }];
-      "ChatMessage#roll": [location: "ChatMessage#roll", err: Error, data: { command: string }];
-      "DefaultTokenConfig#_updateObject": [location: "DefaultTokenConfig#_updateObject", err: Error, data: EmptyObject];
-      "SceneConfig#_updateObject": [location: "SceneConfig#_updateObject", err: Error, data: { scene: string }];
-      "SidebarDirectory.setupFolders": [location: "SidebarDirectory.setupFolders", err: Error, data: EmptyObject];
-      "Sidebar#_render": [location: "Sidebar#_render", err: Error, data: { name: string }];
-      "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: EmptyObject];
-      "EmbeddedCollection#_initialize": [
-        location: "EmbeddedCollection#_initialize",
+      "Actor#applyActiveEffects": [location: "Actor#applyActiveEffects", err: Error, data: EmptyObject];
+      "Macro#_executeChat": [location: "Macro#_executeChat", err: Error, data: Hooks.MacroErrorData];
+      "ChatMessage#rolls": [location: "ChatMessage#rolls", err: Error, data: Hooks.RollErrorData];
+      "SceneConfig#_processSubmitData": [
+        location: "SceneConfig#_processSubmitData",
         err: Error,
-        data: { id: string; documentName: string },
+        data: Hooks.SceneErrorData,
       ];
+      "Sidebar#render": [location: "Sidebar#render", err: Error, data: Hooks.SidebarErrorData];
+      "Game#initializeCanvas": [location: "Game#initializeCanvas", err: Error, data: EmptyObject];
+      "ChatLog#processMessage": [location: "ChatLog#processMessage", err: Error, data: Hooks.ChatErrorData];
+      "TextEditor.enrichHTML": [location: "TextEditor.enrichHTML", err: Error, data: EmptyObject];
+      "CompendiumArt#_registerArt": [location: "CompendiumArt#_registerArt", err: Error, data: EmptyObject];
+      "ChatLog##doRenderBatch": [location: "ChatLog##doRenderBatch", err: Error, data: EmptyObject];
+      "CardsConfig##onDrop": [location: "CardsConfig##onDrop", err: Error, data: EmptyObject];
     }
 
-    type DropData =
-      | layers.TokenLayer.DropData
-      | layers.NotesLayer.DropData
-      | layers.SoundsLayer.DropData
-      | layers.TilesLayer.DropData;
+    interface DropData extends AnyMutableObject, Canvas.Point {}
   }
 }

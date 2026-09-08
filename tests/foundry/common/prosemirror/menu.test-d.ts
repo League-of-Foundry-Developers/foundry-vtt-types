@@ -48,7 +48,7 @@ expectTypeOf(pmm.update(view, view)).toEqualTypeOf<void>();
 
 declare const previousState: EditorState;
 
-expectTypeOf(pmm["_getDropDownMenus"]()).toEqualTypeOf<Record<string, ProseMirrorDropDown.Config>>();
+expectTypeOf(pmm["_getDropDownMenus"]()).toEqualTypeOf<ProseMirrorMenu.DropDowns>();
 expectTypeOf(pmm["_getMenuItems"]()).toEqualTypeOf<ProseMirrorMenu.Item[]>();
 
 declare const pmmItem: ProseMirrorMenu.Item;

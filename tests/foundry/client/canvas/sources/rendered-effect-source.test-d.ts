@@ -144,3 +144,18 @@ expectTypeOf(
     speed: 3,
   }),
 ).toBeVoid();
+
+declare const hookLightSource: foundry.canvas.sources.PointLightSource;
+const hookRenderedSource: RenderedEffectSource.Any = hookLightSource;
+expectTypeOf(hookRenderedSource.background).toEqualTypeOf<foundry.canvas.containers.PointSourceMesh | undefined>();
+
+interface HookSourceLayers {
+  [name: string]: RenderedEffectSource.LayerConfig;
+  background: RenderedEffectSource.LayerConfig;
+}
+expectTypeOf<
+  RenderedEffectSource.LayerMesh<HookSourceLayers, "background">
+>().toEqualTypeOf<foundry.canvas.containers.PointSourceMesh>();
+expectTypeOf<RenderedEffectSource.LayerMesh<HookSourceLayers, "other">>().toEqualTypeOf<
+  foundry.canvas.containers.PointSourceMesh | undefined
+>();

@@ -45,6 +45,6 @@ expectTypeOf(DrawingsLayer.layerOptions.discardClosingPoint).toEqualTypeOf<false
 
 Hooks.on("pasteDrawing", (objects, data, options) => {
   expectTypeOf(objects).toEqualTypeOf<Drawing.Implementation[]>();
-  expectTypeOf(data).toEqualTypeOf<DrawingDocument.Source>();
+  expectTypeOf(data).toEqualTypeOf<DrawingDocument.Source[]>();
   expectTypeOf(options).toEqualTypeOf<Hooks.PastePlaceableObjectOptions>();
 });
