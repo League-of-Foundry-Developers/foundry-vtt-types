@@ -754,12 +754,12 @@ declare namespace DataField {
     | Exclude<BaseAssignmentType, null | undefined> // Always include the base type
     | (Options["nullable"] extends true // determine whether null is in the union
         ? // when nullable, both `null` and `undefined` can safely be passed
-            null | undefined
+          null | undefined
         : never)
     | (Options["required"] extends true // determine whether undefined is in the union
         ? never
         : // when not required, both `null` and `undefined` can safely be passed
-            null | undefined)
+          null | undefined)
     | ("initial" extends keyof Options
         ? // TODO(LukeAbby): This should possibly actually be distributive.
           Options["initial"] extends undefined
@@ -3401,7 +3401,7 @@ declare namespace SetField {
     ? // If the field has `choices` then you _must_ provide options for `createMultiSelectInput`.
       DataField.ToInputConfig<CurrentField> & MultiSelectInputConfig
     : // Otherwise it's optional to provide.
-        DataField.ToInputConfig<CurrentField> | (DataField.ToInputConfig<CurrentField> & MultiSelectInputConfig);
+      DataField.ToInputConfig<CurrentField> | (DataField.ToInputConfig<CurrentField> & MultiSelectInputConfig);
 }
 
 declare abstract class AnySetField extends SetField<
