@@ -248,3 +248,12 @@ Hooks.on("canvasConfig", (config) => {
 });
 // @ts-expect-error Canvas configuration is always an object.
 Hooks.callAll("canvasConfig", undefined);
+
+Hooks.on("soundsRefresh", (layer, listeners) => {
+  expectTypeOf(layer).toEqualTypeOf<foundry.canvas.layers.SoundsLayer.Implementation>();
+  expectTypeOf(listeners).toEqualTypeOf<foundry.canvas.Canvas.ElevatedPoint[]>();
+});
+
+Hooks.on("initializeSoundSources", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<foundry.canvas.layers.SoundsLayer.Implementation>();
+});

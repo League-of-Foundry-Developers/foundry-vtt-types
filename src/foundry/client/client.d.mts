@@ -2409,4 +2409,18 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import PACKAGE_TYPES = foundry.packages.PACKAGE_TYPES;
+
+  interface HTMLFormElement {
+    /**
+     * @remarks The native {@linkcode HTMLFormElement.submit}, preserved by Foundry before it replaces `submit`. It
+     * neither validates the form nor dispatches a `submit` event.
+     */
+    submitNoEvent(): void;
+
+    /**
+     * @remarks Replaced by Foundry with {@linkcode HTMLFormElement.requestSubmit}, so it validates the form and
+     * dispatches a `submit` event. Use {@linkcode HTMLFormElement.submitNoEvent} for the native behaviour.
+     */
+    submit(submitter?: HTMLElement | null): void;
+  }
 }

@@ -1119,6 +1119,16 @@ export interface AllHooks extends DynamicHooks {
   lightingRefresh: (group: EffectsCanvasGroup.Implementation) => void;
 
   /**
+   * A hook event that fires when the SoundsLayer is refreshed, after ambient sound playback has been synchronized.
+   * This fires even when the Scene contains no sound sources.
+   * @param layer     - The SoundsLayer instance
+   * @param listeners - Positions of Tokens which are able to hear
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode layers.SoundsLayer.refresh | SoundsLayer#refresh}
+   */
+  soundsRefresh: (layer: layers.SoundsLayer.Implementation, listeners: Canvas.ElevatedPoint[]) => void;
+
+  /**
    * A hook event that fires when visibility is refreshed.
    * @param visibility - The {@linkcode CanvasVisibility} instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
@@ -1133,6 +1143,15 @@ export interface AllHooks extends DynamicHooks {
    * @see {@linkcode EffectsCanvasGroup.Implementation.initializeLightSources | EffectsCanvasGroup#initializeLightSources}
    */
   initializeLightSources: (group: EffectsCanvasGroup.Implementation) => void;
+
+  /**
+   * A hook event that fires during sound source initialization.
+   * This hook can be used to add programmatic sound sources to the Scene.
+   * @param layer - The SoundsLayer where sound sources are initialized
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode layers.SoundsLayer.initializeSources | SoundsLayer#initializeSources}
+   */
+  initializeSoundSources: (layer: layers.SoundsLayer.Implementation) => void;
 
   /**
    * A hook event that fires after priority light sources initialization.
