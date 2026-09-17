@@ -60,7 +60,7 @@ declare class ShapeLayer {
    * @returns The initial shape data
    *
    * @remarks
-   * @throws If the active tool does not define `shapeData`.
+   * @throws If this layer's documents have multiple shapes and the active tool does not define `shapeData`.
    */
   protected _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
@@ -97,11 +97,8 @@ declare class ShapeLayer {
    * Prepare the database update that should occur as the result of a mouse wheel rotation.
    * @returns The update data and options (optional)
    *
-   * @remarks Returning the `[data, options]` form has no effect: the caller tests `Array.isArray(result[0])`,
-   * which is never true for a tuple whose first element is the update data, so the whole tuple is passed as the
-   * update data.
-   *
-   * @throws If the previewed document's schema has none of the `shapes`, `shape`, or `rotation` fields, in which
+   * @remarks
+   * @throws If the previewed document's schema has none of the `rotation`, `shapes`, or `shape` fields, in which
    * case a subclass must override this method.
    */
   protected _prepareMouseWheelUpdate():

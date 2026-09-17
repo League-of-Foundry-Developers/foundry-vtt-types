@@ -20,3 +20,11 @@ expectTypeOf(JournalEntryPage.slugifyHeading("Test string")).toEqualTypeOf<strin
 expectTypeOf(JournalEntryPage.buildTOC([new HTMLElement(), new HTMLElement()], {})).toEqualTypeOf<
   Record<string, JournalEntryPage.Heading>
 >();
+
+class MyJournalEntryPage extends JournalEntryPage {
+  protected static override _isHeading(element: HTMLElement): boolean {
+    return super._isHeading(element) && !element.classList.contains("no-toc");
+  }
+}
+expectTypeOf(MyJournalEntryPage["_isHeading"](new HTMLElement())).toEqualTypeOf<boolean>();
+expectTypeOf(JournalEntryPage["_isHeading"](new HTMLElement())).toEqualTypeOf<boolean>();

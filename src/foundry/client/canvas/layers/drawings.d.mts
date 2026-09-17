@@ -76,10 +76,6 @@ declare class DrawingsLayer extends ShapeLayerMixin(PlaceablesLayer<"Drawing">) 
 
   protected override _createDragPreviewData(event: Canvas.Event.Pointer): DrawingDocument.CreateData;
 
-  /**
-   * @remarks
-   * @throws If {@linkcode game.activeTool} is not one of the drawing creation tools.
-   */
   protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
   protected override _updateDragPreview(event: Canvas.Event.Pointer): void;

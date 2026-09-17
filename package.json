@@ -89,6 +89,9 @@
     },
     "./workers/image-compressor": {
       "types": "./src/foundry/public/scripts/workers/image-compressor.d.mts"
+    },
+    "./workers/ktx2-transcoder": {
+      "types": "./src/foundry/public/scripts/workers/ktx2-transcoder.d.mts"
     }
   },
   "publishConfig": {

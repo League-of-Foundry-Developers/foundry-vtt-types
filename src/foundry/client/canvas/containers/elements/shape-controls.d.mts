@@ -135,8 +135,6 @@ declare class ShapeControls<
    * @param event - The pointer event.
    * @returns The update data and options (optional)
    * @throws If {@linkcode ShapeControls.document | this.document} has neither a `shapes` nor a `shape` field.
-   * @remarks Only the plain-object form survives: {@linkcode ShapeControls._onDragDrop | ShapeControls#_onDragDrop}
-   * normalizes with `Array.isArray(result[0])`, so the tuple form is wrapped again and its options are dropped.
    */
   protected _prepareDragDropUpdate(event: Canvas.Event.Pointer): ShapeControls.DragDropUpdate;
 

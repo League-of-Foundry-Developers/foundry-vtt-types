@@ -75,6 +75,15 @@ declare abstract class BaseLevel extends Document<"Level", BaseLevel.Schema, any
 
   static override defineSchema(): BaseLevel.Schema;
 
+  /**
+   * @remarks If `data.elevation.top` is `undefined`, sets it to four times the parent Scene's grid distance, or
+   * {@linkcode foundry.documents.BaseScene.defaultGrid | BaseScene.defaultGrid}'s if there is no parent.
+   */
+  protected override _initializeSource(
+    data: BaseLevel.CreateData,
+    options?: Document.InitializeSourceOptions,
+  ): BaseLevel.Source;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.

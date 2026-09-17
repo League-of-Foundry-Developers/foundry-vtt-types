@@ -359,8 +359,12 @@ declare namespace Level {
     /** @remarks Foundry comments "Treat `null` as `-Infinity`" */
     bottom: fields.NumberField<{ required: true; nullable: true; initial: 0 }>;
 
-    /** @remarks Foundry comments "Treat `null` as `+Infinity`" */
-    top: fields.NumberField<{ required: true; nullable: true; initial: 20 }>;
+    /**
+     * @defaultValue `4 * grid.distance` of the parent Scene
+     * @remarks Foundry comments "Treat `null` as `+Infinity`".
+     * The default is applied by {@linkcode foundry.documents.BaseLevel._initializeSource | BaseLevel#_initializeSource}.
+     */
+    top: fields.NumberField<{ required: true; nullable: true }>;
   }
 
   /**
