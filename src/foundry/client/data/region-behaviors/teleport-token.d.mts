@@ -28,7 +28,9 @@ declare namespace TeleportTokenRegionBehaviorType {
 
   interface Schema extends foundry.data.fields.DataSchema {
     /** The destination(s) Region the Token is teleported to. */
-    destinations: fields.SetField<fields.DocumentUUIDField<{ type: "Region"; nullable: false; relative: true }>>;
+    destinations: fields.SetField<
+      fields.DocumentUUIDField<{ type: "Region"; nullable: false; relative: true; relativize: true }>
+    >;
 
     /** The placement of the Token within the destination Region. */
     placement: fields.StringField<{
