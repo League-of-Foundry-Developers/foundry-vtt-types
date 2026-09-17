@@ -95,6 +95,7 @@ declare const v14DataModel: _V14DataModelTest;
 
 expectTypeOf(v14DataModel.getFieldForProperty("name")).toEqualTypeOf<fields.DataField.Unknown | undefined>();
 expectTypeOf(v14DataModel.getFieldForProperty(["name"])).toEqualTypeOf<fields.DataField.Unknown | undefined>();
+expectTypeOf(v14DataModel.getNearestDocument()).toEqualTypeOf<foundry.abstract.Document.Any | null>();
 expectTypeOf(_V14DataModelTest.cleanData({}, {}, { creation: true })).toEqualTypeOf<object>();
 
 // The constructor destructures `parent`, `schema`, and `strict` out of the context before forwarding the remainder.

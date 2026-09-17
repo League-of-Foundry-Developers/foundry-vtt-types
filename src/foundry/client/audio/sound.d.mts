@@ -1,6 +1,5 @@
-import type { Brand, InexactPartial, MaybePromise, Identity, IntentionalPartial } from "#utils";
+import type { Brand, FixedInstanceType, InexactPartial, MaybePromise, Identity, IntentionalPartial } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
-import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
 import type { AudioTimeout } from "./_module.d.mts";
@@ -164,12 +163,12 @@ declare class Sound extends EventEmitterMixin() {
   set loop(value);
 
   /**
-   * An internal reference to some object which is managing this `Sound` instance.
+   * An internal reference to a specific PointSoundSource responsible for managing this Sound's playback.
    * @defaultValue `null`
    * @internal
    * @remarks Only ever set *or* read externally by core, so not protected.
    */
-  _manager: AmbientSound.Implementation | null;
+  _manager: PointSoundSource.Implementation | null;
 
   /**
    * Load the audio source and prepare it for playback, either using an AudioBuffer or a streamed HTMLAudioElement.
@@ -348,6 +347,14 @@ declare class Sound extends EventEmitterMixin() {
    */
   protected _disconnectPipeline(): void;
 
+  /**
+   * Create a sound effect node from an effect configuration, if its type is registered in CONFIG.soundEffects.
+   * @param context - The audio context for the effect
+   * @param config  - The effect configuration
+   * @returns The created effect, if the type is registered
+   */
+  static createEffect(context: AudioContext, config?: Sound.EffectConfig): Sound.Effect | undefined;
+
   #Sound: true;
 }
 
@@ -371,6 +378,14 @@ declare namespace Sound {
   }
 
   interface ConstructorOptions extends InexactPartial<_ConstructorOptions> {}
+
+  /**
+   * @remarks Foundry types both properties as required, but a missing or unregistered `type` creates no effect, and
+   * {@linkcode PointSoundSource.defaultData} passes an empty object for each effect.
+   */
+  interface EffectConfig extends InexactPartial<AmbientSoundDocument.Effect> {}
+
+  type Effect = FixedInstanceType<CONFIG.SoundEffect["effectClass"]>;
 
   type STATES = Brand<number, "Sound.STATES">;
 

@@ -65,6 +65,7 @@ expectTypeOf(
     object: ambientSound,
   }),
 ).toBeVoid();
+expectTypeOf(layer._configurePlayback({ source: somePSS, sound: null, volume: 0, object: null })).toBeVoid();
 
 const filledInPlayAtPositionOptions = {
   baseEffect: { type: "reverb", intensity: 3 },

@@ -418,8 +418,8 @@ export class ActorDeltaField<
     | (() => fields.EmbeddedDocumentField.InitializedType<DocumentType, Options> | null);
 
   /**
-   * @remarks Discards the update if the delta's parent Token is linked. If the delta was `null`, replaces
-   * `options._deltaModel` with a fresh model and stashes the old one in `options._deltaModelDeleted`.
+   * @remarks Uses the delta for `source._id` in `options._deltaModels`, else `options._deltaModel`. Discards the update
+   * for a linked Token; if the delta changed from or to `null`, rebuilds it and stashes the old one in `options._deltaModelDeleted`.
    */
   override _updateCommit(
     source: AnyMutableObject,
