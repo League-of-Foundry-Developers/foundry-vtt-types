@@ -44,6 +44,14 @@ expectTypeOf(mySource.applyEffects({ muffled: true })).toBeVoid();
 expectTypeOf(mySource.resetEffects()).toBeVoid();
 expectTypeOf(mySource.sync(true, 0.8)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(mySource.sync(false, 0, { fade: 500, muffled: undefined })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(mySource.sync(false)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(mySource.sync(false, undefined, { fade: 0 })).toEqualTypeOf<Promise<void>>();
+declare const isAudible: boolean;
+expectTypeOf(mySource.sync(isAudible, 0.5)).toEqualTypeOf<Promise<void>>();
+// @ts-expect-error `volume` is required when the sound may be audible
+expectTypeOf(mySource.sync(true)).toEqualTypeOf<Promise<void>>();
+// @ts-expect-error `volume` is required when the sound may be audible
+expectTypeOf(mySource.sync(isAudible)).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40, elevation: 10 })).toBeNumber();
 expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40, elevation: 10 }, { easing: true })).toBeNumber();
