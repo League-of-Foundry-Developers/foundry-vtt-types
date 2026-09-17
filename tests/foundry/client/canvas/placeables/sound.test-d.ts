@@ -39,6 +39,14 @@ expectTypeOf(sound["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 expectTypeOf(sound.sync(true, 10)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.sync(true, 10, {})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.sync(true, 10, { fade: 250 })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(sound.sync(false)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(sound.sync(false, undefined, { muffled: true })).toEqualTypeOf<Promise<void>>();
+declare const isAudible: boolean;
+expectTypeOf(sound.sync(isAudible, 1)).toEqualTypeOf<Promise<void>>();
+// @ts-expect-error `volume` is required when the sound may be audible
+expectTypeOf(sound.sync(true)).toEqualTypeOf<Promise<void>>();
+// @ts-expect-error `volume` is required when the sound may be audible
+expectTypeOf(sound.sync(isAudible)).toEqualTypeOf<Promise<void>>();
 
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(sound["_draw"]()).toEqualTypeOf<Promise<void>>();
