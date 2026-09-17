@@ -69,6 +69,13 @@ declare namespace ServerSettings {
     /** Is the application running in SSL mode at a reverse-proxy level? */
     proxySSL: fields.BooleanField<{ initial: false }>;
 
+    /**
+     * @remarks Whether server administrator credentials are read from the `x-admin-user` and `x-admin-secret` request
+     * headers supplied by a reverse proxy. The server disables it on startup unless both an administrator username and
+     * password, and either a Unix socket or an SSL certificate and key, are configured.
+     */
+    externalAdminAuth: fields.BooleanField<{ initial: false }>;
+
     /** A URL path part which prefixes normal application routing */
     routePrefix: fields.StringField<{ required: true; blank: false; nullable: true; initial: null }>;
 
@@ -128,13 +135,17 @@ declare class ServerSettings extends DataModel<ServerSettings.Schema> {
    */
   static override migrateData(source: object, options?: fields.DataField.CleanOptions): object;
 
+  /**
+   * @remarks
+   * @throws If neither a `port` nor a `unixSocket` is configured.
+   */
+  static override validateJoint(data: ServerSettings.Source): void;
+
   /* DataModel overrides */
 
   static override _schema: fields.SchemaField<ServerSettings.Schema>;
 
   static override get schema(): fields.SchemaField<ServerSettings.Schema>;
-
-  static override validateJoint(data: ServerSettings.Source): void;
 
   static override fromSource(source: ServerSettings.CreateData, context?: DataModel.FromSourceOptions): ServerSettings;
 

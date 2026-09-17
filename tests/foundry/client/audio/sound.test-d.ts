@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
 
-import AmbientSound = foundry.canvas.placeables.AmbientSound;
+import PointSoundSource = foundry.canvas.sources.PointSoundSource;
 import Sound = foundry.audio.Sound;
 import Canvas = foundry.canvas.Canvas;
 import AudioTimeout = foundry.audio.AudioTimeout;
@@ -78,7 +78,13 @@ describe("Sound Tests", () => {
     expectTypeOf(sound.id).toEqualTypeOf<number>();
     expectTypeOf(sound.src).toEqualTypeOf<string>();
 
-    expectTypeOf(sound._manager).toEqualTypeOf<AmbientSound.Implementation | null>();
+    expectTypeOf(sound._manager).toEqualTypeOf<PointSoundSource.Implementation | null>();
+
+    expectTypeOf(Sound.createEffect(context)).toEqualTypeOf<Sound.Effect | undefined>();
+    expectTypeOf(Sound.createEffect(context, { type: "lowpass", intensity: 5 })).toEqualTypeOf<
+      Sound.Effect | undefined
+    >();
+    expectTypeOf(Sound.createEffect(context, {})).toEqualTypeOf<Sound.Effect | undefined>();
 
     expectTypeOf(sound["_createNodes"]()).toBeVoid();
     expectTypeOf(sound["_connectPipeline"]()).toBeVoid();

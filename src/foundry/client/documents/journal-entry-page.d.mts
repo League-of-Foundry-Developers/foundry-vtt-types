@@ -1163,6 +1163,12 @@ declare class JournalEntryPage<
   protected static _flattenTOC(nodes: JournalEntryPage.IntermediaryHeading[]): JournalEntryPage.TOC;
 
   /**
+   * Test whether an element should contribute a node to the table of contents.
+   * @param element - The element being visited
+   */
+  protected static _isHeading(element: HTMLElement): boolean;
+
+  /**
    * Construct a table of contents node from a heading element.
    * @param heading - The heading element.
    * @param options - Additional options to configure the returned node.

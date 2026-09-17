@@ -1,8 +1,9 @@
-import type { FixedInstanceType, Identity, InexactPartial, Override, RequiredProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, IntentionalPartial, Override, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { Sound } from "#client/audio/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a point-based source of sound.
@@ -14,10 +15,25 @@ declare class PointSoundSource<
   static override sourceType: "sound";
 
   /**
+   * @defaultValue
+   * ```js
+   * {
+   *   ...super.defaultData,
+   *   path: null,
+   *   volume: 1,
+   *   easing: true,
+   *   effects: {base: {}, muffled: {}}
+   * }
+   * ```
    * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
-   * @privateRemarks Fake override to allow merging to this interface but not its parents
    */
   static override defaultData: PointSoundSource.SourceData;
+
+  /**
+   * The Sound instance which this source drives.
+   * @defaultValue `null`
+   */
+  sound: Sound | null;
 
   /** @privateRemarks Fake override to remove `number[]` */
   override shape: SourceShape | undefined;
@@ -29,6 +45,20 @@ declare class PointSoundSource<
   ): PointSoundSource.Initialized<SourceData, SourceShape>;
 
   override get effectsCollection(): Collection<this>;
+
+  /**
+   * Update the set of effects which are applied to the managed Sound.
+   * @remarks
+   * @throws If {@linkcode PointSoundSource.sound | #sound} is `null`
+   */
+  applyEffects(options?: PointSoundSource.ApplyEffectsOptions): void;
+
+  protected override _destroy(): void;
+
+  /**
+   * Release a Sound which no longer matches the configured audio path so that a new one is acquired on the next sync.
+   */
+  protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
   override _getPolygonConfiguration(): PointSoundSource.PolygonConfig;
 
@@ -43,6 +73,20 @@ declare class PointSoundSource<
    * PointSoundSource#getVolumeMultiplier({@linkcode Canvas.ElevatedPoint | ElevatedPoint})." (since v13, until v15)
    */
   getVolumeMultiplier(listener: Canvas.Point, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
+
+  /**
+   * Discard prepared effect nodes so that they are rebuilt from current source data.
+   */
+  resetEffects(): void;
+
+  /**
+   * Toggle playback of the Sound driven by this source, adjusting its volume and effects.
+   * @param isAudible - Should the sound be playing?
+   * @param volume    - The target playback volume
+   */
+  sync(isAudible: boolean, volume: number, options?: PointSoundSource.SyncOptions): Promise<void>;
+
+  #PointSoundSource: true;
 }
 
 declare namespace PointSoundSource {
@@ -79,7 +123,45 @@ declare namespace PointSoundSource {
 
   interface GetVolumeMultiplierOptions extends InexactPartial<_GetVolumeMultiplierOptions> {}
 
-  interface SourceData extends PointEffectSourceMixin.MixedSourceData {}
+  interface SourceData extends PointEffectSourceMixin.MixedSourceData {
+    /**
+     * @defaultValue `null`
+     * @remarks The audio path of the {@linkcode PointSoundSource.sound | #sound} this source drives
+     */
+    path: string | null;
+
+    /** @defaultValue `1` */
+    volume: number;
+
+    /** @defaultValue `true` */
+    easing: boolean;
+
+    /** @defaultValue `{ base: {}, muffled: {} }` */
+    effects: Effects;
+  }
+
+  interface Effects {
+    base: Sound.EffectConfig;
+
+    /** @remarks Falls back to `base` if no effect is created from this config */
+    muffled: Sound.EffectConfig;
+  }
+
+  interface ApplyEffectsOptions {
+    /**
+     * Is the sound currently muffled?
+     * @defaultValue `false`
+     */
+    muffled?: boolean | undefined;
+  }
+
+  interface SyncOptions extends ApplyEffectsOptions {
+    /**
+     * Duration of volume transitions in milliseconds
+     * @defaultValue `250`
+     */
+    fade?: number | undefined;
+  }
 
   interface PartialSourceData extends InexactPartial<SourceData> {}
 

@@ -30,6 +30,12 @@ declare namespace TileShapeControls {
     width: number;
     height: number;
     rotation: number;
+    texture: DragDropUpdateTexture;
+  }
+
+  interface DragDropUpdateTexture {
+    anchorX: number;
+    anchorY: number;
   }
 }
 

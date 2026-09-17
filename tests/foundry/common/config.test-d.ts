@@ -6,6 +6,7 @@ declare const serverSettings: ServerSettings;
 
 expectTypeOf(serverSettings.adminUsername).toEqualTypeOf<string | null>();
 expectTypeOf<ServerSettings.Source["adminUsername"]>().toEqualTypeOf<string | null>();
+expectTypeOf<ServerSettings.Source["externalAdminAuth"]>().toEqualTypeOf<boolean>();
 expectTypeOf<ServerSettings.InitializedData["adminUsername"]>().toEqualTypeOf<string | null>();
 expectTypeOf<ServerSettings.CreateData["adminUsername"]>().toEqualTypeOf<string | null | undefined>();
 

@@ -16,3 +16,5 @@ type KTX2ParserParseOptions = foundry.canvas.KTX2Parser.ParseOptions;
 type KTX2Header = foundry.canvas.KTX2Parser.Header;
 
 type KTX2TranscodeTarget = foundry.canvas.KTX2Parser.TranscodeTarget;
+
+type KTX2TranscodeResult = foundry.canvas.KTX2Parser.TranscodeResult;

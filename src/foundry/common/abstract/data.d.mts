@@ -204,6 +204,12 @@ declare abstract class DataModel<
   static LOCALIZATION_PREFIXES: string[];
 
   /**
+   * Get the Document that is nearest, which is either this instance if it's a Document or the nearest ancestor
+   * that is a Document. If there is no Document, null is returned.
+   */
+  getNearestDocument(): foundry.abstract.Document.Any | null;
+
+  /**
    * Traverse the data model instance, obtaining the DataField definition for a field of a particular property.
    * @param key - A property key like ["abilities", "strength"] or "abilities.strength"
    * @returns The corresponding DataField definition for that field, or undefined
@@ -783,6 +789,13 @@ declare namespace DataModel {
      * @internal
      */
     _deltaModel: ActorDelta.Implementation;
+
+    /**
+     * The ActorDelta being updated for each parent Token, keyed by the Token's ID, so that an update touching
+     * several Tokens commits each delta against its own Token
+     * @internal
+     */
+    _deltaModels: Record<string, ActorDelta.Implementation>;
 
     /**
      * The ActorDelta that {@linkcode foundry.documents.ActorDeltaField | ActorDeltaField} replaced when a `null` delta
