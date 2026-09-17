@@ -8,10 +8,14 @@ declare namespace ToggleBehaviorRegionBehaviorType {
     events: RegionBehaviorType.EventsField;
 
     /** The Region Behavior UUIDs that are enabled. */
-    enable: fields.SetField<fields.DocumentUUIDField<{ type: "RegionBehavior"; nullable: false; relative: true }>>;
+    enable: fields.SetField<
+      fields.DocumentUUIDField<{ type: "RegionBehavior"; nullable: false; relative: true; relativize: true }>
+    >;
 
     /** The Region Behavior UUIDs that are disabled. */
-    disable: fields.SetField<fields.DocumentUUIDField<{ type: "RegionBehavior"; nullable: false; relative: true }>>;
+    disable: fields.SetField<
+      fields.DocumentUUIDField<{ type: "RegionBehavior"; nullable: false; relative: true; relativize: true }>
+    >;
   }
 }
 
