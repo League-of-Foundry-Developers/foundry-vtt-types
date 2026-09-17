@@ -64,7 +64,7 @@ declare class PointDarknessSource<
   /**
    * Padding applied on the darkness source shape for visual appearance only.
    * Note: for now, padding is increased radius. It might evolve in a future release.
-   * @defaultValue `(CONFIG.Canvas.darknessSourcePaddingMultiplier ?? 0) * canvas.grid.size`
+   * @defaultValue `(CONFIG.Canvas.darknessSourcePaddingMultiplier ?? 0) * canvas.scene._source.grid.size`
    */
   protected _padding: number;
 

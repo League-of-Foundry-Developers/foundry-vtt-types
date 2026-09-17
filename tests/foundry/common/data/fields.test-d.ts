@@ -769,3 +769,10 @@ test("validators() threads the receiver and narrows on strict", () => {
     foundry.data.validation.DataModelValidationFailure | boolean | void
   >();
 });
+
+test("DocumentUUIDField relativize", () => {
+  const relativeField = new fields.DocumentUUIDField({ type: "Region", relative: true, relativize: true });
+  expectTypeOf(relativeField.relative).toEqualTypeOf<boolean>();
+  expectTypeOf(relativeField.relativize).toEqualTypeOf<boolean>();
+  expectTypeOf<fields.DocumentUUIDField.DefaultOptions["relativize"]>().toEqualTypeOf<false>();
+});

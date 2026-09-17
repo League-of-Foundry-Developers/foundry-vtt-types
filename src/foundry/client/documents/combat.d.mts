@@ -1273,9 +1273,9 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * Get the Combatant who has the next turn.
-   * @remarks Can be `undefined` if there are no combatants.
+   * @remarks `null` if there are no Combatants, or all are defeated with `skipDefeated` enabled.
    */
-  get nextCombatant(): Combatant.Stored | undefined;
+  get nextCombatant(): Combatant.Stored | null;
 
   /** Return the object of settings which modify the Combat Tracker behavior */
   get settings(): Combat.SettingData;

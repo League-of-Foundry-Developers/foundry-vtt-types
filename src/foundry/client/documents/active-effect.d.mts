@@ -1459,7 +1459,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   get active(): boolean;
 
   /**
-   * Whether this Active Effect currently modify an Actor
+   * Whether this Active Effect currently modifies an Actor.
    */
   get modifiesActor(): boolean;
 

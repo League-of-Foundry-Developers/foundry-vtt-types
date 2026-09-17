@@ -95,7 +95,8 @@ declare abstract class BaseActorDelta<
    * @param changes - Candidate source changes. (default: `{}`)
    * @param options - Options which determine how the new data is merged. (default: `{}`)
    * @internal
-   * @remarks Sets `options._deltaModel` to `this`, then forwards sections of the passed `changes` to the relevant
+   * @remarks Sets `options._deltaModel` to `this`, and records `this` in `options._deltaModels` under the parent
+   * Token's ID if it has one, then forwards sections of the passed `changes` to the relevant
    * {@linkcode foundry.abstract.EmbeddedCollectionDelta._prepareDeltaUpdate | EmbeddedCollectionDelta#_prepareDeltaUpdate}s.
    */
   _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;

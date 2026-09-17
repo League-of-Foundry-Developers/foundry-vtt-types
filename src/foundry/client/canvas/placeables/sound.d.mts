@@ -27,14 +27,12 @@ declare class AmbientSound extends ShapeObjectMixin(PlaceableObject<AmbientSound
 
   /**
    * The Sound which manages playback for this AmbientSound effect
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to {@linkcode AmbientSound.sync | AmbientSound#sync}
-   * or {@linkcode AmbientSound._onUpdate | AmbientSound#_onUpdate} being called (the
-   * former likely via {@linkcode SoundsLayer._syncPositions | SoundsLayer#_syncPositions})
-   *
-   * Set `null` if this sound's document has either no `path` or no `id` (e.g if its a preview, for the latter)
+   * @defaultValue `null`
+   * @remarks Only created by an audible {@linkcode AmbientSound.sync | AmbientSound#sync} or a `path` change in
+   * {@linkcode AmbientSound._onUpdate | AmbientSound#_onUpdate}, and stays `null` if this sound's document has either
+   * no `path` or no `id` (e.g if its a preview, for the latter)
    */
-  sound: Sound | null | undefined;
+  sound: Sound | null;
 
   /**
    * A SoundSource object which manages the area of effect for this ambient sound
@@ -80,6 +78,8 @@ declare class AmbientSound extends ShapeObjectMixin(PlaceableObject<AmbientSound
 
   /**
    * Update the set of effects which are applied to the managed Sound.
+   * @remarks Forwards to {@linkcode PointSoundSource.applyEffects | this.source#applyEffects}, so throws if
+   * {@linkcode AmbientSound.source | #source} has not been created.
    */
   applyEffects(options?: AmbientSound.ApplyEffectsOptions): void;
 
@@ -102,6 +102,7 @@ declare class AmbientSound extends ShapeObjectMixin(PlaceableObject<AmbientSound
    * @param isAudible - Is the sound audible?
    * @param volume    - The target playback volume
    * @param options   - Additional options which affect sound synchronization
+   * @returns A promise which resolves once sound playback is synchronized
    */
   sync(isAudible: boolean, volume: number, options?: AmbientSound.SyncOptions): Promise<void>;
 
@@ -234,27 +235,9 @@ declare namespace AmbientSound {
 
   interface RenderFlags extends RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS> {}
 
-  /** @internal */
-  interface _ApplyEffectsOptions {
-    /**
-     * Is the sound currently muffled?
-     * @defaultValue `false`
-     */
-    muffled: boolean;
-  }
+  interface ApplyEffectsOptions extends PointSoundSource.ApplyEffectsOptions {}
 
-  interface ApplyEffectsOptions extends InexactPartial<_ApplyEffectsOptions> {}
-
-  /** @internal */
-  interface _SyncOptions {
-    /**
-     * A duration in milliseconds to fade volume transition
-     * @defaultValue `250`
-     */
-    fade: number;
-  }
-
-  interface SyncOptions extends InexactPartial<_SyncOptions>, InexactPartial<_ApplyEffectsOptions> {}
+  interface SyncOptions extends PointSoundSource.SyncOptions {}
 
   interface DrawOptions extends PlaceableObject.DrawOptions {}
 
@@ -282,7 +265,7 @@ declare namespace AmbientSound {
    */
   type SoundSourceData = RequiredProps<
     IntentionalPartial<PointSoundSource.SourceData>,
-    "x" | "y" | "elevation" | "radius" | "walls" | "disabled"
+    "x" | "y" | "elevation" | "radius" | "walls" | "path" | "volume" | "easing" | "effects" | "disabled"
   >;
 }
 

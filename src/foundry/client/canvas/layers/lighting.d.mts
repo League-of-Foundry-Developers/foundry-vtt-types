@@ -1,4 +1,4 @@
-import type { AnyMutableObject, FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type PlaceablesLayer from "./base/placeables-layer.d.mts";
 import type ShapeLayerMixin from "./mixins/shapes.d.mts";
@@ -64,8 +64,6 @@ declare class LightingLayer extends LightingLayerBase<"AmbientLight"> {
   protected override _activate(): void;
 
   static override prepareSceneControls(): SceneControls.Control;
-
-  protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
 
   protected override _updateDragPreview(event: Canvas.Event.Pointer): void;
 

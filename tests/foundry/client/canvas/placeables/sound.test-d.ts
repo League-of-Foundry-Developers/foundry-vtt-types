@@ -18,7 +18,7 @@ declare const scene: Scene.Stored;
 const sound = new CONFIG.AmbientSound.objectClass(doc);
 
 expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();
-expectTypeOf(sound.sound).toEqualTypeOf<Sound | null | undefined>();
+expectTypeOf(sound.sound).toEqualTypeOf<Sound | null>();
 expectTypeOf(sound.source).toEqualTypeOf<foundry.canvas.sources.PointSoundSource.Implementation | undefined>();
 expectTypeOf(sound.field).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(sound.controls).toEqualTypeOf<AmbientSoundShapeControls | undefined>();

@@ -22,6 +22,10 @@ const initializedSource = mySource.initialize({
   walls: true,
   x: 50,
   y: 50,
+  path: "sounds/drums.wav",
+  volume: 0.5,
+  easing: false,
+  effects: { base: { type: "lowpass", intensity: 5 }, muffled: {} },
 });
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointSoundSource.SourceData>();
@@ -31,6 +35,15 @@ expectTypeOf(initializedSource.shape).toEqualTypeOf<PointSoundSource.Implementat
 const _shape: foundry.canvas.geometry.PointSourcePolygon = initializedSource.shape;
 
 expectTypeOf(mySource.effectsCollection).toEqualTypeOf<Collection<typeof mySource>>();
+
+expectTypeOf(mySource.sound).toEqualTypeOf<foundry.audio.Sound | null>();
+expectTypeOf(mySource.data.path).toEqualTypeOf<string | null>();
+expectTypeOf(mySource.data.effects).toEqualTypeOf<PointSoundSource.Effects>();
+expectTypeOf(mySource.applyEffects()).toBeVoid();
+expectTypeOf(mySource.applyEffects({ muffled: true })).toBeVoid();
+expectTypeOf(mySource.resetEffects()).toBeVoid();
+expectTypeOf(mySource.sync(true, 0.8)).toEqualTypeOf<Promise<void>>();
+expectTypeOf(mySource.sync(false, 0, { fade: 500, muffled: undefined })).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40, elevation: 10 })).toBeNumber();
 expectTypeOf(mySource.getVolumeMultiplier({ x: 50, y: 40, elevation: 10 }, { easing: true })).toBeNumber();

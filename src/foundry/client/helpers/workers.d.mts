@@ -25,11 +25,18 @@ declare class AsyncWorker extends Worker {
   get ready(): Promise<void>;
 
   /**
+   * Has this worker been terminated?
+   */
+  get terminated(): boolean;
+
+  /**
    * Load a function onto a given Worker.
    * The function must be a pure function with no external dependencies or requirements on global scope.
    * @param functionName - The name of the function to load
    * @param functionRef  - A reference to the function that should be loaded
    * @returns A Promise which resolves once the Worker has loaded the function.
+   * @remarks
+   * @throws If this worker has been {@linkcode AsyncWorker.terminated | terminated}, or if loading fails inside the worker.
    */
   loadFunction(functionName: string, functionRef: AnyFunction): Promise<unknown>;
 
@@ -41,6 +48,8 @@ declare class AsyncWorker extends Worker {
    *                       See {@link https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects}
    *                       (default: `[]`)
    * @returns A Promise which resolves with the returned result of the function once complete.
+   * @remarks
+   * @throws If this worker has been {@linkcode AsyncWorker.terminated | terminated}, or if the function throws inside the worker.
    */
   executeFunction(functionName: string, args?: AnyArray, transfer?: AnyArray): Promise<unknown>;
 

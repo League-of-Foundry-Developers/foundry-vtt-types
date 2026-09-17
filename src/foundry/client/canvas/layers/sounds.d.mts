@@ -1,4 +1,4 @@
-import type { AnyMutableObject, InexactPartial, Identity, FixedInstanceType, HandleEmptyObject } from "#utils";
+import type { InexactPartial, Identity, FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type PlaceablesLayer from "./base/placeables-layer.d.mts";
 import type ShapeLayerMixin from "./mixins/shapes.d.mts";
@@ -74,7 +74,8 @@ declare class SoundsLayer extends ShapeLayerMixin(PlaceablesLayer<"AmbientSound"
   protected override _activate(): void;
 
   /**
-   * Initialize all AmbientSound sources which are present on this layer
+   * Initialize all AmbientSound sources which are present on this layer.
+   * Packages can use the "initializeSoundSources" hook to programmatically add sound sources.
    */
   initializeSources(): void;
 
@@ -82,6 +83,7 @@ declare class SoundsLayer extends ShapeLayerMixin(PlaceablesLayer<"AmbientSound"
    * Update all AmbientSound effects in the layer by toggling their playback status.
    * Sync audio for the positions of tokens which are capable of hearing.
    * @param options - Additional options forwarded to AmbientSound synchronization (defaultValue: `{}`)
+   * @remarks Calls the `soundsRefresh` hook, even when the Scene contains no sound sources.
    */
   refresh(options?: SoundsLayer.RefreshOptions): void;
 
@@ -193,8 +195,6 @@ declare class SoundsLayer extends ShapeLayerMixin(PlaceablesLayer<"AmbientSound"
    */
   protected _onMouseMove(currentPos: PIXI.Point): void;
 
-  protected override _createDragShapeData(event: Canvas.Event.Pointer): AnyMutableObject;
-
   protected override _updateDragPreview(event: Canvas.Event.Pointer): void;
 
   /**
@@ -267,21 +267,22 @@ declare namespace SoundsLayer {
   interface PlaybackConfig {
     /**
      * The Sound node which should be controlled for playback
-     * @remarks the {@linkcode AmbientSound.sound | #sound} of this config's `object`
+     * @remarks The {@linkcode AmbientSound.sound | #sound} of this config's `object`, or the
+     * {@linkcode PointSoundSource.sound | #sound} of its `source` if there is no `object`
      */
-    sound: Sound;
+    sound: Sound | null;
 
     /**
      * The SoundSource which defines the area of effect for the sound
-     * @remarks the {@linkcode AmbientSound.source | #source} of this config's `object`
      */
     // TODO: InitializedImplementation
     source: PointSoundSource.Implementation;
 
     /**
      * An AmbientSound object responsible for the sound, or undefined
+     * @remarks `null` for a sound source added programmatically, rather than by an {@linkcode AmbientSound}
      */
-    object: AmbientSound.Implementation;
+    object: AmbientSound.Implementation | null;
 
     // Foundry describes a `distance: number` property here in their typedef, but it is neither set not read anywhere as of 13.347
 
@@ -310,7 +311,7 @@ declare namespace SoundsLayer {
 
     /**
      * Is playback constrained or muffled by walls and surfaces?
-     * @remarks The {@linkcode AmbientSoundDocument.walls | #walls} of this config's `object.document`
+     * @remarks The {@linkcode PointSoundSource.SourceData.walls | #walls} of this config's `source.data`
      *
      * Only `undefined` if there are no listeners in range of the sound
      */

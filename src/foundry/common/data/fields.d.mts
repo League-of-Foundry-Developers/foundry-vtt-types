@@ -1184,7 +1184,7 @@ declare namespace DataField {
   interface GroupConfig extends InexactPartial<_GroupConfig>, Omit<FormGroupConfig, "label" | "hint" | "input"> {
     /**
      * A text label to apply to the form group
-     * @defaultValue {@linkcode DataField.label | this.label}` ?? `{@linkcode DataField.fieldPath | this.fieldPath}
+     * @defaultValue {@linkcode DataField.label | this.label}` || `{@linkcode DataField.fieldPath | this.fieldPath}
      */
     label?: FormGroupConfig["label"] | undefined;
 
@@ -4321,14 +4321,24 @@ declare class DocumentUUIDField<
   /** Does this field require (or prohibit) embedded documents? */
   embedded: boolean | undefined;
 
-  /** Does this field allow relative document UUIDs? */
+  /**
+   * Does this field allow relative document UUIDs?
+   * @defaultValue `false`
+   */
   relative: boolean;
+
+  /**
+   * If the `relative` option is true, then absolute UUIDs are converted to
+   * relative UUIDs relative to the nearest Document the field is in when cleaning
+   * @defaultValue `false`
+   */
+  relativize: boolean;
 
   static get _defaults(): DocumentUUIDField.Options;
 
   /**
-   * @remarks If the cleaned `value` starts with `"."` and this field is `relative`, builds a
-   * relative UUID against `_state.model`
+   * @remarks If this field is `relative` and `relativize`, converts an absolute `value` to a relative UUID against the
+   * {@linkcode DataModel.getNearestDocument | nearest Document} of `_state.model`, leaving it unchanged on failure
    */
   protected override _cleanType(
     value: InitializedType,
@@ -4336,7 +4346,6 @@ declare class DocumentUUIDField<
     _state?: DataField.UpdateState,
   ): InitializedType;
 
-  /** @remarks `options` is unused in `DocumentUUIDField` */
   protected override _validateType(
     value: InitializedType,
     options?: DataField.ValidateOptions<this> | null,
@@ -4375,8 +4384,18 @@ declare namespace DocumentUUIDField {
     /** Does this field require (or prohibit) embedded documents? */
     embedded?: boolean | undefined;
 
-    /** Does this field allow relative document UUIDs? */
+    /**
+     * Does this field allow relative document UUIDs?
+     * @defaultValue `false`
+     */
     relative?: boolean | undefined;
+
+    /**
+     * If the `relative` option is true, then absolute UUIDs are converted to
+     * relative UUIDs relative to the nearest Document the field is in when cleaning
+     * @defaultValue `false`
+     */
+    relativize?: boolean | undefined;
   };
 
   type DefaultOptions = SimpleMerge<
@@ -4389,6 +4408,7 @@ declare namespace DocumentUUIDField {
       type: undefined;
       embedded: undefined;
       relative: false;
+      relativize: false;
     }
   >;
 
