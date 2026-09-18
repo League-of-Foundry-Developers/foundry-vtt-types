@@ -103,7 +103,11 @@ declare class AmbientSound extends ShapeObjectMixin(PlaceableObject<AmbientSound
    * @param volume    - The target playback volume
    * @param options   - Additional options which affect sound synchronization
    * @returns A promise which resolves once sound playback is synchronized
+   * @remarks Foundry documents `volume` as optional, but it is only optional when stopping playback. It is required
+   * when the sound may be audible, since {@linkcode PointSoundSource.sync | PointSoundSource#sync} passes it to
+   * {@linkcode Sound.fade | Sound#fade}.
    */
+  sync(isAudible: false, volume?: number, options?: AmbientSound.SyncOptions): Promise<void>;
   sync(isAudible: boolean, volume: number, options?: AmbientSound.SyncOptions): Promise<void>;
 
   protected override _clear(): void;

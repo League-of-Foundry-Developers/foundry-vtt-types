@@ -1,11 +1,13 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import RegionShader = foundry.canvas.rendering.shaders.RegionShader;
-
-const myRS = RegionShader.create();
-expectTypeOf(myRS).toEqualTypeOf<RegionShader>();
 
 declare const someMesh: PIXI.Mesh;
 declare const someRenderer: PIXI.Renderer;
 
-expectTypeOf(myRS["_preRender"](someMesh, someRenderer)).toEqualTypeOf<void>();
+test("foundry/client/canvas/rendering/shaders/region/base", () => {
+  const myRS = RegionShader.create();
+  expectTypeOf(myRS).toEqualTypeOf<RegionShader>();
+
+  expectTypeOf(myRS["_preRender"](someMesh, someRenderer)).toEqualTypeOf<void>();
+});

@@ -1,11 +1,4 @@
-import { expectTypeOf } from "vitest";
-
-expectTypeOf(foundry.documents.BaseJournalEntry.create({ name: "Some JournalEntry" })).toEqualTypeOf<
-  Promise<JournalEntry.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseJournalEntry.createDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
-expectTypeOf(foundry.documents.BaseJournalEntry.updateDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
-expectTypeOf(foundry.documents.BaseJournalEntry.deleteDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
+import { expectTypeOf, test } from "vitest";
 
 // Regression test for issue with circular schemas reported by @Eon
 // https://tsplay.dev/mpYKXW
@@ -32,3 +25,12 @@ declare global {
     };
   }
 }
+
+test("foundry/common/documents/journal-entry", () => {
+  expectTypeOf(foundry.documents.BaseJournalEntry.create({ name: "Some JournalEntry" })).toEqualTypeOf<
+    Promise<JournalEntry.Stored | undefined>
+  >();
+  expectTypeOf(foundry.documents.BaseJournalEntry.createDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
+  expectTypeOf(foundry.documents.BaseJournalEntry.updateDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
+  expectTypeOf(foundry.documents.BaseJournalEntry.deleteDocuments([])).toEqualTypeOf<Promise<JournalEntry.Stored[]>>();
+});

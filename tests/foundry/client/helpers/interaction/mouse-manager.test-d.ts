@@ -1,6 +1,8 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import MouseManager = foundry.helpers.interaction.MouseManager;
 
-const mouseManager = new MouseManager();
+test("foundry/client/helpers/interaction/mouse-manager", () => {
+  const mouseManager = new MouseManager();
 
-expectTypeOf(mouseManager["_activateListeners"]()).toBeVoid();
+  expectTypeOf(mouseManager["_activateListeners"]()).toBeVoid();
+});

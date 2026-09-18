@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
@@ -27,23 +27,25 @@ declare class MyInteractionLayer extends InteractionLayer {
   protected override _draw(options: AnyObject): Promise<void>;
 }
 
-expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
-
-expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<Partial<SceneControls.Tool>>();
-
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someUser: User.Implementation;
-const layer = new MyInteractionLayer();
 
-expectTypeOf(layer.name).toEqualTypeOf<string>();
-expectTypeOf(layer.hookName).toEqualTypeOf<"MyInteractionLayer">();
+test("foundry/client/canvas/layers/base/interaction-layer", () => {
+  expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
 
-expectTypeOf(layer.activate()).toEqualTypeOf<MyInteractionLayer>();
-expectTypeOf(layer.activate({})).toEqualTypeOf<MyInteractionLayer>();
-expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>();
+  expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<Partial<SceneControls.Tool>>();
+  const layer = new MyInteractionLayer();
 
-expectTypeOf(layer["_activate"]()).toBeVoid();
-expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
-expectTypeOf(layer.getZIndex()).toBeNumber();
-expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
-expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+  expectTypeOf(layer.name).toEqualTypeOf<string>();
+  expectTypeOf(layer.hookName).toEqualTypeOf<"MyInteractionLayer">();
+
+  expectTypeOf(layer.activate()).toEqualTypeOf<MyInteractionLayer>();
+  expectTypeOf(layer.activate({})).toEqualTypeOf<MyInteractionLayer>();
+  expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>();
+
+  expectTypeOf(layer["_activate"]()).toBeVoid();
+  expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(layer.getZIndex()).toBeNumber();
+  expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+  expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+});

@@ -1,6 +1,6 @@
 // tests for /types/utils/index.d.mts
 
-import { assertType, expectTypeOf } from "vitest";
+import { assertType, expectTypeOf, test } from "vitest";
 import type {
   GetKey,
   IntentionalPartial,
@@ -55,177 +55,10 @@ import type {
   DotKeys,
 } from "fvtt-types/utils";
 
-expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
-expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
-
-expectTypeOf<GetKey<{ abc: number }, "abc">>().toEqualTypeOf<number>();
-
-expectTypeOf<GetKey<object, "abc", "default">>().toEqualTypeOf<"default">();
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-expectTypeOf<GetKey<{}, "abc", "default">>().toEqualTypeOf<"default">();
-
-expectTypeOf<GetKey<Record<string, unknown>, "abc", "default">>().toEqualTypeOf<unknown>();
-expectTypeOf<GetKey<any, "abc", "default">>().toEqualTypeOf<any>();
-
-// It would be better if `K` was covariant like `T[K]` is but this seems difficult to achieve.
-interface _GetKeyVariance<out T, K extends PropertyKey, out D> {
-  x: GetKey<T, K, D>;
-}
-
-expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<{ abc?: number }>();
-
-expectTypeOf<OverlapsWith<7, number>>().toEqualTypeOf<7>();
-expectTypeOf<OverlapsWith<"abc", number>>().toEqualTypeOf<number>();
-expectTypeOf<OverlapsWith<string | number, string>>().toEqualTypeOf<string | number>();
-
-expectTypeOf<ArrayOverlaps<number[], number>>().toEqualTypeOf<number[]>();
-expectTypeOf<ArrayOverlaps<number[], string>>().toEqualTypeOf<readonly string[]>();
-
-expectTypeOf<MakeConform<string, { abc: number }, { abc: number; def: string }>>().toEqualTypeOf<{
-  abc: number;
-  def: string;
-}>();
-expectTypeOf<MakeConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number }>();
-expectTypeOf<MakeConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
-  abc: number;
-  def: number;
-}>();
-
-// @ts-expect-error string doesn't conform
-expectTypeOf<MustConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number; def: string }>();
-expectTypeOf<MustConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
-  abc: number;
-  def: number;
-}>();
-
-class TestClass {
-  #abc: number;
-  def: string;
-
-  constructor() {
-    this.#abc = 0;
-    this.def = "";
-  }
-}
-
-expectTypeOf<TestClass>().not.toEqualTypeOf<{ def: string }>();
-expectTypeOf<InterfaceToObject<TestClass>>().toEqualTypeOf<{ def: string }>();
-
-expectTypeOf<ConformRecord<{ abc: { ghi: number } }, { def: string }>>().toEqualTypeOf<{ abc: { def: string } }>();
-expectTypeOf<ConformRecord<{ abc: { def: string; ghi: number } }, { def: string }>>().toEqualTypeOf<{
-  abc: { def: string; ghi: number };
-}>();
-
-// TODO: ToMethod
-// TODO: MaybeEmpty
-
-// TODO: PropertiesOfType
-// TODO: Brand
-// TODO: PrettifyType
-// TODO: PrettifyTypeDeep
-// TODO: UnionToIntersection
-
-// @ts-expect-error Ideally an empty object should always be assignable to `DeepPartial` but currently it isn't.
-function _emptyMustBeAssignable<T extends object>(_partial: DeepPartial<T> = {}): void {}
-
-expectTypeOf<DeepPartial<{ a: string }>>().toEqualTypeOf<{ a?: string }>();
-expectTypeOf<DeepPartial<{ a: { b: string } }>>().toEqualTypeOf<{ a?: { b?: string } }>();
-
-expectTypeOf<AllKeysOf<{ a: string }>>().toEqualTypeOf<"a">();
-expectTypeOf<AllKeysOf<{ a: string; b: number }>>().toEqualTypeOf<"a" | "b">();
-expectTypeOf<AllKeysOf<{ a: string } | { b: string }>>().toEqualTypeOf<"a" | "b">();
-
-// TODO: InexactPartial
-// TODO: NullishProps
-
-expectTypeOf<Expanded<{ foo: string }>>().toEqualTypeOf<{ foo: string }>();
-expectTypeOf<Expanded<{ "foo.bar": string }>>().toEqualTypeOf<{ foo: { bar: string } }>();
-expectTypeOf<Expanded<{ "foo.bar": string[] }>>().toEqualTypeOf<{ foo: { bar: string[] } }>();
-expectTypeOf<Expanded<{ foo: { "bar.baz": string } }>>().toEqualTypeOf<{ foo: { bar: { baz: string } } }>();
-expectTypeOf<Expanded<{ "foo.bar": string; "baz.qux": string }>>().toEqualTypeOf<{
-  foo: { bar: string };
-  baz: { qux: string };
-}>();
-expectTypeOf<Expanded<{ "foo.bar": string; baz: { qux: string } }>>().toEqualTypeOf<{
-  foo: { bar: string };
-  baz: { qux: string };
-}>();
-expectTypeOf<Expanded<{ "foo.bar": string | number }>>().toEqualTypeOf<{ foo: { bar: string | number } }>();
-expectTypeOf<Expanded<{ foo: { bar: string } | { baz: number } }>>().toEqualTypeOf<{
-  foo: { bar: string } | { baz: number };
-}>();
-expectTypeOf<Expanded<{ "foo.bar"?: string }>>().toEqualTypeOf<{ foo?: { bar: string | undefined } }>();
-
-// TODO: ValueOf
-// TODO: ConcreteKeys
-// TODO: RemoveIndexSignatures
-
-expectTypeOf<Titlecase<"">>().toEqualTypeOf<"">();
-expectTypeOf<Titlecase<" ">>().toEqualTypeOf<" ">();
-expectTypeOf<Titlecase<"42">>().toEqualTypeOf<"42">();
-expectTypeOf<Titlecase<"foobar">>().toEqualTypeOf<"Foobar">();
-expectTypeOf<Titlecase<"FOOBAR">>().toEqualTypeOf<"Foobar">();
-expectTypeOf<Titlecase<"foo bar">>().toEqualTypeOf<"Foo Bar">();
-expectTypeOf<Titlecase<"foo  bar">>().toEqualTypeOf<"Foo  Bar">();
-expectTypeOf<Titlecase<"foo bar baz">>().toEqualTypeOf<"Foo Bar Baz">();
-
-type Override1 = Override<{ foo: number; bar: string }, { foo: string }>;
-
-const _overridden1: Override1 = { foo: "foo", bar: "bar" };
-
-// @ts-expect-error - `overridden` should be essentially equivalent to `{ foo: string; bar: string }`
-const _a: Override1 = { foo: 123, bar: "bar" };
-
-type Override2 = Override<{ foo: boolean[]; bar: string }, { foo: string }>;
-
-const _overridden2: Override2 = { foo: "foo", bar: "bar" };
-
-// @ts-expect-error - In principle this should work but the variance of `Override` is overly
-// conservative. We could force `Override` to have a structural comparison but I simply don't see
-// the point right now.
-const _b: Override1 = _overridden2;
-
-// @ts-expect-error - See above.
-const _c: Override2 = _overridden1;
-
-type Override3 = Override<{ foo: 123; bar: "bar" }, { foo: "foo" }>;
-
-const _overridden3: Override3 = { foo: "foo", bar: "bar" };
-
-const _d: Override1 = _overridden3;
-
-// @ts-expect-error - `_overridden1` is wider than `_overridden3`.
-// This is essentially trying to assign `{ foo: string; bar: string }` to `{ foo: "foo"; bar: "bar" }`.
-const _e: Override3 = _overridden1;
-
-// TODO: Merge
-
-expectTypeOf<IsObject<string>>().toEqualTypeOf<false>();
-
-// A more naive type would count a branded string as an object because `string & { brand: 123 }` extends `object`.
-expectTypeOf<IsObject<Brand<string, "foo">>>().toEqualTypeOf<false>();
-expectTypeOf<IsObject<Brand<{ foo: 123 }, "foo">>>().toEqualTypeOf<true>();
-
-// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-expectTypeOf<IsObject<String>>().toEqualTypeOf<true>();
-
 declare class Class {
   static foo: number;
   bar: string;
 }
-
-expectTypeOf<IsObject<typeof Class>>().toEqualTypeOf<false>();
-
-// interface style classes.
-expectTypeOf<IsObject<typeof URL>>().toEqualTypeOf<false>();
-
-// AddEventListenerOptions really is just an object at runtime.
-expectTypeOf<IsObject<AddEventListenerOptions>>().toEqualTypeOf<true>();
-
-// Unfortunately a class instance is completely indistinguishable from an interface. Permissively
-// returns `true`
-expectTypeOf<IsObject<Class>>().toEqualTypeOf<true>();
 
 // TODO: SimpleMerge
 
@@ -234,38 +67,209 @@ type A = { foo?: string; bar?: number; baz: boolean };
 type B = { foo: string; bar?: number; baz: boolean };
 declare const someVariable: RequiredProps<A, "foo">;
 declare const someOtherVariable: B;
-assertType<B>(someVariable);
-assertType<RequiredProps<A, "foo">>(someOtherVariable);
 
-// TODO: Mixin
-// TODO: GetDataReturnType
-// TODO: HandleEmptyObject
-// TODO: AnyObject
-// TODO: AnyMutableObject
-// TODO: AnyArray
-// TODO: MutableArray
-// TODO: AnyFunction
-// TODO: AnyConstructor
-// TODO: AnyConcreteConstructor
-// TODO: MustBePromise
+test("types/utils", async () => {
+  expectTypeOf<GetKey<{ abc: string }, "abc">>().toEqualTypeOf<string>();
+  expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
 
-const numberMaybePromise = 0 as MaybePromise<number>;
-expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
+  expectTypeOf<GetKey<{ abc: number }, "abc">>().toEqualTypeOf<number>();
 
-// TODO: NonNullish
-// TODO: EmptyObject
-// TODO: ShapeWithIndexSignature
-// TODO: MustBeValidUuid
-// TODO: Quote
+  expectTypeOf<GetKey<object, "abc", "default">>().toEqualTypeOf<"default">();
 
-expectTypeOf<SplitString<"", ".">>().toEqualTypeOf<[]>();
-expectTypeOf<SplitString<"abc", "">>().toEqualTypeOf<["a", "b", "c"]>();
-expectTypeOf<SplitString<"lorem.ipusm", ".">>().toEqualTypeOf<["lorem", "ipusm"]>();
-expectTypeOf<SplitString<"" | "a" | "b.c" | "d.e.f", ".">>().toEqualTypeOf<[] | ["a"] | ["b", "c"] | ["d", "e", "f"]>();
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  expectTypeOf<GetKey<{}, "abc", "default">>().toEqualTypeOf<"default">();
 
-// TODO: DeepReadonly
+  expectTypeOf<GetKey<Record<string, unknown>, "abc", "default">>().toEqualTypeOf<unknown>();
+  expectTypeOf<GetKey<any, "abc", "default">>().toEqualTypeOf<any>();
 
-type CycleA = { a: { b: { c: CycleX } } };
-type CycleX = { x: { y: { z: CycleA } } };
+  // It would be better if `K` was covariant like `T[K]` is but this seems difficult to achieve.
+  interface _GetKeyVariance<out T, K extends PropertyKey, out D> {
+    x: GetKey<T, K, D>;
+  }
 
-expectTypeOf<DotKeys<CycleA>>().toEqualTypeOf<"a" | "a.b" | "a.b.c" | "a.b.c.x" | "a.b.c.x.y" | "a.b.c.x.y.z">();
+  expectTypeOf<IntentionalPartial<{ abc: number }>>().toEqualTypeOf<{ abc?: number }>();
+
+  expectTypeOf<OverlapsWith<7, number>>().toEqualTypeOf<7>();
+  expectTypeOf<OverlapsWith<"abc", number>>().toEqualTypeOf<number>();
+  expectTypeOf<OverlapsWith<string | number, string>>().toEqualTypeOf<string | number>();
+
+  expectTypeOf<ArrayOverlaps<number[], number>>().toEqualTypeOf<number[]>();
+  expectTypeOf<ArrayOverlaps<number[], string>>().toEqualTypeOf<readonly string[]>();
+
+  expectTypeOf<MakeConform<string, { abc: number }, { abc: number; def: string }>>().toEqualTypeOf<{
+    abc: number;
+    def: string;
+  }>();
+  expectTypeOf<MakeConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number }>();
+  expectTypeOf<MakeConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
+    abc: number;
+    def: number;
+  }>();
+
+  // @ts-expect-error string doesn't conform
+  expectTypeOf<MustConform<string, { abc: number }>>().toEqualTypeOf<{ abc: number; def: string }>();
+  expectTypeOf<MustConform<{ abc: number; def: number }, { abc: number }>>().toEqualTypeOf<{
+    abc: number;
+    def: number;
+  }>();
+
+  class TestClass {
+    #abc: number;
+    def: string;
+
+    constructor() {
+      this.#abc = 0;
+      this.def = "";
+    }
+  }
+
+  expectTypeOf<TestClass>().not.toEqualTypeOf<{ def: string }>();
+  expectTypeOf<InterfaceToObject<TestClass>>().toEqualTypeOf<{ def: string }>();
+
+  expectTypeOf<ConformRecord<{ abc: { ghi: number } }, { def: string }>>().toEqualTypeOf<{ abc: { def: string } }>();
+  expectTypeOf<ConformRecord<{ abc: { def: string; ghi: number } }, { def: string }>>().toEqualTypeOf<{
+    abc: { def: string; ghi: number };
+  }>();
+
+  // TODO: ToMethod
+  // TODO: MaybeEmpty
+
+  // TODO: PropertiesOfType
+  // TODO: Brand
+  // TODO: PrettifyType
+  // TODO: PrettifyTypeDeep
+  // TODO: UnionToIntersection
+
+  // @ts-expect-error Ideally an empty object should always be assignable to `DeepPartial` but currently it isn't.
+  function _emptyMustBeAssignable<T extends object>(_partial: DeepPartial<T> = {}): void {}
+
+  expectTypeOf<DeepPartial<{ a: string }>>().toEqualTypeOf<{ a?: string }>();
+  expectTypeOf<DeepPartial<{ a: { b: string } }>>().toEqualTypeOf<{ a?: { b?: string } }>();
+
+  expectTypeOf<AllKeysOf<{ a: string }>>().toEqualTypeOf<"a">();
+  expectTypeOf<AllKeysOf<{ a: string; b: number }>>().toEqualTypeOf<"a" | "b">();
+  expectTypeOf<AllKeysOf<{ a: string } | { b: string }>>().toEqualTypeOf<"a" | "b">();
+
+  // TODO: InexactPartial
+  // TODO: NullishProps
+
+  expectTypeOf<Expanded<{ foo: string }>>().toEqualTypeOf<{ foo: string }>();
+  expectTypeOf<Expanded<{ "foo.bar": string }>>().toEqualTypeOf<{ foo: { bar: string } }>();
+  expectTypeOf<Expanded<{ "foo.bar": string[] }>>().toEqualTypeOf<{ foo: { bar: string[] } }>();
+  expectTypeOf<Expanded<{ foo: { "bar.baz": string } }>>().toEqualTypeOf<{ foo: { bar: { baz: string } } }>();
+  expectTypeOf<Expanded<{ "foo.bar": string; "baz.qux": string }>>().toEqualTypeOf<{
+    foo: { bar: string };
+    baz: { qux: string };
+  }>();
+  expectTypeOf<Expanded<{ "foo.bar": string; baz: { qux: string } }>>().toEqualTypeOf<{
+    foo: { bar: string };
+    baz: { qux: string };
+  }>();
+  expectTypeOf<Expanded<{ "foo.bar": string | number }>>().toEqualTypeOf<{ foo: { bar: string | number } }>();
+  expectTypeOf<Expanded<{ foo: { bar: string } | { baz: number } }>>().toEqualTypeOf<{
+    foo: { bar: string } | { baz: number };
+  }>();
+  expectTypeOf<Expanded<{ "foo.bar"?: string }>>().toEqualTypeOf<{ foo?: { bar: string | undefined } }>();
+
+  // TODO: ValueOf
+  // TODO: ConcreteKeys
+  // TODO: RemoveIndexSignatures
+
+  expectTypeOf<Titlecase<"">>().toEqualTypeOf<"">();
+  expectTypeOf<Titlecase<" ">>().toEqualTypeOf<" ">();
+  expectTypeOf<Titlecase<"42">>().toEqualTypeOf<"42">();
+  expectTypeOf<Titlecase<"foobar">>().toEqualTypeOf<"Foobar">();
+  expectTypeOf<Titlecase<"FOOBAR">>().toEqualTypeOf<"Foobar">();
+  expectTypeOf<Titlecase<"foo bar">>().toEqualTypeOf<"Foo Bar">();
+  expectTypeOf<Titlecase<"foo  bar">>().toEqualTypeOf<"Foo  Bar">();
+  expectTypeOf<Titlecase<"foo bar baz">>().toEqualTypeOf<"Foo Bar Baz">();
+
+  type Override1 = Override<{ foo: number; bar: string }, { foo: string }>;
+
+  const _overridden1: Override1 = { foo: "foo", bar: "bar" };
+
+  // @ts-expect-error - `overridden` should be essentially equivalent to `{ foo: string; bar: string }`
+  const _a: Override1 = { foo: 123, bar: "bar" };
+
+  type Override2 = Override<{ foo: boolean[]; bar: string }, { foo: string }>;
+
+  const _overridden2: Override2 = { foo: "foo", bar: "bar" };
+
+  // @ts-expect-error - In principle this should work but the variance of `Override` is overly
+  // conservative. We could force `Override` to have a structural comparison but I simply don't see
+  // the point right now.
+  const _b: Override1 = _overridden2;
+
+  // @ts-expect-error - See above.
+  const _c: Override2 = _overridden1;
+
+  type Override3 = Override<{ foo: 123; bar: "bar" }, { foo: "foo" }>;
+
+  const _overridden3: Override3 = { foo: "foo", bar: "bar" };
+
+  const _d: Override1 = _overridden3;
+
+  // @ts-expect-error - `_overridden1` is wider than `_overridden3`.
+  // This is essentially trying to assign `{ foo: string; bar: string }` to `{ foo: "foo"; bar: "bar" }`.
+  const _e: Override3 = _overridden1;
+
+  // TODO: Merge
+
+  expectTypeOf<IsObject<string>>().toEqualTypeOf<false>();
+
+  // A more naive type would count a branded string as an object because `string & { brand: 123 }` extends `object`.
+  expectTypeOf<IsObject<Brand<string, "foo">>>().toEqualTypeOf<false>();
+  expectTypeOf<IsObject<Brand<{ foo: 123 }, "foo">>>().toEqualTypeOf<true>();
+
+  // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+  expectTypeOf<IsObject<String>>().toEqualTypeOf<true>();
+
+  expectTypeOf<IsObject<typeof Class>>().toEqualTypeOf<false>();
+
+  // interface style classes.
+  expectTypeOf<IsObject<typeof URL>>().toEqualTypeOf<false>();
+
+  // AddEventListenerOptions really is just an object at runtime.
+  expectTypeOf<IsObject<AddEventListenerOptions>>().toEqualTypeOf<true>();
+
+  // Unfortunately a class instance is completely indistinguishable from an interface. Permissively
+  // returns `true`
+  expectTypeOf<IsObject<Class>>().toEqualTypeOf<true>();
+  assertType<B>(someVariable);
+  assertType<RequiredProps<A, "foo">>(someOtherVariable);
+
+  // TODO: Mixin
+  // TODO: GetDataReturnType
+  // TODO: HandleEmptyObject
+  // TODO: AnyObject
+  // TODO: AnyMutableObject
+  // TODO: AnyArray
+  // TODO: MutableArray
+  // TODO: AnyFunction
+  // TODO: AnyConstructor
+  // TODO: AnyConcreteConstructor
+  // TODO: MustBePromise
+
+  const numberMaybePromise = 0 as MaybePromise<number>;
+  expectTypeOf(await numberMaybePromise).toEqualTypeOf<number>();
+
+  // TODO: NonNullish
+  // TODO: EmptyObject
+  // TODO: ShapeWithIndexSignature
+  // TODO: MustBeValidUuid
+  // TODO: Quote
+
+  expectTypeOf<SplitString<"", ".">>().toEqualTypeOf<[]>();
+  expectTypeOf<SplitString<"abc", "">>().toEqualTypeOf<["a", "b", "c"]>();
+  expectTypeOf<SplitString<"lorem.ipusm", ".">>().toEqualTypeOf<["lorem", "ipusm"]>();
+  expectTypeOf<SplitString<"" | "a" | "b.c" | "d.e.f", ".">>().toEqualTypeOf<
+    [] | ["a"] | ["b", "c"] | ["d", "e", "f"]
+  >();
+
+  // TODO: DeepReadonly
+
+  type CycleA = { a: { b: { c: CycleX } } };
+  type CycleX = { x: { y: { z: CycleA } } };
+
+  expectTypeOf<DotKeys<CycleA>>().toEqualTypeOf<"a" | "a.b" | "a.b.c" | "a.b.c.x" | "a.b.c.x.y" | "a.b.c.x.y.z">();
+});

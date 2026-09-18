@@ -1,134 +1,136 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-// @ts-expect-error A BaseScene requires data.
-foundry.documents.BaseScene.create();
-
-// @ts-expect-error A BaseScene requires a name.
-new foundry.documents.BaseScene({});
-
-expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
-  Promise<Scene.Stored | undefined>
->();
-
-// Subclass `BaseScene` to avoid it being abstract.
-class BaseScene extends foundry.documents.BaseScene {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">)
-      : null;
-  }
-}
-
-// @ts-expect-error A BaseScene requires a name.
-new BaseScene({});
-
-const scene = new BaseScene({ name: "My third scene" });
-expectTypeOf(scene).toEqualTypeOf<BaseScene>();
-
-expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.levels).toEqualTypeOf<EmbeddedCollection<Level.Stored, Scene.Implementation>>();
-expectTypeOf(scene.regions).toEqualTypeOf<EmbeddedCollection<RegionDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument.Stored, Scene.Implementation>>();
-expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument.Stored, Scene.Implementation>>();
-
-// @ts-expect-error A SceneData requires data.
-new foundry.documents.BaseScene();
-
-// @ts-expect-error A SceneData requires a name.
-new foundry.documents.BaseScene({});
-
-expectTypeOf(new BaseScene({ name: "A long expected journey" })).toEqualTypeOf<BaseScene>();
-expectTypeOf(
-  new BaseScene({
-    _id: undefined,
-    name: "A long expected journey",
-    active: undefined,
-    navigation: undefined,
-    navOrder: undefined,
-    navName: undefined,
-    thumb: undefined,
-    width: undefined,
-    height: undefined,
-    padding: undefined,
-    shiftX: undefined,
-    shiftY: undefined,
-    initial: undefined,
-    initialLevel: undefined,
-    grid: undefined,
-    tokenVision: undefined,
-    fog: null,
-    environment: null,
-    transition: undefined,
-    drawings: undefined,
-    tokens: undefined,
-    levels: undefined,
-    lights: undefined,
-    notes: undefined,
-    sounds: undefined,
-    regions: undefined,
-    tiles: undefined,
-    walls: undefined,
-    playlist: undefined,
-    playlistSound: undefined,
-    journal: undefined,
-    weather: undefined,
-    folder: undefined,
-    sort: undefined,
-    ownership: undefined,
-    flags: undefined,
-  }),
-).toEqualTypeOf<BaseScene>();
-expectTypeOf(
-  new BaseScene({
-    _id: null,
-    name: "A long expected journey",
-    active: null,
-    navigation: null,
-    navOrder: null,
-    navName: null,
-    thumb: null,
-    width: null,
-    height: null,
-    padding: null,
-    shiftX: null,
-    shiftY: null,
-    initial: null,
-    initialLevel: null,
-    grid: null,
-    tokenVision: null,
-    fog: null,
-    environment: null,
-    transition: null,
-    drawings: null,
-    tokens: null,
-    levels: null,
-    lights: null,
-    notes: null,
-    sounds: null,
-    regions: null,
-    tiles: null,
-    walls: null,
-    playlist: null,
-    playlistSound: null,
-    journal: null,
-    weather: null,
-    folder: null,
-    sort: null,
-    ownership: null,
-    flags: null,
-  }),
-).toEqualTypeOf<BaseScene>();
-
-expectTypeOf(foundry.documents.BaseScene.defaultGridlessGrid).toEqualTypeOf<foundry.grid.GridlessGrid>();
-expectTypeOf(foundry.documents.BaseScene["_LEVELS_PROPERTY_MAP"]).toEqualTypeOf<
-  readonly [sceneProperty: string, levelProperty: string][]
->();
-
 declare const someScene: Scene.Implementation;
-expectTypeOf(someScene.initialLevel).toEqualTypeOf<Level.Implementation>();
-expectTypeOf(someScene.firstLevel).toEqualTypeOf<Level.Implementation>();
+
+test("foundry/common/documents/scene", () => {
+  // @ts-expect-error A BaseScene requires data.
+  foundry.documents.BaseScene.create();
+
+  // @ts-expect-error A BaseScene requires a name.
+  new foundry.documents.BaseScene({});
+
+  expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
+    Promise<Scene.Stored | undefined>
+  >();
+
+  // Subclass `BaseScene` to avoid it being abstract.
+  class BaseScene extends foundry.documents.BaseScene {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">)
+        : null;
+    }
+  }
+
+  // @ts-expect-error A BaseScene requires a name.
+  new BaseScene({});
+
+  const scene = new BaseScene({ name: "My third scene" });
+  expectTypeOf(scene).toEqualTypeOf<BaseScene>();
+
+  expectTypeOf(scene.drawings).toEqualTypeOf<EmbeddedCollection<DrawingDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.lights).toEqualTypeOf<EmbeddedCollection<AmbientLightDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.notes).toEqualTypeOf<EmbeddedCollection<NoteDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.sounds).toEqualTypeOf<EmbeddedCollection<AmbientSoundDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.levels).toEqualTypeOf<EmbeddedCollection<Level.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.regions).toEqualTypeOf<EmbeddedCollection<RegionDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.tokens).toEqualTypeOf<EmbeddedCollection<TokenDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.tiles).toEqualTypeOf<EmbeddedCollection<TileDocument.Stored, Scene.Implementation>>();
+  expectTypeOf(scene.walls).toEqualTypeOf<EmbeddedCollection<WallDocument.Stored, Scene.Implementation>>();
+
+  // @ts-expect-error A SceneData requires data.
+  new foundry.documents.BaseScene();
+
+  // @ts-expect-error A SceneData requires a name.
+  new foundry.documents.BaseScene({});
+
+  expectTypeOf(new BaseScene({ name: "A long expected journey" })).toEqualTypeOf<BaseScene>();
+  expectTypeOf(
+    new BaseScene({
+      _id: undefined,
+      name: "A long expected journey",
+      active: undefined,
+      navigation: undefined,
+      navOrder: undefined,
+      navName: undefined,
+      thumb: undefined,
+      width: undefined,
+      height: undefined,
+      padding: undefined,
+      shiftX: undefined,
+      shiftY: undefined,
+      initial: undefined,
+      initialLevel: undefined,
+      grid: undefined,
+      tokenVision: undefined,
+      fog: null,
+      environment: null,
+      transition: undefined,
+      drawings: undefined,
+      tokens: undefined,
+      levels: undefined,
+      lights: undefined,
+      notes: undefined,
+      sounds: undefined,
+      regions: undefined,
+      tiles: undefined,
+      walls: undefined,
+      playlist: undefined,
+      playlistSound: undefined,
+      journal: undefined,
+      weather: undefined,
+      folder: undefined,
+      sort: undefined,
+      ownership: undefined,
+      flags: undefined,
+    }),
+  ).toEqualTypeOf<BaseScene>();
+  expectTypeOf(
+    new BaseScene({
+      _id: null,
+      name: "A long expected journey",
+      active: null,
+      navigation: null,
+      navOrder: null,
+      navName: null,
+      thumb: null,
+      width: null,
+      height: null,
+      padding: null,
+      shiftX: null,
+      shiftY: null,
+      initial: null,
+      initialLevel: null,
+      grid: null,
+      tokenVision: null,
+      fog: null,
+      environment: null,
+      transition: null,
+      drawings: null,
+      tokens: null,
+      levels: null,
+      lights: null,
+      notes: null,
+      sounds: null,
+      regions: null,
+      tiles: null,
+      walls: null,
+      playlist: null,
+      playlistSound: null,
+      journal: null,
+      weather: null,
+      folder: null,
+      sort: null,
+      ownership: null,
+      flags: null,
+    }),
+  ).toEqualTypeOf<BaseScene>();
+
+  expectTypeOf(foundry.documents.BaseScene.defaultGridlessGrid).toEqualTypeOf<foundry.grid.GridlessGrid>();
+  expectTypeOf(foundry.documents.BaseScene["_LEVELS_PROPERTY_MAP"]).toEqualTypeOf<
+    readonly [sceneProperty: string, levelProperty: string][]
+  >();
+  expectTypeOf(someScene.initialLevel).toEqualTypeOf<Level.Implementation>();
+  expectTypeOf(someScene.firstLevel).toEqualTypeOf<Level.Implementation>();
+});

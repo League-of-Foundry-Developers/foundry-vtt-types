@@ -1,20 +1,22 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-// This exists to make the class non-abstract.
-class TestBaseRollTable extends foundry.documents.BaseRollTable {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"RollTable">)
-      : null;
+test("foundry/common/documents/roll-table", () => {
+  // This exists to make the class non-abstract.
+  class TestBaseRollTable extends foundry.documents.BaseRollTable {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"RollTable">)
+        : null;
+    }
   }
-}
 
-// @ts-expect-error name is a required field
-new TestBaseRollTable();
+  // @ts-expect-error name is a required field
+  new TestBaseRollTable();
 
-// @ts-expect-error name is a required field
-new TestBaseRollTable({});
+  // @ts-expect-error name is a required field
+  new TestBaseRollTable({});
 
-const myRollTable = new TestBaseRollTable({ name: "foo" });
+  const myRollTable = new TestBaseRollTable({ name: "foo" });
 
-expectTypeOf(myRollTable.description).toBeString();
+  expectTypeOf(myRollTable.description).toBeString();
+});

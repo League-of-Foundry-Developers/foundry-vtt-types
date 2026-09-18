@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 // Import necessary as this is otherwise inaccessible.
 import {
@@ -11,9 +11,12 @@ import {
 } from "../../../../../src/foundry/common/prosemirror/schema/utils.mts";
 
 declare const el: HTMLElement;
-expectTypeOf(onlyInlineContent(el)).toEqualTypeOf<boolean>();
-expectTypeOf(isElementEmpty(el)).toEqualTypeOf<boolean>();
-expectTypeOf(stylesFromString("")).toEqualTypeOf<Record<string, string>>();
-expectTypeOf(mergeStyle("", "")).toEqualTypeOf<string>();
-expectTypeOf(classesFromString("")).toEqualTypeOf<string[]>();
-expectTypeOf(mergeClass("", "")).toEqualTypeOf<string>();
+
+test("foundry/common/prosemirror/schema/utils", () => {
+  expectTypeOf(onlyInlineContent(el)).toEqualTypeOf<boolean>();
+  expectTypeOf(isElementEmpty(el)).toEqualTypeOf<boolean>();
+  expectTypeOf(stylesFromString("")).toEqualTypeOf<Record<string, string>>();
+  expectTypeOf(mergeStyle("", "")).toEqualTypeOf<string>();
+  expectTypeOf(classesFromString("")).toEqualTypeOf<string[]>();
+  expectTypeOf(mergeClass("", "")).toEqualTypeOf<string>();
+});

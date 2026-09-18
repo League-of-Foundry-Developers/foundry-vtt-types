@@ -339,6 +339,7 @@ const rules = [
       // `allowInterfaces` allows the pattern of `interface X extends _X {}`.
       // This is sometimes done as a performance optimization, to allow declaration merging with a dynamic base, or simply to display a different name in intellisense.
       "@typescript-eslint/no-empty-object-type": ["error", { allowInterfaces: "with-single-extends" }],
+      "@typescript-eslint/no-generated-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-extraneous-class": "off",
       "@typescript-eslint/no-invalid-void-type": "off",
@@ -480,6 +481,10 @@ const rules = [
       // Using interfaces is normally helpful so that users can declaration merge fvtt-types if necessary.
       // However in tests it doesn't matter.
       "@typescript-eslint/consistent-type-definitions": "off",
+
+      // `void someBinding` marks a declaration that exists only to assert a type, which this rule
+      // reports because the operand is not a call.
+      "@typescript-eslint/no-meaningless-void-operator": "off",
 
       // There aren't even function bodies in the majority of the codebase.
       // It can make sense to have empty functions in tests.
