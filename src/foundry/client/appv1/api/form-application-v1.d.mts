@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { AnyMutableObject, AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { ProseMirrorKeyMaps, ProseMirrorMenu } from "#common/prosemirror/_module.d.mts";
 import type Application from "./application-v1.d.mts";
@@ -19,6 +20,9 @@ declare module "#configuration" {
  * 1) This application is used to only edit one object at a time
  * 2) The template used contains one (and only one) HTML form as it's outermost element
  * 3) This abstract layer has no knowledge of what is being updated, so the implementation must define _updateObject
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  *
  * @template Options        - the type of the options object
  * @template ConcreteObject - while this is called object this can actually be any arbitrary value.

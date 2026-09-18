@@ -6,6 +6,7 @@ import BaseSheet = foundry.applications.sheets.BaseSheet;
 import CardConfig = foundry.applications.sheets.CardConfig;
 import CombatantConfig = foundry.applications.sheets.CombatantConfig;
 import MacroConfig = foundry.applications.sheets.MacroConfig;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import MeasuredTemplateConfig = foundry.applications.sheets.MeasuredTemplateConfig;
 import PlaylistConfig = foundry.applications.sheets.PlaylistConfig;
 import PlaylistSoundConfig = foundry.applications.sheets.PlaylistSoundConfig;
@@ -38,8 +39,11 @@ declare const macroRenderOptions: MacroConfig.RenderOptions;
 expectTypeOf(macroRenderOptions.hotbarSlot).toEqualTypeOf<number | undefined>();
 
 // MeasuredTemplateConfig
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const templateContext: MeasuredTemplateConfig.RenderContext;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(templateContext.templateTypes).toEqualTypeOf<MeasuredTemplateConfig.TemplateTypes>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(templateContext.units).toEqualTypeOf<MeasuredTemplateConfig.Units>();
 expectTypeOf(templateContext.userColor).toEqualTypeOf<Color>();
 
@@ -64,4 +68,5 @@ declare const resultContext: TableResultConfig.RenderContext;
 expectTypeOf(resultContext.types).toEqualTypeOf<TableResultConfig.ResultTypeChoice[]>();
 expectTypeOf(resultContext.resultDocument).toEqualTypeOf<foundry.abstract.Document.Any | null>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(MeasuredTemplateConfig.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { AnyObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
 
@@ -12,6 +13,9 @@ declare module "#configuration" {
 /**
  * The Application responsible for displaying and editing a single Actor document.
  * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  * @param actor   - The Actor instance being displayed within the sheet.
  * @param options - Additional application configuration options.
  *

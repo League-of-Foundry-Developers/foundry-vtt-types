@@ -1,6 +1,7 @@
 import { assertType, expectTypeOf, test } from "vitest";
 
 import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 
 declare const storedMacro: Macro.Stored;
@@ -26,6 +27,7 @@ user.assignHotbarMacro(storedMacro, 1);
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.avatar).toEqualTypeOf<string | null>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(user.sheet).toEqualTypeOf<Application.Any | foundry.applications.api.DocumentSheetV2.Any | null>();
 
 expectTypeOf(user.color).toEqualTypeOf<Color>();

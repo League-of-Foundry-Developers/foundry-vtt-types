@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { AnyMutableObject, GetDataReturnType, MaybePromise, Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type Application from "./application-v1.mjs";
@@ -16,6 +17,9 @@ declare module "#configuration" {
 /**
  * Extend the FormApplication pattern to incorporate specific logic for viewing or editing Document instances.
  * See the FormApplication documentation for more complete description of this interface.
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  *
  * @template Options          - the type of the options object
  * @template ConcreteDocument - the type of the Document which should be managed by this form sheet

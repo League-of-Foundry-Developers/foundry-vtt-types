@@ -345,6 +345,7 @@ declare class JournalEntrySheet<
   protected _onEditPage(
     event: PointerEvent | null,
     target: HTMLElement,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
   ): Promise<ApplicationV2.Any> | JournalPageSheet.Any | void;
 
   /**
@@ -382,6 +383,7 @@ declare class JournalEntrySheet<
    * Retrieve the sheet instance for rendering this page inline.
    * @param page - The page instance or its ID.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   getPageSheet(page: JournalEntryPage.Implementation | string): JournalEntryPageSheet.Any | JournalPageSheet.Any;
 
   /**
@@ -450,6 +452,7 @@ declare class JournalEntrySheet<
   /**
    * @deprecated since v13 until v16.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   _renderAppV1PageView(element: HTMLElement, sheet: JournalPageSheet.Any): Promise<void>;
 
   #JournalEntrySheet: true;

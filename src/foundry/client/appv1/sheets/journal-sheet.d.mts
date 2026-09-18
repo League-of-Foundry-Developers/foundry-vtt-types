@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { AnyMutableObject, GetDataReturnType, Identity, MaybePromise, InexactPartial, ValueOf } from "#utils";
 import type { Application, DocumentSheet, FormApplication } from "../api/_module.d.mts";
 import type { ContextMenu } from "#client/applications/ux/_module.d.mts";
@@ -13,6 +14,9 @@ declare module "#configuration" {
 
 /**
  * The Application responsible for displaying and editing a single JournalEntry document.
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  * @template Options - the type of the options object
  */
 declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.Options> extends DocumentSheet<

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
@@ -12,24 +13,19 @@ declare module "#configuration" {
 }
 
 /**
- * The Application responsible for configuring a single MeasuredTemplate document within a parent Scene.
+ * @deprecated "MeasuredTemplateConfig is deprecated because the MeasuredTemplate document has been merged into the
+ * functionality of the Region document." (since v14, until v16)
  */
 declare class MeasuredTemplateConfig<
   RenderContext extends MeasuredTemplateConfig.RenderContext = MeasuredTemplateConfig.RenderContext,
   Configuration extends MeasuredTemplateConfig.Configuration = MeasuredTemplateConfig.Configuration,
   RenderOptions extends MeasuredTemplateConfig.RenderOptions = MeasuredTemplateConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   MeasuredTemplateDocument.Implementation,
   RenderContext,
   Configuration,
   RenderOptions
 > {
-  /**
-   * @deprecated since v14, until v16
-   * @remarks "MeasuredTemplateConfig is deprecated because the MeasuredTemplate document has been merged into the
-   * functionality of the Region document."
-   */
   constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
   /**
@@ -73,7 +69,6 @@ declare namespace MeasuredTemplateConfig {
   interface RenderContext
     extends
       HandlebarsApplicationMixin.RenderContext,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       DocumentSheetV2.RenderContext<MeasuredTemplateDocument.Implementation> {
     templateTypes: TemplateTypes;
 
@@ -109,7 +104,6 @@ declare namespace MeasuredTemplateConfig {
   interface Configuration
     extends
       HandlebarsApplicationMixin.Configuration,
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       DocumentSheetV2.Configuration<MeasuredTemplateDocument.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}

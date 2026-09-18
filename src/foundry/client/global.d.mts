@@ -64,6 +64,7 @@ declare global {
      * @remarks Assigned by both {@linkcode foundry.applications.api.ApplicationV2 | ApplicationV2} and
      * {@linkcode foundry.appv1.api.Application | Application} when they are brought to the front.
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     activeWindow: foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any | null;
 
     /**
@@ -87,6 +88,7 @@ declare global {
     /**
      * @defaultValue `{}`
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     windows: Record<number, foundry.appv1.api.Application.Any>;
   }
 

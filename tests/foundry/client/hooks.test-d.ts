@@ -221,6 +221,7 @@ Hooks.call("hotbarDrop", {} as foundry.applications.ui.Hotbar.Any, {}, 1);
 Hooks.on("initializeUnknownSourceShaders", () => {});
 
 Hooks.on("activateEditorLegacy", (editor, options) => {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(editor).toEqualTypeOf<foundry.appv1.api.FormApplication.FormApplicationEditor>();
   expectTypeOf(options).toEqualTypeOf<foundry.applications.ux.TextEditor.Options>();
 });

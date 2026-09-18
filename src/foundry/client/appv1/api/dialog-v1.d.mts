@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { GetDataReturnType, Identity, MaybePromise } from "#utils";
 import type Application from "./application-v1.d.mts";
 
@@ -11,6 +12,9 @@ declare module "#configuration" {
 
 /**
  * Create a dialog window displaying a title, a message, and a set of buttons which trigger callback functions.
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  *
  * @example Constructing a custom dialog instance
  * ```typescript

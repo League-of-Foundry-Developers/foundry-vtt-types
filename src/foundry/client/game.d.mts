@@ -493,6 +493,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * Open Character sheet for current token or controlled actor
    * @returns The ActorSheet which was toggled, or null if the User has no character
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   toggleCharacterSheet(): foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any | null;
 
   /**

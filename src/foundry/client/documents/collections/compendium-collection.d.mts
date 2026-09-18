@@ -81,6 +81,7 @@ declare class CompendiumCollection<
    * A reference to the `Application` class which provides an interface to interact with this compendium content.
    * @defaultValue {@linkcode foundry.applications.sidebar.apps.Compendium}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   applicationClass: Application.AnyConstructor | ApplicationV2.AnyConstructor;
 
   /**

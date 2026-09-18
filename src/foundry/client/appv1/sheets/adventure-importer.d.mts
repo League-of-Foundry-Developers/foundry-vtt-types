@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { AnyMutableObject, AnyObject, GetDataReturnType, Identity } from "#utils";
 import type { Application, DocumentSheet } from "../api/_module.d.mts";
 
@@ -11,6 +12,9 @@ declare module "#configuration" {
 
 /**
  * An interface for importing an adventure from a compendium pack.
+ * @deprecated "The V1 Application framework is deprecated, and will be removed in a later core software version.
+ * Please use the V2 version of the Application framework available under
+ * {@linkcode foundry.applications.api.ApplicationV2}." (since v13, until v16)
  */
 declare class AdventureImporter<
   Options extends AdventureImporter.Options = AdventureImporter.Options,
