@@ -1,8 +1,10 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { BasisBinding } from "@pixi/basis";
-
-expectTypeOf(BASIS()).toEqualTypeOf<Promise<BasisBinding>>();
 
 declare const wasmBinary: ArrayBuffer;
 
-expectTypeOf(BASIS({ wasmBinary })).toEqualTypeOf<Promise<BasisBinding>>();
+test("foundry/public/scripts/ktx2/basis_transcoder", () => {
+  expectTypeOf(BASIS()).toEqualTypeOf<Promise<BasisBinding>>();
+
+  expectTypeOf(BASIS({ wasmBinary })).toEqualTypeOf<Promise<BasisBinding>>();
+});

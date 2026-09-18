@@ -1,5 +1,7 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { NodeSpec } from "prosemirror-model";
 import { selection } from "../../../../../src/foundry/common/prosemirror/schema/inserts.mts";
 
-expectTypeOf(selection).toEqualTypeOf<NodeSpec>();
+test("foundry/common/prosemirror/schema/inserts", () => {
+  expectTypeOf(selection).toEqualTypeOf<NodeSpec>();
+});

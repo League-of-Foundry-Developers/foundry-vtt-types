@@ -173,7 +173,6 @@
     "@typescript-eslint/scope-manager": "^8.31.0",
     "@typescript-eslint/utils": "^8.31.0",
     "@typescript/native-preview": "^7.0.0-dev.20251012.1",
-    "@vitest/runner": "^4.0.15",
     "dotenv": "^17.2.3",
     "esbuild": "^0.28.0",
     "eslint": "^10.2.0",
@@ -189,7 +188,7 @@
     "lint-staged": "^17.0.2",
     "normalize-url": "^9.0.0",
     "npm-run-all2": "^9.0.0",
-    "oxfmt": "^0.65.0",
+    "oxfmt": "^0.68.0",
     "patch-package": "^8.0.1",
     "pathe": "^2.0.3",
     "playwright": "^1.60.0",
@@ -198,8 +197,8 @@
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.31.0",
     "url-join": "^5.0.0",
-    "vite": "^8.0.5",
-    "vitest": "^4.0.15"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.1"
   },
   "peerDependencies": {
     "@typescript/native-preview": "*",

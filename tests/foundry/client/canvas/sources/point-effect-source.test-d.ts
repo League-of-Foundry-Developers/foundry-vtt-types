@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ClockwiseSweepPolygon = foundry.canvas.geometry.ClockwiseSweepPolygon;
 import PointEffectSourceMixin = foundry.canvas.sources.PointEffectSourceMixin;
@@ -15,50 +15,52 @@ declare class MyPointEffectSource<
   shape: SourceShape | undefined;
 }
 
-expectTypeOf(MyPointEffectSource.defaultData).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
-
 declare const object: foundry.canvas.placeables.AmbientLight.Implementation;
-new MyPointEffectSource();
-new MyPointEffectSource({ object: undefined, sourceId: undefined });
-const mySource = new MyPointEffectSource({ object, sourceId: object.sourceId });
-// #initialize param tests are with BaseEffectSource
-const initializedSource = mySource.initialize();
 
-expectTypeOf(mySource.data).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
+test("foundry/client/canvas/sources/point-effect-source", () => {
+  expectTypeOf(MyPointEffectSource.defaultData).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
+  new MyPointEffectSource();
+  new MyPointEffectSource({ object: undefined, sourceId: undefined });
+  const mySource = new MyPointEffectSource({ object, sourceId: object.sourceId });
+  // #initialize param tests are with BaseEffectSource
+  const initializedSource = mySource.initialize();
 
-expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon | undefined>();
-// no type param on the mixin, so this is wide as necessary
-// narrowing requires an override in the subclass, as the real Point*Source classes have
-expectTypeOf(initializedSource.shape).toEqualTypeOf<PointSourcePolygon.Any>();
+  expectTypeOf(mySource.data).toEqualTypeOf<PointEffectSourceMixin.MixedSourceData>();
 
-expectTypeOf(mySource.edges).toEqualTypeOf<foundry.canvas.geometry.edges.Edge[]>();
-expectTypeOf(mySource.requiresEdges).toBeBoolean();
-expectTypeOf(mySource.radius).toBeNumber();
-expectTypeOf(mySource.origin).toEqualTypeOf<Canvas.ElevatedPoint>();
-expectTypeOf(mySource.priority).toBeNumber();
+  expectTypeOf(mySource.shape).toEqualTypeOf<ClockwiseSweepPolygon | undefined>();
+  // no type param on the mixin, so this is wide as necessary
+  // narrowing requires an override in the subclass, as the real Point*Source classes have
+  expectTypeOf(initializedSource.shape).toEqualTypeOf<PointSourcePolygon.Any>();
 
-// AnyObject until we get Flatten
-expectTypeOf(mySource["_configure"]({})).toBeVoid();
+  expectTypeOf(mySource.edges).toEqualTypeOf<foundry.canvas.geometry.edges.Edge[]>();
+  expectTypeOf(mySource.requiresEdges).toBeBoolean();
+  expectTypeOf(mySource.radius).toBeNumber();
+  expectTypeOf(mySource.origin).toEqualTypeOf<Canvas.ElevatedPoint>();
+  expectTypeOf(mySource.priority).toBeNumber();
 
-expectTypeOf(mySource["_initialize"]({})).toBeVoid();
-// only new SourceData keys tested here, thorough tests are on the final Point*Source classes
-expectTypeOf(
-  mySource["_initialize"]({
-    radius: 200,
-    externalRadius: 400,
-    rotation: 60,
-    angle: 270,
-    walls: false,
-    priority: 2,
-  }),
-).toBeVoid();
+  // AnyObject until we get Flatten
+  expectTypeOf(mySource["_configure"]({})).toBeVoid();
 
-expectTypeOf(mySource["_initializeSoftEdges"]()).toBeVoid();
-expectTypeOf(mySource["_getPolygonConfiguration"]()).toEqualTypeOf<PointEffectSourceMixin.PolygonConfig>();
-expectTypeOf(mySource["_createShapes"]()).toBeVoid();
-expectTypeOf(mySource["_destroy"]()).toBeVoid();
-// no type param on the mixin, so any string allowed
-expectTypeOf(mySource["_drawMesh"]("foo")).toEqualTypeOf<PointSourceMesh | null>();
-expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
-expectTypeOf(mySource["_createEdges"]()).toBeVoid();
-expectTypeOf(mySource["_deleteEdges"]()).toBeVoid();
+  expectTypeOf(mySource["_initialize"]({})).toBeVoid();
+  // only new SourceData keys tested here, thorough tests are on the final Point*Source classes
+  expectTypeOf(
+    mySource["_initialize"]({
+      radius: 200,
+      externalRadius: 400,
+      rotation: 60,
+      angle: 270,
+      walls: false,
+      priority: 2,
+    }),
+  ).toBeVoid();
+
+  expectTypeOf(mySource["_initializeSoftEdges"]()).toBeVoid();
+  expectTypeOf(mySource["_getPolygonConfiguration"]()).toEqualTypeOf<PointEffectSourceMixin.PolygonConfig>();
+  expectTypeOf(mySource["_createShapes"]()).toBeVoid();
+  expectTypeOf(mySource["_destroy"]()).toBeVoid();
+  // no type param on the mixin, so any string allowed
+  expectTypeOf(mySource["_drawMesh"]("foo")).toEqualTypeOf<PointSourceMesh | null>();
+  expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
+  expectTypeOf(mySource["_createEdges"]()).toBeVoid();
+  expectTypeOf(mySource["_deleteEdges"]()).toBeVoid();
+});

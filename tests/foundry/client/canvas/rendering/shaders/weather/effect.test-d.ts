@@ -1,22 +1,24 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import WeatherShaderEffect = foundry.canvas.rendering.shaders.WeatherShaderEffect;
 import RainShader = foundry.canvas.rendering.shaders.RainShader;
 
-const myWSE = new WeatherShaderEffect(
-  {
-    opacity: 1,
-    intensity: 0.8,
-    resolution: [0.5, 0.5],
-  },
-  RainShader,
-);
+test("foundry/client/canvas/rendering/shaders/weather/effect", () => {
+  const myWSE = new WeatherShaderEffect(
+    {
+      opacity: 1,
+      intensity: 0.8,
+      resolution: [0.5, 0.5],
+    },
+    RainShader,
+  );
 
-// not a whole lot to test here not covered by QuadMesh tests
-expectTypeOf(
-  myWSE.configure({
-    foo: { x: 1, y: 1 },
-    bar: false,
-    baz: [1, 1, 1],
-  }),
-).toExtend<void>();
+  // not a whole lot to test here not covered by QuadMesh tests
+  expectTypeOf(
+    myWSE.configure({
+      foo: { x: 1, y: 1 },
+      bar: false,
+      baz: [1, 1, 1],
+    }),
+  ).toExtend<void>();
+});

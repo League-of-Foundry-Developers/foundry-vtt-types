@@ -1,191 +1,193 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseTile = foundry.documents.BaseTile;
 import Document = foundry.abstract.Document;
 
-class TestBaseTile extends BaseTile {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Tile">)
-      : null;
+test("foundry/common/documents/tile", () => {
+  class TestBaseTile extends BaseTile {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Tile">)
+        : null;
+    }
   }
-}
 
-// @ts-expect-error Tiles require a provided width and height
-new TestBaseTile();
+  // @ts-expect-error Tiles require a provided width and height
+  new TestBaseTile();
 
-// @ts-expect-error Tiles require a provided width and height
-new TestBaseTile({});
+  // @ts-expect-error Tiles require a provided width and height
+  new TestBaseTile({});
 
-const myTile = new TestBaseTile({
-  _id: "XXXXXSomeIDXXXXX",
-  texture: {
-    src: "path/to/some/image.png",
-    tint: "#FF0000",
-    alphaThreshold: 0.2,
-    anchorX: 0.2,
-    anchorY: 0.2,
-    fit: "contain",
-    scaleX: 0.8,
-    scaleY: 1.2,
-  },
-  width: 200, // actually required for construction
-  height: 200, // actually required for construction
-  x: 300,
-  y: 500,
-  elevation: 20,
-  sort: 23,
-  rotation: 170,
-  alpha: 0.67,
-  hidden: true,
-  locked: false,
-  restrictions: {
-    light: true,
-    weather: false,
-  },
-  occlusion: {
-    modes: [CONST.OCCLUSION_MODES.FADE],
-    alpha: 0.78,
-  },
-  video: {
-    loop: true,
-    autoplay: true,
-    volume: 0.5,
-  },
-  flags: {
-    core: {
-      randomizeVideo: true,
+  const myTile = new TestBaseTile({
+    _id: "XXXXXSomeIDXXXXX",
+    texture: {
+      src: "path/to/some/image.png",
+      tint: "#FF0000",
+      alphaThreshold: 0.2,
+      anchorX: 0.2,
+      anchorY: 0.2,
+      fit: "contain",
+      scaleX: 0.8,
+      scaleY: 1.2,
     },
-  },
-});
+    width: 200, // actually required for construction
+    height: 200, // actually required for construction
+    x: 300,
+    y: 500,
+    elevation: 20,
+    sort: 23,
+    rotation: 170,
+    alpha: 0.67,
+    hidden: true,
+    locked: false,
+    restrictions: {
+      light: true,
+      weather: false,
+    },
+    occlusion: {
+      modes: [CONST.OCCLUSION_MODES.FADE],
+      alpha: 0.78,
+    },
+    video: {
+      loop: true,
+      autoplay: true,
+      volume: 0.5,
+    },
+    flags: {
+      core: {
+        randomizeVideo: true,
+      },
+    },
+  });
 
-new TestBaseTile({
-  _id: null,
-  texture: {
-    src: null,
-    tint: null,
-    alphaThreshold: null,
-    anchorX: null,
-    anchorY: null,
-    fit: null,
-    scaleX: null,
-    scaleY: null,
-  },
-  width: 200, // actually required for construction
-  height: 200, // actually required for construction
-  x: null,
-  y: null,
-  elevation: null,
-  sort: null,
-  rotation: null,
-  alpha: null,
-  hidden: null,
-  locked: null,
-  restrictions: {
-    light: null,
-    weather: null,
-  },
-  occlusion: {
-    modes: null,
+  new TestBaseTile({
+    _id: null,
+    texture: {
+      src: null,
+      tint: null,
+      alphaThreshold: null,
+      anchorX: null,
+      anchorY: null,
+      fit: null,
+      scaleX: null,
+      scaleY: null,
+    },
+    width: 200, // actually required for construction
+    height: 200, // actually required for construction
+    x: null,
+    y: null,
+    elevation: null,
+    sort: null,
+    rotation: null,
     alpha: null,
-  },
-  video: {
-    loop: null,
-    autoplay: null,
-    volume: null,
-  },
-  flags: null,
-});
-new TestBaseTile({
-  width: 200, // actually required for construction
-  height: 200, // actually required for construction
-  texture: null,
-  restrictions: null,
-  occlusion: null,
-  video: null,
-});
+    hidden: null,
+    locked: null,
+    restrictions: {
+      light: null,
+      weather: null,
+    },
+    occlusion: {
+      modes: null,
+      alpha: null,
+    },
+    video: {
+      loop: null,
+      autoplay: null,
+      volume: null,
+    },
+    flags: null,
+  });
+  new TestBaseTile({
+    width: 200, // actually required for construction
+    height: 200, // actually required for construction
+    texture: null,
+    restrictions: null,
+    occlusion: null,
+    video: null,
+  });
 
-new TestBaseTile({
-  _id: undefined,
-  texture: {
-    src: undefined,
-    tint: undefined,
-    alphaThreshold: undefined,
-    anchorX: undefined,
-    anchorY: undefined,
-    fit: undefined,
-    scaleX: undefined,
-    scaleY: undefined,
-  },
-  width: 200, // actually required for construction
-  height: 200, // actually required for construction
-  x: undefined,
-  y: undefined,
-  elevation: undefined,
-  sort: undefined,
-  rotation: undefined,
-  alpha: undefined,
-  hidden: undefined,
-  locked: undefined,
-  restrictions: {
-    light: undefined,
-    weather: undefined,
-  },
-  occlusion: {
-    modes: undefined,
+  new TestBaseTile({
+    _id: undefined,
+    texture: {
+      src: undefined,
+      tint: undefined,
+      alphaThreshold: undefined,
+      anchorX: undefined,
+      anchorY: undefined,
+      fit: undefined,
+      scaleX: undefined,
+      scaleY: undefined,
+    },
+    width: 200, // actually required for construction
+    height: 200, // actually required for construction
+    x: undefined,
+    y: undefined,
+    elevation: undefined,
+    sort: undefined,
+    rotation: undefined,
     alpha: undefined,
-  },
-  video: {
-    loop: undefined,
-    autoplay: undefined,
-    volume: undefined,
-  },
-  flags: undefined,
+    hidden: undefined,
+    locked: undefined,
+    restrictions: {
+      light: undefined,
+      weather: undefined,
+    },
+    occlusion: {
+      modes: undefined,
+      alpha: undefined,
+    },
+    video: {
+      loop: undefined,
+      autoplay: undefined,
+      volume: undefined,
+    },
+    flags: undefined,
+  });
+  new TestBaseTile({
+    width: 200, // actually required for construction
+    height: 200, // actually required for construction
+    texture: undefined,
+    restrictions: undefined,
+    occlusion: undefined,
+    video: undefined,
+  });
+
+  expectTypeOf(myTile).toEqualTypeOf<TestBaseTile>();
+
+  expectTypeOf(myTile._id).toEqualTypeOf<string | null>();
+  expectTypeOf(myTile.name).toEqualTypeOf<string | undefined>();
+
+  // TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
+  expectTypeOf(myTile.texture).toEqualTypeOf<
+    foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
+  >();
+
+  expectTypeOf(myTile.width).toBeNumber();
+  expectTypeOf(myTile.height).toBeNumber();
+  expectTypeOf(myTile.x).toBeNumber();
+  expectTypeOf(myTile.y).toBeNumber();
+  expectTypeOf(myTile.elevation).toBeNumber();
+  expectTypeOf(myTile.levels).toEqualTypeOf<Set<string>>();
+  expectTypeOf(myTile.sort).toBeNumber();
+  expectTypeOf(myTile.rotation).toBeNumber();
+  expectTypeOf(myTile.alpha).toBeNumber();
+  expectTypeOf(myTile.hidden).toBeBoolean();
+  expectTypeOf(myTile.locked).toBeBoolean();
+  expectTypeOf(myTile.restrictions.light).toBeBoolean();
+  expectTypeOf(myTile.restrictions.weather).toBeBoolean();
+  expectTypeOf(myTile.occlusion.modes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES | null>>();
+  expectTypeOf(myTile.occlusion.alpha).toBeNumber();
+  expectTypeOf(myTile.video.loop).toBeBoolean();
+  expectTypeOf(myTile.video.autoplay).toBeBoolean();
+  expectTypeOf(myTile.video.volume).toBeNumber();
+  expectTypeOf(myTile.flags).toEqualTypeOf<
+    foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+      InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+    >
+  >();
+
+  // document-specific flag(s)
+  expectTypeOf(myTile.flags.core?.randomizeVideo).toEqualTypeOf<boolean | undefined>();
+
+  expectTypeOf(myTile.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
 });
-new TestBaseTile({
-  width: 200, // actually required for construction
-  height: 200, // actually required for construction
-  texture: undefined,
-  restrictions: undefined,
-  occlusion: undefined,
-  video: undefined,
-});
-
-expectTypeOf(myTile).toEqualTypeOf<TestBaseTile>();
-
-expectTypeOf(myTile._id).toEqualTypeOf<string | null>();
-expectTypeOf(myTile.name).toEqualTypeOf<string | undefined>();
-
-// TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
-expectTypeOf(myTile.texture).toEqualTypeOf<
-  foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
->();
-
-expectTypeOf(myTile.width).toBeNumber();
-expectTypeOf(myTile.height).toBeNumber();
-expectTypeOf(myTile.x).toBeNumber();
-expectTypeOf(myTile.y).toBeNumber();
-expectTypeOf(myTile.elevation).toBeNumber();
-expectTypeOf(myTile.levels).toEqualTypeOf<Set<string>>();
-expectTypeOf(myTile.sort).toBeNumber();
-expectTypeOf(myTile.rotation).toBeNumber();
-expectTypeOf(myTile.alpha).toBeNumber();
-expectTypeOf(myTile.hidden).toBeBoolean();
-expectTypeOf(myTile.locked).toBeBoolean();
-expectTypeOf(myTile.restrictions.light).toBeBoolean();
-expectTypeOf(myTile.restrictions.weather).toBeBoolean();
-expectTypeOf(myTile.occlusion.modes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES | null>>();
-expectTypeOf(myTile.occlusion.alpha).toBeNumber();
-expectTypeOf(myTile.video.loop).toBeBoolean();
-expectTypeOf(myTile.video.autoplay).toBeBoolean();
-expectTypeOf(myTile.video.volume).toBeNumber();
-expectTypeOf(myTile.flags).toEqualTypeOf<
-  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
-    InterfaceToObject<TileDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
-  >
->();
-
-// document-specific flag(s)
-expectTypeOf(myTile.flags.core?.randomizeVideo).toEqualTypeOf<boolean | undefined>();
-
-expectTypeOf(myTile.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();

@@ -1,7 +1,11 @@
+import { test } from "vitest";
+
 export {};
 
 declare const element: HTMLElement;
 
-const dragDrop = new foundry.applications.ux.DragDrop({});
+test("foundry/client/applications/ux/drag-drop", () => {
+  const dragDrop = new foundry.applications.ux.DragDrop({});
 
-dragDrop.bind(element);
+  dragDrop.bind(element);
+});

@@ -1,8 +1,10 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-expectTypeOf(foundry.documents.BaseCombatant.create({ actorId: "someID", tokenId: "someOtherId" })).toEqualTypeOf<
-  Promise<Combatant.Stored | undefined>
->();
-expectTypeOf(foundry.documents.BaseCombatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
-expectTypeOf(foundry.documents.BaseCombatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
-expectTypeOf(foundry.documents.BaseCombatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+test("foundry/common/documents/combatant", () => {
+  expectTypeOf(foundry.documents.BaseCombatant.create({ actorId: "someID", tokenId: "someOtherId" })).toEqualTypeOf<
+    Promise<Combatant.Stored | undefined>
+  >();
+  expectTypeOf(foundry.documents.BaseCombatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+  expectTypeOf(foundry.documents.BaseCombatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+  expectTypeOf(foundry.documents.BaseCombatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+});

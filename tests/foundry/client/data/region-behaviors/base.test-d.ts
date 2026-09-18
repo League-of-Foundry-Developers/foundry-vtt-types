@@ -1,3 +1,5 @@
+import { test } from "vitest";
+
 import RegionBehaviorType = foundry.data.regionBehaviors.RegionBehaviorType;
 import fields = foundry.data.fields;
 
@@ -15,4 +17,6 @@ declare global {
   }
 }
 
-CONFIG.RegionBehavior.dataModels.subType = RegionBehaviorSubType;
+test("foundry/client/data/region-behaviors/base", () => {
+  CONFIG.RegionBehavior.dataModels.subType = RegionBehaviorSubType;
+});

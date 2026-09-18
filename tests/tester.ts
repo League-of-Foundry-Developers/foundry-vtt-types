@@ -1,6 +1,5 @@
-import type { SerializedConfig, WorkerGlobalState } from "vitest";
-import { VitestTestRunner } from "vitest/runners";
-import { collectTests, startTests } from "@vitest/runner";
+import { TestRunner, type SerializedConfig, type WorkerGlobalState } from "vitest";
+import { collectTests, startTests } from "vitest/internal/browser";
 
 let runner: Runner | undefined;
 function setup(config: SerializedConfig) {
@@ -84,7 +83,7 @@ function setup(config: SerializedConfig) {
   runner = new Runner(config);
 }
 
-class Runner extends VitestTestRunner {
+class Runner extends TestRunner {
   override trace = <T>(name: string, attributes: Record<string, unknown> | (() => T), cb?: () => T): T => {
     return typeof attributes === "function" ? attributes() : cb!();
   };

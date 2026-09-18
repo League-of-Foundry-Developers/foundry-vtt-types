@@ -1,43 +1,47 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import OccludableSamplerShader = foundry.canvas.rendering.shaders.OccludableSamplerShader;
 import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
-
-const myOSS = OccludableSamplerShader.create();
-expectTypeOf(myOSS).toEqualTypeOf<OccludableSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(OccludableSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(OccludableSamplerShader.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(OccludableSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
-expectTypeOf(
-  OccludableSamplerShader["_packInterleavedGeometry"](
-    {
-      _texture: someTex,
-      occlusionElevation: 0,
-      fadeOcclusion: 0,
-      indices: someU16Array,
-      radialOcclusion: 0,
-      surfaceOcclusion: 0,
-      uvs: someF32Array,
-      vertexData: someF32Array,
-      visionOcclusion: 0,
-      _tintRGB: 0,
-      blendMode: PIXI.BLEND_MODES.NORMAL,
-      worldAlpha: 1,
-      occludedAlpha: 0.5,
-      unoccludedAlpha: 1,
-    },
-    someVB,
-    someU16Array,
-    0,
-    0,
-  ),
-).toEqualTypeOf<void>();
+test("foundry/client/canvas/rendering/shaders/samplers/primary/occlusion", () => {
+  const myOSS = OccludableSamplerShader.create();
+  expectTypeOf(myOSS).toEqualTypeOf<OccludableSamplerShader>();
 
-expectTypeOf(myOSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myOSS.pluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(OccludableSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
+  expectTypeOf(OccludableSamplerShader.classPluginName).toEqualTypeOf<string>();
+  expectTypeOf(
+    OccludableSamplerShader.batchDefaultUniforms,
+  ).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+  expectTypeOf(
+    OccludableSamplerShader["_packInterleavedGeometry"](
+      {
+        _texture: someTex,
+        occlusionElevation: 0,
+        fadeOcclusion: 0,
+        indices: someU16Array,
+        radialOcclusion: 0,
+        surfaceOcclusion: 0,
+        uvs: someF32Array,
+        vertexData: someF32Array,
+        visionOcclusion: 0,
+        _tintRGB: 0,
+        blendMode: PIXI.BLEND_MODES.NORMAL,
+        worldAlpha: 1,
+        occludedAlpha: 0.5,
+        unoccludedAlpha: 1,
+      },
+      someVB,
+      someU16Array,
+      0,
+      0,
+    ),
+  ).toEqualTypeOf<void>();
+
+  expectTypeOf(myOSS.paused).toEqualTypeOf<boolean>;
+  expectTypeOf(myOSS.pluginName).toEqualTypeOf<string | null>();
+});

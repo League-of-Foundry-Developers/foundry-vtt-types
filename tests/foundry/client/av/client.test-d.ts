@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import AVClient = foundry.av.AVClient;
 import AVMaster = foundry.av.AVMaster;
@@ -23,17 +23,19 @@ declare class CustomAVCLient extends AVClient {
 declare const avMaster: AVMaster;
 declare const avSettings: AVSettings;
 
-const avClient = new CustomAVCLient(avMaster, avSettings);
+test("foundry/client/av/client", () => {
+  const avClient = new CustomAVCLient(avMaster, avSettings);
 
-expectTypeOf(avClient.master).toEqualTypeOf<AVMaster>();
-expectTypeOf(avClient.settings).toEqualTypeOf<AVSettings>();
-expectTypeOf(avClient.isVoicePTT).toEqualTypeOf<boolean>();
-expectTypeOf(avClient.isVoiceAlways).toEqualTypeOf<boolean>();
-expectTypeOf(avClient.isVoiceActivated).toEqualTypeOf<boolean>();
-expectTypeOf(avClient.isMuted).toEqualTypeOf<boolean>();
-expectTypeOf(avClient.getAudioSinks()).toEqualTypeOf<Promise<Record<string, string>>>();
-expectTypeOf(avClient.getAudioSources()).toEqualTypeOf<Promise<Record<string, string>>>();
-expectTypeOf(avClient.getVideoSources()).toEqualTypeOf<Promise<Record<string, string>>>();
-expectTypeOf(avClient.getMediaStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
-expectTypeOf(avClient.getLevelsStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
-expectTypeOf(avClient.onSettingsChanged({})).toEqualTypeOf<void>();
+  expectTypeOf(avClient.master).toEqualTypeOf<AVMaster>();
+  expectTypeOf(avClient.settings).toEqualTypeOf<AVSettings>();
+  expectTypeOf(avClient.isVoicePTT).toEqualTypeOf<boolean>();
+  expectTypeOf(avClient.isVoiceAlways).toEqualTypeOf<boolean>();
+  expectTypeOf(avClient.isVoiceActivated).toEqualTypeOf<boolean>();
+  expectTypeOf(avClient.isMuted).toEqualTypeOf<boolean>();
+  expectTypeOf(avClient.getAudioSinks()).toEqualTypeOf<Promise<Record<string, string>>>();
+  expectTypeOf(avClient.getAudioSources()).toEqualTypeOf<Promise<Record<string, string>>>();
+  expectTypeOf(avClient.getVideoSources()).toEqualTypeOf<Promise<Record<string, string>>>();
+  expectTypeOf(avClient.getMediaStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
+  expectTypeOf(avClient.getLevelsStreamForUser("")).toEqualTypeOf<MediaStream | null | undefined>();
+  expectTypeOf(avClient.onSettingsChanged({})).toEqualTypeOf<void>();
+});
