@@ -1223,6 +1223,8 @@ interface CollectionNameToLayerMap {
   drawings: Canvas["drawings"];
   notes: Canvas["notes"];
   regions: Canvas["regions"];
+
+  /** @deprecated since v14 */
   templates: Canvas["templates"];
   tiles: Canvas["tiles"];
   tokens: Canvas["tokens"];

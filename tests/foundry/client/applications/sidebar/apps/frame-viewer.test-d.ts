@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf } from "vitest";
 import type { DeepPartial, MaybePromise } from "fvtt-types/utils";
 
@@ -5,7 +6,6 @@ import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import FrameViewer = foundry.applications.sidebar.apps.FrameViewer;
 
 // Deprecated since v13, until v15 — the whole class, warned from its constructor.
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 const viewer = new FrameViewer({ url: "https://foundryvtt.com/api/v14" });
 
 expectTypeOf(viewer).toExtend<ApplicationV2.Any>();

@@ -249,7 +249,11 @@ declare namespace AmbientLight {
     /** @defaultValue `{}` */
     refreshState: RenderFlag<this, "refreshState">;
 
-    /** @defaultValue `{}` */
+    /**
+     * @defaultValue `{}`
+     * @deprecated "The RenderFlag "refreshElevation" of AmbientLight is deprecated in favor of refreshTooltip."
+     * (since v14, until v16)
+     */
     refreshElevation: RenderFlag<this, "refreshElevation">;
   }
 

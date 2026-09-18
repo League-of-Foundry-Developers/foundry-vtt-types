@@ -229,7 +229,11 @@ declare namespace AmbientSound {
     /** @defaultValue `{}` */
     refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
-    /** @defaultValue `{}` */
+    /**
+     * @defaultValue `{}`
+     * @deprecated "The RenderFlag "refreshElevation" of AmbientSound is deprecated in favor of refreshTooltip."
+     * (since v14, until v16)
+     */
     refreshElevation: RenderFlag<this, "refreshElevation">;
   }
 

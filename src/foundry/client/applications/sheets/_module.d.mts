@@ -26,6 +26,7 @@ export { default as PlaylistSoundConfig } from "./playlist-sound-config.mjs";
 export { default as RegionBehaviorConfig } from "./region-behavior-config.mjs";
 export { default as RegionConfig } from "./region-config.mjs";
 export { default as RollTableSheet } from "./roll-table-sheet.mjs";
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export { default as MeasuredTemplateConfig } from "./template-config.mjs";
 export { default as SceneConfig } from "./scene-config.mjs";
 export { default as TableResultConfig } from "./table-result-config.mjs";
