@@ -1,12 +1,14 @@
-import { expectTypeOf } from "vitest";
-
-// @ts-expect-error The `types` file is not actually exported as an object into the foundry namespace
-foundry.types;
+import { expectTypeOf, test } from "vitest";
 
 declare const form: HTMLFormElement;
-expectTypeOf(form.submitNoEvent()).toBeVoid();
-
 declare const button: HTMLButtonElement;
-expectTypeOf(form.submit()).toBeVoid();
-expectTypeOf(form.submit(button)).toBeVoid();
-expectTypeOf(form.submit(null)).toBeVoid();
+
+test("foundry/client/client", () => {
+  // @ts-expect-error The `types` file is not actually exported as an object into the foundry namespace
+  foundry.types;
+
+  expectTypeOf(form.submitNoEvent()).toBeVoid();
+  expectTypeOf(form.submit()).toBeVoid();
+  expectTypeOf(form.submit(button)).toBeVoid();
+  expectTypeOf(form.submit(null)).toBeVoid();
+});

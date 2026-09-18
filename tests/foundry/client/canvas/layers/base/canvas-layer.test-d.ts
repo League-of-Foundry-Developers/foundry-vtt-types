@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
@@ -28,16 +28,18 @@ declare class MyCanvasLayer extends CanvasLayer {
   protected override _draw(_options: MyDrawOptions): Promise<void>;
 }
 
-expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;
+test("foundry/client/canvas/layers/base/canvas-layer", () => {
+  expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;
 
-const layer = new MyCanvasLayer();
+  const layer = new MyCanvasLayer();
 
-expectTypeOf(layer.name).toEqualTypeOf<string>();
-expectTypeOf(layer.hookName).toEqualTypeOf<string>();
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof MyCanvasLayer>();
-expectTypeOf(layer.options.zIndex).toBeNumber();
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<MyCanvasLayer>>();
-expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
-expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<MyCanvasLayer>>();
-expectTypeOf(layer.tearDown({ nextScene: null, nextLevel: null })).toEqualTypeOf<Promise<MyCanvasLayer>>();
-expectTypeOf(layer.getZIndex()).toBeNumber();
+  expectTypeOf(layer.name).toEqualTypeOf<string>();
+  expectTypeOf(layer.hookName).toEqualTypeOf<string>();
+  expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof MyCanvasLayer>();
+  expectTypeOf(layer.options.zIndex).toBeNumber();
+  expectTypeOf(layer.draw()).toEqualTypeOf<Promise<MyCanvasLayer>>();
+  expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<MyCanvasLayer>>();
+  expectTypeOf(layer.tearDown({ nextScene: null, nextLevel: null })).toEqualTypeOf<Promise<MyCanvasLayer>>();
+  expectTypeOf(layer.getZIndex()).toBeNumber();
+});

@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import {
   em,
   strong,
@@ -15,26 +15,28 @@ import {
 } from "../../../../../src/foundry/common/prosemirror/schema/marks.mts";
 import type { MarkSpec } from "prosemirror-model";
 
-expectTypeOf(em).toEqualTypeOf<MarkSpec>();
+test("foundry/common/prosemirror/schema/marks", () => {
+  expectTypeOf(em).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(strong).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(strong).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(cite).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(cite).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(code).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(code).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(underline).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(underline).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(strikethrough).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(strikethrough).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(superscript).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(superscript).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(subscript).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(subscript).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(span).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(span).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(font).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(font).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(size).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(size).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(color).toEqualTypeOf<MarkSpec>();
+  expectTypeOf(color).toEqualTypeOf<MarkSpec>();
+});

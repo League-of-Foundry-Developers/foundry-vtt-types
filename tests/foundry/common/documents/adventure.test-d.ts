@@ -1,25 +1,27 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-// This exists to make the class non-abstract.
-class TestBaseAdventure extends foundry.documents.BaseAdventure {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Adventure">)
-      : null;
+test("foundry/common/documents/adventure", () => {
+  // This exists to make the class non-abstract.
+  class TestBaseAdventure extends foundry.documents.BaseAdventure {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Adventure">)
+        : null;
+    }
   }
-}
 
-// @ts-expect-error name is a required field
-new TestBaseAdventure();
+  // @ts-expect-error name is a required field
+  new TestBaseAdventure();
 
-// @ts-expect-error name is a required field
-new TestBaseAdventure({});
+  // @ts-expect-error name is a required field
+  new TestBaseAdventure({});
 
-const myAdventure = new TestBaseAdventure({ name: "foo" });
+  const myAdventure = new TestBaseAdventure({ name: "foo" });
 
-expectTypeOf(myAdventure.img).toEqualTypeOf<string | null>();
-expectTypeOf(myAdventure.macros.first()!.command).toEqualTypeOf<string>();
+  expectTypeOf(myAdventure.img).toEqualTypeOf<string | null>();
+  expectTypeOf(myAdventure.macros.first()!.command).toEqualTypeOf<string>();
 
-// Static Methods
+  // Static Methods
 
-expectTypeOf(TestBaseAdventure.contentFields.actors).toEqualTypeOf<Actor.ImplementationClass>();
+  expectTypeOf(TestBaseAdventure.contentFields.actors).toEqualTypeOf<Actor.ImplementationClass>();
+});

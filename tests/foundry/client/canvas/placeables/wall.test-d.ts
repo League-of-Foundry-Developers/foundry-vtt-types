@@ -1,141 +1,143 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import Wall = foundry.canvas.placeables.Wall;
 import DoorControl = foundry.canvas.containers.DoorControl;
 import Canvas = foundry.canvas.Canvas;
 import Ray = foundry.canvas.geometry.Ray;
 
-expectTypeOf(Wall.implementation).toEqualTypeOf<Wall.ImplementationClass>();
-expectTypeOf(Wall.embeddedName).toEqualTypeOf<"Wall">();
-expectTypeOf(Wall.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  | Array<
-      | "refresh"
-      | "refreshState"
-      | "refreshVisibility"
-      | "refreshLine"
-      | "refreshEndpoints"
-      | "refreshDirection"
-      | "refreshHighlight"
-    >
-  | undefined
->();
-
 declare const doc: WallDocument.Stored;
-
-const wall = new CONFIG.Wall.objectClass(doc);
-
-expectTypeOf(wall.controlIcon).toBeNull();
-expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.Implementation | null | undefined>();
-expectTypeOf(wall.line).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(wall.endpoints).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | null | undefined>();
-expectTypeOf(wall.highlight).toEqualTypeOf<PIXI.Graphics | undefined>();
-expectTypeOf(wall.coords).toEqualTypeOf<Wall.Coordinates>();
-expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.geometry.edges.Edge | null>();
-expectTypeOf(wall.bounds).toEqualTypeOf<PIXI.Rectangle>();
-expectTypeOf(wall.isDoor).toBeBoolean();
-expectTypeOf(wall.isOpen).toBeBoolean();
-expectTypeOf(wall.midpoint).toEqualTypeOf<Canvas.PointTuple>();
-expectTypeOf(wall.center).toEqualTypeOf<PIXI.Point>();
-expectTypeOf(wall.direction).toEqualTypeOf<number | null>();
-// @ts-expect-error "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
-expectTypeOf(wall.getSnappedPosition()).toBeNever();
-
-expectTypeOf(wall._pasteObject({ x: 50, y: 70 })).toEqualTypeOf<Wall.PasteObjectData>();
-expectTypeOf(
-  wall._pasteObject({ x: 50, y: 70 }, { hidden: true, snap: false, cut: true }),
-).toEqualTypeOf<Wall.PasteObjectData>();
-
-// deprecated since v14, until v16
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.initializeEdge()).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.initializeEdge({})).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.initializeEdge({ deleted: true })).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(wall.initializeEdge({ deleted: undefined })).toBeVoid();
-
-expectTypeOf(wall.toRay()).toEqualTypeOf<Ray>();
-
-// @ts-expect-error _draw always gets passed a value
-expectTypeOf(wall["_draw"]()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(wall["_draw"]({})).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(wall.control()).toBeBoolean();
-expectTypeOf(wall.control({})).toBeBoolean();
-expectTypeOf(wall.control({ releaseOthers: true, chain: true })).toBeBoolean();
-expectTypeOf(wall.control({ releaseOthers: false, chain: undefined })).toBeBoolean();
-
-// @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
-expectTypeOf(wall["_destroy"]()).toBeVoid();
-expectTypeOf(wall["_destroy"]({})).toBeVoid();
-expectTypeOf(wall["_destroy"]({ baseTexture: true, children: true, texture: true })).toBeVoid();
-expectTypeOf(wall["_destroy"](true)).toBeVoid();
-expectTypeOf(wall["_destroy"](undefined)).toBeVoid();
-
-expectTypeOf(wall["_clear"]()).toBeVoid();
-
-expectTypeOf(wall.isDirectionBetweenAngles(60, 90)).toBeBoolean();
 declare const someRay: Ray;
-expectTypeOf(wall.canRayIntersect(someRay)).toBeBoolean();
-expectTypeOf(wall.getLinkedSegments()).toEqualTypeOf<Wall.GetLinkedSegmentsReturn>();
-
-// @ts-expect-error an object must be passed
-expectTypeOf(wall["_applyRenderFlags"]()).toBeVoid();
-expectTypeOf(wall["_applyRenderFlags"]({})).toBeVoid();
-// all falsey values have no effect
-expectTypeOf(wall["_applyRenderFlags"]({ refreshLine: false, refreshEndpoints: undefined })).toBeVoid();
-expectTypeOf(
-  wall["_applyRenderFlags"]({
-    redraw: true,
-    refresh: true,
-    refreshState: true,
-    refreshLine: true,
-    refreshEndpoints: true,
-    refreshDirection: true,
-    refreshHighlight: true,
-  }),
-).toBeVoid();
-
-expectTypeOf(wall["_refreshLine"]()).toBeVoid();
-expectTypeOf(wall["_refreshEndpoints"]()).toBeVoid();
-expectTypeOf(wall["_refreshDirection"]()).toBeVoid();
-expectTypeOf(wall["_refreshHighlight"]()).toBeVoid();
-expectTypeOf(wall["_refreshState"]()).toBeVoid();
-
-expectTypeOf(wall["_getWallColor"]()).toBeNumber();
-
-// TODO: _onCreate and _onUpdate tests once document test helpers are done
-
-expectTypeOf(wall.hasDoorMesh).toBeBoolean();
-expectTypeOf(wall.createDoorMeshes()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(wall.destroyDoorMeshes()).toBeVoid();
-
-expectTypeOf(wall["_playDoorSound"]("lock")).toBeVoid();
-expectTypeOf(wall.soundRadius).toBeNumber();
-
-expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.Implementation | null>();
-expectTypeOf(wall.clearDoorControl()).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
-expectTypeOf(wall["_canControl"](someUser, pointerEvent)).toBeBoolean();
+test("foundry/client/canvas/placeables/wall", () => {
+  expectTypeOf(Wall.implementation).toEqualTypeOf<Wall.ImplementationClass>();
+  expectTypeOf(Wall.embeddedName).toEqualTypeOf<"Wall">();
+  expectTypeOf(Wall.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
+    | Array<
+        | "refresh"
+        | "refreshState"
+        | "refreshVisibility"
+        | "refreshLine"
+        | "refreshEndpoints"
+        | "refreshDirection"
+        | "refreshHighlight"
+      >
+    | undefined
+  >();
 
-expectTypeOf(wall["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toEqualTypeOf<false | void>();
+  const wall = new CONFIG.Wall.objectClass(doc);
 
-expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
+  expectTypeOf(wall.controlIcon).toBeNull();
+  expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.Implementation | null | undefined>();
+  expectTypeOf(wall.line).toEqualTypeOf<PIXI.Graphics | undefined>();
+  expectTypeOf(wall.endpoints).toEqualTypeOf<PIXI.Graphics | undefined>();
+  expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | null | undefined>();
+  expectTypeOf(wall.highlight).toEqualTypeOf<PIXI.Graphics | undefined>();
+  expectTypeOf(wall.coords).toEqualTypeOf<Wall.Coordinates>();
+  expectTypeOf(wall.edge).toEqualTypeOf<foundry.canvas.geometry.edges.Edge | null>();
+  expectTypeOf(wall.bounds).toEqualTypeOf<PIXI.Rectangle>();
+  expectTypeOf(wall.isDoor).toBeBoolean();
+  expectTypeOf(wall.isOpen).toBeBoolean();
+  expectTypeOf(wall.midpoint).toEqualTypeOf<Canvas.PointTuple>();
+  expectTypeOf(wall.center).toEqualTypeOf<PIXI.Point>();
+  expectTypeOf(wall.direction).toEqualTypeOf<number | null>();
+  // @ts-expect-error "`Wall#getSnappedPosition` is not supported: WallDocument does not have a (x, y) position"
+  expectTypeOf(wall.getSnappedPosition()).toBeNever();
 
-expectTypeOf(wall["_onHoverOut"](pointerEvent)).toBeVoid();
-expectTypeOf(wall["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
-expectTypeOf(wall["_onClickLeft"](pointerEvent)).toBeBoolean();
-expectTypeOf(wall["_onClickLeft2"](pointerEvent)).toBeVoid();
-expectTypeOf(wall["_onClickRight2"](pointerEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftMove"](pointerEvent)).toBeVoid();
+  expectTypeOf(wall._pasteObject({ x: 50, y: 70 })).toEqualTypeOf<Wall.PasteObjectData>();
+  expectTypeOf(
+    wall._pasteObject({ x: 50, y: 70 }, { hidden: true, snap: false, cut: true }),
+  ).toEqualTypeOf<Wall.PasteObjectData>();
 
-expectTypeOf(wall["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
+  // deprecated since v14, until v16
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  expectTypeOf(wall.initializeEdge()).toBeVoid();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  expectTypeOf(wall.initializeEdge({})).toBeVoid();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  expectTypeOf(wall.initializeEdge({ deleted: true })).toBeVoid();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  expectTypeOf(wall.initializeEdge({ deleted: undefined })).toBeVoid();
+
+  expectTypeOf(wall.toRay()).toEqualTypeOf<Ray>();
+
+  // @ts-expect-error _draw always gets passed a value
+  expectTypeOf(wall["_draw"]()).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(wall["_draw"]({})).toEqualTypeOf<Promise<void>>();
+
+  expectTypeOf(wall.control()).toBeBoolean();
+  expectTypeOf(wall.control({})).toBeBoolean();
+  expectTypeOf(wall.control({ releaseOthers: true, chain: true })).toBeBoolean();
+  expectTypeOf(wall.control({ releaseOthers: false, chain: undefined })).toBeBoolean();
+
+  // @ts-expect-error _destroy always gets passed a value, even if that value is `undefined`
+  expectTypeOf(wall["_destroy"]()).toBeVoid();
+  expectTypeOf(wall["_destroy"]({})).toBeVoid();
+  expectTypeOf(wall["_destroy"]({ baseTexture: true, children: true, texture: true })).toBeVoid();
+  expectTypeOf(wall["_destroy"](true)).toBeVoid();
+  expectTypeOf(wall["_destroy"](undefined)).toBeVoid();
+
+  expectTypeOf(wall["_clear"]()).toBeVoid();
+
+  expectTypeOf(wall.isDirectionBetweenAngles(60, 90)).toBeBoolean();
+  expectTypeOf(wall.canRayIntersect(someRay)).toBeBoolean();
+  expectTypeOf(wall.getLinkedSegments()).toEqualTypeOf<Wall.GetLinkedSegmentsReturn>();
+
+  // @ts-expect-error an object must be passed
+  expectTypeOf(wall["_applyRenderFlags"]()).toBeVoid();
+  expectTypeOf(wall["_applyRenderFlags"]({})).toBeVoid();
+  // all falsey values have no effect
+  expectTypeOf(wall["_applyRenderFlags"]({ refreshLine: false, refreshEndpoints: undefined })).toBeVoid();
+  expectTypeOf(
+    wall["_applyRenderFlags"]({
+      redraw: true,
+      refresh: true,
+      refreshState: true,
+      refreshLine: true,
+      refreshEndpoints: true,
+      refreshDirection: true,
+      refreshHighlight: true,
+    }),
+  ).toBeVoid();
+
+  expectTypeOf(wall["_refreshLine"]()).toBeVoid();
+  expectTypeOf(wall["_refreshEndpoints"]()).toBeVoid();
+  expectTypeOf(wall["_refreshDirection"]()).toBeVoid();
+  expectTypeOf(wall["_refreshHighlight"]()).toBeVoid();
+  expectTypeOf(wall["_refreshState"]()).toBeVoid();
+
+  expectTypeOf(wall["_getWallColor"]()).toBeNumber();
+
+  // TODO: _onCreate and _onUpdate tests once document test helpers are done
+
+  expectTypeOf(wall.hasDoorMesh).toBeBoolean();
+  expectTypeOf(wall.createDoorMeshes()).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(wall.destroyDoorMeshes()).toBeVoid();
+
+  expectTypeOf(wall["_playDoorSound"]("lock")).toBeVoid();
+  expectTypeOf(wall.soundRadius).toBeNumber();
+
+  expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.Implementation | null>();
+  expectTypeOf(wall.clearDoorControl()).toBeVoid();
+
+  expectTypeOf(wall["_canControl"](someUser, pointerEvent)).toBeBoolean();
+
+  expectTypeOf(wall["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
+  expectTypeOf(wall["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
+  expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
+  expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: undefined })).toEqualTypeOf<false | void>();
+
+  expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
+
+  expectTypeOf(wall["_onHoverOut"](pointerEvent)).toBeVoid();
+  expectTypeOf(wall["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
+  expectTypeOf(wall["_onClickLeft"](pointerEvent)).toBeBoolean();
+  expectTypeOf(wall["_onClickLeft2"](pointerEvent)).toBeVoid();
+  expectTypeOf(wall["_onClickRight2"](pointerEvent)).toBeVoid();
+  expectTypeOf(wall["_onDragLeftStart"](pointerEvent)).toBeVoid();
+  expectTypeOf(wall["_onDragLeftMove"](pointerEvent)).toBeVoid();
+
+  expectTypeOf(wall["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
+});

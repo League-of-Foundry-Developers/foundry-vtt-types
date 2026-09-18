@@ -1,21 +1,10 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ModifyMovementCostRegionBehaviorType = foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType;
 import RegionBehaviorType = foundry.data.regionBehaviors.RegionBehaviorType;
 import TerrainData = foundry.data.TerrainData;
 
 declare const behaviorType: ModifyMovementCostRegionBehaviorType;
-
-expectTypeOf(ModifyMovementCostRegionBehaviorType.LOCALIZATION_PREFIXES).toEqualTypeOf<string[]>();
-expectTypeOf(
-  ModifyMovementCostRegionBehaviorType.defineSchema(),
-).toEqualTypeOf<ModifyMovementCostRegionBehaviorType.Schema>();
-expectTypeOf(ModifyMovementCostRegionBehaviorType.events).toEqualTypeOf<
-  Record<string, RegionBehaviorType.EventBehaviorStaticHandler>
->();
-
-expectTypeOf(behaviorType.difficulties.walk).toEqualTypeOf<number | null>();
-expectTypeOf(behaviorType.prepareBaseData()).toBeVoid();
 
 declare const token: TokenDocument.Implementation;
 declare const segment: RegionBehaviorType.MovementSegment;
@@ -32,4 +21,18 @@ class TestModifyMovementCost extends ModifyMovementCostRegionBehaviorType {
 }
 
 declare const subclassed: TestModifyMovementCost;
-expectTypeOf(subclassed["_getTerrainEffects"](token, segment, options)).toEqualTypeOf<TerrainData.TerrainEffect[]>();
+
+test("foundry/client/data/region-behaviors/increase-movement-cost", () => {
+  expectTypeOf(ModifyMovementCostRegionBehaviorType.LOCALIZATION_PREFIXES).toEqualTypeOf<string[]>();
+  expectTypeOf(
+    ModifyMovementCostRegionBehaviorType.defineSchema(),
+  ).toEqualTypeOf<ModifyMovementCostRegionBehaviorType.Schema>();
+  expectTypeOf(ModifyMovementCostRegionBehaviorType.events).toEqualTypeOf<
+    Record<string, RegionBehaviorType.EventBehaviorStaticHandler>
+  >();
+
+  expectTypeOf(behaviorType.difficulties.walk).toEqualTypeOf<number | null>();
+  expectTypeOf(behaviorType.prepareBaseData()).toBeVoid();
+
+  expectTypeOf(subclassed["_getTerrainEffects"](token, segment, options)).toEqualTypeOf<TerrainData.TerrainEffect[]>();
+});

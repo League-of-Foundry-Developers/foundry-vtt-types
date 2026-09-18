@@ -1,17 +1,10 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import BaseItem = foundry.documents.BaseItem;
 import Document = foundry.abstract.Document;
 
-// @ts-expect-error Base Documents should never be directly created so they are marked as abstract in fvtt-types
-new foundry.documents.BaseItem({ name: "foo", type: "base" });
-
 declare const baseItem: foundry.documents.BaseItem;
-
-expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Item.Implementation>>();
-expectTypeOf(baseItem._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
-expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();
 
 type ItemFlags = {
   "my-system": {
@@ -34,76 +27,85 @@ declare module "fvtt-types/configuration" {
   }
 }
 
-expectTypeOf(baseItem.flags).toEqualTypeOf<{
-  core?: {
-    sheetLock?: boolean;
-    sheetClass?: string;
-  };
+test("foundry/common/documents/item", () => {
+  // @ts-expect-error Base Documents should never be directly created so they are marked as abstract in fvtt-types
+  new foundry.documents.BaseItem({ name: "foo", type: "base" });
 
-  "my-system"?: {
-    countable?: boolean;
-    optionalKey?: string;
-  };
+  expectTypeOf(baseItem.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Item.Implementation>>();
+  expectTypeOf(baseItem._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
+  expectTypeOf(baseItem.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();
 
-  "another-system"?: Partial<AnyObject>;
+  expectTypeOf(baseItem.flags).toEqualTypeOf<{
+    core?: {
+      sheetLock?: boolean;
+      sheetClass?: string;
+    };
 
-  "yet-another-system"?: {
-    randomKey?: string;
-  };
-}>();
+    "my-system"?: {
+      countable?: boolean;
+      optionalKey?: string;
+    };
 
-expectTypeOf(baseItem.getFlag)
-  .parameter(0)
-  .toEqualTypeOf<"core" | "my-system" | "another-system" | "yet-another-system">();
+    "another-system"?: Partial<AnyObject>;
 
-expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
-expectTypeOf(baseItem.getFlag("my-system", "optionalKey")).toEqualTypeOf<string | undefined>();
+    "yet-another-system"?: {
+      randomKey?: string;
+    };
+  }>();
 
-// @ts-expect-error "invalid-key" is not a valid key in the flags.
-baseItem.getFlag("my-system", "invalid-key");
+  expectTypeOf(baseItem.getFlag)
+    .parameter(0)
+    .toEqualTypeOf<"core" | "my-system" | "another-system" | "yet-another-system">();
 
-expectTypeOf(baseItem.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
+  expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
+  expectTypeOf(baseItem.getFlag("my-system", "optionalKey")).toEqualTypeOf<string | undefined>();
 
-// @ts-expect-error "invalid-system" is not a valid system in the flags.
-expectTypeOf(baseItem.getFlag("invalid-system", "value")).toEqualTypeOf<never>();
+  // @ts-expect-error "invalid-key" is not a valid key in the flags.
+  baseItem.getFlag("my-system", "invalid-key");
 
-// returns `this`
-expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
-  Promise<foundry.documents.BaseItem | undefined>
->();
+  expectTypeOf(baseItem.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
 
-// @ts-expect-error my-system.countable is a boolean not a number.
-baseItem.setFlag("my-system", "countable", 2);
+  // @ts-expect-error "invalid-system" is not a valid system in the flags.
+  expectTypeOf(baseItem.getFlag("invalid-system", "value")).toEqualTypeOf<never>();
 
-// @ts-expect-error my-system.unknown-key does not exist.
-baseItem.setFlag("my-system", "unknown-key", 2);
+  // returns `this`
+  expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
+    Promise<foundry.documents.BaseItem | undefined>
+  >();
 
-// returns `this`
-expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
-  Promise<foundry.documents.BaseItem | undefined>
->();
+  // @ts-expect-error my-system.countable is a boolean not a number.
+  baseItem.setFlag("my-system", "countable", 2);
 
-// This test is necessary because seemingly more DRY ways of writing `getFlag` or `setFlag` will fail to typecheck.
-// For example `ConcreteMetadata["name"]` is written a lot instead of `this` because `this` is inherently "generic-like" in its safety requirements.
-// By comparison since the generic parameter for `ConcreteMetadata` is passed a constant value it will allow treating it as a constant.
-class _TestFlags extends Item {
-  testFlags() {
-    expectTypeOf(this.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
-    expectTypeOf(this.setFlag("my-system", "countable", false)).toEqualTypeOf<Promise<this | undefined>>();
+  // @ts-expect-error my-system.unknown-key does not exist.
+  baseItem.setFlag("my-system", "unknown-key", 2);
+
+  // returns `this`
+  expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<
+    Promise<foundry.documents.BaseItem | undefined>
+  >();
+
+  // This test is necessary because seemingly more DRY ways of writing `getFlag` or `setFlag` will fail to typecheck.
+  // For example `ConcreteMetadata["name"]` is written a lot instead of `this` because `this` is inherently "generic-like" in its safety requirements.
+  // By comparison since the generic parameter for `ConcreteMetadata` is passed a constant value it will allow treating it as a constant.
+  class _TestFlags extends Item {
+    testFlags() {
+      expectTypeOf(this.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
+      expectTypeOf(this.setFlag("my-system", "countable", false)).toEqualTypeOf<Promise<this | undefined>>();
+    }
   }
-}
 
-class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  get compendium() {
-    return null;
+  class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
+    // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+    get compendium() {
+      return null;
+    }
+
+    testFlagsFail() {
+      // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+      this.getFlag("my-system", "countable");
+
+      // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+      this.setFlag("my-system", "countable", true);
+    }
   }
-
-  testFlagsFail() {
-    // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
-    this.getFlag("my-system", "countable");
-
-    // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
-    this.setFlag("my-system", "countable", true);
-  }
-}
+});

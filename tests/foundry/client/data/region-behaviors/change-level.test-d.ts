@@ -1,17 +1,19 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ChangeLevelRegionBehaviorType = foundry.data.regionBehaviors.ChangeLevelRegionBehaviorType;
 import RegionBehaviorType = foundry.data.regionBehaviors.RegionBehaviorType;
 
 declare const behaviorType: ChangeLevelRegionBehaviorType;
 
-expectTypeOf(ChangeLevelRegionBehaviorType.LOCALIZATION_PREFIXES).toEqualTypeOf<string[]>();
-expectTypeOf(ChangeLevelRegionBehaviorType.defineSchema()).toEqualTypeOf<ChangeLevelRegionBehaviorType.Schema>();
-expectTypeOf(ChangeLevelRegionBehaviorType.events).toEqualTypeOf<
-  Record<string, RegionBehaviorType.EventBehaviorStaticHandler>
->();
+test("foundry/client/data/region-behaviors/change-level", () => {
+  expectTypeOf(ChangeLevelRegionBehaviorType.LOCALIZATION_PREFIXES).toEqualTypeOf<string[]>();
+  expectTypeOf(ChangeLevelRegionBehaviorType.defineSchema()).toEqualTypeOf<ChangeLevelRegionBehaviorType.Schema>();
+  expectTypeOf(ChangeLevelRegionBehaviorType.events).toEqualTypeOf<
+    Record<string, RegionBehaviorType.EventBehaviorStaticHandler>
+  >();
 
-expectTypeOf(behaviorType.movementActions).toEqualTypeOf<
-  Set<"walk" | "fly" | "swim" | "burrow" | "crawl" | "climb" | "jump" | "blink">
->();
-expectTypeOf(behaviorType.behavior).toEqualTypeOf<RegionBehavior.Implementation | null>();
+  expectTypeOf(behaviorType.movementActions).toEqualTypeOf<
+    Set<"walk" | "fly" | "swim" | "burrow" | "crawl" | "climb" | "jump" | "blink">
+  >();
+  expectTypeOf(behaviorType.behavior).toEqualTypeOf<RegionBehavior.Implementation | null>();
+});

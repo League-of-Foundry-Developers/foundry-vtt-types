@@ -1,13 +1,8 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
-
-expectTypeOf(TokenRingSamplerShader.pausable).toEqualTypeOf<false>();
-
-const myTRSS = TokenRingSamplerShader.create();
-expectTypeOf(myTRSS).toEqualTypeOf<TokenRingSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
@@ -15,38 +10,45 @@ declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 declare const someRing: TokenRing;
 
-expectTypeOf(TokenRingSamplerShader.nullUvs).toEqualTypeOf<Float32Array>();
-expectTypeOf(TokenRingSamplerShader.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(TokenRingSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
-expectTypeOf(
-  TokenRingSamplerShader["_packInterleavedGeometry"](
-    {
-      object: {
-        object: {
-          ring: someRing,
-        },
-      },
-      _texture: someTex,
-      occlusionElevation: 0,
-      fadeOcclusion: 0,
-      indices: someU16Array,
-      radialOcclusion: 0,
-      surfaceOcclusion: 0,
-      uvs: someF32Array,
-      vertexData: someF32Array,
-      visionOcclusion: 0,
-      _tintRGB: 0,
-      blendMode: PIXI.BLEND_MODES.NORMAL,
-      worldAlpha: 1,
-      occludedAlpha: 0.5,
-      unoccludedAlpha: 1,
-    },
-    someVB,
-    someU16Array,
-    0,
-    0,
-  ),
-).toEqualTypeOf<void>();
+test("foundry/client/canvas/rendering/shaders/samplers/primary/token-ring", () => {
+  expectTypeOf(TokenRingSamplerShader.pausable).toEqualTypeOf<false>();
 
-expectTypeOf(myTRSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myTRSS.pluginName).toEqualTypeOf<string | null>();
+  const myTRSS = TokenRingSamplerShader.create();
+  expectTypeOf(myTRSS).toEqualTypeOf<TokenRingSamplerShader>();
+
+  expectTypeOf(TokenRingSamplerShader.nullUvs).toEqualTypeOf<Float32Array>();
+  expectTypeOf(TokenRingSamplerShader.classPluginName).toEqualTypeOf<string>();
+  expectTypeOf(TokenRingSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+  expectTypeOf(
+    TokenRingSamplerShader["_packInterleavedGeometry"](
+      {
+        object: {
+          object: {
+            ring: someRing,
+          },
+        },
+        _texture: someTex,
+        occlusionElevation: 0,
+        fadeOcclusion: 0,
+        indices: someU16Array,
+        radialOcclusion: 0,
+        surfaceOcclusion: 0,
+        uvs: someF32Array,
+        vertexData: someF32Array,
+        visionOcclusion: 0,
+        _tintRGB: 0,
+        blendMode: PIXI.BLEND_MODES.NORMAL,
+        worldAlpha: 1,
+        occludedAlpha: 0.5,
+        unoccludedAlpha: 1,
+      },
+      someVB,
+      someU16Array,
+      0,
+      0,
+    ),
+  ).toEqualTypeOf<void>();
+
+  expectTypeOf(myTRSS.paused).toEqualTypeOf<boolean>;
+  expectTypeOf(myTRSS.pluginName).toEqualTypeOf<string | null>();
+});

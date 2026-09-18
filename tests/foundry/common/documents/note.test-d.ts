@@ -1,128 +1,130 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseNote = foundry.documents.BaseNote;
 import Document = foundry.abstract.Document;
 
-class TestBaseNote extends BaseNote {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">)
-      : null;
+test("foundry/common/documents/note", () => {
+  class TestBaseNote extends BaseNote {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">)
+        : null;
+    }
   }
-}
 
-// Note has no hard required fields for creation
-const myNote = new TestBaseNote();
-new TestBaseNote({});
-new TestBaseNote({
-  _id: "XXXXXSomeIDXXXXX",
-  entryId: "YYYYYSomeIDYYYYY",
-  pageId: "ZZZZZSomeIDZZZZZ",
-  x: 100,
-  y: 300,
-  elevation: 20,
-  sort: 11,
-  texture: {
-    alphaThreshold: 1,
-    anchorX: 10,
-    anchorY: 20,
-    fit: "height",
-    scaleX: 1.2,
-    scaleY: 1.3,
-    src: "path/to/some/icon.svg",
-    tint: "#FFFFFF",
-  },
-  iconSize: 100,
-  text: "Some text",
-  fontFamily: "Comic Sans",
-  fontSize: 50,
-  textAnchor: CONST.TEXT_ANCHOR_POINTS.TOP,
-  textColor: "#FF0000",
-  global: true,
-  flags: {
-    core: {
-      sheetLock: false,
+  // Note has no hard required fields for creation
+  const myNote = new TestBaseNote();
+  new TestBaseNote({});
+  new TestBaseNote({
+    _id: "XXXXXSomeIDXXXXX",
+    entryId: "YYYYYSomeIDYYYYY",
+    pageId: "ZZZZZSomeIDZZZZZ",
+    x: 100,
+    y: 300,
+    elevation: 20,
+    sort: 11,
+    texture: {
+      alphaThreshold: 1,
+      anchorX: 10,
+      anchorY: 20,
+      fit: "height",
+      scaleX: 1.2,
+      scaleY: 1.3,
+      src: "path/to/some/icon.svg",
+      tint: "#FFFFFF",
     },
-  },
+    iconSize: 100,
+    text: "Some text",
+    fontFamily: "Comic Sans",
+    fontSize: 50,
+    textAnchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+    textColor: "#FF0000",
+    global: true,
+    flags: {
+      core: {
+        sheetLock: false,
+      },
+    },
+  });
+  new TestBaseNote({
+    _id: null,
+    entryId: null,
+    pageId: null,
+    x: null,
+    y: null,
+    elevation: null,
+    sort: null,
+    texture: {
+      alphaThreshold: null,
+      anchorX: null,
+      anchorY: null,
+      fit: null,
+      scaleX: null,
+      scaleY: null,
+      src: null,
+      tint: null,
+    },
+    iconSize: null,
+    text: null,
+    fontFamily: null,
+    fontSize: null,
+    textAnchor: null,
+    textColor: null,
+    global: null,
+    flags: null,
+  });
+  new TestBaseNote({ texture: null });
+
+  new TestBaseNote({
+    _id: undefined,
+    entryId: undefined,
+    pageId: undefined,
+    x: undefined,
+    y: undefined,
+    elevation: undefined,
+    sort: undefined,
+    texture: {
+      alphaThreshold: undefined,
+      anchorX: undefined,
+      anchorY: undefined,
+      fit: undefined,
+      scaleX: undefined,
+      scaleY: undefined,
+      src: undefined,
+      tint: undefined,
+    },
+    iconSize: undefined,
+    text: undefined,
+    fontFamily: undefined,
+    fontSize: undefined,
+    textAnchor: undefined,
+    textColor: undefined,
+    global: undefined,
+    flags: undefined,
+  });
+  new TestBaseNote({ texture: undefined });
+
+  expectTypeOf(myNote).toEqualTypeOf<TestBaseNote>();
+
+  expectTypeOf(myNote._id).toEqualTypeOf<string | null>();
+  expectTypeOf(myNote.entryId).toEqualTypeOf<string | null>();
+  expectTypeOf(myNote.pageId).toEqualTypeOf<string | null>();
+  expectTypeOf(myNote.x).toBeNumber();
+  expectTypeOf(myNote.y).toBeNumber();
+  expectTypeOf(myNote.elevation).toBeNumber();
+  expectTypeOf(myNote.sort).toBeNumber();
+
+  // TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
+  expectTypeOf(myNote.texture).toEqualTypeOf<
+    foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
+  >();
+
+  expectTypeOf(myNote.iconSize).toBeNumber();
+  expectTypeOf(myNote.text).toEqualTypeOf<string | undefined>();
+  expectTypeOf(myNote.fontFamily).toBeString();
+  expectTypeOf(myNote.fontSize).toBeNumber();
+  expectTypeOf(myNote.textAnchor).toEqualTypeOf<CONST.TEXT_ANCHOR_POINTS | null>();
+  expectTypeOf(myNote.textColor).toEqualTypeOf<Color>();
+  expectTypeOf(myNote.global).toBeBoolean();
+  expectTypeOf(myNote.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
 });
-new TestBaseNote({
-  _id: null,
-  entryId: null,
-  pageId: null,
-  x: null,
-  y: null,
-  elevation: null,
-  sort: null,
-  texture: {
-    alphaThreshold: null,
-    anchorX: null,
-    anchorY: null,
-    fit: null,
-    scaleX: null,
-    scaleY: null,
-    src: null,
-    tint: null,
-  },
-  iconSize: null,
-  text: null,
-  fontFamily: null,
-  fontSize: null,
-  textAnchor: null,
-  textColor: null,
-  global: null,
-  flags: null,
-});
-new TestBaseNote({ texture: null });
-
-new TestBaseNote({
-  _id: undefined,
-  entryId: undefined,
-  pageId: undefined,
-  x: undefined,
-  y: undefined,
-  elevation: undefined,
-  sort: undefined,
-  texture: {
-    alphaThreshold: undefined,
-    anchorX: undefined,
-    anchorY: undefined,
-    fit: undefined,
-    scaleX: undefined,
-    scaleY: undefined,
-    src: undefined,
-    tint: undefined,
-  },
-  iconSize: undefined,
-  text: undefined,
-  fontFamily: undefined,
-  fontSize: undefined,
-  textAnchor: undefined,
-  textColor: undefined,
-  global: undefined,
-  flags: undefined,
-});
-new TestBaseNote({ texture: undefined });
-
-expectTypeOf(myNote).toEqualTypeOf<TestBaseNote>();
-
-expectTypeOf(myNote._id).toEqualTypeOf<string | null>();
-expectTypeOf(myNote.entryId).toEqualTypeOf<string | null>();
-expectTypeOf(myNote.pageId).toEqualTypeOf<string | null>();
-expectTypeOf(myNote.x).toBeNumber();
-expectTypeOf(myNote.y).toBeNumber();
-expectTypeOf(myNote.elevation).toBeNumber();
-expectTypeOf(myNote.sort).toBeNumber();
-
-// TextureData schema tests are in `tests/foundry/common/data/data.test-d.ts`
-expectTypeOf(myNote.texture).toEqualTypeOf<
-  foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
->();
-
-expectTypeOf(myNote.iconSize).toBeNumber();
-expectTypeOf(myNote.text).toEqualTypeOf<string | undefined>();
-expectTypeOf(myNote.fontFamily).toBeString();
-expectTypeOf(myNote.fontSize).toBeNumber();
-expectTypeOf(myNote.textAnchor).toEqualTypeOf<CONST.TEXT_ANCHOR_POINTS | null>();
-expectTypeOf(myNote.textColor).toEqualTypeOf<Color>();
-expectTypeOf(myNote.global).toBeBoolean();
-expectTypeOf(myNote.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();

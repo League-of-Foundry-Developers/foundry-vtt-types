@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ContextMenu = foundry.applications.ux.ContextMenu;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
@@ -7,13 +7,15 @@ import RollTables = foundry.documents.collections.RollTables;
 
 declare const directory: RollTableDirectory;
 
-expectTypeOf(directory).toExtend<DocumentDirectory.Any>();
+test("foundry/client/applications/sidebar/tabs/roll-table-directory", () => {
+  expectTypeOf(directory).toExtend<DocumentDirectory.Any>();
 
-// Widened from the `"tables"` literal so a subclass can occupy its own sidebar tab.
-expectTypeOf(RollTableDirectory.tabName).toBeString();
+  // Widened from the `"tables"` literal so a subclass can occupy its own sidebar tab.
+  expectTypeOf(RollTableDirectory.tabName).toBeString();
 
-// Narrowed from the base's `DirectoryCollectionMixin.AnyMixed`.
-expectTypeOf(directory.collection).toEqualTypeOf<RollTables.Implementation>();
-expectTypeOf(directory.documentClass).toEqualTypeOf<RollTable.ImplementationClass>();
+  // Narrowed from the base's `DirectoryCollectionMixin.AnyMixed`.
+  expectTypeOf(directory.collection).toEqualTypeOf<RollTables.Implementation>();
+  expectTypeOf(directory.documentClass).toEqualTypeOf<RollTable.ImplementationClass>();
 
-expectTypeOf(directory["_getEntryContextOptions"]()).toEqualTypeOf<ContextMenu.Entry<HTMLElement>[]>();
+  expectTypeOf(directory["_getEntryContextOptions"]()).toEqualTypeOf<ContextMenu.Entry<HTMLElement>[]>();
+});

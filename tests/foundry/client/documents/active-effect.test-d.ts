@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyMutableObject, AnyObject, MaybePromise } from "fvtt-types/utils";
 import { database, testID } from "../../../utils.ts";
 import * as itemHelpers from "./item.test-d.ts";
@@ -20,13 +20,8 @@ type UpdateData = ActiveEffect.UpdateData;
 type UpdateInput = ActiveEffect.UpdateInput;
 type ConstructionContext = ActiveEffect.ConstructionContext;
 
-const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
-
 /** The parent document that runtime tests in this file will use. */
 const parent = await Item.create(itemHelpers.source);
-if (!parent) throw new Error("Couldn't create test Item");
-expectTypeOf(parent).toEqualTypeOf<Item.Stored>();
-docsToCleanUp.add(parent);
 
 export function isStored<Type extends SubType>(doc: OfType<Type> | Stored<Type>): doc is Stored<Type> {
   if (!doc.id) return false;
@@ -563,340 +558,353 @@ export const maximumSource = {
   type: "base",
 } as const satisfies Source;
 
-// @ts-expect-error ActiveEffect requires name.
-new ActiveEffect.implementation();
-
-// @ts-expect-error ActiveEffect requires name.
-new ActiveEffect.implementation({});
-
 declare const model: DataModel.Any;
 declare const change: ActiveEffect.ChangeData;
 declare const aeContext: Document.ConstructionContext<ActiveEffect.Parent>;
 declare const someActor: Actor.Implementation;
 declare const someCombat: Combat.Implementation;
 
-// Static methods native to this Document
-
-expectTypeOf(ActiveEffect.CHANGE_PHASES).toEqualTypeOf<ActiveEffect.ChangePhases>();
-expectTypeOf(ActiveEffect.CHANGE_PHASES.initial).toEqualTypeOf<ActiveEffect.ChangePhaseConfig>();
-expectTypeOf(ActiveEffect.CHANGE_PHASES["some.module.phase"]).toEqualTypeOf<
-  ActiveEffect.ChangePhaseConfig | undefined
->();
-
-expectTypeOf(ActiveEffect.CHANGE_TYPES).toEqualTypeOf<ActiveEffect.ChangeTypes>();
-expectTypeOf(ActiveEffect.CHANGE_TYPES.add).toEqualTypeOf<ActiveEffect.ChangeTypeConfig>();
-expectTypeOf(ActiveEffect.CHANGE_TYPES.subtract.defaultPriority).toBeNumber();
-// Unregistered types — including the `custom.{n}` forms — are not guaranteed to be present.
-expectTypeOf(ActiveEffect.CHANGE_TYPES["custom.7"]).toEqualTypeOf<ActiveEffect.ChangeTypeConfig | undefined>();
-
-expectTypeOf(ActiveEffect.EXPIRY_EVENTS).toEqualTypeOf<ActiveEffect.ExpiryEvents>();
-expectTypeOf(ActiveEffect.EXPIRY_EVENTS.turnStart).toBeString();
-expectTypeOf(ActiveEffect.EXPIRY_EVENTS["some.module.event"]).toEqualTypeOf<string | undefined>();
-
-expectTypeOf(ActiveEffect.registry).toEqualTypeOf<foundry.helpers.ActiveEffectRegistry>();
-
-const synchronousChangeHandler: ActiveEffect.ChangeHandler = () => {};
-const asynchronousChangeHandler: ActiveEffect.ChangeHandler = async () => ({});
-expectTypeOf(synchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
-expectTypeOf(asynchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
-
-expectTypeOf(ActiveEffect.fromStatusEffect("flying")).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(ActiveEffect.fromStatusEffect("flying", {})).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(ActiveEffect.fromStatusEffect("flying", aeContext)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-
-const createData = {
-  name: "foo",
-  system: { changes: [{ key: "system.foo.bar", type: "upgrade", value: 7, phase: "initial", priority: 42 }] },
-};
-
-expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData)).toEqualTypeOf<
-  Promise<ActiveEffect.Implementation>
->();
-expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData, {})).toEqualTypeOf<
-  Promise<ActiveEffect.Implementation>
->();
-expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData, aeContext)).toEqualTypeOf<
-  Promise<ActiveEffect.Implementation>
->();
-
 declare const sf: foundry.data.fields.StringField;
 declare const nf: foundry.data.fields.NumberField;
 declare const edf: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
-
-expectTypeOf(ActiveEffect.applyChange(someActor, change)).toEqualTypeOf<AnyMutableObject>();
-expectTypeOf(ActiveEffect.applyChange(someActor, change, {})).toEqualTypeOf<AnyMutableObject>();
-expectTypeOf(
-  ActiveEffect.applyChange(someActor, change, { replacementData: {}, modifyTarget: false }),
-).toEqualTypeOf<AnyMutableObject>();
-
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change)).toEqualTypeOf<unknown>();
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change, {})).toEqualTypeOf<unknown>();
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: undefined })).toEqualTypeOf<unknown>();
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: sf })).toEqualTypeOf<string | undefined>();
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: nf })).toEqualTypeOf<
-  number | undefined | null
->();
-expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: edf })).toEqualTypeOf<foundry.data.LightData>();
-
-expectTypeOf(ActiveEffect["_applyChangeUnguided"](model, change, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeUnguided"](someActor, change, {}, { modifyTarget: false })).toBeVoid();
-expectTypeOf(ActiveEffect["_replaceDataRefs"]("@abilities.str.mod", {})).toEqualTypeOf<string | null>();
-expectTypeOf(ActiveEffect["_applyChangeAdd"](someActor, change, 1, 2, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeSubtract"](someActor, change, 1, 2, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeMultiply"](someActor, change, 1, 2, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeOverride"](someActor, change, 1, 2, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeUpgrade"](someActor, change, 1, 2, {})).toBeVoid();
-expectTypeOf(ActiveEffect["_applyChangeCustom"](someActor, change, 1, 2, {})).toBeVoid();
-
-expectTypeOf(ActiveEffect.getEffectStart()).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
-expectTypeOf(ActiveEffect.getEffectStart(someCombat)).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
-expectTypeOf(ActiveEffect.getEffectStart(null)).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
-expectTypeOf(ActiveEffect.getEffectStart().time).toBeNumber();
-expectTypeOf(ActiveEffect.getEffectStart().combatant).toEqualTypeOf<string | null>();
-
-// Deprecated since v14, removed in v16
-
-/* eslint-disable @typescript-eslint/no-deprecated */
-expectTypeOf(ActiveEffect.applyField(someActor, change)).toEqualTypeOf<unknown>();
-expectTypeOf(ActiveEffect.applyField(someActor, change, sf)).toEqualTypeOf<string | undefined>();
-expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetInitialDurationReturn>();
-expectTypeOf(ActiveEffect.getInitialDuration().start).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
-/* eslint-enable @typescript-eslint/no-deprecated */
 
 // ClientDocument static overrides
 
 declare const someItem: Item.Implementation;
 
-// @ts-expect-error `defaultName` requires a `pack` or `parent`.
-ActiveEffect.defaultName();
-
-expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
-expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
-expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: undefined })).toBeString();
-
-// Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
-expectTypeOf(ActiveEffect.defaultName({})).toBeString();
-
-// @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
-await ActiveEffect.createDialog({});
-
-expectTypeOf(
-  ActiveEffect.createDialog(
-    {},
-    {
-      parent: someActor,
-    },
-  ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
-expectTypeOf(
-  ActiveEffect.createDialog(
-    createData,
-    {
-      parent: someActor,
-      pack: "some.pack",
-    },
-    {
-      // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
-      //types: [],
-    },
-  ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
-expectTypeOf(
-  ActiveEffect.createDialog(
-    {},
-    {
-      parent: someActor,
-      pack: undefined,
-    },
-  ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
-expectTypeOf(
-  ActiveEffect.createDialog(createData, {
-    parent: someActor,
-    pack: null,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
-
 declare const aeSource: ActiveEffect.Source;
-expectTypeOf(
-  ActiveEffect.fromDropData({
-    data: aeSource,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
-expectTypeOf(
-  ActiveEffect.fromDropData({
-    uuid: "someUUID", // TODO: This should be allowed
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
-expectTypeOf(
-  ActiveEffect.fromDropData({
-    data: aeSource,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
-
-expectTypeOf(ActiveEffect.fromImport(aeSource)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(ActiveEffect.fromImport(aeSource, {})).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(
-  ActiveEffect.fromImport(aeSource, {
-    dropInvalidEmbedded: true,
-    fallback: true,
-    pack: "some.pack",
-    parent: someItem,
-    parentCollection: "effects",
-    strict: true,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-expectTypeOf(
-  ActiveEffect.fromImport(aeSource, {
-    dropInvalidEmbedded: undefined,
-    fallback: undefined,
-    pack: undefined,
-    parent: undefined,
-    parentCollection: undefined,
-    // strict not allowed to be undefined,
-  }),
-).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
-
-// Instance methods native to this Document
-
-const effect = new ActiveEffect.implementation({ name: "My effect" });
-expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
-
-expectTypeOf(effect.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"ActiveEffect", undefined>>();
-
-expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
-expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
-expectTypeOf(effect.shouldApplyChange(change, { phase: "initial", replacementData: { str: 10 } })).toBeBoolean();
-expectTypeOf(effect.shouldApplyChange(change, { phase: undefined, replacementData: undefined })).toBeBoolean();
-
-expectTypeOf(effect.getReplacementData({ str: 10 })).toEqualTypeOf<AnyObject>();
-
-expectTypeOf(effect.actor).toEqualTypeOf<Actor.Implementation | null>();
-// @ts-expect-error Only getter, no setter
-effect.actor = null;
-
-expectTypeOf(effect.item).toEqualTypeOf<Item.Implementation | null>();
-// @ts-expect-error Only getter, no setter
-effect.item = null;
-
-expectTypeOf(effect.thumbnail).toBeString();
-// @ts-expect-error Only getter, no setter
-effect.thumbnail = "foo";
-
-expectTypeOf(effect.isSuppressed).toEqualTypeOf<boolean>();
-// @ts-expect-error Only getter, no setter
-effect.isSuppressed = false;
-
-expectTypeOf(effect.target).toEqualTypeOf<Document.Any | null>();
-// @ts-expect-error Only getter, no setter
-effect.target = null;
-
-expectTypeOf(effect.active).toEqualTypeOf<boolean>();
-// @ts-expect-error Only getter, no setter
-effect.active = false;
-
-expectTypeOf(effect.modifiesActor).toEqualTypeOf<boolean>();
-// @ts-expect-error Only getter, no setter
-effect.modifiesActor = false;
-
-expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
-// @ts-expect-error Only getter, no setter
-effect.isTemporary = false;
-
-expectTypeOf(effect.isExpiryTrackable).toEqualTypeOf<boolean>();
-// @ts-expect-error Only getter, no setter
-effect.isExpiryTrackable = false;
-
-expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
-// @ts-expect-error Only getter, no setter
-effect.sourceName = "foo";
-
-expectTypeOf(effect.prepareBaseData()).toEqualTypeOf<void>();
-expectTypeOf(effect.prepareDerivedData()).toEqualTypeOf<void>();
-
-// `duration` is widened from the schema's initialized data to the prepared duration
-expectTypeOf(effect.duration).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect.duration.units).toEqualTypeOf<CONST.ACTIVE_EFFECT_DURATION_UNITS>();
-expectTypeOf(effect.duration.value).toEqualTypeOf<number | null>();
-expectTypeOf(effect.duration.expiry).toEqualTypeOf<string | null>();
-expectTypeOf(effect.duration.expired).toBeBoolean();
-expectTypeOf(effect.duration.seconds).toEqualTypeOf<number | null>();
-expectTypeOf(effect.duration.remaining).toBeNumber();
-expectTypeOf(effect.duration.secondsRemaining).toEqualTypeOf<number | undefined>();
-expectTypeOf(effect.duration.label).toBeString();
-
-expectTypeOf(effect.start).toEqualTypeOf<ActiveEffect.StartData | null>();
-expectTypeOf(effect.showIcon).toEqualTypeOf<number>();
-expectTypeOf(effect.origin).toEqualTypeOf<string | null>();
-expectTypeOf(effect.folder).toEqualTypeOf<Folder.Stored | null>();
-
-expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect.updateDuration({})).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect.updateDuration({ round: 2, turn: 1 })).toEqualTypeOf<ActiveEffect.Duration>();
-
-expectTypeOf(effect["_prepareDuration"]()).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect["_prepareDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect["_prepareDuration"](effect.duration, { round: 1 })).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect["_prepareTimeBasedDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect["_prepareTimeBasedDuration"](effect.duration, { turn: 0 })).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(effect["_prepareCombatBasedDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
-expectTypeOf(
-  effect["_prepareCombatBasedDuration"](effect.duration, { round: 3 }),
-).toEqualTypeOf<ActiveEffect.Duration>();
-
-expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
-expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
-expectTypeOf(effect.shouldApplyChange(change, { phase: "final" })).toBeBoolean();
-
-expectTypeOf(effect.isExpiryEvent("turnEnd")).toBeBoolean();
-expectTypeOf(effect.isExpiryEvent("turnEnd", {})).toBeBoolean();
-expectTypeOf(effect.isExpiryEvent("turnEnd", { combat: someCombat })).toBeBoolean();
-expectTypeOf(effect.isExpiryEvent("turnEnd", { combat: null })).toBeBoolean();
-
-// getFlag override has no type changes, handled in BaseActiveEffect tests
-
-expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
-
-// Deprecated since v14, removed in v16
-
-/* eslint-disable @typescript-eslint/no-deprecated */
-expectTypeOf(effect.changes).toEqualTypeOf<ActiveEffect.ChangesOfType<ActiveEffect.SubType>>();
 declare const baseEffect: ActiveEffect.OfType<"base">;
-expectTypeOf(baseEffect.changes).toEqualTypeOf<typeof baseEffect.system.changes>();
-expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
-expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
-expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();
-expectTypeOf(effect["_applyMultiply"](someActor, change, 2, 4, {})).toBeVoid();
-expectTypeOf(effect["_applyOverride"](someActor, change, "foo", "bar", {})).toBeVoid();
-expectTypeOf(effect["_applyUpgrade"](someActor, change, 5, 9, {})).toBeVoid();
-expectTypeOf(effect["_applyCustom"](someActor, change, { baz: 17 }, { fizz: false }, {})).toBeVoid();
-/* eslint-enable @typescript-eslint/no-deprecated */
-
-// A subclass exercising the new protected duration hooks
-
-class TestActiveEffect extends ActiveEffect {
-  protected override _prepareTimeBasedDuration(
-    duration: ActiveEffect.DurationData,
-    context?: ActiveEffect.PrepareDurationContext,
-  ): ActiveEffect.Duration {
-    return super._prepareTimeBasedDuration(duration, context);
-  }
-
-  protected override _prepareCombatBasedDuration(
-    duration: ActiveEffect.DurationData,
-    context?: ActiveEffect.PrepareDurationContext,
-  ): ActiveEffect.Duration {
-    return super._prepareCombatBasedDuration(duration, context);
-  }
-
-  protected override _displayScrollingStatus(enabled: boolean): void {
-    return super._displayScrollingStatus(enabled);
-  }
-}
-
-expectTypeOf(new TestActiveEffect({ name: "Subclassed" })).toExtend<TestActiveEffect>();
 
 // ClientDocument instance override(s)
 
 declare const mEvent: MouseEvent;
-expectTypeOf(effect._onClickDocumentLink(mEvent)).toEqualTypeOf<ClientDocument.OnClickDocumentLinkReturn>();
+
+test("foundry/client/documents/active-effect", async () => {
+  const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
+  if (!parent) throw new Error("Couldn't create test Item");
+  expectTypeOf(parent).toEqualTypeOf<Item.Stored>();
+  docsToCleanUp.add(parent);
+
+  // @ts-expect-error ActiveEffect requires name.
+  new ActiveEffect.implementation();
+
+  // @ts-expect-error ActiveEffect requires name.
+  new ActiveEffect.implementation({});
+
+  // Static methods native to this Document
+
+  expectTypeOf(ActiveEffect.CHANGE_PHASES).toEqualTypeOf<ActiveEffect.ChangePhases>();
+  expectTypeOf(ActiveEffect.CHANGE_PHASES.initial).toEqualTypeOf<ActiveEffect.ChangePhaseConfig>();
+  expectTypeOf(ActiveEffect.CHANGE_PHASES["some.module.phase"]).toEqualTypeOf<
+    ActiveEffect.ChangePhaseConfig | undefined
+  >();
+
+  expectTypeOf(ActiveEffect.CHANGE_TYPES).toEqualTypeOf<ActiveEffect.ChangeTypes>();
+  expectTypeOf(ActiveEffect.CHANGE_TYPES.add).toEqualTypeOf<ActiveEffect.ChangeTypeConfig>();
+  expectTypeOf(ActiveEffect.CHANGE_TYPES.subtract.defaultPriority).toBeNumber();
+  // Unregistered types — including the `custom.{n}` forms — are not guaranteed to be present.
+  expectTypeOf(ActiveEffect.CHANGE_TYPES["custom.7"]).toEqualTypeOf<ActiveEffect.ChangeTypeConfig | undefined>();
+
+  expectTypeOf(ActiveEffect.EXPIRY_EVENTS).toEqualTypeOf<ActiveEffect.ExpiryEvents>();
+  expectTypeOf(ActiveEffect.EXPIRY_EVENTS.turnStart).toBeString();
+  expectTypeOf(ActiveEffect.EXPIRY_EVENTS["some.module.event"]).toEqualTypeOf<string | undefined>();
+
+  expectTypeOf(ActiveEffect.registry).toEqualTypeOf<foundry.helpers.ActiveEffectRegistry>();
+
+  const synchronousChangeHandler: ActiveEffect.ChangeHandler = () => {};
+  const asynchronousChangeHandler: ActiveEffect.ChangeHandler = async () => ({});
+  expectTypeOf(synchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
+  expectTypeOf(asynchronousChangeHandler).returns.toEqualTypeOf<MaybePromise<AnyMutableObject | void>>();
+
+  expectTypeOf(ActiveEffect.fromStatusEffect("flying")).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+  expectTypeOf(ActiveEffect.fromStatusEffect("flying", {})).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+  expectTypeOf(ActiveEffect.fromStatusEffect("flying", aeContext)).toEqualTypeOf<
+    Promise<ActiveEffect.Implementation>
+  >();
+
+  const createData = {
+    name: "foo",
+    system: { changes: [{ key: "system.foo.bar", type: "upgrade", value: 7, phase: "initial", priority: 42 }] },
+  };
+
+  expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData)).toEqualTypeOf<
+    Promise<ActiveEffect.Implementation>
+  >();
+  expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData, {})).toEqualTypeOf<
+    Promise<ActiveEffect.Implementation>
+  >();
+  expectTypeOf(ActiveEffect["_fromStatusEffect"]("flying", createData, aeContext)).toEqualTypeOf<
+    Promise<ActiveEffect.Implementation>
+  >();
+
+  expectTypeOf(ActiveEffect.applyChange(someActor, change)).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(ActiveEffect.applyChange(someActor, change, {})).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(
+    ActiveEffect.applyChange(someActor, change, { replacementData: {}, modifyTarget: false }),
+  ).toEqualTypeOf<AnyMutableObject>();
+
+  expectTypeOf(ActiveEffect.applyChangeField(someActor, change)).toEqualTypeOf<unknown>();
+  expectTypeOf(ActiveEffect.applyChangeField(someActor, change, {})).toEqualTypeOf<unknown>();
+  expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: undefined })).toEqualTypeOf<unknown>();
+  expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: sf })).toEqualTypeOf<string | undefined>();
+  expectTypeOf(ActiveEffect.applyChangeField(someActor, change, { field: nf })).toEqualTypeOf<
+    number | undefined | null
+  >();
+  expectTypeOf(
+    ActiveEffect.applyChangeField(someActor, change, { field: edf }),
+  ).toEqualTypeOf<foundry.data.LightData>();
+
+  expectTypeOf(ActiveEffect["_applyChangeUnguided"](model, change, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeUnguided"](someActor, change, {}, { modifyTarget: false })).toBeVoid();
+  expectTypeOf(ActiveEffect["_replaceDataRefs"]("@abilities.str.mod", {})).toEqualTypeOf<string | null>();
+  expectTypeOf(ActiveEffect["_applyChangeAdd"](someActor, change, 1, 2, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeSubtract"](someActor, change, 1, 2, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeMultiply"](someActor, change, 1, 2, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeOverride"](someActor, change, 1, 2, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeUpgrade"](someActor, change, 1, 2, {})).toBeVoid();
+  expectTypeOf(ActiveEffect["_applyChangeCustom"](someActor, change, 1, 2, {})).toBeVoid();
+
+  expectTypeOf(ActiveEffect.getEffectStart()).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
+  expectTypeOf(ActiveEffect.getEffectStart(someCombat)).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
+  expectTypeOf(ActiveEffect.getEffectStart(null)).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
+  expectTypeOf(ActiveEffect.getEffectStart().time).toBeNumber();
+  expectTypeOf(ActiveEffect.getEffectStart().combatant).toEqualTypeOf<string | null>();
+
+  // Deprecated since v14, removed in v16
+
+  /* eslint-disable @typescript-eslint/no-deprecated */
+  expectTypeOf(ActiveEffect.applyField(someActor, change)).toEqualTypeOf<unknown>();
+  expectTypeOf(ActiveEffect.applyField(someActor, change, sf)).toEqualTypeOf<string | undefined>();
+  expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetInitialDurationReturn>();
+  expectTypeOf(ActiveEffect.getInitialDuration().start).toEqualTypeOf<ActiveEffect.GetEffectStartReturn>();
+  /* eslint-enable @typescript-eslint/no-deprecated */
+
+  // @ts-expect-error `defaultName` requires a `pack` or `parent`.
+  ActiveEffect.defaultName();
+
+  expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
+  expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
+  expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: undefined })).toBeString();
+
+  // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
+  expectTypeOf(ActiveEffect.defaultName({})).toBeString();
+
+  // @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
+  await ActiveEffect.createDialog({});
+
+  expectTypeOf(
+    ActiveEffect.createDialog(
+      {},
+      {
+        parent: someActor,
+      },
+    ),
+  ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+  expectTypeOf(
+    ActiveEffect.createDialog(
+      createData,
+      {
+        parent: someActor,
+        pack: "some.pack",
+      },
+      {
+        // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
+        //types: [],
+      },
+    ),
+  ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+  expectTypeOf(
+    ActiveEffect.createDialog(
+      {},
+      {
+        parent: someActor,
+        pack: undefined,
+      },
+    ),
+  ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+  expectTypeOf(
+    ActiveEffect.createDialog(createData, {
+      parent: someActor,
+      pack: null,
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+  expectTypeOf(
+    ActiveEffect.fromDropData({
+      data: aeSource,
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
+  expectTypeOf(
+    ActiveEffect.fromDropData({
+      uuid: "someUUID", // TODO: This should be allowed
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
+  expectTypeOf(
+    ActiveEffect.fromDropData({
+      data: aeSource,
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
+
+  expectTypeOf(ActiveEffect.fromImport(aeSource)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+  expectTypeOf(ActiveEffect.fromImport(aeSource, {})).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+  expectTypeOf(
+    ActiveEffect.fromImport(aeSource, {
+      dropInvalidEmbedded: true,
+      fallback: true,
+      pack: "some.pack",
+      parent: someItem,
+      parentCollection: "effects",
+      strict: true,
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+  expectTypeOf(
+    ActiveEffect.fromImport(aeSource, {
+      dropInvalidEmbedded: undefined,
+      fallback: undefined,
+      pack: undefined,
+      parent: undefined,
+      parentCollection: undefined,
+      // strict not allowed to be undefined,
+    }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
+
+  // Instance methods native to this Document
+
+  const effect = new ActiveEffect.implementation({ name: "My effect" });
+  expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
+
+  expectTypeOf(effect.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"ActiveEffect", undefined>>();
+
+  expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
+  expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
+  expectTypeOf(effect.shouldApplyChange(change, { phase: "initial", replacementData: { str: 10 } })).toBeBoolean();
+  expectTypeOf(effect.shouldApplyChange(change, { phase: undefined, replacementData: undefined })).toBeBoolean();
+
+  expectTypeOf(effect.getReplacementData({ str: 10 })).toEqualTypeOf<AnyObject>();
+
+  expectTypeOf(effect.actor).toEqualTypeOf<Actor.Implementation | null>();
+  // @ts-expect-error Only getter, no setter
+  effect.actor = null;
+
+  expectTypeOf(effect.item).toEqualTypeOf<Item.Implementation | null>();
+  // @ts-expect-error Only getter, no setter
+  effect.item = null;
+
+  expectTypeOf(effect.thumbnail).toBeString();
+  // @ts-expect-error Only getter, no setter
+  effect.thumbnail = "foo";
+
+  expectTypeOf(effect.isSuppressed).toEqualTypeOf<boolean>();
+  // @ts-expect-error Only getter, no setter
+  effect.isSuppressed = false;
+
+  expectTypeOf(effect.target).toEqualTypeOf<Document.Any | null>();
+  // @ts-expect-error Only getter, no setter
+  effect.target = null;
+
+  expectTypeOf(effect.active).toEqualTypeOf<boolean>();
+  // @ts-expect-error Only getter, no setter
+  effect.active = false;
+
+  expectTypeOf(effect.modifiesActor).toEqualTypeOf<boolean>();
+  // @ts-expect-error Only getter, no setter
+  effect.modifiesActor = false;
+
+  expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
+  // @ts-expect-error Only getter, no setter
+  effect.isTemporary = false;
+
+  expectTypeOf(effect.isExpiryTrackable).toEqualTypeOf<boolean>();
+  // @ts-expect-error Only getter, no setter
+  effect.isExpiryTrackable = false;
+
+  expectTypeOf(effect.sourceName).toEqualTypeOf<string>();
+  // @ts-expect-error Only getter, no setter
+  effect.sourceName = "foo";
+
+  expectTypeOf(effect.prepareBaseData()).toEqualTypeOf<void>();
+  expectTypeOf(effect.prepareDerivedData()).toEqualTypeOf<void>();
+
+  // `duration` is widened from the schema's initialized data to the prepared duration
+  expectTypeOf(effect.duration).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect.duration.units).toEqualTypeOf<CONST.ACTIVE_EFFECT_DURATION_UNITS>();
+  expectTypeOf(effect.duration.value).toEqualTypeOf<number | null>();
+  expectTypeOf(effect.duration.expiry).toEqualTypeOf<string | null>();
+  expectTypeOf(effect.duration.expired).toBeBoolean();
+  expectTypeOf(effect.duration.seconds).toEqualTypeOf<number | null>();
+  expectTypeOf(effect.duration.remaining).toBeNumber();
+  expectTypeOf(effect.duration.secondsRemaining).toEqualTypeOf<number | undefined>();
+  expectTypeOf(effect.duration.label).toBeString();
+
+  expectTypeOf(effect.start).toEqualTypeOf<ActiveEffect.StartData | null>();
+  expectTypeOf(effect.showIcon).toEqualTypeOf<number>();
+  expectTypeOf(effect.origin).toEqualTypeOf<string | null>();
+  expectTypeOf(effect.folder).toEqualTypeOf<Folder.Stored | null>();
+
+  expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect.updateDuration({})).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect.updateDuration({ round: 2, turn: 1 })).toEqualTypeOf<ActiveEffect.Duration>();
+
+  expectTypeOf(effect["_prepareDuration"]()).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect["_prepareDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect["_prepareDuration"](effect.duration, { round: 1 })).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect["_prepareTimeBasedDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(
+    effect["_prepareTimeBasedDuration"](effect.duration, { turn: 0 }),
+  ).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(effect["_prepareCombatBasedDuration"](effect.duration)).toEqualTypeOf<ActiveEffect.Duration>();
+  expectTypeOf(
+    effect["_prepareCombatBasedDuration"](effect.duration, { round: 3 }),
+  ).toEqualTypeOf<ActiveEffect.Duration>();
+
+  expectTypeOf(effect.shouldApplyChange(change)).toBeBoolean();
+  expectTypeOf(effect.shouldApplyChange(change, {})).toBeBoolean();
+  expectTypeOf(effect.shouldApplyChange(change, { phase: "final" })).toBeBoolean();
+
+  expectTypeOf(effect.isExpiryEvent("turnEnd")).toBeBoolean();
+  expectTypeOf(effect.isExpiryEvent("turnEnd", {})).toBeBoolean();
+  expectTypeOf(effect.isExpiryEvent("turnEnd", { combat: someCombat })).toBeBoolean();
+  expectTypeOf(effect.isExpiryEvent("turnEnd", { combat: null })).toBeBoolean();
+
+  // getFlag override has no type changes, handled in BaseActiveEffect tests
+
+  expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
+
+  // Deprecated since v14, removed in v16
+
+  /* eslint-disable @typescript-eslint/no-deprecated */
+  expectTypeOf(effect.changes).toEqualTypeOf<ActiveEffect.ChangesOfType<ActiveEffect.SubType>>();
+  expectTypeOf(baseEffect.changes).toEqualTypeOf<typeof baseEffect.system.changes>();
+  expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
+  expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();
+  expectTypeOf(effect["_applyMultiply"](someActor, change, 2, 4, {})).toBeVoid();
+  expectTypeOf(effect["_applyOverride"](someActor, change, "foo", "bar", {})).toBeVoid();
+  expectTypeOf(effect["_applyUpgrade"](someActor, change, 5, 9, {})).toBeVoid();
+  expectTypeOf(effect["_applyCustom"](someActor, change, { baz: 17 }, { fizz: false }, {})).toBeVoid();
+  /* eslint-enable @typescript-eslint/no-deprecated */
+
+  // A subclass exercising the new protected duration hooks
+
+  class TestActiveEffect extends ActiveEffect {
+    protected override _prepareTimeBasedDuration(
+      duration: ActiveEffect.DurationData,
+      context?: ActiveEffect.PrepareDurationContext,
+    ): ActiveEffect.Duration {
+      return super._prepareTimeBasedDuration(duration, context);
+    }
+
+    protected override _prepareCombatBasedDuration(
+      duration: ActiveEffect.DurationData,
+      context?: ActiveEffect.PrepareDurationContext,
+    ): ActiveEffect.Duration {
+      return super._prepareCombatBasedDuration(duration, context);
+    }
+
+    protected override _displayScrollingStatus(enabled: boolean): void {
+      return super._displayScrollingStatus(enabled);
+    }
+  }
+
+  expectTypeOf(new TestActiveEffect({ name: "Subclassed" })).toExtend<TestActiveEffect>();
+  expectTypeOf(effect._onClickDocumentLink(mEvent)).toEqualTypeOf<ClientDocument.OnClickDocumentLinkReturn>();
+});

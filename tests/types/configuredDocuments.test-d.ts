@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 // This is a regression test for the error:
 // "'Item' is referenced directly or indirectly in its own type annotation."
@@ -16,8 +16,6 @@ declare module "fvtt-types/configuration" {
     document: CustomItemClass<SubType>;
   }
 }
-
-expectTypeOf(CONFIG.Item.documentClass).toEqualTypeOf<typeof CustomItemClass>();
 
 // This is a regression test for the error:
 // "Type 'CustomCombatantClass<SubType>' recursively references itself as a base type."
@@ -37,5 +35,9 @@ declare module "fvtt-types/configuration" {
   }
 }
 
-expectTypeOf(CONFIG.Combatant.documentClass).toEqualTypeOf<typeof CustomCombatantClass>();
-expectTypeOf<Combatant.Implementation>().toEqualTypeOf<CustomCombatantClass<Combatant.SubType>>();
+test("types/configuredDocuments", () => {
+  expectTypeOf(CONFIG.Item.documentClass).toEqualTypeOf<typeof CustomItemClass>();
+
+  expectTypeOf(CONFIG.Combatant.documentClass).toEqualTypeOf<typeof CustomCombatantClass>();
+  expectTypeOf<Combatant.Implementation>().toEqualTypeOf<CustomCombatantClass<Combatant.SubType>>();
+});

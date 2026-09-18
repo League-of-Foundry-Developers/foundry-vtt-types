@@ -1,12 +1,14 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import FogSamplerShader = foundry.canvas.rendering.shaders.FogSamplerShader;
 
-let myFSS;
+test("foundry/client/canvas/rendering/shaders/samplers/fog-of-war", () => {
+  let myFSS;
 
-expectTypeOf(FogSamplerShader.classPluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(FogSamplerShader.classPluginName).toEqualTypeOf<string | null>();
 
-expectTypeOf((myFSS = FogSamplerShader.create())).toEqualTypeOf<FogSamplerShader>();
+  expectTypeOf((myFSS = FogSamplerShader.create())).toEqualTypeOf<FogSamplerShader>();
 
-expectTypeOf(myFSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myFSS.pluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(myFSS.paused).toEqualTypeOf<boolean>;
+  expectTypeOf(myFSS.pluginName).toEqualTypeOf<string | null>();
+});

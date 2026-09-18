@@ -1,28 +1,30 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ColorAdjustmentsSamplerShader = foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader;
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
-const myCASS = ColorAdjustmentsSamplerShader.create();
+test("foundry/client/canvas/rendering/shaders/samplers/color-adjustments", () => {
+  const myCASS = ColorAdjustmentsSamplerShader.create();
 
-expectTypeOf(myCASS).toEqualTypeOf<ColorAdjustmentsSamplerShader>();
+  expectTypeOf(myCASS).toEqualTypeOf<ColorAdjustmentsSamplerShader>();
 
-expectTypeOf(ColorAdjustmentsSamplerShader.defaultUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();
-expectTypeOf(ColorAdjustmentsSamplerShader.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(ColorAdjustmentsSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
+  expectTypeOf(ColorAdjustmentsSamplerShader.defaultUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();
+  expectTypeOf(ColorAdjustmentsSamplerShader.classPluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(ColorAdjustmentsSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
 
-expectTypeOf(myCASS.paused).toEqualTypeOf<boolean>();
-expectTypeOf(myCASS.pluginName).toEqualTypeOf<string | null>();
-expectTypeOf(myCASS.linkedToDarknessLevel).toEqualTypeOf<boolean>();
+  expectTypeOf(myCASS.paused).toEqualTypeOf<boolean>();
+  expectTypeOf(myCASS.pluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(myCASS.linkedToDarknessLevel).toEqualTypeOf<boolean>();
 
-expectTypeOf(myCASS.linkedToDarknessLevel).toBeBoolean();
-myCASS.linkedToDarknessLevel = true; // setter
+  expectTypeOf(myCASS.linkedToDarknessLevel).toBeBoolean();
+  myCASS.linkedToDarknessLevel = true; // setter
 
-expectTypeOf(myCASS.contrast).toBeNumber();
-myCASS.contrast = 0.2; // setter
+  expectTypeOf(myCASS.contrast).toBeNumber();
+  myCASS.contrast = 0.2; // setter
 
-expectTypeOf(myCASS.exposure).toBeNumber();
-myCASS.exposure = 0.2; // setter
+  expectTypeOf(myCASS.exposure).toBeNumber();
+  myCASS.exposure = 0.2; // setter
 
-expectTypeOf(myCASS.saturation).toBeNumber();
-myCASS.saturation = 0.2; // setter
+  expectTypeOf(myCASS.saturation).toBeNumber();
+  myCASS.saturation = 0.2; // setter
+});

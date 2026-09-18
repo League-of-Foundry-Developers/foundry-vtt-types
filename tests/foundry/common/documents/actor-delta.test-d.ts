@@ -1,138 +1,142 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 import EmbeddedCollectionDelta = foundry.abstract.EmbeddedCollectionDelta;
 import BaseActorDelta = foundry.documents.BaseActorDelta;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestBaseActorDelta extends BaseActorDelta {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">)
-      : null;
-  }
-}
-
 declare const someToken: TokenDocument.Implementation;
-// @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-new TestBaseActorDelta();
-
-// @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-new TestBaseActorDelta(undefined, { strict: false });
-
-const myDelta = new ActorDelta.implementation({}, { parent: someToken });
 
 declare const someActor: Actor.Stored;
-expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor)).toEqualTypeOf<
-  Actor.Implementation | Actor.Stored | null
->();
-expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor, {})).toEqualTypeOf<
-  Actor.Implementation | Actor.Stored | null
->();
-// @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
-TestBaseActorDelta.applyDelta(myDelta, someActor, { parent: someToken });
-
-expectTypeOf(
-  TestBaseActorDelta.applyDelta(myDelta, someActor, {
-    pack: "someModule.somePack",
-    parentCollection: "foo",
-    strict: false,
-  }),
-).toEqualTypeOf<Actor.Implementation | Actor.Stored | null>();
-
-new TestBaseActorDelta(
-  {
-    _id: "XXXXXSomeIDXXXXX",
-    name: "Foo the Specific Bandit",
-    type: "character", // AD model doesn't enforce this being accurate
-    img: "path/to/icon.webp",
-    system: {},
-    items: [
-      {
-        _id: "YYYYYSomeIDYYYYY",
-        name: "Some Item",
-        // not going to include the entire Item schema here, as this is already 'possibly infinite'
-      },
-    ],
-    effects: [
-      {
-        _id: "ZZZZZSomeIDZZZZZ",
-        name: "Some Effect",
-        // not going to include the entire AE schema here
-      },
-    ],
-    ownership: {
-      UUUUUSomeIDUUUUU: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
-    },
-    flags: {
-      core: {
-        sheetLock: false,
-      },
-    },
-  },
-  { parent: someToken },
-);
-new TestBaseActorDelta(
-  {
-    _id: null,
-    name: null,
-    type: null,
-    img: null,
-    system: null,
-    items: null,
-    effects: null,
-    ownership: null,
-    flags: null,
-  },
-  { parent: someToken },
-);
-new TestBaseActorDelta(
-  {
-    _id: undefined,
-    name: undefined,
-    type: undefined,
-    img: undefined,
-    system: undefined,
-    items: undefined,
-    effects: undefined,
-    ownership: undefined,
-    flags: undefined,
-  },
-  { parent: someToken },
-);
-
-expectTypeOf(myDelta).toEqualTypeOf<ActorDelta.Implementation>();
-
-expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
-expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();
-expectTypeOf(myDelta.type).toEqualTypeOf<ActorDelta.SubType>();
-expectTypeOf(myDelta.img).toEqualTypeOf<string | null>();
-// overridden in template, ActorDelta's `system` field is just an ObjectField
-expectTypeOf(myDelta.system).toEqualTypeOf<BaseActorDelta.SystemOfType<BaseActorDelta.SubType>>();
-expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Stored, ActorDelta.Implementation>>();
-expectTypeOf(myDelta.effects).toEqualTypeOf<EmbeddedCollectionDelta<ActiveEffect.Stored, ActorDelta.Implementation>>();
-expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null>();
-expectTypeOf(myDelta.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
 
 // non-schema:
 declare const someUser: User.Implementation;
-expectTypeOf(myDelta.canUserModify(someUser, "create")).toBeBoolean();
-expectTypeOf(myDelta.canUserModify(someUser, "delete")).toBeBoolean();
-expectTypeOf(myDelta.canUserModify(someUser, "update")).toBeBoolean();
-expectTypeOf(myDelta.canUserModify(someUser, "create", {})).toBeBoolean();
-expectTypeOf(myDelta.canUserModify(someUser, "create", myDelta.toObject())).toBeBoolean();
 
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
+test("foundry/common/documents/actor-delta", () => {
+  class TestBaseActorDelta extends BaseActorDelta {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">)
+        : null;
+    }
+  }
+  // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
+  new TestBaseActorDelta();
 
-// @ts-expect-error Tile is not a valid name of an embedded document of Actor
-myDelta.getBaseCollection("Tile");
-expectTypeOf(myDelta.getBaseCollection("ActiveEffect")).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation> | undefined
->();
-expectTypeOf(myDelta.getBaseCollection("Item")).toEqualTypeOf<
-  EmbeddedCollection<Item.Stored, Actor.Implementation> | undefined
->();
+  // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
+  new TestBaseActorDelta(undefined, { strict: false });
+
+  const myDelta = new ActorDelta.implementation({}, { parent: someToken });
+  expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor)).toEqualTypeOf<
+    Actor.Implementation | Actor.Stored | null
+  >();
+  expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor, {})).toEqualTypeOf<
+    Actor.Implementation | Actor.Stored | null
+  >();
+  // @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
+  TestBaseActorDelta.applyDelta(myDelta, someActor, { parent: someToken });
+
+  expectTypeOf(
+    TestBaseActorDelta.applyDelta(myDelta, someActor, {
+      pack: "someModule.somePack",
+      parentCollection: "foo",
+      strict: false,
+    }),
+  ).toEqualTypeOf<Actor.Implementation | Actor.Stored | null>();
+
+  new TestBaseActorDelta(
+    {
+      _id: "XXXXXSomeIDXXXXX",
+      name: "Foo the Specific Bandit",
+      type: "character", // AD model doesn't enforce this being accurate
+      img: "path/to/icon.webp",
+      system: {},
+      items: [
+        {
+          _id: "YYYYYSomeIDYYYYY",
+          name: "Some Item",
+          // not going to include the entire Item schema here, as this is already 'possibly infinite'
+        },
+      ],
+      effects: [
+        {
+          _id: "ZZZZZSomeIDZZZZZ",
+          name: "Some Effect",
+          // not going to include the entire AE schema here
+        },
+      ],
+      ownership: {
+        UUUUUSomeIDUUUUU: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+      },
+      flags: {
+        core: {
+          sheetLock: false,
+        },
+      },
+    },
+    { parent: someToken },
+  );
+  new TestBaseActorDelta(
+    {
+      _id: null,
+      name: null,
+      type: null,
+      img: null,
+      system: null,
+      items: null,
+      effects: null,
+      ownership: null,
+      flags: null,
+    },
+    { parent: someToken },
+  );
+  new TestBaseActorDelta(
+    {
+      _id: undefined,
+      name: undefined,
+      type: undefined,
+      img: undefined,
+      system: undefined,
+      items: undefined,
+      effects: undefined,
+      ownership: undefined,
+      flags: undefined,
+    },
+    { parent: someToken },
+  );
+
+  expectTypeOf(myDelta).toEqualTypeOf<ActorDelta.Implementation>();
+
+  expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
+  expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();
+  expectTypeOf(myDelta.type).toEqualTypeOf<ActorDelta.SubType>();
+  expectTypeOf(myDelta.img).toEqualTypeOf<string | null>();
+  // overridden in template, ActorDelta's `system` field is just an ObjectField
+  expectTypeOf(myDelta.system).toEqualTypeOf<BaseActorDelta.SystemOfType<BaseActorDelta.SubType>>();
+  expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Stored, ActorDelta.Implementation>>();
+  expectTypeOf(myDelta.effects).toEqualTypeOf<
+    EmbeddedCollectionDelta<ActiveEffect.Stored, ActorDelta.Implementation>
+  >();
+  expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null>();
+  expectTypeOf(myDelta.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
+  expectTypeOf(myDelta.canUserModify(someUser, "create")).toBeBoolean();
+  expectTypeOf(myDelta.canUserModify(someUser, "delete")).toBeBoolean();
+  expectTypeOf(myDelta.canUserModify(someUser, "update")).toBeBoolean();
+  expectTypeOf(myDelta.canUserModify(someUser, "create", {})).toBeBoolean();
+  expectTypeOf(myDelta.canUserModify(someUser, "create", myDelta.toObject())).toBeBoolean();
+
+  expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
+  expectTypeOf(myDelta.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
+  expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
+  expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
+  expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
+
+  // @ts-expect-error Tile is not a valid name of an embedded document of Actor
+  myDelta.getBaseCollection("Tile");
+  expectTypeOf(myDelta.getBaseCollection("ActiveEffect")).toEqualTypeOf<
+    EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation> | undefined
+  >();
+  expectTypeOf(myDelta.getBaseCollection("Item")).toEqualTypeOf<
+    EmbeddedCollection<Item.Stored, Actor.Implementation> | undefined
+  >();
+});
