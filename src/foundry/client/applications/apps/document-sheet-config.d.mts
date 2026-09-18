@@ -130,6 +130,7 @@ declare class DocumentSheetConfig<
   static registerSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
     scope: ClientDatabaseBackend.FlagScope,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<DocumentClass>,
   ): void;
@@ -137,6 +138,7 @@ declare class DocumentSheetConfig<
   static unregisterSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
     scope: ClientDatabaseBackend.FlagScope,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<DocumentClass>,
   ): void;
@@ -362,6 +364,7 @@ declare namespace DocumentSheetConfig {
     id: string;
 
     /** An Application class used to render the sheet. */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor;
 
     /**

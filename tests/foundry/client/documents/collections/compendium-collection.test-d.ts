@@ -5,6 +5,7 @@ import CompendiumCollection = foundry.documents.collections.CompendiumCollection
 import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import BasePackage = foundry.packages.BasePackage;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
@@ -183,6 +184,7 @@ describe("CompendiumCollection Tests", async () => {
     expectTypeOf(actorPack._source).toEqualTypeOf<Actor.Source[]>();
     expectTypeOf(actorPack.collection).toBeString();
     expectTypeOf(actorPack.banner).toEqualTypeOf<string | null | undefined>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(actorPack.applicationClass).toEqualTypeOf<Application.AnyConstructor | ApplicationV2.AnyConstructor>();
     expectTypeOf(actorPack.sort).toBeNumber();
 

@@ -44,6 +44,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @deprecated "ContextMenu.create is deprecated and only supports Application (v1) instances."
    */
   static create<UsesJQuery extends boolean | undefined = true>(
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     app: Application.Any | foundry.applications.api.ApplicationV2.Any,
     html: HTMLElement | JQuery,
     selector: string,

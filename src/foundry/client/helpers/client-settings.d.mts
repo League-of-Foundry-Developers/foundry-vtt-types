@@ -364,6 +364,7 @@ declare namespace ClientSettings {
 
     /** The FormApplication or ApplicationV2 to render */
     // In SettingsConfig#_onClickSubmenu this type is constructed and not given any options.
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
 
     /** If true, only a GM can edit this Setting */
@@ -388,6 +389,7 @@ declare namespace ClientSettings {
      *
      * @privateRemarks The phrase "TODO better typing" in the original documentation was stripped.
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type: (new () => FormApplication.Any) | (new () => ApplicationV2.Any);
 
     /** If true, only a GM can edit this Setting */

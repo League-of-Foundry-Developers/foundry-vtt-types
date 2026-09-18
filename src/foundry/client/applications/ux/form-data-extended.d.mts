@@ -28,6 +28,7 @@ declare class FormDataExtended extends FormData {
    * A record of editors which are linked to this form.
    * @defaultValue `{}`
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   editors: Record<string, foundry.appv1.api.FormApplication.FormApplicationEditor>;
 
   /**

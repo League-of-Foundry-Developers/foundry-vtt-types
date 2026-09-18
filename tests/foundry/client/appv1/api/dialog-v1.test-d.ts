@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf } from "vitest";
 
 import Dialog = foundry.appv1.api.Dialog;

@@ -19,6 +19,7 @@ import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import ContextMenu = foundry.applications.ux.ContextMenu;
@@ -34,6 +35,7 @@ type PlaceablesLayerConfig = HookConfigs.PlaceablesLayerConfig;
 // TODO(LukeAbby): Add warning for invalid configuration.
 // Grabs only valid items.
 type ApplicationName = {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   [K in keyof ApplicationConfig]: K extends string ? (ApplicationConfig[K] extends Application.Any ? K : never) : never;
 }[keyof ApplicationConfig];
 
@@ -832,8 +834,8 @@ export interface AllHooks extends DynamicHooks {
   activateNote: (
     note: Note.Implementation,
     options:
-      | foundry.appv1.sheets.JournalSheet.Options
-      | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      foundry.appv1.sheets.JournalSheet.Options | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
   ) => true | false;
 
   /* Cards */
@@ -899,7 +901,9 @@ export interface AllHooks extends DynamicHooks {
    */
   dropActorSheetData: (
     actor: Actor.Implementation,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheet: foundry.appv1.sheets.ActorSheet.Any | foundry.applications.sheets.ActorSheetV2.Any,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     data: foundry.appv1.sheets.ActorSheet.DropData,
   ) => boolean | void;
 
@@ -1372,6 +1376,7 @@ declare global {
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@linkcode Application._render | Application#_render}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type RenderApplication<A extends Application.Any = Application.Any> = (
       app: A,
       html: JQuery,
@@ -1388,8 +1393,10 @@ declare global {
      * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@linkcode Application._getHeaderButtons | Application#_getHeaderButtons}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
       app: A,
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       buttons: Application.HeaderButton[],
     ) => boolean | void;
 
@@ -1402,6 +1409,7 @@ declare global {
      * @remarks This is called by {@linkcode Hooks.callAll}.
      * @see {@linkcode Application.close | Application#close}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
 
     /** EffectsCanvasGroup */
@@ -1696,6 +1704,7 @@ declare global {
      * @remarks This is called by {@linkcode Hooks.call}.
      * @see {@linkcode ContextMenu.create}
      */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type GetEntryContext<Application extends Application.Any = Application.Any> = (
       app: Application,
       entryOptions: ContextMenu.Entry<HTMLElement | JQuery>[],
@@ -1703,6 +1712,7 @@ declare global {
 
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: layers.CanvasLayer }];
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       "Application#render": [location: "Application#render", err: Error, data: Application.RenderOptions];
       "Localization#_loadTranslationFile": [
         location: "Localization#_loadTranslationFile",

@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 
 // @ts-expect-error data is required
@@ -44,6 +45,7 @@ expectTypeOf(chat.type).toEqualTypeOf<"chat">();
 expectTypeOf(chat.execute()).toEqualTypeOf<void | Promise<unknown>>();
 
 // properties and functions of `ClientDocumentMixin`
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(script.apps).toEqualTypeOf<Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>>();
 expectTypeOf(script.collection).toEqualTypeOf<foundry.documents.collections.Macros.Implementation | null>();
 expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();

@@ -1209,6 +1209,8 @@ interface EmbeddedEntityNameToLayerMap {
   AmbientSound: Canvas["sounds"];
   Drawing: Canvas["drawings"];
   Note: Canvas["notes"];
+
+  /** @deprecated since v14 */
   MeasuredTemplate: Canvas["templates"];
   Region: Canvas["regions"];
   Tile: Canvas["tiles"];
@@ -1223,6 +1225,8 @@ interface CollectionNameToLayerMap {
   drawings: Canvas["drawings"];
   notes: Canvas["notes"];
   regions: Canvas["regions"];
+
+  /** @deprecated since v14 */
   templates: Canvas["templates"];
   tiles: Canvas["tiles"];
   tokens: Canvas["tokens"];
