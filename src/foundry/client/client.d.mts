@@ -283,24 +283,28 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode Application} which is now namespaced under {@linkcode foundry.appv1.api.Application}"
    * (since v13 will be removed in v16)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import Application = foundry.appv1.api.Application;
 
   /**
    * @deprecated "You are accessing the global {@linkcode Dialog} which is now namespaced under {@linkcode foundry.appv1.api.Dialog}"
    * (since v13 will be removed in v16)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import Dialog = foundry.appv1.api.Dialog;
 
   /**
    * @deprecated "You are accessing the global {@linkcode FormApplication} which is now namespaced under {@linkcode foundry.appv1.api.FormApplication}"
    * (since v13 will be removed in v16)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import FormApplication = foundry.appv1.api.FormApplication;
 
   /**
    * @deprecated "You are accessing the global {@linkcode DocumentSheet} which is now namespaced under {@linkcode foundry.appv1.api.DocumentSheet}"
    * (since v13 will be removed in v16)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
   /**
@@ -493,6 +497,7 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode MeasuredTemplateConfig} which is now namespaced under {@linkcode foundry.applications.sheets.MeasuredTemplateConfig}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import MeasuredTemplateConfig = foundry.applications.sheets.MeasuredTemplateConfig;
 
   /**
@@ -845,30 +850,35 @@ declare global {
    * @deprecated "You are accessing the global {@linkcode ActorSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.ActorSheet}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ActorSheet = foundry.appv1.sheets.ActorSheet;
 
   /**
    * @deprecated "You are accessing the global {@linkcode AdventureImporter} which is now namespaced under {@linkcode foundry.appv1.sheets.AdventureImporter}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import AdventureImporter = foundry.appv1.sheets.AdventureImporter;
 
   /**
    * @deprecated "You are accessing the global {@linkcode ItemSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.ItemSheet}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ItemSheet = foundry.appv1.sheets.ItemSheet;
 
   /**
    * @deprecated "You are accessing the global {@linkcode JournalSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.JournalSheet}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import JournalSheet = foundry.appv1.sheets.JournalSheet;
 
   /**
    * @deprecated "You are accessing the global {@linkcode JournalPageSheet} which is now namespaced under {@linkcode foundry.appv1.sheets.JournalPageSheet}"
    * (since v13 will be removed in v15)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import JournalPageSheet = foundry.appv1.sheets.JournalPageSheet;
 
   /**

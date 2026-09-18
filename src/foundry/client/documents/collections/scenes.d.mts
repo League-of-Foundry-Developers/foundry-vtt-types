@@ -65,6 +65,7 @@ declare class Scenes extends WorldCollection<"Scene"> {
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Scene.ImplementationClass>,
   ): void;
@@ -72,6 +73,7 @@ declare class Scenes extends WorldCollection<"Scene"> {
   // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<Scene.ImplementationClass>,
   ): void;

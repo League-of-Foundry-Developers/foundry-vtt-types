@@ -1,5 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 
 declare const someMacro: Macro.Stored;
@@ -48,6 +49,7 @@ test("foundry/client/documents/macro", async () => {
 
   // properties and functions of `ClientDocumentMixin`
   expectTypeOf(script.apps).toEqualTypeOf<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>
   >();
   expectTypeOf(script.collection).toEqualTypeOf<foundry.documents.collections.Macros.Implementation | null>();

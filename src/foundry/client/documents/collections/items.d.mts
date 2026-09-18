@@ -27,6 +27,7 @@ declare class Items extends WorldCollection<"Item"> {
   // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Item.ImplementationClass>,
   ): void;
@@ -34,6 +35,7 @@ declare class Items extends WorldCollection<"Item"> {
   // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<Item.ImplementationClass>,
   ): void;

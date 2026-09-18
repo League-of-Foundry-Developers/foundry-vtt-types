@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf, test } from "vitest";
 import type { DeepPartial, MaybePromise } from "fvtt-types/utils";
 
@@ -12,7 +13,6 @@ declare const element: HTMLElement;
 
 test("foundry/client/applications/sidebar/apps/frame-viewer", () => {
   // Deprecated since v13, until v15 — the whole class, warned from its constructor.
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const viewer = new FrameViewer({ url: "https://foundryvtt.com/api/v14" });
 
   expectTypeOf(viewer).toExtend<ApplicationV2.Any>();

@@ -218,14 +218,8 @@ declare namespace AmbientSound {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
-    /** @defaultValue `{ propagate: ["refreshState", "refreshField", "refreshElevation"], alias: true }` */
+    /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshField", "refreshTooltip"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
-
-    /** @defaultValue `{ propagate: ["refreshPosition"] }` */
-    refreshField: RenderFlag<this, "refreshField">;
-
-    /** @defaultValue `{}` */
-    refreshPosition: RenderFlag<this, "refreshPosition">;
 
     /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
     refreshState: RenderFlag<this, "refreshState">;
@@ -233,7 +227,29 @@ declare namespace AmbientSound {
     /** @defaultValue `{}` */
     refreshVisibility: RenderFlag<this, "refreshVisibility">;
 
+    /** @defaultValue `{ propagate: ["refreshPosition", "refreshSize"], alias: true }` */
+    refreshTransform: RenderFlag<this, "refreshTransform">;
+
+    /** @defaultValue `{ propagate: ["refreshMeasurements"] }` */
+    refreshPosition: RenderFlag<this, "refreshPosition">;
+
+    /** @defaultValue `{ propagate: ["refreshMeasurements"] }` */
+    refreshSize: RenderFlag<this, "refreshSize">;
+
     /** @defaultValue `{}` */
+    refreshField: RenderFlag<this, "refreshField">;
+
+    /** @defaultValue `{}` */
+    refreshTooltip: RenderFlag<this, "refreshTooltip">;
+
+    /** @defaultValue `{}` */
+    refreshMeasurements: RenderFlag<this, "refreshMeasurements">;
+
+    /**
+     * @defaultValue `{ propagate: ["refreshTooltip"], deprecated: { since: 14, until: 16 }, alias: true }`
+     * @deprecated "The RenderFlag "refreshElevation" of AmbientSound is deprecated in favor of refreshTooltip."
+     * (since v14, until v16)
+     */
     refreshElevation: RenderFlag<this, "refreshElevation">;
   }
 

@@ -1,5 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
@@ -26,5 +27,6 @@ test("foundry/client/documents/playlist", () => {
   expectTypeOf(playlist.cycleMode()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
   expectTypeOf(playlist.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(playlist.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf, test } from "vitest";
 import type { GetDataReturnType } from "fvtt-types/utils";
 
@@ -23,7 +24,6 @@ test("foundry/client/appv1/sheets/adventure-importer", () => {
   expectTypeOf(adventureImporter.adventure).toEqualTypeOf<Adventure.Implementation>();
   expectTypeOf(adventureImporter.isEditable).toEqualTypeOf<boolean>();
   expectTypeOf(
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     adventureImporter._importContent(importData.toCreate, importData.toUpdate, importData.documentCount),
   ).toEqualTypeOf<Promise<Adventure.ImportResult>>();
   expectTypeOf(contentList.field).toEqualTypeOf<keyof typeof foundry.documents.BaseAdventure.contentFields>();

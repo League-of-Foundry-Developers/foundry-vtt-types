@@ -25,6 +25,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @defaultValue `{}`
    * @remarks Created during construction via `defineProperty`, with options `{value: {}, writable: false, enumerable: false}`
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
@@ -33,6 +34,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
    * @internal
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   protected _sheet: Application.Any | DocumentSheetV2.Any | null;
 
   static name: "ClientDocumentMixin";
@@ -105,6 +107,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Lazily obtain an Application instance used to configure this Document, or null if no sheet is available.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   get sheet(): Application.Any | DocumentSheetV2.Any | null;
 
   /**
@@ -119,6 +122,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * but {@linkcode InternalClientDocument.sheet | #sheet} will return `null` if the found class does not extent either `Application` (v1)
    * or `DocumentSheetV2`, so that's the constraint used here
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   protected _getSheetClass(): Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined;
 
   /**
@@ -176,6 +180,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param force   - Force rendering (default: `false`)
    * @param context - Optional context (default: `{}`)
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   render(force?: boolean, context?: Application.RenderOptions | ApplicationV2.RenderOptions): void;
 
   /**
@@ -797,6 +802,7 @@ declare global {
     interface CreateDocumentLinkOptions extends InexactPartial<_CreateDocumentLinkOptions> {}
 
     /** The return type of {@linkcode ClientDocument._onClickDocumentLink | ClientDocument#_onClickDocumentLink} if not overridden */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     type OnClickDocumentLinkReturn = Application.Any | Promise<DocumentSheetV2.Any>;
 
     type ToCompendiumReturnType<

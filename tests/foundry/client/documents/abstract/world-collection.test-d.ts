@@ -3,6 +3,7 @@ import { afterAll, test, describe, expectTypeOf, expect } from "vitest";
 import WorldCollection = foundry.documents.abstract.WorldCollection;
 // Collection is a blessed global so doesn't need to be imported
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import sidebar = foundry.applications.sidebar;
@@ -38,6 +39,7 @@ describe("WorldCollection Tests", async () => {
     type: "base",
   }).toObject();
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const anyV1Sheet: Application.AnyConstructor = foundry.appv1.api.Application;
   const anyV2Sheet: DocumentSheetV2.AnyConstructor = foundry.applications.api.DocumentSheetV2;
 

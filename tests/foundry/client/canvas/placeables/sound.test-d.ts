@@ -17,7 +17,18 @@ test("foundry/client/canvas/placeables/sound", () => {
   expectTypeOf(AmbientSound.implementation).toEqualTypeOf<AmbientSound.ImplementationClass>();
   expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
   expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-    | Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshVisibility" | "refreshElevation">
+    | Array<
+        | "refresh"
+        | "refreshState"
+        | "refreshVisibility"
+        | "refreshTransform"
+        | "refreshPosition"
+        | "refreshSize"
+        | "refreshField"
+        | "refreshTooltip"
+        | "refreshMeasurements"
+        | "refreshElevation"
+      >
     | undefined
   >();
   const sound = new CONFIG.AmbientSound.objectClass(doc);
@@ -28,6 +39,15 @@ test("foundry/client/canvas/placeables/sound", () => {
   expectTypeOf(sound.field).toEqualTypeOf<PIXI.Graphics | undefined>();
   expectTypeOf(sound.controls).toEqualTypeOf<AmbientSoundShapeControls | undefined>();
   expectTypeOf(sound.tooltip).toEqualTypeOf<PreciseText | undefined>();
+
+  expectTypeOf(
+    sound.renderFlags.set({
+      refreshTransform: true,
+      refreshSize: true,
+      refreshTooltip: true,
+      refreshMeasurements: true,
+    }),
+  ).toBeVoid();
   expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
 
   expectTypeOf(sound.applyEffects()).toBeVoid();

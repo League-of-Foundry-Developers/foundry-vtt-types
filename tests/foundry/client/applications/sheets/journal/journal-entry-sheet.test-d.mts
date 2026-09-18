@@ -2,6 +2,7 @@ import { expectTypeOf, test } from "vitest";
 
 import JournalEntrySheet = foundry.applications.sheets.journal.JournalEntrySheet;
 import JournalEntryPageSheet = foundry.applications.sheets.journal.JournalEntryPageSheet;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import JournalPageSheet = foundry.appv1.sheets.JournalPageSheet;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import HandlebarsApplicationMixin = foundry.applications.api.HandlebarsApplicationMixin;
@@ -81,7 +82,9 @@ test("foundry/client/applications/sheets/journal/journal-entry-sheet", () => {
   expectTypeOf(sheet.createPageDialog()).toEqualTypeOf<Promise<JournalEntryPage.Stored | null | undefined>>();
 
   // V14 can return either an AppV2 page sheet or a legacy AppV1 one.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(sheet.getPageSheet(page)).toEqualTypeOf<JournalEntryPageSheet.Any | JournalPageSheet.Any>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(sheet.getPageSheet("someId")).toEqualTypeOf<JournalEntryPageSheet.Any | JournalPageSheet.Any>();
 
   expectTypeOf(sheet.goToPage("someId")).toEqualTypeOf<Promise<JournalEntrySheet> | void>();
@@ -135,9 +138,11 @@ test("foundry/client/applications/sheets/journal/journal-entry-sheet", () => {
   expectTypeOf(sheet["_onContextMenuOpen"](element)).toEqualTypeOf<void>();
   expectTypeOf(sheet["_onContextMenuClose"](element)).toEqualTypeOf<void>();
   expectTypeOf(sheet["_onEditPage"](pointerEvent, element)).toEqualTypeOf<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     Promise<ApplicationV2.Any> | JournalPageSheet.Any | void
   >();
   expectTypeOf(sheet["_onEditPage"](null, element)).toEqualTypeOf<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     Promise<ApplicationV2.Any> | JournalPageSheet.Any | void
   >();
   expectTypeOf(sheet["_onPageScroll"](observerEntries, observer)).toEqualTypeOf<void>();

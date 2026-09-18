@@ -102,6 +102,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    */
   static registerSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<ClientDocumentMixin.AnyMixedConstructor>,
   ): void;
@@ -118,6 +119,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    */
   static unregisterSheet(
     scope: string,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<ClientDocumentMixin.AnyMixedConstructor>,
   ): void;
@@ -125,6 +127,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
   /**
    * Return an array of currently registered sheet classes for this Document type.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   static get registeredSheets(): (Application.AnyConstructor | DocumentSheetV2.AnyConstructor)[];
 }
 

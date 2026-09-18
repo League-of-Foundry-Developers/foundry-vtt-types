@@ -2,6 +2,7 @@ import { expectTypeOf, assertType, test } from "vitest";
 import type { AnyConstructor, AnyFunction, DeepReadonly, NonNullish } from "fvtt-types/utils";
 import utils = foundry.utils;
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import FormApplication = foundry.appv1.api.FormApplication;
 
 declare function functionWithoutParameters(): void;
@@ -612,7 +613,9 @@ test("foundry/common/utils/helpers", () => {
 
   // Array merging
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   assertType<FormApplication.Options>(
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     utils.mergeObject(FormApplication.defaultOptions, {
       classes: ["my", "custom", "css"],
     }),

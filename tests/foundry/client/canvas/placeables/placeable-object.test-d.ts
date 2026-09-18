@@ -5,6 +5,7 @@ import Document = foundry.abstract.Document;
 import Canvas = foundry.canvas.Canvas;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import LightingLayer = foundry.canvas.layers.LightingLayer;
@@ -57,6 +58,7 @@ test("foundry/client/canvas/placeables/placeable-object", () => {
   expectTypeOf(placeable.hasPreview).toBeBoolean();
   expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Implementation>();
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(placeable.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
   expectTypeOf(placeable.controlled).toBeBoolean();

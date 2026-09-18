@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf, test } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type DocumentSheetV2 from "../../../../../src/foundry/client/applications/api/document-sheet.d.mts";

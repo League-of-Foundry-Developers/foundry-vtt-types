@@ -2,6 +2,7 @@ import type { EmptyObject } from "fvtt-types/utils";
 import { expectTypeOf, test } from "vitest";
 
 import Canvas = foundry.canvas.Canvas;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import FormApplication = foundry.appv1.api.FormApplication;
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
@@ -26,6 +27,7 @@ test("foundry/client/helpers/hooks", () => {
   // });
 
   Hooks.on("closeFormApplication", (app, jq) => {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(app).toEqualTypeOf<FormApplication.Any>();
     expectTypeOf(jq).toEqualTypeOf<JQuery>();
   });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject, MaybePromise } from "fvtt-types/utils";
 

@@ -6,6 +6,7 @@ import BaseSheet = foundry.applications.sheets.BaseSheet;
 import CardConfig = foundry.applications.sheets.CardConfig;
 import CombatantConfig = foundry.applications.sheets.CombatantConfig;
 import MacroConfig = foundry.applications.sheets.MacroConfig;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import MeasuredTemplateConfig = foundry.applications.sheets.MeasuredTemplateConfig;
 import PlaylistConfig = foundry.applications.sheets.PlaylistConfig;
 import PlaylistSoundConfig = foundry.applications.sheets.PlaylistSoundConfig;
@@ -25,6 +26,7 @@ declare const macroContext: MacroConfig.RenderContext;
 declare const macroRenderOptions: MacroConfig.RenderOptions;
 
 // MeasuredTemplateConfig
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const templateContext: MeasuredTemplateConfig.RenderContext;
 
 // PlaylistConfig
@@ -50,7 +52,9 @@ test("foundry/client/applications/sheets/misc-sheets", () => {
   expectTypeOf(macroContext.typeChoices).toEqualTypeOf<Record<CONST.MACRO_TYPES, string>>();
   expectTypeOf(macroContext.editorLang).toEqualTypeOf<"javascript" | "html">();
   expectTypeOf(macroRenderOptions.hotbarSlot).toEqualTypeOf<number | undefined>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(templateContext.templateTypes).toEqualTypeOf<MeasuredTemplateConfig.TemplateTypes>();
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(templateContext.units).toEqualTypeOf<MeasuredTemplateConfig.Units>();
   expectTypeOf(templateContext.userColor).toEqualTypeOf<Color>();
   expectTypeOf(playlistContext.modes).toEqualTypeOf<Record<CONST.PLAYLIST_MODES, string>>();
@@ -66,5 +70,6 @@ test("foundry/client/applications/sheets/misc-sheets", () => {
   expectTypeOf(resultContext.types).toEqualTypeOf<TableResultConfig.ResultTypeChoice[]>();
   expectTypeOf(resultContext.resultDocument).toEqualTypeOf<foundry.abstract.Document.Any | null>();
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(MeasuredTemplateConfig.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
 });

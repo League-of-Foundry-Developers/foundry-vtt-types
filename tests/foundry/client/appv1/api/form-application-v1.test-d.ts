@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { assertType, expectTypeOf, test } from "vitest";
 import type { AnyObject, GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 import type TextEditor from "../../../../../src/foundry/client/applications/ux/text-editor.mjs";
@@ -31,7 +32,6 @@ class ProtectedSurface extends FormApplication<{ foo: string }, FormApplication.
   testProtected(event: Event): void {
     // `_onSubmit` returns `false` when the form is not submittable, rather than partial form data.
     expectTypeOf(this._onSubmit(event)).toEqualTypeOf<Promise<AnyObject | false>>();
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(this._activateFilePicker(event as PointerEvent)).toEqualTypeOf<Promise<FilePicker>>();
 
     // `options` is optional and `remove` defaults to `true`.
