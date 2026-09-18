@@ -1,46 +1,7 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
-expectTypeOf(foundry.utils.cleanHTML("<p>foo")).toEqualTypeOf<string>();
-
-expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
-
 declare const file: File;
-expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
-
-expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
-expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
-
-expectTypeOf(foundry.utils.getPlaceableObjectClass("Token")).toEqualTypeOf<
-  foundry.canvas.placeables.Token.ImplementationClass | undefined
->();
-
-expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Stored | null>>;
-expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Stored | null>>;
-
-// This is actually incorrect but can't be easily fixed.
-// The issue is that as soon as a generic parameter is provided all other generic parameters use their
-// defaults and stop inferring. This means that `Uuid` is `string` and not validateable.
-expectTypeOf(fromUuid<Actor.Implementation>("Actor.uuid1.Item.uuid2")).toEqualTypeOf<
-  Promise<Actor.Implementation | null>
->;
-
-// @ts-expect-error This is an invalid Uuid.
-fromUuid("invalid");
-
-// @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
-// However the usual strategy of returning a union of possible uuids isn't possible here because
-// `Item.${string}` would erroneously allow it as a 'valid' uuid.
-fromUuid("Item.uuid1.Abc.uuid2");
-
-expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<Actor.Stored | AnyObject | null>;
-expectTypeOf(fromUuidSync("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Item.Stored | AnyObject | null>;
-
-// @ts-expect-error This is an invalid Uuid.
-fromUuidSync("invalid");
-
-// @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
-fromUuidSync("Item.uuid1.Abc.uuid2");
 
 interface SortingStructure {
   target: number;
@@ -50,26 +11,67 @@ interface SortingStructure {
 }
 
 declare const input: SortingStructure;
-expectTypeOf(foundry.utils.performIntegerSort(input, {})).toEqualTypeOf<
-  Array<{ target: SortingStructure; update: { sort: number } }>
->();
-expectTypeOf(
-  foundry.utils.performIntegerSort(input, {
-    target: null,
-    siblings: [input],
-    sortKey: "order",
-    sortBefore: undefined,
-  }),
-).toEqualTypeOf<Array<{ target: SortingStructure; update: { order: number } }>>();
 
-expectTypeOf(foundry.utils.timeSince(new Date())).toEqualTypeOf<string>();
-expectTypeOf(foundry.utils.timeSince("2026-01-01")).toEqualTypeOf<string>();
+test("foundry/client/utils/helpers", () => {
+  expectTypeOf(foundry.utils.cleanHTML("<p>foo")).toEqualTypeOf<string>();
 
-expectTypeOf(foundry.utils.parseHTML("<p>foo</p>")).toEqualTypeOf<HTMLCollection | HTMLElement | null>();
+  expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
+  expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>>();
 
-expectTypeOf(foundry.utils.getCacheBustURL("https://example.com/foo.png")).toEqualTypeOf<string | false>();
+  expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
+  expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
 
-expectTypeOf(foundry.utils.fetchResource("foo.png")).toEqualTypeOf<Promise<Blob>>();
-expectTypeOf(foundry.utils.fetchResource("foo.png", {})).toEqualTypeOf<Promise<Blob>>();
-expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: true })).toEqualTypeOf<Promise<Blob>>();
-expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: undefined })).toEqualTypeOf<Promise<Blob>>();
+  expectTypeOf(foundry.utils.getPlaceableObjectClass("Token")).toEqualTypeOf<
+    foundry.canvas.placeables.Token.ImplementationClass | undefined
+  >();
+
+  expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Stored | null>>;
+  expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Stored | null>>;
+
+  // This is actually incorrect but can't be easily fixed.
+  // The issue is that as soon as a generic parameter is provided all other generic parameters use their
+  // defaults and stop inferring. This means that `Uuid` is `string` and not validateable.
+  expectTypeOf(fromUuid<Actor.Implementation>("Actor.uuid1.Item.uuid2")).toEqualTypeOf<
+    Promise<Actor.Implementation | null>
+  >;
+
+  // @ts-expect-error This is an invalid Uuid.
+  fromUuid("invalid");
+
+  // @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
+  // However the usual strategy of returning a union of possible uuids isn't possible here because
+  // `Item.${string}` would erroneously allow it as a 'valid' uuid.
+  fromUuid("Item.uuid1.Abc.uuid2");
+
+  expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<Actor.Stored | AnyObject | null>;
+  expectTypeOf(fromUuidSync("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Item.Stored | AnyObject | null>;
+
+  // @ts-expect-error This is an invalid Uuid.
+  fromUuidSync("invalid");
+
+  // @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
+  fromUuidSync("Item.uuid1.Abc.uuid2");
+  expectTypeOf(foundry.utils.performIntegerSort(input, {})).toEqualTypeOf<
+    Array<{ target: SortingStructure; update: { sort: number } }>
+  >();
+  expectTypeOf(
+    foundry.utils.performIntegerSort(input, {
+      target: null,
+      siblings: [input],
+      sortKey: "order",
+      sortBefore: undefined,
+    }),
+  ).toEqualTypeOf<Array<{ target: SortingStructure; update: { order: number } }>>();
+
+  expectTypeOf(foundry.utils.timeSince(new Date())).toEqualTypeOf<string>();
+  expectTypeOf(foundry.utils.timeSince("2026-01-01")).toEqualTypeOf<string>();
+
+  expectTypeOf(foundry.utils.parseHTML("<p>foo</p>")).toEqualTypeOf<HTMLCollection | HTMLElement | null>();
+
+  expectTypeOf(foundry.utils.getCacheBustURL("https://example.com/foo.png")).toEqualTypeOf<string | false>();
+
+  expectTypeOf(foundry.utils.fetchResource("foo.png")).toEqualTypeOf<Promise<Blob>>();
+  expectTypeOf(foundry.utils.fetchResource("foo.png", {})).toEqualTypeOf<Promise<Blob>>();
+  expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: true })).toEqualTypeOf<Promise<Blob>>();
+  expectTypeOf(foundry.utils.fetchResource("foo.png", { bustCache: undefined })).toEqualTypeOf<Promise<Blob>>();
+});

@@ -1,61 +1,63 @@
 import type { EmptyObject } from "fvtt-types/utils";
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import Canvas = foundry.canvas.Canvas;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import FormApplication = foundry.appv1.api.FormApplication;
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
-expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Record<string, Hooks.HookedFunction[]>>();
-expectTypeOf(Hooks.on("ready", () => {})).toEqualTypeOf<number>();
-expectTypeOf(Hooks.once("ready", () => {})).toEqualTypeOf<number>();
-expectTypeOf(Hooks.off("ready", () => {})).toEqualTypeOf<void>();
-expectTypeOf(Hooks.callAll("ready")).toEqualTypeOf<true>();
-expectTypeOf(Hooks.call("ready")).toEqualTypeOf<boolean>();
-expectTypeOf(Hooks.onError("", new Error(""))).toEqualTypeOf<void>();
+test("foundry/client/helpers/hooks", () => {
+  expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Record<string, Hooks.HookedFunction[]>>();
+  expectTypeOf(Hooks.on("ready", () => {})).toEqualTypeOf<number>();
+  expectTypeOf(Hooks.once("ready", () => {})).toEqualTypeOf<number>();
+  expectTypeOf(Hooks.off("ready", () => {})).toEqualTypeOf<void>();
+  expectTypeOf(Hooks.callAll("ready")).toEqualTypeOf<true>();
+  expectTypeOf(Hooks.call("ready")).toEqualTypeOf<boolean>();
+  expectTypeOf(Hooks.onError("", new Error(""))).toEqualTypeOf<void>();
 
-Hooks.on("canvasInit", (canvas) => {
-  expectTypeOf(canvas).toEqualTypeOf<Canvas>();
-});
+  Hooks.on("canvasInit", (canvas) => {
+    expectTypeOf(canvas).toEqualTypeOf<Canvas>();
+  });
 
-// TODO: Clean up as part of revised hooks file
-// Hooks.on("fooBar", (baz, bar) => {
-//   expectTypeOf(baz).toEqualTypeOf<string>();
-//   expectTypeOf(bar).toEqualTypeOf<number>();
-//   return true;
-// });
+  // TODO: Clean up as part of revised hooks file
+  // Hooks.on("fooBar", (baz, bar) => {
+  //   expectTypeOf(baz).toEqualTypeOf<string>();
+  //   expectTypeOf(bar).toEqualTypeOf<number>();
+  //   return true;
+  // });
 
-Hooks.on("closeFormApplication", (app, jq) => {
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  expectTypeOf(app).toEqualTypeOf<FormApplication.Any>();
-  expectTypeOf(jq).toEqualTypeOf<JQuery>();
-});
+  Hooks.on("closeFormApplication", (app, jq) => {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(app).toEqualTypeOf<FormApplication.Any>();
+    expectTypeOf(jq).toEqualTypeOf<JQuery>();
+  });
 
-Hooks.on("error", (location, _err, data) => {
-  if (location === "Canvas#draw") expectTypeOf(data.layer).toEqualTypeOf<CanvasLayer>();
-  if (location === "Game#initializeCanvas") expectTypeOf(data).toEqualTypeOf<EmptyObject>();
-  if (location === "MyClass#myMethod") expectTypeOf(data.foo).toEqualTypeOf<number>();
-});
+  Hooks.on("error", (location, _err, data) => {
+    if (location === "Canvas#draw") expectTypeOf(data.layer).toEqualTypeOf<CanvasLayer>();
+    if (location === "Game#initializeCanvas") expectTypeOf(data).toEqualTypeOf<EmptyObject>();
+    if (location === "MyClass#myMethod") expectTypeOf(data.foo).toEqualTypeOf<number>();
+  });
 
-// Test for @peril_maelstrom on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1377367755338289223
-Hooks.on("deleteToken", (document, options) => {
-  expectTypeOf(document).toEqualTypeOf<TokenDocument.Implementation>();
-  expectTypeOf(options.parent).toEqualTypeOf<TokenDocument.Parent>();
-});
+  // Test for @peril_maelstrom on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1377367755338289223
+  Hooks.on("deleteToken", (document, options) => {
+    expectTypeOf(document).toEqualTypeOf<TokenDocument.Implementation>();
+    expectTypeOf(options.parent).toEqualTypeOf<TokenDocument.Parent>();
+  });
 
-Hooks.on("preCreateActiveEffect", (document, data, options) => {
-  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
-  expectTypeOf(data).toEqualTypeOf<ActiveEffect.CreateData>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreCreateOptions>();
-});
+  Hooks.on("preCreateActiveEffect", (document, data, options) => {
+    expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+    expectTypeOf(data).toEqualTypeOf<ActiveEffect.CreateData>();
+    expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreCreateOptions>();
+  });
 
-Hooks.on("preUpdateActiveEffect", (document, changed, options) => {
-  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
-  expectTypeOf(changed).toEqualTypeOf<ActiveEffect.UpdateData>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreUpdateOptions>();
-});
+  Hooks.on("preUpdateActiveEffect", (document, changed, options) => {
+    expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+    expectTypeOf(changed).toEqualTypeOf<ActiveEffect.UpdateData>();
+    expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreUpdateOptions>();
+  });
 
-Hooks.on("preDeleteActiveEffect", (document, options) => {
-  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreDeleteOptions>();
+  Hooks.on("preDeleteActiveEffect", (document, options) => {
+    expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+    expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreDeleteOptions>();
+  });
 });

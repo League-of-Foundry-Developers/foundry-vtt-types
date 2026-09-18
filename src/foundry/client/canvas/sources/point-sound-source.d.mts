@@ -83,7 +83,10 @@ declare class PointSoundSource<
    * Toggle playback of the Sound driven by this source, adjusting its volume and effects.
    * @param isAudible - Should the sound be playing?
    * @param volume    - The target playback volume
+   * @remarks `volume` can be omitted when stopping playback. It is required when the
+   * sound may be audible, since a playing sound passes it to {@linkcode Sound.fade | Sound#fade}.
    */
+  sync(isAudible: false, volume?: number, options?: PointSoundSource.SyncOptions): Promise<void>;
   sync(isAudible: boolean, volume: number, options?: PointSoundSource.SyncOptions): Promise<void>;
 
   #PointSoundSource: true;

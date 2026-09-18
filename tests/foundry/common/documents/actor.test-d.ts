@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyMutableObject, AnyObject, EmptyObject } from "fvtt-types/utils";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import fields = foundry.data.fields;
@@ -8,31 +8,6 @@ import SchemaField = fields.SchemaField;
 import TypeDataModel = foundry.abstract.TypeDataModel;
 
 type DataSchema = foundry.data.fields.DataSchema;
-
-// This exists to make the class non-abstract.
-class TestBaseActor extends foundry.documents.BaseActor {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Actor">)
-      : null;
-  }
-}
-
-// @ts-expect-error name and type are required
-new TestBaseActor();
-
-// @ts-expect-error name and type are required
-new TestBaseActor({});
-
-const baseActor = new TestBaseActor({ name: "foo", type: "character" });
-expectTypeOf(baseActor.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation>>();
-expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Stored | undefined>();
-expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
-expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Stored | undefined>();
-expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null>();
-expectTypeOf(baseActor._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
 
 /**
  * Data Model Integration
@@ -92,8 +67,6 @@ class MyCharacter extends TypeDataModel<MyCharacterSchema, Actor.Implementation>
 }
 
 declare const MyCharacterSystem: MyCharacter;
-
-expectTypeOf(MyCharacterSystem.abilities.strength.value).toEqualTypeOf<number>();
 
 type RequiredInteger = { required: true; nullable: false; integer: true };
 
@@ -249,12 +222,6 @@ class BoilerplateCharacter extends BoilerplateActorBase<
 
 declare const boilerplateCharacter: BoilerplateCharacter;
 
-// The class is assumed to have fully gone through initialization.
-// Therefore the derived properties are all available.
-expectTypeOf(boilerplateCharacter.abilities.strength.mod).toEqualTypeOf<number>();
-expectTypeOf(boilerplateCharacter.extra.deep.check.deepDerivedProp).toEqualTypeOf<number>();
-expectTypeOf(boilerplateCharacter.extra.deep.derived.prop).toEqualTypeOf<string>();
-
 declare global {
   interface DataModelConfig {
     Actor: {
@@ -278,3 +245,38 @@ declare global {
 //   expectTypeOf(baseActor.getFlag("my-module", "xp")).toEqualTypeOf<never>();
 // }
 // expectTypeOf(baseActor.documentName).toEqualTypeOf<"Actor">();
+
+test("foundry/common/documents/actor", () => {
+  // This exists to make the class non-abstract.
+  class TestBaseActor extends foundry.documents.BaseActor {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Actor">)
+        : null;
+    }
+  }
+
+  // @ts-expect-error name and type are required
+  new TestBaseActor();
+
+  // @ts-expect-error name and type are required
+  new TestBaseActor({});
+
+  const baseActor = new TestBaseActor({ name: "foo", type: "character" });
+  expectTypeOf(baseActor.name).toEqualTypeOf<string>();
+  expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation>>();
+  expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Stored | undefined>();
+  expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
+  expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
+  expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Stored | undefined>();
+  expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null>();
+  expectTypeOf(baseActor._source.effects[0]!.duration.value).toEqualTypeOf<number | null>();
+
+  expectTypeOf(MyCharacterSystem.abilities.strength.value).toEqualTypeOf<number>();
+
+  // The class is assumed to have fully gone through initialization.
+  // Therefore the derived properties are all available.
+  expectTypeOf(boilerplateCharacter.abilities.strength.mod).toEqualTypeOf<number>();
+  expectTypeOf(boilerplateCharacter.extra.deep.check.deepDerivedProp).toEqualTypeOf<number>();
+  expectTypeOf(boilerplateCharacter.extra.deep.derived.prop).toEqualTypeOf<string>();
+});

@@ -1,40 +1,42 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import fu = foundry.utils;
 
 import Canvas = foundry.canvas.Canvas;
 
-const a = { x: 0, y: 0 };
-const b = new PIXI.Point(0, 0);
-const c = { x: 0, y: 0 };
-const d = new PIXI.Point(0, 0);
+test("foundry/common/utils/geometry", () => {
+  const a = { x: 0, y: 0 };
+  const b = new PIXI.Point(0, 0);
+  const c = { x: 0, y: 0 };
+  const d = new PIXI.Point(0, 0);
 
-expectTypeOf(fu.orient2dFast(a, b, c)).toEqualTypeOf<number>();
+  expectTypeOf(fu.orient2dFast(a, b, c)).toEqualTypeOf<number>();
 
-expectTypeOf(fu.lineSegmentIntersects(a, b, c, d)).toEqualTypeOf<boolean>();
+  expectTypeOf(fu.lineSegmentIntersects(a, b, c, d)).toEqualTypeOf<boolean>();
 
-expectTypeOf(fu.lineLineIntersection(a, b, c, d)).toEqualTypeOf<fu.LineIntersection | null>();
-expectTypeOf(fu.lineLineIntersection(a, b, c, d, { t1: true })).toEqualTypeOf<fu.LineIntersection | null>();
-expectTypeOf(fu.lineLineIntersection(a, b, c, d, { t1: undefined })).toEqualTypeOf<fu.LineIntersection | null>();
+  expectTypeOf(fu.lineLineIntersection(a, b, c, d)).toEqualTypeOf<fu.LineIntersection | null>();
+  expectTypeOf(fu.lineLineIntersection(a, b, c, d, { t1: true })).toEqualTypeOf<fu.LineIntersection | null>();
+  expectTypeOf(fu.lineLineIntersection(a, b, c, d, { t1: undefined })).toEqualTypeOf<fu.LineIntersection | null>();
 
-expectTypeOf(fu.lineCircleIntersection(a, b, c, 0)).toEqualTypeOf<fu.LineCircleIntersection>();
+  expectTypeOf(fu.lineCircleIntersection(a, b, c, 0)).toEqualTypeOf<fu.LineCircleIntersection>();
 
-expectTypeOf(fu.closestPointToSegment(a, b, c)).toEqualTypeOf<Canvas.Point>();
+  expectTypeOf(fu.closestPointToSegment(a, b, c)).toEqualTypeOf<Canvas.Point>();
 
-expectTypeOf(fu.closestPointToPath(a, [b, d], true)).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(fu.closestPointToPath(b, [a, c], false)).toEqualTypeOf<Canvas.Point>();
+  expectTypeOf(fu.closestPointToPath(a, [b, d], true)).toEqualTypeOf<Canvas.Point>();
+  expectTypeOf(fu.closestPointToPath(b, [a, c], false)).toEqualTypeOf<Canvas.Point>();
 
-expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)).toEqualTypeOf<fu.LineCircleIntersectionPoints>();
-expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)[0]).toEqualTypeOf<fu.CircleIntersection | undefined>();
+  expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)).toEqualTypeOf<fu.LineCircleIntersectionPoints>();
+  expectTypeOf(fu.quadraticIntersection(a, b, c, 2, 2)[0]).toEqualTypeOf<fu.CircleIntersection | undefined>();
 
-const points = [
-  new PIXI.Point(0, 0),
-  new PIXI.Point(1, 0),
-  new PIXI.Point(1, 2),
-  new PIXI.Point(0, 3),
-] satisfies Canvas.Point[];
+  const points = [
+    new PIXI.Point(0, 0),
+    new PIXI.Point(1, 0),
+    new PIXI.Point(1, 2),
+    new PIXI.Point(0, 3),
+  ] satisfies Canvas.Point[];
 
-expectTypeOf(fu.polygonCentroid(points)).toExtend<Canvas.Point>();
+  expectTypeOf(fu.polygonCentroid(points)).toExtend<Canvas.Point>();
 
-expectTypeOf(fu.pathCircleIntersects(points, true, a, 1)).toEqualTypeOf<boolean>();
+  expectTypeOf(fu.pathCircleIntersects(points, true, a, 1)).toEqualTypeOf<boolean>();
 
-expectTypeOf(fu.circleCircleIntersects(1, 2, 3, 3, 2, 1)).toEqualTypeOf<boolean>();
+  expectTypeOf(fu.circleCircleIntersects(1, 2, 3, 3, 2, 1)).toEqualTypeOf<boolean>();
+});

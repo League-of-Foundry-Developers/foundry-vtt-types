@@ -1,11 +1,13 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-const stringTerm = new foundry.dice.terms.StringTerm({ term: "aaa" });
+test("foundry/client/dice/dice/string", () => {
+  const stringTerm = new foundry.dice.terms.StringTerm({ term: "aaa" });
 
-expectTypeOf(stringTerm.term).toEqualTypeOf<string>();
-expectTypeOf(stringTerm.expression).toEqualTypeOf<string>();
-expectTypeOf(stringTerm.total).toEqualTypeOf<string>();
-expectTypeOf(stringTerm.isDeterministic).toEqualTypeOf<boolean>();
-expectTypeOf(stringTerm.evaluate()).toEqualTypeOf<never>();
+  expectTypeOf(stringTerm.term).toEqualTypeOf<string>();
+  expectTypeOf(stringTerm.expression).toEqualTypeOf<string>();
+  expectTypeOf(stringTerm.total).toEqualTypeOf<string>();
+  expectTypeOf(stringTerm.isDeterministic).toEqualTypeOf<boolean>();
+  expectTypeOf(stringTerm.evaluate()).toEqualTypeOf<never>();
 
-expectTypeOf(foundry.dice.terms.StringTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<string[]>();
+  expectTypeOf(foundry.dice.terms.StringTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<string[]>();
+});

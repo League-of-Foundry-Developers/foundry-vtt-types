@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import Document = foundry.abstract.Document;
@@ -6,30 +6,32 @@ import FormDataExtended = foundry.applications.ux.FormDataExtended;
 
 declare const documentSheetV2: DocumentSheetV2<Document.Any>;
 
-expectTypeOf(documentSheetV2.document).toEqualTypeOf<Document.Any>();
-expectTypeOf(documentSheetV2.title).toEqualTypeOf<string>();
-expectTypeOf(documentSheetV2.isVisible).toEqualTypeOf<boolean>();
-expectTypeOf(documentSheetV2.isEditable).toEqualTypeOf<boolean>();
-
 declare const event: SubmitEvent;
 declare const form: HTMLFormElement;
 declare const formData: FormDataExtended;
 declare const submitData: DocumentSheetV2.SubmitData<Document.Any>;
-expectTypeOf(documentSheetV2["_processFormData"](event, form, formData)).toEqualTypeOf<
-  DocumentSheetV2.SubmitData<Document.Any>
->();
-expectTypeOf(documentSheetV2["_processSubmitData"](event, form, submitData)).toEqualTypeOf<
-  Promise<DocumentSheetV2.SubmitResult<Document.Any>>
->();
-expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf<DocumentSheetV2.SubmitData<Folder.Implementation>>().toEqualTypeOf<Folder.UpdateData>();
-expectTypeOf<DocumentSheetV2.SubmitOptions<Folder.Implementation>["updateData"]>().toEqualTypeOf<Folder.UpdateData>();
-expectTypeOf<DocumentSheetV2.ProcessSubmitOptions<Folder.Implementation>>().toEqualTypeOf<
-  Folder.Database.CreateDocumentsOperation | Folder.Database.UpdateOneDocumentOperation
->();
-expectTypeOf<Parameters<(typeof documentSheetV2)["_processSubmitData"]>[3]>().toEqualTypeOf<
-  DocumentSheetV2.ProcessSubmitOptions<Document.Any> | undefined
->();
+test("foundry/client/applications/api/document-sheet", () => {
+  expectTypeOf(documentSheetV2.document).toEqualTypeOf<Document.Any>();
+  expectTypeOf(documentSheetV2.title).toEqualTypeOf<string>();
+  expectTypeOf(documentSheetV2.isVisible).toEqualTypeOf<boolean>();
+  expectTypeOf(documentSheetV2.isEditable).toEqualTypeOf<boolean>();
+  expectTypeOf(documentSheetV2["_processFormData"](event, form, formData)).toEqualTypeOf<
+    DocumentSheetV2.SubmitData<Document.Any>
+  >();
+  expectTypeOf(documentSheetV2["_processSubmitData"](event, form, submitData)).toEqualTypeOf<
+    Promise<DocumentSheetV2.SubmitResult<Document.Any>>
+  >();
+  expectTypeOf(documentSheetV2.submit()).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
+  expectTypeOf<DocumentSheetV2.SubmitData<Folder.Implementation>>().toEqualTypeOf<Folder.UpdateData>();
+  expectTypeOf<DocumentSheetV2.SubmitOptions<Folder.Implementation>["updateData"]>().toEqualTypeOf<Folder.UpdateData>();
+  expectTypeOf<DocumentSheetV2.ProcessSubmitOptions<Folder.Implementation>>().toEqualTypeOf<
+    Folder.Database.CreateDocumentsOperation | Folder.Database.UpdateOneDocumentOperation
+  >();
+  expectTypeOf<Parameters<(typeof documentSheetV2)["_processSubmitData"]>[3]>().toEqualTypeOf<
+    DocumentSheetV2.ProcessSubmitOptions<Document.Any> | undefined
+  >();
+
+  expectTypeOf(DocumentSheetV2.DEFAULT_OPTIONS).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
+});

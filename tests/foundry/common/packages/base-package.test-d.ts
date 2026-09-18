@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
 // Import necessary as this is otherwise inaccessible.
@@ -9,189 +9,195 @@ import BaseFolder = foundry.documents.BaseFolder;
 import Module = foundry.packages.Module;
 import System = foundry.packages.System;
 
-const basePackage = new BasePackage({
-  id: "foobar",
-  title: "Test Package",
-});
-
-expectTypeOf(basePackage.availability).toEqualTypeOf<CONST.PACKAGE_AVAILABILITY_CODES>();
-expectTypeOf(basePackage.locked).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.owned).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.tags).toEqualTypeOf<string[]>();
-expectTypeOf(basePackage.type).toEqualTypeOf<CONST.PACKAGE_TYPES>();
-expectTypeOf(basePackage.unavailable).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage._unknownKeys).toEqualTypeOf<string[]>();
-expectTypeOf(basePackage.incompatibleWithCoreVersion).toEqualTypeOf<boolean>();
-
-new BasePackage({ id: "foobar", title: "Test Package" }, { installed: false });
-
 declare const modules: Collection<Module>;
-expectTypeOf(basePackage._testRequiredDependencies(modules)).toEqualTypeOf<Promise<boolean>>();
 
 declare const systems: Collection<System>;
-expectTypeOf(basePackage._testSupportedSystems(systems)).toEqualTypeOf<Promise<boolean>>();
-
-expectTypeOf(foundry.packages.BasePackage.type).toEqualTypeOf<CONST.PACKAGE_TYPES>();
 
 declare const availability: CONST.PACKAGE_AVAILABILITY_CODES;
-expectTypeOf(foundry.packages.BasePackage.isIncompatibleWithCoreVersion(availability)).toEqualTypeOf<boolean>();
-expectTypeOf(foundry.packages.BasePackage.collection).toEqualTypeOf<"worlds" | "systems" | "modules">();
-expectTypeOf(foundry.packages.BasePackage.defineSchema()).toEqualTypeOf<foundry.packages.BasePackage.Schema>();
 
-expectTypeOf(
-  // TODO: This shouldn't need to be `toObject`ed
-  foundry.packages.BasePackage.testAvailability(basePackage, {}),
-).toEqualTypeOf<CONST.PACKAGE_AVAILABILITY_CODES>();
+test("foundry/common/packages/base-package", () => {
+  const basePackage = new BasePackage({
+    id: "foobar",
+    title: "Test Package",
+  });
 
-const packageCompatibility = basePackage.relationships.systems.first()!.compatibility;
-expectTypeOf(
-  foundry.packages.BasePackage.testDependencyCompatibility(packageCompatibility, basePackage),
-).toEqualTypeOf<boolean>();
-expectTypeOf(foundry.packages.BasePackage.cleanData()).toEqualTypeOf<object>();
-expectTypeOf(foundry.packages.BasePackage.validateId("")).toEqualTypeOf<void>();
-expectTypeOf(foundry.packages.BasePackage.migrateData({})).toEqualTypeOf<object>();
-expectTypeOf(foundry.packages.BasePackage.migrateData({}, { migrate: true })).toEqualTypeOf<object>();
-expectTypeOf(foundry.packages.BasePackage.fromRemoteManifest("", { strict: true })).toEqualTypeOf<Promise<never>>();
+  expectTypeOf(basePackage.availability).toEqualTypeOf<CONST.PACKAGE_AVAILABILITY_CODES>();
+  expectTypeOf(basePackage.locked).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.owned).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.tags).toEqualTypeOf<string[]>();
+  expectTypeOf(basePackage.type).toEqualTypeOf<CONST.PACKAGE_TYPES>();
+  expectTypeOf(basePackage.unavailable).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage._unknownKeys).toEqualTypeOf<string[]>();
+  expectTypeOf(basePackage.incompatibleWithCoreVersion).toEqualTypeOf<boolean>();
 
-const packageCompendia: foundry.data.fields.SchemaField.InitializedData<{ ownership: CompendiumOwnershipField }> = {
-  ownership: {
-    ASSISTANT: "OBSERVER",
-    // @ts-expect-error Foobar is not a valid value
-    PLAYER: "foobar",
-  },
-};
+  new BasePackage({ id: "foobar", title: "Test Package" }, { installed: false });
+  expectTypeOf(basePackage._testRequiredDependencies(modules)).toEqualTypeOf<Promise<boolean>>();
+  expectTypeOf(basePackage._testSupportedSystems(systems)).toEqualTypeOf<Promise<boolean>>();
 
-expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
-  keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
->;
+  expectTypeOf(foundry.packages.BasePackage.type).toEqualTypeOf<CONST.PACKAGE_TYPES>();
+  expectTypeOf(foundry.packages.BasePackage.isIncompatibleWithCoreVersion(availability)).toEqualTypeOf<boolean>();
+  expectTypeOf(foundry.packages.BasePackage.collection).toEqualTypeOf<"worlds" | "systems" | "modules">();
+  expectTypeOf(foundry.packages.BasePackage.defineSchema()).toEqualTypeOf<foundry.packages.BasePackage.Schema>();
 
-expectTypeOf(basePackage.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.changelog).toEqualTypeOf<string | undefined>();
+  expectTypeOf(
+    // TODO: This shouldn't need to be `toObject`ed
+    foundry.packages.BasePackage.testAvailability(basePackage, {}),
+  ).toEqualTypeOf<CONST.PACKAGE_AVAILABILITY_CODES>();
 
-// Checking the sets
-expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined | null>();
-expectTypeOf(basePackage._source.authors[0]!.discord).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
+  const packageCompatibility = basePackage.relationships.systems.first()!.compatibility;
+  expectTypeOf(
+    foundry.packages.BasePackage.testDependencyCompatibility(packageCompatibility, basePackage),
+  ).toEqualTypeOf<boolean>();
+  expectTypeOf(foundry.packages.BasePackage.cleanData()).toEqualTypeOf<object>();
+  expectTypeOf(foundry.packages.BasePackage.validateId("")).toEqualTypeOf<void>();
+  expectTypeOf(foundry.packages.BasePackage.migrateData({})).toEqualTypeOf<object>();
+  expectTypeOf(foundry.packages.BasePackage.migrateData({}, { migrate: true })).toEqualTypeOf<object>();
+  expectTypeOf(foundry.packages.BasePackage.fromRemoteManifest("", { strict: true })).toEqualTypeOf<Promise<never>>();
 
-// Checking packFolders
-expectTypeOf(basePackage.packFolders.first()!.name).toEqualTypeOf<string>();
-expectTypeOf(
-  basePackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.name,
-).toEqualTypeOf<string>();
-// @ts-expect-error Folders property does not exist this deep
-basePackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders;
+  const packageCompendia: foundry.data.fields.SchemaField.InitializedData<{ ownership: CompendiumOwnershipField }> = {
+    ownership: {
+      ASSISTANT: "OBSERVER",
+      // @ts-expect-error Foobar is not a valid value
+      PLAYER: "foobar",
+    },
+  };
 
-// schema fields
-type OptionalString = string | undefined;
-expectTypeOf(basePackage.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.title).toEqualTypeOf<string>();
-expectTypeOf(basePackage.description).toEqualTypeOf<string>();
+  expectTypeOf(packageCompendia.ownership.ASSISTANT).toEqualTypeOf<
+    keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
+  >;
 
-expectTypeOf(basePackage.authors.first()!.name).toEqualTypeOf<string>();
-expectTypeOf(basePackage.authors.first()!.email).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.authors.first()!.url).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.authors.first()!.discord).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.authors.first()!.flags).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(basePackage.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.changelog).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.url).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.license).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.readme).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.bugs).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.changelog).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.flags.canUpload).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(basePackage.flags.compendiumArtMappings).toEqualTypeOf<
-  Record<string, BasePackage.Flags.CompendiumArtFlag> | undefined
->();
-expectTypeOf(basePackage.flags.hotReload).toEqualTypeOf<BasePackage.Flags.HotReloadConfig | undefined>();
-expectTypeOf(basePackage.flags.tokenRingSubjectMappings).toEqualTypeOf<Record<string, string> | undefined>();
+  // Checking the sets
+  expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined | null>();
+  expectTypeOf(basePackage._source.authors[0]!.discord).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
 
-expectTypeOf(basePackage.media.first()!.type).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.media.first()!.url).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.media.first()!.caption).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.media.first()!.loop).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.media.first()!.thumbnail).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.media.first()!.flags).toEqualTypeOf<AnyMutableObject>();
+  // Checking packFolders
+  expectTypeOf(basePackage.packFolders.first()!.name).toEqualTypeOf<string>();
+  expectTypeOf(
+    basePackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.name,
+  ).toEqualTypeOf<string>();
+  // @ts-expect-error Folders property does not exist this deep
+  basePackage.packFolders.first()!.folders.first()!.folders.first()!.folders.first()!.folders;
 
-expectTypeOf(basePackage.version).toEqualTypeOf<string | null>();
+  // schema fields
+  type OptionalString = string | undefined;
+  expectTypeOf(basePackage.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.title).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.description).toEqualTypeOf<string>();
 
-expectTypeOf(basePackage.compatibility.minimum).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.compatibility.verified).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.compatibility.maximum).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.authors.first()!.name).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.authors.first()!.email).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.authors.first()!.url).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.authors.first()!.discord).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.authors.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
-expectTypeOf(basePackage.scripts).toEqualTypeOf<Set<string>>();
-expectTypeOf(basePackage.esmodules).toEqualTypeOf<Set<string>>();
-expectTypeOf(basePackage.styles).toEqualTypeOf<BasePackage.StylesData[]>();
-expectTypeOf(basePackage.styles[0]!.layer).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(basePackage.styles[0]!.src).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.url).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.license).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.readme).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.bugs).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.changelog).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.flags.canUpload).toEqualTypeOf<boolean | undefined>();
+  expectTypeOf(basePackage.flags.compendiumArtMappings).toEqualTypeOf<
+    Record<string, BasePackage.Flags.CompendiumArtFlag> | undefined
+  >();
+  expectTypeOf(basePackage.flags.hotReload).toEqualTypeOf<BasePackage.Flags.HotReloadConfig | undefined>();
+  expectTypeOf(basePackage.flags.tokenRingSubjectMappings).toEqualTypeOf<Record<string, string> | undefined>();
 
-expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
-expectTypeOf(basePackage.languages.first()!.name).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.languages.first()!.path).toEqualTypeOf<string>();
-expectTypeOf(basePackage.languages.first()!.system).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.languages.first()!.module).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.languages.first()!.flags).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(basePackage.media.first()!.type).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.media.first()!.url).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.media.first()!.caption).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.media.first()!.loop).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.media.first()!.thumbnail).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.media.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
-expectTypeOf(basePackage.packs.first()!.name).toEqualTypeOf<string>();
-expectTypeOf(basePackage.packs.first()!.label).toEqualTypeOf<string>();
-expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString | null>();
-expectTypeOf(basePackage.packs.first()!.path).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.packs.first()!.type).toEqualTypeOf<CONST.COMPENDIUM_DOCUMENT_TYPES>();
+  expectTypeOf(basePackage.version).toEqualTypeOf<string | null>();
 
-expectTypeOf(basePackage.packFolders.first()!.name).toEqualTypeOf<string>();
-expectTypeOf(basePackage.packFolders.first()!.sorting).toEqualTypeOf<
-  (typeof BaseFolder.SORTING_MODES)[number] | undefined
->();
-expectTypeOf(basePackage.packFolders.first()!.color).toEqualTypeOf<Color | null>();
+  expectTypeOf(basePackage.compatibility.minimum).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.compatibility.verified).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.compatibility.maximum).toEqualTypeOf<OptionalString>();
 
-expectTypeOf(basePackage.packFolders.first()!.packs).toEqualTypeOf<Set<string>>();
+  expectTypeOf(basePackage.scripts).toEqualTypeOf<Set<string>>();
+  expectTypeOf(basePackage.esmodules).toEqualTypeOf<Set<string>>();
+  expectTypeOf(basePackage.styles).toEqualTypeOf<BasePackage.StylesData[]>();
+  expectTypeOf(basePackage.styles[0]!.layer).toEqualTypeOf<string | null | undefined>();
+  expectTypeOf(basePackage.styles[0]!.src).toEqualTypeOf<string>();
 
-expectTypeOf(basePackage.relationships.systems.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships.systems.first()!.type).toEqualTypeOf<"system">();
-expectTypeOf(basePackage.relationships.systems.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.systems.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.systems.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.systems.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.languages.first()!.name).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.languages.first()!.path).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.languages.first()!.system).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.languages.first()!.module).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.languages.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
-expectTypeOf(basePackage.relationships.requires.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships.requires.first()!.type).toEqualTypeOf<(typeof CONST.PACKAGE_TYPES)[number]>();
-expectTypeOf(basePackage.relationships.requires.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.requires.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.requires.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.requires.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.requires.first()!.reason).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.packs.first()!.name).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.packs.first()!.label).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString | null>();
+  expectTypeOf(basePackage.packs.first()!.path).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.packs.first()!.type).toEqualTypeOf<CONST.COMPENDIUM_DOCUMENT_TYPES>();
 
-expectTypeOf(basePackage.relationships.recommends.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships.recommends.first()!.type).toEqualTypeOf<(typeof CONST.PACKAGE_TYPES)[number]>();
-expectTypeOf(basePackage.relationships.recommends.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.recommends.first()!.reason).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.packFolders.first()!.name).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.packFolders.first()!.sorting).toEqualTypeOf<
+    (typeof BaseFolder.SORTING_MODES)[number] | undefined
+  >();
+  expectTypeOf(basePackage.packFolders.first()!.color).toEqualTypeOf<Color | null>();
 
-expectTypeOf(basePackage.relationships.conflicts.first()!.id).toEqualTypeOf<string>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.type).toEqualTypeOf<(typeof CONST.PACKAGE_TYPES)[number]>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.relationships.conflicts.first()!.reason).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.packFolders.first()!.packs).toEqualTypeOf<Set<string>>();
 
-expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(basePackage.relationships.systems.first()!.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.relationships.systems.first()!.type).toEqualTypeOf<"system">();
+  expectTypeOf(basePackage.relationships.systems.first()!.manifest).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.systems.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.systems.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.systems.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.requires.first()!.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.relationships.requires.first()!.type).toEqualTypeOf<(typeof CONST.PACKAGE_TYPES)[number]>();
+  expectTypeOf(basePackage.relationships.requires.first()!.manifest).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.requires.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.requires.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.requires.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.requires.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.socket).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.manifest).toEqualTypeOf<string | undefined>();
-expectTypeOf(basePackage.download).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.protected).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.persistentStorage).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.relationships.recommends.first()!.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.relationships.recommends.first()!.type).toEqualTypeOf<
+    (typeof CONST.PACKAGE_TYPES)[number]
+  >();
+  expectTypeOf(basePackage.relationships.recommends.first()!.manifest).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.verified).toEqualTypeOf<
+    string | undefined
+  >();
+  expectTypeOf(basePackage.relationships.recommends.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.recommends.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.compatibilityList).toEqualTypeOf<BasePackage.CompatibilitySegment[]>();
-expectTypeOf(basePackage.compatibilityList[0]!.from).toEqualTypeOf<string>();
-expectTypeOf(basePackage.compatibilityList[0]!.to).toEqualTypeOf<string | null>();
-expectTypeOf(basePackage.compatibilityList[0]!.verified).toEqualTypeOf<string | null>();
-expectTypeOf(basePackage.compatibilityList[0]!.version).toEqualTypeOf<string>();
-expectTypeOf(basePackage.compatibilityList[0]!.manifest).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.id).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.type).toEqualTypeOf<(typeof CONST.PACKAGE_TYPES)[number]>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.manifest).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.minimum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.verified).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.relationships.conflicts.first()!.reason).toEqualTypeOf<string | undefined>();
+
+  expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyMutableObject>();
+
+  expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
+
+  expectTypeOf(basePackage.socket).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.manifest).toEqualTypeOf<string | undefined>();
+  expectTypeOf(basePackage.download).toEqualTypeOf<OptionalString>();
+  expectTypeOf(basePackage.protected).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();
+  expectTypeOf(basePackage.persistentStorage).toEqualTypeOf<boolean>();
+
+  expectTypeOf(basePackage.compatibilityList).toEqualTypeOf<BasePackage.CompatibilitySegment[]>();
+  expectTypeOf(basePackage.compatibilityList[0]!.from).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.compatibilityList[0]!.to).toEqualTypeOf<string | null>();
+  expectTypeOf(basePackage.compatibilityList[0]!.verified).toEqualTypeOf<string | null>();
+  expectTypeOf(basePackage.compatibilityList[0]!.version).toEqualTypeOf<string>();
+  expectTypeOf(basePackage.compatibilityList[0]!.manifest).toEqualTypeOf<string>();
+});

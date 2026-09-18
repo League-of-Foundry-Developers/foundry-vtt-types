@@ -1,16 +1,18 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import BaseSamplerShader = foundry.canvas.rendering.shaders.BaseSamplerShader;
 
-const myBSS = BaseSamplerShader.create();
-expectTypeOf(myBSS).toEqualTypeOf<BaseSamplerShader>();
+test("foundry/client/canvas/rendering/shaders/samplers/base-sampler", () => {
+  const myBSS = BaseSamplerShader.create();
+  expectTypeOf(myBSS).toEqualTypeOf<BaseSamplerShader>();
 
-expectTypeOf(BaseSamplerShader.pausable).toEqualTypeOf<boolean>();
-expectTypeOf(BaseSamplerShader.classPluginName).toEqualTypeOf<string | null>();
-expectTypeOf(BaseSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
-expectTypeOf(BaseSamplerShader.batchVertexShader).toEqualTypeOf<string>();
-expectTypeOf(BaseSamplerShader.batchFragmentShader).toEqualTypeOf<string>();
-// TODO: I'd like to test `.createPlugin` but the BatchPlugin magic isn't exported
+  expectTypeOf(BaseSamplerShader.pausable).toEqualTypeOf<boolean>();
+  expectTypeOf(BaseSamplerShader.classPluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(BaseSamplerShader.registerPlugin({ force: true })).toEqualTypeOf<void>();
+  expectTypeOf(BaseSamplerShader.batchVertexShader).toEqualTypeOf<string>();
+  expectTypeOf(BaseSamplerShader.batchFragmentShader).toEqualTypeOf<string>();
+  // TODO: I'd like to test `.createPlugin` but the BatchPlugin magic isn't exported
 
-expectTypeOf(myBSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myBSS.pluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(myBSS.paused).toEqualTypeOf<boolean>;
+  expectTypeOf(myBSS.pluginName).toEqualTypeOf<string | null>();
+});

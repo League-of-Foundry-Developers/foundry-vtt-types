@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import CachedContainer = foundry.canvas.containers.CachedContainer;
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
@@ -7,23 +7,25 @@ import DarknessLevelContainer = foundry.canvas.layers.DarknessLevelContainer;
 import SpriteMesh = foundry.canvas.containers.SpriteMesh;
 import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 
-const layer = new CanvasIlluminationEffects();
+test("foundry/client/canvas/layers/effects/illumination-effects", () => {
+  const layer = new CanvasIlluminationEffects();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<CanvasLayer.AnyConstructor>();
+  expectTypeOf(layer.options.baseClass).toEqualTypeOf<CanvasLayer.AnyConstructor>();
 
-expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.Implementation | undefined>();
-expectTypeOf(layer.lights).toEqualTypeOf<PIXI.Container>();
-expectTypeOf(layer.baselineMesh).toEqualTypeOf<SpriteMesh>();
-expectTypeOf(layer.darknessLevelMeshes).toEqualTypeOf<DarknessLevelContainer>();
+  expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.Implementation | undefined>();
+  expectTypeOf(layer.lights).toEqualTypeOf<PIXI.Container>();
+  expectTypeOf(layer.baselineMesh).toEqualTypeOf<SpriteMesh>();
+  expectTypeOf(layer.darknessLevelMeshes).toEqualTypeOf<DarknessLevelContainer>();
 
-expectTypeOf(layer.hasDynamicDarknessLevel).toBeBoolean();
-expectTypeOf(layer.renderTexture).toEqualTypeOf<PIXI.RenderTexture>();
+  expectTypeOf(layer.hasDynamicDarknessLevel).toBeBoolean();
+  expectTypeOf(layer.renderTexture).toEqualTypeOf<PIXI.RenderTexture>();
 
-expectTypeOf(layer.clear()).toBeVoid();
-expectTypeOf(layer.invalidateDarknessLevelContainer(true)).toBeVoid();
+  expectTypeOf(layer.clear()).toBeVoid();
+  expectTypeOf(layer.invalidateDarknessLevelContainer(true)).toBeVoid();
 
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasIlluminationEffects>>();
-expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasIlluminationEffects>>();
+  expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-// Literally no instance changes to test on DLC
-expectTypeOf(DarknessLevelContainer.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
+  // Literally no instance changes to test on DLC
+  expectTypeOf(DarknessLevelContainer.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
+});

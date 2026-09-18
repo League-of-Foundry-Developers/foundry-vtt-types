@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import { Schema } from "prosemirror-model";
 import { Plugin, PluginKey } from "prosemirror-state";
 import type { AnyObject } from "fvtt-types/utils";
@@ -9,9 +9,11 @@ declare class MyPlugin extends foundry.prosemirror.ProseMirrorPlugin {
   static override build(schema: Schema, options: AnyObject): Plugin;
 }
 
-const plugin = new MyPlugin(schema);
+test("foundry/common/prosemirror/plugin", () => {
+  const plugin = new MyPlugin(schema);
 
-expectTypeOf(plugin.schema).toEqualTypeOf<Schema>();
+  expectTypeOf(plugin.schema).toEqualTypeOf<Schema>();
 
-expectTypeOf(MyPlugin.build(schema, {})).toEqualTypeOf<Plugin>();
-expectTypeOf(MyPlugin.key).toEqualTypeOf<PluginKey>();
+  expectTypeOf(MyPlugin.build(schema, {})).toEqualTypeOf<Plugin>();
+  expectTypeOf(MyPlugin.key).toEqualTypeOf<PluginKey>();
+});

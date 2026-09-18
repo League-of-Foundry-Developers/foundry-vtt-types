@@ -1,25 +1,27 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-// This exists to make the class non-abstract.
-class TestBaseCombat extends foundry.documents.BaseCombat {
-  get compendium() {
-    return this.inCompendium
-      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Combat">)
-      : null;
+test("foundry/common/documents/combat", async () => {
+  // This exists to make the class non-abstract.
+  class TestBaseCombat extends foundry.documents.BaseCombat {
+    get compendium() {
+      return this.inCompendium
+        ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Combat">)
+        : null;
+    }
   }
-}
 
-expectTypeOf(TestBaseCombat.create({ scene: "foo", active: true, sort: 1 })).toEqualTypeOf<
-  Promise<Combat.Stored | undefined>
->();
-expectTypeOf(TestBaseCombat.createDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
-expectTypeOf(TestBaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
-expectTypeOf(TestBaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
-
-const combat = await TestBaseCombat.create({ scene: "foo", active: true });
-if (combat) {
-  expectTypeOf(combat).toEqualTypeOf<Combat.Stored>();
-  expectTypeOf(combat.collections.combatants).toEqualTypeOf<
-    foundry.abstract.EmbeddedCollection<Combatant.Stored, Combat.Implementation>
+  expectTypeOf(TestBaseCombat.create({ scene: "foo", active: true, sort: 1 })).toEqualTypeOf<
+    Promise<Combat.Stored | undefined>
   >();
-}
+  expectTypeOf(TestBaseCombat.createDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
+  expectTypeOf(TestBaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
+  expectTypeOf(TestBaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
+
+  const combat = await TestBaseCombat.create({ scene: "foo", active: true });
+  if (combat) {
+    expectTypeOf(combat).toEqualTypeOf<Combat.Stored>();
+    expectTypeOf(combat.collections.combatants).toEqualTypeOf<
+      foundry.abstract.EmbeddedCollection<Combatant.Stored, Combat.Implementation>
+    >();
+  }
+});

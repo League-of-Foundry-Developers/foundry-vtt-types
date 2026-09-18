@@ -1,9 +1,11 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import VisionMaskFilter = foundry.canvas.rendering.filters.VisionMaskFilter;
 
-const myVMF = VisionMaskFilter.create();
-expectTypeOf(myVMF).toEqualTypeOf<VisionMaskFilter>();
+test("foundry/client/canvas/rendering/filters/vision-mask-filter", () => {
+  const myVMF = VisionMaskFilter.create();
+  expectTypeOf(myVMF).toEqualTypeOf<VisionMaskFilter>();
 
-expectTypeOf(myVMF.suppressed).toEqualTypeOf<boolean>();
-expectTypeOf(myVMF.enabled).toEqualTypeOf<boolean>();
+  expectTypeOf(myVMF.suppressed).toEqualTypeOf<boolean>();
+  expectTypeOf(myVMF.enabled).toEqualTypeOf<boolean>();
+});

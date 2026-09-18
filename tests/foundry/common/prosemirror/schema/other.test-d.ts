@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import {
   dl,
   dl_group,
@@ -22,40 +22,42 @@ import {
 } from "../../../../../src/foundry/common/prosemirror/schema/other.mts";
 import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(dl).toEqualTypeOf<NodeSpec>();
+test("foundry/common/prosemirror/schema/other", () => {
+  expectTypeOf(dl).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dl_group).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(dl_group).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dt).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(dt).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dd).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(dd).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(fieldset).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(fieldset).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(legend).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(legend).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(picture).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(picture).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(audio).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(audio).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(video).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(video).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(track).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(track).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(source).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(source).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(object).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(object).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(figure).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(figure).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(figcaption).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(figcaption).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(small).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(small).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(ruby).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(ruby).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(rp).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(rp).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(rt).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(rt).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(iframe).toEqualTypeOf<NodeSpec>();
+  expectTypeOf(iframe).toEqualTypeOf<NodeSpec>();
+});

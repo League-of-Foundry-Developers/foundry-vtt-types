@@ -1,32 +1,35 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject, MaybePromise } from "fvtt-types/utils";
 
 import ActorSheet = foundry.appv1.sheets.ActorSheet;
 
 declare const actor: Actor.Implementation;
-const actorSheet = new ActorSheet(actor);
 
-expectTypeOf(actorSheet.object).toEqualTypeOf<Actor.Implementation>();
-expectTypeOf(actorSheet.document).toEqualTypeOf<Actor.Implementation>();
-expectTypeOf(ActorSheet.defaultOptions).toEqualTypeOf<ActorSheet.Options>();
-expectTypeOf(actorSheet.options).toEqualTypeOf<ActorSheet.Options>();
-expectTypeOf(actorSheet.getData()).toEqualTypeOf<MaybePromise<object>>();
-expectTypeOf(actorSheet.render(true)).toEqualTypeOf<ActorSheet>();
+test("foundry/client/appv1/sheets/actor-sheet", () => {
+  const actorSheet = new ActorSheet(actor);
 
-expectTypeOf(actorSheet.actor).toEqualTypeOf<Actor.Implementation>();
-expectTypeOf(actorSheet.token).toEqualTypeOf<TokenDocument.Implementation | null>();
-expectTypeOf(actorSheet.options.token).toEqualTypeOf<TokenDocument.Implementation | null>();
+  expectTypeOf(actorSheet.object).toEqualTypeOf<Actor.Implementation>();
+  expectTypeOf(actorSheet.document).toEqualTypeOf<Actor.Implementation>();
+  expectTypeOf(ActorSheet.defaultOptions).toEqualTypeOf<ActorSheet.Options>();
+  expectTypeOf(actorSheet.options).toEqualTypeOf<ActorSheet.Options>();
+  expectTypeOf(actorSheet.getData()).toEqualTypeOf<MaybePromise<object>>();
+  expectTypeOf(actorSheet.render(true)).toEqualTypeOf<ActorSheet>();
 
-class CustomActorSheet extends ActorSheet {
-  testProtected(event: DragEvent, itemData: Item.Implementation["_source"]): void {
-    expectTypeOf(this._onDrop(event)).toEqualTypeOf<Promise<unknown>>();
+  expectTypeOf(actorSheet.actor).toEqualTypeOf<Actor.Implementation>();
+  expectTypeOf(actorSheet.token).toEqualTypeOf<TokenDocument.Implementation | null>();
+  expectTypeOf(actorSheet.options.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 
-    // V14 passes the concluding DragEvent as a second argument.
-    expectTypeOf(this._onDropItemCreate(itemData, event)).toEqualTypeOf<Promise<Item.Implementation[]>>();
-    expectTypeOf(this._onDropItemCreate([itemData], event)).toEqualTypeOf<Promise<Item.Implementation[]>>();
+  class CustomActorSheet extends ActorSheet {
+    testProtected(event: DragEvent, itemData: Item.Implementation["_source"]): void {
+      expectTypeOf(this._onDrop(event)).toEqualTypeOf<Promise<unknown>>();
 
-    expectTypeOf(this._getSubmitData()).toEqualTypeOf<AnyObject>();
+      // V14 passes the concluding DragEvent as a second argument.
+      expectTypeOf(this._onDropItemCreate(itemData, event)).toEqualTypeOf<Promise<Item.Implementation[]>>();
+      expectTypeOf(this._onDropItemCreate([itemData], event)).toEqualTypeOf<Promise<Item.Implementation[]>>();
+
+      expectTypeOf(this._getSubmitData()).toEqualTypeOf<AnyObject>();
+    }
   }
-}
-void CustomActorSheet;
+  void CustomActorSheet;
+});

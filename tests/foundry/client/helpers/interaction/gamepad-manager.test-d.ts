@@ -1,9 +1,11 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import GamepadManager = foundry.helpers.interaction.GamepadManager;
 
-expectTypeOf(GamepadManager.GAMEPAD_POLLER_INTERVAL_MS).toEqualTypeOf<number>();
+test("foundry/client/helpers/interaction/gamepad-manager", () => {
+  expectTypeOf(GamepadManager.GAMEPAD_POLLER_INTERVAL_MS).toEqualTypeOf<number>();
 
-const gamepadManager = new GamepadManager();
+  const gamepadManager = new GamepadManager();
 
-expectTypeOf(gamepadManager["_activateListeners"]()).toBeVoid();
+  expectTypeOf(gamepadManager["_activateListeners"]()).toBeVoid();
+});

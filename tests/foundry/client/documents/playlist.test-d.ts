@@ -1,30 +1,32 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
-// @ts-expect-error A Playlist requires name.
-new Playlist.implementation();
-
-// @ts-expect-error A Playlist requires name.
-new Playlist.implementation({});
-
-const playlist = new Playlist.implementation({ name: "Some Playlist" });
-expectTypeOf(playlist).toEqualTypeOf<Playlist.Implementation>();
-
 declare const playlistSound: PlaylistSound.Stored;
 
-expectTypeOf(playlist.playbackOrder).toEqualTypeOf<string[]>();
-expectTypeOf(playlist.visible).toEqualTypeOf<boolean>();
-expectTypeOf(playlist.prepareDerivedData()).toEqualTypeOf<void>();
-expectTypeOf(playlist.playAll()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
-expectTypeOf(playlist.playNext()).toEqualTypeOf<Promise<Playlist.Implementation | undefined | null>>();
-expectTypeOf(playlist.playSound(playlistSound)).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
-expectTypeOf(playlist.stopSound(playlistSound)).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
-expectTypeOf(playlist.stopAll()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
-expectTypeOf(playlist.cycleMode()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
-expectTypeOf(playlist.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
+test("foundry/client/documents/playlist", () => {
+  // @ts-expect-error A Playlist requires name.
+  new Playlist.implementation();
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(playlist.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
+  // @ts-expect-error A Playlist requires name.
+  new Playlist.implementation({});
+
+  const playlist = new Playlist.implementation({ name: "Some Playlist" });
+  expectTypeOf(playlist).toEqualTypeOf<Playlist.Implementation>();
+
+  expectTypeOf(playlist.playbackOrder).toEqualTypeOf<string[]>();
+  expectTypeOf(playlist.visible).toEqualTypeOf<boolean>();
+  expectTypeOf(playlist.prepareDerivedData()).toEqualTypeOf<void>();
+  expectTypeOf(playlist.playAll()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
+  expectTypeOf(playlist.playNext()).toEqualTypeOf<Promise<Playlist.Implementation | undefined | null>>();
+  expectTypeOf(playlist.playSound(playlistSound)).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
+  expectTypeOf(playlist.stopSound(playlistSound)).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
+  expectTypeOf(playlist.stopAll()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
+  expectTypeOf(playlist.cycleMode()).toEqualTypeOf<Promise<Playlist.Implementation | undefined>>();
+  expectTypeOf(playlist.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
+
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  expectTypeOf(playlist.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
+});
