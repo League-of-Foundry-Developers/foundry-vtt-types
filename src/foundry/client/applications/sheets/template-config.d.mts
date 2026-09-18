@@ -13,7 +13,6 @@ declare module "#configuration" {
 }
 
 /**
- * The Application responsible for configuring a single MeasuredTemplate document within a parent Scene.
  * @deprecated "MeasuredTemplateConfig is deprecated because the MeasuredTemplate document has been merged into the
  * functionality of the Region document." (since v14, until v16)
  */
