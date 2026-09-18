@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ElevatedSurfaceExposureGenerator = foundry.canvas.geometry.ElevatedSurfaceExposureGenerator;
 import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
@@ -6,20 +6,22 @@ import PolygonTree = foundry.data.PolygonTree;
 
 declare const somePolygon: PointSourcePolygon.Any;
 
-new ElevatedSurfaceExposureGenerator(somePolygon);
-new ElevatedSurfaceExposureGenerator(somePolygon, {});
-new ElevatedSurfaceExposureGenerator(somePolygon, { threshold: undefined });
-const generator = new ElevatedSurfaceExposureGenerator(somePolygon, { threshold: 5 });
+test("foundry/client/canvas/geometry/shapes/elevated-surface-exposure-polygon", () => {
+  new ElevatedSurfaceExposureGenerator(somePolygon);
+  new ElevatedSurfaceExposureGenerator(somePolygon, {});
+  new ElevatedSurfaceExposureGenerator(somePolygon, { threshold: undefined });
+  const generator = new ElevatedSurfaceExposureGenerator(somePolygon, { threshold: 5 });
 
-// @ts-expect-error a source polygon is required
-new ElevatedSurfaceExposureGenerator();
+  // @ts-expect-error a source polygon is required
+  new ElevatedSurfaceExposureGenerator();
 
-expectTypeOf(generator.polygon).toEqualTypeOf<PointSourcePolygon.Any>();
-expectTypeOf(generator.threshold).toBeNumber();
-expectTypeOf(generator.result).toEqualTypeOf<PolygonTree | null>();
-expectTypeOf(generator.compute()).toEqualTypeOf<PolygonTree | null>();
+  expectTypeOf(generator.polygon).toEqualTypeOf<PointSourcePolygon.Any>();
+  expectTypeOf(generator.threshold).toBeNumber();
+  expectTypeOf(generator.result).toEqualTypeOf<PolygonTree | null>();
+  expectTypeOf(generator.compute()).toEqualTypeOf<PolygonTree | null>();
 
-expectTypeOf(ElevatedSurfaceExposureGenerator.compute(somePolygon)).toEqualTypeOf<PolygonTree | null>();
-expectTypeOf(
-  ElevatedSurfaceExposureGenerator.compute(somePolygon, { threshold: 10 }),
-).toEqualTypeOf<PolygonTree | null>();
+  expectTypeOf(ElevatedSurfaceExposureGenerator.compute(somePolygon)).toEqualTypeOf<PolygonTree | null>();
+  expectTypeOf(
+    ElevatedSurfaceExposureGenerator.compute(somePolygon, { threshold: 10 }),
+  ).toEqualTypeOf<PolygonTree | null>();
+});

@@ -1,10 +1,13 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import UnboundTransform = foundry.canvas.geometry.UnboundTransform;
 
-expectTypeOf(UnboundTransform.IDENTITY).toEqualTypeOf<UnboundTransform>();
-
-const myUT = new UnboundTransform();
 declare const someTransform: PIXI.Transform;
 
-expectTypeOf(myUT.updateTransform(someTransform)).toBeVoid();
+test("foundry/client/canvas/geometry/unbound-transform", () => {
+  expectTypeOf(UnboundTransform.IDENTITY).toEqualTypeOf<UnboundTransform>();
+
+  const myUT = new UnboundTransform();
+
+  expectTypeOf(myUT.updateTransform(someTransform)).toBeVoid();
+});

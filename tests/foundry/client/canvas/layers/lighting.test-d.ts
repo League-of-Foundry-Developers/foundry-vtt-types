@@ -1,39 +1,41 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
 import LightingLayer = foundry.canvas.layers.LightingLayer;
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
 
-expectTypeOf(LightingLayer.documentName).toEqualTypeOf<"AmbientLight">();
-expectTypeOf(LightingLayer.instance).toEqualTypeOf<LightingLayer | undefined>();
-expectTypeOf(LightingLayer.layerOptions).toEqualTypeOf<LightingLayer.LayerOptions>();
-expectTypeOf(LightingLayer.layerOptions.name).toEqualTypeOf<"lighting">();
-expectTypeOf(LightingLayer.layerOptions.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
-
-const layer = new LightingLayer();
-
-expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
-expectTypeOf(layer.options).toEqualTypeOf<LightingLayer.LayerOptions>();
-expectTypeOf(layer.options.name).toEqualTypeOf<"lighting">();
-
-expectTypeOf(layer.hookName).toEqualTypeOf<"LightingLayer">();
-
-expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
-expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(layer.refreshFields()).toBeVoid();
-expectTypeOf(layer["_activate"]()).toBeVoid();
-
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const wheelEvent: foundry.canvas.Canvas.Event.Wheel;
 declare const darknessChangeEvent: foundry.canvas.Canvas.Event.DarknessChange;
-expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
-expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_createDragShapeData"](pointerEvent)).toEqualTypeOf<AnyMutableObject>();
-expectTypeOf(layer["_updateDragPreview"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
-expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toBeVoid();
-expectTypeOf(layer._onDarknessChange(darknessChangeEvent)).toBeVoid();
+
+test("foundry/client/canvas/layers/lighting", () => {
+  expectTypeOf(LightingLayer.documentName).toEqualTypeOf<"AmbientLight">();
+  expectTypeOf(LightingLayer.instance).toEqualTypeOf<LightingLayer | undefined>();
+  expectTypeOf(LightingLayer.layerOptions).toEqualTypeOf<LightingLayer.LayerOptions>();
+  expectTypeOf(LightingLayer.layerOptions.name).toEqualTypeOf<"lighting">();
+  expectTypeOf(LightingLayer.layerOptions.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
+
+  const layer = new LightingLayer();
+
+  expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();
+  expectTypeOf(layer.options).toEqualTypeOf<LightingLayer.LayerOptions>();
+  expectTypeOf(layer.options.name).toEqualTypeOf<"lighting">();
+
+  expectTypeOf(layer.hookName).toEqualTypeOf<"LightingLayer">();
+
+  expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+  expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
+
+  expectTypeOf(layer.refreshFields()).toBeVoid();
+  expectTypeOf(layer["_activate"]()).toBeVoid();
+  expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+  expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+  expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+  expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+  expectTypeOf(layer["_createDragShapeData"](pointerEvent)).toEqualTypeOf<AnyMutableObject>();
+  expectTypeOf(layer["_updateDragPreview"](pointerEvent)).toBeVoid();
+  expectTypeOf(layer["_updateMouseWheelPreview"]()).toBeVoid();
+  expectTypeOf(layer["_onMouseWheel"](wheelEvent)).toBeVoid();
+  expectTypeOf(layer._onDarknessChange(darknessChangeEvent)).toBeVoid();
+});

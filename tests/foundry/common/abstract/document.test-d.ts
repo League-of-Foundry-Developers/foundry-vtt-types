@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 
 import Document = foundry.abstract.Document;
@@ -7,70 +7,8 @@ import fields = foundry.data.fields;
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
-// `changes` moved to `system.changes` in v14. `start` is source data here, so `combat` is an id rather
-// than a resolved Combat.
-type AEStartSource = foundry.data.fields.SchemaField.SourceData<ActiveEffect.StartSchema>;
-expectTypeOf(baseActiveEffect.toJSON().start).toEqualTypeOf<AEStartSource | null>();
-expectTypeOf(baseActiveEffect.toObject().start).toEqualTypeOf<AEStartSource | null>();
-expectTypeOf(baseActiveEffect.toObject(true).start).toEqualTypeOf<AEStartSource | null>();
-expectTypeOf(baseActiveEffect.toObject(false).start).toEqualTypeOf<AEStartSource | null>();
-
-const item = await Item.create({ name: "Some Item", type: "base" });
-if (item) {
-  expectTypeOf(item.toObject(false).effects[0]!.duration.value).toEqualTypeOf<number | null>();
-  expectTypeOf(item.toObject().effects).toEqualTypeOf<
-    foundry.data.fields.SchemaField.SourceData<BaseActiveEffect["schema"]["fields"]>[]
-  >();
-}
-
-expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).branded.toEqualTypeOf<
-  Promise<Macro.Stored | undefined>
->();
-
-const _foo = await foundry.documents.BaseMacro.createDocuments([]);
-
-expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).branded.toEqualTypeOf<
-  Promise<Macro.Stored<Macro.SubType>[]>
->();
-
-expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
-expectTypeOf(foundry.documents.BaseMacro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
-const user = await User.implementation.create({ name: "Some User" });
-if (user) {
-  expectTypeOf(user.testUserPermission(user, "NONE")).toEqualTypeOf<boolean>();
-  expectTypeOf(user.testUserPermission(user, "OBSERVER", {})).toEqualTypeOf<boolean>();
-  expectTypeOf(user.testUserPermission(user, "LIMITED", { exact: true })).toEqualTypeOf<boolean>();
-  expectTypeOf(user.testUserPermission(user, "OWNER", { exact: false })).toEqualTypeOf<boolean>();
-}
-
 // test creation of embedded documents
 declare const scene: Scene.Implementation;
-// TODO: these methods will be updated in a later PR
-// expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
-//   Promise<NoteDocument.Stored[]> // Should be `.Implementation` as it can be temporary. See #3271
-// >();
-// expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
-//   Promise<NoteDocument.Stored[]>
-// >();
-expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[]>>();
-
-// verify that document lifecycle methods work with source data is possible
-
-if (item) {
-  expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
-  expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
-  expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
-
-  // `item.update` is effectively distributive because `item` itself is currently a union.
-  // This will change when `type` inference occurs.
-  type UpdatedUnion<Doc> = Doc extends unknown ? Promise<Doc | undefined> : never;
-
-  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<UpdatedUnion<Item.Stored>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
-
-  // @ts-expect-error `deleteAll` is only valid for the static deleteDocuments workflow.
-  item.delete({ deleteAll: true });
-}
 
 declare module "fvtt-types/configuration" {
   interface FlagConfig {
@@ -86,103 +24,167 @@ declare module "fvtt-types/configuration" {
   }
 }
 
-// const combatant = new Combatant({}, {});
-// expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
-// expectTypeOf(combatant.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
-
-// expectTypeOf(combatant.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
-// expectTypeOf(combatant.getFlag("my-system", "value2")).toEqualTypeOf<number>();
-// expectTypeOf(combatant.getFlag("my-system", "unknown-key")).toEqualTypeOf<never>();
-// expectTypeOf(combatant.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
-// expectTypeOf(combatant.getFlag("my-optional-system", "value")).toEqualTypeOf<boolean | undefined>();
-
-// expectTypeOf(combatant.setFlag("my-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
-
-// // @ts-expect-error the flag my-system.value is a boolean and not a number
-// combatant.setFlag("my-system", "value", 2);
-
-// // @ts-expect-error the flag my-system.unknown-key doesn't exist
-// combatant.setFlag("my-system", "unknown-key", 2);
-
-// expectTypeOf(combatant.setFlag("my-optional-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
-
-// // @ts-expect-error an optional system with a required flag can't be assigned an undefined value
-// combatant.setFlag("my-optional-system", "value", undefined);
-
-// expectTypeOf(combatant.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
-
-// expectTypeOf(combatant.unsetFlag("my-system", "value")).toEqualTypeOf<Promise<Combatant>>();
-// expectTypeOf(combatant.unsetFlag("my-optional-system", "value")).toEqualTypeOf<Promise<Combatant>>();
-// expectTypeOf(combatant.unsetFlag("another-system", "value")).toEqualTypeOf<Promise<Combatant>>();
-
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// class MyCombatant extends Combatant {
-//   setSomeFlag() {
-//     expectTypeOf(this.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
-//     expectTypeOf(this.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
-
-//     expectTypeOf(this.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
-//     expectTypeOf(this.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
-
-//     expectTypeOf(this.setFlag("my-system", "value", true)).toEqualTypeOf<Promise<this>>();
-//     expectTypeOf(this.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<this>>();
-//   }
-// }
-
-// expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.AnyConstructor>();
-
-// Note(LukeAbby): This test prevents us from accidentally making `Lookup` no longer covariant.
-// At one point the various lookups, when inlined, essentially looked like `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap : never | ...)[Operation]`.
-// For whatever reason this defeated the variance calculation but inlining the property access as so `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap[Operation] : never | ...)` calculates the variance fine.
-interface _TestLookupVariance<
-  out Operation extends Document.Database.Internal.Operation,
-  out Name extends Document.Type,
-> {
-  _: Document.Database.Internal.Lookup<Operation, Name>;
-}
-
-// `Document#_updateDiff` is narrower than `object`. Its `changes` must still admit the
-// `ForcedReplacement` on `system` that the runtime demands when `type` changes, otherwise the type
-// would silently forbid a legitimate document type change.
-class _TestDocumentUpdateDiff extends Actor {
-  protected override _updateDiff(
-    copy: fields.SchemaField.SourceData<Actor.Schema>,
-    changes: fields.SchemaField.UpdateData<Actor.Schema>,
-    options: DataModel.UpdateOptions,
-    _state: fields.DataField.UpdateState,
-  ): fields.SchemaField.UpdateData<Actor.Schema> {
-    super._updateDiff(copy, { type: "base", system: _replace({}) }, options, _state);
-    return super._updateDiff(copy, changes, options, _state);
-  }
-}
-
 // `Document#uuid` returns `string | null` as of v14; a `Stored` document narrows it back to `string`.
 declare const _temporaryActor: Actor.Implementation;
 declare const _storedActor: Actor.Stored;
-expectTypeOf(_temporaryActor.uuid).toEqualTypeOf<string | null>();
-expectTypeOf(_storedActor.uuid).toEqualTypeOf<string>();
 
 declare const _constructionContext: Document.ConstructionContext;
-expectTypeOf(_constructionContext.creation).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(_constructionContext.modifiedTime).toEqualTypeOf<number | undefined>();
-expectTypeOf(_constructionContext.parentCollection).toEqualTypeOf<string | undefined>();
 
-// `Document._preCleanData` is a real static override point in v14.
-class _TestDocumentPreCleanData extends Actor {
-  protected static override _preCleanData(
-    data: object,
-    options: fields.DataField.CleanOptions,
-    _state: fields.DataField.UpdateState,
-  ): void {
-    super._preCleanData(data, options, _state);
+test("foundry/common/abstract/document", async () => {
+  // `changes` moved to `system.changes` in v14. `start` is source data here, so `combat` is an id rather
+  // than a resolved Combat.
+  type AEStartSource = foundry.data.fields.SchemaField.SourceData<ActiveEffect.StartSchema>;
+  expectTypeOf(baseActiveEffect.toJSON().start).toEqualTypeOf<AEStartSource | null>();
+  expectTypeOf(baseActiveEffect.toObject().start).toEqualTypeOf<AEStartSource | null>();
+  expectTypeOf(baseActiveEffect.toObject(true).start).toEqualTypeOf<AEStartSource | null>();
+  expectTypeOf(baseActiveEffect.toObject(false).start).toEqualTypeOf<AEStartSource | null>();
+
+  const item = await Item.create({ name: "Some Item", type: "base" });
+  if (item) {
+    expectTypeOf(item.toObject(false).effects[0]!.duration.value).toEqualTypeOf<number | null>();
+    expectTypeOf(item.toObject().effects).toEqualTypeOf<
+      foundry.data.fields.SchemaField.SourceData<BaseActiveEffect["schema"]["fields"]>[]
+    >();
   }
-}
 
-// `deleteAll` must not survive into the single-document delete operation, but stays on the static one.
-expectTypeOf<Actor.Database.DeleteOperation["deleteAll"]>().toEqualTypeOf<boolean>();
+  expectTypeOf(foundry.documents.BaseMacro.create({ name: "" })).branded.toEqualTypeOf<
+    Promise<Macro.Stored | undefined>
+  >();
 
-// Foundry documents `noHook` per write operation; none of them reach `GetOperation`.
-expectTypeOf<Actor.Database.CreateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
-expectTypeOf<Actor.Database.UpdateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
-expectTypeOf<Actor.Database.DeleteOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
-expectTypeOf<foundry.abstract.DatabaseBackend.GetOperation>().not.toHaveProperty("noHook");
+  const _foo = await foundry.documents.BaseMacro.createDocuments([]);
+
+  expectTypeOf(foundry.documents.BaseMacro.createDocuments([])).branded.toEqualTypeOf<
+    Promise<Macro.Stored<Macro.SubType>[]>
+  >();
+
+  expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+  expectTypeOf(foundry.documents.BaseMacro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+  const user = await User.implementation.create({ name: "Some User" });
+  if (user) {
+    expectTypeOf(user.testUserPermission(user, "NONE")).toEqualTypeOf<boolean>();
+    expectTypeOf(user.testUserPermission(user, "OBSERVER", {})).toEqualTypeOf<boolean>();
+    expectTypeOf(user.testUserPermission(user, "LIMITED", { exact: true })).toEqualTypeOf<boolean>();
+    expectTypeOf(user.testUserPermission(user, "OWNER", { exact: false })).toEqualTypeOf<boolean>();
+  }
+  // TODO: these methods will be updated in a later PR
+  // expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
+  //   Promise<NoteDocument.Stored[]> // Should be `.Implementation` as it can be temporary. See #3271
+  // >();
+  // expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
+  //   Promise<NoteDocument.Stored[]>
+  // >();
+  expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[]>>();
+
+  // verify that document lifecycle methods work with source data is possible
+
+  if (item) {
+    expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
+    expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
+    expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
+
+    // `item.update` is effectively distributive because `item` itself is currently a union.
+    // This will change when `type` inference occurs.
+    type UpdatedUnion<Doc> = Doc extends unknown ? Promise<Doc | undefined> : never;
+
+    expectTypeOf(item.update(item.toObject())).toEqualTypeOf<UpdatedUnion<Item.Stored>>();
+    expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
+
+    // @ts-expect-error `deleteAll` is only valid for the static deleteDocuments workflow.
+    item.delete({ deleteAll: true });
+  }
+
+  // const combatant = new Combatant({}, {});
+  // expectTypeOf(combatant.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
+  // expectTypeOf(combatant.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
+
+  // expectTypeOf(combatant.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
+  // expectTypeOf(combatant.getFlag("my-system", "value2")).toEqualTypeOf<number>();
+  // expectTypeOf(combatant.getFlag("my-system", "unknown-key")).toEqualTypeOf<never>();
+  // expectTypeOf(combatant.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
+  // expectTypeOf(combatant.getFlag("my-optional-system", "value")).toEqualTypeOf<boolean | undefined>();
+
+  // expectTypeOf(combatant.setFlag("my-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
+
+  // // @ts-expect-error the flag my-system.value is a boolean and not a number
+  // combatant.setFlag("my-system", "value", 2);
+
+  // // @ts-expect-error the flag my-system.unknown-key doesn't exist
+  // combatant.setFlag("my-system", "unknown-key", 2);
+
+  // expectTypeOf(combatant.setFlag("my-optional-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
+
+  // // @ts-expect-error an optional system with a required flag can't be assigned an undefined value
+  // combatant.setFlag("my-optional-system", "value", undefined);
+
+  // expectTypeOf(combatant.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
+
+  // expectTypeOf(combatant.unsetFlag("my-system", "value")).toEqualTypeOf<Promise<Combatant>>();
+  // expectTypeOf(combatant.unsetFlag("my-optional-system", "value")).toEqualTypeOf<Promise<Combatant>>();
+  // expectTypeOf(combatant.unsetFlag("another-system", "value")).toEqualTypeOf<Promise<Combatant>>();
+
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // class MyCombatant extends Combatant {
+  //   setSomeFlag() {
+  //     expectTypeOf(this.flags["my-system"]).toEqualTypeOf<{ value: boolean; value2: number }>();
+  //     expectTypeOf(this.flags["my-optional-system"]).toEqualTypeOf<{ value: boolean } | undefined>();
+
+  //     expectTypeOf(this.getFlag("my-system", "value")).toEqualTypeOf<boolean>();
+  //     expectTypeOf(this.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
+
+  //     expectTypeOf(this.setFlag("my-system", "value", true)).toEqualTypeOf<Promise<this>>();
+  //     expectTypeOf(this.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<this>>();
+  //   }
+  // }
+
+  // expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.AnyConstructor>();
+
+  // Note(LukeAbby): This test prevents us from accidentally making `Lookup` no longer covariant.
+  // At one point the various lookups, when inlined, essentially looked like `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap : never | ...)[Operation]`.
+  // For whatever reason this defeated the variance calculation but inlining the property access as so `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap[Operation] : never | ...)` calculates the variance fine.
+  interface _TestLookupVariance<
+    out Operation extends Document.Database.Internal.Operation,
+    out Name extends Document.Type,
+  > {
+    _: Document.Database.Internal.Lookup<Operation, Name>;
+  }
+
+  // `Document#_updateDiff` is narrower than `object`. Its `changes` must still admit the
+  // `ForcedReplacement` on `system` that the runtime demands when `type` changes, otherwise the type
+  // would silently forbid a legitimate document type change.
+  class _TestDocumentUpdateDiff extends Actor {
+    protected override _updateDiff(
+      copy: fields.SchemaField.SourceData<Actor.Schema>,
+      changes: fields.SchemaField.UpdateData<Actor.Schema>,
+      options: DataModel.UpdateOptions,
+      _state: fields.DataField.UpdateState,
+    ): fields.SchemaField.UpdateData<Actor.Schema> {
+      super._updateDiff(copy, { type: "base", system: _replace({}) }, options, _state);
+      return super._updateDiff(copy, changes, options, _state);
+    }
+  }
+  expectTypeOf(_temporaryActor.uuid).toEqualTypeOf<string | null>();
+  expectTypeOf(_storedActor.uuid).toEqualTypeOf<string>();
+  expectTypeOf(_constructionContext.creation).toEqualTypeOf<boolean | undefined>();
+  expectTypeOf(_constructionContext.modifiedTime).toEqualTypeOf<number | undefined>();
+  expectTypeOf(_constructionContext.parentCollection).toEqualTypeOf<string | undefined>();
+
+  // `Document._preCleanData` is a real static override point in v14.
+  class _TestDocumentPreCleanData extends Actor {
+    protected static override _preCleanData(
+      data: object,
+      options: fields.DataField.CleanOptions,
+      _state: fields.DataField.UpdateState,
+    ): void {
+      super._preCleanData(data, options, _state);
+    }
+  }
+
+  // `deleteAll` must not survive into the single-document delete operation, but stays on the static one.
+  expectTypeOf<Actor.Database.DeleteOperation["deleteAll"]>().toEqualTypeOf<boolean>();
+
+  // Foundry documents `noHook` per write operation; none of them reach `GetOperation`.
+  expectTypeOf<Actor.Database.CreateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+  expectTypeOf<Actor.Database.UpdateOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+  expectTypeOf<Actor.Database.DeleteOperation["noHook"]>().toEqualTypeOf<boolean | undefined>();
+  expectTypeOf<foundry.abstract.DatabaseBackend.GetOperation>().not.toHaveProperty("noHook");
+});

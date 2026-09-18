@@ -1,18 +1,20 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import AVMaster = foundry.av.AVMaster;
 import AVSettings = foundry.av.AVSettings;
 
-const avSettings = new AVSettings();
+test("foundry/client/av/settings", () => {
+  const avSettings = new AVSettings();
 
-AVSettings.DEFAULT_USER_SETTINGS.blocked;
+  AVSettings.DEFAULT_USER_SETTINGS.blocked;
 
-expectTypeOf(avSettings.client).toEqualTypeOf<AVSettings.ClientSettingData>();
-expectTypeOf(avSettings.world).toEqualTypeOf<AVSettings.WorldSettingData>();
-expectTypeOf(avSettings.activity).toEqualTypeOf<Record<string, AVSettings.Data>>();
-expectTypeOf(avSettings.getUser("")).toEqualTypeOf<AVSettings.UserSettings | null>();
-expectTypeOf(avSettings.users).toEqualTypeOf<Record<string, AVSettings.UserSettings>>();
-expectTypeOf(avSettings.verticalDock).toEqualTypeOf<boolean>();
+  expectTypeOf(avSettings.client).toEqualTypeOf<AVSettings.ClientSettingData>();
+  expectTypeOf(avSettings.world).toEqualTypeOf<AVSettings.WorldSettingData>();
+  expectTypeOf(avSettings.activity).toEqualTypeOf<Record<string, AVSettings.Data>>();
+  expectTypeOf(avSettings.getUser("")).toEqualTypeOf<AVSettings.UserSettings | null>();
+  expectTypeOf(avSettings.users).toEqualTypeOf<Record<string, AVSettings.UserSettings>>();
+  expectTypeOf(avSettings.verticalDock).toEqualTypeOf<boolean>();
 
-const avMaster = new AVMaster();
-expectTypeOf(avMaster.settings.client.voice.mode).toEqualTypeOf<AVSettings.VOICE_MODES>();
+  const avMaster = new AVMaster();
+  expectTypeOf(avMaster.settings.client.voice.mode).toEqualTypeOf<AVSettings.VOICE_MODES>();
+});

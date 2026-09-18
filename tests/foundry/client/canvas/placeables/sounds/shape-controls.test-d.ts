@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import AmbientSoundShapeControls = foundry.canvas.placeables.sounds.AmbientSoundShapeControls;
@@ -6,7 +6,9 @@ import AmbientSoundShapeControls = foundry.canvas.placeables.sounds.AmbientSound
 declare const controls: AmbientSoundShapeControls;
 declare const event: Canvas.Event.Pointer;
 
-expectTypeOf(controls["_onDragStart"](event)).toBeVoid();
-expectTypeOf(controls["_updateDragPreview"](event)).toBeVoid();
-expectTypeOf(controls["_prepareDragDropUpdate"](event)).toEqualTypeOf<AmbientSoundShapeControls.DragDropUpdate>();
-expectTypeOf(controls["_onDragDrop"](event)).toBeVoid();
+test("foundry/client/canvas/placeables/sounds/shape-controls", () => {
+  expectTypeOf(controls["_onDragStart"](event)).toBeVoid();
+  expectTypeOf(controls["_updateDragPreview"](event)).toBeVoid();
+  expectTypeOf(controls["_prepareDragDropUpdate"](event)).toEqualTypeOf<AmbientSoundShapeControls.DragDropUpdate>();
+  expectTypeOf(controls["_onDragDrop"](event)).toBeVoid();
+});

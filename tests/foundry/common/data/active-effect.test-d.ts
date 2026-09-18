@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import ActiveEffectTypeDataModel = foundry.data.ActiveEffectTypeDataModel;
 import TypeDataModel = foundry.abstract.TypeDataModel;
@@ -6,30 +6,9 @@ import fields = foundry.data.fields;
 
 declare const model: ActiveEffectTypeDataModel;
 
-expectTypeOf(ActiveEffectTypeDataModel.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
-
-expectTypeOf(model.changes).toEqualTypeOf<
-  fields.SchemaField.InitializedData<ActiveEffectTypeDataModel.ChangeSchema>[]
->();
-
-const change = model.changes[0]!;
-expectTypeOf(change.key).toBeString();
-expectTypeOf(change.type).toBeString();
-expectTypeOf(change.value).toEqualTypeOf<unknown>();
-expectTypeOf(change.phase).toBeString();
-expectTypeOf(change.priority).toEqualTypeOf<number | null | undefined>();
-
 // Foundry registers this model for the `base` subtype, so `system.changes` is available without any
 // `DataModelConfig` declaration merging on the consumer's part.
 declare const baseEffect: ActiveEffect.OfType<"base">;
-expectTypeOf(baseEffect.system).toEqualTypeOf<ActiveEffectTypeDataModel>();
-expectTypeOf(baseEffect.system.changes).toEqualTypeOf<typeof model.changes>();
-
-// ...and it is what `CONFIG.ActiveEffect.dataModels.base` is typed as. The config entry carries the
-// class' construct signature pinned at its default `Schema` (see `ActiveEffect.CoreEffects`), so compare
-// at the instance level rather than against the raw generic constructor.
-expectTypeOf(new CONFIG.ActiveEffect.dataModels.base()).toEqualTypeOf<ActiveEffectTypeDataModel>();
-expectTypeOf(CONFIG.ActiveEffect.dataModels.base.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
 
 interface ExtraChangeSchema extends ActiveEffectTypeDataModel.BaseChangeSchema {
   label: fields.StringField;
@@ -81,12 +60,6 @@ interface MissingPrioritySchema extends fields.DataSchema {
 // @ts-expect-error ActiveEffect changes must define `priority`.
 declare class _MissingPriorityModel extends ActiveEffectTypeDataModel<MissingPrioritySchema> {}
 
-// A model which defines its own `changes` is not deprecated to construct.
-new _ConformingModel();
-
-new _ConformingModel({ enabled: true });
-expectTypeOf<ConstructorParameters<typeof _ConformingModel>>().not.toEqualTypeOf<never>();
-
 interface TypedChangeSchema extends ActiveEffectTypeDataModel.BaseChangeSchema {
   value: fields.StringField;
 }
@@ -132,15 +105,8 @@ declare class _NonConformingModel extends foundry.abstract.TypeDataModel<
   static override defineSchema(): MissingPhaseSchema;
 }
 
-expectTypeOf<_ConformingModel>().toExtend<ActiveEffectTypeDataModel.Any>();
-expectTypeOf<typeof _ConformingModel>().toExtend<ActiveEffectTypeDataModel.AnyConstructor>();
-expectTypeOf<typeof _ConformingRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
-expectTypeOf<typeof _TypedRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
-expectTypeOf<typeof _NonConformingModel>().not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
-
 // `defineSchema` alone is not enough — a registrable model must actually be a `TypeDataModel`.
 declare const _schemaShapedObject: { defineSchema(): ConformingSchema };
-expectTypeOf(_schemaShapedObject).not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
 
 declare global {
   namespace CONFIG.ActiveEffect {
@@ -158,14 +124,6 @@ declare global {
   }
 }
 
-expectTypeOf<ActiveEffect.ChangeTypes["test.change"]>().toEqualTypeOf<ActiveEffect.ChangeTypeConfig>();
-expectTypeOf<ActiveEffect.ChangePhases["test.phase"]>().toEqualTypeOf<ActiveEffect.ChangePhaseConfig>();
-expectTypeOf<ActiveEffect.ExpiryEvents["test.expiry"]>().toBeString();
-expectTypeOf<"test.phase">().toExtend<ActiveEffect.ChangePhase>();
-expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.phase");
-// @ts-expect-error Only core and package-registered phases are accepted.
-expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.typo");
-
 interface NarrowChangeSchema extends ActiveEffectTypeDataModel.BaseChangeSchema {
   label: fields.StringField;
 }
@@ -179,8 +137,52 @@ declare class _NarrowModel extends TypeDataModel<NarrowSchema, ActiveEffect.Impl
   static override defineSchema(): NarrowSchema;
 }
 
-// The schema is a valid refinement of the minimum schema.
-expectTypeOf<NarrowSchema>().toExtend<ActiveEffectTypeDataModel.AnySchema>();
+test("foundry/common/data/active-effect", () => {
+  expectTypeOf(ActiveEffectTypeDataModel.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
 
-// Its TypeDataModel class should therefore be registrable.
-expectTypeOf<typeof _NarrowModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+  expectTypeOf(model.changes).toEqualTypeOf<
+    fields.SchemaField.InitializedData<ActiveEffectTypeDataModel.ChangeSchema>[]
+  >();
+
+  const change = model.changes[0]!;
+  expectTypeOf(change.key).toBeString();
+  expectTypeOf(change.type).toBeString();
+  expectTypeOf(change.value).toEqualTypeOf<unknown>();
+  expectTypeOf(change.phase).toBeString();
+  expectTypeOf(change.priority).toEqualTypeOf<number | null | undefined>();
+  expectTypeOf(baseEffect.system).toEqualTypeOf<ActiveEffectTypeDataModel>();
+  expectTypeOf(baseEffect.system.changes).toEqualTypeOf<typeof model.changes>();
+
+  // ...and it is what `CONFIG.ActiveEffect.dataModels.base` is typed as. The config entry carries the
+  // class' construct signature pinned at its default `Schema` (see `ActiveEffect.CoreEffects`), so compare
+  // at the instance level rather than against the raw generic constructor.
+  expectTypeOf(new CONFIG.ActiveEffect.dataModels.base()).toEqualTypeOf<ActiveEffectTypeDataModel>();
+  expectTypeOf(CONFIG.ActiveEffect.dataModels.base.defineSchema()).toEqualTypeOf<ActiveEffectTypeDataModel.Schema>();
+
+  // A model which defines its own `changes` is not deprecated to construct.
+  new _ConformingModel();
+
+  new _ConformingModel({ enabled: true });
+  expectTypeOf<ConstructorParameters<typeof _ConformingModel>>().not.toEqualTypeOf<never>();
+
+  expectTypeOf<_ConformingModel>().toExtend<ActiveEffectTypeDataModel.Any>();
+  expectTypeOf<typeof _ConformingModel>().toExtend<ActiveEffectTypeDataModel.AnyConstructor>();
+  expectTypeOf<typeof _ConformingRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+  expectTypeOf<typeof _TypedRegistrableModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+  expectTypeOf<typeof _NonConformingModel>().not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+  expectTypeOf(_schemaShapedObject).not.toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+
+  expectTypeOf<ActiveEffect.ChangeTypes["test.change"]>().toEqualTypeOf<ActiveEffect.ChangeTypeConfig>();
+  expectTypeOf<ActiveEffect.ChangePhases["test.phase"]>().toEqualTypeOf<ActiveEffect.ChangePhaseConfig>();
+  expectTypeOf<ActiveEffect.ExpiryEvents["test.expiry"]>().toBeString();
+  expectTypeOf<"test.phase">().toExtend<ActiveEffect.ChangePhase>();
+  expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.phase");
+  // @ts-expect-error Only core and package-registered phases are accepted.
+  expectTypeOf<Actor.Implementation["applyActiveEffects"]>().toBeCallableWith("test.typo");
+
+  // The schema is a valid refinement of the minimum schema.
+  expectTypeOf<NarrowSchema>().toExtend<ActiveEffectTypeDataModel.AnySchema>();
+
+  // Its TypeDataModel class should therefore be registrable.
+  expectTypeOf<typeof _NarrowModel>().toExtend<ActiveEffectTypeDataModel.RegistrableClass>();
+});

@@ -1,43 +1,47 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
 import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
-
-const myPBSS = PrimaryBaseSamplerShader.create();
-expectTypeOf(myPBSS).toEqualTypeOf<PrimaryBaseSamplerShader>();
 
 declare const someVB: PIXI.ViewableBuffer;
 declare const someU16Array: Uint16Array;
 declare const someF32Array: Float32Array;
 declare const someTex: PIXI.Texture;
 
-expectTypeOf(PrimaryBaseSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
-expectTypeOf(PrimaryBaseSamplerShader.classPluginName).toEqualTypeOf<string>();
-expectTypeOf(PrimaryBaseSamplerShader.batchDefaultUniforms).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
-expectTypeOf(
-  PrimaryBaseSamplerShader["_packInterleavedGeometry"](
-    {
-      _texture: someTex,
-      occlusionElevation: 0,
-      fadeOcclusion: 0,
-      indices: someU16Array,
-      radialOcclusion: 0,
-      surfaceOcclusion: 0,
-      uvs: someF32Array,
-      vertexData: someF32Array,
-      visionOcclusion: 0,
-      _tintRGB: 0,
-      blendMode: PIXI.BLEND_MODES.NORMAL,
-      worldAlpha: 1,
-      occludedAlpha: 0.5,
-      unoccludedAlpha: 1,
-    },
-    someVB,
-    someU16Array,
-    0,
-    0,
-  ),
-).toEqualTypeOf<void>();
+test("foundry/client/canvas/rendering/shaders/samplers/primary/primary", () => {
+  const myPBSS = PrimaryBaseSamplerShader.create();
+  expectTypeOf(myPBSS).toEqualTypeOf<PrimaryBaseSamplerShader>();
 
-expectTypeOf(myPBSS.paused).toEqualTypeOf<boolean>;
-expectTypeOf(myPBSS.pluginName).toEqualTypeOf<string | null>();
+  expectTypeOf(PrimaryBaseSamplerShader.reservedTextureUnits).toEqualTypeOf<number>();
+  expectTypeOf(PrimaryBaseSamplerShader.classPluginName).toEqualTypeOf<string>();
+  expectTypeOf(
+    PrimaryBaseSamplerShader.batchDefaultUniforms,
+  ).toEqualTypeOf<BatchRenderer.BatchDefaultUniformsFunction>();
+  expectTypeOf(
+    PrimaryBaseSamplerShader["_packInterleavedGeometry"](
+      {
+        _texture: someTex,
+        occlusionElevation: 0,
+        fadeOcclusion: 0,
+        indices: someU16Array,
+        radialOcclusion: 0,
+        surfaceOcclusion: 0,
+        uvs: someF32Array,
+        vertexData: someF32Array,
+        visionOcclusion: 0,
+        _tintRGB: 0,
+        blendMode: PIXI.BLEND_MODES.NORMAL,
+        worldAlpha: 1,
+        occludedAlpha: 0.5,
+        unoccludedAlpha: 1,
+      },
+      someVB,
+      someU16Array,
+      0,
+      0,
+    ),
+  ).toEqualTypeOf<void>();
+
+  expectTypeOf(myPBSS.paused).toEqualTypeOf<boolean>;
+  expectTypeOf(myPBSS.pluginName).toEqualTypeOf<string | null>();
+});
