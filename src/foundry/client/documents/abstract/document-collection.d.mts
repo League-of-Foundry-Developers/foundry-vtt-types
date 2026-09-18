@@ -38,6 +38,7 @@ declare abstract class DocumentCollection<
    * An Array of application references which will be automatically updated when the collection content changes
    * @defaultValue `[]`
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   apps: (Application.Any | ApplicationV2.Any)[];
 
   /**
@@ -247,6 +248,7 @@ declare namespace DocumentCollection {
    * `options.force` is overwritten with the first parameter of `DocumentCollection#render`, so it is omitted here.
    */
   interface RenderOptions
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     extends DeepPartial<Application.Options>, DeepPartial<Omit<ApplicationV2.RenderOptions, "force">> {}
 
   /** @internal */

@@ -18,6 +18,7 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
   /**
    * The Application being made draggable.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   app: Application.Any | ApplicationV2.Any;
 
   /**
@@ -40,6 +41,7 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
    * The Application's starting position, pre-drag.
    * @defaultValue `null`
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   position: foundry.utils.Duplicated<Application.Position> | null;
 
   /**

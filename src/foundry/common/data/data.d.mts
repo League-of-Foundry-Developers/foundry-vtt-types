@@ -1387,6 +1387,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    * @remarks Created via `defineProperty` in constructor without options.
    * Since it isn't defined in the class body, it's readonly.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   readonly apps: Record<string, foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any>;
 
   static override defineSchema(): PrototypeToken.Schema;

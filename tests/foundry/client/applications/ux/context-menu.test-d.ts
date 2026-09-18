@@ -2,10 +2,12 @@ import { expectTypeOf } from "vitest";
 import type { MaybePromise } from "fvtt-types/utils";
 
 import ContextMenu = foundry.applications.ux.ContextMenu;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import JournalSheet = foundry.appv1.sheets.JournalSheet;
 
 const myJournal = new JournalEntry.implementation({ name: "Journal" });
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const testAppV1 = new JournalSheet(myJournal);
 const testAppV2 = new foundry.applications.sheets.journal.JournalEntrySheet({ document: myJournal });
 

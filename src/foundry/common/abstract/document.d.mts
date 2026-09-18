@@ -3352,6 +3352,7 @@ declare namespace Document {
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
   > = InexactPartial<foundry.appv1.api.Dialog.Options> & {
     /**
      * A compendium pack within which the Document should be created

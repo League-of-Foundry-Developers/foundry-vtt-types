@@ -3,6 +3,7 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import TemplateLayer = foundry.canvas.layers.TemplateLayer;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 import Application = foundry.appv1.api.Application;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -25,6 +26,7 @@ expectTypeOf(MeasuredTemplateDocument.deleteDocuments).returns.toEqualTypeOf<
   Promise<MeasuredTemplateDocument.Stored[]>
 >();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(doc.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
