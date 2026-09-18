@@ -3,6 +3,7 @@ import type { fields, ShapeData } from "#common/data/_module.mjs";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { EllipseShapeData, PolygonShapeData, RectangleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -992,13 +993,11 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    */
   static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 
-  // FIXME: `RectangleShapeData`, `EllipseShapeData` and `PolygonShapeData` are the `client/data/shapes.mjs`
-  // classes, which have not been ported yet. Restore this declaration once that module exists.
-  // /**
-  //  * The rectangle shape of this Tile document.
-  //  * @internal
-  //  */
-  // _shape: RectangleShapeData | EllipseShapeData | PolygonShapeData;
+  /**
+   * The rectangle shape of this Tile document.
+   * @internal
+   */
+  _shape: RectangleShapeData | EllipseShapeData | PolygonShapeData;
 
   /**
    * Is the current User the author of this drawing?
