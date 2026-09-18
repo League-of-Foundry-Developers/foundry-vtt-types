@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-test("foundry/client/head", () => {
+test("foundry/client/global", () => {
   type _UninitializedGame = { [K in Exclude<keyof Game, "view">]?: never };
 
   // TODO: find a way to use the existing type rather than reimplementing once head.d.mts is removed/refactored.
@@ -51,4 +51,6 @@ test("foundry/client/head", () => {
   const myColor = Color.from("foobar");
 
   expectTypeOf(myColor).toEqualTypeOf<Color>();
+  expectTypeOf(_loc).toEqualTypeOf<foundry.helpers.Localization["localize"] | undefined>();
+  expectTypeOf(animejs.createTimeline).toBeFunction();
 });
