@@ -237,20 +237,38 @@ declare namespace AmbientLight {
     /** @defaultValue `{ propagate: ["refresh"] }` */
     redraw: RenderFlag<this, "redraw">;
 
-    /** @defaultValue `{ propagate: ["refreshState", "refreshField", "refreshElevation"], alias: true }` */
+    /** @defaultValue `{ propagate: ["refreshState", "refreshTransform", "refreshField", "refreshTooltip"], alias: true }` */
     refresh: RenderFlag<this, "refresh">;
 
-    /** @defaultValue `{ propagate: ["refreshPosition"] }` */
+    /** @defaultValue `{ propagate: ["refreshVisibility"] }` */
+    refreshState: RenderFlag<this, "refreshState">;
+
+    /** @defaultValue `{}` */
+    refreshVisibility: RenderFlag<this, "refreshVisibility">;
+
+    /** @defaultValue `{ propagate: ["refreshPosition", "refreshRotation", "refreshSize"], alias: true }` */
+    refreshTransform: RenderFlag<this, "refreshTransform">;
+
+    /** @defaultValue `{ propagate: ["refreshMeasurements"] }` */
+    refreshPosition: RenderFlag<this, "refreshPosition">;
+
+    /** @defaultValue `{ propagate: ["refreshMeasurements"] }` */
+    refreshRotation: RenderFlag<this, "refreshRotation">;
+
+    /** @defaultValue `{ propagate: ["refreshMeasurements"] }` */
+    refreshSize: RenderFlag<this, "refreshSize">;
+
+    /** @defaultValue `{}` */
     refreshField: RenderFlag<this, "refreshField">;
 
     /** @defaultValue `{}` */
-    refreshPosition: RenderFlag<this, "refreshPosition">;
+    refreshTooltip: RenderFlag<this, "refreshTooltip">;
 
     /** @defaultValue `{}` */
-    refreshState: RenderFlag<this, "refreshState">;
+    refreshMeasurements: RenderFlag<this, "refreshMeasurements">;
 
     /**
-     * @defaultValue `{}`
+     * @defaultValue `{ propagate: ["refreshTooltip"], deprecated: { since: 14, until: 16 }, alias: true }`
      * @deprecated "The RenderFlag "refreshElevation" of AmbientLight is deprecated in favor of refreshTooltip."
      * (since v14, until v16)
      */
