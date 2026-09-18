@@ -8,7 +8,19 @@ expectTypeOf(AmbientLight.implementation).toEqualTypeOf<AmbientLight.Implementat
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   // undefined only from the optional chain, not underlying type
-  | Array<"refresh" | "refreshState" | "refreshVisibility" | "refreshField" | "refreshPosition" | "refreshElevation">
+  | Array<
+      | "refresh"
+      | "refreshState"
+      | "refreshVisibility"
+      | "refreshTransform"
+      | "refreshPosition"
+      | "refreshRotation"
+      | "refreshSize"
+      | "refreshField"
+      | "refreshTooltip"
+      | "refreshMeasurements"
+      | "refreshElevation"
+    >
   | undefined
 >();
 
@@ -23,6 +35,16 @@ expectTypeOf(light.controls).toEqualTypeOf<AmbientLightShapeControls | undefined
 expectTypeOf(light.tooltip).toEqualTypeOf<PreciseText | undefined>();
 expectTypeOf(light.bounds).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(light.sourceId).toBeString();
+
+expectTypeOf(
+  light.renderFlags.set({
+    refreshTransform: true,
+    refreshRotation: true,
+    refreshSize: true,
+    refreshTooltip: true,
+    refreshMeasurements: true,
+  }),
+).toBeVoid();
 expectTypeOf(light.config).toEqualTypeOf<foundry.data.LightData>();
 expectTypeOf(light.global).toBeBoolean();
 expectTypeOf(light.radius).toBeNumber();

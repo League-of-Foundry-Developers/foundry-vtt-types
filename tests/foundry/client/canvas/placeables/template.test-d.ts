@@ -25,7 +25,7 @@ expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | undefined
 >();
 expectTypeOf(MeasuredTemplate.getCircleShape(5)).toEqualTypeOf<PIXI.Circle | PIXI.Polygon>();
-expectTypeOf(MeasuredTemplate.getConeShape(5, 270, 60)).toEqualTypeOf<PIXI.Polygon>();
+expectTypeOf(MeasuredTemplate.getConeShape(5, 270, 60)).toEqualTypeOf<PIXI.Polygon | PIXI.Circle>();
 expectTypeOf(MeasuredTemplate.getRectShape(5, 90)).toEqualTypeOf<PIXI.Rectangle>();
 expectTypeOf(MeasuredTemplate.getRayShape(5, 180, 2)).toEqualTypeOf<PIXI.Polygon>();
 
