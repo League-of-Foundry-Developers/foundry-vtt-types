@@ -14,7 +14,7 @@ declare class IterableWeakSet<K extends WeakKey> {
   /**
    * Enumerate the values.
    */
-  [Symbol.iterator](): Generator<K, void, unknown>;
+  [Symbol.iterator](): Generator<K, void, void>;
 
   /**
    * Add a value to the set.
@@ -38,7 +38,7 @@ declare class IterableWeakSet<K extends WeakKey> {
   /**
    * Enumerate the collection.
    */
-  values(): Generator<K, void, unknown>;
+  values(): Generator<K, void, void>;
 
   /**
    * Clear all values from the set.

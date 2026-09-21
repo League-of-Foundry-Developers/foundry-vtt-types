@@ -508,7 +508,7 @@ export function isEmpty(
 /**
  * Object entries generator.
  */
-export function objectEntries(obj: object): Generator<[string, unknown], void, unknown>;
+export function objectEntries(obj: object): Generator<[string, unknown], void, void>;
 
 /**
  * Stream object entries.
@@ -518,7 +518,7 @@ export function iterateEntries(obj: object): IteratorObject<[string, unknown], v
 /**
  * Object keys generator.
  */
-export function objectKeys(obj: object): Generator<string, void, unknown>;
+export function objectKeys(obj: object): Generator<string, void, void>;
 
 /**
  * Stream object keys.
@@ -528,7 +528,7 @@ export function iterateKeys(obj: object): IteratorObject<string, void, unknown>;
 /**
  * Object values generator.
  */
-export function objectValues(obj: object): Generator<unknown, void, unknown>;
+export function objectValues(obj: object): Generator<unknown, void, void>;
 
 /**
  * Stream object values.

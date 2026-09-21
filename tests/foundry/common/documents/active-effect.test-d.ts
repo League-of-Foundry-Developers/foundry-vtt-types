@@ -224,7 +224,7 @@ test("foundry/common/documents/active-effect", () => {
   // Document template static overrides
 
   expectTypeOf(fullTestAE["_initializationOrder"]()).toEqualTypeOf<
-    Generator<[string, fields.DataField.Any], void, undefined>
+    Generator<[string, fields.DataField.Any], void, void>
   >();
   expectTypeOf(TestActiveEffect.implementation).toEqualTypeOf<ActiveEffect.ImplementationClass>();
   expectTypeOf(TestActiveEffect.baseDocument).toEqualTypeOf<typeof BaseActiveEffect>();

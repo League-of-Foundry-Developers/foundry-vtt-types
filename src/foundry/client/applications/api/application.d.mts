@@ -692,7 +692,7 @@ declare class ApplicationV2<
    * Iterate over the inheritance chain of this Application.
    * The chain includes this Application itself and all parents until the base application is encountered.
    */
-  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor, void, undefined>;
+  static inheritanceChain(): Generator<ApplicationV2.AnyConstructor, void, void>;
 
   /**
    * Initialize configuration options for the Application instance.
@@ -763,12 +763,12 @@ declare class ApplicationV2<
   /**
    * Iterate over header control buttons, filtering for controls which are visible for the current client.
    */
-  protected _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
+  protected _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, void>;
 
   /**
    * Generate context menu entries based on the header control specification.
    */
-  protected _headerControlContextEntries(): Generator<ContextMenu.Entry<HTMLElement>, void, undefined>;
+  protected _headerControlContextEntries(): Generator<ContextMenu.Entry<HTMLElement>, void, void>;
 
   /**
    * Render an HTMLElement for the Application.
@@ -1098,7 +1098,7 @@ declare class ApplicationV2<
    * @privateRemarks Foundry documents `Generator<typeof this>`, but the runtime yields instances, not the class.
    * The `this` parameter is what makes `MyApplication.instances()` yield `MyApplication`.
    */
-  static instances<T extends ApplicationV2.AnyConstructor>(this: T): Generator<FixedInstanceType<T>, void, undefined>;
+  static instances<T extends ApplicationV2.AnyConstructor>(this: T): Generator<FixedInstanceType<T>, void, void>;
 
   /**
    * Parse a CSS style rule into a number of pixels which apply to that dimension.

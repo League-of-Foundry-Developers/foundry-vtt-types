@@ -284,7 +284,7 @@ declare abstract class DataModel<
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
    */
-  protected _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
+  protected _initializationOrder(): Generator<[string, DataField.Any], void, void>;
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.

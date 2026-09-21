@@ -1312,7 +1312,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Get all ActiveEffects that may apply to this Actor. This will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
-  allApplicableEffects(): Generator<ActiveEffect.Stored, void, undefined>;
+  allApplicableEffects(): Generator<ActiveEffect.Stored, void, void>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor

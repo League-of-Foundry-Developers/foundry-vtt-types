@@ -422,7 +422,7 @@ declare class JournalEntrySheet<
   /**
    * Iterate over the JournalEntryPage documents which are currently visible in the sheet.
    */
-  viewedPageDocuments(): Generator<JournalEntryPage.Implementation, void, undefined>;
+  viewedPageDocuments(): Generator<JournalEntryPage.Implementation, void, void>;
 
   /**
    * Determine if drop operations are permitted.

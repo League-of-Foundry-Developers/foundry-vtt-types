@@ -76,7 +76,7 @@ test("foundry/client/canvas/layers/base/placeables-layer", () => {
   expectTypeOf(layer.paletteCreateData).toEqualTypeOf<AnyMutableObject>();
   expectTypeOf(layer.placeables).toEqualTypeOf<CAL[]>();
   expectTypeOf(layer.controlled).toEqualTypeOf<CAL[]>();
-  expectTypeOf(layer.viewedDocuments()).toEqualTypeOf<Generator<SAL, void, undefined>>();
+  expectTypeOf(layer.viewedDocuments()).toEqualTypeOf<Generator<SAL, void, void>>();
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(layer.getDocuments()).toEqualTypeOf<SAL[]>();
   // eslint-disable-next-line @typescript-eslint/no-deprecated
