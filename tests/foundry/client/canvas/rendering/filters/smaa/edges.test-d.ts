@@ -1,6 +1,11 @@
-import { test } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-// `SMAAEdgeDetectionFilter` is only imported in `smaa.mjs`, is only assigned to a private property of `SMAAFilter`, and never gets re-exported, so it cannot currently be tested.
-// It's only testable alteration to its parent class is the constructor interface
+import SMAAEdgeDetectionFilter = foundry.canvas.rendering.filters.SMAAEdgeDetectionFilter;
 
-test.todo("foundry/client/canvas/rendering/filters/smaa/edges");
+test("foundry/client/canvas/rendering/filters/smaa/edges", () => {
+  const filter = new SMAAEdgeDetectionFilter({ threshold: 0.1, localContrastAdaptionFactor: 2 });
+  expectTypeOf(filter).toExtend<PIXI.Filter>();
+
+  // @ts-expect-error both config keys are required
+  new SMAAEdgeDetectionFilter({ threshold: 0.1 });
+});

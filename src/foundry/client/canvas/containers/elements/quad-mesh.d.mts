@@ -39,6 +39,8 @@ declare class QuadMesh extends PIXI.Container {
   containsPoint(point: PIXI.IPointData): boolean;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+  #QuadMesh: true;
 }
 
 declare namespace QuadMesh {

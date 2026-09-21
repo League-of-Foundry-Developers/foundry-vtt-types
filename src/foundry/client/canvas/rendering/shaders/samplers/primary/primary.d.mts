@@ -7,7 +7,7 @@ import type { DepthSamplerShader, OccludableSamplerShader } from "../../_module.
 declare class PrimaryBaseSamplerShader extends OccludableSamplerShader {
   /**
    * The depth shader class associated with this shader.
-   * @defaultValue `DepthSampleShader`
+   * @defaultValue `DepthSamplerShader`
    */
   static depthShaderClass: typeof DepthSamplerShader;
 

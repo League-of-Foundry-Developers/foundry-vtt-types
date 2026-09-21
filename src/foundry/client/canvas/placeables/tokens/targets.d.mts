@@ -21,6 +21,8 @@ declare class UserTargets extends Set<Token.Implementation> {
   override clear(): void;
 
   override delete(token: Token.Implementation): boolean;
+
+  #UserTargets: true;
 }
 
 declare namespace UserTargets {

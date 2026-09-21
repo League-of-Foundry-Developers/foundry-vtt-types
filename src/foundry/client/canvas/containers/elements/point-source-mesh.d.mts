@@ -11,23 +11,6 @@ declare class PointSourceMesh<Shader extends PIXI.Shader = AdaptiveLightingShade
    */
   constructor(geometry: PIXI.Geometry, shader: Shader, state?: PIXI.State, drawMode?: PIXI.DRAW_MODES);
 
-  /**
-   * @deprecated Removed without replacement in v13 (this warning will be removed in v14)
-   */
-  protected static _priorBlendMode: never;
-
-  protected static _currentTexture: never;
-
-  /**
-   * @deprecated Made hard private in v13 (this warning will be removed in v14)
-   */
-  _worldID: never;
-
-  /**
-   * @deprecated Made hard private in v13 (this warning will be removed in v14)
-   */
-  _updateID: never;
-
   override get geometry(): PIXI.Geometry;
 
   override set geometry(value: PIXI.Geometry);
@@ -37,11 +20,6 @@ declare class PointSourceMesh<Shader extends PIXI.Shader = AdaptiveLightingShade
 
   /** @throws You can't add children to a {@linkcode PointSourceMesh}. */
   override addChildAt(): never;
-
-  /**
-   * @deprecated Removed without replacement in v13 (this warning will be removed in v14)
-   */
-  protected override _render(renderer: never): never;
 
   override calculateBounds(): void;
 

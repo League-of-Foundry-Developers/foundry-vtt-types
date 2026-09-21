@@ -28,7 +28,7 @@ declare class SmoothNoise {
    * The noise output is multiplied by this value
    *
    * @remarks
-   * @throws If passed `NaN` or `+`/`-Infinity`
+   * @throws If passed `0`, `NaN`, or `+`/`-Infinity`
    */
   get amplitude(): number;
 
@@ -40,7 +40,7 @@ declare class SmoothNoise {
    * Scale factor of the random indices
    *
    * @remarks
-   * @throws If passed a negative number, `NaN`, or `+`/`-Infinity`
+   * @throws If passed a number that is not positive, `NaN`, or `+`/`-Infinity`
    */
   get scale(): number;
 
@@ -65,21 +65,21 @@ declare namespace SmoothNoise {
     /**
      * The generated noise will be on the range [0, amplitude].
      * @defaultValue `1`
-     * @remarks Must be finite
+     * @remarks Must be finite and non-zero
      */
     amplitude: number;
 
     /**
      * An adjustment factor for the input x values which place them on an appropriate range.
      * @defaultValue `1`
-     * @remarks Must be finite and non-negative
+     * @remarks Must be finite and positive
      */
     scale: number;
 
     /**
      * The number of pre-generated random numbers to generate.
      * @defaultValue `256`
-     * @remarks Must be a power of 2 or construction throws.
+     * @remarks Must be a positive power-of-2 integer or construction throws.
      */
     maxReferences: number;
   }

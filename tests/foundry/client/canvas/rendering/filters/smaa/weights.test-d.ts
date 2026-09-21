@@ -1,6 +1,18 @@
-import { test } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
-// `SMAABWeightCalculationFilter` is only imported in `smaa.mjs`, is only assigned to a private property of `SMAAFilter`, and never gets re-exported, so it cannot currently be tested.
-// It's only testable alteration to its parent class is the constructor interface
+import SMAABlendingWeightCalculationFilter = foundry.canvas.rendering.filters.SMAABlendingWeightCalculationFilter;
 
-test.todo("foundry/client/canvas/rendering/filters/smaa/weights");
+test("foundry/client/canvas/rendering/filters/smaa/weights", () => {
+  const filter = new SMAABlendingWeightCalculationFilter({
+    threshold: 0.1,
+    maxSearchSteps: 16,
+    maxSearchStepsDiag: 8,
+    cornerRounding: 25,
+    disableDiagDetection: false,
+    disableCornerDetection: false,
+  });
+  expectTypeOf(filter).toExtend<PIXI.Filter>();
+
+  // @ts-expect-error `localContrastAdaptionFactor` is not used by this filter
+  new SMAABlendingWeightCalculationFilter({ localContrastAdaptionFactor: 2 });
+});
