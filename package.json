@@ -173,7 +173,7 @@
     "@typescript-eslint/scope-manager": "^8.31.0",
     "@typescript-eslint/utils": "^8.31.0",
     "@typescript/native-preview": "^7.0.0-dev.20251012.1",
-    "dotenv": "^17.2.3",
+    "dotenv": "^18.0.0",
     "esbuild": "^0.28.0",
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.0.1",
