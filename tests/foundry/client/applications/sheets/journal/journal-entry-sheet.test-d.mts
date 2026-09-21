@@ -97,9 +97,7 @@ test("foundry/client/applications/sheets/journal/journal-entry-sheet", () => {
   expectTypeOf(sheet.previousPage()).toEqualTypeOf<Promise<JournalEntrySheet> | void>();
   expectTypeOf(sheet.toggleSearchMode()).toEqualTypeOf<Promise<JournalEntrySheet>>();
   expectTypeOf(sheet.toggleSidebar()).toEqualTypeOf<void>();
-  expectTypeOf(sheet.viewedPageDocuments()).toEqualTypeOf<
-    Generator<JournalEntryPage.Implementation, void, undefined>
-  >();
+  expectTypeOf(sheet.viewedPageDocuments()).toEqualTypeOf<Generator<JournalEntryPage.Implementation, void, void>>();
 
   /* Render lifecycle */
 

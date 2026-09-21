@@ -492,7 +492,7 @@ test("foundry/common/utils/helpers", () => {
 
   // objectEntries
 
-  expectTypeOf(utils.objectEntries({})).toEqualTypeOf<Generator<[string, unknown], void, unknown>>();
+  expectTypeOf(utils.objectEntries({})).toEqualTypeOf<Generator<[string, unknown], void, void>>();
 
   // iterateEntries
 
@@ -502,7 +502,7 @@ test("foundry/common/utils/helpers", () => {
 
   // objectKeys
 
-  expectTypeOf(utils.objectKeys({})).toEqualTypeOf<Generator<string, void, unknown>>();
+  expectTypeOf(utils.objectKeys({})).toEqualTypeOf<Generator<string, void, void>>();
 
   // iterateKeys
 
@@ -512,7 +512,7 @@ test("foundry/common/utils/helpers", () => {
 
   // objectValues
 
-  expectTypeOf(utils.objectValues({})).toEqualTypeOf<Generator<unknown, void, unknown>>();
+  expectTypeOf(utils.objectValues({})).toEqualTypeOf<Generator<unknown, void, void>>();
 
   // iterateValues
 

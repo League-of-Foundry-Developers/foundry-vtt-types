@@ -130,7 +130,7 @@ expectTypeOf(ApplicationV2.RENDER_STATES).toEqualTypeOf<{
 }>();
 expectTypeOf(ApplicationV2.emittedEvents).toEqualTypeOf<string[]>();
 expectTypeOf(ApplicationV2.inheritanceChain()).toEqualTypeOf<
-  Generator<foundry.applications.api.ApplicationV2.AnyConstructor, void, undefined>
+  Generator<foundry.applications.api.ApplicationV2.AnyConstructor, void, void>
 >();
 expectTypeOf(ApplicationV2.parseCSSDimension("", 1)).toEqualTypeOf<number | undefined>();
 // Called on the base class the `this` parameter resolves through the constraint, so the yielded instance is the
@@ -139,7 +139,7 @@ expectTypeOf(ApplicationV2.instances()).toEqualTypeOf<
   Generator<
     ApplicationV2<object, ApplicationV2.Configuration<ApplicationV2.Any>, ApplicationV2.RenderOptions>,
     void,
-    undefined
+    void
   >
 >();
 
@@ -147,14 +147,14 @@ expectTypeOf(ApplicationV2.instances()).toEqualTypeOf<
 test("static instances is polymorphic", () => {
   class _InstancesApp extends ApplicationV2 {}
 
-  expectTypeOf(_InstancesApp.instances()).toEqualTypeOf<Generator<_InstancesApp, void, undefined>>();
+  expectTypeOf(_InstancesApp.instances()).toEqualTypeOf<Generator<_InstancesApp, void, void>>();
 });
 
 expectTypeOf(applicationV2["_headerControlButtons"]()).toEqualTypeOf<
-  Generator<foundry.applications.api.ApplicationV2.HeaderControlsEntry, void, undefined>
+  Generator<foundry.applications.api.ApplicationV2.HeaderControlsEntry, void, void>
 >();
 expectTypeOf(applicationV2["_headerControlContextEntries"]()).toEqualTypeOf<
-  Generator<foundry.applications.ux.ContextMenu.Entry<HTMLElement>, void, undefined>
+  Generator<foundry.applications.ux.ContextMenu.Entry<HTMLElement>, void, void>
 >();
 expectTypeOf(applicationV2["_renderFrameButtons"]({})).toEqualTypeOf<Promise<void>>();
 

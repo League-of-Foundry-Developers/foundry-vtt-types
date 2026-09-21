@@ -60,7 +60,7 @@ class _V14DataModelTest extends DataModel<TestSchema, null> {
     return super._getInnerModel(field, element, options);
   }
 
-  protected override _initializationOrder(): Generator<[string, fields.DataField.Any], void, undefined> {
+  protected override _initializationOrder(): Generator<[string, fields.DataField.Any], void, void> {
     return super._initializationOrder();
   }
 

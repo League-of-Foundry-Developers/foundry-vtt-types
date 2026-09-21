@@ -99,7 +99,7 @@ declare class PolygonTreeNode {
   /**
    * Iterate over recursively over the children in depth-first order.
    */
-  [Symbol.iterator](): Generator<PolygonTreeNode, void, undefined>;
+  [Symbol.iterator](): Generator<PolygonTreeNode, void, void>;
 
   /**
    * Find the node in this (sub)tree that contains the given point.
