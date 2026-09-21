@@ -222,8 +222,9 @@ export interface EditorInputConfig extends FormInputConfig<string>, InexactParti
 
 /**
  * Create a `<div class="editor">` element for a StringField.
- * @remarks If {@linkcode CONFIG.TextEditor.engines} has an entry for the
- * {@linkcode EditorInputConfig.engine | engine} with a `render` function, the element that function returns is used instead.
+ * @remarks If {@linkcode CONFIG.TextEditor.engines} has an entry for the {@linkcode EditorInputConfig.engine | engine}
+ * with a `render` function, the element it returns is used instead. This is why the return type is `HTMLElement`
+ * rather than `HTMLDivElement`.
  */
 export function createEditorInput(config: EditorInputConfig): HTMLElement;
 
