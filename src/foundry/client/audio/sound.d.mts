@@ -356,6 +356,7 @@ declare class Sound extends EventEmitterMixin() {
   static createEffect(context: AudioContext, config?: Sound.EffectConfig): Sound.Effect | undefined;
 
   #Sound: true;
+  static #SoundStatic: true;
 }
 
 declare namespace Sound {

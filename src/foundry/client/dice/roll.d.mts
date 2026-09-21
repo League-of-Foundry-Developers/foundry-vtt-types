@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
+import type { AnyMutableObject, AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -349,7 +349,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param data    - A data object used to substitute for attributes in the formula
    * @returns A parsed array of RollTerm instances
    */
-  static parse(formula: string, data: Record<string, unknown>): RollTerm[];
+  static parse(formula: string, data: AnyMutableObject): RollTerm[];
 
   /**
    * Instantiate the nodes in an AST sub-tree into RollTerm instances.

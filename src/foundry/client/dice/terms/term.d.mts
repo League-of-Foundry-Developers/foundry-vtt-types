@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType, Identity } from "#utils";
+import type { AnyMutableObject, InexactPartial, FixedInstanceType, Identity } from "#utils";
 import type { RollParseNode } from "../_types.mts";
 
 import type RollResolver from "../../applications/dice/roll-resolver.d.mts";
@@ -103,7 +103,7 @@ declare abstract class RollTerm {
    * @param data - Provided data from an un-serialized term
    * @returns The constructed RollTerm
    */
-  static fromData(data: Record<string, unknown>): RollTerm;
+  static fromData(data: AnyMutableObject): RollTerm;
 
   /** Construct a RollTerm from parser information. */
   static fromParseNode(node: RollParseNode): RollTerm;
@@ -113,10 +113,7 @@ declare abstract class RollTerm {
    * @param data - The de-serialized term data
    * @returns The re-constructed RollTerm object
    */
-  protected static _fromData<T extends RollTerm.AnyConstructor>(
-    this: T,
-    data: Record<string, unknown>,
-  ): FixedInstanceType<T>;
+  protected static _fromData<T extends RollTerm.AnyConstructor>(this: T, data: AnyMutableObject): FixedInstanceType<T>;
 
   /**
    * Reconstruct a RollTerm instance from a provided JSON string
@@ -129,7 +126,7 @@ declare abstract class RollTerm {
    * Serialize the RollTerm to a JSON string which allows it to be saved in the database or embedded in text.
    * This method should return an object suitable for passing to the JSON.stringify function.
    */
-  toJSON(): Record<string, unknown>;
+  toJSON(): AnyMutableObject;
 }
 
 declare namespace RollTerm {

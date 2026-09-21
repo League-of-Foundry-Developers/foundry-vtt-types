@@ -1,3 +1,7 @@
+import type { parser as PeggyParser } from "peggy";
+import type RollParser from "./parser.d.mts";
+import type RollTerm from "./terms/term.d.mts";
+
 export interface RollParseOffset {
   /** The start position of the matched term in the formula string. */
   start: number;
@@ -106,3 +110,26 @@ export interface DiceRollParseNode extends ModifiersRollParseNode {
 }
 
 export type RollParseArg = null | number | string | RollParseNode | RollParseArg[];
+
+/**
+ * The compiled Peggy grammar used to parse roll formulae.
+ * @remarks Foundry compiles `grammar.pegjs` into its bundle and exposes it as {@linkcode foundry.dice.RollGrammar}.
+ */
+export interface RollGrammar {
+  StartRules: "Expression"[];
+  SyntaxError: typeof PeggyParser.SyntaxError;
+  parse(formula: string, options?: RollGrammarParseOptions): RollParseNode | RollTerm.Data;
+}
+
+export interface RollGrammarParseOptions {
+  /** @remarks Identifies the formula in parser error locations. */
+  grammarSource?: string | { toString(): string } | undefined;
+
+  startRule?: "Expression" | undefined;
+
+  /**
+   * @defaultValue `CONFIG.Dice.parser`
+   * @remarks The parser class whose callbacks the grammar's actions delegate to.
+   */
+  parser?: RollParser.AnyConstructor | undefined;
+}

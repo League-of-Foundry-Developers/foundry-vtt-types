@@ -214,6 +214,7 @@ declare class Tour {
   static highlightElement(element: HTMLElement, options?: Tour.HighlightElementOptions): HTMLElement;
 
   #Tour: true;
+  static #TourStatic: true;
 }
 
 declare namespace Tour {
