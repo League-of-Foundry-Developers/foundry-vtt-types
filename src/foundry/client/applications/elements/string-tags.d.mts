@@ -99,7 +99,7 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<string[] | 
   protected _validateTag(tag: string): void;
 
   /**
-   * @remarks Returns `[tags: HTMLDivElement, input: HTMLInputElement, button: HTMLButtonElement]` in {@linkcode HTMLStringTagsElement}.
+   * @remarks Returns `[tags: HTMLDivElement, group: HTMLDivElement]` in {@linkcode HTMLStringTagsElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];

@@ -31,8 +31,6 @@ declare class NoteTab<
     entry: PlaceableTab.PlaceableDocument,
     context: PlaceableTab._EntryContext,
   ): Promise<NoteTab.EntryContext>;
-
-  #NoteTab: true;
 }
 
 declare namespace NoteTab {

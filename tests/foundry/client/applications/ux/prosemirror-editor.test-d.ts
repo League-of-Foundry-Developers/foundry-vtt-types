@@ -27,6 +27,10 @@ test("foundry/client/applications/ux/prosemirror-editor", () => {
   expectTypeOf(ProseMirrorEditor.buildDefaultPlugins()).toEqualTypeOf<Record<string, Plugin>>();
 
   new ProseMirrorEditor("prosemirror.test", view, { collaborate: true });
+
+  // `collaborate` is copied from the options, which may omit it
+  const localEditor = new ProseMirrorEditor("prosemirror.test", view);
+  expectTypeOf(localEditor.collaborate).toEqualTypeOf<boolean | undefined>();
   // eslint-disable-next-line @typescript-eslint/no-deprecated -- v14 runtime keeps this signature under deprecation.
   new ProseMirrorEditor("prosemirror.test", view, plugin, true, { collaborate: true });
 });

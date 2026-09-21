@@ -106,9 +106,10 @@ declare namespace FolderConfig {
     /**
      * @remarks Called with the updated Folder on successful submission, or with `null` on submission
      * failure or close (see {@linkcode FolderConfig._processSubmitData | #_processSubmitData} and
-     * {@linkcode FolderConfig._onClose | #_onClose})
+     * {@linkcode FolderConfig._onClose | #_onClose}).
+     * Optional: the sheet only calls it if it was provided.
      */
-    resolve: ResolveFunction;
+    resolve?: ResolveFunction | undefined;
   }
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}

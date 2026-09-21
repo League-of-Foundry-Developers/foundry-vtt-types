@@ -19,6 +19,9 @@ test("foundry/client/applications/apps/image-popout", () => {
   const fromPath = new ImagePopout("path/to/image.webp");
   expectTypeOf(fromPath).toEqualTypeOf<ImagePopout>();
 
+  // The deprecated top-level `title` option is still accepted
+  new ImagePopout({ src: "path/to/image.webp", title: "Legacy Title" });
+
   expectTypeOf(ImagePopout.DEFAULT_OPTIONS).toEqualTypeOf<ImagePopout.DefaultOptions>();
   expectTypeOf(ImagePopout.PARTS).toEqualTypeOf<Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>>();
 

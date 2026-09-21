@@ -209,7 +209,8 @@ declare class TextEditor {
   ): Promise<HTMLAnchorElement | null>;
 
   /**
-   * Activate listeners for the interior content of the editor frame.
+   * Activate interaction listeners for the interior content of the editor frame.
+   * @param document - The document to bind listeners to. (default: `window.document`)
    */
   static activateListeners(document?: Document): void;
 
@@ -252,7 +253,7 @@ declare class TextEditor {
    */
   static get implementation(): TextEditor.ImplementationClass;
 
-  #private: true;
+  static #TextEditorStatic: true;
 }
 
 declare namespace TextEditor {
