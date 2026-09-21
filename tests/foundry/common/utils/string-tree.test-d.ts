@@ -10,6 +10,8 @@ test("foundry/common/utils/string-tree", () => {
   // can't test the unique symbol StringTree.leaves
 
   expectTypeOf(s.addLeaf(["a"], node)).toEqualTypeOf<StringTree.Node<AnyObject>>();
+  expectTypeOf(s.addLeaf("ab", node)).toEqualTypeOf<StringTree.Node<AnyObject>>();
+  expectTypeOf(s.addLeaf(new Set(["a"]), node)).toEqualTypeOf<StringTree.Node<AnyObject>>();
 
   expectTypeOf(s.lookup(["a"])).toEqualTypeOf<AnyObject[]>();
   expectTypeOf(s.lookup(["a"], {})).toEqualTypeOf<AnyObject[]>();

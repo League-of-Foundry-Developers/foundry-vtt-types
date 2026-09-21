@@ -59,6 +59,7 @@ declare class IterableWeakMap<K extends WeakKey, V> extends WeakMap<K, V> {
   values(): Generator<V, void, undefined>;
 
   #IterableWeakMap: true;
+  static #IterableWeakMapStatic: true;
 }
 
 declare namespace IterableWeakMap {
