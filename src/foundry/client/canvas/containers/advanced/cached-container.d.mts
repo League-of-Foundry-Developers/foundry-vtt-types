@@ -63,7 +63,8 @@ declare class CachedContainer extends PIXI.Container {
   get alphaMode(): undefined;
 
   /**
-   * A bound Sprite which uses this container's render texture
+   * A PIXI.Sprite or SpriteMesh which is bound to this CachedContainer.
+   * The RenderTexture from this Container is associated with the Sprite which is automatically rendered.
    */
   get sprite(): PIXI.Sprite | SpriteMesh | undefined;
 

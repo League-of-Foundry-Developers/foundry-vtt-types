@@ -2,7 +2,6 @@ import type { Identity, InexactPartial } from "#utils";
 
 /**
  * A modified version of the PIXI.smooth.DashLineShader that supports an offset.
- * @internal
  */
 declare class DashLineShader extends PIXI.smooth.SmoothGraphicsShader {
   /**

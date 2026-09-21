@@ -89,6 +89,7 @@ declare namespace CollisionResult {
   interface Any extends AnyCollisionResult {}
   interface AnyConstructor extends Identity<typeof AnyCollisionResult> {}
 
+  /** @internal */
   interface _ConstructorValues {
     /**
      * The set of edges connected to the target vertex that continue clockwise

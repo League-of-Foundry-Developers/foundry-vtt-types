@@ -30,7 +30,7 @@ declare class PolygonMesher {
   /**
    * Convert a flat points array into a 2 dimensional {@linkcode ClipperLib.Path | ClipperLib path}
    * @param poly      - PIXI.Polygon or points flat array.
-   * @param dimension - Dimension. (default `2`)
+   * @param dimension - The number of dimensions. (default `2`)
    * @returns The clipper lib path.
    * @remarks
    * @throws If `dimension < 2`

@@ -122,6 +122,7 @@ declare class WeilerAthertonClipper {
   ): PIXI.Polygon[];
 
   #WeilerAthertonClipper: true;
+  static #WeilerAthertonClipperStatic: true;
 }
 
 declare namespace WeilerAthertonClipper {

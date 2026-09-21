@@ -5,6 +5,9 @@ import type { fields } from "#client/data/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type TokenTurnMarker from "#client/canvas/placeables/tokens/turn-marker.d.mts";
 
+/**
+ * Turn marker configuration data model.
+ */
 declare class TurnMarkerData extends DataModel<TurnMarkerData.Schema> {
   static override defineSchema(): TurnMarkerData.Schema;
 

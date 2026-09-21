@@ -28,5 +28,6 @@ test("foundry/client/canvas/geometry/shapes/limited-angle-polygon", () => {
   });
 
   expectTypeOf(myLimitedAnglePolygon.getBounds()).toEqualTypeOf<PIXI.Rectangle>();
+  expectTypeOf(myLimitedAnglePolygon.externalBounds).toEqualTypeOf<PIXI.Rectangle | undefined>();
   expectTypeOf(myLimitedAnglePolygon["_includeEdge"]({ x: 50, y: 50 }, { x: 100, y: 100 })).toEqualTypeOf<boolean>();
 });
