@@ -49,11 +49,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   get contents(): V[];
 
   /**
-   * Find an entry in the Map using an functional condition.
+   * Find an entry in the Map using a functional condition.
    * @see {@linkcode Array.find | Array#find}
-   *
-   * @param condition - The functional condition to test. Positional arguments are the value, the index of
-   * iteration, and the collection being searched.
+   * @param condition - The functional condition to test.
    * @returns The value, if found, otherwise undefined
    *
    * @example
@@ -64,14 +62,12 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * ```
    */
   find<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S | undefined;
-  find(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V | undefined;
+  find(/** @immediate */ condition: (e: V, index: number, collection: this) => unknown): V | undefined;
 
   /**
    * Filter the `Collection`, returning an Array of entries which match a functional condition.
    * @see {@linkcode Array.filter | Array#filter}
-   *
-   * @param condition - The functional condition to test. Positional arguments are the value, the
-   * index of iteration, and the collection being filtered.
+   * @param condition - The functional condition to test.
    * @returns An Array of matched values
    *
    * @example
@@ -82,7 +78,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * ```
    */
   filter<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S[];
-  filter(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V[];
+  filter(/** @immediate */ condition: (e: V, index: number, collection: this) => unknown): V[];
 
   /**
    * Apply a function to each element of the collection
@@ -132,7 +128,6 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   /**
    * Reduce the `Collection` by applying an evaluator function and accumulating entries
    * @see {@linkcode Array.reduce | Array#reduce}
-   * @template U
    * @param reducer - A reducer function applied to each entry value.
    * @param initial - An initial value which accumulates with each iteration
    * @returns The accumulated result
@@ -147,7 +142,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * ```
    */
   reduce<A>(
-    /** @immediate */ evaluator: (accumulator: A, entity: V, index: number, collection: this) => A,
+    /** @immediate */ reducer: (accumulator: A, entity: V, index: number, collection: this) => A,
     initial: A,
   ): A;
 
@@ -189,9 +184,9 @@ declare namespace Collection {
      * @example
      * Get an element from the Collection by key
      * ```ts
-     * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-     * c.get("a"); // "A"
-     * c.get("d"); // null
+     * let c = new Collection([["a", "Alfred"], ["b", "Bob"], ["c", "Cynthia"]]);
+     * c.get("a"); // "Alfred"
+     * c.get("d"); // undefined
      * c.get("d", {strict: true}); // throws Error
      * ```
      */

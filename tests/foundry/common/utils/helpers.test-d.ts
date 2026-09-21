@@ -381,10 +381,10 @@ test("foundry/common/utils/helpers", () => {
 
   // expandObjectInPlace
 
-  expectTypeOf(utils.expandObjectInPlace({})).toEqualTypeOf<object>();
-  expectTypeOf(utils.expandObjectInPlace({}, {})).toEqualTypeOf<object>();
-  expectTypeOf(utils.expandObjectInPlace({}, { shallow: true })).toEqualTypeOf<object>();
-  expectTypeOf(utils.expandObjectInPlace({}, { shallow: undefined })).toEqualTypeOf<object>();
+  expectTypeOf(utils.expandObjectInPlace({})).toEqualTypeOf<boolean>();
+  expectTypeOf(utils.expandObjectInPlace({}, {})).toEqualTypeOf<boolean>();
+  expectTypeOf(utils.expandObjectInPlace({}, { shallow: true })).toEqualTypeOf<boolean>();
+  expectTypeOf(utils.expandObjectInPlace({}, { shallow: undefined })).toEqualTypeOf<boolean>();
 
   // filterObject
 
@@ -474,6 +474,7 @@ test("foundry/common/utils/helpers", () => {
   expectTypeOf(utils.isNewerVersion(4, "2.3", {})).toEqualTypeOf<boolean>();
   expectTypeOf(utils.isNewerVersion(4, "2.3", { majorOnly: true })).toEqualTypeOf<boolean>();
   expectTypeOf(utils.isNewerVersion(4, "2.3", { majorOnly: undefined })).toEqualTypeOf<boolean>();
+  expectTypeOf(utils.isNewerVersion(null, undefined)).toEqualTypeOf<boolean>();
 
   // isEmpty
 
@@ -729,12 +730,14 @@ test("foundry/common/utils/helpers", () => {
 
   // @ts-expect-error: base must be 2 or 10
   expectTypeOf(utils.formatFileSize(4, { base: 6 })).toEqualTypeOf<string>();
-  expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA")).toEqualTypeOf<utils.ResolvedUUID>();
-  expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA", {})).toEqualTypeOf<utils.ResolvedUUID>();
+  expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA")).toEqualTypeOf<utils.ResolvedUUID | null>();
+  expectTypeOf(utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA", {})).toEqualTypeOf<utils.ResolvedUUID | null>();
   expectTypeOf(
     utils.parseUuid("Compendium.Actor.AAAAASomeIDAAAAA", { relative: undefined }),
-  ).toEqualTypeOf<utils.ResolvedUUID>();
-  expectTypeOf(utils.parseUuid(".Item.IIIIISomeIDIIIII", { relative: someActor })).toEqualTypeOf<utils.ResolvedUUID>();
+  ).toEqualTypeOf<utils.ResolvedUUID | null>();
+  expectTypeOf(
+    utils.parseUuid(".Item.IIIIISomeIDIIIII", { relative: someActor }),
+  ).toEqualTypeOf<utils.ResolvedUUID | null>();
   expectTypeOf(utils.buildRelativeUuid(someItem, someActor)).toBeString();
   expectTypeOf(utils.buildRelativeUuid("Item.SomeID", someActor)).toBeString();
   expectTypeOf(utils.buildRelativeUuid("Item.PONMLKJIHGFEDCBA", "Actor.ABCDEFGHIJKLMNOP")).toBeString();

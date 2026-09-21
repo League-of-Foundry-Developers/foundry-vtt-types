@@ -46,7 +46,7 @@ test("foundry/common/utils/bitmask", () => {
   expectTypeOf(b.toJSON()).toEqualTypeOf<string>();
 
   expectTypeOf(BitMask.fromJSON('{"a": true}')).toEqualTypeOf<BitMask.Any>();
-  expectTypeOf(b.toObject()).toEqualTypeOf<typeof b>();
+  expectTypeOf(b.toObject()).toEqualTypeOf<{ foo: boolean; bar: boolean }>();
   expectTypeOf(b.clone()).toEqualTypeOf<typeof b>();
 
   expectTypeOf(BitMask.generateShaderBitMaskConstants(["a"])).toEqualTypeOf<string>();

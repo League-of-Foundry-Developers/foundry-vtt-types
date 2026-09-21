@@ -6,7 +6,7 @@ declare const _leavesSymbol: unique symbol;
 /**
  * A data structure representing a tree of string nodes with arbitrary object leaves.
  */
-declare class StringTree<Leaf extends object = AnyObject, Keys extends Iterable<string> = string[]> {
+declare class StringTree<Leaf extends object = AnyObject, Keys extends Iterable<string> = Iterable<string>> {
   /**
    * The key symbol that stores the leaves of any given node.
    */
@@ -52,6 +52,7 @@ declare class StringTree<Leaf extends object = AnyObject, Keys extends Iterable<
   ): void;
 
   #StringTree: true;
+  static #StringTreeStatic: true;
 }
 
 declare namespace StringTree {
@@ -102,6 +103,6 @@ declare namespace StringTree {
 
 export default StringTree;
 
-declare abstract class AnyStringTree extends StringTree<object, string[]> {
+declare abstract class AnyStringTree extends StringTree<object, Iterable<string>> {
   constructor(...args: never);
 }

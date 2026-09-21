@@ -86,6 +86,10 @@ describe("Collection Tests", () => {
 
     expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
     expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
+
+    // Conditions are tested for truthiness
+    expectTypeOf(cn.filter((entry) => entry?.length)).toEqualTypeOf<Array<string | null>>();
+    expectTypeOf(cn.find((entry) => entry?.length)).toEqualTypeOf<string | null | undefined>();
   });
 
   test("Iteration", () => {
