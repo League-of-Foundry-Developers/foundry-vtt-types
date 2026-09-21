@@ -1,2 +1,6 @@
-export { default as ChatInputPlugin } from "./chat-input-plugin.mts";
-export { default as ChatMenuPlugin } from "./chat-menu-plugin.mts";
+// In Foundry itself this file contains re-exports of these other modules.
+// Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
+// While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
+
+export { default as ChatInputPlugin } from "./chat-input-plugin.mjs";
+export { default as ChatMenuPlugin } from "./chat-menu-plugin.mjs";

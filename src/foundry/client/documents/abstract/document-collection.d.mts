@@ -211,6 +211,7 @@ declare abstract class DocumentCollection<
   ): void;
 
   #DocumentCollection: true;
+  static #DocumentCollectionStatic: true;
 }
 
 declare namespace DocumentCollection {

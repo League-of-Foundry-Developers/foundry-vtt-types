@@ -77,6 +77,8 @@ declare class SearchFilter {
    * @remarks obj needs to work with both Document.Any *and* plain objects
    */
   static evaluateFilter(obj: object, filter: SearchFilter.FieldFilter): boolean;
+
+  #SearchFilter: true;
 }
 
 declare namespace SearchFilter {

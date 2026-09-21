@@ -118,6 +118,7 @@ declare class AVSettings {
   handleUserActivity(userId: string, settings: AVSettings.Data): void;
 
   #AVSettings: true;
+  static #AVSettingsStatic: true;
 }
 
 declare namespace AVSettings {

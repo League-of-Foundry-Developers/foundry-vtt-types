@@ -105,16 +105,16 @@ declare class AudioHelper {
   get context(): this["music"];
 
   /**
+   * A singleton cache used for audio buffers.
+   */
+  buffers: AudioBufferCache;
+
+  /**
    * A global mute which suppresses all 3 audio channels.
    */
   get globalMute(): boolean;
 
   set globalMute(muted);
-
-  /**
-   * A singleton cache used for audio buffers.
-   */
-  buffers: AudioBufferCache;
 
   /**
    * Create a Sound instance for a given audio source URL
@@ -304,6 +304,7 @@ declare class AudioHelper {
   getMaxBandLevel(band?: AudioHelper.BandName, options?: AudioHelper.GetMaxBandLevelOptions): number;
 
   #AudioHelper: true;
+  static #AudioHelperStatic: true;
 }
 
 declare namespace AudioHelper {

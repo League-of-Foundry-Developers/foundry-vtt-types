@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType, Identity } from "#utils";
+import type { AnyMutableObject, InexactPartial, FixedInstanceType, Identity } from "#utils";
 import type { PoolRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -129,10 +129,10 @@ declare class PoolTerm extends RollTerm {
 
   protected static override _fromData<T extends RollTerm.AnyConstructor>(
     this: T,
-    data: Record<string, unknown>,
+    data: AnyMutableObject,
   ): FixedInstanceType<T>;
 
-  toJSON(): Record<string, unknown>;
+  toJSON(): AnyMutableObject;
 
   /**
    * Given a string formula, create and return an evaluated PoolTerm object

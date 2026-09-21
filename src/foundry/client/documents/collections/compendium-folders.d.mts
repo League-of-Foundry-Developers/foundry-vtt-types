@@ -25,16 +25,16 @@ declare class CompendiumFolderCollection<
     options: DocumentCollection.ImportToCompendiumOptions<"Folder">,
   ): Promise<Folder.Stored<DocumentName> | undefined>;
 
-  protected override _prepareImportDocument<Options extends DocumentCollection.ImportToCompendiumOptions<"Folder">>(
-    document: Folder.OfType<DocumentName> | Folder.Stored<DocumentName>,
-    options: Options,
-  ): ClientDocument.ToCompendiumReturnType<"Folder", Options>;
-
   override updateAll(
     transformation: DocumentCollection.Transformation<"Folder">,
     condition?: ((doc: Folder.Stored<DocumentName>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<"Folder">,
   ): Promise<Folder.Stored[]>;
+
+  protected override _prepareImportDocument<Options extends DocumentCollection.ImportToCompendiumOptions<"Folder">>(
+    document: Folder.OfType<DocumentName> | Folder.Stored<DocumentName>,
+    options: Options,
+  ): ClientDocument.ToCompendiumReturnType<"Folder", Options>;
 
   override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,

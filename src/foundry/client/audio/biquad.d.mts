@@ -27,6 +27,7 @@ declare class BiquadFilterEffect extends BiquadFilterNode {
   update(options?: BiquadFilterEffect.UpdateOptions): void;
 
   #BiquadFilterEffect: true;
+  static #BiquadFilterEffectStatic: true;
 }
 
 declare namespace BiquadFilterEffect {
