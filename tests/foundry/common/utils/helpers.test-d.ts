@@ -9,6 +9,10 @@ declare function functionWithoutParameters(): void;
 declare function functionWithParameters(a: number, b: string, c?: boolean): void;
 declare function functionWithReturnTypeOtherThanVoid(): number;
 
+// equals
+
+declare const someUnknown: unknown;
+
 // isSubclass
 
 declare class ClassWithNoConstructorParameters {}
@@ -211,7 +215,13 @@ test("foundry/common/utils/helpers", () => {
   expectTypeOf(utils.equals("foo", "foo")).toBeBoolean();
   expectTypeOf(utils.equals("foo", "bar")).toBeBoolean();
   expectTypeOf(utils.equals(7, {})).toBeBoolean();
-  expectTypeOf(utils.equals(foundry.documents.Actor, foundry.documents.Card)).toBeBoolean();
+  expectTypeOf(utils.equals(someUnknown, 7)).toBeBoolean();
+
+  // `b` must overlap with `a`, since values of unrelated types can never be equal
+  // @ts-expect-error a number is never equal to a string
+  utils.equals(7, "x");
+  // @ts-expect-error unrelated classes are never equal
+  utils.equals(foundry.documents.Actor, foundry.documents.Card);
 
   // duplicate
 

@@ -87,9 +87,11 @@ describe("Collection Tests", () => {
     expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
     expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
 
-    // Conditions are tested for truthiness
-    expectTypeOf(cn.filter((entry) => entry?.length)).toEqualTypeOf<Array<string | null>>();
-    expectTypeOf(cn.find((entry) => entry?.length)).toEqualTypeOf<string | null | undefined>();
+    // Foundry tests conditions for truthiness, but they are typed to return a boolean
+    expectTypeOf(cn.filter((entry) => !!entry?.length)).toEqualTypeOf<Array<string | null>>();
+    expectTypeOf(cn.find((entry) => !!entry?.length)).toEqualTypeOf<string | null | undefined>();
+    // @ts-expect-error the condition must return a boolean
+    cn.filter((entry) => entry?.length);
   });
 
   test("Iteration", () => {

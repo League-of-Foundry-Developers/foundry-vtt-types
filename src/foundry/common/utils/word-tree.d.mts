@@ -8,7 +8,10 @@ import type { Document } from "#common/abstract/_module.d.mts";
  * handling for languages that compose characters and letters.
  */
 declare class WordTree<DocumentName extends Document.Type> extends StringTree<WordTree.Entry<DocumentName>, string> {
-  override addLeaf(strings: Iterable<string>, entry: WordTree.Entry<DocumentName>): WordTree.EntryNode<DocumentName>;
+  override addLeaf(
+    strings: string | Iterable<string>,
+    entry: WordTree.Entry<DocumentName>,
+  ): WordTree.EntryNode<DocumentName>;
 
   /**
    * Return entries that match the given string prefix.

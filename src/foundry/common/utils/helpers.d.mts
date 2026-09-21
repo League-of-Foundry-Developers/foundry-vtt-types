@@ -9,6 +9,7 @@ import type {
   InexactPartial,
   NonNullish,
   NonObject,
+  OverlapsWith,
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
 
@@ -217,8 +218,9 @@ export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
  *
  * @param a - The first value
  * @param b - The second value
+ * @remarks `b` must overlap with the type of `a`, since unrelated types can never be equal.
  */
-export function equals(a: unknown, b: unknown): boolean;
+export function equals<A, B>(a: A, b: OverlapsWith<B, A>): boolean;
 
 /**
  * A cheap data duplication trick which is relatively robust.

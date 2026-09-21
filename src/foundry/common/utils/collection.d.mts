@@ -60,9 +60,10 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
+   * @remarks Although Foundry tests for truthiness, the condition is typed as `boolean`; coerce with `!!`.
    */
   find<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S | undefined;
-  find(/** @immediate */ condition: (e: V, index: number, collection: this) => unknown): V | undefined;
+  find(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V | undefined;
 
   /**
    * Filter the `Collection`, returning an Array of entries which match a functional condition.
@@ -76,9 +77,10 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
+   * @remarks Although Foundry tests for truthiness, the condition is typed as `boolean`; coerce with `!!`.
    */
   filter<S extends V>(/** @immediate */ condition: (e: V, index: number, collection: this) => e is S): S[];
-  filter(/** @immediate */ condition: (e: V, index: number, collection: this) => unknown): V[];
+  filter(/** @immediate */ condition: (e: V, index: number, collection: this) => boolean): V[];
 
   /**
    * Apply a function to each element of the collection
