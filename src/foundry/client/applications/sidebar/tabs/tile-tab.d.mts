@@ -36,8 +36,6 @@ declare class TileTab<
   protected override _matchesFilter(entry: PlaceableTab.PlaceableDocument): boolean;
 
   protected override _hasAdvancedFilters(): boolean;
-
-  #TileTab: true;
 }
 
 declare namespace TileTab {

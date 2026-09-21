@@ -36,8 +36,6 @@ declare class AmbientLightTab<
   protected override _matchesFilter(entry: PlaceableTab.PlaceableDocument): boolean;
 
   protected override _hasAdvancedFilters(): boolean;
-
-  #AmbientLightTab: true;
 }
 
 declare namespace AmbientLightTab {

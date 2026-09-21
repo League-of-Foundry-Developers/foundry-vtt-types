@@ -14,6 +14,7 @@ test("foundry/client/applications/ux/form-data-extended", () => {
   expectTypeOf(formData.editors).toEqualTypeOf<Record<string, FormApplication.FormApplicationEditor>>();
   expectTypeOf(formData.object).toEqualTypeOf<AnyMutableObject>();
   expectTypeOf(formData.process(htmlForm, {})).toEqualTypeOf<void>();
+  expectTypeOf(formData.process(htmlForm)).toEqualTypeOf<void>();
   expectTypeOf(formData.set("field", "value")).toEqualTypeOf<void>();
   expectTypeOf(formData.append("field", "value")).toEqualTypeOf<void>();
 });

@@ -52,7 +52,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   /**
    * Allow a maximum number of documents to be tagged to the element.
    * @remarks Returns `Infinity` if `max` isn't set; Passing the setter `Infinity`,
-   * a non-integer, or any negative number removes the attribute.
+   * a non-integer, or a non-positive number removes the attribute.
    */
   get max(): number;
 
@@ -80,7 +80,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   protected _initializeTags(values?: string[]): void;
 
   /**
-   * @remarks Returns `[tags: HTMLDivElement, input: HTMLInputElement, button: HTMLButtonElement]` in {@linkcode HTMLDocumentTagsElement}.
+   * @remarks Returns `[tags: HTMLDivElement, group: HTMLDivElement]` in {@linkcode HTMLDocumentTagsElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
@@ -111,9 +111,6 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
    * Create a {@linkcode HTMLDocumentTagsElement} using provided configuration data.
    */
   static create(config: HTMLDocumentTagsElement.Config): HTMLDocumentTagsElement;
-
-  /** @deprecated Removed without replacement (functionality folded into `##add`) in v13. This warning will be removed in v14. */
-  _validateDocument(document: never): never;
 
   #HTMLDocumentTagsElement: true;
 }

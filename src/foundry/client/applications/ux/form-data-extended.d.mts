@@ -41,7 +41,7 @@ declare class FormDataExtended extends FormData {
    * @param form    - The HTML form being processed
    * @param options - Options forwarded from the constructor
    */
-  process(form: HTMLFormElement, options: FormDataExtended.Options): void;
+  process(form: HTMLFormElement, options?: FormDataExtended.Options): void;
 
   /**
    * Assign a value to the FormData instance which always contains JSON strings.
@@ -57,6 +57,8 @@ declare class FormDataExtended extends FormData {
    * @param value - The value to append to the form data
    */
   override append(name: string, value: any): void;
+
+  #FormDataExtended: true;
 }
 
 declare namespace FormDataExtended {

@@ -52,8 +52,6 @@ declare class DrawingTab<
     context: PlaceableTab._EntryContext,
   ): Promise<DrawingTab.EntryContext>;
 
-  #DrawingTab: true;
-
   static #DrawingTabStatic: true;
 }
 

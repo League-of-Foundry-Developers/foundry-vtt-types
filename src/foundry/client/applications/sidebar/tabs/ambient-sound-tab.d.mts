@@ -21,8 +21,6 @@ declare class AmbientSoundTab<
    * @remarks Also re-initializes every sound source, so that filtered-out sounds stop playing.
    */
   override _applyFilters(): void;
-
-  #AmbientSoundTab: true;
 }
 
 declare namespace AmbientSoundTab {
