@@ -3,7 +3,7 @@ import { Graphics as _Graphics } from "pixi.js";
 
 import * as _PIXI from "pixi.js";
 
-// Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
+// Note(LukeAbby): The `smooth.d.mts` and `particles.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
 // Each of them write `export * from "..."` and then selectively shadow or augment the exports.
 
 import * as _smooth from "./smooth.mjs";
@@ -904,7 +904,7 @@ declare global {
      * Represents the update priorities used by internal PIXI classes when registered with
      * the {@linkcode PIXI.Ticker} object. Higher priority items are updated first and lower
      * priority items, such as render, should go later.
-     * @remarks Includes Foundry's additions of `OBJECTS`, `PRIMARY`, and `PERCEPTION`
+     * @remarks Includes Foundry's additions of `OBJECTS`, `INTERFACE`, `PRIMARY`, and `PERCEPTION`
      */
     const UPDATE_PRIORITY: {
       /** Highest priority used for interaction events in {@linkcode PIXI.EventSystem} */
@@ -917,13 +917,16 @@ declare global {
       NORMAL: 0 & UPDATE_PRIORITY;
 
       /** Low priority used for {@linkcode PIXI.Application} rendering. */
-      LOW: 25 & UPDATE_PRIORITY;
+      LOW: -25 & UPDATE_PRIORITY;
 
       /** Lowest priority used for {@linkcode PIXI.BasePrepare} utility. */
-      UTILITY: 50 & UPDATE_PRIORITY;
+      UTILITY: -50 & UPDATE_PRIORITY;
 
       /** @remarks Foundry addition, defined as `HIGH - 2` */
       OBJECTS: 23 & UPDATE_PRIORITY;
+
+      /** @remarks Foundry addition, defined as `HIGH - 3` */
+      INTERFACE: 22 & UPDATE_PRIORITY;
 
       /** @remarks Foundry addition, defined as `NORMAL + 3` */
       PRIMARY: 3 & UPDATE_PRIORITY;
@@ -1081,6 +1084,12 @@ declare module "pixi.js" {
      * Handled in Canvas##activateTicker, defined as `HIGH - 2`
      */
     OBJECTS = 23,
+
+    /**
+     * @remarks Foundry defined custom ticker priority
+     * Handled in Canvas##activateTicker, defined as `HIGH - 3`
+     */
+    INTERFACE = 22,
 
     /**
      * @remarks Foundry defined custom ticker priority
