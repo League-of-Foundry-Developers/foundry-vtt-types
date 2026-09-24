@@ -4,9 +4,8 @@ import type { Identity } from "#utils";
  * A custom Transform class allowing to observe changes with a callback.
  * @privateRemarks Scope extends object is intentional; `"The scope bound to an ObservableTransform class must be a valid object/class."`
  */
-declare class ObservableTransform<CB extends (this: Scope) => unknown, Scope extends object> extends PIXI.Transform {
+declare class ObservableTransform<CB extends (this: Scope) => void, Scope extends object> extends PIXI.Transform {
   /**
-   *
    * @param callback - The callback called to observe changes.
    * @param scope    - The scope of the callback.
    */

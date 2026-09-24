@@ -2,6 +2,7 @@
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
+export * as types from "./_types.mjs";
 export { default as BaseGrid } from "./base.mjs";
 export { default as GridHex } from "./grid-hex.mjs";
 export { default as GridlessGrid } from "./gridless.mjs";

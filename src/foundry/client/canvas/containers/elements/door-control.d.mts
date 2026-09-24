@@ -65,14 +65,18 @@ declare class DoorControl extends PIXI.Container {
    * This should only toggle between the OPEN and CLOSED states.
    * @param event - The originating interaction event
    */
-  protected _onMouseDown(event: PIXI.FederatedEvent<PointerEvent>): false | void | Promise<WallDocument.Implementation>;
+  protected _onMouseDown(
+    event: PIXI.FederatedEvent<PointerEvent>,
+  ): false | void | Promise<WallDocument.Implementation | undefined>;
 
   /**
-   * Handle right mouse down events on the door control icon
-   * This should toggle whether the door is LOCKED or CLOSED
+   * Handle right mouse down events on a door control icon.
+   * This should toggle whether the door is LOCKED or CLOSED.
    * @param event - The originating interaction event
    */
-  protected _onRightDown(event: PIXI.FederatedEvent<PointerEvent>): void | Promise<WallDocument.Implementation>;
+  protected _onRightDown(
+    event: PIXI.FederatedEvent<PointerEvent>,
+  ): void | Promise<WallDocument.Implementation | undefined>;
 }
 
 declare namespace DoorControl {

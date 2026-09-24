@@ -48,6 +48,8 @@ declare class ConvolverEffect extends ConvolverNode {
    * @param sourceNode - An upstream source node that is connecting to this one
    */
   onConnectFrom(sourceNode: AudioNode): void;
+
+  #ConvolverEffect: true;
 }
 
 declare namespace ConvolverEffect {

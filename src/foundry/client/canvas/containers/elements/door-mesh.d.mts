@@ -223,6 +223,6 @@ declare namespace DoorMesh {
 
 export default DoorMesh;
 
-declare abstract class AnyDoorMesh {
+declare abstract class AnyDoorMesh extends DoorMesh {
   constructor(...args: never);
 }

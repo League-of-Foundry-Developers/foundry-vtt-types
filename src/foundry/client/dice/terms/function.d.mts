@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType } from "#utils";
+import type { AnyMutableObject, InexactPartial, FixedInstanceType } from "#utils";
 import type { FunctionRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -64,10 +64,10 @@ declare class FunctionTerm extends RollTerm {
   /* -------------------------------------------- */
   protected static override _fromData<T extends RollTerm.AnyConstructor>(
     this: T,
-    data: Record<string, unknown>,
+    data: AnyMutableObject,
   ): FixedInstanceType<T>;
 
-  override toJSON(): Record<string, unknown>;
+  override toJSON(): AnyMutableObject;
 
   static override fromParseNode(node: FunctionRollParseNode): RollTerm;
 

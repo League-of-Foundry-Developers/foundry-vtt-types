@@ -20,4 +20,11 @@ test("foundry/client/applications/ux/draggable", () => {
   const resizable = new Draggable(new App(), $(), new HTMLElement(), true);
   expectTypeOf(resizable.resizable).toEqualTypeOf<true>();
   expectTypeOf(resizable.handlers).toEqualTypeOf<Draggable.ResizableHandlers>();
+
+  // The bring-to-front handler listens for `pointerdown`, not `click`
+  expectTypeOf(resizable.handlers.click[0]).toEqualTypeOf<"pointerdown">();
+
+  const resizeOptions = { selector: ".handle", resizeY: false, rtl: true } satisfies Draggable.Resizable;
+  const rtlResizable = new Draggable(new App(), $(), false, resizeOptions);
+  expectTypeOf(rtlResizable.handle).toEqualTypeOf<HTMLElement | false>();
 });

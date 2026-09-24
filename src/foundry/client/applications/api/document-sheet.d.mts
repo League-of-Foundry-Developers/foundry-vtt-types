@@ -192,7 +192,7 @@ declare class DocumentSheetV2<
   // TODO(LukeAbby): This needs to be updated to use `DocumentSheetV2.InputOptions` but that breaks subclassing right now
   protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
-  protected override _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
+  protected override _headerControlButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, void>;
 
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 

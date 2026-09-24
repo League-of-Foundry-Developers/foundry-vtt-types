@@ -108,6 +108,8 @@ declare class ImagePopout<
   static _handleShareImage(config: ImagePopout.HandleShareImageOptions): ImagePopout.Any;
 
   #ImagePopout: true;
+
+  static #ImagePopoutStatic: true;
 }
 
 declare namespace ImagePopout {
@@ -146,6 +148,12 @@ declare namespace ImagePopout {
 
     /** Force showing or hiding the title */
     showTitle?: boolean | undefined;
+
+    /**
+     * @deprecated "An ImagePopout title must be assigned to options.window.title." (since v13, until v15)
+     * @remarks Moved to `window.title` and then deleted by {@linkcode ImagePopout._initializeApplicationOptions | ImagePopout#_initializeApplicationOptions}.
+     */
+    title?: string | undefined;
   }
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily

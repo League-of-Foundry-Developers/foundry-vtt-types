@@ -8,25 +8,26 @@ import type { Identity } from "#utils";
  */
 declare class RegionGeometry extends PIXI.Geometry {
   /**
-   * Create a RegionGeometry
+   * Create a RegionGeometry.
+   * @param region - The Region to create the RegionGeometry from.
    * @internal
    */
   constructor(region: Region.Implementation);
 
-  /** The Region this geometry belongs to */
+  /** The Region this geometry belongs to. */
   get region(): Region.Implementation;
 
   /**
-   * Update the buffers
+   * Update the buffers.
    * @internal
-   * @remarks Is exclusively called externally in `Region##updateShapes`
+   * @remarks Only called externally in {@linkcode Region._refreshGeometry | Region#_refreshGeometry}
    */
   _clearBuffers(): void;
 
   /**
-   * Update the buffers
+   * Update the buffers.
    * @internal
-   * @remarks Is exclusively called externally in `Region##updateShapes`
+   * @remarks Only called externally in {@linkcode foundry.canvas.placeables.regions.RegionMesh._render | RegionMesh#_render}
    */
   _updateBuffers(): void;
 

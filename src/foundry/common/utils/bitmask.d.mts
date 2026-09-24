@@ -29,27 +29,31 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
 
   /**
    * Add a state to the bitmask.
-   * @param state - The state to add. Throws an error if the provided state is not valid.
+   * @param state - The state to add.
+   * @throws Throws an error if the provided state is not valid.
    */
   addState(state: keyof T): void;
 
   /**
    * Remove a state from the bitmask.
-   * @param state   - The state to remove. Throws an error if the provided state is not valid.
+   * @param state - The state to remove.
+   * @throws Throws an error if the provided state is not valid.
    */
   removeState(state: keyof T): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
-   * @param state   - The state to toggle. Throws an error if the provided state is not valid.
+   * @param state   - The state to toggle.
    * @param enabled - Toggle on (true) or off (false)? If undefined, the state is switched automatically.
+   * @throws Throws an error if the provided state is not valid.
    */
   toggleState(state: keyof T, enabled: boolean): void;
 
   /**
    * Toggle the state of a specific state in the bitmask.
    * @param state - The state to toggle.
-   * @returns  The updated bitmask. Throws an error if the provided state is not valid.
+   * @throws Throws an error if the provided state is not valid.
+   * @remarks Returns the updated numeric value of the bitmask when `enabled` is omitted.
    */
   toggleState(state: keyof T): number;
 
@@ -94,13 +98,14 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
    * Convert value of this BitMask to object representation according to structure.
    * @returns The data represented by the bitmask.
    */
-  toObject(): this;
+  toObject(): { -readonly [K in keyof T]: boolean };
 
   /**
    * Creates a clone of this BitMask instance.
    * @returns A new BitMask instance with the same value and valid states as this instance.
+   * @remarks Always constructs a base `BitMask`, even when called on a subclass.
    */
-  clone(): this;
+  clone(): InternalBitMask<T> & number;
 
   /**
    * Generates shader constants based on the provided states.

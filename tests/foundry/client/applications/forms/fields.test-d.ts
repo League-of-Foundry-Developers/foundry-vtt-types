@@ -33,6 +33,8 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     placeholder: "placeholder",
     classes: "some classes space separated",
     id: "system-foo",
+    named: false,
+    rootId: "HYIwO4kkI2XOzf99",
   } satisfies formFields.FormInputConfig<unknown>;
 
   const commonInputConfigUndefined = {
@@ -47,6 +49,9 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     placeholder: undefined,
     classes: undefined,
     id: undefined,
+    named: undefined,
+    rootId: undefined,
+    model: undefined,
   } satisfies formFields.FormInputConfig<unknown>;
 
   const options = [
@@ -79,6 +84,9 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     type: "character",
   });
   if (!actor) throw new Error("Actor creation for `applications/fields` tests somehow blocked.");
+
+  // `model` lets relative UUIDs resolve against the model's nearest Document
+  expectTypeOf(createTextInput({ name: "name", model: actor })).toEqualTypeOf<HTMLInputElement>();
 
   const sf = new dataFields.StringField();
   const nf = new dataFields.NumberField();
@@ -167,9 +175,10 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
 
     // @ts-expect-error Must pass at least a `name`
     createEditorInput({});
-    expectTypeOf(createEditorInput(minimalConfig)).toEqualTypeOf<HTMLDivElement>();
-    expectTypeOf(createEditorInput(config)).toEqualTypeOf<HTMLDivElement>();
-    expectTypeOf(createEditorInput(undefinedConfig)).toEqualTypeOf<HTMLDivElement>();
+    // A `CONFIG.TextEditor.engines` entry's `render` can return any element
+    expectTypeOf(createEditorInput(minimalConfig)).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(createEditorInput(config)).toEqualTypeOf<HTMLElement>();
+    expectTypeOf(createEditorInput(undefinedConfig)).toEqualTypeOf<HTMLElement>();
   });
 
   test("createMultiSelectInput", () => {
@@ -387,6 +396,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     // but there's no parameter default, and unchecked property access.
     setInputAttributes(el);
     expectTypeOf(setInputAttributes(el, {})).toBeVoid();
+    expectTypeOf(setInputAttributes(el, { name: "system.foo", named: false })).toBeVoid();
     expectTypeOf(setInputAttributes(el, config)).toBeVoid();
     expectTypeOf(setInputAttributes(el, undefinedConfig)).toBeVoid();
   });

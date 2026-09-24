@@ -6,6 +6,7 @@ import type { COMPATIBILITY_MODES } from "../constants.d.mts";
  * @param message - The original warning or error message
  * @param options - Additional options which customize logging (default: `{}`)
  * @throws An Error if the mode is ERROR
+ * @remarks Only {@linkcode COMPATIBILITY_MODES.FAILURE | FAILURE} throws; `ERROR` logs the message as an error.
  */
 export declare function logCompatibilityWarning(message: string, options?: LogCompatibilityWarningOptions): void;
 

@@ -77,11 +77,7 @@ declare class EffectsCanvasGroup<
    * Iterator for all light and darkness sources.
    */
   // TODO: Make .InitializedImplementation
-  allSources(): Generator<
-    sources.PointDarknessSource.Internal.Any | sources.PointLightSource.Internal.Any,
-    void,
-    undefined
-  >;
+  allSources(): Generator<sources.PointDarknessSource.Internal.Any | sources.PointLightSource.Internal.Any, void, void>;
 
   /**
    * @remarks `EffectsCanvasGroup` doesn't use the same dynamic layer property assignment as other groups, instead this returns

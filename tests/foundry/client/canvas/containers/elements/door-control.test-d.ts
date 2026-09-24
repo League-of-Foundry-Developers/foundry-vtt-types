@@ -36,8 +36,10 @@ describe("DoorControl tests", () => {
     expectTypeOf(control["_onMouseOver"](pointerEvent)).toEqualTypeOf<false | void>();
     expectTypeOf(control["_onMouseOut"](pointerEvent)).toEqualTypeOf<false | void>();
     expectTypeOf(control["_onMouseDown"](pointerEvent)).toEqualTypeOf<
-      Promise<WallDocument.Implementation> | false | void
+      Promise<WallDocument.Implementation | undefined> | false | void
     >();
-    expectTypeOf(control["_onRightDown"](pointerEvent)).toEqualTypeOf<Promise<WallDocument.Implementation> | void>();
+    expectTypeOf(control["_onRightDown"](pointerEvent)).toEqualTypeOf<Promise<
+      WallDocument.Implementation | undefined
+    > | void>();
   });
 });

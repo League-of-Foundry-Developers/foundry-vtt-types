@@ -142,7 +142,7 @@ declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> e
    * Iterates over placeable objects that are eligible for control/select.
    * @yields A placeable object
    */
-  controllableObjects(): Generator<PlaceableObject.Any, void, undefined>;
+  controllableObjects(): Generator<PlaceableObject.Any, void, void>;
 
   /**
    * Track the set of PlaceableObjects on this layer which are currently controlled.
@@ -202,7 +202,7 @@ declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> e
   /**
    * Iterate over all documents which are viewed in the current Level.
    */
-  viewedDocuments(): Generator<Document.StoredForName<DocumentName>, void, undefined>;
+  viewedDocuments(): Generator<Document.StoredForName<DocumentName>, void, void>;
 
   // fake type override
   override draw(options?: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<this>;

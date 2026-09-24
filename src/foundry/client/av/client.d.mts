@@ -147,6 +147,8 @@ declare abstract class AVClient {
 
   /** Replace the local stream for each connected peer with a re-generated MediaStream. */
   abstract updateLocalStream(): Promise<void>;
+
+  #AVClient: true;
 }
 
 declare namespace AVClient {

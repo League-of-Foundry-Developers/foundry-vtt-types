@@ -950,7 +950,7 @@ declare namespace RollTable {
     /**
      * Additional data which customizes the created messages
      * @defaultValue `{}`
-     * @privateRemarks This gets `mergeObject`ed with base create data with default options, so `performDeletions` is false,
+     * @privateRemarks This gets `mergeObject`ed with base create data with default options, so `applyOperators` is false,
      * so we can't use `UpdateData`.
      */
     messageData: IntentionalPartial<ChatMessage.CreateData>;

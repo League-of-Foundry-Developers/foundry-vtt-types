@@ -7,11 +7,11 @@ import type { Document } from "#common/abstract/_module.d.mts";
  * Note that this works well for languages with alphabets (latin, cyrillic, korean, etc.), but may need more nuanced
  * handling for languages that compose characters and letters.
  */
-declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<string> = string[]> extends StringTree<
-  WordTree.Entry<DocumentName>,
-  Key
-> {
-  override addLeaf(key: Key, entry: WordTree.Entry<DocumentName>): WordTree.EntryNode<DocumentName>;
+declare class WordTree<DocumentName extends Document.Type> extends StringTree<WordTree.Entry<DocumentName>, string> {
+  override addLeaf(
+    strings: string | Iterable<string>,
+    entry: WordTree.Entry<DocumentName>,
+  ): WordTree.EntryNode<DocumentName>;
 
   /**
    * Return entries that match the given string prefix.
@@ -19,7 +19,7 @@ declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<
    * @param options - Additional options to configure behaviour.
    * @returns A number of entries that have the given prefix.
    */
-  override lookup(prefix: Key, options?: WordTree.LookupOptions<DocumentName>): WordTree.Entry<DocumentName>[];
+  override lookup(prefix: string, options?: WordTree.LookupOptions<DocumentName>): WordTree.Entry<DocumentName>[];
 
   /**
    * Returns the node at the given prefix.
@@ -27,7 +27,7 @@ declare class WordTree<DocumentName extends Document.Type, Key extends Iterable<
    * @returns The node
    * @remarks Calls super with no way to provide options, meaning `undefined` is never allow
    */
-  override nodeAtPrefix(prefix: Key): WordTree.EntryNode<DocumentName> | undefined;
+  override nodeAtPrefix(prefix: string): WordTree.EntryNode<DocumentName> | undefined;
 }
 
 declare namespace WordTree {
@@ -78,6 +78,6 @@ declare namespace WordTree {
 
 export default WordTree;
 
-declare abstract class AnyWordTree extends WordTree<Document.Type, string> {
+declare abstract class AnyWordTree extends WordTree<Document.Type> {
   constructor(...args: never);
 }

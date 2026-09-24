@@ -33,12 +33,6 @@ declare class Cursor extends PIXI.Container {
    */
   draw(user: User.Implementation): void;
 
-  /**
-   * Move an existing cursor to a new position smoothly along the animation loop
-   * @deprecated Made hard private in v13 (this warning will be removed in v14)
-   */
-  protected _animate(): never;
-
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
   #Cursor: true;

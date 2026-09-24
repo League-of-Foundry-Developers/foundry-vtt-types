@@ -4,19 +4,19 @@ import type SMAAFilter from "./smaa.d.mts";
 /**
  * The blending weight calculation filter for {@linkcode foundry.canvas.rendering.filters.SMAAFilter}.
  */
-declare class SMAABWeightCalculationFilter extends PIXI.Filter {
-  constructor(config: SMAABWeightCalculationFilter.Config);
+declare class SMAABlendingWeightCalculationFilter extends PIXI.Filter {
+  constructor(config: SMAABlendingWeightCalculationFilter.Config);
 }
 
-declare namespace SMAABWeightCalculationFilter {
-  interface Any extends AnySMAABWeightCalculationFilter {}
-  interface AnyConstructor extends Identity<typeof AnySMAABWeightCalculationFilter> {}
+declare namespace SMAABlendingWeightCalculationFilter {
+  interface Any extends AnySMAABlendingWeightCalculationFilter {}
+  interface AnyConstructor extends Identity<typeof AnySMAABlendingWeightCalculationFilter> {}
 
   interface Config extends Omit<SMAAFilter.Config, "localContrastAdaptionFactor"> {}
 }
 
-export default SMAABWeightCalculationFilter;
+export default SMAABlendingWeightCalculationFilter;
 
-declare abstract class AnySMAABWeightCalculationFilter extends SMAABWeightCalculationFilter {
+declare abstract class AnySMAABlendingWeightCalculationFilter extends SMAABlendingWeightCalculationFilter {
   constructor(...args: never);
 }

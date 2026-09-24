@@ -53,6 +53,7 @@ declare class StringNode<
   static fromString(html: string): StringNode.Any;
 
   #StringNode: true;
+  static #StringNodeStatic: true;
 }
 
 declare namespace StringNode {

@@ -2,12 +2,14 @@ import type {
   AnyArray,
   AnyConstructor,
   AnyFunction,
+  AnyMutableObject,
   AnyObject,
   DeepReadonly,
   DeletableDotKeys,
   InexactPartial,
   NonNullish,
   NonObject,
+  OverlapsWith,
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
 
@@ -216,8 +218,9 @@ export interface DiffObjectOptions extends InexactPartial<_DiffObjectOptions> {}
  *
  * @param a - The first value
  * @param b - The second value
+ * @remarks `b` must overlap with the type of `a`, since unrelated types can never be equal.
  */
-export function equals(a: unknown, b: unknown): b is typeof a;
+export function equals<A, B>(a: A, b: OverlapsWith<B, A>): boolean;
 
 /**
  * A cheap data duplication trick which is relatively robust.
@@ -285,7 +288,7 @@ export function expandObject(obj: object): object;
  * @param options - Options for how expansion occurs.
  * @returns Whether any expansion was performed at any level.
  */
-export function expandObjectInPlace(data: object, options?: ExpandObjectInPlaceOptions): object;
+export function expandObjectInPlace(data: AnyMutableObject, options?: ExpandObjectInPlaceOptions): boolean;
 
 /** @internal */
 interface _ExpandObjectInPlaceOptions {
@@ -476,7 +479,11 @@ export type InvertObject<in out T extends InvertableObject> = {
  * @param options - Additional options which affect the comparison.
  * @returns Is v1 a more advanced version than v0?
  */
-export function isNewerVersion(v1: number | string, v0: number | string, options?: IsNewerVersionOptions): boolean;
+export function isNewerVersion(
+  v1: number | string | null | undefined,
+  v0: number | string | null | undefined,
+  options?: IsNewerVersionOptions,
+): boolean;
 
 /** @internal */
 interface _IsNewerVersionOptions {
@@ -501,7 +508,7 @@ export function isEmpty(
 /**
  * Object entries generator.
  */
-export function objectEntries(obj: object): Generator<[string, unknown], void, unknown>;
+export function objectEntries(obj: object): Generator<[string, unknown], void, void>;
 
 /**
  * Stream object entries.
@@ -511,7 +518,7 @@ export function iterateEntries(obj: object): IteratorObject<[string, unknown], v
 /**
  * Object keys generator.
  */
-export function objectKeys(obj: object): Generator<string, void, unknown>;
+export function objectKeys(obj: object): Generator<string, void, void>;
 
 /**
  * Stream object keys.
@@ -521,7 +528,7 @@ export function iterateKeys(obj: object): IteratorObject<string, void, unknown>;
 /**
  * Object values generator.
  */
-export function objectValues(obj: object): Generator<unknown, void, unknown>;
+export function objectValues(obj: object): Generator<unknown, void, void>;
 
 /**
  * Stream object values.
@@ -744,7 +751,7 @@ export interface ResolvedUUID {
  * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining
  * Embedded Document parts, if any.
  */
-export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
+export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID | null;
 
 /** @internal */
 interface _ParseUUIDOptions {
@@ -761,6 +768,8 @@ export interface ParseUUIDOptions extends InexactPartial<_ParseUUIDOptions> {}
  * @param target - The target UUID or Document
  * @param origin - The origin UUID or Document
  * @returns The relative UUID of the target relative to the origin if possible, otherwise the absolute UUID of the target
+ * @remarks
+ * @throws If `target` or `origin` is a Document without a UUID, or a string that is not a valid UUID.
  */
 export function buildRelativeUuid(target: string | Document.AnyStored, origin: string | Document.AnyStored): string;
 
@@ -804,7 +813,7 @@ export function unescapeHTML(value: string): string;
 
 /**
  * @deprecated "`foundry.utils.applySpecialKeys` has been deprecated and renamed to {@linkcode foundry.utils.applyDataOperators}"
- * @ignore
+ * (since v14, until v16)
  */
 // TODO: bespoke return type accounting for deletion keys recursively
 export function applySpecialKeys<T>(obj: T): T;
@@ -814,7 +823,6 @@ export function applySpecialKeys<T>(obj: T): T;
  *
  * This function has become internal and undocumented. It can be deprecated and removed once support for
  * legacy deletion keys is fully removed.
- * @ignore
  * @internal
  */
 export function isDeletionKey(key: string): key is DeletionKey;
