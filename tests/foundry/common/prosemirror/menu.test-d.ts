@@ -62,7 +62,7 @@ test("foundry/common/prosemirror/menu", () => {
   expectTypeOf(pmm.update(view)).toEqualTypeOf<void>();
   expectTypeOf(pmm.update(view, view)).toEqualTypeOf<void>();
 
-  expectTypeOf(pmm["_getDropDownMenus"]()).toEqualTypeOf<Record<string, ProseMirrorDropDown.Config>>();
+  expectTypeOf(pmm["_getDropDownMenus"]()).toEqualTypeOf<ProseMirrorMenu.DropDowns>();
   expectTypeOf(pmm["_getMenuItems"]()).toEqualTypeOf<ProseMirrorMenu.Item[]>();
   expectTypeOf(pmm["_isItemActive"](pmmItem)).toBeBoolean();
   expectTypeOf(pmm["_isMarkActive"](pmmItem)).toBeBoolean();
