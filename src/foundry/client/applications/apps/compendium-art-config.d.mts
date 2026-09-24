@@ -24,9 +24,6 @@ declare class CompendiumArtConfig<
   Configuration extends CompendiumArtConfig.Configuration = CompendiumArtConfig.Configuration,
   RenderOptions extends CompendiumArtConfig.RenderOptions = CompendiumArtConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  // placeholder private member to help subclassing
-  #compendiumArtConfig: true;
-
   /**
    * @defaultValue
    * ```js
@@ -71,7 +68,11 @@ declare class CompendiumArtConfig<
   /*  Rendering                                   */
   /* -------------------------------------------- */
 
-  override _prepareContext(_options: DeepPartial<CompendiumArtConfig.RenderOptions>): Promise<RenderContext>;
+  protected override _prepareContext(
+    _options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  static #CompendiumArtConfig: true;
 }
 
 declare namespace CompendiumArtConfig {

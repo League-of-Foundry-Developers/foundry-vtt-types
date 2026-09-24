@@ -27,7 +27,7 @@ export declare function mergeStyle(a: string, b: string): string;
 
 /**
  * Convert an element's class attribute string into an array of class names.
- * @param str - The class string
+ * @param str - The class string.
  */
 export declare function classesFromString(str: string): string[];
 

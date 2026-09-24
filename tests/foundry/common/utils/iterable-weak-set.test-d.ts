@@ -16,7 +16,7 @@ test("foundry/common/utils/iterable-weak-set", () => {
   expectTypeOf(myIWS.delete({ x: 1 })).toEqualTypeOf<boolean>();
   expectTypeOf(myIWS.has({ x: 1 })).toEqualTypeOf<boolean>();
 
-  expectTypeOf(myIWS.values()).toEqualTypeOf<Generator<ElementType, void, unknown>>();
+  expectTypeOf(myIWS.values()).toEqualTypeOf<Generator<ElementType, void, void>>();
 
   expectTypeOf(myIWS.clear()).toBeVoid();
 

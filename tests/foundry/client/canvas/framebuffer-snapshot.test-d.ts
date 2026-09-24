@@ -8,5 +8,5 @@ test("foundry/client/canvas/framebuffer-snapshot", () => {
   const myFS = new FramebufferSnapshot();
 
   expectTypeOf(myFS.framebufferTexture).toEqualTypeOf<PIXI.RenderTexture>();
-  expectTypeOf(myFS.getFramebufferTexture(someRenderer)).toEqualTypeOf<PIXI.RenderTexture>();
+  expectTypeOf(myFS.getFramebufferTexture(someRenderer)).toEqualTypeOf<PIXI.RenderTexture | PIXI.Texture>();
 });

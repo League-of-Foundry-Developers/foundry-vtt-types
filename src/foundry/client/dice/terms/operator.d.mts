@@ -1,4 +1,4 @@
-import type { InexactPartial } from "#utils";
+import type { AnyMutableObject, FixedInstanceType, InexactPartial } from "#utils";
 
 import type RollTerm from "./term.d.mts";
 
@@ -33,6 +33,14 @@ declare class OperatorTerm extends RollTerm {
    * @defaultValue `["operator"]`
    */
   static override SERIALIZE_ATTRIBUTES: string[];
+
+  /**
+   * @remarks Constructs the term directly from `data`, without restoring its evaluation state.
+   */
+  protected static override _fromData<T extends RollTerm.AnyConstructor>(
+    this: T,
+    data: AnyMutableObject,
+  ): FixedInstanceType<T>;
 
   /**
    * Optional flavor text which modifies and describes this term.

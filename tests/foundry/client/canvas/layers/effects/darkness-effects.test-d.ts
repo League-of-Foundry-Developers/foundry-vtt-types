@@ -10,4 +10,5 @@ test("foundry/client/canvas/layers/effects/darkness-effects", () => {
   expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasDarknessEffects>>();
   expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
   expectTypeOf(layer.clear()).toBeVoid();
+  expectTypeOf(layer.filter).toEqualTypeOf<foundry.canvas.rendering.filters.VoidFilter | undefined>();
 });

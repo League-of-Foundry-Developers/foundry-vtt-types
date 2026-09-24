@@ -60,9 +60,9 @@ declare class LimitedAnglePolygon extends PIXI.Polygon {
 
   /**
    * The bounding box of the circle defined by the externalRadius, if any
-   * @privateRemarks Set in `##generatePoints`, which is called at the end of the constructor
+   * @remarks `undefined` unless the polygon is non-empty and has a non-zero `externalRadius`.
    */
-  externalBounds: PIXI.Rectangle;
+  externalBounds: PIXI.Rectangle | undefined;
 
   /**
    * Restrict the edges which should be included in a PointSourcePolygon based on this specialized shape.
@@ -93,6 +93,8 @@ declare class LimitedAnglePolygon extends PIXI.Polygon {
     rMax: ClockwiseSweepPolygon.Ray,
     angle: number,
   ): boolean;
+
+  #LimitedAnglePolygon: true;
 }
 
 declare namespace LimitedAnglePolygon {

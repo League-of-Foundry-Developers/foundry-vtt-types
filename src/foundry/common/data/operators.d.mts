@@ -14,8 +14,15 @@ export declare const OPERATOR_IDENTIFIER: "__$OPERATOR$__";
 declare class DataFieldOperator<Value = undefined> {
   constructor(value?: Value);
 
+  /**
+   * The value that a field should be assigned to.
+   */
   [OPERATOR_VALUE]: Value;
 
+  /**
+   * Represent the data of the DataFieldOperator as an object suitable for JSON serialization.
+   * @returns Structured data that can be serialized into JSON
+   */
   toJSON(): DataFieldOperator.ReconstructionObject<Value>;
 
   /**
@@ -74,6 +81,9 @@ declare namespace ForcedDeletion {
   }
 }
 
+/**
+ * Force the replacement of a certain DataModel field, assigning it to some explicit value without inner recursion.
+ */
 declare class ForcedReplacement<Value = undefined> extends DataFieldOperator<DataFieldOperator.Unwrap<Value>> {
   constructor(value?: Value);
 
@@ -106,6 +116,8 @@ declare namespace ForcedReplacement {
 
 /**
  * Reconstruct a {@linkcode DataFieldOperator} instance from a serialized object.
+ * @remarks
+ * @throws If the serialized identifier is neither `"ForcedDeletion"` nor `"ForcedReplacement"`.
  */
 declare function reconstructOperator<Object extends DataFieldOperator.ReconstructionObject>(
   obj: Object,

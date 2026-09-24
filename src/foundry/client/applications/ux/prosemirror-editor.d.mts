@@ -19,8 +19,10 @@ declare class ProseMirrorEditor {
 
   /**
    * Whether this is a collaborative editor.
+   * @remarks Copied from {@linkcode ProseMirrorEditor.Options.collaborate | options.collaborate}, so `undefined` if the
+   * editor was constructed without it. {@linkcode ProseMirrorEditor.create} always provides it.
    */
-  readonly collaborate: boolean;
+  readonly collaborate: boolean | undefined;
 
   options: ProseMirrorEditor.Options;
 
@@ -32,7 +34,9 @@ declare class ProseMirrorEditor {
   constructor(uuid: string, view: EditorView, options?: ProseMirrorEditor.Options);
 
   /**
-   * @deprecated The ProseMirrorEditor constructor signature changed in v14 and this legacy form will be removed in v16.
+   * @deprecated "The ProseMirrorEditor constructor signature has changed. The isDirtyPlugin argument
+   * is no longer required, and the collaborate argument has moved into the options argument in third
+   * position." (since v14, until v16)
    * @param uuid          - A string that uniquely identifies this ProseMirror instance.
    * @param view          - The ProseMirror EditorView.
    * @param isDirtyPlugin - The plugin to track the dirty state of the editor.
@@ -167,6 +171,8 @@ declare class ProseMirrorEditor {
    * @internal
    */
   static _activateSocketListeners(socket: Socket): void;
+
+  static #ProseMirrorEditor: true;
 }
 
 declare namespace ProseMirrorEditor {

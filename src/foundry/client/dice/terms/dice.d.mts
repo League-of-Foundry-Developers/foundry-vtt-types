@@ -1,4 +1,4 @@
-import type { InexactPartial, FixedInstanceType, Identity } from "#utils";
+import type { AnyMutableObject, InexactPartial, FixedInstanceType, Identity } from "#utils";
 import type { DiceRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -268,12 +268,9 @@ declare abstract class DiceTerm extends RollTerm {
   /*  Serialization & Loading                     */
   /* -------------------------------------------- */
 
-  protected static _fromData<T extends RollTerm.AnyConstructor>(
-    this: T,
-    data: Record<string, unknown>,
-  ): FixedInstanceType<T>;
+  protected static _fromData<T extends RollTerm.AnyConstructor>(this: T, data: AnyMutableObject): FixedInstanceType<T>;
 
-  override toJSON(): Record<string, unknown>;
+  override toJSON(): AnyMutableObject;
 
   #DiceTerm: true;
   static #DiceTermStatic: true;

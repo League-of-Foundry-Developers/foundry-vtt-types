@@ -16,20 +16,24 @@ test("foundry/common/utils/word-tree", () => {
     pack: "some.pack",
   } satisfies ActorEntry; // necessary to make `"Actor"` a `Document.Type`
 
-  expectTypeOf(w.addLeaf(["a"], entry)).toEqualTypeOf<ActorEntryNode>();
+  expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<ActorEntryNode>();
+  expectTypeOf(w.addLeaf(["a", "b"], entry)).toEqualTypeOf<ActorEntryNode>();
 
-  // @ts-expect-error as of v14, WordTree takes arrays of strings just like StringTree
-  w.addLeaf("a", entry);
-
-  expectTypeOf(w.lookup(["a"])).toEqualTypeOf<ActorEntry[]>();
-  expectTypeOf(w.lookup(["a"], {})).toEqualTypeOf<ActorEntry[]>();
+  expectTypeOf(w.lookup("a")).toEqualTypeOf<ActorEntry[]>();
+  expectTypeOf(w.lookup("a", {})).toEqualTypeOf<ActorEntry[]>();
   expectTypeOf(
-    w.lookup(["a"], {
+    w.lookup("a", {
       limit: 4,
       filterEntries: (entry: ActorEntry) => entry.uuid.length > 5,
     }),
   ).toEqualTypeOf<ActorEntry[]>();
-  expectTypeOf(w.lookup(["a"], { limit: undefined, filterEntries: undefined })).toEqualTypeOf<ActorEntry[]>();
+  expectTypeOf(w.lookup("a", { limit: undefined, filterEntries: undefined })).toEqualTypeOf<ActorEntry[]>();
 
-  expectTypeOf(w.nodeAtPrefix(["a"])).toEqualTypeOf<ActorEntryNode | undefined>();
+  expectTypeOf(w.nodeAtPrefix("a")).toEqualTypeOf<ActorEntryNode | undefined>();
+
+  // `lookup` and `nodeAtPrefix` lower-case the prefix, so it must be a string
+  // @ts-expect-error arrays are not accepted
+  w.lookup(["a"]);
+  // @ts-expect-error arrays are not accepted
+  w.nodeAtPrefix(["a"]);
 });

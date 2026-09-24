@@ -17,7 +17,7 @@ declare class SecretNode extends SchemaDefinition {
   static override make(): NodeSpec;
 
   /**
-   * Handle slitting a secret block in two, making sure the new block gets a unique ID.
+   * Handle splitting a secret block in two, making sure the new block gets a unique ID.
    * @param state    - The ProseMirror editor state.
    * @param dispatch - The editor dispatch function.
    */

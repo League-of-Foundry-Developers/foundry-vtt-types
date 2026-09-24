@@ -1,5 +1,6 @@
 import type { HandleEmptyObject, Identity } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
+import type { VoidFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -18,6 +19,11 @@ declare class CanvasDarknessEffects extends CanvasLayer {
    * @defaultValue `true`
    */
   override sortableChildren: boolean;
+
+  /**
+   * @remarks Set in {@linkcode CanvasDarknessEffects._draw | #_draw}, so only `undefined` prior to first draw.
+   */
+  filter: VoidFilter | undefined;
 
   /**
    * Clear coloration effects container

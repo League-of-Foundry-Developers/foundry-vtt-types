@@ -3,7 +3,14 @@ import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { TurnMarkerData } from "#client/canvas/placeables/tokens/_module.d.mts";
 
+/**
+ * The Turn Marker of a {@linkcode foundry.canvas.placeables.Token | Token}.
+ */
 declare class TokenTurnMarker extends PIXI.Container<SpriteMesh> {
+  /**
+   * Construct a TokenTurnMarker by providing a Token object instance.
+   * @param token - The Token that this Turn Marker belongs to
+   */
   constructor(token: Token.Implementation);
 
   /**
@@ -42,7 +49,7 @@ declare class TokenTurnMarker extends PIXI.Container<SpriteMesh> {
 
   /**
    * Animate the Turn Marker.
-   * @param deltaTime -The delta time
+   * @param deltaTime - The delta time
    * @remarks Ultimately called every canvas tick via `TokenLayer##animate` -\> `TokenLayer##animateTurnMarkers`
    */
   animate(deltaTime: number): void;

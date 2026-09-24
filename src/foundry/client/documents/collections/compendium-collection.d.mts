@@ -371,6 +371,7 @@ declare class CompendiumCollection<
   protected static _onConfigure(config: CompendiumCollection.SettingData): void;
 
   #CompendiumCollection: true;
+  static #CompendiumCollectionStatic: true;
 }
 
 declare namespace CompendiumCollection {

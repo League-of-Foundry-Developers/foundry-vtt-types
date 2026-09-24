@@ -141,6 +141,8 @@ declare class AVMaster {
   onSettingsChanged(changed: DeepPartial<AVSettings.Settings>): void;
 
   debug(message: string): void;
+
+  #AVMaster: true;
 }
 
 declare namespace AVMaster {

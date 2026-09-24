@@ -195,7 +195,7 @@ declare abstract class Document<
    */
   static override get schema(): SchemaField.Any;
 
-  protected override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
+  protected override _initializationOrder(): Generator<[string, DataField.Any], void, void>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -762,7 +762,7 @@ declare abstract class Document<
    */
   // TODO: Put this into the document template with types that recurse Doc.Hierarchy for embedded documents
   // TODO: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3546
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, undefined>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, void>;
 
   /**
    * Get the value of a "flag" for this document

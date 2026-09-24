@@ -29,7 +29,7 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
   /**
    * The drag handle, or false to disable dragging.
    */
-  handle: HTMLElement | boolean;
+  handle: HTMLElement | false;
 
   /**
    * Registered event handlers.
@@ -100,6 +100,8 @@ declare class Draggable<R extends boolean | Draggable.Resizable = false> {
    * Retrieve the configured Draggable implementation.
    */
   static get implementation(): Draggable.ImplementationClass;
+
+  #Draggable: true;
 }
 
 declare namespace Draggable {
@@ -124,13 +126,13 @@ declare namespace Draggable {
     selector?: string | undefined;
 
     /**
-     * Enable resizing in the X direction.
+     * Enable resizing along the X axis.
      * @defaultValue `true`
      */
     resizeX?: boolean | undefined;
 
     /**
-     * Enable resizing in the y direction.
+     * Enable resizing along the Y axis.
      * @defaultValue `true`
      */
     resizeY?: boolean | undefined;
@@ -138,7 +140,7 @@ declare namespace Draggable {
     /**
      * Modify the resizing direction to be right-to-left.
      */
-    rt1?: boolean | null | undefined;
+    rtl?: boolean | undefined;
   }
 
   type RegisteredHandlers<R extends boolean | Resizable> = R extends true
@@ -148,7 +150,8 @@ declare namespace Draggable {
       : Handlers | ResizableHandlers;
 
   interface Handlers {
-    click: ["click", (e: MouseEvent) => void, { capture: boolean; passive: boolean }];
+    /** @remarks Despite the key, this brings the application to the front on `pointerdown`. */
+    click: ["pointerdown", () => void, { capture: boolean; passive: boolean }];
     dragDown: ["pointerdown", (e: Event) => void, false];
     dragMove: ["pointermove", (e: Event) => void, false];
     dragUp: ["pointerup", (e: Event) => void, false];

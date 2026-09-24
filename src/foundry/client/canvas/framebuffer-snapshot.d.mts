@@ -15,10 +15,12 @@ declare class FramebufferSnapshot {
    * Get the framebuffer texture snapshot.
    * @param renderer - The renderer for this context.
    * @returns The framebuffer snapshot.
+   * @remarks Returns {@linkcode PIXI.Texture.WHITE} if the current viewport is empty.
    */
-  getFramebufferTexture(renderer: PIXI.Renderer): PIXI.RenderTexture;
+  getFramebufferTexture(renderer: PIXI.Renderer): PIXI.RenderTexture | PIXI.Texture;
 
   #FramebufferSnapshot: true;
+  static #FramebufferSnapshotStatic: true;
 }
 
 declare namespace FramebufferSnapshot {

@@ -56,16 +56,6 @@ declare class Ray {
   slope: number;
 
   /**
-   * @deprecated Made hard private in v13 (this warning will be removed in v14)
-   */
-  protected _angle: never;
-
-  /**
-   * @deprecated Made hard private in v13 (this warning will be removed in v14)
-   */
-  protected _distance: never;
-
-  /**
    * The normalized angle of the ray in radians on the range (-PI, PI).
    * The angle is computed lazily (only if required) and cached.
    */
@@ -143,8 +133,12 @@ declare class Ray {
   shiftAngle(offset: number, distance?: number): Ray;
 
   /**
-   * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
+   * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray.
    * @see {@linkcode foundry.utils.lineSegmentIntersection}
+   *
+   * @param coords - An array of four coordinates `[x1, y1, x2, y2]`.
+   * @returns The intersection result from foundry.utils.lineSegmentIntersection
+   * or `null` if no intersection was found.
    */
   intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
 

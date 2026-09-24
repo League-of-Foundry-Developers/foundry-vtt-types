@@ -2,7 +2,7 @@
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 
-// export * as types from "./_types.mjs";
+export * as types from "./_types.mjs";
 export { default as AbstractBaseShader } from "./base-shader.mjs";
 
 // Grid

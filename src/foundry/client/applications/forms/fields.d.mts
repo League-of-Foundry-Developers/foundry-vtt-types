@@ -8,6 +8,7 @@ import type {
 /** @privateRemarks `NumberField` is only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DataField, NumberField } from "#common/data/fields.d.mts";
+import type DataModel from "#common/abstract/data.d.mts";
 
 interface _FormGroupConfig {
   /**
@@ -97,6 +98,13 @@ interface _FormInputConfig<FormInputValue = unknown> {
   name: string;
 
   /**
+   * Whether the element should be named in the form. If false, the element
+   * will be given a name via data attribute only.
+   * @defaultValue `true`
+   */
+  named: boolean;
+
+  /**
    * The current value of the form element
    */
   value: FormInputValue;
@@ -157,7 +165,20 @@ interface _FormInputConfig<FormInputValue = unknown> {
    */
   classes: string;
 
+  /**
+   * Some parent CSS id within which field names are unique. If provided,
+   * this root ID is used to automatically assign "id" attributes to
+   * input elements and "for" attributes to corresponding labels.
+   */
+  rootId: string;
+
   // `input` omitted here and added in `DataField.ToFormInput`
+
+  /**
+   * The DataModel instance the field belongs to
+   * @remarks Used to resolve relative UUIDs against the model's nearest Document.
+   */
+  model: DataModel.Any;
 }
 
 export interface FormInputConfig<FormInputValue = unknown> extends InexactPartial<_FormInputConfig<FormInputValue>> {
@@ -201,8 +222,11 @@ export interface EditorInputConfig extends FormInputConfig<string>, InexactParti
 
 /**
  * Create a `<div class="editor">` element for a StringField.
+ * @remarks If {@linkcode CONFIG.TextEditor.engines} has an entry for the {@linkcode EditorInputConfig.engine | engine}
+ * with a `render` function, the element it returns is used instead. This is why the return type is `HTMLElement`
+ * rather than `HTMLDivElement`.
  */
-export function createEditorInput(config: EditorInputConfig): HTMLDivElement;
+export function createEditorInput(config: EditorInputConfig): HTMLElement;
 
 /**
  * @remarks This is the value type for methods which pass their config through {@linkcode prepareSelectOptionGroups}, which will:
@@ -434,11 +458,18 @@ export type InputAttribute =
   | "dataset"
   | "disabled"
   | "id"
+  | "named"
   | "placeholder"
   | "readonly"
   | "required";
 
-export interface SetInputAttributeConfig extends Pick<FormInputConfig<unknown>, InputAttribute> {}
+export interface SetInputAttributeConfig extends Pick<FormInputConfig<unknown>, InputAttribute> {
+  /**
+   * The name of the form element
+   * @remarks Assigned as the `name` attribute, or as `data-name` if {@linkcode SetInputAttributeConfig.named | named} is `false`.
+   */
+  name?: string | undefined;
+}
 
 /**
  * Apply standard attributes to all input elements.

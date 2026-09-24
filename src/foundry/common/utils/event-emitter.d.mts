@@ -23,6 +23,8 @@ declare class EventEmitter {
    * @param type     - The type of event being registered for
    * @param listener - The listener function called when the event occurs
    * @param options  - Options which configure the event listener
+   * @remarks
+   * @throws If `type` is not one of the class's {@linkcode EventEmitter.emittedEvents | emittedEvents}.
    */
   addEventListener(
     type: string,
@@ -42,6 +44,8 @@ declare class EventEmitter {
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent}
    * @param event - The `Event` to dispatch
    * @returns Was default behavior for the event prevented?
+   * @remarks
+   * @throws If the event's type is not one of the class's {@linkcode EventEmitter.emittedEvents | emittedEvents}.
    */
   dispatchEvent(event: Event): boolean;
 
@@ -50,7 +54,7 @@ declare class EventEmitter {
 
 /**
  * Augment a base class with EventEmitter behavior.
- * @param BaseClass - Some base class augmented with event emitter functionality: defaults to an anonymous empty class.
+ * @param BaseClass - Some base class to be augmented with event emitter functionality: defaults to an anonymous empty class.
  */
 declare function EventEmitterMixin<BaseClass extends EventEmitterMixin.BaseClass | undefined = undefined>(
   BaseClass?: BaseClass,
