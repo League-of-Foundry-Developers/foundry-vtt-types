@@ -1,4 +1,4 @@
-import type { GetKey, NullishCoalesce, RemoveIndexSignatures, ToMethod, ValueOf } from "#utils";
+import type { GetKey, Identity, NullishCoalesce, RemoveIndexSignatures, ToMethod, ValueOf } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
 
@@ -308,21 +308,30 @@ declare namespace BaseShapeData {
 
   type ShapeTypes = keyof RemoveIndexSignatures<BaseShapeData.Types>;
 
+  /** @privateRemarks These are the `client/data/shapes.mjs` subclasses, not the ones declared in this file. */
   interface Types extends fields.TypedSchemaField.Types {
-    rectangle: typeof RectangleShapeData;
-    circle: typeof CircleShapeData;
-    ellipse: typeof EllipseShapeData;
-    emanation: typeof EmanationShapeData;
-    cone: typeof ConeShapeData;
-    ring: typeof RingShapeData;
-    line: typeof LineShapeData;
-    polygon: typeof PolygonShapeData;
-    token: typeof TokenShapeData;
-    grid: typeof GridShapeData;
+    rectangle: typeof foundry.data.RectangleShapeData;
+    circle: typeof foundry.data.CircleShapeData;
+    ellipse: typeof foundry.data.EllipseShapeData;
+    emanation: typeof foundry.data.EmanationShapeData;
+    cone: typeof foundry.data.ConeShapeData;
+    ring: typeof foundry.data.RingShapeData;
+    line: typeof foundry.data.LineShapeData;
+    polygon: typeof foundry.data.PolygonShapeData;
+    token: typeof foundry.data.TokenShapeData;
+    grid: typeof foundry.data.GridShapeData;
   }
 
   /** @see {@linkcode EmanationShapeData.Schema.base} */
   type EmanationBaseTypes = Omit<Types, "emanation" | "ring">;
+
+  interface Any extends AnyBaseShapeData {}
+
+  interface AnyConstructor extends Identity<typeof AnyBaseShapeData> {}
+}
+
+declare abstract class AnyBaseShapeData extends BaseShapeData<BaseShapeData.Schema> {
+  constructor(...args: never);
 }
 
 /**

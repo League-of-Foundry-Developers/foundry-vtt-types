@@ -8,16 +8,26 @@ declare namespace PauseGameRegionBehaviorType {
   }
 }
 
-/** The data model for a behavior that pauses the game when a player-controlled Token enters the Region. */
+/**
+ * The data model for a behavior that pauses the game when a player-controlled Token enters the Region.
+ */
 declare class PauseGameRegionBehaviorType extends RegionBehaviorType<PauseGameRegionBehaviorType.Schema> {
-  #pauseGameRegionBehaviorType: true;
-
   /** @defaultValue `["BEHAVIOR.TYPES.pauseGame", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): PauseGameRegionBehaviorType.Schema;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   [REGION_EVENTS.TOKEN_MOVE_IN]: PauseGameRegionBehaviorType.#onTokenMoveIn
+   * }
+   * ```
+   */
   static override events: Record<string, RegionBehaviorType.EventBehaviorStaticHandler>;
+
+  static #PauseGameRegionBehaviorType: true;
 }
 
 export default PauseGameRegionBehaviorType;
