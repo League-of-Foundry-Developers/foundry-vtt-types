@@ -140,7 +140,6 @@ test("types/utils", async () => {
   // TODO: PrettifyTypeDeep
   // TODO: UnionToIntersection
 
-  // @ts-expect-error Ideally an empty object should always be assignable to `DeepPartial` but currently it isn't.
   function _emptyMustBeAssignable<T extends object>(_partial: DeepPartial<T> = {}): void {}
 
   expectTypeOf<DeepPartial<{ a: string }>>().toEqualTypeOf<{ a?: string }>();

@@ -488,18 +488,18 @@ export type UnionToIntersection<U> = (U extends unknown ? (arg: U) => void : nev
  *
  * Its behavior is unspecified when run on a non-plain object.
  */
-// Allowing passing any `object` is done because it's more convenient for the end user.
-// Note that `{}` should always be assignable to `DeepPartial<T>`.
-export type DeepPartial<T extends object> = _DeepPartial<T>;
+// Note(LukeAbby): This is a top-level homomorphic mapped type to ensure DeepParital can be deferred.
+// It would be ideal to skip non-plain objects.
+export type DeepPartial<T extends object> = {
+  [K in keyof T]?: _DeepPartial<T[K]>;
+};
 
 // `Node` (e.g. the `HTMLDivElement` used by `Configuration.content`) is excluded from recursion:
 // its circular DOM properties cause "Excessive stack depth comparing types" crashes.
 type _DeepPartial<T> = T extends object
   ? T extends AnyArray | AnyFunction | AnyConstructor | Node
     ? T
-    : {
-        [K in keyof T]?: _DeepPartial<T[K]>;
-      }
+    : DeepPartial<T>
   : T;
 
 /**

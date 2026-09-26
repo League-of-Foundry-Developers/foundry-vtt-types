@@ -71,3 +71,16 @@ Hooks.on("getHBMixinTestContextOptions", (application, controls) => {
 Hooks.on("closeHBMixinTest", (application) => {
   expectTypeOf(application).toEqualTypeOf<HBMixinTest>();
 });
+
+// Note(LukeAbby): Resolving `_preRender`'s `DeepPartial<RenderContextOf<this>>` with concrete arguments is very
+// expensive and has caused an excessive stack error.
+// Reported at https://discord.com/channels/732325252788387980/803646399014109205/1553477952317038806
+test("MrSurvive regression test", () => {
+  class _ConcreteActorSheet extends HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {}
+
+  class _ConcreteItemSheet extends HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2)<
+    foundry.applications.sheets.ItemSheetV2.RenderContext,
+    foundry.applications.sheets.ItemSheetV2.Configuration,
+    foundry.applications.sheets.ItemSheetV2.RenderOptions
+  > {}
+});
