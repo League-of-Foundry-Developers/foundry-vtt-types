@@ -1,4 +1,3 @@
-import type { FixedInstanceType } from "#utils";
 import type TokenApplicationMixin from "#client/applications/sheets/token/mixin.d.mts";
 import type { AllHooks } from "#client/hooks.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
@@ -42,10 +41,8 @@ export interface DeprecatedHookConfig {
  * A registry of the {@linkcode ApplicationV2}'s name to the instance. Used for hooks.
  */
 export interface ApplicationV2Config {
-  HandlebarsApplication: FixedInstanceType<
-    foundry.applications.api.HandlebarsApplicationMixin.Mix<foundry.applications.api.ApplicationV2.AnyConstructor>
-  >;
-  TokenApplication: FixedInstanceType<TokenApplicationMixin.Mix<foundry.applications.api.ApplicationV2.AnyConstructor>>;
+  HandlebarsApplication: foundry.applications.api.HandlebarsApplicationMixin.AnyMixed;
+  TokenApplication: TokenApplicationMixin.AnyMixed;
   PlaceablePalette: foundry.applications.sheets.palette.PlaceablePaletteMixin.AnyMixed;
 }
 

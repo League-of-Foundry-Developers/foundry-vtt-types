@@ -195,7 +195,7 @@ declare function TokenApplicationMixin<BaseClass extends TokenApplicationMixin.B
 ): TokenApplicationMixin.Mix<BaseClass>;
 
 declare namespace TokenApplicationMixin {
-  type AnyMixedConstructor = ReturnType<typeof TokenApplicationMixin<BaseClass>>;
+  type AnyMixedConstructor = ReturnType<typeof TokenApplicationMixin<ApplicationV2.AnyConstructor>>;
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = ApplicationV2.Internal.Constructor;
