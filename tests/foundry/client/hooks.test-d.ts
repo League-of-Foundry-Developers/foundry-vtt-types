@@ -241,6 +241,23 @@ test("foundry/client/hooks", () => {
   });
   Hooks.on("deactivateHandlebarsApplication", () => {});
   Hooks.on("closeViewHandlebarsApplication", () => {});
+  Hooks.on("activateApplicationV2", (_app, change) => {
+    expectTypeOf(change).toEqualTypeOf<foundry.applications.ui.SceneControls.ActivationChange | undefined>();
+  });
+  Hooks.on("deactivateApplicationV2", () => {});
+  Hooks.on("closeViewApplicationV2", () => {});
+  Hooks.on("closeViewDocumentSheetV2", (app) => {
+    expectTypeOf(app).toEqualTypeOf<foundry.applications.api.DocumentSheetV2.Any>();
+  });
+  Hooks.on("activateActorDirectory", (app) => {
+    expectTypeOf(app).toEqualTypeOf<foundry.applications.sidebar.tabs.ActorDirectory.Any>();
+  });
+  // @ts-expect-error `SceneControls` is activated but never deactivated.
+  Hooks.on("deactivateSceneControls", () => {});
+  // @ts-expect-error Only sidebar tabs and `SceneControls` are activated.
+  Hooks.on("activateSettingsConfig", () => {});
+  // @ts-expect-error Only journal page sheets close a view.
+  Hooks.on("closeViewActorSheetV2", () => {});
   Hooks.on("renderTokenApplication", () => {});
   Hooks.on("renderPlaceablePalette", () => {});
 

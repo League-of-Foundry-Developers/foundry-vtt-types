@@ -283,10 +283,11 @@ export interface SettingConfig {
 
   "core.compendiumArtConfiguration": Record<
     string,
-    Pick<foundry.helpers.media.CompendiumArt.Descriptor, "priority"> & {
+    {
       portraits: boolean;
       tokens: boolean;
       items: boolean;
+      priority: number;
     }
   >;
 

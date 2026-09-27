@@ -1,5 +1,12 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { AnyMutableObject, DeepPartial, EmptyObject, HandleEmptyObject, ValueOf } from "#utils";
+import type {
+  AnyMutableObject,
+  DeepPartial,
+  EmptyObject,
+  HandleEmptyObject,
+  IntentionalPartial,
+  ValueOf,
+} from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
@@ -272,61 +279,71 @@ type PastePlaceableLayerHooks = {
 
 interface PlaceableLayerHooks extends PastePlaceableLayerHooks {}
 
+type CollectionErrorArgs<Location extends string, DocumentName extends Document.Type> = [
+  location: Location,
+  err: Error,
+  data: Hooks.CollectionInitializationErrorData<DocumentName>,
+];
+
 type CollectionErrorCallbacks = {
-  [K in keyof HookConfigs.DocumentCollectionConfig as K extends string ? `${K}#_initialize` : never]: [
-    location: K extends string ? `${K}#_initialize` : never,
-    err: Error,
-    data: Hooks.CollectionInitializationErrorData<HookConfigs.DocumentCollectionConfig[K]>,
-  ];
+  [K in keyof HookConfigs.DocumentCollectionConfig as `${K}#_initialize`]: CollectionErrorArgs<
+    `${K}#_initialize`,
+    HookConfigs.DocumentCollectionConfig[K]
+  >;
 };
 
 type EmbeddedCollectionErrorCallbacks = {
-  [K in keyof HookConfigs.EmbeddedCollectionConfig as K extends string ? `${K}#_initializeDocument` : never]: [
-    location: K extends string ? `${K}#_initializeDocument` : never,
-    err: Error,
-    data: Hooks.CollectionInitializationErrorData<HookConfigs.EmbeddedCollectionConfig[K]>,
-  ];
+  [K in keyof HookConfigs.EmbeddedCollectionConfig as `${K}#_initializeDocument`]: CollectionErrorArgs<
+    `${K}#_initializeDocument`,
+    HookConfigs.EmbeddedCollectionConfig[K]
+  >;
 };
 
-type ActivateApplicationHooks = {
-  [
-    K in ApplicationV2Name as ApplicationV2Config[K] extends
-      | foundry.applications.sidebar.AbstractSidebarTab.Any
-      | foundry.applications.ui.SceneControls.Any
-      ? `activate${K}`
-      : K extends "ApplicationV2" | "HandlebarsApplication"
-        ? `activate${K}`
-        : never
-  ]: ApplicationV2Config[K] extends foundry.applications.ui.SceneControls.Any
+// The applications whose registered instance extends `App`.
+type ApplicationV2NameFor<App> = {
+  [K in ApplicationV2Name]: ApplicationV2Config[K] extends App ? K : never;
+}[ApplicationV2Name];
+
+// Every application inherits from these, so their per-class hooks fire for all applications.
+type BaseApplicationV2Name = "ApplicationV2" | "HandlebarsApplication";
+
+type ActivatableApplicationName =
+  | ApplicationV2NameFor<
+      foundry.applications.sidebar.AbstractSidebarTab.Any | foundry.applications.ui.SceneControls.Any
+    >
+  | BaseApplicationV2Name;
+
+type ActivateApplicationHook<K extends ActivatableApplicationName> =
+  ApplicationV2Config[K] extends foundry.applications.ui.SceneControls.Any
     ? (app: ApplicationV2Config[K], change: foundry.applications.ui.SceneControls.ActivationChange) => void
-    : K extends "ApplicationV2" | "HandlebarsApplication"
+    : K extends BaseApplicationV2Name
       ? (app: ApplicationV2Config[K], change?: foundry.applications.ui.SceneControls.ActivationChange) => void
       : (app: ApplicationV2Config[K]) => void;
+
+type ActivateApplicationHooks = {
+  [K in ActivatableApplicationName as `activate${K}`]: ActivateApplicationHook<K>;
 };
+
+type DeactivatableApplicationName =
+  | ApplicationV2NameFor<foundry.applications.sidebar.AbstractSidebarTab.Any>
+  | BaseApplicationV2Name;
 
 type DeactivateApplicationHooks = {
-  [
-    K in ApplicationV2Name as ApplicationV2Config[K] extends foundry.applications.sidebar.AbstractSidebarTab.Any
-      ? `deactivate${K}`
-      : K extends "ApplicationV2" | "HandlebarsApplication"
-        ? `deactivate${K}`
-        : never
-  ]: (app: ApplicationV2Config[K]) => void;
+  [K in DeactivatableApplicationName as `deactivate${K}`]: (app: ApplicationV2Config[K]) => void;
 };
 
+type JournalViewApplicationName =
+  | ApplicationV2NameFor<foundry.applications.sheets.journal.JournalEntryPageSheet.Any>
+  | BaseApplicationV2Name
+  | "DocumentSheetV2";
+
 type CloseJournalViewHooks = {
-  [
-    K in ApplicationV2Name as ApplicationV2Config[K] extends foundry.applications.sheets.journal.JournalEntryPageSheet.Any
-      ? `closeView${K}`
-      : K extends "ApplicationV2" | "HandlebarsApplication" | "DocumentSheetV2"
-        ? `closeView${K}`
-        : never
-  ]: (app: ApplicationV2Config[K]) => void;
+  [K in JournalViewApplicationName as `closeView${K}`]: (app: ApplicationV2Config[K]) => void;
 };
 
 type InitializeSourceShadersHooks = {
   [
-    K in keyof HookConfigs.RenderedEffectSourceConfig as K extends string ? `initialize${K}Shaders` : never
+    K in keyof HookConfigs.RenderedEffectSourceConfig as `initialize${K}Shaders`
   ]: Hooks.InitializeRenderedEffectSourceShaders<HookConfigs.RenderedEffectSourceConfig[K]>;
 };
 
@@ -1508,7 +1525,7 @@ declare global {
    * ```
    */
   namespace Hooks {
-    interface CanvasConfig extends Partial<PIXI.IApplicationOptions> {
+    interface CanvasConfig extends IntentionalPartial<PIXI.IApplicationOptions> {
       width: number;
       height: number;
       transparent: boolean;
