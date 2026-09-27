@@ -91,9 +91,9 @@ type GetHeaderControlsApplicationV2Hooks = {
   [K in ApplicationV2Name as `getHeaderControls${K}`]: Hooks.GetHeaderControlsApplicationV2<ApplicationV2Config[K]>;
 };
 
-// `Compendium` supplies its own `hookName`, so its `get{}ContextOptions` event is
-// `get<documentName>ContextOptions` and never `getCompendiumContextOptions`, which
-// `CompendiumDirectory` emits instead.
+// Core applications always pass `_createContextMenu` a fixed `hookName`, so these per-class events only
+// fire for applications that omit it. `Compendium` is excluded because `CompendiumDirectory` emits
+// `getCompendiumContextOptions` for itself.
 type GetApplicationV2ContextOptionsHooks = {
   [
     K in ApplicationV2Name as K extends "Compendium" ? never : `get${K}ContextOptions`
