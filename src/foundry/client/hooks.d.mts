@@ -92,10 +92,12 @@ type GetHeaderControlsApplicationV2Hooks = {
 };
 
 // Core applications always pass `_createContextMenu` a fixed `hookName`, so these per-class events only
-// fire for applications that omit it. `AllHooks` overrides `getCompendiumContextOptions` because
-// `CompendiumDirectory` also emits it.
+// fire for applications that omit it. `Compendium` is excluded so that `getCompendiumContextOptions` keeps the
+// `CompendiumDirectory` type core emits it with; see that hook's `@privateRemarks`.
 type GetApplicationV2ContextOptionsHooks = {
-  [K in ApplicationV2Name as `get${K}ContextOptions`]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
+  [
+    K in ApplicationV2Name as K extends "Compendium" ? never : `get${K}ContextOptions`
+  ]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
 };
 
 type CloseApplicationV2Hooks = {
@@ -1073,13 +1075,12 @@ export interface AllHooks extends DynamicHooks {
    * @param app     - The Application instance that the context menu is constructed in
    * @param entries - The context menu entries
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @privateRemarks Core {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium} apps pass a fixed
-   * `get<documentName>ContextOptions` instead, but a subclass that calls `_createContextMenu` without a `hookName`
-   * also fires this event, with itself as `app`.
+   * @privateRemarks A {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium} subclass that omits
+   * `hookName` also fires this with itself as `app`. That's left untyped so listeners needn't narrow `app`.
    * @see {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory._onFirstRender | CompendiumDirectory#_onFirstRender}
    */
   getCompendiumContextOptions: (
-    app: foundry.applications.sidebar.tabs.CompendiumDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
+    app: foundry.applications.sidebar.tabs.CompendiumDirectory.Any,
     entries: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 
