@@ -92,12 +92,10 @@ type GetHeaderControlsApplicationV2Hooks = {
 };
 
 // Core applications always pass `_createContextMenu` a fixed `hookName`, so these per-class events only
-// fire for applications that omit it. `Compendium` is excluded because `CompendiumDirectory` emits
-// `getCompendiumContextOptions` for itself.
+// fire for applications that omit it. `AllHooks` overrides `getCompendiumContextOptions` because
+// `CompendiumDirectory` also emits it.
 type GetApplicationV2ContextOptionsHooks = {
-  [
-    K in ApplicationV2Name as K extends "Compendium" ? never : `get${K}ContextOptions`
-  ]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
+  [K in ApplicationV2Name as `get${K}ContextOptions`]: Hooks.GetApplicationV2ContextOptions<ApplicationV2Config[K]>;
 };
 
 type CloseApplicationV2Hooks = {
@@ -1075,10 +1073,13 @@ export interface AllHooks extends DynamicHooks {
    * @param app     - The Application instance that the context menu is constructed in
    * @param entries - The context menu entries
    * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @privateRemarks Core {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium} apps pass a fixed
+   * `get<documentName>ContextOptions` instead, but a subclass that calls `_createContextMenu` without a `hookName`
+   * also fires this event, with itself as `app`.
    * @see {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory._onFirstRender | CompendiumDirectory#_onFirstRender}
    */
   getCompendiumContextOptions: (
-    app: foundry.applications.sidebar.tabs.CompendiumDirectory.Any,
+    app: foundry.applications.sidebar.tabs.CompendiumDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any,
     entries: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 

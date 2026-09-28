@@ -9,6 +9,17 @@ class HookLightSource extends foundry.canvas.sources.PointLightSource {
   hookSourceMarker = true;
 }
 
+// Core `Compendium` passes a fixed `hookName`, but a module subclass that omits it fires `get{}ContextOptions` for
+// every class in its inheritance chain, including `getCompendiumContextOptions` with itself as the app.
+class ModuleCompendium extends foundry.applications.sidebar.apps.Compendium {
+  moduleCompendiumMarker = true;
+
+  protected override _createContextMenus(): void {
+    super._createContextMenus();
+    this._createContextMenu(() => [], ".module-entry", { jQuery: false });
+  }
+}
+
 declare module "fvtt-types/configuration" {
   namespace Hooks {
     interface RenderedEffectSourceConfig {
@@ -111,9 +122,18 @@ test("foundry/client/hooks", () => {
   });
 
   Hooks.on("getCompendiumContextOptions", (app, entries) => {
-    expectTypeOf(app).toEqualTypeOf<foundry.applications.sidebar.tabs.CompendiumDirectory.Any>();
+    expectTypeOf(app).toEqualTypeOf<
+      foundry.applications.sidebar.tabs.CompendiumDirectory.Any | foundry.applications.sidebar.apps.Compendium.Any
+    >();
     expectTypeOf(entries).toEqualTypeOf<foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]>();
+
+    if (app instanceof ModuleCompendium) expectTypeOf(app.moduleCompendiumMarker).toEqualTypeOf<boolean>();
   });
+
+  Hooks.callAll("getCompendiumContextOptions", {} as foundry.applications.sidebar.tabs.CompendiumDirectory.Any, []);
+  Hooks.callAll("getCompendiumContextOptions", {} as ModuleCompendium, []);
+  // @ts-expect-error `getCompendiumContextOptions` only fires for `CompendiumDirectory` and `Compendium` apps
+  Hooks.callAll("getCompendiumContextOptions", {} as foundry.applications.sidebar.tabs.ChatLog.Any, []);
 
   Hooks.on("getAdventureContextOptions", (app) => {
     expectTypeOf(app).toEqualTypeOf<foundry.applications.sidebar.apps.Compendium.Any>();
