@@ -13,6 +13,12 @@ declare class MyRenderedSource extends foundry.canvas.sources.RenderedEffectSour
 }
 
 declare const object: foundry.canvas.placeables.Token.Implementation;
+declare const hookLightSource: foundry.canvas.sources.PointLightSource;
+
+interface HookSourceLayers {
+  [name: string]: RenderedEffectSource.LayerConfig;
+  background: RenderedEffectSource.LayerConfig;
+}
 
 test("foundry/client/canvas/sources/rendered-effect-source", () => {
   expectTypeOf(MyRenderedSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
@@ -145,4 +151,14 @@ test("foundry/client/canvas/sources/rendered-effect-source", () => {
       speed: 3,
     }),
   ).toBeVoid();
+
+  const hookRenderedSource: RenderedEffectSource.Any = hookLightSource;
+  expectTypeOf(hookRenderedSource.background).toEqualTypeOf<foundry.canvas.containers.PointSourceMesh | undefined>();
+
+  expectTypeOf<
+    RenderedEffectSource.LayerMesh<HookSourceLayers, "background">
+  >().toEqualTypeOf<foundry.canvas.containers.PointSourceMesh>();
+  expectTypeOf<RenderedEffectSource.LayerMesh<HookSourceLayers, "other">>().toEqualTypeOf<
+    foundry.canvas.containers.PointSourceMesh | undefined
+  >();
 });

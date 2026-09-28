@@ -4,7 +4,6 @@ import { expectTypeOf, test } from "vitest";
 import Canvas = foundry.canvas.Canvas;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 import FormApplication = foundry.appv1.api.FormApplication;
-import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
 test("foundry/client/helpers/hooks", () => {
   expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Record<string, Hooks.HookedFunction[]>>();
@@ -33,7 +32,7 @@ test("foundry/client/helpers/hooks", () => {
   });
 
   Hooks.on("error", (location, _err, data) => {
-    if (location === "Canvas#draw") expectTypeOf(data.layer).toEqualTypeOf<CanvasLayer>();
+    if (location === "Canvas#draw") expectTypeOf(data).toEqualTypeOf<EmptyObject>();
     if (location === "Game#initializeCanvas") expectTypeOf(data).toEqualTypeOf<EmptyObject>();
     if (location === "MyClass#myMethod") expectTypeOf(data.foo).toEqualTypeOf<number>();
   });
