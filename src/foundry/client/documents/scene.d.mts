@@ -1842,6 +1842,12 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   gridlessGrid: foundry.grid.GridlessGrid;
 
   /**
+   * Maintain a list of BaseShapeData instances that are placed in this Scene.
+   * @internal
+   */
+  readonly _dependentShapes: foundry.utils.IterableWeakSet<foundry.data.BaseShapeData.Any>;
+
+  /**
    * Determine the canvas dimensions this Scene would occupy, if rendered
    * @defaultValue `{}`
    * @remarks Technically `undefined` prior to the first time {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} is called

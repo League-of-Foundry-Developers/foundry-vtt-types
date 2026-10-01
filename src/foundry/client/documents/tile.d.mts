@@ -3,6 +3,7 @@ import type { fields, TextureData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseTile } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { RectangleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -961,12 +962,10 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
    */
   constructor(data: TileDocument.CreateData, context?: TileDocument.ConstructionContext);
 
-  // FIXME: `RectangleShapeData` is the `client/data/shapes.mjs` class, which has not been ported yet.
-  // Restore this declaration once that module exists.
-  // /**
-  //  * The rectangle shape of this Tile document.
-  //  */
-  // shape: RectangleShapeData;
+  /**
+   * The rectangle shape of this Tile document.
+   */
+  shape: RectangleShapeData;
 
   override prepareBaseData(): void;
 
