@@ -236,7 +236,7 @@ declare class ChatLog<
    *
    * @remarks Applies only to the chat message editor.
    */
-  protected _onConfigurePlugins(event: ProseMirrorPluginsEvent): void;
+  protected override _onConfigurePlugins(event: ProseMirrorPluginsEvent): void;
 
   protected override _onDeactivate(): void;
 

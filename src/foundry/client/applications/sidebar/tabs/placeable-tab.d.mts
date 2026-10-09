@@ -315,7 +315,7 @@ declare class PlaceableTab<
 
   /**
    * Test whether a placeable entry matches any additional tab-specific filter criteria.
-   * Only called for entries that already pass the common name, elevation, and level filters.
+   * Only called for entries that already pass the common name, elevation, hidden, locked, and level filters.
    * @param entry - The placeable document to test.
    * @returns True if the entry should remain visible.
    */
@@ -386,6 +386,12 @@ declare namespace PlaceableTab {
     dialog: PlaceableFilter.Any | null;
 
     elevation: ElevationFilter;
+
+    /** @defaultValue `null` */
+    hidden: boolean | null;
+
+    /** @defaultValue `null` */
+    locked: boolean | null;
 
     /**
      * The IDs of the levels entries are restricted to; empty when unfiltered.

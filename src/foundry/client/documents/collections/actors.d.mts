@@ -33,7 +33,7 @@ declare class Actors extends WorldCollection<"Actor"> {
   // fake type override
   override importDocument<Doc extends Actor.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Actor">,
+    options?: WorldCollection.ImportDocumentOptions<"Actor">,
   ): Actors.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

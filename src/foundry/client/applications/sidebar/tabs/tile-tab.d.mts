@@ -43,11 +43,11 @@ declare namespace TileTab {
   interface AnyConstructor extends Identity<typeof AnyTileTab> {}
 
   interface Restrictions {
-    /** @defaultValue `false` */
-    light: boolean;
+    /** @defaultValue `null` */
+    light: boolean | null;
 
-    /** @defaultValue `false` */
-    weather: boolean;
+    /** @defaultValue `null` */
+    weather: boolean | null;
   }
 
   interface FilterState extends PlaceableTab.FilterState {

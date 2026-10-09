@@ -12,6 +12,7 @@ import type {
 } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 import type ContextMenu from "../ux/context-menu.d.mts";
+import type HTMLProseMirrorElement from "../elements/prosemirror-editor.d.mts";
 
 // TODO: Investigate use of DeepPartial vs Partial vs InexactPartial
 
@@ -1060,6 +1061,12 @@ declare class ApplicationV2<
    * Attach event listeners to the Application frame.
    */
   protected _attachFrameListeners(): void;
+
+  /**
+   * Configure plugins for the ProseMirror instance.
+   * @param event - The plugin configuration event.
+   */
+  protected _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   /**
    * Handle click events on a tab within the Application.

@@ -265,6 +265,7 @@ expectTypeOf(tempItem.render()).toBeVoid();
 expectTypeOf(tempItem.render(true)).toBeVoid();
 expectTypeOf(tempItem.render(true, {})).toBeVoid();
 expectTypeOf(tempItem.render(true, { title: "foo" })).toBeVoid();
+expectTypeOf(tempItem.render(false, { renderEmbedded: true })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
 // @ts-expect-error Render options not partial yet.
 expectTypeOf(tempItem.render(true, { window: { title: "foo" } })).toBeVoid();

@@ -21,7 +21,7 @@ declare class Items extends WorldCollection<"Item"> {
   // fake type override
   override importDocument<Doc extends Item.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Item">,
+    options?: WorldCollection.ImportDocumentOptions<"Item">,
   ): Items.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

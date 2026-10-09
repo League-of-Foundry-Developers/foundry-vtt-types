@@ -33,6 +33,7 @@ declare const someUser: User.Implementation;
 test("foundry/client/canvas/layers/base/interaction-layer", () => {
   expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
 
+  expectTypeOf(InteractionLayer.FORCE_SNAP_VERTICES).toEqualTypeOf<Partial<SceneControls.Tool>>();
   expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<Partial<SceneControls.Tool>>();
   const layer = new MyInteractionLayer();
 

@@ -79,9 +79,11 @@ describe("VisionMode tests", () => {
 
   test("Animation", () => {
     expectTypeOf(monochromatic.animated).toBeBoolean();
-    // Not actually deprecated by foundry, but always throws at runtime: https://github.com/foundryvtt/foundryvtt/issues/13227
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expectTypeOf(monochromatic.animate(0.6)).toBeVoid();
+    expectTypeOf(monochromatic.animate.call(visionSource, 0.6)).toBeVoid();
+
+    // `this` must be the vision source; the VisionMode has no `animation` state of its own.
+    // @ts-expect-error Called on the VisionMode itself, `this` is not a vision source.
+    monochromatic.animate(0.6);
   });
 
   test("Schema properties", () => {

@@ -177,11 +177,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Render all Application instances which are connected to this document by calling their respective
    * @see {@linkcode ApplicationV2.render | foundry.applications.api.ApplicationV2#render}
-   * @param force   - Force rendering (default: `false`)
-   * @param context - Optional context (default: `{}`)
+   * @param force   - Force rendering (constructed) DocumentSheets and other Applications (default: `false`)
+   * @param context - Optional context and Application configuration (default: `{}`)
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  render(force?: boolean, context?: Application.RenderOptions | ApplicationV2.RenderOptions): void;
+  render(force?: boolean, context?: ClientDocument.RenderContext): void;
 
   /**
    * Determine the sort order for this Document by positioning it relative a target sibling.
@@ -691,6 +690,19 @@ declare global {
   interface ClientDocumentConstructor extends Identity<typeof _ClientDocument> {}
 
   namespace ClientDocument {
+    /** @internal */
+    interface _RenderContext {
+      /** Also render Applications of embedded Documents */
+      renderEmbedded: boolean;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    interface AppV1RenderContext extends Application.RenderOptions, InexactPartial<_RenderContext> {}
+
+    interface AppV2RenderContext extends ApplicationV2.RenderOptions, InexactPartial<_RenderContext> {}
+
+    type RenderContext = AppV1RenderContext | AppV2RenderContext;
+
     interface SortOptions<T, SortKey extends string = "sort"> extends foundry.utils.SortOptions<T, SortKey> {
       /**
        * Additional data changes which are applied to each sorted document

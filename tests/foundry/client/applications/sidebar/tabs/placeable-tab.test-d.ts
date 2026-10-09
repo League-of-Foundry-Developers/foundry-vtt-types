@@ -45,6 +45,8 @@ test("foundry/client/applications/sidebar/tabs/placeable-tab", () => {
   expectTypeOf(tab._applyFilters()).toEqualTypeOf<void>();
   expectTypeOf(tab._clearFilters()).toEqualTypeOf<void>();
   expectTypeOf(tab._filterState).toEqualTypeOf<PlaceableTab.FilterState>();
+  expectTypeOf(tab._filterState.hidden).toEqualTypeOf<boolean | null>();
+  expectTypeOf(tab._filterState.locked).toEqualTypeOf<boolean | null>();
   expectTypeOf(filterState.dialog).toEqualTypeOf<PlaceableFilter.Any | null>();
   expectTypeOf(filterState.elevation.bottom).toBeNumber();
   expectTypeOf(filterState.elevation.top).toBeNumber();
