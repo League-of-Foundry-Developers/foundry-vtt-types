@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity, InexactPartial, MaybePromise } from "#utils";
+import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, MaybePromise } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
@@ -11,12 +11,12 @@ declare class InteractionLayer extends CanvasLayer {
    * The shared "snap to grid vertices" tool.
    * @remarks Hidden on gridless scenes.
    */
-  static get FORCE_SNAP_VERTICES(): Partial<SceneControls.Tool>;
+  static get FORCE_SNAP_VERTICES(): IntentionalPartial<SceneControls.Tool>;
 
   /**
    * The shared palette tool.
    */
-  static get TOGGLE_PALETTE(): Partial<SceneControls.Tool>;
+  static get TOGGLE_PALETTE(): IntentionalPartial<SceneControls.Tool>;
 
   /**
    * Is this layer currently active

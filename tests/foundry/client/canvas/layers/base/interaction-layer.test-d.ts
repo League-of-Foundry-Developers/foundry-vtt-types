@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyObject, IntentionalPartial } from "fvtt-types/utils";
 
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
 import SceneControls = foundry.applications.ui.SceneControls;
@@ -33,8 +33,8 @@ declare const someUser: User.Implementation;
 test("foundry/client/canvas/layers/base/interaction-layer", () => {
   expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
 
-  expectTypeOf(InteractionLayer.FORCE_SNAP_VERTICES).toEqualTypeOf<Partial<SceneControls.Tool>>();
-  expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<Partial<SceneControls.Tool>>();
+  expectTypeOf(InteractionLayer.FORCE_SNAP_VERTICES).toEqualTypeOf<IntentionalPartial<SceneControls.Tool>>();
+  expectTypeOf(InteractionLayer.TOGGLE_PALETTE).toEqualTypeOf<IntentionalPartial<SceneControls.Tool>>();
   const layer = new MyInteractionLayer();
 
   expectTypeOf(layer.name).toEqualTypeOf<string>();
