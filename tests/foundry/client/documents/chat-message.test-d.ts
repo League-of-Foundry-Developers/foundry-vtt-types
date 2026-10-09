@@ -30,6 +30,7 @@ test("Regression test for CONFIG.Dice.rollModes as choices", () => {
   new foundry.data.fields.StringField({
     blank: true,
     required: true,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     choices: CONFIG.Dice.rollModes,
   });
 });

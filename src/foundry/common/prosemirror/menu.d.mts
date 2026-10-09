@@ -89,7 +89,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Configure dropdowns for this menu. Each entry in the top-level array corresponds to a separate drop-down.
    */
-  protected _getDropDownMenus(): Record<string, ProseMirrorDropDown.Config>;
+  protected _getDropDownMenus(): ProseMirrorMenu.DropDowns;
 
   /**
    * Configure the items for this menu.
@@ -373,6 +373,25 @@ declare namespace ProseMirrorMenu {
 
     /** The description of the menu item. */
     title: string;
+  }
+
+  interface DropDowns {
+    [name: string]: ProseMirrorDropDown.Config;
+
+    /** The combined formatting drop-down, which every other drop-down is also collapsed under. */
+    format: ProseMirrorDropDown.Config;
+
+    /** Table creation and manipulation. */
+    table: ProseMirrorDropDown.Config;
+
+    /**
+     * The available font families, from
+     * {@linkcode foundry.applications.settings.menus.FontConfig.getAvailableFonts | FontConfig.getAvailableFonts}.
+     */
+    fonts: ProseMirrorDropDown.Config;
+
+    /** The font sizes offered by the editor. */
+    sizes: ProseMirrorDropDown.Config;
   }
 
   /**
