@@ -166,6 +166,11 @@ declare class JournalEntrySheet<
    */
   override get title(): string;
 
+  override render(options?: DeepPartial<RenderOptions>): Promise<this>;
+
+  /** @deprecated Exists for backwards compatibility with the original `ApplicationV1#render` signature. */
+  override render(options: boolean, _options?: DeepPartial<RenderOptions>): Promise<this>;
+
   /**
    * Highlights the currently-viewed page in the sidebar.
    */

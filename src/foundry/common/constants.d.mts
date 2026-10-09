@@ -1680,12 +1680,12 @@ export declare const EDGE_SENSE_TYPES: Readonly<{
   NONE: 0 & EDGE_SENSE_TYPES;
 
   /**
-   * Senses collide with this edge.
+   * Senses collide with the second intersection, bypassing the first.
    */
   LIMITED: 10 & EDGE_SENSE_TYPES;
 
   /**
-   * Senses collide with the second intersection, bypassing the first.
+   * Senses collide with this edge.
    */
   NORMAL: 20 & EDGE_SENSE_TYPES;
 
@@ -2251,6 +2251,7 @@ export const ALLOWED_HTML_ATTRIBUTES: DeepReadonly<{
     "list",
     "max",
     "min",
+    "multiple",
     "readonly",
     "size",
     "src",

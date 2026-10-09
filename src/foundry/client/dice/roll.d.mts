@@ -310,6 +310,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * A sandbox-safe evaluation function to execute user-input code with access to scoped Math methods.
    * @param expression - The input string expression
    * @returns The numeric evaluated result
+   * @throws If the expression is invalid or yields a non-numeric result
    */
   static safeEval(expression: string): number;
 

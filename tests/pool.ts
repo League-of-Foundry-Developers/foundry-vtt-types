@@ -354,7 +354,7 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
     throw new Error(`Expected to be redirected to /join but got pathname ${pageUrl.pathname}`);
   }
 
-  await page.fill("[name=username]", "Test User", { strict: true });
+  await page.selectOption("[name=userId]", { label: "Test User" }, { strict: true });
   await page.click("button[name=join]", { strict: true });
   await page.waitForURL("/game");
   await page.waitForFunction(() => typeof game !== "undefined" && game.ready);

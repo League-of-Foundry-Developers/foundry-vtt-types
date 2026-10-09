@@ -57,14 +57,14 @@ declare namespace AmbientLightTab {
      */
     color: string | null;
 
-    /** @defaultValue `false` */
-    negative: boolean;
+    /** @defaultValue `null` */
+    negative: boolean | null;
 
-    /** @defaultValue `false` */
-    walls: boolean;
+    /** @defaultValue `null` */
+    walls: boolean | null;
 
-    /** @defaultValue `false` */
-    vision: boolean;
+    /** @defaultValue `null` */
+    vision: boolean | null;
   }
 
   interface RenderContext extends PlaceableTab.RenderContext {}

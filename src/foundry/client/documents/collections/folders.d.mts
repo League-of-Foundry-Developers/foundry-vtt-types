@@ -37,7 +37,7 @@ declare class Folders extends WorldCollection<"Folder"> {
   // fake type override
   override importDocument<Doc extends Folder.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Folder">,
+    options?: WorldCollection.ImportDocumentOptions<"Folder">,
   ): Folders.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

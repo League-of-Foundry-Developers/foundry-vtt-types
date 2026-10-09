@@ -439,7 +439,7 @@ export function getProperty(object: object, key: PropertyKey): unknown;
  * @param object - The object to update
  * @param key    - The string key
  * @param value  - The value to be assigned
- * @returns Whether the value was changed from its previous value
+ * @returns Whether the value was changed from its previous value or the object didn't have the property
  *
  * @remarks - This type is likely to refuse to set a key that isn't known in the future.
  */

@@ -80,8 +80,6 @@ declare class JournalEntryPageProseMirrorSheet<
    */
   protected override _isEditorDirty(): boolean | undefined;
 
-  protected override _attachFrameListeners(): void;
-
   /**
    * Update the parent sheet if it is open when the server autosaves the contents of this editor.
    * @param content - The updated editor contents.
@@ -89,10 +87,7 @@ declare class JournalEntryPageProseMirrorSheet<
    */
   _onAutosave(content: string): void;
 
-  /**
-   * Configure plugins for the ProseMirror instance.
-   */
-  protected _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
+  protected override _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   /**
    * Update the UI appropriately when receiving new steps from another client.

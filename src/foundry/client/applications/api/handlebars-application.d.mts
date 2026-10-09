@@ -88,6 +88,7 @@ declare class HandlebarsApplication {
 
   /**
    * Prepare data used to synchronize the state of a template part.
+   * A data-focus attribute can identify an inner control to restore within a custom form input.
    * @param partId       - The id of the part being rendered
    * @param newElement   - The new rendered HTML element for the part
    * @param priorElement - The prior rendered HTML element for the part

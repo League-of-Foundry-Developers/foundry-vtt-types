@@ -592,6 +592,20 @@ test("protected override method signatures", () => {
     protected override _validateModel(data: number[], options?: DataField.ValidateModelOptions): void {
       return super._validateModel(data, options);
     }
+
+    // Change values are arbitrary JSON, so an array delta is cast element by element.
+    protected override _castChangeDelta(delta: unknown, replacementData?: AnyObject): number[] {
+      return super._castChangeDelta(delta, replacementData);
+    }
+
+    override applyChange(
+      value: number[],
+      model: foundry.abstract.DataModel.Any,
+      change: ActiveEffect.ChangeData,
+      options?: DataField.ApplyChangeOptions,
+    ): number[] | undefined {
+      return super.applyChange(value, model, change, options);
+    }
   }
 
   class HookCoverageField extends fields.AnyField {

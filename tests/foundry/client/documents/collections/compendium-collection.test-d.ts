@@ -161,6 +161,15 @@ describe("CompendiumCollection Tests", async () => {
     expectTypeOf(actorPack.duplicateCompendium({ label: "new name" })).toEqualTypeOf<Promise<typeof actorPack>>();
     expectTypeOf(actorPack.duplicateCompendium({ label: undefined })).toEqualTypeOf<Promise<typeof actorPack>>();
 
+    expectTypeOf(actorPack.duplicateCompendiumDialog()).toEqualTypeOf<Promise<CompendiumCollection.Any | void>>();
+    expectTypeOf(actorPack.duplicateCompendiumDialog({ position: { width: 480 } })).toEqualTypeOf<
+      Promise<CompendiumCollection.Any | void>
+    >();
+    expectTypeOf(actorPack.toggleLockDialog()).toEqualTypeOf<Promise<CompendiumCollection.Any | void>>();
+    expectTypeOf(actorPack.toggleLockDialog({ window: { title: "Unlock" } })).toEqualTypeOf<
+      Promise<CompendiumCollection.Any | void>
+    >();
+
     expectTypeOf(actorPack.migrate()).toEqualTypeOf<Promise<typeof actorPack>>();
     expectTypeOf(actorPack.migrate({ notify: false })).toEqualTypeOf<Promise<typeof actorPack>>();
     expectTypeOf(actorPack.migrate({ notify: undefined })).toEqualTypeOf<Promise<typeof actorPack>>();

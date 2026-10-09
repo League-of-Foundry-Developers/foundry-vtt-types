@@ -65,7 +65,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
   // fake type override
   override importDocument(
     document: Document.ImplementationFor<DocumentName>,
-    options: WorldCollection.ImportDocumentOptions<DocumentName>,
+    options?: WorldCollection.ImportDocumentOptions<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName> | undefined>;
 
   protected override _prepareImportDocument<Options extends WorldCollection.ImportDocumentOptions<DocumentName>>(

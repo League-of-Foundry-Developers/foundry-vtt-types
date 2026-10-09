@@ -24,7 +24,7 @@ declare class CombatEncounters extends WorldCollection<"Combat"> {
   override get directory(): typeof ui.combat;
 
   /**
-   * Get an Array of Combat instances which apply to the current canvas scene
+   * Get an Array of Combat instances which apply to the current canvas scene, in sort order.
    */
   get combats(): Combat.Stored[];
 
@@ -41,7 +41,7 @@ declare class CombatEncounters extends WorldCollection<"Combat"> {
   // fake type override
   override importDocument<Doc extends Combat.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Combat">,
+    options?: WorldCollection.ImportDocumentOptions<"Combat">,
   ): CombatEncounters.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

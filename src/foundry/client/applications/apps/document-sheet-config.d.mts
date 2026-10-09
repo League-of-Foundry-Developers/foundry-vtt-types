@@ -126,6 +126,9 @@ declare class DocumentSheetConfig<
    * @param scope         - A unique namespace scope for this sheet.
    * @param sheetClass    - An Application class used to render the sheet.
    * @param options       - Sheet registration configuration options.
+   * @remarks
+   * @throws If `documentClass` is not a Document class, or `sheetClass` is neither an `Application` nor a
+   * `DocumentSheetV2` subclass.
    */
   static registerSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
@@ -135,6 +138,15 @@ declare class DocumentSheetConfig<
     options?: DocumentSheetConfig.RegisterSheetOptions<DocumentClass>,
   ): void;
 
+  /**
+   * Unregister a sheet class, removing it from the list of available Applications to use for a Document type.
+   * @param documentClass - The Document class to register a new sheet option for.
+   * @param scope         - A unique namespace scope for this sheet.
+   * @param sheetClass    - An Application class used to render the sheet.
+   * @remarks
+   * @throws If `documentClass` is not a Document class, or `sheetClass` is neither an `Application` nor a
+   * `DocumentSheetV2` subclass.
+   */
   static unregisterSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
     scope: ClientDatabaseBackend.FlagScope,
@@ -150,6 +162,7 @@ declare class DocumentSheetConfig<
   static updateDefaultSheets(setting?: DefaultSheetsConfig.SettingData): void;
 
   #DocumentSheetConfig: true;
+  static #DocumentSheetConfigStatic: true;
 }
 
 declare namespace DocumentSheetConfig {
