@@ -122,7 +122,7 @@ declare global {
    */
   interface CONFIG extends Mutable<typeof globalConfig> {}
 
-  const CONFIG: CONFIG;
+  var CONFIG: CONFIG;
 
   namespace foundry {
     export import Game = _Game;
@@ -205,6 +205,11 @@ declare global {
     export import dice = _dice;
 
     export import nue = _nue;
+
+    /**
+     * A collection of application instances
+     */
+    export const ui: typeof globalThis.ui;
   }
 
   /**
@@ -214,15 +219,13 @@ declare global {
 
   /**
    * A singleton ForcedDeletion operator instance that can be reused.
-   * @privateRemarks `let` because it is created by `defineProperties` without `writable: false`
    */
-  let _del: foundry.data.operators.ForcedDeletion;
+  var _del: foundry.data.operators.ForcedDeletion;
 
   /**
    * A reference for ForcedReplacement.create that can be easily referenced.
-   * @privateRemarks `let` because it is created by `defineProperties` without `writable: false`
    */
-  let _replace: typeof foundry.data.operators.ForcedReplacement.create;
+  var _replace: typeof foundry.data.operators.ForcedReplacement.create;
 
   // Blessed globals - will remain global without deprecation
 
@@ -313,7 +316,7 @@ declare global {
    * A "secret" global to help debug attributes of the currently controlled Token.
    * This is only for debugging, and may be removed in the future, so it's not safe to use.
    */
-  let _token: foundry.canvas.placeables.Token.Implementation | null;
+  var _token: foundry.canvas.placeables.Token.Implementation | null;
 
   // Bundled Libraries
 

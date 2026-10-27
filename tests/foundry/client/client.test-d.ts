@@ -7,6 +7,9 @@ test("foundry/client/client", () => {
   // @ts-expect-error The `types` file is not actually exported as an object into the foundry namespace
   foundry.types;
 
+  expectTypeOf(foundry.ui).toEqualTypeOf<typeof ui>();
+  expectTypeOf(foundry.ui.chat).toEqualTypeOf<foundry.applications.sidebar.tabs.ChatLog | undefined>();
+
   expectTypeOf(form.submitNoEvent()).toBeVoid();
   expectTypeOf(form.submit()).toBeVoid();
   expectTypeOf(form.submit(button)).toBeVoid();
