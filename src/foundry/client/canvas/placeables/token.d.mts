@@ -1360,9 +1360,11 @@ declare namespace Token {
     cost?: number | TokenDocument.MovementCostFunction | undefined;
   }
 
+  type PlannedMovementWaypoint = Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "subpathId">;
+
   interface PlannedMovement {
-    foundPath: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
-    unreachableWaypoints: Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId">[];
+    foundPath: PlannedMovementWaypoint[];
+    unreachableWaypoints: PlannedMovementWaypoint[];
     history: TokenDocument.MeasuredMovementWaypoint[];
     hidden: boolean;
     searching: boolean;
@@ -1373,12 +1375,12 @@ declare namespace Token {
     clonedToken: Token.Implementation;
     origin: TokenDocument.Position;
     destination: TokenDocument.MovementWaypoint;
-    waypoints: Partial<TokenDocument.MovementWaypoint>[];
+    waypoints: InexactPartial<TokenDocument.MovementWaypoint>[];
     foundPath: TokenDocument.MovementWaypoint[];
     unreachableWaypoints: TokenDocument.MovementWaypoint[];
     hidden: boolean;
     updating: boolean;
-    search: Token.FindMovementPathJob;
+    search: Token.FindMovementPathJob | null;
     searching: boolean;
     searchId: number;
   }
@@ -1956,6 +1958,15 @@ declare namespace Token {
 
     /** The measure options. */
     measureOptions?: Token.MovementMeasureOptions | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    ignoreWalls?: boolean | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    ignoreCost?: boolean | undefined;
+
+    /** @deprecated Pass through `constrainOptions` instead. (since v14, until v16) */
+    history?: boolean | TokenDocument.MeasuredMovementWaypoint[] | undefined;
   }
 
   interface FindMovementPathJob {
