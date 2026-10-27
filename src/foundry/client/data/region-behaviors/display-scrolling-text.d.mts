@@ -10,17 +10,17 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     /**
      * Display only for gamemaster users
      */
-    GAMEMASTER: 0;
+    GAMEMASTER: 0 & VISIBILITY_MODES;
 
     /**
      * Display only for users with observer permissions on the triggering token (and for the GM)
      */
-    OBSERVER: 1;
+    OBSERVER: 1 & VISIBILITY_MODES;
 
     /**
      * Display for all users
      */
-    ANYONE: 2;
+    ANYONE: 2 & VISIBILITY_MODES;
   }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
@@ -30,13 +30,16 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
     text: fields.StringField<{ required: true }>;
 
     /** Optional color setting for the text */
-    color: fields.ColorField<{ required: true; nullable: false; initial: string }>;
+    color: fields.ColorField<{ required: true; nullable: false; initial: "#ffffff" }>;
 
-    /** Which users the scrolling text will display for (see {@linkcode VISIBILITY_MODES}) */
+    /**
+     * Which users the scrolling text will display for
+     * (see {@linkcode DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES})
+     */
     visibility: fields.NumberField<{
       required: true;
       choices: InvertObject<VisibilityModes>;
-      initial: typeof DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES.GAMEMASTER;
+      initial: typeof DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES.ANYONE;
       validationError: string;
     }>;
 
@@ -45,19 +48,24 @@ declare namespace DisplayScrollingTextRegionBehaviorType {
   }
 }
 
-/** The data model for a behavior that displays scrolling text above a token when one of the subscribed events occurs. */
+/**
+ * The data model for a behavior that displays scrolling text above a token when one of the subscribed events occurs.
+ */
 declare class DisplayScrollingTextRegionBehaviorType extends RegionBehaviorType<DisplayScrollingTextRegionBehaviorType.Schema> {
-  #displayScrollingTextRegionBehaviorType: true;
-
   /** @defaultValue `["BEHAVIOR.TYPES.displayScrollingText", "BEHAVIOR.TYPES.base"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** Darkness level behavior modes. */
+  /**
+   * Text visibility behavior modes.
+   */
   static get VISIBILITY_MODES(): DisplayScrollingTextRegionBehaviorType.VisibilityModes;
 
   static override defineSchema(): DisplayScrollingTextRegionBehaviorType.Schema;
 
   protected override _handleRegionEvent(event: RegionDocument.RegionEvent): Promise<void>;
+
+  #DisplayScrollingTextRegionBehaviorType: true;
+  static #DisplayScrollingTextRegionBehaviorTypeStatic: true;
 }
 
 export default DisplayScrollingTextRegionBehaviorType;

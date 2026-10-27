@@ -1,5 +1,4 @@
 import { expectTypeOf, test } from "vitest";
-import type { DeepReadonly } from "fvtt-types/utils";
 
 import Canvas = foundry.canvas.Canvas;
 import PolygonTree = foundry.data.PolygonTree;
@@ -25,7 +24,7 @@ test("foundry/client/data/polygon-tree", () => {
   expectTypeOf(myTree.depth).toBeNumber();
   expectTypeOf(myTree.isHole).toBeBoolean();
   expectTypeOf(myTree.isEmpty).toBeBoolean();
-  expectTypeOf(myTree.clipperPath).toEqualTypeOf<DeepReadonly<PIXI.Polygon.ClipperPath> | null>();
+  expectTypeOf(myTree.clipperPath).toEqualTypeOf<PIXI.Polygon.ClipperPath | null>();
   expectTypeOf(myTree.polygon).toEqualTypeOf<PIXI.Polygon | null>();
   expectTypeOf(myTree.points).toEqualTypeOf<readonly number[] | null>();
   expectTypeOf(myTree.path).toEqualTypeOf<readonly Canvas.Point[] | null>();
@@ -45,7 +44,7 @@ test("foundry/client/data/polygon-tree", () => {
   expectTypeOf(myTree.findClosestPoint({ x: 5, y: 10 })).toEqualTypeOf<Canvas.Point>();
 
   expectTypeOf(myTree.polygons).toEqualTypeOf<readonly PIXI.Polygon[]>();
-  expectTypeOf(myTree.clipperPaths).toEqualTypeOf<DeepReadonly<PIXI.Polygon.ClipperPath[]>>();
+  expectTypeOf(myTree.clipperPaths).toEqualTypeOf<readonly PIXI.Polygon.ClipperPath[]>();
   expectTypeOf(myTree.triangulation).toEqualTypeOf<PolygonTree.Triangulation>();
   expectTypeOf(myTree.triangulation.vertices).toEqualTypeOf<Float32Array>();
   expectTypeOf(myTree.triangulation.indices).toEqualTypeOf<Uint16Array | Uint32Array>();

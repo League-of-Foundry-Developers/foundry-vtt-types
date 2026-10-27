@@ -1,4 +1,4 @@
-import type { DeepReadonly, Identity } from "#utils";
+import type { Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
@@ -58,7 +58,7 @@ declare class PolygonTreeNode {
    *
    * The value of this property must not be mutated.
    */
-  get clipperPath(): DeepReadonly<PIXI.Polygon.ClipperPath> | null;
+  get clipperPath(): PIXI.Polygon.ClipperPath | null;
 
   /**
    * The polygon of this node.
@@ -183,7 +183,7 @@ declare class PolygonTree extends PolygonTreeNode {
    *
    * The value of this property must not be mutated.
    */
-  get clipperPaths(): DeepReadonly<PIXI.Polygon.ClipperPath[]>;
+  get clipperPaths(): readonly PIXI.Polygon.ClipperPath[];
 
   /**
    * The triangulation of this polygon tree.
