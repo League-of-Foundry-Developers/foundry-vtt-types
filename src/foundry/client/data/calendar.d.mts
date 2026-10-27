@@ -329,6 +329,8 @@ declare class CalendarData<
    */
   static _DURATION_FORMAT_UNITS: Set<CalendarData.DurationFormatUnit>;
 
+  static override defineSchema(): CalendarData.Schema;
+
   /** @remarks Adds the derived `daysPerLeapYear`, which is not part of the schema. */
   days: CalendarData.ConfigDays.InitializedData;
 

@@ -6,8 +6,6 @@
 // /*  Commons                                     */
 // /* -------------------------------------------- */
 
-// import * as globalUI from "./ui.mjs";
-
 export * as CONST from "#common/constants.mjs";
 
 // // declare global {
@@ -100,12 +98,15 @@ export * as nue from "./nue/_module.mjs";
 
 export { default as Game } from "./game.mjs";
 
-// /**
-//  * A collection of application instances
-//  */
-// // export const ui = {...globalUI};
+/**
+ * A collection of application instances
+ */
+export const ui: typeof globalThis.ui;
 
 /**
  * Client/shared importable types.
  */
 export * as types from "./_types.mjs";
+
+// FIXME: The `setup/` module is not typed yet.
+// export * as setup from "../setup/_module.mjs";

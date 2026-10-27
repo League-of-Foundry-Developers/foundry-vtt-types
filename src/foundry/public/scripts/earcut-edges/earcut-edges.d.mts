@@ -42,5 +42,5 @@ declare global {
     earcutEdges: EarcutEdges;
   }
 
-  const earcut: Earcut;
+  var earcut: Earcut;
 }

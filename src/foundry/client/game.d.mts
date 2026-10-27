@@ -859,7 +859,7 @@ declare global {
    * The singleton game Canvas
    * @remarks This is defined at Game construction, for which `init` is the earliest hook we have.
    */
-  const canvas: InitializedOn<Canvas, "init">;
+  var canvas: InitializedOn<Canvas, "init">;
 
   /**
    * A convenience alias of {@linkcode game.i18n.localize}
@@ -868,7 +868,7 @@ declare global {
    * Unfortunately, that happens after top level package code runs, so this must be delayed to `init`.
    * This reference is bound to {@linkcode game.i18n}.
    */
-  const _loc: InitializedOn<typeof foundry.helpers.Localization.prototype.localize, "init">;
+  var _loc: InitializedOn<typeof foundry.helpers.Localization.prototype.localize, "init">;
 }
 
 type ConfiguredCollectionClassForName<Name extends CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<

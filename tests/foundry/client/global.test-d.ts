@@ -53,4 +53,19 @@ test("foundry/client/global", () => {
   expectTypeOf(myColor).toEqualTypeOf<Color>();
   expectTypeOf(_loc).toEqualTypeOf<foundry.helpers.Localization["localize"] | undefined>();
   expectTypeOf(animejs.createTimeline).toBeFunction();
+
+  // Runtime globals are properties of `globalThis`, not only bare identifiers.
+  expectTypeOf(globalThis.vtt).toEqualTypeOf<"Foundry VTT">();
+  expectTypeOf(globalThis.game).toEqualTypeOf<typeof game>();
+  expectTypeOf(globalThis.SIGNED_EULA).toEqualTypeOf<boolean>();
+  expectTypeOf(globalThis.ROUTE_PREFIX).toEqualTypeOf<string>();
+  expectTypeOf(globalThis.MESSAGES).toEqualTypeOf<typeof MESSAGES>();
+  expectTypeOf(globalThis.ui).toEqualTypeOf<typeof ui>();
+  expectTypeOf(globalThis.logger).toEqualTypeOf<typeof console>();
+  expectTypeOf(globalThis.CONFIG).toEqualTypeOf<CONFIG>();
+  expectTypeOf(globalThis._del).toEqualTypeOf<foundry.data.operators.ForcedDeletion>();
+  expectTypeOf(globalThis._replace).toEqualTypeOf<typeof foundry.data.operators.ForcedReplacement.create>();
+  expectTypeOf(globalThis._token).toEqualTypeOf<foundry.canvas.placeables.Token.Implementation | null>();
+  expectTypeOf(globalThis.canvas).toEqualTypeOf<typeof canvas>();
+  expectTypeOf(globalThis._loc).toEqualTypeOf<typeof _loc>();
 });

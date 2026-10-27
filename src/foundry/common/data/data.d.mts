@@ -786,7 +786,7 @@ declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.
 }
 
 declare namespace TextureData {
-  /** The parameter defaults for `srcOptions` in the {@link TextureData} constructor */
+  /** The parameter defaults for `srcOptions` in the {@linkcode TextureData} constructor */
   interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
     // Avoid using `EmptyObject` as that creates a broken index signature.
@@ -863,6 +863,7 @@ declare namespace TextureData {
     }>;
 
     /**
+     * The texture fit mode.
      * @defaultValue `initial.fit ?? "fill"`
      * @remarks The `initial` in the above default value is the property from the `srcOptions`
      * parameter of the {@linkcode TextureData} constructor
@@ -967,6 +968,7 @@ declare namespace PrototypeToken {
     | "y"
     | "elevation"
     | "shape"
+    | "level"
     | "sort"
     | "hidden"
     | "locked"
@@ -994,8 +996,14 @@ declare namespace PrototypeToken {
      */
     randomImg: fields.BooleanField;
 
+    /**
+     * @defaultValue `false`
+     */
     appendNumber: fields.BooleanField;
 
+    /**
+     * @defaultValue `false`
+     */
     prependAdjective: fields.BooleanField;
   }
 
@@ -1041,7 +1049,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
 
   static get database(): CONFIG["DatabaseBackend"];
 
-  override _initializeSource(
+  protected override _initializeSource(
     data: PrototypeToken.CreateData | PrototypeToken,
     options?: DataModel.InitializeSourceOptions,
   ): PrototypeToken.Source;
@@ -1338,7 +1346,7 @@ declare namespace TombstoneData {
 }
 
 /**
- * A minimal data model used to represent a tombstone entry inside an EmbeddedCollectionDelta.
+ * A minimal data model used to represent a tombstone entry inside an {@linkcode foundry.abstract.EmbeddedCollectionDelta}.
  */
 declare class TombstoneData extends DataModel<TombstoneData.Schema> {
   static override defineSchema(): TombstoneData.Schema;

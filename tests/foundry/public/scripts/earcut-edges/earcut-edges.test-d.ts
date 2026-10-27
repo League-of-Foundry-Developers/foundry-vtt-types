@@ -5,6 +5,7 @@ declare const holes: number[];
 
 test("foundry/public/scripts/earcut-edges/earcut-edges", () => {
   expectTypeOf(earcut).toEqualTypeOf<Earcut>();
+  expectTypeOf(globalThis.earcut).toEqualTypeOf<Earcut>();
   expectTypeOf(earcut.earcutEdges).toEqualTypeOf<EarcutEdges>();
   expectTypeOf(earcut.earcutEdges).returns.toEqualTypeOf<number[]>;
 
