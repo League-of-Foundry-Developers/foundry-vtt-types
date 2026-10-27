@@ -111,7 +111,20 @@ declare class AdventureExporter<
     options?: DocumentSheetV2.ProcessSubmitOptions<Adventure.Implementation>,
   ): Promise<DocumentSheetV2.SubmitResult<Adventure.Implementation>>;
 
+  /**
+   * @remarks Registers this app against the real Adventure Document so it cannot be evicted from cache.
+   */
+  protected override _onFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
+
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * @remarks Removes the registration made by {@linkcode AdventureExporter._onFirstRender | #_onFirstRender}.
+   */
+  protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
   /**
    * Stage a document for addition to the Adventure.

@@ -13,8 +13,8 @@ test("foundry/client/applications/sidebar/tabs/tile-tab", () => {
 
   expectTypeOf(tab._filterState).toEqualTypeOf<TileTab.FilterState>();
   expectTypeOf(tab._filterState.occlusionModes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES>>();
-  expectTypeOf(tab._filterState.restrictions.light).toBeBoolean();
-  expectTypeOf(tab._filterState.restrictions.weather).toBeBoolean();
+  expectTypeOf(tab._filterState.restrictions.light).toEqualTypeOf<boolean | null>();
+  expectTypeOf(tab._filterState.restrictions.weather).toEqualTypeOf<boolean | null>();
 
   class CustomTileTab extends TileTab {
     protected override _getEntryLabel(entry: PlaceableTab.PlaceableDocument): string {

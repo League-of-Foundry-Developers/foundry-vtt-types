@@ -224,6 +224,8 @@ declare namespace TokenApplicationMixin {
     /** @remarks The value of {@linkcode TokenApplication._fields | #_fields}. */
     fields: TokenApplicationMixin.FieldsFor<ConcreteToken>;
 
+    isGM: boolean;
+
     isPrototype: boolean;
 
     /** @remarks The value of {@linkcode TokenApplication.DISPLAY_MODES}. */
@@ -244,8 +246,6 @@ declare namespace TokenApplicationMixin {
 
   /** @remarks Added for the `identity` part. */
   interface IdentityTabContext {
-    isGM: boolean;
-
     /** @remarks The Actors the current User owns, sorted by name. */
     actors: ActorChoice[];
 

@@ -18,16 +18,25 @@ test("foundry/client/applications/sidebar/apps/invitation-links", () => {
   expectTypeOf(links["_prepareContext"](options)).toEqualTypeOf<Promise<InvitationLinks.RenderContext>>();
 
   // The context is a copy of `game.data.addresses`, so it carries that shape.
-  expectTypeOf<InvitationLinks.RenderContext["local"]>().toBeString();
-  expectTypeOf<InvitationLinks.RenderContext["remote"]>().toEqualTypeOf<string | undefined>();
+  expectTypeOf<InvitationLinks.RenderContext>().toExtend<foundry.Game.Data.Addresses>();
+  expectTypeOf<InvitationLinks.RenderContext["local"]>().toEqualTypeOf<string | null>();
+  expectTypeOf<InvitationLinks.RenderContext["remote"]>().toEqualTypeOf<string | null>();
+  expectTypeOf<InvitationLinks.RenderContext["remote6"]>().toEqualTypeOf<string | null>();
   expectTypeOf<InvitationLinks.RenderContext["remoteIsAccessible"]>().toEqualTypeOf<boolean | null>();
+  expectTypeOf<InvitationLinks.RenderContext["remoteIPv4Accessible"]>().toEqualTypeOf<boolean | null>();
+  expectTypeOf<InvitationLinks.RenderContext["remoteIPv6Accessible"]>().toEqualTypeOf<boolean | null>();
+  expectTypeOf<InvitationLinks.RenderContext["rootId"]>().toBeString();
 
-  // Every `remoteIsAccessible` value sets these two.
-  expectTypeOf<InvitationLinks.RenderContext["remoteClass"]>().toBeString();
-  expectTypeOf<InvitationLinks.RenderContext["remoteTitle"]>().toBeString();
+  // One status per remote address.
+  expectTypeOf<InvitationLinks.RenderContext["remoteStatus"]>().toEqualTypeOf<InvitationLinks.ConnectionStatus>();
+  expectTypeOf<InvitationLinks.RenderContext["remote6Status"]>().toEqualTypeOf<InvitationLinks.ConnectionStatus>();
+  expectTypeOf<InvitationLinks.ConnectionStatus["cssClass"]>().toEqualTypeOf<
+    "connection" | "no-connection" | "unknown-connection"
+  >();
+  expectTypeOf<InvitationLinks.ConnectionStatus["title"]>().toBeString();
+  expectTypeOf<InvitationLinks.ConnectionStatus["canConnect"]>().toBeBoolean();
+  expectTypeOf<InvitationLinks.ConnectionStatus["failedCheck"]>().toBeBoolean();
 
-  // Which branch ran decides whether these are present.
-  expectTypeOf<InvitationLinks.RenderContext["failedCheck"]>().toEqualTypeOf<boolean | undefined>();
-  expectTypeOf<InvitationLinks.RenderContext["canConnect"]>().toEqualTypeOf<boolean | undefined>();
-  expectTypeOf<InvitationLinks.RenderContext["rootId"]>().toEqualTypeOf<string | undefined>();
+  // Connection state lives only in the per-address statuses.
+  expectTypeOf<InvitationLinks.RenderContext>().not.toHaveProperty("remoteClass");
 });

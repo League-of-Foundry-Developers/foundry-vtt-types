@@ -100,6 +100,12 @@ declare class SoundsLayer extends ShapeLayerMixin(PlaceablesLayer<"AmbientSound"
 
   /**
    * Get an array of listener positions for Tokens which are able to hear environmental sound.
+   *
+   * If there are active, non-preview vision sources, only those tokens are listeners. For GMs, if
+   * none of their controlled tokens have vision, all controlled tokens are listeners, regardless of
+   * vision. For non-GMs, if Token Vision is enabled but they have no vision sources, they have no
+   * listeners. Otherwise, all controlled tokens are listeners. If a non-GM has no controlled tokens,
+   * all tokens they can observe are listeners.
    */
   getListenerPositions(): Canvas.ElevatedPoint[];
 

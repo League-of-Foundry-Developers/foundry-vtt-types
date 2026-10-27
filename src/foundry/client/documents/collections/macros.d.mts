@@ -29,7 +29,7 @@ declare class Macros extends WorldCollection<"Macro"> {
   // fake type override (`Macro`s don't have real type data, but we kind of treat them like they do)
   override importDocument<Doc extends Macro.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Macro">,
+    options?: WorldCollection.ImportDocumentOptions<"Macro">,
   ): Macros.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

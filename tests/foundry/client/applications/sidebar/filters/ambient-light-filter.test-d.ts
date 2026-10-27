@@ -20,9 +20,11 @@ test("foundry/client/applications/sidebar/filters/ambient-light-filter", () => {
   expectTypeOf(context.animationType.field).toEqualTypeOf<foundry.data.fields.StringField>();
   expectTypeOf(context.animationType.value).toBeString();
   expectTypeOf(context.color.value).toEqualTypeOf<string | null>();
-  expectTypeOf(context.negative.value).toBeBoolean();
-  expectTypeOf(context.walls.field).toEqualTypeOf<foundry.data.fields.BooleanField>();
-  expectTypeOf(context.vision.value).toBeBoolean();
+  expectTypeOf(context.negative.value).toEqualTypeOf<"any" | "yes" | "no">();
+  expectTypeOf(context.walls.field).toEqualTypeOf<foundry.data.fields.StringField>();
+  expectTypeOf(context.vision).toEqualTypeOf<foundry.applications.sidebar.filters.PlaceableFilter.BooleanFilterField>();
+  expectTypeOf(AmbientLightFilter._BOOLEAN_FIELD_FILTERS).toEqualTypeOf<Record<string, string>>();
+  expectTypeOf(filter.tab._filterState.negative).toEqualTypeOf<boolean | null>();
 
   // The inherited elevation controls are still present.
   expectTypeOf(context.elevation.top.value).toEqualTypeOf<number | null>();

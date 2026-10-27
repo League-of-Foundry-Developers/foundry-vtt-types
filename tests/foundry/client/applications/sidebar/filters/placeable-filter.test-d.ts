@@ -18,6 +18,9 @@ test("foundry/client/applications/sidebar/filters/placeable-filter", () => {
   // Null rather than the infinite bound the filter state holds.
   expectTypeOf(context.elevation.bottom.value).toEqualTypeOf<number | null>();
   expectTypeOf(context.elevation.top.value).toEqualTypeOf<number | null>();
+  expectTypeOf(context.hidden.field).toEqualTypeOf<foundry.data.fields.StringField>();
+  expectTypeOf(context.locked.value).toEqualTypeOf<"any" | "yes" | "no">();
+  expectTypeOf(PlaceableFilter._BOOLEAN_FIELD_FILTERS).toEqualTypeOf<Record<string, string>>();
 
   class CustomPlaceableFilter extends PlaceableFilter {
     protected override _canDetach(): boolean {

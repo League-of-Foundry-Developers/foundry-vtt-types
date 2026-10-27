@@ -767,11 +767,7 @@ declare namespace Game {
   /** @internal */
   type _Data = {
     activeUsers: string[];
-    addresses: {
-      local: string;
-      remote?: string | undefined;
-      remoteIsAccessible: boolean | null;
-    };
+    addresses: Data.Addresses;
     coreUpdate: {
       channel: string | null;
       couldReachWebsite: boolean;
@@ -831,6 +827,22 @@ declare namespace Game {
   interface Data extends _Data {}
 
   namespace Data {
+    /** @remarks The server's invitation links. Each address is `null` when the server could not determine it. */
+    interface Addresses {
+      local: string | null;
+      remote: string | null;
+      remote6: string | null;
+
+      /** @remarks `true` if either remote address is reachable, otherwise `null` if either check could not be completed. */
+      remoteIsAccessible: boolean | null;
+
+      /** @remarks `null` when the IP discovery service could not complete the check. */
+      remoteIPv4Accessible: boolean | null;
+
+      /** @remarks `null` when the IP discovery service could not complete the check. */
+      remoteIPv6Accessible: boolean | null;
+    }
+
     interface Pack extends BasePackage.SocketCompendiumData {
       /**
        * @remarks Not all packs are required to specify a `system`, and those that don't will not have this key in their data,

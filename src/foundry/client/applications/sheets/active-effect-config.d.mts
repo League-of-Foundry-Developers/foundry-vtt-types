@@ -3,6 +3,7 @@ import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
+import type HTMLProseMirrorElement from "../elements/prosemirror-editor.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
@@ -83,7 +84,10 @@ declare class ActiveEffectConfig<
    */
   static override TABS: Record<string, ApplicationV2.TabsConfiguration>;
 
-  protected override _attachFrameListeners(): void;
+  /**
+   * @remarks Adds the ProseMirror `menu` and `keyMaps` plugins.
+   */
+  protected override _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   protected override _preparePartContext(
     partId: string,

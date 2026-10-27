@@ -3,6 +3,7 @@ import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
+import type HTMLProseMirrorElement from "../elements/prosemirror-editor.d.mts";
 
 import Document = foundry.abstract.Document;
 
@@ -79,6 +80,11 @@ declare class TableResultConfig<
   ): DocumentSheetV2.SubmitData<TableResult.Implementation>;
 
   protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
+
+  /**
+   * @remarks Adds the ProseMirror `menu` and `keyMaps` plugins.
+   */
+  protected override _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   static #TableResultConfig: true;
 }

@@ -59,8 +59,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
-   * @remarks Does not call `super`. Deletes `changes._shapeConstraints` unless internally flagged via
-   * `options._updateShapeConstraints`.
+   * @remarks Deletes `changes._shapeConstraints` unless internally flagged via `options._updateShapeConstraints`.
    */
   protected override _preUpdate(
     changes: BaseRegion.UpdateData,

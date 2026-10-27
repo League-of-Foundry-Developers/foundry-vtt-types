@@ -22,7 +22,7 @@ declare class CompendiumFolderCollection<
   // fake type override
   override importDocument(
     document: Folder.OfType<DocumentName> | Folder.Stored<DocumentName>,
-    options: DocumentCollection.ImportToCompendiumOptions<"Folder">,
+    options?: DocumentCollection.ImportToCompendiumOptions<"Folder">,
   ): Promise<Folder.Stored<DocumentName> | undefined>;
 
   override updateAll(

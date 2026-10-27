@@ -65,14 +65,12 @@ declare class VisionMode extends DataModel<
   deactivate(source: PointVisionSource.Internal.Any): void;
 
   /**
-   * An animation function which runs every frame while this Vision Mode is active.
-   * @param dt - The deltaTime passed by the PIXI Ticker
-   * @deprecated Always throws as of 14.366, see remarks
-   * @remarks Calls {@linkcode foundry.canvas.sources.RenderedEffectSource.animateTime | RenderedEffectSource#animateTime} with `this` set to this {@linkcode VisionMode}
-   * @throws Because of the above, as of 14.366 this will **always** throw: it tries to access `this.animation.seed`, but `VisionMode`s don't have an `#animation` object.
-   * See {@link https://github.com/foundryvtt/foundryvtt/issues/13227}.
+   * Animate a vision source using this vision mode.
+   * Foundry calls this function each frame with the PointVisionSource as `this`.
+   * Don't call it directly on a VisionMode instance.
+   * @param dt - The delta time passed by the PIXI Ticker
    */
-  animate(dt: number): void;
+  animate(this: PointVisionSource.Internal.Any, dt: number): void;
 
   /* DataModel overrides */
 

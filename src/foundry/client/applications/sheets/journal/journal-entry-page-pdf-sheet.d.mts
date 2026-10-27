@@ -43,7 +43,8 @@ declare class JournalEntryPagePDFSheet<
    *   header: super.EDIT_PARTS.header,
    *   content: {
    *     template: "templates/journal/pages/pdf/edit.hbs",
-   *     classes: ["standard-form"]
+   *     classes: ["standard-form", "scrollable"],
+   *     scrollable: [""]
    *   },
    *   footer: super.EDIT_PARTS.footer
    * }

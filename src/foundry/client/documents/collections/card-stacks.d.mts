@@ -20,7 +20,7 @@ declare class CardStacks extends WorldCollection<"Cards"> {
   // fake type override
   override importDocument<Doc extends Cards.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"Cards">,
+    options?: WorldCollection.ImportDocumentOptions<"Cards">,
   ): CardStacks.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

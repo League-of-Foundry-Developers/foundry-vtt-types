@@ -1,6 +1,7 @@
 import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
+import type HTMLProseMirrorElement from "../elements/prosemirror-editor.d.mts";
 
 import Document = foundry.abstract.Document;
 
@@ -218,6 +219,11 @@ declare class DocumentSheetV2<
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
+
+  /**
+   * @remarks Adds a `highlightDocumentMatches` plugin to every ProseMirror editor in the sheet.
+   */
+  protected override _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   /**
    * @privateRemarks Synchronous at runtime; kept as the base's `MaybePromise<void>` so async subclass overrides like

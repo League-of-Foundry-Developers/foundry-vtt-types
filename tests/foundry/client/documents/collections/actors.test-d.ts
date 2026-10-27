@@ -115,6 +115,9 @@ describe("Actors Tests", async () => {
     if (!imported2) throw new Error("Failed to create test `Actor` via `#importDocument`");
     docsToCleanUp.add(imported2);
     expectTypeOf(imported2).toEqualTypeOf<Actor.Stored<"base">>();
+
+    // `options` defaults to `{}`.
+    expectTypeOf(actors.importDocument).toBeCallableWith(actor);
   });
 
   test("_prepareImportDocument", () => {

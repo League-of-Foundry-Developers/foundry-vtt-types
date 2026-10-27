@@ -3,6 +3,7 @@ import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type FormDataExtended from "../ux/form-data-extended.d.mts";
+import type HTMLProseMirrorElement from "../elements/prosemirror-editor.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -191,6 +192,11 @@ declare class RollTableSheet<
   ): Promise<void>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * @remarks Adds the ProseMirror `menu` and `keyMaps` plugins.
+   */
+  protected override _onConfigurePlugins(event: HTMLProseMirrorElement.PluginsEvent): void;
 
   protected override _onRevealSecret(event: Event): void;
 

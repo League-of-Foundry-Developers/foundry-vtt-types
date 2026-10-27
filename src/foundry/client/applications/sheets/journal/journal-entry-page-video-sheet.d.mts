@@ -45,7 +45,8 @@ declare class JournalEntryPageVideoSheet<
    *   header: super.EDIT_PARTS.header,
    *   content: {
    *     template: "templates/journal/pages/video/edit.hbs",
-   *     classes: ["standard-form"]
+   *     classes: ["standard-form", "scrollable"],
+   *     scrollable: [""]
    *   },
    *   footer: super.EDIT_PARTS.footer
    * }
@@ -73,9 +74,16 @@ declare class JournalEntryPageVideoSheet<
 
   /**
    * @remarks In view mode, applies the page's volume and starting timestamp to the rendered YouTube player or
-   * `video` element.
+   * `video` element. A re-rendered embedded player's form state is re-synced once its `iframe` loads.
    */
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: HandlebarsApplicationMixin.PartState,
+  ): void;
 
   /**
    * Get the YouTube player parameters depending on whether the sheet is being viewed or edited.
@@ -106,6 +114,8 @@ declare class JournalEntryPageVideoSheet<
    * @remarks Returns an empty object for a falsy `timestamp`, and omits any zeroed hours or minutes.
    */
   protected _timestampToTimeComponents(timestamp: number): JournalEntryPageVideoSheet.TimeComponents;
+
+  #JournalEntryPageVideoSheet: true;
 }
 
 declare namespace JournalEntryPageVideoSheet {

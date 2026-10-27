@@ -59,6 +59,8 @@ test("foundry/client/applications/ux/context-menu", () => {
     },
   ];
   new ContextMenu(testAppV2.element, ".foobar", entries, { jQuery: false, fixed: true });
+  const classed = new ContextMenu(testAppV2.element, ".foobar", entries, { jQuery: false, classes: ["themed"] });
+  expectTypeOf(classed["_classes"]).toEqualTypeOf<string[]>();
 
   // Deprecated in general.
   // eslint-disable-next-line @typescript-eslint/no-deprecated

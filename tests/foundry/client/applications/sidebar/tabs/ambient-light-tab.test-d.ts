@@ -17,9 +17,9 @@ test("foundry/client/applications/sidebar/tabs/ambient-light-tab", () => {
     foundry.canvas.sources.RenderedEffectSource.ConfiguredLightAnimations | "none" | null
   >();
   expectTypeOf(tab._filterState.color).toEqualTypeOf<string | null>();
-  expectTypeOf(tab._filterState.negative).toBeBoolean();
-  expectTypeOf(tab._filterState.walls).toBeBoolean();
-  expectTypeOf(tab._filterState.vision).toBeBoolean();
+  expectTypeOf(tab._filterState.negative).toEqualTypeOf<boolean | null>();
+  expectTypeOf(tab._filterState.walls).toEqualTypeOf<boolean | null>();
+  expectTypeOf(tab._filterState.vision).toEqualTypeOf<boolean | null>();
   expectTypeOf(tab._filterState.levels).toEqualTypeOf<Set<string>>();
 
   class CustomAmbientLightTab extends AmbientLightTab {

@@ -1284,7 +1284,8 @@ declare class SchemaField<
    * @param fields - The provided field definitions
    * @returns The validated schema
    * @remarks
-   * @throws If any field is named `_source`
+   * @throws If any field is named `_source` or `"__$OPERATOR$__"`,
+   * or its name starts with `-=` or `==` (the legacy deletion and replacement keys)
    */
   protected _initialize(fields: Fields): Fields;
 
@@ -2968,7 +2969,14 @@ declare class ArrayField<
     options?: Options,
   ): Return;
 
-  protected override _castChangeDelta(delta: string, replacementData?: AnyObject): InitializedType;
+  override applyChange(
+    value: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+    options?: DataField.ApplyChangeOptions,
+  ): InitializedType | undefined;
+
+  protected override _castChangeDelta(delta: unknown, replacementData?: AnyObject): InitializedType;
 
   /** @remarks Returns `value` with `delta` `push`ed. `model` and `change` are unused in `ArrayField` */
   protected override _applyChangeAdd(

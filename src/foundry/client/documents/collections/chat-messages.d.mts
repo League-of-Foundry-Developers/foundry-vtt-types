@@ -42,7 +42,7 @@ declare class ChatMessages extends WorldCollection<"ChatMessage"> {
   // fake type override
   override importDocument<Doc extends ChatMessage.Implementation>(
     document: Doc,
-    options: WorldCollection.ImportDocumentOptions<"ChatMessage">,
+    options?: WorldCollection.ImportDocumentOptions<"ChatMessage">,
   ): ChatMessages.ImportDocumentReturn<Doc>;
 
   // Fake override for the purpose of typing `options`.

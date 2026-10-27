@@ -3,7 +3,7 @@ import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type PlaceableFilter from "./placeable-filter.d.mts";
 import type AmbientLightTab from "../tabs/ambient-light-tab.d.mts";
-import type { BooleanField, StringField } from "#common/data/fields.d.mts";
+import type { StringField } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -45,6 +45,20 @@ declare class AmbientLightFilter<
    */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   hidden: "hidden",
+   *   locked: "locked",
+   *   negative: "config.negative",
+   *   walls: "walls",
+   *   vision: "vision"
+   * }
+   * ```
+   */
+  static override _BOOLEAN_FIELD_FILTERS: Record<string, string>;
+
   // Fake override.
   override get tab(): AmbientLightTab.Any;
 
@@ -70,11 +84,11 @@ declare namespace AmbientLightFilter {
     /** @remarks The CSS representation of the filtered color, or `null` when unfiltered. */
     color: { value: string | null };
 
-    negative: PlaceableFilter.FilterField<BooleanField, boolean>;
+    negative: PlaceableFilter.BooleanFilterField;
 
-    walls: PlaceableFilter.FilterField<BooleanField, boolean>;
+    walls: PlaceableFilter.BooleanFilterField;
 
-    vision: PlaceableFilter.FilterField<BooleanField, boolean>;
+    vision: PlaceableFilter.BooleanFilterField;
   }
 
   interface Configuration<

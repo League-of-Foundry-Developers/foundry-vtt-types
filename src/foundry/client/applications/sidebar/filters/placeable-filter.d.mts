@@ -2,7 +2,7 @@ import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type PlaceableTab from "../tabs/placeable-tab.d.mts";
-import type { NumberField } from "#common/data/fields.d.mts";
+import type { NumberField, StringField } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -65,6 +65,19 @@ declare class PlaceableFilter<
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
+   * Boolean fields to create filter options for.
+   * @defaultValue
+   * ```js
+   * {
+   *   hidden: "hidden",
+   *   locked: "locked"
+   * }
+   * ```
+   * @internal
+   */
+  static _BOOLEAN_FIELD_FILTERS: Record<string, string>;
+
+  /**
    * The tab this dialog belongs to.
    */
   get tab(): PlaceableTab.Any;
@@ -94,6 +107,15 @@ declare namespace PlaceableFilter {
     value: Value;
   }
 
+  /** @remarks `"any"` leaves the field unfiltered. */
+  type BooleanFilterValue = "any" | "yes" | "no";
+
+  /**
+   * @remarks A select for one entry of {@linkcode PlaceableFilter._BOOLEAN_FIELD_FILTERS}, labelled from the
+   * placeable's schema field.
+   */
+  interface BooleanFilterField extends FilterField<StringField, BooleanFilterValue> {}
+
   interface ElevationContext {
     /** @remarks `null` when the filter is unbounded below, i.e. the state holds `-Infinity`. */
     bottom: FilterField<NumberField, number | null>;
@@ -104,6 +126,10 @@ declare namespace PlaceableFilter {
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
     elevation: ElevationContext;
+
+    hidden: BooleanFilterField;
+
+    locked: BooleanFilterField;
   }
 
   interface Configuration<PlaceableFilter extends PlaceableFilter.Any = PlaceableFilter.Any>

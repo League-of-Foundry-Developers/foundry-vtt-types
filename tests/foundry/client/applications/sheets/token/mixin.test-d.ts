@@ -92,7 +92,7 @@ test("foundry/client/applications/sheets/token/mixin", () => {
   expectTypeOf<TokenApplicationMixin.SubmitData["scale"]>().toEqualTypeOf<number | undefined>();
   expectTypeOf<TokenApplicationMixin.SubmitData["mirrorX"]>().toEqualTypeOf<boolean | undefined>();
   expectTypeOf<TokenApplicationMixin.SubmitData["mirrorY"]>().toEqualTypeOf<boolean | undefined>();
-  expectTypeOf(identity.isGM).toBeBoolean();
+  expectTypeOf(renderContext.isGM).toBeBoolean();
   expectTypeOf(identity.actors).toEqualTypeOf<TokenApplicationMixin.ActorChoice[]>();
   expectTypeOf(identity.defaultMovementActionLabel).toBeString();
   expectTypeOf(identity.movementActions).toEqualTypeOf<Record<string, string>>();

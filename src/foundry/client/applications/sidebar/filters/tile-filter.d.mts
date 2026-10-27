@@ -3,7 +3,7 @@ import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type PlaceableFilter from "./placeable-filter.d.mts";
 import type TileTab from "../tabs/tile-tab.d.mts";
-import type { BooleanField, NumberField, SetField } from "#common/data/fields.d.mts";
+import type { NumberField, SetField } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -45,6 +45,19 @@ declare class TileFilter<
    */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   hidden: "hidden",
+   *   locked: "locked",
+   *   "restrictions.light": "restrictions.light",
+   *   "restrictions.weather": "restrictions.weather"
+   * }
+   * ```
+   */
+  static override _BOOLEAN_FIELD_FILTERS: Record<string, string>;
+
   // Fake override.
   override get tab(): TileTab.Any;
 
@@ -65,9 +78,9 @@ declare namespace TileFilter {
   type OcclusionField = SetField<NumberField>;
 
   interface RestrictionsContext {
-    light: PlaceableFilter.FilterField<BooleanField, boolean>;
+    light: PlaceableFilter.BooleanFilterField;
 
-    weather: PlaceableFilter.FilterField<BooleanField, boolean>;
+    weather: PlaceableFilter.BooleanFilterField;
   }
 
   interface RenderContext extends PlaceableFilter.RenderContext {

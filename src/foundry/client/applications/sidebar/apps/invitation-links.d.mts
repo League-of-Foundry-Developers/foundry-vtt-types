@@ -20,7 +20,7 @@ declare class InvitationLinks<
    * ```js
    * {
    *   id: "invitation-links",
-   *   position: {width: 420},
+   *   position: {width: 500},
    *   window: {
    *     contentClasses: ["standard-form"],
    *     icon: "fa-solid fa-wifi",
@@ -48,43 +48,42 @@ declare class InvitationLinks<
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
-   * @remarks The context is a shallow copy of {@linkcode Game.data | game.data.addresses}, extended with the
-   * connectivity members.
+   * @remarks The context is a shallow copy of {@linkcode Game.data | game.data.addresses}, extended with a connection
+   * status for each remote address.
    */
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
   ): Promise<RenderContext>;
 
-  static #InvitationLinks: true;
+  #InvitationLinks: true;
+  static #InvitationLinksStatic: true;
 }
 
 declare namespace InvitationLinks {
   interface Any extends AnyInvitationLinks {}
   interface AnyConstructor extends Identity<typeof AnyInvitationLinks> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
-    /** The local network address of the server. */
-    local: string;
+  interface RenderContext
+    extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext, foundry.Game.Data.Addresses {
+    rootId: string;
 
-    /** The public address of the server, absent when the server could not determine one. */
-    remote?: string | undefined;
+    /** @remarks The connection status of the IPv4 address. */
+    remoteStatus: ConnectionStatus;
 
-    /** Whether the public address responded, or `null` while the check is outstanding. */
-    remoteIsAccessible: boolean | null;
+    /** @remarks The connection status of the IPv6 address. */
+    remote6Status: ConnectionStatus;
+  }
 
-    /** A CSS class describing the connection state. */
-    remoteClass: string;
+  interface ConnectionStatus {
+    cssClass: "connection" | "no-connection" | "unknown-connection";
 
-    /** A localized tooltip describing the connection state. */
-    remoteTitle: string;
+    /** @remarks A localization key. */
+    title: string;
 
-    /** Set when the connectivity check has not resolved. */
-    failedCheck?: boolean | undefined;
+    canConnect: boolean;
 
-    /** Whether the public address is reachable. Absent while the check is outstanding. */
-    canConnect?: boolean | undefined;
-
-    rootId?: string | undefined;
+    /** @remarks `true` when the connection check could not be completed. */
+    failedCheck: boolean;
   }
 
   interface Configuration<InvitationLinks extends InvitationLinks.Any = InvitationLinks.Any>

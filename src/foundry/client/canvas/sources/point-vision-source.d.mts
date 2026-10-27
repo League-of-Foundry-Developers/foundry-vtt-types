@@ -14,6 +14,7 @@ import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mt
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
@@ -23,6 +24,11 @@ declare class PointVisionSource<
   SourceShape extends ClockwiseSweepPolygon = PointVisionSource.ImplementationPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointVisionSource.Layers,
 > extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
+  /**
+   * @param options - Options which modify the base effect source instance
+   */
+  constructor(options: PointVisionSource.ConstructorOptions);
+
   static override sourceType: "sight";
 
   /** @defaultValue `["visionMode", "blinded"]` */
@@ -232,6 +238,10 @@ declare namespace PointVisionSource {
   namespace Internal {
     interface Any extends AnyPointVisionSource {}
     interface AnyConstructor extends Identity<typeof AnyPointVisionSource> {}
+  }
+
+  interface ConstructorOptions extends BaseEffectSource.ConstructorOptions {
+    object: Token.Implementation;
   }
 
   /** @remarks See {@linkcode PointVisionSource._layers} */

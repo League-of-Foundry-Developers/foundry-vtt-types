@@ -19,8 +19,11 @@ test("foundry/client/canvas/sources/point-vision-source", () => {
   expectTypeOf(PointVisionSource.effectsCollection).toBeString();
   expectTypeOf(PointVisionSource.defaultData).toEqualTypeOf<PointVisionSource.SourceData>();
   expectTypeOf(PointVisionSource["_layers"]).toEqualTypeOf<Record<string, RenderedEffectSource.LayerConfig>>();
+  // @ts-expect-error `options` is required, since the constructor throws without a Token `object`.
   new PointVisionSource();
+  // @ts-expect-error `object` must be a Token, otherwise the constructor throws.
   new PointVisionSource({ object: undefined, sourceId: undefined });
+  new PointVisionSource({ object });
   const mySource = new PointVisionSource({ object, sourceId: object.sourceId });
   // #initialize param tests are with BaseEffectSource
   const initializedSource = mySource.initialize();

@@ -58,8 +58,13 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   get element(): HTMLElement;
 
   /**
+   * Additional CSS classes to apply to the outermost element.
+   */
+  protected _classes: string[];
+
+  /**
    * A CSS selector to identify context menu targets.
-   * @defaultValue `container.attr("id")`
+   * @defaultValue `"#" + CSS.escape(container.id)`, or `""` if the container has no ID
    */
   get selector(): string;
 
@@ -395,6 +400,12 @@ declare namespace ContextMenu {
      * @defaultValue `"cursor"`
      */
     relative?: "target" | "cursor" | undefined;
+
+    /**
+     * Additional CSS classes to apply to the outermost element.
+     * @defaultValue `[]`
+     */
+    classes?: string[] | undefined;
 
     /**
      * Close the context menu when one of the options is selected.

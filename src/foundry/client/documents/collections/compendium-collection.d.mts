@@ -338,6 +338,18 @@ declare class CompendiumCollection<
   duplicateCompendium({ label }?: CompendiumCollection.DuplicateCompendiumOptions): Promise<this>;
 
   /**
+   * Prompt the user for options when duplicating a compendium pack.
+   * @param options - Dialog options. (default: `{}`)
+   */
+  duplicateCompendiumDialog(options?: CompendiumCollection.DialogOptions): Promise<CompendiumCollection.Any | void>;
+
+  /**
+   * Prompt the user for options when unlocking a compendium.
+   * @param options - Dialog options. (default: `{}`)
+   */
+  toggleLockDialog(options?: CompendiumCollection.DialogOptions): Promise<CompendiumCollection.Any | void>;
+
+  /**
    * Migrate a compendium pack.
    * This operation re-saves all documents within the compendium pack to disk, applying the current data model.
    * If the document type has system data, the latest system data template will also be applied to all documents.
@@ -665,6 +677,9 @@ declare namespace CompendiumCollection {
   }
 
   interface ImportDialogOptions extends DialogV2.ConfirmConfig, InexactPartial<_ImportDialogOptions> {}
+
+  /** @remarks Merged into the configuration of the dialog the method opens. */
+  interface DialogOptions extends DeepPartial<DialogV2.Configuration> {}
 
   type ImportDialogReturn<
     DocumentName extends CompendiumCollection.DocumentName,

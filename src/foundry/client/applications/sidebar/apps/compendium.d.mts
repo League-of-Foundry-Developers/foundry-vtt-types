@@ -31,7 +31,22 @@ declare class Compendium<
    *   classes: ["compendium-directory", "sidebar-popout"],
    *   window: {
    *     frame: true,
-   *     positioned: true
+   *     positioned: true,
+   *     controls: [{
+   *       action: "toggleLock",
+   *       icon: "fa-solid fa-lock",
+   *       label: "COMPENDIUM.ToggleLocked.Lock",
+   *       visible() {
+   *         return game.user.isGM && !this.collection.locked;
+   *       }
+   *     }, {
+   *       action: "toggleLock",
+   *       icon: "fa-solid fa-lock-open",
+   *       label: "COMPENDIUM.ToggleLocked.Unlock",
+   *       visible() {
+   *         return game.user.isGM && this.collection.locked;
+   *       }
+   *     }]
    *   },
    *   position: {
    *     top: 70,
@@ -40,7 +55,8 @@ declare class Compendium<
    *     height: window.innerHeight - 100
    *   },
    *   actions: {
-   *     copyId: Compendium.#onCopyId
+   *     copyId: Compendium.#onCopyId,
+   *     toggleLock: Compendium.#onToggleLock
    *   }
    * }
    * ```

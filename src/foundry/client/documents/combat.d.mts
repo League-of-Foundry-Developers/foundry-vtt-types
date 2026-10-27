@@ -1427,6 +1427,12 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
+  // protected static override _preCreateOperation(
+  //   documents: Combat.Implementation[],
+  //   operation: Combat.Database.PreCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
   // protected override _onCreate(data: Combat.CreateData, options: Combat.Database.OnCreateOptions, userId: string): void;
 
   // protected override _onUpdate(

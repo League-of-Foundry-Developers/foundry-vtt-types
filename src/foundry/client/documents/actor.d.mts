@@ -1118,6 +1118,7 @@ declare namespace Actor {
 
     /**
      * Limit the results to tokens that exist in their parent scene, excluding ephemeral/unpersisted tokens.
+     * Unless `options.scenes` is passed, only tokens in scenes that exist in the world's scene collection are included.
      * This will become the default in v15.
      * @defaultValue `false`
      */
