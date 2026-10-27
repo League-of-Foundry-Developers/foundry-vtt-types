@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { AnyObject, DeepReadonly } from "#utils";
+import type { AnyObject } from "#utils";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -60,7 +60,7 @@ test("foundry/client/data/shapes", () => {
   expectTypeOf(rectangle.isEmpty).toBeBoolean();
   expectTypeOf(rectangle.polygons).toEqualTypeOf<readonly PIXI.Polygon[]>();
   expectTypeOf(rectangle.polygonTree).toEqualTypeOf<foundry.data.PolygonTree>();
-  expectTypeOf(rectangle.clipperPaths).toEqualTypeOf<DeepReadonly<PIXI.Polygon.ClipperPath[]>>();
+  expectTypeOf(rectangle.clipperPaths).toEqualTypeOf<readonly PIXI.Polygon.ClipperPath[]>();
   expectTypeOf(rectangle.clipperPolyTree).toEqualTypeOf<ClipperLib.PolyTree>();
   expectTypeOf(rectangle.triangulation).toEqualTypeOf<foundry.data.PolygonTree.Triangulation>();
   expectTypeOf(rectangle.bounds).toEqualTypeOf<PIXI.Rectangle>();

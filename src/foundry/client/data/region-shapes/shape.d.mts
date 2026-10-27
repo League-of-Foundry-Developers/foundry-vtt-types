@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-import type { DeepReadonly, Identity } from "#utils";
+import type { Identity } from "#utils";
 import type { BaseShapeData } from "#common/data/data.d.mts";
 import type {
   CircleShapeData,
@@ -43,7 +43,7 @@ declare class RegionShape<ShapeData extends BaseShapeData.Any = BaseShapeData.An
    * The Clipper paths of this shape.
    * The winding numbers are 1 or 0.
    */
-  get clipperPaths(): DeepReadonly<PIXI.Polygon.ClipperPath[]>;
+  get clipperPaths(): readonly PIXI.Polygon.ClipperPath[];
 
   /**
    * The Clipper polygon tree of this shape.

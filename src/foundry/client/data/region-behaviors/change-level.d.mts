@@ -11,7 +11,7 @@ declare namespace ChangeLevelRegionBehaviorType {
   /**
    * @remarks The configured movement actions, minus `displace`, which never triggers a level change.
    */
-  type MovementActionChoices = () => Omit<RemoveIndexSignatures<CONFIG.Token.Movement.Actions>, "displace">;
+  interface MovementActionChoices extends Omit<RemoveIndexSignatures<CONFIG.Token.Movement.Actions>, "displace"> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     movementActions: fields.SetField<
@@ -20,7 +20,7 @@ declare namespace ChangeLevelRegionBehaviorType {
         blank: false;
         nullable: false;
         initial: undefined;
-        choices: MovementActionChoices;
+        choices: () => MovementActionChoices;
       }>
     >;
   }

@@ -17,13 +17,16 @@ declare namespace ModifyMovementCostRegionBehaviorType {
     hint: string;
   }>;
 
+  /** @internal */
+  type _DifficultiesSchema = {
+    [Action in ConcreteKeys<CONFIG.Token.Movement.Actions>]: DifficultyField;
+  };
+
   /**
    * @privateRemarks Only movement actions that configure neither `terrainAction` nor `deriveTerrainDifficulty` get a
    * registered field; the difficulty of the remaining actions is derived in `prepareBaseData`.
    */
-  type DifficultiesSchema = {
-    [Action in ConcreteKeys<CONFIG.Token.Movement.Actions>]: DifficultyField;
-  };
+  interface DifficultiesSchema extends _DifficultiesSchema {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     /** The difficulty of each movement action */

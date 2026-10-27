@@ -3,6 +3,7 @@ import type { DataModel } from "#common/abstract/data.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type * as data from "#common/data/data.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { PolygonTree } from "./polygon-tree.d.mts";
 
@@ -57,7 +58,7 @@ declare class ClientShapeData {
    *
    * The value of this property must not be mutated.
    */
-  get clipperPaths(): DeepReadonly<PIXI.Polygon.ClipperPath[]>;
+  get clipperPaths(): readonly PIXI.Polygon.ClipperPath[];
 
   /**
    * The Clipper polygon tree of this shape.
@@ -481,7 +482,7 @@ declare namespace ClientShapeDataMixin {
  * The data model for a rectangle shape.
  */
 declare class RectangleShapeData<
-  Schema extends data.RectangleShapeData.Schema = data.RectangleShapeData.Schema,
+  Schema extends RectangleShapeData.Schema = RectangleShapeData.Schema,
 > extends ClientShapeDataMixin(data.RectangleShapeData)<Schema> {
   /**
    * Get the rays for both axes.
@@ -523,11 +524,65 @@ declare class RectangleShapeData<
 }
 
 declare namespace RectangleShapeData {
-  type Schema = data.RectangleShapeData.Schema;
-  type Source = data.RectangleShapeData.Source;
-  type CreateData = data.RectangleShapeData.CreateData;
-  type UpdateData = data.RectangleShapeData.UpdateData;
-  type InitializedData = data.RectangleShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"rectangle"> {
+    /**
+     * The x-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The width of the rectangle in pixels.
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The height of the rectangle in pixels.
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The x-coordinate of the anchor.
+     * @defaultValue `0`
+     */
+    anchorX: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * The y-coordinate of the anchor.
+     * @defaultValue `0`
+     */
+    anchorY: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+    /**
+     * The rotation around the origin of the rectangle in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   interface Rays {
     axisX: Ray;
@@ -540,7 +595,7 @@ declare namespace RectangleShapeData {
  * The data model for a circle shape.
  */
 declare class CircleShapeData<
-  Schema extends data.CircleShapeData.Schema = data.CircleShapeData.Schema,
+  Schema extends CircleShapeData.Schema = CircleShapeData.Schema,
 > extends ClientShapeDataMixin(data.CircleShapeData)<Schema> {
   override get isEmpty(): boolean;
 
@@ -570,18 +625,48 @@ declare class CircleShapeData<
 }
 
 declare namespace CircleShapeData {
-  type Schema = data.CircleShapeData.Schema;
-  type Source = data.CircleShapeData.Source;
-  type CreateData = data.CircleShapeData.CreateData;
-  type UpdateData = data.CircleShapeData.UpdateData;
-  type InitializedData = data.CircleShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"circle"> {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 }
 
 /**
  * The data model for an ellipse shape.
  */
 declare class EllipseShapeData<
-  Schema extends data.EllipseShapeData.Schema = data.EllipseShapeData.Schema,
+  Schema extends EllipseShapeData.Schema = EllipseShapeData.Schema,
 > extends ClientShapeDataMixin(data.EllipseShapeData)<Schema> {
   /**
    * Get the rays for both axes.
@@ -619,11 +704,53 @@ declare class EllipseShapeData<
 }
 
 declare namespace EllipseShapeData {
-  type Schema = data.EllipseShapeData.Schema;
-  type Source = data.EllipseShapeData.Source;
-  type CreateData = data.EllipseShapeData.CreateData;
-  type UpdateData = data.EllipseShapeData.UpdateData;
-  type InitializedData = data.EllipseShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"ellipse"> {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The x-radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radiusX: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The y-radius of the circle in pixels.
+     * @defaultValue `undefined`
+     */
+    radiusY: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The rotation around the center of the rectangle in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   interface Rays {
     axisX: Ray;
@@ -635,9 +762,9 @@ declare namespace EllipseShapeData {
 /**
  * The data model for a cone shape.
  */
-declare class ConeShapeData<
-  Schema extends data.ConeShapeData.Schema = data.ConeShapeData.Schema,
-> extends ClientShapeDataMixin(data.ConeShapeData)<Schema> {
+declare class ConeShapeData<Schema extends ConeShapeData.Schema = ConeShapeData.Schema> extends ClientShapeDataMixin(
+  data.ConeShapeData,
+)<Schema> {
   /**
    * Get the left, center, and right rays of this cone.
    * @internal
@@ -672,11 +799,67 @@ declare class ConeShapeData<
 }
 
 declare namespace ConeShapeData {
-  type Schema = data.ConeShapeData.Schema;
-  type Source = data.ConeShapeData.Source;
-  type CreateData = data.ConeShapeData.CreateData;
-  type UpdateData = data.ConeShapeData.UpdateData;
-  type InitializedData = data.ConeShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"cone"> {
+    /**
+     * The x-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the center point in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the cone in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The angle of the cone in degrees.
+     * @defaultValue `undefined`
+     */
+    angle: fields.AngleField<{ initial: undefined; min: 0; normalize: false }>;
+
+    /**
+     * The direction of the cone in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * The curvature.
+     * @defaultValue `"round"`
+     */
+    curvature: fields.StringField<{
+      required: true;
+      initial: "round";
+      choices: {
+        round: "SHAPE.TYPES.cone.CURVATURES.round.label";
+        flat: "SHAPE.TYPES.cone.CURVATURES.flat.label";
+        semicircle: "SHAPE.TYPES.cone.CURVATURES.semicircle.label";
+      };
+    }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   interface Rays {
     left: Ray;
@@ -690,9 +873,9 @@ declare namespace ConeShapeData {
 /**
  * The data model for a ring shape.
  */
-declare class RingShapeData<
-  Schema extends data.RingShapeData.Schema = data.RingShapeData.Schema,
-> extends ClientShapeDataMixin(data.RingShapeData)<Schema> {
+declare class RingShapeData<Schema extends RingShapeData.Schema = RingShapeData.Schema> extends ClientShapeDataMixin(
+  data.RingShapeData,
+)<Schema> {
   override get isEmpty(): boolean;
 
   override clone(data?: SchemaField.UpdateData<Schema>, context?: DataModel.CloneContext): this;
@@ -729,19 +912,61 @@ declare class RingShapeData<
 }
 
 declare namespace RingShapeData {
-  type Schema = data.RingShapeData.Schema;
-  type Source = data.RingShapeData.Source;
-  type CreateData = data.RingShapeData.CreateData;
-  type UpdateData = data.RingShapeData.UpdateData;
-  type InitializedData = data.RingShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"ring"> {
+    /**
+     * The x-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The radius of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The inner width of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    innerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The inner width of the ring in pixels.
+     * @defaultValue `undefined`
+     */
+    outerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 }
 
 /**
  * The data model for a line shape.
  */
-declare class LineShapeData<
-  Schema extends data.LineShapeData.Schema = data.LineShapeData.Schema,
-> extends ClientShapeDataMixin(data.LineShapeData)<Schema> {
+declare class LineShapeData<Schema extends LineShapeData.Schema = LineShapeData.Schema> extends ClientShapeDataMixin(
+  data.LineShapeData,
+)<Schema> {
   /**
    * Get the rays for both axes.
    * @internal
@@ -780,11 +1005,53 @@ declare class LineShapeData<
 }
 
 declare namespace LineShapeData {
-  type Schema = data.LineShapeData.Schema;
-  type Source = data.LineShapeData.Source;
-  type CreateData = data.LineShapeData.CreateData;
-  type UpdateData = data.LineShapeData.UpdateData;
-  type InitializedData = data.LineShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"line"> {
+    /**
+     * The x-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The y-coordinate of the origin in pixels.
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    /**
+     * The length of the line in pixels.
+     * @defaultValue `undefined`
+     */
+    length: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The width of the line in pixels.
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * The rotation around the origin of the line in degrees.
+     * @defaultValue `0`
+     */
+    rotation: fields.AngleField;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   interface Rays {
     axisX: Ray;
@@ -797,7 +1064,7 @@ declare namespace LineShapeData {
  * The data model for an emanation shape.
  */
 declare class EmanationShapeData<
-  Schema extends data.EmanationShapeData.Schema = data.EmanationShapeData.Schema,
+  Schema extends EmanationShapeData.Schema = EmanationShapeData.Schema,
 > extends ClientShapeDataMixin(data.EmanationShapeData)<Schema> {
   override get isEmpty(): boolean;
 
@@ -833,18 +1100,41 @@ declare class EmanationShapeData<
 }
 
 declare namespace EmanationShapeData {
-  type Schema = data.EmanationShapeData.Schema;
-  type Source = data.EmanationShapeData.Source;
-  type CreateData = data.EmanationShapeData.CreateData;
-  type UpdateData = data.EmanationShapeData.UpdateData;
-  type InitializedData = data.EmanationShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"emanation"> {
+    /**
+     * The base shape of the emanation.
+     */
+    base: fields.TypedSchemaField<data.BaseShapeData.EmanationBaseTypes>;
+
+    /**
+     * The radius of the emanation in pixels.
+     * @defaultValue `undefined`
+     */
+    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
+
+    /**
+     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
+     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
+     * grid's metric.
+     * @defaultValue `false`
+     */
+    gridBased: fields.BooleanField;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 }
 
 /**
  * The data model for a polygon shape.
  */
 declare class PolygonShapeData<
-  Schema extends data.PolygonShapeData.Schema = data.PolygonShapeData.Schema,
+  Schema extends PolygonShapeData.Schema = PolygonShapeData.Schema,
 > extends ClientShapeDataMixin(data.PolygonShapeData)<Schema> {
   /**
    * The origin of this shape.
@@ -886,19 +1176,46 @@ declare class PolygonShapeData<
 }
 
 declare namespace PolygonShapeData {
-  type Schema = data.PolygonShapeData.Schema;
-  type Source = data.PolygonShapeData.Source;
-  type CreateData = data.PolygonShapeData.CreateData;
-  type UpdateData = data.PolygonShapeData.UpdateData;
-  type InitializedData = data.PolygonShapeData.InitializedData;
+  interface OriginSchema extends fields.DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+  }
+
+  interface Schema extends data.BaseShapeData.Schema<"polygon"> {
+    /**
+     * The points of the polygon ([x0, y0, x1, y1, ...]).
+     * The polygon must not be self-intersecting if it is supposed to be filled.
+     * The polygon must not contained zero-length edges except for the edge from the last to the first point.
+     * @defaultValue `[]`
+     */
+    points: fields.ArrayField<
+      fields.NumberField<{ required: true; nullable: false; initial: undefined }>,
+      { min: 4; validate: (value: number[]) => void }
+    >;
+
+    /**
+     * The origin of the polygon. If null, it defaults to the center-of-mass.
+     * @defaultValue `null`
+     */
+    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 }
 
 /**
  * The data model for a token shape.
  */
-declare class TokenShapeData<
-  Schema extends data.TokenShapeData.Schema = data.TokenShapeData.Schema,
-> extends ClientShapeDataMixin(data.TokenShapeData)<Schema> {
+declare class TokenShapeData<Schema extends TokenShapeData.Schema = TokenShapeData.Schema> extends ClientShapeDataMixin(
+  data.TokenShapeData,
+)<Schema> {
   /**
    * Get the token shape.
    * @internal
@@ -943,11 +1260,45 @@ declare class TokenShapeData<
 }
 
 declare namespace TokenShapeData {
-  type Schema = data.TokenShapeData.Schema;
-  type Source = data.TokenShapeData.Source;
-  type CreateData = data.TokenShapeData.CreateData;
-  type UpdateData = data.TokenShapeData.UpdateData;
-  type InitializedData = data.TokenShapeData.InitializedData;
+  interface Schema extends data.BaseShapeData.Schema<"token"> {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    x: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     * @defaultValue `undefined`
+     */
+    y: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
+
+    /**
+     * The width in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    width: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The height in grid spaces (positive).
+     * @defaultValue `undefined`
+     */
+    height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
+
+    /**
+     * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
+     * @defaultValue `undefined`
+     */
+    shape: fields.NumberField<{ required: true; choices: CONST.TOKEN_SHAPES[]; initial: undefined }>;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   type ResolvedShape = CircleShapeData | EllipseShapeData | RectangleShapeData | PolygonShapeData;
 }
@@ -955,9 +1306,9 @@ declare namespace TokenShapeData {
 /**
  * The data model for a grid shape.
  */
-declare class GridShapeData<
-  Schema extends data.GridShapeData.Schema = data.GridShapeData.Schema,
-> extends ClientShapeDataMixin(data.GridShapeData)<Schema> {
+declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.Schema> extends ClientShapeDataMixin(
+  data.GridShapeData,
+)<Schema> {
   /**
    * The origin of this shape.
    * @remarks Shadows the `origin` schema field: the getter returns `_source.origin` when it is set and
@@ -1003,11 +1354,33 @@ declare class GridShapeData<
 }
 
 declare namespace GridShapeData {
-  type Schema = data.GridShapeData.Schema;
-  type Source = data.GridShapeData.Source;
-  type CreateData = data.GridShapeData.CreateData;
-  type UpdateData = data.GridShapeData.UpdateData;
-  type InitializedData = data.GridShapeData.InitializedData;
+  interface OriginSchema extends fields.DataSchema {
+    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+
+    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
+  }
+
+  interface Schema extends data.BaseShapeData.Schema<"grid"> {
+    /**
+     * The grid offsets covered by this shape
+     * @defaultValue `[]`
+     */
+    offsets: fields.GridOffsetsField;
+
+    /**
+     * The optional grid space origin, which is by default the center point of the first grid space in `offsets`
+     * @defaultValue `null`
+     */
+    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
+  }
+
+  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
+
+  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  interface Source extends fields.SchemaField.SourceData<Schema> {}
 }
 
 export {

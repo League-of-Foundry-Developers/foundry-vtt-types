@@ -374,65 +374,11 @@ declare abstract class BaseShapeData<
 }
 
 declare namespace RectangleShapeData {
-  interface Schema extends BaseShapeData.Schema<"rectangle"> {
-    /**
-     * The x-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The width of the rectangle in pixels.
-     * @defaultValue `undefined`
-     */
-    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The height of the rectangle in pixels.
-     * @defaultValue `undefined`
-     */
-    height: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The x-coordinate of the anchor.
-     * @defaultValue `0`
-     */
-    anchorX: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-    /**
-     * The y-coordinate of the anchor.
-     * @defaultValue `0`
-     */
-    anchorY: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-    /**
-     * The rotation around the origin of the rectangle in degrees.
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.RectangleShapeData.Schema;
+  export import InitializedData = foundry.data.RectangleShapeData.InitializedData;
+  export import CreateData = foundry.data.RectangleShapeData.CreateData;
+  export import UpdateData = foundry.data.RectangleShapeData.UpdateData;
+  export import Source = foundry.data.RectangleShapeData.Source;
 }
 
 /**
@@ -471,41 +417,11 @@ declare class RectangleShapeData<
 }
 
 declare namespace CircleShapeData {
-  interface Schema extends BaseShapeData.Schema<"circle"> {
-    /**
-     * The x-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The radius of the circle in pixels.
-     * @defaultValue `undefined`
-     */
-    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.CircleShapeData.Schema;
+  export import InitializedData = foundry.data.CircleShapeData.InitializedData;
+  export import CreateData = foundry.data.CircleShapeData.CreateData;
+  export import UpdateData = foundry.data.CircleShapeData.UpdateData;
+  export import Source = foundry.data.CircleShapeData.Source;
 }
 
 /**
@@ -544,53 +460,11 @@ declare class CircleShapeData<
 }
 
 declare namespace EllipseShapeData {
-  interface Schema extends BaseShapeData.Schema<"ellipse"> {
-    /**
-     * The x-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The x-radius of the circle in pixels.
-     * @defaultValue `undefined`
-     */
-    radiusX: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The y-radius of the circle in pixels.
-     * @defaultValue `undefined`
-     */
-    radiusY: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The rotation around the center of the rectangle in degrees.
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.EllipseShapeData.Schema;
+  export import InitializedData = foundry.data.EllipseShapeData.InitializedData;
+  export import CreateData = foundry.data.EllipseShapeData.CreateData;
+  export import UpdateData = foundry.data.EllipseShapeData.UpdateData;
+  export import Source = foundry.data.EllipseShapeData.Source;
 }
 
 /**
@@ -629,34 +503,11 @@ declare class EllipseShapeData<
 }
 
 declare namespace EmanationShapeData {
-  interface Schema extends BaseShapeData.Schema<"emanation"> {
-    /**
-     * The base shape of the emanation.
-     */
-    base: fields.TypedSchemaField<BaseShapeData.EmanationBaseTypes>;
-
-    /**
-     * The radius of the emanation in pixels.
-     * @defaultValue `undefined`
-     */
-    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.EmanationShapeData.Schema;
+  export import InitializedData = foundry.data.EmanationShapeData.InitializedData;
+  export import CreateData = foundry.data.EmanationShapeData.CreateData;
+  export import UpdateData = foundry.data.EmanationShapeData.UpdateData;
+  export import Source = foundry.data.EmanationShapeData.Source;
 }
 
 /**
@@ -695,67 +546,11 @@ declare class EmanationShapeData<
 }
 
 declare namespace ConeShapeData {
-  interface Schema extends BaseShapeData.Schema<"cone"> {
-    /**
-     * The x-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the center point in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The radius of the cone in pixels.
-     * @defaultValue `undefined`
-     */
-    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The angle of the cone in degrees.
-     * @defaultValue `undefined`
-     */
-    angle: fields.AngleField<{ initial: undefined; min: 0; normalize: false }>;
-
-    /**
-     * The direction of the cone in degrees.
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * The curvature.
-     * @defaultValue `"round"`
-     */
-    curvature: fields.StringField<{
-      required: true;
-      initial: "round";
-      choices: {
-        round: "SHAPE.TYPES.cone.CURVATURES.round.label";
-        flat: "SHAPE.TYPES.cone.CURVATURES.flat.label";
-        semicircle: "SHAPE.TYPES.cone.CURVATURES.semicircle.label";
-      };
-    }>;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.ConeShapeData.Schema;
+  export import InitializedData = foundry.data.ConeShapeData.InitializedData;
+  export import CreateData = foundry.data.ConeShapeData.CreateData;
+  export import UpdateData = foundry.data.ConeShapeData.UpdateData;
+  export import Source = foundry.data.ConeShapeData.Source;
 }
 
 /**
@@ -792,53 +587,11 @@ declare class ConeShapeData<Schema extends ConeShapeData.Schema = ConeShapeData.
 }
 
 declare namespace RingShapeData {
-  interface Schema extends BaseShapeData.Schema<"ring"> {
-    /**
-     * The x-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The radius of the ring in pixels.
-     * @defaultValue `undefined`
-     */
-    radius: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The inner width of the ring in pixels.
-     * @defaultValue `undefined`
-     */
-    innerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The inner width of the ring in pixels.
-     * @defaultValue `undefined`
-     */
-    outerWidth: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.RingShapeData.Schema;
+  export import InitializedData = foundry.data.RingShapeData.InitializedData;
+  export import CreateData = foundry.data.RingShapeData.CreateData;
+  export import UpdateData = foundry.data.RingShapeData.UpdateData;
+  export import Source = foundry.data.RingShapeData.Source;
 }
 
 /**
@@ -872,53 +625,11 @@ declare class RingShapeData<Schema extends RingShapeData.Schema = RingShapeData.
 }
 
 declare namespace LineShapeData {
-  interface Schema extends BaseShapeData.Schema<"line"> {
-    /**
-     * The x-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The y-coordinate of the origin in pixels.
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    /**
-     * The length of the line in pixels.
-     * @defaultValue `undefined`
-     */
-    length: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The width of the line in pixels.
-     * @defaultValue `undefined`
-     */
-    width: fields.NumberField<{ required: true; nullable: false; initial: undefined; min: 0 }>;
-
-    /**
-     * The rotation around the origin of the line in degrees.
-     * @defaultValue `0`
-     */
-    rotation: fields.AngleField;
-
-    /**
-     * If the shape is grid-based, its dimensions are converted into grid units by dividing each by the grid size and
-     * multiplying by the grid distance. The shape is then constructed using these dimensions conforming to the
-     * grid's metric.
-     * @defaultValue `false`
-     */
-    gridBased: fields.BooleanField;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.LineShapeData.Schema;
+  export import InitializedData = foundry.data.LineShapeData.InitializedData;
+  export import CreateData = foundry.data.LineShapeData.CreateData;
+  export import UpdateData = foundry.data.LineShapeData.UpdateData;
+  export import Source = foundry.data.LineShapeData.Source;
 }
 
 /**
@@ -952,38 +663,12 @@ declare class LineShapeData<Schema extends LineShapeData.Schema = LineShapeData.
 }
 
 declare namespace PolygonShapeData {
-  interface OriginSchema extends fields.DataSchema {
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-  }
-
-  interface Schema extends BaseShapeData.Schema<"polygon"> {
-    /**
-     * The points of the polygon ([x0, y0, x1, y1, ...]).
-     * The polygon must not be self-intersecting if it is supposed to be filled.
-     * The polygon must not contained zero-length edges except for the edge from the last to the first point.
-     * @defaultValue `[]`
-     */
-    points: fields.ArrayField<
-      fields.NumberField<{ required: true; nullable: false; initial: undefined }>,
-      { min: 4; validate: (value: number[]) => void }
-    >;
-
-    /**
-     * The origin of the polygon. If null, it defaults to the center-of-mass.
-     * @defaultValue `null`
-     */
-    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import OriginSchema = foundry.data.PolygonShapeData.OriginSchema;
+  export import Schema = foundry.data.PolygonShapeData.Schema;
+  export import InitializedData = foundry.data.PolygonShapeData.InitializedData;
+  export import CreateData = foundry.data.PolygonShapeData.CreateData;
+  export import UpdateData = foundry.data.PolygonShapeData.UpdateData;
+  export import Source = foundry.data.PolygonShapeData.Source;
 }
 
 /**
@@ -1022,45 +707,11 @@ declare class PolygonShapeData<
 }
 
 declare namespace TokenShapeData {
-  interface Schema extends BaseShapeData.Schema<"token"> {
-    /**
-     * The top-left x-coordinate in pixels (integer).
-     * @defaultValue `undefined`
-     */
-    x: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
-
-    /**
-     * The top-left y-coordinate in pixels (integer).
-     * @defaultValue `undefined`
-     */
-    y: fields.NumberField<{ required: true; nullable: false; integer: true; initial: undefined }>;
-
-    /**
-     * The width in grid spaces (positive).
-     * @defaultValue `undefined`
-     */
-    width: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
-
-    /**
-     * The height in grid spaces (positive).
-     * @defaultValue `undefined`
-     */
-    height: fields.NumberField<{ required: true; nullable: false; positive: true; initial: undefined }>;
-
-    /**
-     * The shape type (see {@linkcode CONST.TOKEN_SHAPES}).
-     * @defaultValue `undefined`
-     */
-    shape: fields.NumberField<{ required: true; choices: CONST.TOKEN_SHAPES[]; initial: undefined }>;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import Schema = foundry.data.TokenShapeData.Schema;
+  export import InitializedData = foundry.data.TokenShapeData.InitializedData;
+  export import CreateData = foundry.data.TokenShapeData.CreateData;
+  export import UpdateData = foundry.data.TokenShapeData.UpdateData;
+  export import Source = foundry.data.TokenShapeData.Source;
 }
 
 /**
@@ -1096,33 +747,12 @@ declare class TokenShapeData<
 }
 
 declare namespace GridShapeData {
-  interface OriginSchema extends fields.DataSchema {
-    x: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-
-    y: fields.NumberField<{ required: true; nullable: false; initial: undefined }>;
-  }
-
-  interface Schema extends BaseShapeData.Schema<"grid"> {
-    /**
-     * The grid offsets covered by this shape
-     * @defaultValue `[]`
-     */
-    offsets: fields.GridOffsetsField;
-
-    /**
-     * The optional grid space origin, which is by default the center point of the first grid space in `offsets`
-     * @defaultValue `null`
-     */
-    origin: fields.SchemaField<OriginSchema, { nullable: true }>;
-  }
-
-  interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
-
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
-
-  interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
-
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  export import OriginSchema = foundry.data.GridShapeData.OriginSchema;
+  export import Schema = foundry.data.GridShapeData.Schema;
+  export import InitializedData = foundry.data.GridShapeData.InitializedData;
+  export import CreateData = foundry.data.GridShapeData.CreateData;
+  export import UpdateData = foundry.data.GridShapeData.UpdateData;
+  export import Source = foundry.data.GridShapeData.Source;
 }
 
 /**

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
 import { expectTypeOf, test } from "vitest";
-import type { DeepReadonly } from "#utils";
 
 import RegionShape = foundry.data.regionShapes.RegionShape;
 
@@ -21,7 +20,7 @@ test("foundry/client/data/region-shapes/shape", () => {
   expectTypeOf(rCircle.data.y).toBeNumber();
   expectTypeOf(rCircle.data.radius).toBeNumber();
   expectTypeOf(rCircle.isHole).toBeBoolean();
-  expectTypeOf(rCircle.clipperPaths).toEqualTypeOf<DeepReadonly<PIXI.Polygon.ClipperPath[]>>();
+  expectTypeOf(rCircle.clipperPaths).toEqualTypeOf<readonly PIXI.Polygon.ClipperPath[]>();
   expectTypeOf(rCircle.clipperPolyTree).toEqualTypeOf<ClipperLib.PolyTree>();
 
   expectTypeOf(rEllipse.data.type).toEqualTypeOf<"ellipse">();
