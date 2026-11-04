@@ -20,6 +20,8 @@ declare const renderContext: PlaceableTab.RenderContext;
 
 declare const partContext: PlaceableTab.PreparePartContext;
 
+declare const filterButton: PlaceableTab.FilterButton;
+
 test("foundry/client/applications/sidebar/tabs/placeable-tab", () => {
   const tab = new PlaceableTab({ collectionName: "tokens", directory });
 
@@ -44,6 +46,8 @@ test("foundry/client/applications/sidebar/tabs/placeable-tab", () => {
   expectTypeOf(tab._isFiltered()).toBeBoolean();
   expectTypeOf(tab._applyFilters()).toEqualTypeOf<void>();
   expectTypeOf(tab._clearFilters()).toEqualTypeOf<void>();
+  expectTypeOf(tab._clearFilterByLevels()).toEqualTypeOf<void>();
+  expectTypeOf(tab._pruneFilterByLevels()).toEqualTypeOf<void>();
   expectTypeOf(tab._filterState).toEqualTypeOf<PlaceableTab.FilterState>();
   expectTypeOf(tab._filterState.hidden).toEqualTypeOf<boolean | null>();
   expectTypeOf(tab._filterState.locked).toEqualTypeOf<boolean | null>();
@@ -73,6 +77,7 @@ test("foundry/client/applications/sidebar/tabs/placeable-tab", () => {
   expectTypeOf(partContext.hasLevels).toEqualTypeOf<boolean | undefined>();
   expectTypeOf(partContext.labels).toEqualTypeOf<PlaceableTab.SearchLabels | undefined>();
   expectTypeOf(partContext.state).toEqualTypeOf<PlaceableTab.FilterStateContext | undefined>();
+  expectTypeOf(filterButton.disabled).toEqualTypeOf<boolean | undefined>();
 
   class CustomPlaceableTab extends PlaceableTab {
     protected override _getEntryLabel(entry: PlaceableTab.PlaceableDocument): string {

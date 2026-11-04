@@ -62,7 +62,11 @@ describe("HTMLCodeMirrorElement Tests", () => {
   test("Position", () => {
     expectTypeOf(el.cursor).toEqualTypeOf<number | null>();
 
-    expectTypeOf(el.posAtCoords({ x: 500, y: 500 })).toBeNumber();
+    expectTypeOf(el.posAtCoords({ x: 500, y: 500 })).toEqualTypeOf<number | null>();
+
+    const snapshot = el.captureScrollSnapshot();
+    expectTypeOf(snapshot).toEqualTypeOf<HTMLCodeMirrorElement.ScrollSnapshot | null>();
+    if (snapshot) expectTypeOf(el.restoreScrollSnapshot(snapshot)).toBeVoid();
 
     // the first param is ignored
     expectTypeOf(el.scrollTo(0, 50)).toBeVoid();

@@ -467,7 +467,7 @@ declare namespace ActiveEffect {
      * The maximum duration of the Effect in the quantity of the unit, with null being initialized to Infinity
      * @defaultValue `null`
      */
-    value: fields.NumberField<{ required: true; nullable: true; integer: true; min: 0 }>;
+    value: fields.ExtendedNumberField<{ required: true; integer: true; min: 0 }>;
 
     /**
      * The time- or combat-based unit of the duration value

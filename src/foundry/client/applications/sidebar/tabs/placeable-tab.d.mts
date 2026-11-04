@@ -272,6 +272,20 @@ declare class PlaceableTab<
   protected _onFilterByLevel(id: string | null): void;
 
   /**
+   * Called in {@linkcode foundry.documents.Scene._onUpdate | Scene#_onUpdate}.
+   * @internal
+   * @remarks Actually called by {@linkcode foundry.canvas.Canvas.draw | Canvas#draw} when the viewed Scene changes.
+   */
+  _clearFilterByLevels(): void;
+
+  /**
+   * Called in {@linkcode foundry.documents.Scene._onUpdate | Scene#_onUpdate} and
+   * {@linkcode foundry.documents.Level._onDeleteOperation | Level._onDeleteOperation}.
+   * @internal
+   */
+  _pruneFilterByLevels(): void;
+
+  /**
    * Handle hovering over a directory entry.
    * @param event - The triggering event.
    */
@@ -397,6 +411,7 @@ declare namespace PlaceableTab {
      * The IDs of the levels entries are restricted to; empty when unfiltered.
      *
      * @defaultValue `new Set()`
+     * @remarks The same `Set` is shared by every placeable tab.
      */
     levels: Set<string>;
 
@@ -441,6 +456,9 @@ declare namespace PlaceableTab {
     cssClass: string;
 
     tooltip: string;
+
+    /** @remarks Only set for the filter-by-level button, which is disabled while no Scene is viewed. */
+    disabled?: boolean | undefined;
   }
 
   interface SearchLabels {
@@ -470,7 +488,7 @@ declare namespace PlaceableTab {
     /** @remarks Added for the directory part. */
     entries: EntryContext[] | undefined;
 
-    /** @remarks Added for the directory part; only Regions can be created from the sidebar. */
+    /** @remarks Added for the search part. `true` only for Regions while a Scene is viewed. */
     canCreate: boolean | undefined;
 
     /** @remarks Added for the search part. */

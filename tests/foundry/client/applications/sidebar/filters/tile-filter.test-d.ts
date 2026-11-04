@@ -17,7 +17,7 @@ test("foundry/client/applications/sidebar/filters/tile-filter", () => {
   expectTypeOf(context.restrictions.light.field).toEqualTypeOf<foundry.data.fields.StringField>();
   expectTypeOf(context.restrictions.weather.value).toEqualTypeOf<"any" | "yes" | "no">();
   expectTypeOf(TileFilter._BOOLEAN_FIELD_FILTERS).toEqualTypeOf<Record<string, string>>();
-  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number | null>();
+  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number>();
 
   expectTypeOf(filter.tab._filterState.occlusionModes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES>>();
   expectTypeOf(filter.tab._filterState.restrictions.light).toEqualTypeOf<boolean | null>();

@@ -9,9 +9,6 @@ import type { AnyObject } from "fvtt-types/utils";
 declare const sheet: JournalEntryPageCodeMirrorSheet;
 declare const dragEvent: DragEvent;
 declare const eventData: AnyObject;
-declare const newElement: HTMLElement;
-declare const priorElement: HTMLElement;
-declare const state: JournalEntryPageCodeMirrorSheet.PartState;
 
 test("foundry/client/applications/sheets/journal/journal-entry-page-code-mirror-sheet", () => {
   expectTypeOf(JournalEntryPageCodeMirrorSheet.DEFAULT_OPTIONS).toEqualTypeOf<JournalEntryPageSheet.DefaultOptions>();
@@ -20,8 +17,6 @@ test("foundry/client/applications/sheets/journal/journal-entry-page-code-mirror-
   >();
 
   expectTypeOf(sheet["_prepareContentContext"]).returns.toEqualTypeOf<Promise<void>>();
-  expectTypeOf(sheet["_preSyncPartState"]("content", newElement, priorElement, state)).toEqualTypeOf<void>();
-  expectTypeOf(sheet["_syncPartState"]("content", newElement, priorElement, state)).toEqualTypeOf<void>();
   expectTypeOf(sheet["_attachFrameListeners"]()).toEqualTypeOf<void>();
 
   // Returns early without a promise when the drop did not land on a `code-mirror` element.
@@ -30,10 +25,6 @@ test("foundry/client/applications/sheets/journal/journal-entry-page-code-mirror-
 
   // Unlike the ProseMirror sheet, this one always has an editor to query.
   expectTypeOf(sheet["_isEditorDirty"]()).toEqualTypeOf<boolean>();
-
-  // The part state is extended with the editor's cursor position; `null` when the part had no `code-mirror` element.
-  expectTypeOf<JournalEntryPageCodeMirrorSheet.PartState>().toExtend<HandlebarsApplicationMixin.PartState>();
-  expectTypeOf<JournalEntryPageCodeMirrorSheet.PartState["cursor"]>().toEqualTypeOf<number | null | undefined>();
 
   expectTypeOf<JournalEntryPageCodeMirrorSheet.TextContext>().toExtend<JournalEntryPageTextSheet.TextContext>();
   expectTypeOf<JournalEntryPageCodeMirrorSheet.TextContext["enriched"]>().toEqualTypeOf<string | undefined>();

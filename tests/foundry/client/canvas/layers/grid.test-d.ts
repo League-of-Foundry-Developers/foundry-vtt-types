@@ -17,7 +17,7 @@ test("foundry/client/canvas/layers/grid", () => {
   const layer = new GridLayer();
 
   expectTypeOf(layer.mesh).toEqualTypeOf<GridMesh | undefined>();
-  expectTypeOf(layer.highlight).toEqualTypeOf<PIXI.Container | undefined>();
+  expectTypeOf(layer.highlight).toEqualTypeOf<PIXI.Container>();
   expectTypeOf(layer.highlightLayers).toEqualTypeOf<Record<string, GridHighlight>>();
 
   expectTypeOf(layer.options.name).toEqualTypeOf<"grid">();

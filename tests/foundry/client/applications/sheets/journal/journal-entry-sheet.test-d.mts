@@ -204,7 +204,6 @@ test("foundry/client/applications/sheets/journal/journal-entry-sheet", () => {
   expectTypeOf<JournalEntrySheet.RenderOptions["pageId"]>().toEqualTypeOf<string | undefined>();
   expectTypeOf<JournalEntrySheet.RenderOptions["mode"]>().toEqualTypeOf<JournalEntrySheet.VIEW_MODES | undefined>();
   expectTypeOf<JournalEntrySheet.RenderOptions["anchor"]>().toEqualTypeOf<string | undefined>();
-  expectTypeOf<JournalEntrySheet.RenderOptions["tempOwnership"]>().toEqualTypeOf<boolean | undefined>();
   expectTypeOf<JournalEntrySheet.RenderOptions["expanded"]>().toEqualTypeOf<boolean | undefined>();
   expectTypeOf<JournalEntrySheet.RenderOptions["modeChanged"]>().toEqualTypeOf<boolean | undefined>();
   expectTypeOf<JournalEntrySheet.RenderOptions["pageChanged"]>().toEqualTypeOf<boolean | undefined>();

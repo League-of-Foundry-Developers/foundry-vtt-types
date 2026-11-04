@@ -20,6 +20,8 @@ declare module "#configuration" {
  * A CanvasLayer responsible for drawing a square grid
  */
 declare class GridLayer extends CanvasLayer {
+  constructor();
+
   /**
    * The grid mesh.
    * @defaultValue `undefined`
@@ -29,10 +31,8 @@ declare class GridLayer extends CanvasLayer {
 
   /**
    * The Grid Highlight container
-   * @defaultValue `undefined`
-   * @remarks Only `undefined` prior to first draw
    */
-  highlight: PIXI.Container | undefined;
+  highlight: PIXI.Container;
 
   /**
    * Map named highlight layers
@@ -61,6 +61,8 @@ declare class GridLayer extends CanvasLayer {
   override draw(options?: HandleEmptyObject<GridLayer.DrawOptions>): Promise<this>;
 
   protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
+
+  protected override _tearDown(options: GridLayer.TearDownOptions): Promise<void>;
 
   /**
    * Creates the grid mesh.
@@ -138,7 +140,6 @@ declare namespace GridLayer {
 
   interface DrawOptions extends CanvasLayer.DrawOptions {}
 
-  // `GridLayer` has no `_tearDown` override, this exists for consistency
   interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   /** @internal */

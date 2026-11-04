@@ -113,8 +113,8 @@ test("foundry/common/documents/region", () => {
       | ({ type: "grid" } & foundry.data.GridShapeData)
     >
   >();
-  expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
-  expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number | null>();
+  expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number>();
+  expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number>();
 
   expectTypeOf(myRegion.behaviors).toEqualTypeOf<
     EmbeddedCollection<RegionBehavior.Stored, RegionDocument.Implementation>

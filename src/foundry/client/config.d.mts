@@ -1356,6 +1356,12 @@ declare global {
 
           /** @defaultValue `{ label: "d100", icon: '<i class="fa-solid fa-percent"></i>' }` */
           d100: DiceDenomination;
+
+          /** @defaultValue `{ label: "c", icon: '<i class="fa-solid fa-coin"></i>' }` */
+          c: DiceDenomination;
+
+          /** @defaultValue `{ label: "f", icon: '<i class="fa-solid fa-plus-minus"></i>' }` */
+          f: DiceDenomination;
         }
 
         interface DiceDenomination {
@@ -1832,7 +1838,16 @@ declare global {
       confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery;
     }
 
-    type QueryHandler = ToMethod<(queryData: unknown, queryOptions?: { timeout?: number | undefined }) => unknown>;
+    type QueryHandler = ToMethod<(queryData: unknown, queryContext: QueryContext) => unknown>;
+
+    /** @remarks Passed to every {@linkcode QueryHandler} by the receiving client. */
+    interface QueryContext {
+      /** The timeout that the querying User set for this query, if any */
+      timeout: number | undefined;
+
+      /** @remarks The User who sent the query. */
+      user: User.Implementation;
+    }
 
     interface Canvas {
       /** @defaultValue `10` */
@@ -3969,6 +3984,44 @@ declare global {
       }
     }
 
+    namespace Region {
+      /** The configuration of Measured Template Mode. */
+      interface TemplateModeConfig {
+        /** The types of shapes that are available. */
+        shapeTypes: foundry.data.BaseShapeData.ShapeTypes[];
+
+        /** The cone angle. */
+        coneAngle: number;
+
+        /** The cone curvature. */
+        coneCurvature: "round" | "flat" | "semicircle";
+
+        /** The alignment of the ring, a number between 0 and 1. */
+        ringAlignment: number;
+
+        /** Whether the shapes are grid-based. */
+        gridBased: boolean;
+
+        /** The color used to highlight the Region. The user's color by default. */
+        color?: string | undefined;
+
+        /** The configuration of the constraint that walls impose on the shapes of the Region. */
+        restriction?: RegionDocument.RestrictionData | undefined;
+
+        /** The visibility of the Region, from CONST.REGION_VISIBILITY. */
+        visibility?: CONST.REGION_VISIBILITY | undefined;
+
+        /** Whether the true shapes of the Region or the grid spaces that it covers are highlighted. */
+        highlightMode?: RegionDocument.HighlightMode | undefined;
+
+        /** Are measurements displayed for the Region? */
+        displayMeasurements?: boolean | undefined;
+
+        /** An object of optional key/value flags. */
+        flags?: RegionDocument.Flags | undefined;
+      }
+    }
+
     namespace Token {
       interface BarConfig {
         /**
@@ -4576,6 +4629,24 @@ declare global {
        * ```
        */
       sidebar: PlaceableSidebar<typeof foundry.applications.sidebar.tabs.RegionTab>;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   shapeTypes: ["rectangle", "circle", "cone", "ring", "line", "emanation", "grid"],
+       *   coneAngle: 60,
+       *   coneCurvature: "round",
+       *   ringAlignment: 1,
+       *   gridBased: false,
+       *   restriction: { enabled: true, type: "move" },
+       *   visibility: CONST.REGION_VISIBILITY.ALWAYS,
+       *   highlightMode: "coverage",
+       *   displayMeasurements: true
+       * }
+       * ```
+       */
+      templateModeConfig: Region.TemplateModeConfig;
     }
 
     interface RegionBehavior extends _Document<"RegionBehavior">, _HasTypes<"RegionBehavior"> {

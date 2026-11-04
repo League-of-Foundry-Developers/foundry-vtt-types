@@ -38,7 +38,8 @@ declare class SpriteMesh extends PIXI.Container {
 
   /**
    * The texture that the sprite is using.
-   * @remarks Set `null` in {@linkcode destroy | #destroy}, or if this mesh was constructed with no texture
+   * @remarks Set `null` in {@linkcode destroy | #destroy}. A mesh constructed with no texture uses
+   * `PIXI.Texture.EMPTY`.
    */
   protected _texture: PIXI.Texture | null;
 

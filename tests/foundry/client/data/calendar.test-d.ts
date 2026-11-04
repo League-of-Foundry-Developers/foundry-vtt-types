@@ -1,4 +1,6 @@
-import { test } from "vitest";
+import { expectTypeOf, test } from "vitest";
+
+declare const calendar: foundry.data.CalendarData;
 
 test("foundry/client/data/calendar", () => {
   // Copied implementation from Foundry's calendar.mjs
@@ -54,4 +56,8 @@ test("foundry/client/data/calendar", () => {
       ],
     },
   } satisfies foundry.data.CalendarData.CreateData;
+
+  expectTypeOf(calendar.componentsToUnit({ day: 1 }, "hour")).toBeNumber();
+  // @ts-expect-error Months have no fixed length, so they cannot be converted into.
+  calendar.componentsToUnit({ day: 1 }, "month");
 });

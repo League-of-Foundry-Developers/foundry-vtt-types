@@ -13,11 +13,11 @@ test("foundry/client/applications/sidebar/filters/placeable-filter", () => {
 
   expectTypeOf(PlaceableFilter.DEFAULT_OPTIONS).toEqualTypeOf<PlaceableFilter.DefaultOptions>();
   expectTypeOf(filter.tab).toEqualTypeOf<PlaceableTab.Any>();
-  expectTypeOf(context.elevation.bottom.field).toEqualTypeOf<foundry.data.fields.NumberField>();
+  expectTypeOf(context.elevation.bottom.field).toEqualTypeOf<foundry.data.fields.ExtendedNumberField>();
 
-  // Null rather than the infinite bound the filter state holds.
-  expectTypeOf(context.elevation.bottom.value).toEqualTypeOf<number | null>();
-  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number | null>();
+  // The infinite bound the filter state holds, not `null`.
+  expectTypeOf(context.elevation.bottom.value).toEqualTypeOf<number>();
+  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number>();
   expectTypeOf(context.hidden.field).toEqualTypeOf<foundry.data.fields.StringField>();
   expectTypeOf(context.locked.value).toEqualTypeOf<"any" | "yes" | "no">();
   expectTypeOf(PlaceableFilter._BOOLEAN_FIELD_FILTERS).toEqualTypeOf<Record<string, string>>();

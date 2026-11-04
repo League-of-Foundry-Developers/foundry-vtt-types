@@ -27,7 +27,7 @@ declare class TileTab<
   override _filterState: TileTab.FilterState;
 
   /**
-   * @remarks Falls back to the texture's default sound name before the tile's ID.
+   * @remarks Falls back to a name formatted from the texture's file name, then to the tile's ID.
    */
   protected override _getEntryLabel(entry: PlaceableTab.PlaceableDocument): string;
 

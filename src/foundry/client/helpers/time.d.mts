@@ -22,10 +22,13 @@ declare class GameTime {
   /** The "Earth" calendar instance for IRL timekeeping. */
   get earthCalendar(): CalendarData<CalendarData.TimeComponents>;
 
-  /** The current server time based on the last synchronization point and the approximated one-way latency. */
+  /**
+   * The current server time based on the last synchronization point and the approximated one-way latency.
+   * This is the number of milliseconds since the active World was launched.
+   */
   get serverTime(): number;
 
-  /** The current World time expressed in seconds. */
+  /** The current World time expressed in seconds (integer). */
   get worldTime(): number;
 
   /** The current World time expressed as components. */
@@ -42,7 +45,7 @@ declare class GameTime {
 
   /**
    * Advance or rewind the world time according to a delta amount expressed either in seconds or as components.
-   * @param delta   - The number of seconds to advance (or rewind if negative) by
+   * @param delta   - The number of seconds to advance (or rewind if negative) by (integer)
    * @param options - Additional options passed to `game.settings.set`
    * @returns The new game time
    */
@@ -53,7 +56,7 @@ declare class GameTime {
 
   /**
    * Directly set the world time to a certain value expressed either in seconds or as components.
-   * @param time    - The desired world time
+   * @param time    - The desired world time (integer)
    * @param options - Additional options passed to `game.settings.set`
    * @returns The new game time
    */

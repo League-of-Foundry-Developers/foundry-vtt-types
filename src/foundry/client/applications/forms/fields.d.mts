@@ -166,6 +166,11 @@ interface _FormInputConfig<FormInputValue = unknown> {
   classes: string;
 
   /**
+   * The autocomplete attribute value
+   */
+  autocomplete: string;
+
+  /**
    * Some parent CSS id within which field names are unique. If provided,
    * this root ID is used to automatically assign "id" attributes to
    * input elements and "for" attributes to corresponding labels.
@@ -333,6 +338,9 @@ export interface _SelectInputConfig {
   /** @remarks See {@linkcode prepareSelectOptionGroups} for examples */
   options: FormSelectOption[];
 
+  /** @remarks Only used by {@linkcode createMultiSelectInput} when `type` is `"checkboxes"`. */
+  columns?: number | undefined;
+
   /**
    * An option to control the order and display of optgroup elements. The order of strings defines the displayed order of optgroup elements.
    * A blank string may be used to define the position of ungrouped options. If not defined, the order of groups corresponds to the order of
@@ -453,6 +461,7 @@ export interface PreparedSelectOptionGroup {
 /** The attributes that {@linkcode setInputAttributes} cares about */
 export type InputAttribute =
   | "aria"
+  | "autocomplete"
   | "autofocus"
   | "classes"
   | "dataset"

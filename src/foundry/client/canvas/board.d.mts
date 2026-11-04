@@ -214,13 +214,6 @@ declare class Canvas extends _InternalCanvas {
   initializing: Promise<void> | null;
 
   /**
-   * The view options.
-   * @internal
-   * @defaultValue `{}`
-   */
-  _viewOptions: Scene.ViewOptions;
-
-  /**
    * The singleton {@linkcode PIXI.Application} instance rendered on the Canvas.
    * @remarks Only `undefined` prior to canvas {@link Canvas.initialize | initialization},
    * which happens only once, between the `setup` and `ready` hooks.
@@ -484,11 +477,12 @@ declare class Canvas extends _InternalCanvas {
 
   /**
    * Draw the game canvas.
-   * @param scene - A specific Scene document to render on the Canvas
+   * @param scene       - A specific Scene document to render on the Canvas
+   * @param viewOptions - The view options
    * @returns A Promise which resolves once the Canvas is fully drawn
    * @privateRemarks Foundry calls this with `null` in `Scene#_onDelete` and `Scene#_onActivate`
    */
-  draw(scene?: Scene.Implementation | null): Promise<this>;
+  draw(scene?: Scene.Implementation | null, viewOptions?: Scene.ViewOptions): Promise<this>;
 
   /** @remarks Doesn't exist prior to first draw */
   blur?: Canvas.Blur;

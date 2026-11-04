@@ -17,7 +17,7 @@ test("foundry/client/applications/sidebar/filters/region-filter", () => {
   expectTypeOf(filter.tab._filterState.behaviorType).toBeString();
   expectTypeOf(context.behaviorType.field).toEqualTypeOf<foundry.data.fields.StringField>();
   expectTypeOf(context.behaviorType.value).toBeString();
-  expectTypeOf(context.elevation.bottom.value).toEqualTypeOf<number | null>();
+  expectTypeOf(context.elevation.bottom.value).toEqualTypeOf<number>();
 
   class CustomRegionFilter extends RegionFilter {
     protected override _onChangeForm(

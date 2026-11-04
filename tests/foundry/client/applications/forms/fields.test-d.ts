@@ -32,6 +32,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     aria: { placeholder: "placeholder", bar: "baz" }, // not restricted to real ARIA properties
     placeholder: "placeholder",
     classes: "some classes space separated",
+    autocomplete: "off",
     id: "system-foo",
     named: false,
     rootId: "HYIwO4kkI2XOzf99",
@@ -48,6 +49,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     aria: undefined,
     placeholder: undefined,
     classes: undefined,
+    autocomplete: undefined,
     id: undefined,
     named: undefined,
     rootId: undefined,
@@ -69,6 +71,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     labelAttr: "label",
     valueAttr: "value",
     sort: true,
+    columns: 2,
   } satisfies formFields._SelectInputConfig;
 
   const commonSelectInputConfigUndefined = {
@@ -77,6 +80,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     labelAttr: undefined,
     valueAttr: undefined,
     sort: undefined,
+    columns: undefined,
   } satisfies formFields._SelectInputConfig;
 
   const actor = await Actor.implementation.create({
@@ -397,6 +401,7 @@ describe("foundry/client/applications/forms/fields.mjs Tests", async () => {
     setInputAttributes(el);
     expectTypeOf(setInputAttributes(el, {})).toBeVoid();
     expectTypeOf(setInputAttributes(el, { name: "system.foo", named: false })).toBeVoid();
+    expectTypeOf(setInputAttributes(el, { autocomplete: "off" })).toBeVoid();
     expectTypeOf(setInputAttributes(el, config)).toBeVoid();
     expectTypeOf(setInputAttributes(el, undefinedConfig)).toBeVoid();
   });

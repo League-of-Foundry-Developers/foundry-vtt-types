@@ -51,6 +51,13 @@ declare class TileHUD<
    */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: HandlebarsApplicationMixin.PartState,
+  ): void;
+
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
   static #TileHUD: true;

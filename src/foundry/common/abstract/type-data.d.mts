@@ -409,7 +409,7 @@ declare abstract class TypeDataModel<
    * Specific callback actions to take when the embedded HTML for this Document has been added to the DOM.
    * @param element - The embedded document HTML
    */
-  onEmbed(element: HTMLDocumentEmbedElement): void;
+  onEmbed(element: HTMLDocumentEmbedElement, options?: ClientDocument.OnEmbedOptions): void;
 
   /* -------------------------------------------- */
   /*  Database Operations                         */

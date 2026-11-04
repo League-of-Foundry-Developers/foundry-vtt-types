@@ -953,13 +953,24 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
 
   /**
-   * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
+   * Whether the current User has temporary Observer permission for this JournalEntry.
+   * @defaultValue `false`
+   * @internal
+   */
+  _temporaryObserver: boolean;
+
+  /**
+   * A boolean indicator for whether the JournalEntry is visible to the current user in the directory sidebar
+   * @remarks Ignores {@linkcode JournalEntry._temporaryObserver | #_temporaryObserver}.
    */
   get visible(): boolean;
 
   /**
    * @remarks "Upgrade to `OBSERVER` ownership if the journal entry is in a `LIMITED` compendium,
    * as `LIMITED` has no special meaning for journal entries in this context."
+   *
+   * Also raised to at least `OBSERVER` for the current User while
+   * {@linkcode JournalEntry._temporaryObserver | #_temporaryObserver} is set.
    */
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

@@ -110,6 +110,10 @@ describe("ParticleGenerator tests", () => {
     new ParticleGenerator({ area: { path: [], shape: undefined } });
     new ParticleGenerator({ blur: { enabled: true, intensity: 2, quality: undefined } });
 
+    // The container can also be named by its property on `canvas`.
+    new ParticleGenerator({ container: "primary" });
+    new ParticleGenerator({ container: null });
+
     // deprecated since v14:
     new ParticleGenerator({
       perFrame: 5,

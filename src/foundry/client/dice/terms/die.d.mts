@@ -11,7 +11,7 @@ import type DiceTerm from "./dice.d.mts";
  * ```
  */
 declare class Die extends DiceTerm {
-  constructor(termData?: InexactPartial<Die.TermData>);
+  constructor(termData: InexactPartial<Die.TermData>);
 
   /**
    * @defaultValue `"d"`
@@ -165,14 +165,16 @@ declare class Die extends DiceTerm {
   countOdd(modifier: string): boolean | void; // FIXME: Modifiers is also unused.
 
   /**
-   * Deduct the number of failures from the dice result, counting each failure as -1
+   * Deduct the number of failures from the dice result, counting each failure as -1.
    * Failures are identified relative to some target, or relative to the lowest possible value if no target is given.
    * Applying a deduct-failures modifier to the results counts all failed results as -1.
    *
-   * 6d6df      Subtract the number of dice which rolled a 1 from the non-failed total.
-   * 6d6cs\>3df  Subtract the number of dice which rolled a 3 or less from the non-failed count.
-   * 6d6cf\<3df  Subtract the number of dice which rolled less than 3 from the non-failed count.
-   *
+   * 6d6df      Subtract the number of dice which rolled a 1 from the non-failed total, which
+   *            is the total of results which rolled greater than 1.
+   * 6d6df\<=3   Subtract the number of dice which rolled a 3 or less from the non-failed total,
+   *            which is the total of results which rolled greater than 3.
+   * 6d6cs\>3df  Subtract the number of dice which rolled a 3 or less from the non-failed count,
+   *            which are the number of dice which rolled greater than 3.
    * @param modifier - The matched modifier query
    */
   deductFailures(modifier: string): boolean | void;
@@ -180,9 +182,12 @@ declare class Die extends DiceTerm {
   /**
    * Subtract the value of failed dice from the non-failed total, where each failure counts as its negative value.
    * Failures are identified relative to some target, or relative to the lowest possible value if no target is given.
-   * Applying a deduct-failures modifier to the results counts all failed results as -1.
+   * Applying a subtract-failures modifier to the results counts each failed result as its negative value.
    *
-   * 6d6df\<3    Subtract the value of results which rolled less than 3 from the non-failed total.
+   * 6d6sf      Subtract the value of results which rolled a 1 from the non-failed total, which
+   *            is the total of results which rolled greater than 1.
+   * 6d6sf\<3    Subtract the value of results which rolled less than 3 from the non-failed total, which
+   *            is the total of results which rolled 3 or greater.
    *
    * @param modifier - The matched modifier query
    */

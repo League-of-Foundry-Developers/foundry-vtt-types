@@ -971,6 +971,21 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   override prepareDerivedData(): void;
 
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: TileDocument.CreateData,
+  //   options: TileDocument.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  /**
+   * Format the file name of a texture as words, such as "Tree Fir Small 01" from "TreeFir_Small01.webp".
+   * @internal
+   */
+  static _formatTextureName(src: string): string;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.

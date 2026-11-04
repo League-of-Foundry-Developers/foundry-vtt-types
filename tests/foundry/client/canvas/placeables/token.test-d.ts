@@ -21,6 +21,7 @@ declare const doc: TokenDocument.Stored;
 const token = new CONFIG.Token.objectClass(doc);
 
 expectTypeOf(token.control({ pan: { duration: 250, force: true } })).toBeBoolean();
+expectTypeOf(token.control({ switchView: false })).toBeBoolean();
 expectTypeOf(token.panCanvas()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(
   token.panCanvas({
@@ -91,7 +92,7 @@ expectTypeOf(token.inCombat).toBeBoolean();
 expectTypeOf(token.combatant).toEqualTypeOf<Combatant.Stored | null>();
 expectTypeOf(token.isTargeted).toBeBoolean();
 expectTypeOf(token.isDragged).toBeBoolean();
-expectTypeOf(token.detectionModes).toEqualTypeOf<Record<string, { enabled: boolean; range: number | null }>>();
+expectTypeOf(token.detectionModes).toEqualTypeOf<Record<string, { enabled: boolean; range: number }>>();
 expectTypeOf(token.isVisible).toBeBoolean();
 expectTypeOf(token["_testCulled"]()).toBeBoolean();
 expectTypeOf(token.isInteractable).toBeBoolean();
@@ -148,6 +149,7 @@ expectTypeOf(token["_destroy"](undefined)).toBeVoid();
 // @ts-expect-error _draw always gets passed a value
 expectTypeOf(token["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(token["_draw"]({})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(token["_createMesh"]()).toEqualTypeOf<foundry.canvas.primary.PrimarySpriteMesh>();
 
 // @ts-expect-error an object must be passed
 expectTypeOf(token["_applyRenderFlags"]()).toBeVoid();
@@ -641,6 +643,7 @@ expectTypeOf(token["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVo
 expectTypeOf(token["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_propagateLeftClick"](pointerEvent)).toBeBoolean();
 expectTypeOf(token["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onClickRight"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onClickRight2"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onDragLeftStart"](pointerEvent)).toEqualTypeOf<boolean | void>();
 expectTypeOf(token["_initializeDragLeft"](pointerEvent)).toBeVoid();

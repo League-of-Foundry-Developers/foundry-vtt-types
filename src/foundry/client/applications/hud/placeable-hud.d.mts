@@ -1,5 +1,6 @@
 import type { AnyObject, DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
+import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
@@ -119,6 +120,21 @@ declare class BasePlaceableHUD<
    * @param active  - Force the palette to be active or inactive
    */
   togglePalette(palette: string | null, active?: boolean): void;
+
+  /**
+   * Capture the scroll positions of palettes.
+   * @param partId       - The id of the part being rendered
+   * @param newElement   - The new rendered HTML element for the part
+   * @param priorElement - The prior rendered HTML element for the part
+   * @param state        - A state object which is used to synchronize after replacement
+   * @internal
+   */
+  _capturePaletteScrollPositions(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: HandlebarsApplicationMixin.PartState,
+  ): void;
 
   /**
    * Handle submission of the BasePlaceableHUD form.

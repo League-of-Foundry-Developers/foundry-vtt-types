@@ -1018,6 +1018,15 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    */
   importContent(data: Adventure.ImportData): Promise<Adventure.ImportResult>;
 
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Adventure.CreateData,
+  //   options: Adventure.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.

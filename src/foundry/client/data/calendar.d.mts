@@ -1,6 +1,7 @@
 import type DataModel from "#common/abstract/data.d.mts";
 import type * as fields from "#common/data/fields.mjs";
 import type { AnyObject, Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { ClientSettings } from "#client/helpers/_module.d.mts";
 
 declare namespace CalendarData {
   interface Any extends AnyCalendarData {}
@@ -223,10 +224,7 @@ declare namespace CalendarData {
     /** The number of days completed within the year. */
     day: number;
 
-    /**
-     * The number of hours completed within the year.
-     * @remarks This should say "completed within the _day_"
-     */
+    /** The number of hours completed within the day. */
     hour: number;
 
     /** The number of minutes completed within the hour. */
@@ -276,6 +274,9 @@ declare namespace CalendarData {
    * descendingly by order of magnitude.
    */
   type DurationFormatUnit = "year" | "month" | "day" | "hour" | "minute" | "second";
+
+  /** The units {@linkcode CalendarData.componentsToUnit | CalendarData#componentsToUnit} can convert into. */
+  type ConversionUnit = "year" | "day" | "hour" | "minute" | "second";
 
   interface ComponentsToUnitOptions {
     /**
@@ -349,13 +350,10 @@ declare class CalendarData<
    * @param unit       - The unit to convert into
    * @param options    - Additional options
    * @returns The cumulative time in the requested units
-   * @remarks
-   * @throws If `unit` is `"month"`, which {@linkcode CalendarData._DURATION_FORMAT_UNITS} lists but the conversion
-   * does not handle.
    */
   componentsToUnit(
     components: InexactPartial<Components>,
-    unit: CalendarData.DurationFormatUnit,
+    unit: CalendarData.ConversionUnit,
     options?: CalendarData.ComponentsToUnitOptions,
   ): number;
 
@@ -425,8 +423,8 @@ declare class CalendarData<
   ): string;
 
   /**
-   * Format time components as "\{years\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\}". The empty string is returned
-   * if the components are unabled to be formatted.
+   * Format time components as "\{years\}, \{months\}, \{days\}, \{hours\}, \{minutes\}, \{seconds\}".
+   * The empty string is returned if the components are unabled to be formatted.
    * @remarks Returns the infinity sign when a component is not finite, or when the formatter reports a
    * {@linkcode RangeError}.
    */
@@ -446,15 +444,15 @@ declare class CalendarData<
   /**
    * Allow the active world calendar instance to respond to changes in the world time.
    * This method is called and awaited before "updateWorldTime" hooks are dispatched.
-   * @param worldTime - The new world time, game.time.worldTime
+   * @param worldTime - The new world time, `game.time.worldTime`
    * @param deltaTime - The relative change in the world time
-   * @param options   - Options passed through the world time update operation
-   * @param userId    - The user who triggered the time change
+   * @param options   - Options passed from the requesting client where the change was made
+   * @param userId    - The ID of the User who triggered the time change
    */
   onUpdateWorldTime(
     worldTime: number,
     deltaTime: number,
-    options: AnyObject | undefined,
+    options: ClientSettings.OnChangeOptions,
     userId: string,
   ): Promise<void>;
 

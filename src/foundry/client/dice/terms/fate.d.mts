@@ -8,9 +8,11 @@ import type Die from "./die.d.mts";
  * Mathematically behaves like 1d3-2
  */
 declare class FateDie extends DiceTerm {
-  constructor(termData?: InexactPartial<FateDie.TermData>);
+  constructor(termData: InexactPartial<FateDie.TermData>);
 
   _faces: 3;
+
+  minValue: -1;
 
   /**
    * @defaultValue `"f"`
@@ -19,13 +21,9 @@ declare class FateDie extends DiceTerm {
 
   static override MODIFIERS: FateDie.Modifiers;
 
-  override roll({
-    minimize,
-    maximize,
-    ...options
-  }?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
+  override _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
 
-  override mapRandomFace(randomUniform: number): number;
+  override roll(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
 
   override getResultLabel(result: DiceTerm.Result): string;
 }

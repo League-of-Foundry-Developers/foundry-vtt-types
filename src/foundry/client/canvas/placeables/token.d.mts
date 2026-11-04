@@ -470,6 +470,14 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
   protected override _draw(options: HandleEmptyObject<Token.DrawOptions> | undefined): Promise<void>;
 
   /**
+   * Create a PrimarySpriteMesh for this Token using a specified class, shader, and options specified by the
+   * createTokenMesh hook. Called when the Token is first drawn or as the temporary target of a texture transition.
+   * @remarks Falls back to a plain {@linkcode PrimarySpriteMesh} if the classes the hook provides are invalid or
+   * construction fails.
+   */
+  protected _createMesh(): PrimarySpriteMesh;
+
+  /**
    * Create the BaseTokenRuler instance for this Token, if any.
    * This function is called when the Token is drawn for the first time.
    */
@@ -1056,6 +1064,8 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
+
   protected override _onClickRight2(event: Canvas.Event.Pointer): void;
 
   protected override _initializeDragLeft(event: Canvas.Event.Pointer): void;
@@ -1431,13 +1441,19 @@ declare namespace Token {
 
   interface RefreshOptions extends PlaceableObject.RefreshOptions {}
 
-  /** @internal */
-  interface _ControlOptions {
-    /** @defaultValue `false` */
-    pan: boolean | TokenDocument.PanningOptions;
-  }
+  interface ControlOptions extends PlaceableObject.ControlOptions {
+    /**
+     * Switch the view to the level the Token is located in.
+     * Defaults to `releaseOthers`.
+     */
+    switchView?: boolean | undefined;
 
-  interface ControlOptions extends InexactPartial<_ControlOptions>, PlaceableObject.ControlOptions {}
+    /**
+     * Pan to the controlled Token
+     * @defaultValue `false`
+     */
+    pan?: boolean | TokenDocument.PanningOptions | undefined;
+  }
 
   interface ReleaseOptions extends PlaceableObject.ReleaseOptions {}
 

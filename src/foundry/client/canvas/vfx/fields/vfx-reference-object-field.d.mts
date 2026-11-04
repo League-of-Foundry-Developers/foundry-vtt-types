@@ -54,7 +54,7 @@ declare namespace VFXReferenceObjectField {
 
     property: fields.StringField<{ required: false; nullable: true }>;
 
-    deltas: fields.TypedObjectField<fields.NumberField<{ required: true; nullable: false }>>;
+    deltas: fields.TypedObjectField<fields.NumberField<{ required: true; nullable: false }>, { required: false }>;
   }
 
   type ReferenceField = fields.SchemaField<ReferenceSchema, { required: true; nullable: false }>;

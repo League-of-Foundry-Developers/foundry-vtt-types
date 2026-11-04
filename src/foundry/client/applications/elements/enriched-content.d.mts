@@ -21,6 +21,8 @@ export default class HTMLEnrichedContentElement extends AdoptableHTMLElement {
    */
   connectedCallback(): void;
 
+  override disconnectedCallback(): void;
+
   /**
    * Fire a callback on change to an observed attribute.
    * @param attrName - The name of the attribute
