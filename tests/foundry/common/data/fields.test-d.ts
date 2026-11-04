@@ -790,3 +790,23 @@ test("DocumentUUIDField relativize", () => {
   expectTypeOf(relativeField.relativize).toEqualTypeOf<boolean>();
   expectTypeOf<fields.DocumentUUIDField.DefaultOptions["relativize"]>().toEqualTypeOf<false>();
 });
+
+test("ExtendedNumberField initializes null as its extension", () => {
+  const field = new fields.ExtendedNumberField({ required: true, min: 0 });
+  expectTypeOf(field.extension).toEqualTypeOf<number>();
+  expectTypeOf<fields.ExtendedNumberField.DefaultOptions["nullable"]>().toEqualTypeOf<true>();
+
+  expectTypeOf<
+    fields.ExtendedNumberField.InitializedType<{ required: true; extension: number }>
+  >().toEqualTypeOf<number>();
+  expectTypeOf<fields.ExtendedNumberField.PersistedType<{ required: true; extension: number }>>().toEqualTypeOf<
+    number | null
+  >();
+  expectTypeOf<fields.ExtendedNumberField.InitializedType<{ extension: number }>>().toEqualTypeOf<number | undefined>();
+
+  // @ts-expect-error The constructor throws for a non-nullable field.
+  new fields.ExtendedNumberField({ nullable: false, extension: Infinity });
+
+  expectTypeOf(field).toExtend<fields.ExtendedNumberField.Any>();
+  expectTypeOf(field).toExtend<fields.NumberField.Any>();
+});

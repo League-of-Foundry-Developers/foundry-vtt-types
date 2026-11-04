@@ -475,4 +475,12 @@ expectTypeOf(tempItem["_createFigureEmbed"](element, embedConfig, enrichmentOpti
   Promise<HTMLDocumentEmbedElement | null>
 >();
 
+declare const embedElement: HTMLDocumentEmbedElement;
+declare const abortSignal: AbortSignal;
+
+expectTypeOf(tempItem.onEmbed(embedElement)).toEqualTypeOf<void>();
+expectTypeOf(tempItem.onEmbed(embedElement, {})).toEqualTypeOf<void>();
+expectTypeOf(tempItem.onEmbed(embedElement, { signal: abortSignal })).toEqualTypeOf<void>();
+expectTypeOf(tempItem.onEmbed(embedElement, { signal: undefined })).toEqualTypeOf<void>();
+
 // omitting tests for deprecated _*EmbeddedDocuments methods

@@ -155,14 +155,8 @@ declare namespace Notifications {
      */
     element?: HTMLLIElement | undefined;
 
-    /**
-     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
-     */
     remove: () => void;
 
-    /**
-     * @privateRemarks Foundry documents this as optional, but at runtime always sets it.
-     */
     update: (update?: Notifications.UpdateOptions) => void;
   }
 

@@ -12,7 +12,7 @@ declare class SocketInterface {
    * @param eventName - The socket event name being handled
    * @param request   - Request data provided to the Socket event
    * @returns A Promise which resolves to the SocketResponse
-   * @remarks Rejects with the `Error` returned by the server if the response carries one.
+   * @remarks Rejects with a {@linkcode SocketError} if the response carries an error.
    */
   static dispatch<DatabaseAction extends DatabaseBackend.DatabaseAction>(
     eventName: string,
@@ -64,6 +64,11 @@ declare namespace SocketInterface {
     data?: RequestData | undefined;
   }
 }
+
+/**
+ * An error that occurred handling a socket message.
+ */
+export declare class SocketError extends Error {}
 
 export default SocketInterface;
 

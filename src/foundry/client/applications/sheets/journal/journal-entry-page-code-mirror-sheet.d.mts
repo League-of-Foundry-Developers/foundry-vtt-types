@@ -38,7 +38,8 @@ declare class JournalEntryPageCodeMirrorSheet<
    * {
    *   content: {
    *     root: true,
-   *     template: "templates/journal/pages/text/view.hbs"
+   *     template: "templates/journal/pages/text/view.hbs",
+   *     scrollable: ['code-mirror[name="text.markdown"]']
    *   }
    * }
    * ```
@@ -52,26 +53,6 @@ declare class JournalEntryPageCodeMirrorSheet<
     context: ApplicationV2.RenderContextOf<this>,
     options: DeepPartial<RenderOptions>,
   ): Promise<void>;
-
-  /**
-   * @remarks Stores the editor's cursor position in `state` when re-rendering the `content` part in edit mode.
-   */
-  protected override _preSyncPartState(
-    partId: string,
-    newElement: HTMLElement,
-    priorElement: HTMLElement,
-    state: JournalEntryPageCodeMirrorSheet.PartState,
-  ): void;
-
-  /**
-   * @remarks Restores the editor's cursor position from `state` when re-rendering the `content` part in edit mode.
-   */
-  protected override _syncPartState(
-    partId: string,
-    newElement: HTMLElement,
-    priorElement: HTMLElement,
-    state: JournalEntryPageCodeMirrorSheet.PartState,
-  ): void;
 
   protected override _attachFrameListeners(): void;
 
@@ -107,14 +88,6 @@ declare namespace JournalEntryPageCodeMirrorSheet {
      * @remarks The enriched page content. Only added in view mode.
      */
     enriched?: string | undefined;
-  }
-
-  /** @remarks The part state, extended with the `code-mirror` editor's cursor position. */
-  interface PartState extends HandlebarsApplicationMixin.PartState {
-    /**
-     * @remarks Only added for the `content` part in edit mode; `null` when the part had no `code-mirror` element.
-     */
-    cursor?: number | null | undefined;
   }
 
   interface Configuration extends JournalEntryPageTextSheet.Configuration {}

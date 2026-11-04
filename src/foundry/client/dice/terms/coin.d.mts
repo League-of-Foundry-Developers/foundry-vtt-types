@@ -9,6 +9,8 @@ declare class Coin extends DiceTerm {
 
   _faces: 2;
 
+  minValue: 0;
+
   /**
    * @defaultValue `c`
    */
@@ -24,17 +26,9 @@ declare class Coin extends DiceTerm {
    */
   static MODIFIERS: Coin.Modifiers;
 
-  override roll({
-    minimize,
-    maximize,
-    ...options
-  }?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
-
   override getResultLabel(result: DiceTerm.Result): string;
 
   override getResultCSS(result: DiceTerm.Result): (string | null)[];
-
-  override mapRandomFace(randomUniform: number): number;
 
   /* -------------------------------------------- */
   /*  Term Modifiers                              */

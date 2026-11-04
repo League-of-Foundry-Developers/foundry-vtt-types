@@ -106,11 +106,11 @@ declare class RollResolver<
 
   /**
    * Update the Roll instance with the fulfilled results.
-   * @param event     - The originating form submission event.
-   * @param form      - The form element that was submitted.
-   * @param formData  - Processed data for the submitted form.
-   * @remarks {@linkcode RollResolver.close | RollResolver#close} passes `null` for both `event` and
-   * `form` when it flushes the form on an early close.
+   * @param event     - The originating form submission event, or null if the app was closed
+   *                    without submission.
+   * @param form      - The form element that was submitted, or null if the app was closed
+   *                    without submission.
+   * @param formData  - Processed data for the submitted or closed form.
    */
   protected static _fulfillRoll(
     this: RollResolver.Any,
@@ -189,11 +189,7 @@ declare namespace RollResolver {
 
     minValue: number;
 
-    /**
-     * @remarks `undefined` when the term's faces are a complex expression that has not been
-     * evaluated, as {@linkcode foundry.dice.terms.DiceTerm.faces | DiceTerm#faces} is then `undefined`.
-     */
-    maxValue: number | undefined;
+    maxValue: number;
 
     readonly: boolean;
     disabled: boolean;

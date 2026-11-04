@@ -64,7 +64,7 @@ test("foundry/client/applications/dice/roll-resolver", () => {
   expectTypeOf(result.isNew).toEqualTypeOf<boolean | undefined>();
   expectTypeOf(result.value).toEqualTypeOf<number | "">();
   expectTypeOf(result.minValue).toEqualTypeOf<number>();
-  expectTypeOf(result.maxValue).toEqualTypeOf<number | undefined>();
+  expectTypeOf(result.maxValue).toEqualTypeOf<number>();
   expectTypeOf(result.readonly).toEqualTypeOf<boolean>();
   expectTypeOf(result.disabled).toEqualTypeOf<boolean>();
   expectTypeOf(descriptor.id).toEqualTypeOf<string>();

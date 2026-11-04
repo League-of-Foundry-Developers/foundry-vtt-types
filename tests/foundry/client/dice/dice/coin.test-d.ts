@@ -6,6 +6,7 @@ test("foundry/client/dice/dice/coin", () => {
   const coin = new foundry.dice.terms.Coin();
 
   expectTypeOf(coin.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
+  expectTypeOf(coin.minValue).toEqualTypeOf<0>();
   expectTypeOf(coin.getResultLabel(result)).toEqualTypeOf<string>();
   expectTypeOf(coin.getResultCSS(result)).toEqualTypeOf<(string | null)[]>();
   expectTypeOf(coin.call("")).toEqualTypeOf<void>();

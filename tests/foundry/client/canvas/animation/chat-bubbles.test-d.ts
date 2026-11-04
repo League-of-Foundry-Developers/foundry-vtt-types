@@ -5,6 +5,7 @@ import ChatBubbles = foundry.canvas.animation.ChatBubbles;
 declare const socket: io.Socket;
 declare const someToken: foundry.canvas.placeables.Token.Implementation;
 declare const docOrPlaceable: TokenDocument.Implementation | typeof someToken;
+declare const someUser: User.Implementation;
 
 describe("ClassName tests", () => {
   const myCB = new ChatBubbles();
@@ -38,6 +39,7 @@ describe("ClassName tests", () => {
         cssClasses: ["foobar", "fizzbuzz"],
         pan: false,
         requireVisible: true,
+        user: someUser,
       }),
     );
     expectTypeOf(
@@ -45,6 +47,7 @@ describe("ClassName tests", () => {
         cssClasses: undefined,
         pan: undefined,
         requireVisible: undefined,
+        user: undefined,
       }),
     );
   });

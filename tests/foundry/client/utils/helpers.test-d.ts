@@ -2,6 +2,7 @@ import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 declare const file: File;
+declare const user: User.Implementation;
 
 interface SortingStructure {
   target: number;
@@ -14,6 +15,7 @@ declare const input: SortingStructure;
 
 test("foundry/client/utils/helpers", () => {
   expectTypeOf(foundry.utils.cleanHTML("<p>foo")).toEqualTypeOf<string>();
+  expectTypeOf(foundry.utils.cleanHTML("<p>foo", { user })).toEqualTypeOf<string>();
 
   expectTypeOf(foundry.utils.saveDataToFile("", "", "")).toEqualTypeOf<void>();
   expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>>();

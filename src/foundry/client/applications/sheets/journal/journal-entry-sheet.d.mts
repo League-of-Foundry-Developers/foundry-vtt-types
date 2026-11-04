@@ -325,7 +325,7 @@ declare class JournalEntrySheet<
   protected _onClickImage(event: PointerEvent): void;
 
   /**
-   * @remarks Closes every page sheet and reverts any temporarily-granted ownership.
+   * @remarks Closes every page sheet and resets any temporarily-granted Observer permissions.
    */
   protected override _onClose(options: DeepPartial<RenderOptions>): void;
 
@@ -608,12 +608,6 @@ declare namespace JournalEntrySheet {
 
     /** Scroll to the specified heading in the given page. */
     anchor?: string | undefined;
-
-    /**
-     * @remarks Whether the current User has been granted temporary ownership of this JournalEntry or its pages,
-     * which is reverted when the sheet closes.
-     */
-    tempOwnership?: boolean | undefined;
 
     /** @remarks Sets the expanded state of the sidebar. */
     expanded?: boolean | undefined;

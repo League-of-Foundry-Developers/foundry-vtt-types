@@ -15,12 +15,16 @@ declare abstract class DiceTerm extends RollTerm {
    *                    (default: `1`)
    * @param faces     - The number of faces on each die of this type
    *                    (default: `6`)
+   * @param minValue  - The minimum possible value on any face of the die with positive faces.
+   *                    (default: `1`)
    * @param modifiers - An array of modifiers applied to the results
    *                    (default: `[]`)
    * @param results   - An optional array of pre-cast results for the term
    *                    (default: `[]`)
    * @param options   - Additional options that modify the term
    *                    (default: `{}`)
+   * @remarks
+   * @throws If `minValue` is not an integer.
    */
   constructor(termData?: InexactPartial<DiceTerm.TermData>);
 
@@ -91,6 +95,27 @@ declare abstract class DiceTerm extends RollTerm {
   /** The number of faces on the die, or a Roll instance that will be evaluated to a number. */
   _faces: number | Roll;
 
+  /**
+   * The minimum possible value (integer) on any face of the die with positive faces.
+   * @defaultValue `1`
+   */
+  minValue: number;
+
+  /**
+   * The minimum result that can be rolled on the die. If the faces are 0, the minimum result is 0.
+   * If the faces are positive and integer, the minimum result is equal to the minimum value
+   * ({@linkcode DiceTerm.minValue | DiceTerm#minValue}).
+   */
+  get minResult(): number;
+
+  /**
+   * The maximum result that can be rolled on the die. If the faces are 0, the maximum result is 0.
+   * If the faces are positive and integer, the maximum result is equal to the minimum value
+   * ({@linkcode DiceTerm.minValue | DiceTerm#minValue}) plus the number of faces
+   * ({@linkcode DiceTerm.faces | DiceTerm#faces}) minus 1.
+   */
+  get maxResult(): number;
+
   /**  The denomination of this DiceTerm instance. */
   get denomination(): string;
 
@@ -147,13 +172,20 @@ declare abstract class DiceTerm extends RollTerm {
   protected _roll(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<number | undefined>;
 
   /**
-   * Maps a randomly-generated value in the interval [0, 1) to a face value on the die.
+   * Maps a randomly-generated value in the interval [0, 1) to a face value on the die. Returns NaN
+   * if the faces are NaN or represented as a complex term that has not yet been evaluated.
    * @param randomUniform - A value to map. Must be in the interval [0, 1).
-   * @returns The face value.
+   * @returns The face value, an integer between {@linkcode DiceTerm.minResult | DiceTerm#minResult} and
+   * {@linkcode DiceTerm.maxResult | DiceTerm#maxResult}, or NaN if the faces are NaN or not evaluated yet.
    */
   mapRandomFace(randomUniform: number): number;
 
-  /** Generate a random face value for this die using the configured PRNG. */
+  /**
+   * Generate a random face value for this die using the configured PRNG. Returns NaN
+   * if the faces are NaN or are represented as a complex term that has not yet been evaluated.
+   * @returns The face value, an integer between {@linkcode DiceTerm.minResult | DiceTerm#minResult} and
+   * {@linkcode DiceTerm.maxResult | DiceTerm#maxResult}, or NaN if the faces are NaN or not evaluated yet.
+   */
   randomFace(): number;
 
   /**
@@ -295,6 +327,12 @@ declare namespace DiceTerm {
      * @defaultValue `6`
      */
     faces: number;
+
+    /**
+     * The minimum possible value on any face of the die with positive faces.
+     * @defaultValue `1`
+     */
+    minValue: number;
 
     /**
      * @defaultValue `undefined`

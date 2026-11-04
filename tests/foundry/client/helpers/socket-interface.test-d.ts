@@ -9,4 +9,7 @@ declare const request2: foundry.documents.collections.CompendiumCollection.Manag
 test("foundry/client/helpers/socket-interface", () => {
   expectTypeOf(SocketInterface.dispatch("", request)).toEqualTypeOf<Promise<SocketInterface.SocketResponse>>();
   expectTypeOf(SocketInterface.dispatch("", request2)).toEqualTypeOf<Promise<SocketInterface.SocketResponse>>();
+
+  const socketError = new foundry.helpers.SocketError("message");
+  expectTypeOf(socketError).toExtend<Error>();
 });

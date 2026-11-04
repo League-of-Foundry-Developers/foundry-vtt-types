@@ -175,6 +175,19 @@ declare class HTMLMultiCheckboxElement extends AbstractMultiSelectElement {
   /** @defaultValue `"multi-checkbox"` */
   static override tagName: string;
 
+  /** @defaultValue `[...super.observedAttributes, "columns"]` */
+  static override observedAttributes: string[];
+
+  /**
+   * The preferred number of columns to render.
+   * @remarks `null` unless the `columns` attribute is a positive integer. Setting anything else removes the attribute.
+   */
+  get columns(): number | null;
+
+  set columns(value: number | null);
+
+  override attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void;
+
   /**
    * @remarks Returns `(HTMLFieldSetElement | HTMLLabelElement)[]` in {@linkcode HTMLMultiCheckboxElement}
    * @privateRemarks Return type left wide for ease of subclassing

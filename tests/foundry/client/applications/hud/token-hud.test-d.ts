@@ -17,6 +17,12 @@ declare class _TestTokenHUDSubclass extends TokenHUD {
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void>;
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: foundry.applications.api.HandlebarsApplicationMixin.PartState,
+  ): void;
 }
 
 test("foundry/client/applications/hud/token-hud", () => {

@@ -425,15 +425,20 @@ export interface AllHooks extends DynamicHooks {
   pauseGame: (paused: boolean, options: foundry.Game.TogglePauseOptions) => void;
 
   /**
-   * A hook event that fires when the World time has been updated.
-   * @param worldTime - The new canonical World time
-   * @param delta     - The time delta
+   * A hook event that fires when the official World time is changed.
+   * @param worldTime - The new world time, `game.time.worldTime`
+   * @param deltaTime - The relative change in the world time
    * @param options   - Options passed from the requesting client where the change was made
-   * @param userId    - The ID of the User who advanced the time
+   * @param userId    - The ID of the User who triggered the time change
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
-  updateWorldTime: (worldTime: number, delta: number, options: ClientSettings.OnChangeOptions, userId: string) => void;
+  updateWorldTime: (
+    worldTime: number,
+    deltaTime: number,
+    options: ClientSettings.OnChangeOptions,
+    userId: string,
+  ) => void;
 
   /* CanvasLifecycle */
 
@@ -941,6 +946,19 @@ export interface AllHooks extends DynamicHooks {
     message: string,
     options: foundry.canvas.animation.ChatBubbles.Options,
   ) => boolean | void;
+
+  /**
+   * A hook event that fires when the PrimarySpriteMesh for a Token is created.
+   * Listeners may choose the mesh class, its shader class, or both.
+   * A custom shader is used only when the Token does not utilize a dynamic Token ring.
+   * Return `false` from this hook to prevent other listeners from also claiming the Token.
+   * To cooperate with other listeners, assign a subclass of the current class instead.
+   * @param token  - The Token whose mesh is being created
+   * @param config - The mesh configuration, which listeners may modify
+   * @returns Return false to claim the mesh and prevent further listeners
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  createTokenMesh: (token: Token.Implementation, config: Hooks.CreateTokenMeshConfig) => boolean | void;
 
   /**
    * A hook event that fires when a token's resource bar attribute has been modified.
@@ -1572,6 +1590,20 @@ declare global {
     interface RenderChatInputCloseOptions extends ApplicationV2.ClosingOptions, _RenderChatInputClosing {}
 
     type RenderChatInputOptions = RenderChatInputRenderOptions | RenderChatInputCloseOptions;
+
+    interface CreateTokenMeshConfig {
+      /** The PrimarySpriteMesh subclass to construct */
+      meshClass: foundry.canvas.primary.PrimarySpriteMesh.AnyConstructor;
+
+      /** The PrimaryBaseSamplerShader subclass to render with */
+      shaderClass: foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader.AnyConstructor;
+
+      /**
+       * Additional options passed to the mesh class constructor
+       * @remarks `name`, `object`, `texture`, and `shaderClass` are always overwritten by the Token's own values.
+       */
+      meshOptions: foundry.canvas.primary.PrimarySpriteMesh.ConstructorOptions;
+    }
 
     interface HotReloadData {
       /** The type of package which was modified */

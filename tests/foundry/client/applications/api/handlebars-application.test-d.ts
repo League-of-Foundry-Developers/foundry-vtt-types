@@ -43,6 +43,13 @@ expectTypeOf(HBMixinTest.PARTS).toEqualTypeOf<
   Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>
 >();
 
+expectTypeOf<foundry.applications.api.HandlebarsApplicationMixin.PartState["scrollPositions"]>().toEqualTypeOf<
+  Array<[selector: string, scrollTop: number, scrollLeft: number]>
+>();
+expectTypeOf<foundry.applications.api.HandlebarsApplicationMixin.PartState["scrollSnapshots"]>().toEqualTypeOf<
+  Array<[selector: string, snapshot: foundry.applications.elements.HTMLCodeMirrorElement.ScrollSnapshot]>
+>();
+
 declare module "fvtt-types/configuration" {
   namespace Hooks {
     interface ApplicationV2Config {

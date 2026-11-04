@@ -7,6 +7,8 @@ test("foundry/client/dice/dice/fate", () => {
 
   expectTypeOf(fateDie.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
   expectTypeOf(fateDie.mapRandomFace(5)).toEqualTypeOf<number>();
+  expectTypeOf(fateDie.minValue).toEqualTypeOf<-1>();
+  expectTypeOf(fateDie._evaluateSync()).toEqualTypeOf<typeof fateDie>();
   expectTypeOf(fateDie.getResultLabel(result)).toEqualTypeOf<string>();
 
   expectTypeOf(foundry.dice.terms.FateDie.DENOMINATION).toEqualTypeOf<string>();

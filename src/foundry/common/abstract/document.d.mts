@@ -341,8 +341,8 @@ declare abstract class Document<
 
   /**
    * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
-   * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
-   * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
+   * Compendium content caps the level of contained content with the pack's role-based ownership level.
+   * Otherwise, Documents use granular per-User ownership definitions and Embedded Documents defer to their parent.
    *
    * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
    * `GAMEMASTER` user might still return a result of `NONE` if they are not explicitly denoted as having a level.

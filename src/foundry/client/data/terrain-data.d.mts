@@ -87,8 +87,6 @@ declare class TerrainData<Schema extends TerrainData.Schema = TerrainData.Schema
     options?: TokenDocument.MeasureMovementPathOptions,
   ): TokenDocument.MovementCostFunction | void;
 
-  override _initialize(options: DataModel.InitializeOptions): void;
-
   override equals(other: BaseTerrainData.Implementation): boolean;
 
   /* DataModel overrides */
@@ -109,7 +107,7 @@ declare namespace TerrainData {
   export import ImplementationClass = BaseTerrainData.ImplementationClass;
 
   interface Schema extends fields.DataSchema {
-    difficulty: fields.NumberField<{ required: true; nullable: true; min: 0; initial: 1 }>;
+    difficulty: fields.ExtendedNumberField<{ required: true; min: 0; initial: 1 }>;
   }
 
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}

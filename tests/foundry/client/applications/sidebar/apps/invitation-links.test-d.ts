@@ -26,6 +26,7 @@ test("foundry/client/applications/sidebar/apps/invitation-links", () => {
   expectTypeOf<InvitationLinks.RenderContext["remoteIPv4Accessible"]>().toEqualTypeOf<boolean | null>();
   expectTypeOf<InvitationLinks.RenderContext["remoteIPv6Accessible"]>().toEqualTypeOf<boolean | null>();
   expectTypeOf<InvitationLinks.RenderContext["rootId"]>().toBeString();
+  expectTypeOf<InvitationLinks.RenderContext["buttons"]>().toEqualTypeOf<ApplicationV2.FormFooterButton[]>();
 
   // One status per remote address.
   expectTypeOf<InvitationLinks.RenderContext["remoteStatus"]>().toEqualTypeOf<InvitationLinks.ConnectionStatus>();

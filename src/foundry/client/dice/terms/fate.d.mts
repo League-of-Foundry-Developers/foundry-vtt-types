@@ -12,6 +12,8 @@ declare class FateDie extends DiceTerm {
 
   _faces: 3;
 
+  minValue: -1;
+
   /**
    * @defaultValue `"f"`
    */
@@ -19,13 +21,9 @@ declare class FateDie extends DiceTerm {
 
   static override MODIFIERS: FateDie.Modifiers;
 
-  override roll({
-    minimize,
-    maximize,
-    ...options
-  }?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
+  override _evaluateSync(options?: InexactPartial<DiceTerm.EvaluationOptions>): this;
 
-  override mapRandomFace(randomUniform: number): number;
+  override roll(options?: InexactPartial<DiceTerm.EvaluationOptions>): Promise<DiceTerm.Result>;
 
   override getResultLabel(result: DiceTerm.Result): string;
 }

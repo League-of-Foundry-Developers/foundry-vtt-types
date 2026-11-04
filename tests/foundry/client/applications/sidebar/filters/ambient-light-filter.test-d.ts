@@ -27,7 +27,7 @@ test("foundry/client/applications/sidebar/filters/ambient-light-filter", () => {
   expectTypeOf(filter.tab._filterState.negative).toEqualTypeOf<boolean | null>();
 
   // The inherited elevation controls are still present.
-  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number | null>();
+  expectTypeOf(context.elevation.top.value).toEqualTypeOf<number>();
 
   class CustomAmbientLightFilter extends AmbientLightFilter {
     protected override _onChangeForm(

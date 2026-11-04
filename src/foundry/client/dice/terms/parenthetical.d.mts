@@ -1,4 +1,4 @@
-import type { InexactPartial } from "#utils";
+import type { AnyMutableObject, InexactPartial } from "#utils";
 import type { ParentheticalRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -88,6 +88,9 @@ declare class ParentheticalTerm extends RollTerm {
 
   /** Construct a Parenthetical from parser information. */
   static override fromParseNode(node: ParentheticalRollParseNode): ParentheticalTerm;
+
+  /** @remarks Serializes the inner `roll` as well. */
+  override toJSON(): AnyMutableObject;
 }
 
 declare namespace ParentheticalTerm {

@@ -13,6 +13,8 @@ test("foundry/client/documents/journal-entry-page", () => {
 
   expectTypeOf(myJournalEntryPage.toc).toEqualTypeOf<Record<string, JournalEntryPage.Heading>>();
   expectTypeOf(myJournalEntryPage.sceneNote).toEqualTypeOf<Note.Implementation | null>();
+  expectTypeOf(myJournalEntryPage._temporaryObserver).toEqualTypeOf<boolean>();
+  expectTypeOf(myJournalEntryPage.getUserLevel()).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
 
   const headingElement = new HTMLHeadingElement();
   expectTypeOf(JournalEntryPage.slugifyHeading(headingElement)).toEqualTypeOf<string>();

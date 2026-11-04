@@ -28,7 +28,7 @@ declare class InvitationLinks<
    *   },
    *   actions: {
    *     copyLink: InvitationLinks.#onCopyLink,
-   *     recheckInternet: InvitationLinks.#onRecheckInternet,
+   *     refreshAddresses: InvitationLinks.#onRefreshAddresses,
    *     showLink: InvitationLinks.#onShowLink,
    *     hideLink: InvitationLinks.#onHideLink
    *   }
@@ -41,7 +41,8 @@ declare class InvitationLinks<
    * @defaultValue
    * ```js
    * {
-   *   body: {template: "templates/sidebar/apps/invitation-links.hbs", root: true}
+   *   body: {template: "templates/sidebar/apps/invitation-links.hbs", root: true},
+   *   footer: {template: "templates/generic/form-footer.hbs"}
    * }
    * ```
    */
@@ -72,6 +73,9 @@ declare namespace InvitationLinks {
 
     /** @remarks The connection status of the IPv6 address. */
     remote6Status: ConnectionStatus;
+
+    /** @remarks A single button which refreshes the addresses. */
+    buttons: ApplicationV2.FormFooterButton[];
   }
 
   interface ConnectionStatus {

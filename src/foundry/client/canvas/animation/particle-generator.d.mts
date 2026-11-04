@@ -1928,10 +1928,13 @@ declare namespace ParticleGenerator {
     sort: number;
 
     /**
-     * The parent container which receives the internal particle container. Defaults to canvas.primary.
+     * The parent container or its property name on canvas. Names are resolved when the generator is constructed.
+     * Defaults to canvas.primary.
      * @defaultValue `null`
+     * @remarks
+     * @throws If a name does not resolve to a `PIXI.Container`.
      */
-    container: PIXI.Container | null;
+    container: PIXI.Container | string | null;
 
     /**
      * The ticker used to drive the update loop. Defaults to {@linkcode CanvasAnimation.ticker}.

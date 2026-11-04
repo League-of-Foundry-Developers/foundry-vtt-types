@@ -1637,8 +1637,23 @@ declare namespace Scene {
     /** The ID of the Level to view */
     level?: string | undefined;
 
+    /** The name of the canvas layer to activate */
+    activeLayer?: string | undefined;
+
+    /**
+     * The object ID of the placeable that is bound to the HUD,
+     * e.g. `"Token.0123456789abcdef"`
+     */
+    activeHUD?: string | undefined;
+
     /** The IDs of initially controlled tokens */
     controlledTokens?: string[] | undefined;
+
+    /** The IDs of initially targeted tokens */
+    targetedTokens?: string[] | undefined;
+
+    /** The ID of token to pan to, or `null` if no token should be panned to */
+    panToken?: string | null | undefined;
 
     /** The transition animation to used when viewing the scene */
     transition?: ViewTransition | undefined;
@@ -2152,6 +2167,12 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   // ): void;
 
   // protected override _onDelete(options: Scene.Database.OnDeleteOptions, userId: string): void;
+
+  // protected static override _onDeleteOperation(
+  //   documents: Scene.Stored[],
+  //   operation: Scene.Database.OnDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
 
   /**
    * Handle Scene activation workflow if the active state is changed to true.

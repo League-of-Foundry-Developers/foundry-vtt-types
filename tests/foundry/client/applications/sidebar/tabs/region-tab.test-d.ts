@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from "vitest";
+import type { DeepPartial } from "fvtt-types/utils";
 
 import RegionTab = foundry.applications.sidebar.tabs.RegionTab;
 import RegionFilter = foundry.applications.sidebar.filters.RegionFilter;
@@ -9,9 +10,15 @@ declare const directory: foundry.applications.sidebar.tabs.PlaceableDirectory;
 
 declare const entry: RegionTab.EntryContext;
 
+declare const renderContext: RegionTab.RenderContext;
+
+declare const group: RegionTab.Group;
+
 test("foundry/client/applications/sidebar/tabs/region-tab", () => {
   const tab = new RegionTab({ collectionName: "regions", directory });
 
+  expectTypeOf(RegionTab.DEFAULT_OPTIONS).toEqualTypeOf<RegionTab.DefaultOptions>();
+  expectTypeOf(RegionTab.DIRECTORY_PARTIAL).toBeString();
   expectTypeOf(RegionTab.ENTRY_PARTIAL).toBeString();
   expectTypeOf(RegionTab.FILTER_CLASS).toEqualTypeOf<RegionFilter.AnyConstructor>();
 
@@ -21,6 +28,7 @@ test("foundry/client/applications/sidebar/tabs/region-tab", () => {
   >();
   expectTypeOf(tab._filterState.behaviorType).toEqualTypeOf<RegionTab.BehaviorType>();
   expectTypeOf(entry.isVisible).toEqualTypeOf<boolean | undefined>();
+  expectTypeOf(entry.hasPlayerOwner).toEqualTypeOf<boolean | undefined>();
   expectTypeOf(entry.color).toEqualTypeOf<Color>();
   expectTypeOf(entry.empty).toBeBoolean();
 
@@ -30,7 +38,21 @@ test("foundry/client/applications/sidebar/tabs/region-tab", () => {
   expectTypeOf(entry.elevation.topInclusive).toBeBoolean();
   expectTypeOf(entry.elevation.label).toBeString();
 
+  // GMs see the entries split by owner instead of a flat list.
+  expectTypeOf(renderContext.isGM).toEqualTypeOf<boolean | undefined>();
+  expectTypeOf(renderContext.groups).toEqualTypeOf<RegionTab.Group[] | undefined>();
+  expectTypeOf(group.owner).toEqualTypeOf<"player" | "gm">();
+  expectTypeOf(group.label).toBeString();
+  expectTypeOf(group.entries).toEqualTypeOf<RegionTab.EntryContext[]>();
+
   class CustomRegionTab extends RegionTab {
+    protected override async _prepareDirectoryContext(
+      context: RegionTab.RenderContext,
+      options: DeepPartial<RegionTab.RenderOptions>,
+    ): Promise<RegionTab.RenderContext> {
+      return super._prepareDirectoryContext(context, options);
+    }
+
     protected override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[] {
       return super._getEntryContextOptions();
     }

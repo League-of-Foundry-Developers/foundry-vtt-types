@@ -475,9 +475,15 @@ declare namespace ApplicationV2 {
 
     /**
      * Update application position after changing the tab?
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     updatePosition: boolean;
+
+    /**
+     * An internal tracking parameter to prevent indefinite deferred attempts
+     * @internal
+     */
+    _deferred: boolean;
   }> {}
 
   type CreateContextMenuHandler = () => ContextMenu.Entry<HTMLElement>[];

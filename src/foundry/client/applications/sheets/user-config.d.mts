@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity } from "#utils";
+import type { DeepPartial, Identity, MaybePromise } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -67,6 +67,15 @@ declare class UserConfig<
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
   ): Promise<RenderContext>;
 
+  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): MaybePromise<void>;
+
+  protected override _processSubmitData(
+    event: SubmitEvent,
+    form: HTMLFormElement,
+    submitData: DocumentSheetV2.SubmitData<User.Implementation>,
+    options?: DocumentSheetV2.ProcessSubmitOptions<User.Implementation>,
+  ): Promise<DocumentSheetV2.SubmitResult<User.Implementation>>;
+
   static #UserConfig: true;
 }
 
@@ -76,8 +85,12 @@ declare namespace UserConfig {
 
   interface RenderContext
     extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<User.Implementation> {
-    /** @remarks The same value as {@linkcode DocumentSheetV2.RenderContext.document | context.document}. */
-    user: User.Implementation;
+    currentUserIsGM: boolean;
+
+    /**
+     * @remarks `false` in demo mode; otherwise only `true` for the User themself or a GM whose role is at least theirs.
+     */
+    canUpdatePassword: boolean;
 
     /**
      * @remarks Renders the `character` field as a choice between the Actors this User can observe, grouped by

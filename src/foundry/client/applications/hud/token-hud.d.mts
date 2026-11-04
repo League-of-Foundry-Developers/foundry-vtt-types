@@ -63,6 +63,13 @@ declare class TokenHUD<
    */
   get actor(): Actor.Implementation | null | undefined;
 
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: HandlebarsApplicationMixin.PartState,
+  ): void;
+
   protected override _prepareContext(options: DeepPartial<RenderOptions>): Promise<RenderContext>;
 
   /**

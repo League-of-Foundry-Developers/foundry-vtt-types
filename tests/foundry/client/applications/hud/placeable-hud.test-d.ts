@@ -11,6 +11,9 @@ declare const token: Token.Implementation;
 
 declare const parsed: BasePlaceableHUD.ParsedAttributeInput;
 
+declare const element: HTMLElement;
+declare const partState: foundry.applications.api.HandlebarsApplicationMixin.PartState;
+
 declare class _TestHUDSubclass extends BasePlaceableHUD<Token.Implementation> {
   protected override _onSubmitElevation(
     event: SubmitEvent | Event,
@@ -36,6 +39,7 @@ test("foundry/client/applications/hud/placeable-hud", () => {
   expectTypeOf(hud.bind(token)).toEqualTypeOf<Promise<void>>();
   expectTypeOf(hud.togglePalette("effects")).toBeVoid();
   expectTypeOf(hud.togglePalette(null, true)).toBeVoid();
+  expectTypeOf(hud._capturePaletteScrollPositions("hud", element, element, partState)).toBeVoid();
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(hud.clear()).toBeVoid();

@@ -88,6 +88,9 @@ test("partial update of flags allowed", () => {
   });
 });
 
+// A non-GM changing a password must confirm the current one.
+user.update({ password: "new" }, { currentPassword: "old" });
+
 declare const someUser: User.Stored;
 
 expectTypeOf(someUser.idle).toBeBoolean();

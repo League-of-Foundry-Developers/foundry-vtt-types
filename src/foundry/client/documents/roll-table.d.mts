@@ -1243,7 +1243,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected _onClickEmbedAction(event: PointerEvent, action: string): Promise<void>;
 
-  override onEmbed(element: HTMLDocumentEmbedElement): void;
+  override onEmbed(element: HTMLDocumentEmbedElement, options?: ClientDocument.OnEmbedOptions): void;
 
   protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs): void;
 

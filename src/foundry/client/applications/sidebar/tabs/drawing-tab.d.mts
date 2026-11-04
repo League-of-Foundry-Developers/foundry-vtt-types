@@ -40,7 +40,7 @@ declare class DrawingTab<
   protected override _getEntryLabel(entry: PlaceableTab.PlaceableDocument): string;
 
   /**
-   * @remarks Groups the prepared entries by author, with any authorless drawings in a leading group.
+   * @remarks Groups the prepared entries by author, sorted by label, with any authorless drawings in a leading group.
    */
   protected override _prepareDirectoryContext(
     context: RenderContext,

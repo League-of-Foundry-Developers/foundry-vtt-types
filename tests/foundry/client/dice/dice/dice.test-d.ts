@@ -12,6 +12,9 @@ test("foundry/client/dice/dice/dice", () => {
   expectTypeOf(diceTerm.results).toEqualTypeOf<foundry.dice.terms.DiceTerm.Result[]>();
   expectTypeOf(diceTerm.number).toEqualTypeOf<number | undefined>();
   expectTypeOf(diceTerm.faces).toEqualTypeOf<number | undefined>();
+  expectTypeOf(diceTerm.minValue).toEqualTypeOf<number>();
+  expectTypeOf(diceTerm.minResult).toEqualTypeOf<number>();
+  expectTypeOf(diceTerm.maxResult).toEqualTypeOf<number>();
   expectTypeOf(diceTerm.denomination).toEqualTypeOf<string>();
   expectTypeOf(diceTerm.dice).toEqualTypeOf<foundry.dice.terms.DiceTerm[]>();
   expectTypeOf(diceTerm.total).toEqualTypeOf<number | undefined>();

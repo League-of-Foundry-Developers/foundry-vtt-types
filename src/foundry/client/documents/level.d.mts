@@ -174,7 +174,7 @@ declare namespace Level {
       label: "DOCUMENT.Level";
       labelPlural: "DOCUMENT.Levels";
       isEmbedded: true;
-      schemaVersion: "14.364";
+      schemaVersion: "14.370";
     }>
   > {}
 
@@ -353,18 +353,20 @@ declare namespace Level {
     sort: fields.IntegerSortField;
 
     flags: fields.DocumentFlagsField<Name>;
+
+    _stats: fields.DocumentStatsField;
   }
 
   interface ElevationSchema extends fields.DataSchema {
-    /** @remarks Foundry comments "Treat `null` as `-Infinity`" */
-    bottom: fields.NumberField<{ required: true; nullable: true; initial: 0 }>;
+    /** @remarks `null` is initialized as `-Infinity`. */
+    bottom: fields.ExtendedNumberField<{ required: true; extension: number; initial: 0 }>;
 
     /**
      * @defaultValue `4 * grid.distance` of the parent Scene
-     * @remarks Foundry comments "Treat `null` as `+Infinity`".
+     * @remarks `null` is initialized as `Infinity`.
      * The default is applied by {@linkcode foundry.documents.BaseLevel._initializeSource | BaseLevel#_initializeSource}.
      */
-    top: fields.NumberField<{ required: true; nullable: true }>;
+    top: fields.ExtendedNumberField<{ required: true; extension: number }>;
   }
 
   /**

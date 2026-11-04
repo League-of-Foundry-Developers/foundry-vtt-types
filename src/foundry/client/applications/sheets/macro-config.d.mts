@@ -50,7 +50,11 @@ declare class MacroConfig<
    * @defaultValue
    * ```js
    * {
-   *   body: {template: "templates/sheets/macro-config.hbs", root: true},
+   *   body: {
+   *     template: "templates/sheets/macro-config.hbs",
+   *     root: true,
+   *     scrollable: ["code-mirror[name=command]"]
+   *   },
    *   footer: {template: "templates/generic/form-footer.hbs"}
    * }
    * ```

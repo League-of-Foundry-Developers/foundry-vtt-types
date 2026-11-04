@@ -379,7 +379,7 @@ export interface SettingConfig {
     required: true;
     blank: false;
     initial: NonNullable<typeof game.i18n>["lang"];
-    choices: typeof CONFIG.supportedLanguages;
+    choices: () => typeof CONFIG.supportedLanguages;
   }>;
   "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
@@ -438,7 +438,7 @@ export interface SettingConfig {
 
   "core.showToolclips": fields.BooleanField<{ initial: true }>;
   "core.tilePalette": foundry.documents.TileDocument.CreateData;
-  "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+  "core.time": fields.NumberField<{ required: true; nullable: false; integer: true; initial: 0 }>;
   "core.tokenAutoRotate": fields.BooleanField<{ initial: true }>;
   "core.tokenDragPreview": boolean;
 

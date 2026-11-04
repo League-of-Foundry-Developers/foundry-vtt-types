@@ -11,5 +11,6 @@ describe("HTMLDocumentEmbedElement Tests", () => {
 
   test("Element API and lifecycle methods", () => {
     expectTypeOf(el.connectedCallback()).toBeVoid();
+    expectTypeOf(el.disconnectedCallback()).toBeVoid();
   });
 });

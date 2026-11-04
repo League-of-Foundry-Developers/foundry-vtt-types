@@ -6,7 +6,12 @@ import type Document from "#common/abstract/document.d.mts";
  * @param raw - A raw HTML string
  * @returns The cleaned HTML content
  */
-export function cleanHTML(raw: string): string;
+export function cleanHTML(raw: string, options?: CleanHTMLOptions): string;
+
+export interface CleanHTMLOptions {
+  /** The user who authored the HTML being cleaned. */
+  user?: User.Implementation | undefined;
+}
 
 /**
  * Export data content to be saved to a local file

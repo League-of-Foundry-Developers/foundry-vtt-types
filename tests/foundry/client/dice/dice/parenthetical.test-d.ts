@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from "vitest";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 declare const roll: foundry.dice.Roll;
 
@@ -15,6 +16,7 @@ test("foundry/client/dice/dice/parenthetical", () => {
   expectTypeOf(parentheticalTerm.total).toEqualTypeOf<number | undefined>();
   expectTypeOf(parentheticalTerm.expression).toEqualTypeOf<string>();
   expectTypeOf(parentheticalTerm.isDeterministic).toEqualTypeOf<boolean>();
+  expectTypeOf(parentheticalTerm.toJSON()).toEqualTypeOf<AnyMutableObject>();
 
   expectTypeOf(foundry.dice.terms.ParentheticalTerm.OPEN_REGEXP).toEqualTypeOf<RegExp>();
   expectTypeOf(foundry.dice.terms.ParentheticalTerm.CLOSE_REGEXP).toEqualTypeOf<RegExp>();

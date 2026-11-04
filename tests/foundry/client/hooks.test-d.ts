@@ -280,4 +280,14 @@ test("foundry/client/hooks", () => {
   Hooks.on("initializeSoundSources", (layer) => {
     expectTypeOf(layer).toEqualTypeOf<foundry.canvas.layers.SoundsLayer.Implementation>();
   });
+
+  Hooks.on("createTokenMesh", (token, config) => {
+    expectTypeOf(token).toEqualTypeOf<foundry.canvas.placeables.Token.Implementation>();
+    expectTypeOf(config.meshClass).toEqualTypeOf<foundry.canvas.primary.PrimarySpriteMesh.AnyConstructor>();
+    expectTypeOf(
+      config.shaderClass,
+    ).toEqualTypeOf<foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader.AnyConstructor>();
+    expectTypeOf(config.meshOptions).toEqualTypeOf<foundry.canvas.primary.PrimarySpriteMesh.ConstructorOptions>();
+    return false;
+  });
 });

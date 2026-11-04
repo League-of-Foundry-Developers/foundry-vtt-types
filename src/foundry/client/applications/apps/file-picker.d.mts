@@ -420,6 +420,11 @@ declare namespace FilePicker {
     source: SourceInfo | S3SourceInfo;
     sources: Sources;
     target: string;
+
+    /** @remarks `null` when no Scene is drawn. */
+    gridSize: number | null;
+
+    /** @remarks `null` when the `tileSize` option is disabled or no Scene is drawn. */
     tileSize: number | null;
     user: User.Stored;
     favorites: Record<string, FilePicker.FavoriteFolder>;
@@ -504,6 +509,9 @@ declare namespace FilePicker {
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
   interface FavoriteFolder {
+    /** The bucket this folder is in, for S3 sources. */
+    bucket?: string | undefined;
+
     /** The source of the folder (e.g. "data", "public") */
     source: string;
 

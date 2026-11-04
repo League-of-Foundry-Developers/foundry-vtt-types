@@ -941,7 +941,9 @@ declare namespace DataField {
     /** Skip system sanitization? */
     skipSystem: boolean;
 
-    /** The User performing an operation which requires sanitization */
+    /**
+     * The User performing an operation which requires sanitization. If no user is passed, treat the content as trusted.
+     */
     user: User.Implementation;
 
     /** Clean data out of stats? */
@@ -2162,6 +2164,132 @@ declare namespace NumberField {
 
 declare abstract class AnyNumberField extends NumberField<
   NumberField.Options & object,
+  unknown,
+  unknown,
+  number | null | undefined
+> {
+  constructor(...args: never);
+}
+
+/**
+ * A nullable NumberField representing an extended number system, with `null` being initialized as `Infinity` or
+ * `-Infinity`.
+ * @template Options         - the options of the ExtendedNumberField instance
+ * @template AssignmentType  - the type of the allowed assignment values of the ExtendedNumberField
+ * @template InitializedType - the type of the initialized values of the ExtendedNumberField
+ * @template PersistedType   - the type of the persisted values of the ExtendedNumberField
+ * @remarks
+ * Defaults:
+ * - AssignmentType: `number | null | undefined`
+ * - InitializedType: `number`
+ * - PersistedType: `number | null`
+ * - InitialValue: `null`
+ */
+declare class ExtendedNumberField<
+  const Options extends ExtendedNumberField.Options = ExtendedNumberField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = ExtendedNumberField.AssignmentType<Options>,
+  const InitializedType = ExtendedNumberField.InitializedType<Options>,
+  const PersistedType extends number | null | undefined = ExtendedNumberField.PersistedType<Options>,
+> extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
+  /**
+   * @remarks
+   * @throws If `extension` is not provided and cannot be inferred from exactly one finite `min` or `max`.
+   */
+  constructor(options?: Options, context?: DataField.ConstructionContext);
+
+  /**
+   * The infinite value added to the field's permitted numbers, represented as `null` in source data. The option is
+   * inferred if there is exactly one of `min` or `max` defined but must otherwise be explicitly provided.
+   * @remarks Always `Infinity` or `-Infinity` once constructed.
+   */
+  extension: number;
+
+  protected static override get _defaults(): ExtendedNumberField.Options;
+
+  /** @remarks Casts `""` and the `extension` value itself to `null`. */
+  protected override _cast(value: unknown): AssignmentType;
+
+  /** @remarks Initializes `null` as the `extension` value. */
+  override initialize(
+    value: PersistedType,
+    model: DataModel.Any,
+    options?: DataField.InitializeOptions,
+  ): InitializedType | (() => InitializedType | null);
+
+  /**
+   * @remarks Renders an infinite `value` as blank and, unless a `placeholder` is given, shows a signed infinity icon as
+   * the placeholder.
+   */
+  protected override _toInput(
+    config: NumberField.ToInputConfig<this> | NumberField.ToInputConfigWithOptions<this>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
+  protected override _toInput(
+    config: NumberField.ToInputConfigWithChoices<this>,
+  ): HTMLElement | HTMLElement[] | HTMLCollection;
+
+  #ExtendedNumberField: true;
+}
+
+declare namespace ExtendedNumberField {
+  interface Any extends AnyExtendedNumberField {}
+  interface AnyConstructor extends Identity<typeof AnyExtendedNumberField> {}
+
+  interface Options extends NumberField.Options {
+    /**
+     * @remarks `ExtendedNumberField` throws if constructed with `nullable: false`.
+     */
+    nullable?: true | undefined;
+
+    /**
+     * The infinite value added to the field's permitted numbers, represented as `null` in source data. The option is
+     * inferred if there is exactly one of `min` or `max` defined but must otherwise be explicitly provided.
+     * @remarks Must be `Infinity` or `-Infinity`.
+     */
+    extension?: number | undefined;
+  }
+
+  /** The type of the default options for the {@linkcode ExtendedNumberField} class. */
+  type DefaultOptions = SimpleMerge<NumberField.DefaultOptions, { extension: undefined }>;
+
+  /**
+   * A helper type for the given options type merged into the default options of the ExtendedNumberField class.
+   * @template Options - the options that override the default options
+   */
+  type MergedOptions<Options extends ExtendedNumberField.Options> = SimpleMerge<DefaultOptions, Options>;
+
+  /**
+   * A shorthand for the assignment type of a ExtendedNumberField class.
+   * @template Options - the options that override the default options
+   *
+   * @deprecated AssignmentType is being deprecated. See {@linkcode SchemaField.AssignmentData}
+   * for more details.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type AssignmentType<Options extends ExtendedNumberField.Options> = DataField.DerivedAssignmentType<
+    number,
+    MergedOptions<Options>
+  >;
+
+  /**
+   * A shorthand for the initialized type of a ExtendedNumberField class.
+   * @template Options - the options that override the default options
+   * @remarks `null` is initialized as the field's `extension`, so it never appears here.
+   */
+  type InitializedType<Options extends ExtendedNumberField.Options> = Exclude<PersistedType<Options>, null>;
+
+  /**
+   * A shorthand for the persisted type of a ExtendedNumberField class.
+   * @template Options - the options that override the default options
+   */
+  type PersistedType<Options extends ExtendedNumberField.Options> = DataField.DerivedInitializedType<
+    number,
+    MergedOptions<Options>
+  >;
+}
+
+declare abstract class AnyExtendedNumberField extends ExtendedNumberField<
+  ExtendedNumberField.Options & object,
   unknown,
   unknown,
   number | null | undefined
@@ -7161,6 +7289,7 @@ export {
   EmbeddedCollectionField,
   EmbeddedCollectionDeltaField,
   EmbeddedDocumentField,
+  ExtendedNumberField,
   FilePathField,
   ForeignDocumentField,
   GridOffsetField,

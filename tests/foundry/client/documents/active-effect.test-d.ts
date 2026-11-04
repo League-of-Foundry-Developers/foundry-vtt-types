@@ -827,7 +827,7 @@ test("foundry/client/documents/active-effect", async () => {
   // `duration` is widened from the schema's initialized data to the prepared duration
   expectTypeOf(effect.duration).toEqualTypeOf<ActiveEffect.Duration>();
   expectTypeOf(effect.duration.units).toEqualTypeOf<CONST.ACTIVE_EFFECT_DURATION_UNITS>();
-  expectTypeOf(effect.duration.value).toEqualTypeOf<number | null>();
+  expectTypeOf(effect.duration.value).toEqualTypeOf<number>();
   expectTypeOf(effect.duration.expiry).toEqualTypeOf<string | null>();
   expectTypeOf(effect.duration.expired).toBeBoolean();
   expectTypeOf(effect.duration.seconds).toEqualTypeOf<number | null>();
