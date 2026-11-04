@@ -10,7 +10,6 @@ import type Roll from "../roll.d.mts";
 declare abstract class DiceTerm extends RollTerm {
   /**
    * @param termData  - Data used to create the Dice Term, including the following:
-   *                    (default: `{}`)
    * @param number    - The number of dice of this term to roll, before modifiers are applied
    *                    (default: `1`)
    * @param faces     - The number of faces on each die of this type
@@ -26,7 +25,7 @@ declare abstract class DiceTerm extends RollTerm {
    * @remarks
    * @throws If `minValue` is not an integer.
    */
-  constructor(termData?: InexactPartial<DiceTerm.TermData>);
+  constructor(termData: InexactPartial<DiceTerm.TermData>);
 
   get method(): keyof typeof CONFIG.Dice.fulfillment.methods | null | undefined;
 

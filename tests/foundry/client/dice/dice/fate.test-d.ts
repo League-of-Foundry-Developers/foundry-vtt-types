@@ -3,7 +3,10 @@ import { expectTypeOf, test } from "vitest";
 declare const result: foundry.dice.terms.DiceTerm.Result;
 
 test("foundry/client/dice/dice/fate", () => {
-  const fateDie = new foundry.dice.terms.FateDie();
+  // @ts-expect-error The constructor reads `termData` without a default, so it is required.
+  new foundry.dice.terms.FateDie();
+
+  const fateDie = new foundry.dice.terms.FateDie({});
 
   expectTypeOf(fateDie.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
   expectTypeOf(fateDie.mapRandomFace(5)).toEqualTypeOf<number>();

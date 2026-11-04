@@ -9,6 +9,9 @@ test("foundry/client/dice/dice/parenthetical", () => {
   const parentheticalTerm = new foundry.dice.terms.ParentheticalTerm({ term: "" });
   new foundry.dice.terms.ParentheticalTerm({ roll });
 
+  // @ts-expect-error The constructor destructures `termData` without a default, so it is required.
+  new foundry.dice.terms.ParentheticalTerm();
+
   expectTypeOf(parentheticalTerm.term).toEqualTypeOf<string | undefined>();
   expectTypeOf(parentheticalTerm.roll).toEqualTypeOf<foundry.dice.Roll | undefined>();
   expectTypeOf(parentheticalTerm.isIntermediate).toEqualTypeOf<boolean>();

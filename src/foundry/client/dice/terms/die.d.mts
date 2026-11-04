@@ -11,7 +11,7 @@ import type DiceTerm from "./dice.d.mts";
  * ```
  */
 declare class Die extends DiceTerm {
-  constructor(termData?: InexactPartial<Die.TermData>);
+  constructor(termData: InexactPartial<Die.TermData>);
 
   /**
    * @defaultValue `"d"`

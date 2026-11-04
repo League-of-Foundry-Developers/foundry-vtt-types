@@ -3,7 +3,10 @@ import { expectTypeOf, test } from "vitest";
 declare const result: foundry.dice.terms.DiceTerm.Result;
 
 test("foundry/client/dice/dice/coin", () => {
-  const coin = new foundry.dice.terms.Coin();
+  // @ts-expect-error The constructor reads `termData` without a default, so it is required.
+  new foundry.dice.terms.Coin();
+
+  const coin = new foundry.dice.terms.Coin({});
 
   expectTypeOf(coin.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
   expectTypeOf(coin.minValue).toEqualTypeOf<0>();
