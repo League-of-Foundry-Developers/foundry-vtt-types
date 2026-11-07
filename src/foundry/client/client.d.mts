@@ -27,6 +27,7 @@ import * as _helpers from "./helpers/_module.mjs";
 import * as _data from "./data/_module.mjs";
 import * as _dice from "./dice/_module.mjs";
 import * as _nue from "./nue/_module.mjs";
+import * as _setup from "../setup/_module.mjs";
 import * as _utils from "./utils/_module.mjs"; // moved here to match other client exports
 
 import * as globalConfig from "./config.mjs";
@@ -210,6 +211,8 @@ declare global {
      * A collection of application instances
      */
     export const ui: typeof globalThis.ui;
+
+    export import setup = _setup;
   }
 
   /**

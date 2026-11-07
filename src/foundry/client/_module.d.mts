@@ -108,5 +108,4 @@ export const ui: typeof globalThis.ui;
  */
 export * as types from "./_types.mjs";
 
-// FIXME: The `setup/` module is not typed yet.
-// export * as setup from "../setup/_module.mjs";
+export * as setup from "../setup/_module.mjs";
