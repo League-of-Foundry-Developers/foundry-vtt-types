@@ -2259,6 +2259,16 @@ declare namespace ExtendedNumberField {
   type MergedOptions<Options extends ExtendedNumberField.Options> = SimpleMerge<DefaultOptions, Options>;
 
   /**
+   * @internal
+   * @remarks `null` is initialized as the field's `extension`, so the initialized type is derived as if the field were
+   * not nullable. Assignment and persistence still accept `null`, so they use {@linkcode MergedOptions} directly.
+   */
+  type _EffectiveOptions<Options extends ExtendedNumberField.Options> = SimpleMerge<
+    MergedOptions<Options>,
+    { nullable: false }
+  >;
+
+  /**
    * A shorthand for the assignment type of a ExtendedNumberField class.
    * @template Options - the options that override the default options
    *
@@ -2276,7 +2286,10 @@ declare namespace ExtendedNumberField {
    * @template Options - the options that override the default options
    * @remarks `null` is initialized as the field's `extension`, so it never appears here.
    */
-  type InitializedType<Options extends ExtendedNumberField.Options> = Exclude<PersistedType<Options>, null>;
+  type InitializedType<Options extends ExtendedNumberField.Options> = DataField.DerivedInitializedType<
+    number,
+    _EffectiveOptions<Options>
+  >;
 
   /**
    * A shorthand for the persisted type of a ExtendedNumberField class.
