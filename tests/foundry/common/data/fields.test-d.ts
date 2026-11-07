@@ -810,3 +810,20 @@ test("ExtendedNumberField initializes null as its extension", () => {
   expectTypeOf(field).toExtend<fields.ExtendedNumberField.Any>();
   expectTypeOf(field).toExtend<fields.NumberField.Any>();
 });
+
+test("ExtendedNumberField with an explicit nullable: true never initializes to null", () => {
+  type RequiredNullable = { required: true; nullable: true; extension: number };
+  type Nullable = { nullable: true; extension: number };
+
+  // `null` is persisted, but `initialize` turns it into the extension.
+  expectTypeOf<fields.ExtendedNumberField.InitializedType<RequiredNullable>>().toEqualTypeOf<number>();
+  expectTypeOf<fields.ExtendedNumberField.PersistedType<RequiredNullable>>().toEqualTypeOf<number | null>();
+  expectTypeOf<fields.ExtendedNumberField.InitializedType<Nullable>>().toEqualTypeOf<number | undefined>();
+  expectTypeOf<fields.ExtendedNumberField.PersistedType<Nullable>>().toEqualTypeOf<number | null | undefined>();
+
+  const field = new fields.ExtendedNumberField({ required: true, nullable: true, extension: Infinity });
+  expectTypeOf(field).toExtend<fields.ExtendedNumberField.Any>();
+  type Schema = { value: typeof field };
+  expectTypeOf<fields.SchemaField.InitializedData<Schema>["value"]>().toEqualTypeOf<number>();
+  expectTypeOf<fields.SchemaField.SourceData<Schema>["value"]>().toEqualTypeOf<number | null>();
+});
