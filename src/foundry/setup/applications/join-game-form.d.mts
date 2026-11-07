@@ -119,7 +119,7 @@ declare namespace JoinGameForm {
     externalAdminAuthRequired: boolean;
 
     /** @remarks The localized time of the World's next session. Absent when no valid session is scheduled. */
-    nextTime?: string;
+    nextTime?: string | undefined;
   }
 
   interface Configuration<JoinGameForm extends JoinGameForm.Any = JoinGameForm.Any>

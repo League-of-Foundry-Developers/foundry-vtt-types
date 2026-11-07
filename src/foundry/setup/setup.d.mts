@@ -360,8 +360,11 @@ declare namespace Setup {
     /** The package's available version */
     version: string;
 
-    /** The package's minimum version requirement. */
-    minimum?: string;
+    /**
+     * The package's minimum version requirement.
+     * @remarks Always set, but `undefined` when the relationship has no `compatibility.minimum`.
+     */
+    minimum: string | undefined;
 
     /** Whether the package is required or just optional. */
     required: boolean;
@@ -369,8 +372,11 @@ declare namespace Setup {
     /** Note explaining whether the package is required or optional. */
     note: string;
 
-    /** The package author's reason for the dependency. */
-    reason?: string;
+    /**
+     * The package author's reason for the dependency.
+     * @remarks Always set, but `undefined` when the relationship has no `reason`.
+     */
+    reason: string | undefined;
   }
 
   interface InstallDependenciesOptions extends _InstallOptions {
@@ -450,7 +456,7 @@ declare namespace Setup {
     createdAt: number;
 
     /** @remarks Present when the backup is part of a snapshot. */
-    snapshotId?: string;
+    snapshotId?: string | undefined;
   }
 
   /**
@@ -475,11 +481,11 @@ declare namespace Setup {
   interface BackupsListing {
     snapshots: Record<string, SnapshotData>;
 
-    world?: Record<string, BackupData[]>;
+    world?: Record<string, BackupData[]> | undefined;
 
-    system?: Record<string, BackupData[]>;
+    system?: Record<string, BackupData[]> | undefined;
 
-    module?: Record<string, BackupData[]>;
+    module?: Record<string, BackupData[]> | undefined;
   }
 
   /**
@@ -510,10 +516,10 @@ declare namespace Setup {
     step: CONST.SETUP_PACKAGE_PROGRESS.STEPS;
 
     /** A text status message. */
-    message?: string;
+    message?: string | undefined;
 
     /** The title of the entry. If not provided, the ID is used instead. */
-    title?: string;
+    title?: string | undefined;
   }
 
   type ProgressListener = (data: ProgressReceiverPacket) => void;
