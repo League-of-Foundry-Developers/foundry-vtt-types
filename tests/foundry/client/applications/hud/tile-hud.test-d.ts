@@ -8,6 +8,12 @@ declare const hud: TileHUD;
 
 declare class _TestTileHUDSubclass extends TileHUD {
   protected override _prepareContext(options: DeepPartial<TileHUD.RenderOptions>): Promise<TileHUD.RenderContext>;
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: foundry.applications.api.HandlebarsApplicationMixin.PartState,
+  ): void;
 }
 
 test("foundry/client/applications/hud/tile-hud", () => {

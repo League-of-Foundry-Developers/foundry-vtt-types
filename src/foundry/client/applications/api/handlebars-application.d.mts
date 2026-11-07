@@ -1,6 +1,7 @@
 import type { DeepPartial, FixedInstanceType, Mixin } from "#utils";
 import type ApplicationV2 from "./application.d.mts";
 import type DocumentSheetV2 from "./document-sheet.d.mts";
+import type { HTMLCodeMirrorElement } from "#client/applications/elements/_module.d.mts";
 
 /**
  * The mixed application class augmented with [Handlebars](https://handlebarsjs.com) template rendering behavior.
@@ -145,7 +146,15 @@ declare namespace HandlebarsApplicationMixin {
   type Mix<BaseClass extends HandlebarsApplicationMixin.BaseClass> = Mixin<typeof HandlebarsApplication, BaseClass>;
 
   interface PartState {
-    scrollPositions: Array<[el1: HTMLElement, scrollTop: number, scrollLeft: number]>;
+    /** @remarks Each entry pairs a `scrollable` selector with the element's scroll position. */
+    scrollPositions: Array<[selector: string, scrollTop: number, scrollLeft: number]>;
+
+    /**
+     * @remarks Each entry pairs a `scrollable` selector with a snapshot captured from an element that supports
+     * `captureScrollSnapshot`, such as {@linkcode foundry.applications.elements.HTMLCodeMirrorElement}.
+     */
+    scrollSnapshots: Array<[selector: string, snapshot: HTMLCodeMirrorElement.ScrollSnapshot]>;
+
     focus?: string | undefined;
   }
 

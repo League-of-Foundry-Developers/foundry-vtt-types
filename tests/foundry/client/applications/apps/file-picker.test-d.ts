@@ -43,6 +43,9 @@ test("foundry/client/applications/apps/file-picker", async () => {
   expectTypeOf(myPicker.canCreateFolder).toEqualTypeOf<boolean>();
   expectTypeOf(myPicker.canUpload).toEqualTypeOf<boolean>();
 
+  expectTypeOf<FilePicker.RenderContext["gridSize"]>().toEqualTypeOf<number | null>();
+  expectTypeOf<FilePicker.FavoriteFolder["bucket"]>().toEqualTypeOf<string | undefined>();
+
   // New protected surface is reachable from a subclass.
   class CustomFilePicker extends FilePicker {
     protected override _inferSourceAndTarget(target: string): [FilePicker.SourceType, string] {

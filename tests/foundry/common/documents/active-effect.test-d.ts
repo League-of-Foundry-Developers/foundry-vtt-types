@@ -199,7 +199,7 @@ test("foundry/common/documents/active-effect", () => {
     foundry.data.fields.SchemaField.InitializedData<foundry.data.fields.DocumentStatsField.Schema>
   >();
   expectTypeOf(fullTestAE.img).toEqualTypeOf<string | null>();
-  expectTypeOf(fullTestAE.duration.value).toEqualTypeOf<number | null>();
+  expectTypeOf(fullTestAE.duration.value).toEqualTypeOf<number>();
   expectTypeOf(fullTestAE.duration.units).toEqualTypeOf<CONST.ACTIVE_EFFECT_DURATION_UNITS>();
   expectTypeOf(fullTestAE.duration.expiry).toEqualTypeOf<string | null>();
   expectTypeOf(fullTestAE.duration.expired).toBeBoolean();

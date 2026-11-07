@@ -16,6 +16,7 @@ declare global {
 declare const placeableTabConfiguration: PlaceableTab.Configuration<PlaceableTab.Any>;
 declare const movementDescriptor: CONFIG.Token.Movement.ActionConfigDescriptor;
 declare const movementConfig: CONFIG.Token.Movement.ActionConfig;
+declare const queryContext: CONFIG.QueryContext;
 
 test("foundry/client/config", () => {
   CONFIG.Dice.D20Roll = D20Roll;
@@ -23,6 +24,9 @@ test("foundry/client/config", () => {
   const d20roll = new CONFIG.Dice.D20Roll("1d20");
 
   d20roll.evaluate();
+
+  expectTypeOf(CONFIG.Dice.fulfillment.dice.c.label).toEqualTypeOf<string>();
+  expectTypeOf(CONFIG.Dice.fulfillment.dice.f.label).toEqualTypeOf<string>();
 
   expectTypeOf(CONFIG.AmbientLight.sidebar.applicationClass).toEqualTypeOf<
     typeof foundry.applications.sidebar.tabs.AmbientLightTab
@@ -40,6 +44,11 @@ test("foundry/client/config", () => {
   ).toEqualTypeOf<foundry.canvas.rendering.filters.AbstractBaseFilter.AnyConstructor>();
 
   expectTypeOf(CONFIG.Level.documentClass).toEqualTypeOf<foundry.documents.Level.ImplementationClass>();
+
+  expectTypeOf(CONFIG.Region.templateModeConfig).toEqualTypeOf<CONFIG.Region.TemplateModeConfig>();
+  expectTypeOf(CONFIG.Region.templateModeConfig.shapeTypes).toEqualTypeOf<foundry.data.BaseShapeData.ShapeTypes[]>();
+  expectTypeOf(CONFIG.Region.templateModeConfig.coneCurvature).toEqualTypeOf<"round" | "flat" | "semicircle">();
+  expectTypeOf(CONFIG.Region.templateModeConfig.color).toEqualTypeOf<string | undefined>();
 
   expectTypeOf(CONFIG.Canvas.managedScenes).toEqualTypeOf<
     Record<string, typeof foundry.canvas.SceneManager | foundry.canvas.SceneManager>
@@ -76,4 +85,7 @@ test("foundry/client/config", () => {
   expectTypeOf(movementConfig.canSelect).toEqualTypeOf<
     (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean
   >();
+
+  expectTypeOf(queryContext.timeout).toEqualTypeOf<number | undefined>();
+  expectTypeOf(queryContext.user).toEqualTypeOf<User.Implementation>();
 });

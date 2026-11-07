@@ -20,6 +20,23 @@ declare class RegionTab<
   RenderOptions extends RegionTab.RenderOptions = RegionTab.RenderOptions,
 > extends PlaceableTab<RenderContext, Configuration, RenderOptions> {
   /**
+   * @defaultValue
+   * ```js
+   * {
+   *   actions: {
+   *     selectGroup: RegionTab.#onSelectGroup
+   *   }
+   * }
+   * ```
+   */
+  static override DEFAULT_OPTIONS: RegionTab.DefaultOptions;
+
+  /**
+   * @defaultValue `"templates/sidebar/tabs/placeable/regions.hbs"`
+   */
+  static override DIRECTORY_PARTIAL: string;
+
+  /**
    * @defaultValue `"templates/sidebar/tabs/placeable/region.hbs"`
    */
   static override ENTRY_PARTIAL: string;
@@ -31,6 +48,11 @@ declare class RegionTab<
 
   // Fake override.
   override _filterState: RegionTab.FilterState;
+
+  protected override _prepareDirectoryContext(
+    context: RenderContext,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<RenderContext>;
 
   protected override _prepareEntry(
     entry: PlaceableTab.PlaceableDocument,
@@ -49,6 +71,8 @@ declare class RegionTab<
   protected override _matchesFilter(entry: PlaceableTab.PlaceableDocument): boolean;
 
   #RegionTab: true;
+
+  static #RegionTabStatic: true;
 }
 
 declare namespace RegionTab {
@@ -86,6 +110,9 @@ declare namespace RegionTab {
   }
 
   interface EntryContext extends PlaceableTab.EntryContext {
+    /** @remarks Whether a non-GM, non-banned User owns the region. Only prepared for GM users. */
+    hasPlayerOwner?: boolean | undefined;
+
     /**
      * Whether the region is shown to non-GM users.
      *
@@ -101,8 +128,23 @@ declare namespace RegionTab {
     empty: boolean;
   }
 
+  /** The regions rendered as one selectable group. */
+  interface Group {
+    owner: "player" | "gm";
+
+    label: string;
+
+    entries: EntryContext[];
+  }
+
   interface RenderContext extends PlaceableTab.RenderContext {
     entries?: EntryContext[] | undefined;
+
+    /** @remarks Added for the directory part. */
+    isGM?: boolean | undefined;
+
+    /** @remarks Added for the directory part, for GM users only. Empty groups are omitted. */
+    groups?: Group[] | undefined;
   }
 
   interface Configuration<

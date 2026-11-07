@@ -68,9 +68,6 @@ declare class WorldConfig<
 
   override get title(): string;
 
-  /** @remarks Keeps the world ID field's placeholder in step with a slugified version of the title. */
-  protected override _onChangeForm(formConfig: ApplicationV2.FormConfiguration, event: Event): void;
-
   protected override _prepareContext(
     options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
   ): Promise<RenderContext>;

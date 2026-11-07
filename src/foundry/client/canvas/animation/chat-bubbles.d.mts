@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { Identity } from "#utils";
 import type { placeables } from "../_module.d.mts";
 
 /**
@@ -69,28 +69,28 @@ declare namespace ChatBubbles {
   interface Any extends AnyChatBubbles {}
   interface AnyConstructor extends Identity<typeof AnyChatBubbles> {}
 
-  /** @internal */
-  interface _Options {
+  interface Options {
     /**
      * An optional array of CSS classes to apply to the resulting bubble
      * @defaultValue `[]`
      */
-    cssClasses: string[];
+    cssClasses?: string[] | undefined;
 
     /**
      * Pan to the token speaker for this bubble, if allowed by the client
      * @defaultValue `true`
      */
-    pan: boolean;
+    pan?: boolean | undefined;
 
     /**
      * Require that the token be visible in order for the bubble to be rendered
      * @defaultValue `false`
      */
-    requireVisible: boolean;
-  }
+    requireVisible?: boolean | undefined;
 
-  interface Options extends InexactPartial<_Options> {}
+    /** The user broadcasting the message. */
+    user?: User.Implementation | undefined;
+  }
 }
 
 export default ChatBubbles;

@@ -42,6 +42,8 @@ type LightAnimationData = foundry.data.LightData.AnimationData;
 
 type NumberFieldOptions = fields.NumberField.Options;
 
+type ExtendedNumberFieldOptions = fields.ExtendedNumberField.Options;
+
 type StringFieldOptions = fields.StringField.Options;
 
 type ChoiceInputConfig = fields.StringField.PrepareChoiceConfig;

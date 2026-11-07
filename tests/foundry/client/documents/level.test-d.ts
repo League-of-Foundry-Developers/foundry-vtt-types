@@ -17,8 +17,8 @@ describe("Level Tests", () => {
   test("schema props", () => {
     expectTypeOf(level.name).toBeString();
 
-    expectTypeOf(level.elevation.bottom).toEqualTypeOf<number | null>();
-    expectTypeOf(level.elevation.top).toEqualTypeOf<number | null>();
+    expectTypeOf(level.elevation.bottom).toEqualTypeOf<number>();
+    expectTypeOf(level.elevation.top).toEqualTypeOf<number>();
 
     expectTypeOf(level.background.color).toEqualTypeOf<Color>();
     expectTypeOf(level.background.src).toEqualTypeOf<string | null>();

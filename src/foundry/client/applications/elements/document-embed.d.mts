@@ -14,4 +14,8 @@ export default class HTMLDocumentEmbedElement extends AdoptableHTMLElement {
    * Invoke the Document#onEmbed callback when it is added to the DOM.
    */
   connectedCallback(): void;
+
+  override disconnectedCallback(): void;
+
+  #HTMLDocumentEmbedElement: true;
 }

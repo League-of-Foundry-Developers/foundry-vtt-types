@@ -107,6 +107,7 @@ expectTypeOf(applicationV2.minimize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.maximize()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(applicationV2.bringToFront()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2.changeTab("", "")).toEqualTypeOf<void>();
+expectTypeOf<ApplicationV2.ChangeTabOptions["_deferred"]>().toEqualTypeOf<boolean | undefined>();
 expectTypeOf(applicationV2["_refit"]()).toEqualTypeOf<void>();
 expectTypeOf(applicationV2["_refit"]({ width: "auto" })).toEqualTypeOf<void>();
 

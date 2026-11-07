@@ -41,7 +41,7 @@ declare namespace NoteTab {
     /**
      * Whether any non-GM user can see the note's journal entry.
      *
-     * @remarks Only prepared for GM users; a note with no linked journal reports whether its author is a player.
+     * @remarks Only prepared for GMs. Also `true` for a player-authored note, or one with neither journal nor author.
      */
     isVisible?: boolean | undefined;
   }

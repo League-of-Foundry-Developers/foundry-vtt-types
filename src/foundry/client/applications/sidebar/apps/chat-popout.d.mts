@@ -28,6 +28,9 @@ declare class ChatPopout<
    * @defaultValue
    * ```js
    * {
+   *   actions: {
+   *     expandRoll: ChatPopout.#onExpandRoll
+   *   },
    *   classes: ["chat-popout", "themed", "theme-light"],
    *   position: {
    *     width: 300
@@ -72,6 +75,7 @@ declare class ChatPopout<
   protected override _attachFrameListeners(): void;
 
   #ChatPopout: true;
+  static #ChatPopoutStatic: true;
 }
 
 declare namespace ChatPopout {

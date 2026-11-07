@@ -425,8 +425,8 @@ declare namespace CompendiumDirectory {
     /** The pack's banner image. */
     banner: string | null | undefined;
 
-    /** Whether the pack has custom ownership configured. */
-    customOwnership: boolean;
+    /** Whether the pack is visible to players. */
+    playerVisible: boolean;
 
     /** The name of the package the pack belongs to. */
     package: string;

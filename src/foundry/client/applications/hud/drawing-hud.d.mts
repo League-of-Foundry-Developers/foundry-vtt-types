@@ -47,6 +47,13 @@ declare class DrawingHUD<
    * ```
    */
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  protected override _preSyncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: HandlebarsApplicationMixin.PartState,
+  ): void;
 }
 
 declare namespace DrawingHUD {

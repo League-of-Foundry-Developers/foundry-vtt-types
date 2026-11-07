@@ -131,4 +131,5 @@ test("foundry/client/applications/sidebar/tabs/compendium-directory", () => {
   expectTypeOf<CompendiumDirectory.PackContext["hidden"]>().toEqualTypeOf<boolean | 0>();
   expectTypeOf<CompendiumDirectory.PackContext["icon"]>().toEqualTypeOf<string | undefined>();
   expectTypeOf<CompendiumDirectory.PackContext["banner"]>().toEqualTypeOf<string | null | undefined>();
+  expectTypeOf<CompendiumDirectory.PackContext["playerVisible"]>().toEqualTypeOf<boolean>();
 });

@@ -22,4 +22,15 @@ test("foundry/client/applications/ux/text-editor", async () => {
 
   const customEngine = await TextEditor.implementation.create({ engine: "custom-engine" });
   expectTypeOf(customEngine).toEqualTypeOf<TextEditor.CustomEngine>();
+
+  // `onRender` always receives a signal that aborts when the element is disconnected.
+  const enricherConfig: TextEditor.EnricherConfig = {
+    pattern: /@Foo\[(\w+)]/g,
+    enricher: async () => null,
+    onRender: (element, { signal }) => {
+      expectTypeOf(element).toEqualTypeOf<foundry.applications.elements.HTMLEnrichedContentElement>();
+      element.addEventListener("click", () => {}, { signal });
+    },
+  };
+  void enricherConfig;
 });

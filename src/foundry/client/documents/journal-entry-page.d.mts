@@ -1125,6 +1125,13 @@ declare class JournalEntryPage<
   constructor(data: JournalEntryPage.CreateData<SubType>, context?: JournalEntryPage.ConstructionContext);
 
   /**
+   * Whether the current User has temporary Observer permission for this JournalEntryPage.
+   * @defaultValue `false`
+   * @internal
+   */
+  _temporaryObserver: boolean;
+
+  /**
    * The cached table of contents for this JournalEntryPage.
    */
   protected _toc: JournalEntryPage.TOC;
@@ -1135,6 +1142,13 @@ declare class JournalEntryPage<
   get toc(): JournalEntryPage.TOC;
 
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /**
+   * @remarks Raised to at least `OBSERVER` for the current User while
+   * {@linkcode JournalEntryPage._temporaryObserver | #_temporaryObserver} is set. In a `LIMITED` compendium, the page's
+   * own explicit level applies, capped at `OBSERVER`.
+   */
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.

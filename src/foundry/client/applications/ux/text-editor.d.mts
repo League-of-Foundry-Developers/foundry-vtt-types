@@ -457,7 +457,19 @@ declare namespace TextEditor {
     replaceParent: boolean;
 
     /** An optional callback that is invoked when the enriched content is added to the DOM. */
-    onRender: (el: HTMLEnrichedContentElement) => void;
+    onRender: EnricherRenderCallback;
+  }
+
+  /**
+   * @param element - The enriched content wrapper element.
+   */
+  // Defined in `client/config.mjs`
+  type EnricherRenderCallback = (element: HTMLEnrichedContentElement, options: EnricherRenderOptions) => void;
+
+  /** @privateRemarks Foundry documents `options` and `signal` as optional, but always passes both. */
+  interface EnricherRenderOptions {
+    /** An signal that aborts when the element is disconnected. */
+    signal: AbortSignal;
   }
 
   // Defined in `client/config.mjs`

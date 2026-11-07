@@ -493,6 +493,12 @@ declare namespace User {
      */
     interface UpdateOperation extends DatabaseBackend.UpdateOperation<User.UpdateInput, User.Parent> {
       // `updateWorld` is omitted here as it only sees use server side and it's not something users should be passing
+
+      /**
+       * @remarks The User's current password, which {@linkcode foundry.applications.sheets.UserConfig} passes when a
+       * non-GM User changes or wipes a password. Verified by the server.
+       */
+      currentPassword?: string | undefined;
     }
 
     /**

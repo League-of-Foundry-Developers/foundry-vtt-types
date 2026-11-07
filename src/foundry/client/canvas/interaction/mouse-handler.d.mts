@@ -129,6 +129,13 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   protected _dragRight: boolean;
 
   /**
+   * A flag for whether we instantly start dragging
+   * @defaultValue `false`
+   * @internal
+   */
+  _instantDrag: boolean;
+
+  /**
    * An optional ControlIcon instance for the object
    */
   // TODO: can this be inferred from ObjectFor without introducing circularities?

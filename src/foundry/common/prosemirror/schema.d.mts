@@ -36,7 +36,7 @@ import type {
   iframe,
 } from "./schema/other.d.mts";
 import type DisclosureWidget from "./schema/disclosure.d.mts";
-import type { selection } from "./schema/inserts.d.mts";
+import type { selection, selectionInline } from "./schema/inserts.d.mts";
 import type {
   superscript,
   subscript,
@@ -93,6 +93,7 @@ interface Nodes extends Identity<typeof builtInTableNodes> {
 
   // Inserts.
   selection: typeof selection;
+  selection_inline: typeof selectionInline;
 
   // Misc.
   dl: typeof dl;

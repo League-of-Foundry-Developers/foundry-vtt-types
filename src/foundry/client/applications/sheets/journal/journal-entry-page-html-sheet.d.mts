@@ -42,7 +42,8 @@ declare class JournalEntryPageHTMLSheet<
    *   header: super.EDIT_PARTS.header,
    *   content: {
    *     classes: ["flex1", "flexcol"],
-   *     template: "templates/journal/pages/html/edit.hbs"
+   *     template: "templates/journal/pages/html/edit.hbs",
+   *     scrollable: ['code-mirror[name="text.content"]']
    *   },
    *   footer: super.EDIT_PARTS.footer
    * }

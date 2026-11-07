@@ -985,8 +985,7 @@ declare namespace RegionDocument {
 
   /**
    * The elevation range {@linkcode RegionDocument._testElevation} tests against, which is
-   * {@linkcode RegionDocument.elevation | RegionDocument#elevation} after
-   * {@linkcode RegionDocument.prepareBaseData | prepareBaseData} has substituted the infinities.
+   * {@linkcode RegionDocument.elevation | RegionDocument#elevation} with its `null` bounds initialized as infinities.
    */
   interface ElevationRange {
     bottom: number;
@@ -1137,17 +1136,17 @@ declare namespace RegionDocument {
   interface ElevationSchema extends fields.DataSchema {
     /**
      * The bottom elevation level where the Region begins to take effect
-     * @remarks if bottom is `null`, it is treated as `-Infinity`
+     * @remarks `null` is initialized as `-Infinity`.
      * @defaultValue `null`
      */
-    bottom: fields.NumberField<{ required: true }>;
+    bottom: fields.ExtendedNumberField<{ required: true; extension: number }>;
 
     /**
      * The top elevation level where the Region's effect ends
-     * @remarks if top is `null`, it is treated as `Infinity`
+     * @remarks `null` is initialized as `Infinity`.
      * @defaultValue `null`
      */
-    top: fields.NumberField<{ required: true }>;
+    top: fields.ExtendedNumberField<{ required: true; extension: number }>;
 
     /**
      * @defaultValue `false`

@@ -19,10 +19,16 @@ import CanvasEdges = foundry.canvas.geometry.edges.CanvasEdges;
 import Level = foundry.documents.Level;
 
 declare const someScene: Scene.Implementation;
+declare const viewOptions: Scene.ViewOptions;
 
 test("foundry/client/canvas/board", () => {
   const myCanvas = new Canvas();
   expectTypeOf(myCanvas.draw(someScene)).toEqualTypeOf<Promise<Canvas>>();
+  expectTypeOf(myCanvas.draw(null, viewOptions)).toEqualTypeOf<Promise<Canvas>>();
+  expectTypeOf(viewOptions.activeLayer).toEqualTypeOf<string | undefined>();
+  expectTypeOf(viewOptions.activeHUD).toEqualTypeOf<string | undefined>();
+  expectTypeOf(viewOptions.targetedTokens).toEqualTypeOf<string[] | undefined>();
+  expectTypeOf(viewOptions.panToken).toEqualTypeOf<string | null | undefined>();
 
   expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientLight")).toEqualTypeOf<LightingLayer.Implementation | null>();
   expectTypeOf(myCanvas.getLayerByEmbeddedName("AmbientSound")).toEqualTypeOf<SoundsLayer.Implementation | null>();
@@ -93,7 +99,6 @@ test("foundry/client/canvas/board", () => {
 
   expectTypeOf(myCanvas.root).toEqualTypeOf<PIXI.Container | undefined>();
   expectTypeOf(myCanvas._frameId).toEqualTypeOf<number>();
-  expectTypeOf(myCanvas._viewOptions).toEqualTypeOf<Scene.ViewOptions>();
 
   expectTypeOf(myCanvas.mousePositionVisible).toEqualTypeOf<boolean>();
   expectTypeOf(myCanvas._mousePositionVisible).toEqualTypeOf<boolean>();

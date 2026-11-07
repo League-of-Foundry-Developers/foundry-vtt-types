@@ -1,7 +1,10 @@
 import { expectTypeOf, test } from "vitest";
 
 test("foundry/client/dice/dice/die", () => {
-  const die = new foundry.dice.terms.Die();
+  // @ts-expect-error The constructor reads `termData` without a default, so it is required.
+  new foundry.dice.terms.Die();
+
+  const die = new foundry.dice.terms.Die({});
 
   expectTypeOf(die.total).toEqualTypeOf<number | undefined>();
   expectTypeOf(die.denomination).toEqualTypeOf<string>();

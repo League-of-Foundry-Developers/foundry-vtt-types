@@ -110,3 +110,5 @@ type ConnectedGamepad = foundry.helpers.interaction.GamepadManager.ConnectedGame
 type ClipperPoint = PIXI.Polygon.ClipperPoint;
 
 type CanvasTearDownOptions = Canvas.TearDownOptions;
+
+type RegionTemplateModeConfig = CONFIG.Region.TemplateModeConfig;

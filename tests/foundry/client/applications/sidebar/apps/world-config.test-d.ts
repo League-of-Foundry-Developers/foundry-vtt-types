@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { DeepPartial } from "fvtt-types/utils";
+import type { DeepPartial, MaybePromise } from "fvtt-types/utils";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import HandlebarsApplicationMixin = foundry.applications.api.HandlebarsApplicationMixin;
@@ -23,7 +23,8 @@ test("foundry/client/applications/sidebar/apps/world-config", () => {
 
   expectTypeOf(worldConfig.world).toEqualTypeOf<World>();
   expectTypeOf(worldConfig.title).toBeString();
-  expectTypeOf(worldConfig["_onChangeForm"](formConfig, event)).toBeVoid();
+  // Inherited from `ApplicationV2`.
+  expectTypeOf(worldConfig["_onChangeForm"](formConfig, event)).toEqualTypeOf<MaybePromise<void>>();
   expectTypeOf(worldConfig["_prepareContext"](options)).toEqualTypeOf<Promise<WorldConfig.RenderContext>>();
 
   expectTypeOf<WorldConfig.RenderContext["themes"]>().toEqualTypeOf<Record<string, string>>();

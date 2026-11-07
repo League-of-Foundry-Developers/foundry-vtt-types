@@ -42,7 +42,8 @@ declare class JournalEntryPageMarkdownSheet<
    *   header: super.EDIT_PARTS.header,
    *   content: {
    *     classes: ["flex1", "flexcol"],
-   *     template: "templates/journal/pages/markdown/edit.hbs"
+   *     template: "templates/journal/pages/markdown/edit.hbs",
+   *     scrollable: ['code-mirror[name="text.markdown"]']
    *   },
    *   footer: super.EDIT_PARTS.footer
    * }

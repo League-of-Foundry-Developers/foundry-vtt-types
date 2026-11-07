@@ -17,6 +17,7 @@ describe("HTMLEnrichedContentElement Tests", () => {
 
   test("Element API and lifecycle methods", () => {
     expectTypeOf(el.connectedCallback()).toBeVoid();
+    expectTypeOf(el.disconnectedCallback()).toBeVoid();
 
     expectTypeOf(el.attributeChangedCallback("enricher", "enricherID1", "enricherID2")).toBeVoid();
     expectTypeOf(el.attributeChangedCallback("enricher", null, "enricherID2")).toBeVoid();

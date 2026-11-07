@@ -27,6 +27,7 @@ declare const gridShape: GridShapeData;
 
 declare const graphics: PIXI.Graphics;
 declare const point: Canvas.Point;
+declare const federatedEvent: PIXI.FederatedEvent;
 
 // The mixin's subclass hooks retain their protected access.
 declare class CustomRectangleShapeData extends RectangleShapeData {
@@ -110,6 +111,7 @@ test("foundry/client/data/shapes", () => {
   expectTypeOf(ring.innerWidth).toBeNumber();
   expectTypeOf(emanation.radius).toBeNumber();
   expectTypeOf(gridShape.isEmpty).toBeBoolean();
+  expectTypeOf(gridShape._onDragStart(federatedEvent)).toBeVoid();
 
   // `PolygonShapeData` and `GridShapeData` shadow their nullable `origin` schema field with the mixin's getter.
   expectTypeOf(polygon.origin).toEqualTypeOf<Readonly<Canvas.Point>>();

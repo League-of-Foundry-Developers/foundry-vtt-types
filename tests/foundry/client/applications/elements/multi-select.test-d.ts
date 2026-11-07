@@ -105,9 +105,17 @@ describe("HTMLMultiCheckboxElement Tests", () => {
   test("Miscellaneous", () => {
     // tag names are just `string`s for ease of subclassing
     expectTypeOf(elements.HTMLMultiCheckboxElement.tagName).toBeString();
+    expectTypeOf(elements.HTMLMultiCheckboxElement.observedAttributes).toEqualTypeOf<string[]>();
+  });
+
+  test("Columns", () => {
+    expectTypeOf(mce.columns).toEqualTypeOf<number | null>();
+    mce.columns = 3;
+    mce.columns = null;
   });
 
   test("Element API and lifecycle methods", () => {
+    expectTypeOf(mce.attributeChangedCallback("columns", null, "3")).toBeVoid();
     expectTypeOf(mce["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();
     expectTypeOf(mce["_refresh"]()).toBeVoid();
     expectTypeOf(mce["_activateListeners"]()).toBeVoid();

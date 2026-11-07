@@ -544,7 +544,7 @@ declare namespace TokenDocument {
      * How far in distance units the Token can see without the aid of a light source
      * @defaultValue `0`
      */
-    range: fields.NumberField<{ required: true; nullable: true; min: 0; step: 0.01; initial: 0 }>;
+    range: fields.ExtendedNumberField<{ required: true; min: 0; step: 0.01; initial: 0 }>;
 
     /**
      * An angle at which the Token can see relative to their direction of facing
@@ -663,7 +663,7 @@ declare namespace TokenDocument {
      * The maximum range in distance units at which this mode can detect targets
      * @defaultValue `null`
      */
-    range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
+    range: fields.ExtendedNumberField<{ required: true; min: 0; step: 0.01 }>;
   }
 
   interface DetectionModeData extends fields.SchemaField.InitializedData<DetectionModeSchema> {}
@@ -2777,15 +2777,14 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   protected _inferMovementAction(): string;
 
   /**
-   * Prepare detection modes which are available to the Token.
-   * Ensure that every Token has the basic sight detection mode configured.
-   */
-
-  /**
    * Extend data in attribute-bar properties.
    */
   protected _prepareBars(): void;
 
+  /**
+   * Prepare detection modes which are available to the Token.
+   * Ensure that every sighted Token has the basic sight detection mode configured.
+   */
   protected _prepareDetectionModes(): void;
 
   /**
@@ -3419,7 +3418,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   protected _inflateVisionModeChange(modeId: string): TokenDocument.InflatedVisionModeChange;
 
   /**
-   * Send emulated update data to the Token PlaceableObject
+   * Send emulated update data to the Token PlaceableObject.
+   * The TokenDocument is in nonanimated state (reset) when this function is called.
    * @param priorOverrides - Overrides prior to data reinitialization
    */
   protected _renderActiveEffectChanges(priorOverrides: AnyMutableObject): void;

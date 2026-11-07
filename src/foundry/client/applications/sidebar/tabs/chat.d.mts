@@ -312,8 +312,7 @@ declare class ChatLog<
   updateTimestamps(): void;
 
   /**
-   * Handles chat message rendering during the ChatMessage#getHTML deprecation period. After that period ends, calls
-   * to this method can be replaced by ChatMessage#renderHTML.
+   * Static helper that renders a message and allows transformations to be applied after any system-specific rendering.
    * @param message - The chat message to render.
    * @param options - Options forwarded to the render function.
    * @throws If the message's render methods do not return a usable result.

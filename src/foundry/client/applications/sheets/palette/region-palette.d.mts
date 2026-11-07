@@ -67,8 +67,7 @@ declare class RegionPalette<
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
-   * @remarks Region elevation is a `bottom`/`top` pair rather than a single number, and each side is left `null` when
-   * the viewed level's bound is infinite.
+   * @remarks Region elevation is a `bottom`/`top` pair rather than a single number, copied from the viewed level.
    */
   protected static override _getDefaultLevelData(): AnyMutableObject;
 

@@ -182,6 +182,8 @@ declare namespace VFXParticleGeneratorComponent {
      * When effects are built directly in code, this can also include a custom batchable `shaderClass` that is
      * compatible with SpriteMesh and whose plugin was already registered.
      * Values here override any explicitly-set schema fields of the same name.
+     * Use a canvas property name such as "interface" for config.container, rather than a PIXI container instance.
+     * The name is resolved when the component starts.
      */
     config: fields.ObjectField<{ required: false }>;
 

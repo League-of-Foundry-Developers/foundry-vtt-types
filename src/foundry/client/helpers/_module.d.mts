@@ -13,4 +13,4 @@ export { default as ActiveEffectRegistry } from "./active-effect-registry.mjs";
 export { default as GameTime } from "./time.mjs";
 export { default as Hooks } from "./hooks.mjs";
 export { default as Localization } from "./localization.mjs";
-export { default as SocketInterface } from "./socket-interface.mjs";
+export { default as SocketInterface, SocketError } from "./socket-interface.mjs";

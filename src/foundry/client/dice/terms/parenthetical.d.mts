@@ -1,4 +1,4 @@
-import type { InexactPartial } from "#utils";
+import type { AnyMutableObject, InexactPartial } from "#utils";
 import type { ParentheticalRollParseNode } from "../_types.d.mts";
 
 import type RollTerm from "./term.d.mts";
@@ -8,7 +8,7 @@ import type DiceTerm from "./dice.d.mts";
  * A type of RollTerm used to enclose a parenthetical expression to be recursively evaluated.
  */
 declare class ParentheticalTerm extends RollTerm {
-  constructor({ term, roll, options }?: ParentheticalTerm.TermData);
+  constructor({ term, roll, options }: ParentheticalTerm.TermData);
 
   /** The original provided string term used to construct the parenthetical */
   term: string | undefined; // only one of term or roll is expected
@@ -88,6 +88,9 @@ declare class ParentheticalTerm extends RollTerm {
 
   /** Construct a Parenthetical from parser information. */
   static override fromParseNode(node: ParentheticalRollParseNode): ParentheticalTerm;
+
+  /** @remarks Serializes the inner `roll` as well. */
+  override toJSON(): AnyMutableObject;
 }
 
 declare namespace ParentheticalTerm {

@@ -600,10 +600,13 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   ): Promise<HTMLElement | null>;
 
   /**
-   * Specific callback actions to take when the embedded HTML for this document has been added to the DOM.
+   * Specific callback actions to take when the embedded HTML for this Document has been added to the DOM.
    * @param element - The embedded document HTML
    */
-  onEmbed(element: foundry.applications.elements.HTMLDocumentEmbedElement): void;
+  onEmbed(
+    element: foundry.applications.elements.HTMLDocumentEmbedElement,
+    options?: ClientDocument.OnEmbedOptions,
+  ): void;
 
   /**
    * A method that can be overridden by subclasses to customize embedded HTML generation.
@@ -795,6 +798,11 @@ declare global {
     }
 
     interface ToCompendiumOptions extends InexactPartial<_ToCompendiumOptions> {}
+
+    interface OnEmbedOptions {
+      /** The abort signal used to manage event listener lifecycle. */
+      signal?: AbortSignal | undefined;
+    }
 
     /** @internal */
     interface _CreateDocumentLinkOptions {

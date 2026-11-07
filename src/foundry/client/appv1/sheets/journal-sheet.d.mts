@@ -401,9 +401,6 @@ declare namespace JournalSheet {
       /** Render the sheet with the given anchor for the given page in view. */
       anchor: string;
 
-      /** Whether the journal entry or one of its pages is being shown to players who might otherwise not have permission to view it. */
-      tempOwnership: boolean;
-
       /** Render the sheet with the TOC sidebar collapsed? */
       collapsed: boolean;
     }>;

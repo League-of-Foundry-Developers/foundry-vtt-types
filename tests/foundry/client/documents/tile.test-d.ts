@@ -17,4 +17,6 @@ test("foundry/client/documents/tile", () => {
   expectTypeOf(someTile.levels).toEqualTypeOf<Set<string>>();
   expectTypeOf(someTile.occlusion.modes).toEqualTypeOf<Set<CONST.OCCLUSION_MODES | null>>();
   expectTypeOf(someTile.prepareBaseData()).toEqualTypeOf<void>();
+
+  expectTypeOf(TileDocument._formatTextureName("TreeFir_Small01.webp")).toEqualTypeOf<string>();
 });

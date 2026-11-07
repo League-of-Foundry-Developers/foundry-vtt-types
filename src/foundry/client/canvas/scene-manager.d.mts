@@ -1,4 +1,4 @@
-import type { AnyFunction, Identity } from "#utils";
+import type { AnyFunction, Identity, MaybePromise } from "#utils";
 import type { Level } from "#client/documents/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -90,12 +90,14 @@ declare class SceneManager {
    * @param textures          - Destination record to register textures into.
    * @param additionalSources - Additional sources to load.
    * @param level             - The Level to load textures for.
+   * @privateRemarks Asynchronous at runtime, but widened to `MaybePromise<void>` so synchronous overrides remain
+   * valid; the result is awaited and discarded.
    */
   protected _loadTextures(
     textures: Canvas.SceneTextures,
     additionalSources: string[],
     level: Level.Implementation,
-  ): void;
+  ): MaybePromise<void>;
 
   /**
    * Additional behaviors to perform after core groups and layers are drawn to the canvas.

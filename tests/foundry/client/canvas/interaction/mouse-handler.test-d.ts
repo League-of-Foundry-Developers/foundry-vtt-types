@@ -158,6 +158,7 @@ describe("MouseInteractionManager tests", () => {
     expectTypeOf(noteMIM.lcTime).toBeNumber();
     expectTypeOf(noteMIM.rcTime).toBeNumber();
     expectTypeOf(noteMIM["_dragRight"]).toBeBoolean();
+    expectTypeOf(noteMIM._instantDrag).toBeBoolean();
 
     expectTypeOf(noteMIM.viewId).toBeString();
     expectTypeOf(noteMIM.lastClick).toEqualTypeOf<PIXI.Point>();

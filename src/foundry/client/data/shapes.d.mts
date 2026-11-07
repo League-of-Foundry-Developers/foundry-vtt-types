@@ -1348,6 +1348,8 @@ declare class GridShapeData<Schema extends GridShapeData.Schema = GridShapeData.
     options?: ClientShapeData.MoveControlHandleOptions,
   ): void;
 
+  override _onDragStart(event: PIXI.FederatedEvent): void;
+
   override _onDragMove(event: PIXI.FederatedEvent): void;
 
   #GridShapeData: true;

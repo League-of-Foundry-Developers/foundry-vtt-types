@@ -1,3 +1,4 @@
+import type { StateEffect } from "@codemirror/state";
 import type AbstractFormInputElement from "../form-element.d.mts";
 import type { InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -67,9 +68,7 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
   protected override _setValue(value: string): void;
 
   /**
-   * @remarks Forwards focus to the underlying CodeMirror view.
-   * @throws If the element has never been connected to the DOM, as the view is only constructed in {@linkcode HTMLCodeMirrorElement.connectedCallback | #connectedCallback}.
-   * After {@linkcode HTMLCodeMirrorElement.disconnectedCallback | #disconnectedCallback} the view is destroyed but not cleared, so this no longer throws.
+   * @remarks Forwards focus to the underlying CodeMirror view, if it has been constructed.
    */
   override focus(): void;
 
@@ -77,13 +76,25 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
    * Given screen co-ordinates, returns the position in the editor's text content at those co-ordinates.
    * @param coords - The screen co-ordinates.
    */
-  posAtCoords(coords: Canvas.Point): number;
+  posAtCoords(coords: Canvas.Point): number | null;
 
   /**
    * @remarks This override only cares about `y`, or {@linkcode ScrollToOptions.top | x?.top} in the `options` overload case.
    */
   override scrollTo(x: number, y: number): void;
   override scrollTo(options?: ScrollToOptions): void;
+
+  /**
+   * Capture a scroll snapshot that can be restored with
+   * {@linkcode HTMLCodeMirrorElement.restoreScrollSnapshot | restoreScrollSnapshot}.
+   */
+  captureScrollSnapshot(): HTMLCodeMirrorElement.ScrollSnapshot | null;
+
+  /**
+   * Restore a scroll snapshot that has been captured with
+   * {@linkcode HTMLCodeMirrorElement.captureScrollSnapshot | captureScrollSnapshot}.
+   */
+  restoreScrollSnapshot(snapshot: HTMLCodeMirrorElement.ScrollSnapshot): void;
 
   override connectedCallback(): void;
 
@@ -113,6 +124,12 @@ declare namespace HTMLCodeMirrorElement {
   }
 
   interface Options extends InexactPartial<_Options> {}
+
+  /**
+   * @privateRemarks Foundry types this as `Record<string, unknown>`, but it is the effect returned by CodeMirror's
+   * `EditorView#scrollSnapshot`.
+   */
+  type ScrollSnapshot = StateEffect<unknown>;
 
   type Language = "javascript" | "json" | "html" | "markdown" | "" | "plain";
 

@@ -153,7 +153,7 @@ test("foundry/common/documents/token", () => {
   expectTypeOf(myToken.light).toEqualTypeOf<foundry.data.LightData>();
 
   expectTypeOf(myToken.sight.enabled).toBeBoolean();
-  expectTypeOf(myToken.sight.range).toEqualTypeOf<number | null>();
+  expectTypeOf(myToken.sight.range).toEqualTypeOf<number>();
   expectTypeOf(myToken.sight.angle).toBeNumber();
   expectTypeOf(myToken.sight.visionMode).toBeString();
   expectTypeOf(myToken.sight.color).toEqualTypeOf<Color | null>;
@@ -164,7 +164,7 @@ test("foundry/common/documents/token", () => {
   const lightPerceptionMode = myToken.detectionModes["lightPerception"];
   if (lightPerceptionMode) {
     expectTypeOf(lightPerceptionMode.enabled).toBeBoolean();
-    expectTypeOf(lightPerceptionMode.range).toEqualTypeOf<number | null>();
+    expectTypeOf(lightPerceptionMode.range).toEqualTypeOf<number>();
   }
   expectTypeOf(myToken.ring.enabled).toBeBoolean();
   expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null>();

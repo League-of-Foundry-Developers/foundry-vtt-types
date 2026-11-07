@@ -319,9 +319,11 @@ declare class DialogV2<
 
   /**
    * The dialog query handler.
+   * @internal
    */
   static _handleQuery<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
     config: DialogV2.HandleQueryConfig<T, Options>,
+    context: CONFIG.QueryContext,
   ): Promise<DialogV2.QueryReturn<T, Options>>;
 }
 

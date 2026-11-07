@@ -2,7 +2,7 @@ import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
 import type PlaceableTab from "../tabs/placeable-tab.d.mts";
-import type { NumberField, StringField } from "#common/data/fields.d.mts";
+import type { ExtendedNumberField, StringField } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -117,11 +117,11 @@ declare namespace PlaceableFilter {
   interface BooleanFilterField extends FilterField<StringField, BooleanFilterValue> {}
 
   interface ElevationContext {
-    /** @remarks `null` when the filter is unbounded below, i.e. the state holds `-Infinity`. */
-    bottom: FilterField<NumberField, number | null>;
+    /** @remarks `-Infinity` when the filter is unbounded below. */
+    bottom: FilterField<ExtendedNumberField, number>;
 
-    /** @remarks `null` when the filter is unbounded above, i.e. the state holds `Infinity`. */
-    top: FilterField<NumberField, number | null>;
+    /** @remarks `Infinity` when the filter is unbounded above. */
+    top: FilterField<ExtendedNumberField, number>;
   }
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {

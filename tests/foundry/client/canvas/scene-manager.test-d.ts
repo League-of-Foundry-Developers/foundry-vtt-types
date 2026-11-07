@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from "vitest";
+import type { MaybePromise } from "fvtt-types/utils";
 import SceneManager = foundry.canvas.SceneManager;
 import Canvas = foundry.canvas.Canvas;
 
@@ -13,7 +14,9 @@ test("foundry/client/canvas/scene-manager", () => {
   expectTypeOf(mySM["_determineInitialLevel"]()).toEqualTypeOf<string | void>();
   expectTypeOf(mySM["_getAvailableLevels"](someLevels)).toEqualTypeOf<Set<Level.Implementation> | void>();
   expectTypeOf(mySM["_onInit"]()).toEqualTypeOf<Promise<void>>();
-  expectTypeOf(mySM["_loadTextures"](someTextures, ["foo.webp"], someLevels.values().next().value!)).toBeVoid();
+  expectTypeOf(mySM["_loadTextures"](someTextures, ["foo.webp"], someLevels.values().next().value!)).toEqualTypeOf<
+    MaybePromise<void>
+  >();
   expectTypeOf(mySM["_onDraw"]()).toEqualTypeOf<Promise<void>>();
   expectTypeOf(mySM["_onReady"]()).toEqualTypeOf<Promise<void>>();
   expectTypeOf(mySM["_onTearDown"]({})).toEqualTypeOf<Promise<void>>();
