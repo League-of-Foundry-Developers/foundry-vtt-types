@@ -2,6 +2,7 @@ import type { ConfiguredActiveEffect } from "#configuration";
 import type {
   AnyMutableObject,
   AnyObject,
+  DeepPartial,
   GetKey,
   Identity,
   InterfaceToObject,
@@ -12,7 +13,7 @@ import type {
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseCombat, BaseCombatant, BaseFolder } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type ActiveEffectRegistry from "#client/helpers/active-effect-registry.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -574,6 +575,13 @@ declare namespace ActiveEffect {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode ActiveEffect.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<ActiveEffect.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1892,6 +1900,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     data: ActiveEffect.CreateDialogData | undefined,
     createOptions: ActiveEffect.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ActiveEffect.CreateDialogReturn<Options>>;
 
   /**
@@ -1905,7 +1914,13 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: ActiveEffect.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ActiveEffect.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: ActiveEffect.CreateInput[],
+    operation?: ActiveEffect.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<ActiveEffect.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

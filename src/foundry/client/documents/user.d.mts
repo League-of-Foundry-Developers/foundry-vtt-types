@@ -1,11 +1,19 @@
 import type { ConfiguredDocumentClass } from "../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type {
+  AnyObject,
+  DeepPartial,
+  FixedInstanceType,
+  InexactPartial,
+  IntentionalPartial,
+  MaybeArray,
+  Merge,
+} from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { AVSettings } from "#client/av/_module.d.mts";
 import type { Users } from "#client/documents/collections/_module.d.mts";
 
@@ -387,6 +395,13 @@ declare namespace User {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode User.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<User.Source> {}
 
     /**
      * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
@@ -1044,6 +1059,12 @@ declare namespace User {
      * mode is enabled and the ping is within the viewport.
      */
     style: Ping.ConfiguredStyles;
+
+    /**
+     * The bounds within which a pulled view is kept.
+     * @defaultValue `"canvas"`
+     */
+    constrainPan: "canvas" | "scene";
   }
 
   /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
@@ -1278,6 +1299,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
     data?: User.CreateDialogData,
     createOptions?: User.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<User.CreateDialogReturn<Options>>;
 
   /**
@@ -1291,7 +1313,13 @@ declare class User extends BaseUser.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: User.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<User.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: User.CreateInput[],
+    operation?: User.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<User.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

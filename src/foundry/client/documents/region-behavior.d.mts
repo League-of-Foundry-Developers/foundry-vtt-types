@@ -1,9 +1,9 @@
 import type { ConfiguredRegionBehavior } from "#configuration";
-import type { Identity, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseRegionBehavior } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -396,6 +396,13 @@ declare namespace RegionBehavior {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode RegionBehavior.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<RegionBehavior.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -933,8 +940,9 @@ declare class RegionBehavior<
   get scene(): Scene.Implementation | null;
 
   /**
-   * A RegionBehavior is active if and only if it was created, hasn't been deleted yet, isn't disabled,
-   * and its Region isn't hidden.
+   * A RegionBehavior is active if and only if was created, hasn't been deleted yet, isn't disabled,
+   * and its Region is active.
+   * @see {@linkcode RegionDocument.active | foundry.documents.RegionDocument#active}
    */
   get active(): boolean;
 
@@ -962,6 +970,7 @@ declare class RegionBehavior<
     data: RegionBehavior.CreateDialogData | undefined,
     createOptions: RegionBehavior.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RegionBehavior.CreateDialogReturn<Options>>;
 
   /**
@@ -975,7 +984,13 @@ declare class RegionBehavior<
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RegionBehavior.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RegionBehavior.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: RegionBehavior.CreateInput[],
+    operation?: RegionBehavior.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<RegionBehavior.Stored>>;
 
   /*
    * After this point these are not really overridden methods.

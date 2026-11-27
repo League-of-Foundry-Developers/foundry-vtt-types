@@ -2,6 +2,7 @@ import type {
   AnyArray,
   AnyMutableObject,
   AnyObject,
+  DeepPartial,
   DeepReadonly,
   EmptyObject,
   InexactPartial,
@@ -16,7 +17,7 @@ import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#
 import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type { TerrainData } from "#client/data/terrain-data.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { BaseGrid, HexagonalGrid } from "#common/grid/_module.d.mts";
@@ -1018,6 +1019,13 @@ declare namespace TokenDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<TokenDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -3509,6 +3517,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     data: TokenDocument.CreateDialogData | undefined,
     createOptions: TokenDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TokenDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -3522,7 +3531,13 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TokenDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TokenDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: TokenDocument.CreateInput[],
+    operation?: TokenDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<TokenDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

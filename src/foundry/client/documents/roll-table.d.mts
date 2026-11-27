@@ -1,9 +1,9 @@
-import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseRollTable, BaseTableResult } from "#client/documents/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -414,6 +414,13 @@ declare namespace RollTable {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<RollTable.Source> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
@@ -1294,6 +1301,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     data?: RollTable.CreateDialogData,
     createOptions?: RollTable.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RollTable.CreateDialogReturn<Options>>;
 
   /**
@@ -1307,7 +1315,13 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RollTable.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RollTable.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: RollTable.CreateInput[],
+    operation?: RollTable.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<RollTable.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

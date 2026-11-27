@@ -24,7 +24,7 @@ test("foundry/client/dice/dice/dice", () => {
   expectTypeOf(diceTerm.roll()).toEqualTypeOf<Promise<foundry.dice.terms.DiceTerm.Result>>();
   expectTypeOf(diceTerm.mapRandomFace(4)).toEqualTypeOf<number>();
   expectTypeOf(diceTerm.randomFace()).toEqualTypeOf<number>();
-  expectTypeOf(diceTerm.getResultLabel(result)).toEqualTypeOf<string>();
+  expectTypeOf(diceTerm.getResultLabel(result)).toEqualTypeOf<string | Handlebars.SafeString>();
   expectTypeOf(diceTerm.getResultCSS(result)).toEqualTypeOf<(string | null)[]>();
   expectTypeOf(diceTerm.getTooltipData()).toEqualTypeOf<foundry.dice.terms.DiceTerm.ToolTipData>();
 

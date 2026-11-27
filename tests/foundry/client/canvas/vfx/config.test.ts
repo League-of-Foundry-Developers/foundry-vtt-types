@@ -23,7 +23,7 @@ describe("CONFIG.Canvas.vfx", () => {
     const points = [
       { x: 0, y: 0, elevation: 0 },
       { x: 100, y: 100, elevation: 0 },
-    ] satisfies VFXPath.BasePathPoint[];
+    ] satisfies VFXPath.Position[];
 
     expectTypeOf<VFXPath.ConfiguredPath>().toExtend<keyof CONFIG.Canvas.VFX.Paths>();
     expectTypeOf(VFXPath.getPathGenerator("linear")).toEqualTypeOf<VFXPath.Generator>();

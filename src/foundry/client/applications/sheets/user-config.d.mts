@@ -88,7 +88,8 @@ declare namespace UserConfig {
     currentUserIsGM: boolean;
 
     /**
-     * @remarks `false` in demo mode; otherwise only `true` for the User themself or a GM whose role is at least theirs.
+     * @remarks `false` in demo mode; otherwise only `true` for the User themself, a full Gamemaster, or a GM whose role
+     * exceeds theirs.
      */
     canUpdatePassword: boolean;
 

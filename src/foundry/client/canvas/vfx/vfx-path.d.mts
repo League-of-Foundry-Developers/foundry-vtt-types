@@ -6,11 +6,14 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
  */
 declare class VFXPath {
   /**
-   * Construct a VFXPath by providing an array of base point data.
+   * Construct a VFXPath by providing an array of positions.
+   * @param points  - The points which give the path's shape
+   * @param options - (default: `{}`)
    * @remarks
-   * @throws If `points` is not an array of at least two points.
+   * @throws If `points`, or `options.controlPoints` when passed, is not an array of at least two points.
    */
-  constructor(points: VFXPath.BasePathPoint[]);
+  constructor(points: VFXPath.Position[], options?: VFXPath.PathOptions);
+  constructor(points: VFXPath.ControlledPosition[], options: VFXPath.ControlledPathOptions);
 
   /**
    * The array of points in the path
@@ -52,7 +55,7 @@ declare class VFXPath {
    * @param parameters - Additional parameters used to construct the path
    * @returns The generated path
    */
-  static create(pathName: VFXPath.ConfiguredPath, points: VFXPath.BasePathPoint[], parameters?: AnyObject): VFXPath;
+  static create(pathName: VFXPath.ConfiguredPath, points: VFXPath.Position[], parameters?: AnyObject): VFXPath;
 
   #VFXPath: true;
 }
@@ -64,26 +67,46 @@ declare namespace VFXPath {
   /** The name of a path generator registered in `CONFIG.Canvas.vfx.paths`. */
   type ConfiguredPath = keyof CONFIG.Canvas.VFX.Paths;
 
-  /** Base point data accepted by the VFXPath constructor. */
-  interface BasePathPoint extends Canvas.Point {
-    /** The elevation of the point */
-    elevation: number;
+  /**
+   * The position of a sprite or other canvas object, as a VFXPositionField describes it.
+   * Along a path, an omitted value retains its prior value.
+   */
+  interface Position extends Canvas.Point {
+    /** The elevation */
+    elevation?: number | undefined;
 
-    /** The rotation at the point in radians */
+    /** The rotation in radians; along a path, the heading where omitted */
     rotation?: number | undefined;
 
-    /** The sort order of the point */
+    /** A multiplier of the sprite's own scale on each axis */
+    scale?: Canvas.Point | undefined;
+
+    /** The sort order within the elevation */
     sort?: number | undefined;
 
-    /**
-     * The sort layer for the point
-     * @defaultValue `foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS`
-     */
+    /** The sort layer, a value of PrimaryCanvasGroup.SORT_LAYERS */
     sortLayer?: number | undefined;
   }
 
-  /** A fully-resolved path point with interpolated distance and index. */
-  interface PathPoint extends BasePathPoint {
+  /**
+   * @remarks A {@linkcode Position} generated between control points, as the path generators pass to the
+   * {@linkcode VFXPath} constructor along with {@linkcode PathOptions.controlPoints | controlPoints}.
+   */
+  interface ControlledPosition extends Position {
+    /** @remarks A control index plus the fraction toward the next control point */
+    control: number;
+  }
+
+  /**
+   * @deprecated Replaced by {@linkcode VFXPath.Position} in 14.371, where `elevation` became optional.
+   */
+  type BasePathPoint = Position;
+
+  /**
+   * A point along a VFXPath. Its control is its position along the path's control points:
+   * a control index plus the fraction toward the next control point.
+   */
+  interface PathPoint extends Position {
     rotation: number;
 
     distance: number;
@@ -93,10 +116,55 @@ declare namespace VFXPath {
     elevation: number;
 
     sort: number;
+
+    control: number;
   }
 
-  /** A function that generates a VFXPath from a set of base points and parameters. */
-  type Generator = (points: VFXPath.BasePathPoint[], params: AnyObject) => VFXPath;
+  /**
+   * How a VFXPath interpolates the values of its control points. Each control point holds any value it omits from the
+   * one before, with elevation and sort zero until one is given. Elevation and scale blend between control points.
+   * Sort and sort layer step to the next control point's value. Rotation turns the short way between control points
+   * which both give it, and otherwise follows the heading of the path.
+   * @remarks Options for a path whose points are its own control points. With `controlPoints`, use
+   * {@linkcode ControlledPathOptions} instead.
+   */
+  interface PathOptions {
+    /**
+     * @remarks Only accepted together with {@linkcode ControlledPosition} points; see
+     * {@linkcode ControlledPathOptions.controlPoints | ControlledPathOptions#controlPoints}.
+     */
+    controlPoints?: undefined;
+
+    /**
+     * The moment along each control segment, from 0 to 1, at which stepped
+     * values change to the next control point's
+     * @defaultValue `0`
+     */
+    step?: number | undefined;
+
+    /**
+     * Step elevation with sort and sort layer, rather than blending it
+     * @defaultValue `false`
+     */
+    stepElevation?: boolean | undefined;
+  }
+
+  /**
+   * {@linkcode PathOptions} for a path whose points were generated between control points.
+   * @remarks Split from Foundry's single `VFXPathOptions` typedef so that `controlPoints` can only be passed with
+   * {@linkcode ControlledPosition} points, whose `control` the constructor reads.
+   */
+  interface ControlledPathOptions extends Omit<PathOptions, "controlPoints"> {
+    /**
+     * Control points for points generated between them, each generated point
+     * giving its control: a control index plus the fraction toward the next control point. By default, the points are
+     * the control points.
+     */
+    controlPoints: Position[];
+  }
+
+  /** A function that generates a VFXPath from a set of positions and parameters. */
+  type Generator = (points: VFXPath.Position[], params: AnyObject) => VFXPath;
 }
 
 export default VFXPath;

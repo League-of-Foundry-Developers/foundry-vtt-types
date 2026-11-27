@@ -1,10 +1,10 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -58,6 +58,7 @@ declare namespace Macro {
       label: "DOCUMENT.Macro";
       labelPlural: "DOCUMENT.Macros";
       coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
+      preserveOnImport: ["_id", "sort", "ownership", "folder", "approver"];
       permissions: Metadata.Permissions;
       schemaVersion: "13.341";
     }>
@@ -292,10 +293,24 @@ declare namespace Macro {
     type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT }>;
 
     /**
-     * The _id of a User document which created this Macro
+     * The _id of a User document which last authored this Macro's command
      * @defaultValue `game.user?.id`
      */
     author: fields.DocumentAuthorField<typeof BaseUser, { nullable: true }>;
+
+    /**
+     * The _id of a Gamemaster User who approved this Macro's command, "required" if
+     * approval is required, or null if the command is trusted through its author
+     * @defaultValue `null`
+     */
+    approver: fields.StringField<{
+      required: true;
+      nullable: true;
+      blank: false;
+      initial: null;
+      validate: (a: unknown) => boolean;
+      validationError: `must be a User id or "required"`;
+    }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -420,6 +435,13 @@ declare namespace Macro {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Macro.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Macro.Source> {}
 
     /**
      * @deprecated `Macro` documents are never embedded. This interface exists for consistency with other documents.
@@ -968,6 +990,15 @@ declare namespace Macro {
     ? UnknownScope
     : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ChatScope : never);
 
+  /** Options which modify how the Macro is executed */
+  interface ExecuteOptions {
+    /**
+     * Open the sheet for a Gamemaster if the Macro requires approval
+     * @defaultValue `false`
+     */
+    promptApproval?: boolean | undefined;
+  }
+
   // Note: If extra types ever get added this will need to be updated to account for them, even if
   // just to return `undefined`.
   type ExecuteReturn<SubType extends Macro.SubType> =
@@ -1013,6 +1044,11 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   get isAuthor(): boolean;
 
   /**
+   * Has this Macro been approved for execution by users other than its author?
+   */
+  get isApproved(): boolean;
+
+  /**
    * Test whether the current user is capable of executing a Macro script
    */
   get canExecute(): boolean;
@@ -1024,6 +1060,10 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   /**
    * Test whether the given User is capable of executing this Macro.
+   * In addition to requiring document ownership of at least LIMITED, users may only execute:
+   * 1. Chat Macros
+   * 2. Their own authored script macros
+   * 3. Approved script macros
    * @param user - The User to test.
    * @returns Can this User execute this Macro?
    * @privateRemarks Only tests permissions, non-persisted `User`s work.
@@ -1032,19 +1072,26 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   /**
    * Execute the Macro command.
-   * @param scope - Macro execution scope which is passed to script macros
+   * @param scope   - Macro execution scope which is passed to script macros
+   * @param options - Options which modify how the Macro is executed
    * @returns A promise containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
    *          macro or the return value if a script macro. A void return is possible if the user
    *          is not permitted to execute macros or a script macro execution fails.
    * @remarks Forwards to either `#executeChat` or `#executeScript`
    */
-  execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
+  execute(scope?: Macro.ExecuteScope<SubType>, options?: Macro.ExecuteOptions): Macro.ExecuteReturn<SubType>;
 
-  /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event})` */
+  /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event}, {promptApproval: true})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changes: Macro.UpdateData,
+  //   options: Macro.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   // protected override _onCreate(
   //   data: Macro.CreateData,
@@ -1068,10 +1115,12 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   static override defaultName(context?: Macro.DefaultNameContext): string;
 
+  /** @remarks Omits the `script` type unless the current User has the `MACRO_SCRIPT` permission. */
   static override createDialog<Options extends Macro.CreateDialogOptions | undefined = undefined>(
     data?: Macro.CreateDialogData,
     createOptions?: Macro.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Macro.CreateDialogReturn<Options>>;
 
   /**
@@ -1085,7 +1134,13 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Macro.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Macro.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Macro.CreateInput[],
+    operation?: Macro.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Macro.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

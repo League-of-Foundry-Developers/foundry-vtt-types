@@ -1,8 +1,8 @@
-import type { MaybeArray, Merge } from "#utils";
+import type { DeepPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAmbientSound } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CircleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -415,6 +415,13 @@ declare namespace AmbientSoundDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode AmbientSoundDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<AmbientSoundDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -961,6 +968,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     data: AmbientSoundDocument.CreateDialogData | undefined,
     createOptions: AmbientSoundDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<AmbientSoundDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -974,7 +982,13 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: AmbientSoundDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<AmbientSoundDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: AmbientSoundDocument.CreateInput[],
+    operation?: AmbientSoundDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<AmbientSoundDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

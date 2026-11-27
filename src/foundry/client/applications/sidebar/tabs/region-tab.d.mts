@@ -116,7 +116,8 @@ declare namespace RegionTab {
     /**
      * Whether the region is shown to non-GM users.
      *
-     * @remarks Only prepared for GM users.
+     * @remarks Only prepared for GM users. `false` whenever the Region is not
+     * {@linkcode RegionDocument.active | active}, which includes being attached to a hidden Token.
      */
     isVisible?: boolean | undefined;
 
@@ -126,6 +127,8 @@ declare namespace RegionTab {
 
     /** Whether the region has no shapes. */
     empty: boolean;
+
+    attachment: RegionDocument.AttachmentData;
   }
 
   /** The regions rendered as one selectable group. */

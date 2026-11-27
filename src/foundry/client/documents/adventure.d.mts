@@ -1,8 +1,8 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAdventure } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -390,6 +390,13 @@ declare namespace Adventure {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Adventure.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Adventure.Source> {}
 
     /**
      * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
@@ -1049,6 +1056,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
     data: Adventure.CreateDialogData | undefined,
     createOptions: Adventure.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Adventure.CreateDialogReturn<Options>>;
 
   /**
@@ -1062,7 +1070,13 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Adventure.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Adventure.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Adventure.CreateInput[],
+    operation?: Adventure.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Adventure.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

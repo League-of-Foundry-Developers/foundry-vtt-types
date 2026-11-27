@@ -200,7 +200,10 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   get hasDoorMesh(): boolean;
 
   /**
-   * Create and add a {@linkcode DoorMesh} to the {@linkcode PrimaryCanvasContainer}.
+   * Create the door meshes and add them to the primary canvas group.
+   * Add each mesh before initialization so childAdded listeners can subscribe to its events.
+   * @remarks Constructs {@linkcode CONFIG.Wall.doorMeshClass}. A call superseded by a later one, or by
+   * {@linkcode Wall.destroyDoorMeshes | #destroyDoorMeshes}, before its texture loads creates nothing.
    */
   createDoorMeshes(): Promise<void>;
 

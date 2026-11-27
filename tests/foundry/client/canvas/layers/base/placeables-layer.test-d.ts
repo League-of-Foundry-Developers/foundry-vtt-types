@@ -55,6 +55,13 @@ test("foundry/client/canvas/layers/base/placeables-layer", () => {
 
   expectTypeOf(layer.options).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
+  expectTypeOf(
+    layer._createPreview(
+      { x: 100, y: 100 },
+      { createOptions: { renderSheet: false }, renderOptions: { force: true }, top: 20, left: 40 },
+    ),
+  ).toEqualTypeOf<Promise<AmbientLight.Implementation>>();
+
   const firstHistoryEntry = layer.history[0]!;
   if (firstHistoryEntry.type === "create") {
     expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<{ _id: string }>>();

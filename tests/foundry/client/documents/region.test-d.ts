@@ -18,6 +18,9 @@ test("foundry/client/documents/region", () => {
   >();
 
   expectTypeOf(region.isSingleShape).toBeBoolean();
+  expectTypeOf(region.active).toBeBoolean();
+  expectTypeOf(region.visible).toBeBoolean();
+  expectTypeOf(RegionDocument._onHiddenChange([region], game.user!)).toBeVoid();
   expectTypeOf(region.area).toBeNumber();
   expectTypeOf(region.clipperPolyTree).toEqualTypeOf<ClipperLib.PolyTree>();
   expectTypeOf(region.levels).toEqualTypeOf<Set<string>>();
@@ -27,6 +30,11 @@ test("foundry/client/documents/region", () => {
   expectTypeOf(region.highlightMode).toEqualTypeOf<RegionDocument.HighlightMode>();
   expectTypeOf(region.displayMeasurements).toBeBoolean();
   expectTypeOf(region.hidden).toBeBoolean();
+  expectTypeOf(region.attachment.token).toEqualTypeOf<TokenDocument.Stored | null>();
+  expectTypeOf(region._source.attachment.token).toEqualTypeOf<string | null>();
+  expectTypeOf(region.attachment.token?.hidden).toEqualTypeOf<boolean | undefined>();
+  region.updateSource({ attachment: { token: "abc123" } });
+  region.updateSource({ attachment: { token: null } });
   expectTypeOf(region.elevation.topInclusive).toBeBoolean();
   expectTypeOf(region.clampElevation(5)).toBeNumber();
   expectTypeOf(region.clampElevation(5, 2)).toBeNumber();

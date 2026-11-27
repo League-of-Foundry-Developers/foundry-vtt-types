@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-deprecated */
-import type { MaybeArray, Merge } from "#utils";
+import type { DeepPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { BaseUser } from "#client/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -391,6 +391,15 @@ declare namespace MeasuredTemplateDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode MeasuredTemplateDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends
+        CreateDocumentsOperation,
+        ClientDocument.CreateOrReplaceDocumentsOptions<MeasuredTemplateDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1236,6 +1245,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
     data: MeasuredTemplateDocument.CreateDialogData | undefined,
     createOptions: MeasuredTemplateDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -1249,7 +1259,13 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
     createOptions: MeasuredTemplateDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: MeasuredTemplateDocument.CreateInput[],
+    operation?: MeasuredTemplateDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<MeasuredTemplateDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

@@ -32,6 +32,25 @@ declare class AttributeCapture {
    */
   _captureClasses(el: HTMLElement, managed?: AttributeCapture.ManagedAttributes): string;
 
+  /**
+   * Whether a given URL uses an allowed scheme.
+   * @param url - The URL.
+   * @internal
+   * @remarks `true` for `null` and for a string which does not parse as an absolute URL. `false` for any other non-string.
+   */
+  static _isAllowedURL(url: string | null): boolean;
+
+  /**
+   * Validate captured attributes against the list of allowed attributes and prevent attempts to preserve a managed
+   * attribute.
+   * @param preserved - The preserved attributes.
+   * @param managed   - Attributes managed by the node. (default: `{}`)
+   * @internal
+   * @remarks
+   * @throws A `RangeError` if `preserved` is not a plain object, or holds an attribute which may not be preserved.
+   */
+  _validateCaptured(preserved: Record<string, string>, managed?: AttributeCapture.ManagedAttributes): void;
+
   #AttributeCapture: true;
 }
 

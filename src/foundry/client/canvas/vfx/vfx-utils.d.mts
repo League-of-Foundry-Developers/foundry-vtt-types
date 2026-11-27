@@ -63,13 +63,13 @@ export function resolveEasing(
  * @returns Array of points which may be augmented with additional auxiliary attributes
  */
 export function generateHermiteSegment(
-  p0: VFXPath.BasePathPoint,
+  p0: VFXPath.Position,
   m0: Canvas.Point,
-  p1: VFXPath.BasePathPoint,
+  p1: VFXPath.Position,
   m1: Canvas.Point,
   numPoints: number,
   auxiliary?: string[],
-): VFXPath.BasePathPoint[];
+): VFXPath.Position[];
 
 /**
  * Interpolate auxiliary attributes between two points.
@@ -82,8 +82,8 @@ export function generateHermiteSegment(
  * @returns Interpolated auxiliary properties
  */
 export function interpolateProperties(
-  p0: VFXPath.BasePathPoint,
-  p1: VFXPath.BasePathPoint,
+  p0: VFXPath.Position,
+  p1: VFXPath.Position,
   t: number,
   auxiliary?: string[],
 ): Record<string, number>;

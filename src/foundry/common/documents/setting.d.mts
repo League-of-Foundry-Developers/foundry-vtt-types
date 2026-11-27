@@ -65,6 +65,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    *   "core.adventureImports",
    *   "core.animateRollTable",
    *   "core.gridDiagonals",
+   *   "core.compendiumConfiguration",
    *   "core.gridTemplates", // deprecated since v14
    *   "core.coneTemplateType", // deprecated since v14
    * ]

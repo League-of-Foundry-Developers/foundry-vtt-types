@@ -132,7 +132,7 @@ describe("VFXSingleAttackComponent", () => {
   });
 
   test("origin and destination are undefined before drawing", () => {
-    expectTypeOf<VFXSingleAttackComponent["origin"]>().toEqualTypeOf<VFXPath.BasePathPoint | undefined>();
-    expectTypeOf<VFXSingleAttackComponent["destination"]>().toEqualTypeOf<VFXPath.BasePathPoint | undefined>();
+    expectTypeOf<VFXSingleAttackComponent["origin"]>().toEqualTypeOf<VFXPath.Position | undefined>();
+    expectTypeOf<VFXSingleAttackComponent["destination"]>().toEqualTypeOf<VFXPath.Position | undefined>();
   });
 });

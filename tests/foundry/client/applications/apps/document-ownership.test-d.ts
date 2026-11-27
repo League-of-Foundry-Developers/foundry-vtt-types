@@ -21,7 +21,6 @@ test("foundry/client/applications/apps/document-ownership", () => {
   expectTypeOf(context.users).toEqualTypeOf<DocumentOwnershipConfig.UserOwnershipContext[]>();
   expectTypeOf(context.buttons).toEqualTypeOf<foundry.applications.api.ApplicationV2.FormFooterButton[]>();
   expectTypeOf(userContext.user).toEqualTypeOf<User.Stored>();
-  expectTypeOf(userContext.isAuthor).toEqualTypeOf<boolean>();
   expectTypeOf(userContext.level).toEqualTypeOf<
     foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | foundry.CONST.DOCUMENT_META_OWNERSHIP_LEVELS | undefined
   >();

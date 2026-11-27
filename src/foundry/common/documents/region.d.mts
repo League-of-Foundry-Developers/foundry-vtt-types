@@ -59,8 +59,15 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
-   * @remarks Deletes `changes._shapeConstraints` unless internally flagged via `options._updateShapeConstraints`.
+   * @remarks Includes the Region only in the attached Token's Level, if it has one.
+   * @throws If the Region is restricted but not included in exactly one Level.
    */
+  protected override _preCreate(
+    data: BaseRegion.CreateData,
+    options: BaseRegion.Database.PreCreateOptions,
+    user: User.Stored,
+  ): Promise<boolean | void>;
+
   protected override _preUpdate(
     changes: BaseRegion.UpdateData,
     options: BaseRegion.Database.PreUpdateOptions,
@@ -202,11 +209,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     key: Key,
   ): Promise<this | undefined>;
 
-  protected override _preCreate(
-    data: BaseRegion.CreateData,
-    options: BaseRegion.Database.PreCreateOptions,
-    user: User.Stored,
-  ): Promise<boolean | void>;
+  // `_preCreate` omitted from template due to actual override above.
 
   protected override _onCreate(
     data: BaseRegion.CreateData,

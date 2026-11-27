@@ -38,6 +38,7 @@ declare abstract class BaseTokenRuler {
    * Is the ruler supposed to be visible?
    * {@linkcode BaseTokenRuler.visible | BaseTokenRuler#visible} is set to {@linkcode BaseTokenRuler.isVisible | BaseTokenRuler#isVisible}
    * in {@linkcode Token._refreshState | Token#_refreshState}.
+   * @remarks Always `false` for a non-GM when the Token is hidden.
    */
   get isVisible(): boolean;
 

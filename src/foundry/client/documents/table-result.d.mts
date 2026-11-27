@@ -1,9 +1,9 @@
 import type { ConfiguredTableResult } from "#configuration";
-import type { Identity, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseTableResult } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -400,6 +400,13 @@ declare namespace TableResult {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode TableResult.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<TableResult.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -961,6 +968,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
     data: TableResult.CreateDialogData | undefined,
     createOptions: TableResult.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TableResult.CreateDialogReturn<Options>>;
 
   /**
@@ -974,7 +982,13 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TableResult.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TableResult.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: TableResult.CreateInput[],
+    operation?: TableResult.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<TableResult.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

@@ -39,6 +39,7 @@ declare abstract class BaseChatMessage<
    *   isPrimary: true,
    *   permissions: {
    *     create: this.#canCreate,
+   *     update: this.#canUpdate,
    *     delete: "OWNER"
    *   },
    *   schemaVersion: "14.352"

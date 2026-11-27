@@ -1,10 +1,10 @@
 import type { ConfiguredChatMessage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { AnyObject, DeepPartial, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -66,6 +66,7 @@ declare namespace ChatMessage {
      */
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
+      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
       delete: "OWNER";
     }
   }
@@ -510,6 +511,13 @@ declare namespace ChatMessage {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode ChatMessage.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<ChatMessage.Source> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
@@ -1328,6 +1336,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
     data?: ChatMessage.CreateDialogData,
     createOptions?: ChatMessage.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ChatMessage.CreateDialogReturn<Options>>;
 
   /**
@@ -1341,7 +1350,13 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: ChatMessage.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ChatMessage.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: ChatMessage.CreateInput[],
+    operation?: ChatMessage.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<ChatMessage.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

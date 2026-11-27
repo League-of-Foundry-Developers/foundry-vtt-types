@@ -375,6 +375,13 @@ declare namespace Folder {
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
 
     /**
+     * The interface for passing to {@linkcode Folder.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Folder.Source> {}
+
+    /**
      * @deprecated `Folder` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1069,6 +1076,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    */
   get ancestors(): Folder.Stored[];
 
+  /** @remarks Whether this Folder's `type` matches the `documentName` of its {@linkcode Folder.pack | pack}. */
   override get inCompendium(): boolean;
 
   // For type simplicity the following real override(s) are commented out.
@@ -1102,6 +1110,11 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
     createOptions: Folder.CreateDialogDeprecatedOptions,
     options?: Options,
   ): Promise<void>;
+
+  static override createOrReplaceDocuments(
+    data?: Folder.CreateInput[],
+    operation?: Folder.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Folder.Stored>>;
 
   /**
    * Export all Documents contained in this Folder to a given Compendium pack.

@@ -51,6 +51,8 @@ test("foundry/client/applications/sheets/misc-sheets", () => {
   expectTypeOf(combatantContext.buttons).toEqualTypeOf<ApplicationV2.FormFooterButton[]>();
   expectTypeOf(macroContext.typeChoices).toEqualTypeOf<Record<CONST.MACRO_TYPES, string>>();
   expectTypeOf(macroContext.editorLang).toEqualTypeOf<"javascript" | "html">();
+  expectTypeOf(macroContext.author).toEqualTypeOf<string>();
+  expectTypeOf(macroContext.unapproved).toEqualTypeOf<boolean>();
   expectTypeOf(macroRenderOptions.hotbarSlot).toEqualTypeOf<number | undefined>();
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   expectTypeOf(templateContext.templateTypes).toEqualTypeOf<MeasuredTemplateConfig.TemplateTypes>();

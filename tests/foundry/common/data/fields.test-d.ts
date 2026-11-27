@@ -827,3 +827,8 @@ test("ExtendedNumberField with an explicit nullable: true never initializes to n
   expectTypeOf<fields.SchemaField.InitializedData<Schema>["value"]>().toEqualTypeOf<number>();
   expectTypeOf<fields.SchemaField.SourceData<Schema>["value"]>().toEqualTypeOf<number | null>();
 });
+
+test("FilePathField#getAllowedExtension", () => {
+  const field = new fields.FilePathField({ categories: ["IMAGE"] });
+  expectTypeOf(field.getAllowedExtension("image/png")).toEqualTypeOf<string>();
+});

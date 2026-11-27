@@ -31,6 +31,7 @@ test("foundry/client/applications/sidebar/tabs/region-tab", () => {
   expectTypeOf(entry.hasPlayerOwner).toEqualTypeOf<boolean | undefined>();
   expectTypeOf(entry.color).toEqualTypeOf<Color>();
   expectTypeOf(entry.empty).toBeBoolean();
+  expectTypeOf(entry.attachment).toEqualTypeOf<RegionDocument.AttachmentData>();
 
   // Formatted for display, so the bounds are localized strings rather than the document's numbers.
   expectTypeOf(entry.elevation.bottom).toBeString();

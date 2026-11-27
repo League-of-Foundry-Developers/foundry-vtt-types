@@ -1,4 +1,4 @@
-import type { DeepReadonly, InexactPartial, MaybeArray, Merge, OverlapsWith } from "#utils";
+import type { DeepPartial, DeepReadonly, InexactPartial, MaybeArray, Merge, OverlapsWith } from "#utils";
 import type { LightData, fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type {
@@ -20,7 +20,7 @@ import type {
 } from "#common/documents/_module.d.mts";
 import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Notifications } from "#client/applications/ui/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -960,6 +960,13 @@ declare namespace Scene {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Scene.Source> {}
 
     /**
      * @deprecated `Scene` documents are never embedded. This interface exists for consistency with other documents.
@@ -2281,6 +2288,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
     data?: Scene.CreateDialogData,
     createOptions?: Scene.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Scene.CreateDialogReturn<Options>>;
 
   /**
@@ -2294,7 +2302,13 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Scene.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Scene.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Scene.CreateInput[],
+    operation?: Scene.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Scene.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

@@ -2,6 +2,7 @@ import type {
   AnyObject,
   AnyMutableObject,
   Brand,
+  DeepPartial,
   FixedInstanceType,
   HandleEmptyObject,
   Identity,
@@ -10,7 +11,7 @@ import type {
   ToMethod,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
@@ -19,7 +20,7 @@ import type PlaceablePaletteMixin from "#client/applications/sheets/palette/plac
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
 import type TokenLayer from "#client/canvas/layers/tokens.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.mjs";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.mjs";
 
 /**
  * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
@@ -917,13 +918,35 @@ declare namespace PlaceablesLayer {
 
   interface CanvasCoordinatesFromDropOptions extends InexactPartial<_CanvasCoordinatesFromDropOptions> {}
 
+  /**
+   * @privateRemarks Foundry types this `Omit<DatabaseCreateOperation, "parent"|"pack">`, without `Partial`, but every key
+   * is optional at runtime.
+   */
+  interface CreatePreviewCreateOptions extends InexactPartial<
+    Omit<DatabaseBackend.CreateOperation, "parent" | "pack">
+  > {}
+
   /** @internal */
   interface _CreatePreviewOptions {
     /**
+     * Document creation options
+     * @defaultValue `{}`
+     * @remarks Spread into the preview Document's construction context, with `parent`, `pack`, and `renderSheet`
+     * overridden.
+     */
+    createOptions: CreatePreviewCreateOptions;
+
+    /**
      * Render the preview object config sheet?
-     * @defaultValue `true`
+     * @defaultValue `createOptions.renderSheet ?? true`
      */
     renderSheet: boolean;
+
+    /**
+     * Options to forward to the document sheet's render call.
+     * @defaultValue `{}`
+     */
+    renderOptions: DeepPartial<ApplicationV2.RenderOptions>;
 
     /**
      * The offset-top position where the sheet should be rendered

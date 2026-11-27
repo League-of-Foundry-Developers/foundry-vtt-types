@@ -153,7 +153,7 @@ declare global {
        * @returns The array of intersection points
        * @privateRemarks Foundry's `@returns` type says `ClipperPoint[]`; the runtime forwards to
        * {@linkcode PIXI.Polygon.intersectClipper | PIXI.Polygon#intersectClipper} and so yields that method's
-       * {@linkcode ClipperLib.Paths} solution, or `[]` for a zero-area rectangle
+       * {@linkcode ClipperLib.Paths} solution, which is `[]` for a zero-area rectangle unless the clip type is a union
        */
       intersectClipper(
         clipperPoints: PIXI.Polygon.ClipperPoint[],

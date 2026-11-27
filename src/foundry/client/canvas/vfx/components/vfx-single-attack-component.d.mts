@@ -75,13 +75,13 @@ declare class VFXSingleAttackComponent<
    * The configured origin point of the path.
    * This is recorded at the beginning of the _draw workflow once references are resolved.
    */
-  origin: VFXPath.BasePathPoint | undefined;
+  origin: VFXPath.Position | undefined;
 
   /**
    * The configured destination point of the path.
    * This is recorded at the beginning of the _draw workflow once references are resolved.
    */
-  destination: VFXPath.BasePathPoint | undefined;
+  destination: VFXPath.Position | undefined;
 
   static override defineSchema(): VFXSingleAttackComponent.Schema;
 

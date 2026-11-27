@@ -40,6 +40,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    *   label: "DOCUMENT.Macro",
    *   labelPlural: "DOCUMENT.Macros",
    *   coreTypes: Object.values(CONST.MACRO_TYPES),
+   *   preserveOnImport: [...super.metadata.preserveOnImport, "approver"],
    *   permissions: {
    *     create: this.#canCreate,
    *     update: this.#canUpdate,
@@ -80,14 +81,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  protected override _preCreate(
-    data: BaseMacro.CreateData,
-    options: BaseMacro.Database.PreCreateOptions,
-    user: User.Stored,
-  ): Promise<boolean | void>;
-
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -122,7 +115,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   // `canUserCreate` omitted from template due to actual override above.
 
-  // `getUserLevel` omitted from template due to actual override above.
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   override testUserPermission(
     user: User.Implementation,
@@ -186,6 +179,12 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     scope: Scope,
     key: Key,
   ): Promise<this | undefined>;
+
+  protected override _preCreate(
+    data: BaseMacro.CreateData,
+    options: BaseMacro.Database.PreCreateOptions,
+    user: User.Stored,
+  ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseMacro.CreateData,

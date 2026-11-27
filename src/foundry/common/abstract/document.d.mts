@@ -323,9 +323,9 @@ declare abstract class Document<
   get uuid(): string | null;
 
   /**
-   * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
-   * guarantee that the User is able to create all Documents of this type, as certain document-specific requirements
-   * may also be present.
+   * Test whether a given User has sufficient permissions to create Documents of this type in the world in general.
+   * This does not guarantee that the User is able to create all Documents of this type, as certain document-specific
+   * requirements may also be present.
    *
    * Generally speaking, this method is used to verify whether a User should be presented with the option to create
    * Documents of this type in the UI.
