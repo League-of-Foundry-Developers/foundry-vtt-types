@@ -1,9 +1,11 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 import VFXReferenceField = foundry.canvas.vfx.fields.VFXReferenceField;
 import VFXReferenceObjectField = foundry.canvas.vfx.fields.VFXReferenceObjectField;
 import VFXReferencePointField = foundry.canvas.vfx.fields.VFXReferencePointField;
 import VFXPointField = foundry.canvas.vfx.fields.VFXPointField;
+import VFXPositionField = foundry.canvas.vfx.fields.VFXPositionField;
+import VFXReferencePositionField = foundry.canvas.vfx.fields.VFXReferencePositionField;
 import VFXPointSourcePolygonField = foundry.canvas.vfx.fields.VFXPointSourcePolygonField;
 
 import fields = foundry.data.fields;
@@ -119,5 +121,32 @@ describe("VFXPointSourcePolygonField", () => {
     expectTypeOf<VFXPointSourcePolygonField.InitializedType>().toEqualTypeOf<
       foundry.canvas.geometry.PointSourcePolygon | null | undefined
     >();
+  });
+});
+
+describe("VFXPositionField", () => {
+  test("can be constructed with no arguments", () => {
+    const field = new VFXPositionField();
+    expectTypeOf(field).toExtend<VFXPositionField>();
+    expect(Object.keys(field.fields)).toEqual(["x", "y", "elevation", "rotation", "scale", "sort", "sortLayer"]);
+  });
+
+  test("initialized type requires only the point", () => {
+    expectTypeOf<VFXPositionField.InitializedType["x"]>().toEqualTypeOf<number>();
+    expectTypeOf<VFXPositionField.InitializedType["elevation"]>().toEqualTypeOf<number | undefined>();
+    expectTypeOf<VFXPositionField.InitializedType["scale"]>().toEqualTypeOf<{ x: number; y: number } | undefined>();
+  });
+});
+
+describe("VFXReferencePositionField", () => {
+  test("drops rotation and scale from a referenced object", () => {
+    const field = new VFXReferencePositionField();
+    expectTypeOf(field).toExtend<VFXReferencePositionField>();
+    const resolved = field.resolve(
+      { reference: "token", deltas: { elevation: 1 } },
+      { token: { x: 1000, y: 2000, elevation: 5, sort: 3, rotation: 90 } },
+    );
+    expect(resolved).not.toHaveProperty("rotation");
+    expect(resolved).toMatchObject({ x: 1000, y: 2000, elevation: 6, sort: 3 });
   });
 });

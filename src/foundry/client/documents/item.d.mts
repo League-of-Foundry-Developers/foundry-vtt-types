@@ -1,9 +1,9 @@
 import type { ConfiguredItem } from "#configuration";
-import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
+import type { AnyObject, DeepPartial, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -480,6 +480,13 @@ declare namespace Item {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Item.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Item.Source> {}
 
     /**
      * @deprecated `Item` documents are never embedded. This interface exists for consistency with other documents.
@@ -1126,6 +1133,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
     data?: Item.CreateDialogData,
     createOptions?: Item.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Item.CreateDialogReturn<Options>>;
 
   /**
@@ -1139,7 +1147,13 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Item.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Item.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Item.CreateInput[],
+    operation?: Item.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Item.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

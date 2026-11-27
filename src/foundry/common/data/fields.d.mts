@@ -222,7 +222,7 @@ declare abstract class DataField<
    * Attempt to retrieve a valid initial value for the DataField.
    * @param source - Model source data object within which an initial value is required for this field
    * @returns A proposed initial value
-   * @remarks `source` is unused if the field's `initial` is not a function.
+   * @remarks `source` is unused if the field's `initial` is not a function. An object or array `initial` is deep-cloned.
    */
   getInitialValue(source?: unknown): InitializedType;
 
@@ -4936,6 +4936,14 @@ declare class FilePathField<
   override initial: DataField.Options.InitialType<PersistedType>;
 
   protected static override get _defaults(): FilePathField.Options;
+
+  /**
+   * Get the file extension which a file of a given MIME type may have in this field.
+   * @param mimeType - The requested MIME type
+   * @returns The allowed extension
+   * @throws If this field does not allow files of the MIME type
+   */
+  getAllowedExtension(mimeType: string): string;
 
   /** @remarks `options` is unused in `FilePathField` */
   protected override _validateType(

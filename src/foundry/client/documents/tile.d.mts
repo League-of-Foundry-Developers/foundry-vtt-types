@@ -1,8 +1,8 @@
-import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields, TextureData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseTile } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { RectangleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -434,6 +434,13 @@ declare namespace TileDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode TileDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<TileDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1008,6 +1015,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
     data: TileDocument.CreateDialogData | undefined,
     createOptions: TileDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TileDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -1021,7 +1029,13 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TileDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<TileDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: TileDocument.CreateInput[],
+    operation?: TileDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<TileDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

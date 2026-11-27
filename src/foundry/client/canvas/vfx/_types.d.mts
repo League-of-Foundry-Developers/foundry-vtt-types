@@ -19,8 +19,10 @@ type VFXComponentAnimation = VFXComponent.Animation;
 
 type VFXPathGenerator = VFXPath.Generator;
 
-type VFXBasePathPoint = VFXPath.BasePathPoint;
+type VFXPosition = VFXPath.Position;
 
 type VFXPathPoint = VFXPath.PathPoint;
+
+type VFXPathOptions = VFXPath.PathOptions | VFXPath.ControlledPathOptions;
 
 type VFXPositionalSoundData = VFXPositionalSoundComponent.PositionalSoundData;

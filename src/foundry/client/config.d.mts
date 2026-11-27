@@ -3498,11 +3498,16 @@ declare global {
         interface Paths {
           [pathName: Brand<string, "CONFIG.Canvas.vfx.paths">]: vfx.VFXPath.Generator;
 
-          /** @defaultValue `(points, _parameters) => new foundry.canvas.vfx.VFXPath(points)` */
+          /**
+           * @defaultValue `(points, {step, stepElevation}={}) => new foundry.canvas.vfx.VFXPath(points, {step, stepElevation})`
+           */
           linear: vfx.VFXPath.Generator;
 
           /** @defaultValue the `arcPath` generator from `client/canvas/vfx/paths/vfx-arc-path.mjs` */
           arc: vfx.VFXPath.Generator;
+
+          /** @defaultValue the `splinePath` generator from `client/canvas/vfx/paths/vfx-spline-path.mjs` */
+          spline: vfx.VFXPath.Generator;
 
           /** @defaultValue the `weavePath` generator from `client/canvas/vfx/paths/vfx-weave-path.mjs` */
           weave: vfx.VFXPath.Generator;
@@ -4735,6 +4740,12 @@ declare global {
 
     interface Wall extends _Document<"Wall">, _HasNoTypes<"Wall">, _CanvasDoc<"Wall"> {
       /**
+       * @defaultValue {@linkcode foundry.canvas.containers.DoorMesh}
+       * @remarks The class {@linkcode foundry.canvas.placeables.Wall.createDoorMeshes | Wall#createDoorMeshes} constructs.
+       */
+      doorMeshClass: typeof DoorMesh;
+
+      /**
        * @defaultValue
        * ```ts
        * { applicationClass: foundry.applications.sidebar.tabs.WallTab, order: 400 }
@@ -5116,8 +5127,15 @@ declare global {
         woodHeavy: DoorSoundConfig;
       }
 
+      /**
+       * Prepare the attributes for a door animation.
+       */
       type DoorAnimationFunction = (this: DoorMesh, open: boolean) => CanvasAnimation.Attribute[];
 
+      /**
+       * A callback at a door animation lifecycle boundary.
+       * The preAnimate and postAnimate callbacks are awaited; initialize is synchronous.
+       */
       type DoorAnimationHook = (this: DoorMesh, open: boolean) => MaybePromise<void>;
 
       /** @internal */
@@ -5131,13 +5149,20 @@ declare global {
         /** @defaultValue {@linkcode CanvasAnimation.easeInOutCosine | "easeInOutCosine"} */
         easing: CanvasAnimation.EasingFunction;
 
-        /** @remarks `initialize` hooks are not awaited */
+        /**
+         * Called after applying the closed pose,
+         * before applying the open pose if needed.
+         * @remarks Not awaited.
+         */
         initialize: DoorAnimationHook;
 
-        /** @remarks `preAnimate` hooks **are** awaited */
+        /** Called before an animation plays. */
         preAnimate: DoorAnimationHook;
 
-        /** @remarks `postAnimate` hooks **are** awaited */
+        /**
+         * Called after an animation ends, unless it was replaced
+         * or the mesh was reinitialized or destroyed.
+         */
         postAnimate: DoorAnimationHook;
       }
 
@@ -5145,6 +5170,7 @@ declare global {
         /** @remarks Label (or localization key) for the animation select in {@linkcode foundry.applications.sheets.WallConfig | WallConfig}*/
         label: string;
 
+        /** Returns the attributes for the requested open or closed state. */
         animate: DoorAnimationFunction;
 
         /** @remarks Time to animate over in milliseconds */

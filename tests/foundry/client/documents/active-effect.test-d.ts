@@ -729,6 +729,9 @@ test("foundry/client/documents/active-effect", async () => {
     }),
   ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
   expectTypeOf(
+    ActiveEffect.createDialog({}, { parent: someActor }, {}, { window: { title: "New Effect" } }),
+  ).toEqualTypeOf<Promise<ActiveEffect.Stored | null>>();
+  expectTypeOf(
     ActiveEffect.fromDropData({
       data: aeSource,
     }),

@@ -191,8 +191,10 @@ declare abstract class DiceTerm extends RollTerm {
    * Return a string used as the label for each rolled result
    * @param result - The rolled result
    * @returns The result label
+   * @remarks Return a `Handlebars.SafeString` for a label containing markup. An HTML string is still rendered as markup by
+   * {@linkcode DiceTerm.getTooltipData | #getTooltipData}, with a deprecation warning (since v14, until v15).
    */
-  getResultLabel(result: DiceTerm.Result): string;
+  getResultLabel(result: DiceTerm.Result): string | Handlebars.SafeString;
 
   /**
    * Get the CSS classes that should be used to display each rolled result
@@ -389,7 +391,7 @@ declare namespace DiceTerm {
     icon: string;
     method: string;
     formula: string;
-    rolls: { result: string; classes: string }[];
+    rolls: { result: string | Handlebars.SafeString; classes: string }[];
   }
 
   interface _KeepOrDropOptions {

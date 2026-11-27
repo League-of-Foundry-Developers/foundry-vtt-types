@@ -17,7 +17,7 @@ declare namespace ServerSettings {
 
     compressSocket: fields.BooleanField<{ initial: true }>;
 
-    cssTheme: fields.StringField<{ blank: false; choices: typeof CONST.CSS_THEMES; initial: "dark" }>;
+    cssTheme: fields.StringField<{ required: true; blank: false; choices: typeof CONST.CSS_THEMES; initial: "dark" }>;
 
     /** The absolute path of the user data directory (obscured) */
     dataPath: fields.StringField;
@@ -62,6 +62,14 @@ declare namespace ServerSettings {
 
     /** The Internet Protocol version to use, either 4 or 6. */
     protocol: fields.NumberField<{ integer: true; choices: [4, 6]; nullable: true }>;
+
+    /**
+     * The number of trusted proxy hops for socket connection limits.
+     * Requires a consistent number of trusted proxy hops on all routes
+     * to the server.
+     * @defaultValue `1`
+     */
+    proxyHops: fields.NumberField<{ required: true; nullable: false; integer: true; min: 0; initial: 1 }>;
 
     /** An external-facing proxied port used for invitation addresses and URLs */
     proxyPort: fields.NumberField<{ required: true; nullable: true; integer: true; initial: null }>;

@@ -1,8 +1,8 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { RegionShape } from "#client/data/region-shapes/_module.d.mts";
 import type { PolygonTree } from "#client/data/polygon-tree.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -23,6 +23,15 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @param context - Construction context options
    */
   constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
+
+  /**
+   * A Region is active if and only if it was created, hasn't been deleted yet, isn't effectively hidden, and
+   * isn't in a Compendium pack.
+   * A Region is effectively hidden if and only if it itself is hidden and the Token it is attached to is hidden.
+   */
+  get active(): boolean;
+
+  override get visible(): boolean;
 
   /**
    * Does this Region have a single shape that is not a hole?
@@ -393,6 +402,14 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   //   user: User.Stored,
   // ): Promise<void>;
 
+  /**
+   * Trigger the status and enter/exit events of Regions whose prepared hidden state has changed.
+   * @param regions - The Regions which became hidden or unhidden
+   * @param user    - The User who triggered the change
+   * @internal
+   */
+  static _onHiddenChange(regions: Iterable<RegionDocument.Implementation>, user: User.Implementation): void;
+
   // protected static override _onDeleteOperation(
   //   documents: RegionDocument.Stored[],
   //   operation: RegionDocument.Database.OnDeleteOperation,
@@ -400,10 +417,12 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   // ): Promise<void>;
 
   /**
-   * Trigger the Region event.
+   * Trigger the Region event. Only GMs may trigger Region events.
    * @param eventName - The event name
    * @param eventData - The event data
    * @internal
+   * @remarks
+   * @throws If the current User is not a GM.
    */
   protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
 
@@ -477,6 +496,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     data: RegionDocument.CreateDialogData | undefined,
     createOptions: RegionDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RegionDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -490,7 +510,13 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RegionDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<RegionDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: RegionDocument.CreateInput[],
+    operation?: RegionDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<RegionDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
@@ -1126,12 +1152,24 @@ declare namespace RegionDocument {
     /**
      * The `_id` of the Token this Region is attached to, moving with it.
      * @defaultValue `null`
+     * @remarks The field is `idOnly`, so it initializes to the Token's `_id`, but
+     * {@linkcode RegionDocument.prepareBaseData | RegionDocument#prepareBaseData} replaces it with the Token document
+     * from the parent Scene, or `null` if there is none. The `_id` stays in `_source.attachment.token`.
      */
     token: fields.ForeignDocumentField<
       typeof foundry.documents.BaseToken,
-      { idOnly: true; nullable: true; initial: null }
+      { idOnly: true; nullable: true; initial: null },
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      fields.ForeignDocumentField.AssignmentType<
+        typeof foundry.documents.BaseToken,
+        { idOnly: true; nullable: true; initial: null }
+      >,
+      TokenDocument.Stored | null,
+      string | null
     >;
   }
+
+  interface AttachmentData extends fields.SchemaField.InitializedData<AttachmentSchema> {}
 
   interface ElevationSchema extends fields.DataSchema {
     /**
@@ -1212,6 +1250,13 @@ declare namespace RegionDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode RegionDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<RegionDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that

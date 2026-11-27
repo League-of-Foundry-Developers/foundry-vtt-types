@@ -3,6 +3,8 @@
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
 export { default as VFXPointField } from "./vfx-point-field.mjs";
 export { default as VFXPointSourcePolygonField } from "./vfx-point-source-polygon-field.mjs";
+export { default as VFXPositionField } from "./vfx-position-field.mjs";
 export { default as VFXReferenceField } from "./vfx-reference-field.mjs";
 export { default as VFXReferenceObjectField } from "./vfx-reference-object-field.mjs";
 export { default as VFXReferencePointField } from "./vfx-reference-point-field.mjs";
+export { default as VFXReferencePositionField } from "./vfx-reference-position-field.mjs";

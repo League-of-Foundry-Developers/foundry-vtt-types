@@ -1,10 +1,10 @@
-import type { AnyObject, InexactPartial, MaybeArray, Merge, Identity } from "#utils";
+import type { AnyObject, DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { ConfiguredActor } from "#configuration";
 import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { IterableWeakMap, IterableWeakSet } from "#common/utils/_module.d.mts";
 import type { ActiveEffectRegistry } from "#client/helpers/_module.d.mts";
 
@@ -496,6 +496,13 @@ declare namespace Actor {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Actor.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Actor.Source> {}
 
     /**
      * @deprecated `Actor` documents are never embedded. This interface exists for consistency with other documents.
@@ -1483,6 +1490,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
     data?: Actor.CreateDialogData,
     createOptions?: Actor.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Actor.CreateDialogReturn<Options>>;
 
   /**
@@ -1496,7 +1504,13 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Actor.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Actor.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Actor.CreateInput[],
+    operation?: Actor.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Actor.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

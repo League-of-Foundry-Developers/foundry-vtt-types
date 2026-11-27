@@ -88,7 +88,7 @@ declare class ClientSettings {
    *   config: true,        // This specifies that the setting appears in the configuration view
    *   requiresReload: true // This will prompt the GM to have all clients reload the application for the setting to
    *                        // take effect.
-   *   type: new foundry.fields.NumberField({nullable: false, min: 0, max: 100, step: 10}),
+   *   type: new foundry.data.fields.NumberField({nullable: false, min: 0, max: 100, step: 10}),
    *   default: 50,         // The default value for the setting
    *   onChange: value => { // A callback function which triggers when the setting is changed
    *     console.log(value)
@@ -103,7 +103,7 @@ declare class ClientSettings {
    *   hint: "A description of the registered setting and its behavior.",
    *   scope: "user",       // This specifies a user-level setting
    *   config: true,        // This specifies that the setting appears in the configuration view
-   *   type: new foundry.fields.BooleanField(),
+   *   type: new foundry.data.fields.BooleanField(),
    *   default: false
    * });
    * ```

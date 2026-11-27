@@ -20,7 +20,10 @@ declare class Macros extends WorldCollection<"Macro"> {
 
   override get directory(): typeof ui.macros;
 
-  // `Macros` override doesn't change the signature, only sets `data.author` to `game.user.id` if `clearOwnership` is `true`
+  /**
+   * @remarks Clears `approver` unless it is {@linkcode CONST.MACRO_APPROVAL_REQUIRED}, in which case the source's
+   * `author` is kept.
+   */
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
     document: Macro.Implementation | Macro.Source,
     options?: Options,

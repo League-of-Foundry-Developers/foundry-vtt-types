@@ -1,9 +1,9 @@
 import type { ConfiguredCombat } from "#configuration";
-import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
 import type { BaseCombat, BaseCombatant, BaseCombatantGroup, BaseScene } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { ClientSettings } from "#client/helpers/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -490,6 +490,13 @@ declare namespace Combat {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Combat.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Combat.Source> {}
 
     /**
      * @deprecated `Combat` documents are never embedded. This interface exists for consistency with other documents.
@@ -1611,6 +1618,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
     data?: Combat.CreateDialogData,
     createOptions?: Combat.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Combat.CreateDialogReturn<Options>>;
 
   /**
@@ -1624,7 +1632,13 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Combat.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Combat.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Combat.CreateInput[],
+    operation?: Combat.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Combat.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

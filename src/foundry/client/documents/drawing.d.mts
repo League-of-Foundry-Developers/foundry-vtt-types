@@ -1,8 +1,8 @@
-import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields, ShapeData } from "#common/data/_module.mjs";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { EllipseShapeData, PolygonShapeData, RectangleShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -455,6 +455,13 @@ declare namespace DrawingDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<DrawingDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1028,6 +1035,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
     data: DrawingDocument.CreateDialogData | undefined,
     createOptions: DrawingDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<DrawingDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -1041,7 +1049,13 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: DrawingDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<DrawingDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: DrawingDocument.CreateInput[],
+    operation?: DrawingDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<DrawingDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

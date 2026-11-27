@@ -1,8 +1,8 @@
-import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseSetting, BaseUser } from "#client/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -319,6 +319,13 @@ declare namespace Setting {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Setting.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Setting.Source> {}
 
     /**
      * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
@@ -913,6 +920,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
     data?: Setting.CreateDialogData,
     createOptions?: Setting.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Setting.CreateDialogReturn<Options>>;
 
   /**
@@ -926,7 +934,13 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Setting.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Setting.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Setting.CreateInput[],
+    operation?: Setting.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Setting.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

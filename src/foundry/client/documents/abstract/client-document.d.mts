@@ -1,6 +1,7 @@
 import type {
   AnyObject,
   Coalesce,
+  DeepPartial,
   FixedInstanceType,
   Identity,
   InexactPartial,
@@ -495,8 +496,39 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
     data: never,
     createOptions: never,
     options?: never,
-    renderOptions?: ApplicationV2.RenderOptions,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<unknown>;
+
+  /**
+   * Create Documents from data, replacing any whose _id already exists in the destination collection.
+   * @param data      - Creation data, where a provided _id is kept (default: `[]`)
+   * @param operation - Parameters of the database operations (default: `{}`)
+   * @returns The created and the replaced Documents
+   *
+   * @example Import compendium Actors into the World, keeping the folder and ownership of any which already exist
+   * ```js
+   * const pack = game.packs.get("world.heroes");
+   * const actors = await pack.getDocuments();
+   * const data = actors.map(actor => game.actors.fromCompendium(actor, {keepId: true}));
+   * const {created, replaced} = await Actor.implementation.createOrReplaceDocuments(data, {
+   *   preserve: ["folder", "ownership"]
+   * });
+   * ```
+   *
+   * @example Create or replace embedded Items within a parent Actor
+   * ```js
+   * const actor = game.actors.getName("Tim");
+   * const data = [{_id: "swordItem0000000", name: "Sword", type: "weapon"}];
+   * const {created, replaced} = await Item.implementation.createOrReplaceDocuments(data, {parent: actor});
+   * ```
+   *
+   * @remarks Both operations run as a single {@linkcode foundry.documents.modifyBatch} call. Creations always keep their
+   * `_id`, and replacements are applied as a non-recursive update with `diff: false`.
+   */
+  static createOrReplaceDocuments(
+    data: never,
+    operation?: never,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Document.Any>>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -706,6 +738,24 @@ declare global {
 
     type RenderContext = AppV1RenderContext | AppV2RenderContext;
 
+    /**
+     * The options {@linkcode ClientDocumentMixin.AnyMixedConstructor.createOrReplaceDocuments | ClientDocument.createOrReplaceDocuments}
+     * adds to a creation operation.
+     */
+    interface CreateOrReplaceDocumentsOptions<Source extends object> {
+      /**
+       * Top-level fields that replaced Documents keep from their existing values
+       * @defaultValue `[]`
+       */
+      preserve?: Array<keyof Source> | undefined;
+    }
+
+    /** The created and the replaced Documents */
+    interface CreateOrReplaceDocumentsReturn<Stored extends Document.Any> {
+      created: Stored[];
+      replaced: Stored[];
+    }
+
     interface SortOptions<T, SortKey extends string = "sort"> extends foundry.utils.SortOptions<T, SortKey> {
       /**
        * Additional data changes which are applied to each sorted document
@@ -770,9 +820,10 @@ declare global {
       clearFolder: boolean;
 
       /**
-       * Clear document ownership (recursive)
+       * Clear non-default ownership and non-World authorship (recursive)
        * @defaultValue `true`
-       * @remarks Also clears `author`. A numeric `ownership.default` is preserved.
+       * @remarks `author` is kept when the destination pack belongs to the World. A numeric `ownership.default` is
+       * preserved.
        */
       clearOwnership: boolean;
 

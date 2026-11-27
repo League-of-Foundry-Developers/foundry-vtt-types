@@ -286,6 +286,8 @@ declare class CompendiumCollection<
   /**
    * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
    * @returns The configured ownership for the pack
+   * @remarks
+   * @throws If the current User is not a GM with `OWNER` level on this pack.
    * @privateRemarks Always returns `this.ownership`, not the dialog return
    */
   configureOwnershipDialog(): Promise<BasePackage.OwnershipRecord>;
@@ -301,6 +303,8 @@ declare class CompendiumCollection<
    * Create a new Compendium Collection using provided metadata.
    * @param metadata - The compendium metadata used to create the new pack
    * @param options  - Additional options which modify the Compendium creation request (default: `{}`)
+   * @remarks
+   * @throws If the current User is not a GM.
    */
   static createCompendium<Type extends CompendiumCollection.DocumentName>(
     this: abstract new (...args: never) => CompendiumCollection<NoInfer<Type>>,
@@ -321,7 +325,8 @@ declare class CompendiumCollection<
    * @returns A Promise which resolves once the setting is updated
    * @remarks Passing explicit `undefined` for any key of `configuration` will remove it from the stored config, reverting to default
    * handling for that property.
-   * @throws If the current user is not a GM with `OWNER` level on this pack.
+   * @throws If the current user is not a GM, or if `configuration` includes `ownership` or `locked` and they lack
+   * `OWNER` level on this pack.
    */
   configure(configuration?: CompendiumCollection.Configuration): Promise<void>;
 
@@ -334,6 +339,8 @@ declare class CompendiumCollection<
   /**
    * Duplicate a compendium pack to the current World.
    * @param label - A new Compendium label
+   * @remarks
+   * @throws If the current User is not a GM.
    */
   duplicateCompendium({ label }?: CompendiumCollection.DuplicateCompendiumOptions): Promise<this>;
 

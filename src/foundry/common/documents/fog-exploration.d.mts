@@ -33,7 +33,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    *   labelPlural: "DOCUMENT.FogExplorations",
    *   isPrimary: true,
    *   permissions: {
-   *     create: "PLAYER",
+   *     create: this.#canCreate,
    *     update: this.#canModify,
    *     delete: this.#canModify
    *   },

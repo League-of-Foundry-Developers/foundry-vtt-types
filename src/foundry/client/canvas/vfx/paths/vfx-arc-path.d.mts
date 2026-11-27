@@ -6,7 +6,7 @@ import type VFXPath from "../vfx-path.d.mts";
  * @param params    - Spline interpolation parameters (default: `{}`)
  * @returns A generated arc path
  */
-declare function arcPath(waypoints: VFXPath.BasePathPoint[], params?: ArcPathOptions): VFXPath;
+declare function arcPath(waypoints: VFXPath.Position[], params?: ArcPathParams): VFXPath;
 
 export default arcPath;
 
@@ -18,10 +18,10 @@ export default arcPath;
  * @returns Array of path points
  */
 export function generateArcPoints(
-  origin: VFXPath.BasePathPoint,
-  destination: VFXPath.BasePathPoint,
+  origin: VFXPath.Position,
+  destination: VFXPath.Position,
   options?: ArcPathOptions,
-): VFXPath.BasePathPoint[];
+): VFXPath.Position[];
 
 export interface ArcPathOptions {
   /**
@@ -60,3 +60,12 @@ export interface ArcPathOptions {
    */
   auxiliary?: string[] | undefined;
 }
+
+/**
+ * @remarks Omits `auxiliary`, which the path always replaces with `["control"]` so that each generated point carries its
+ * `control`.
+ * @privateRemarks Foundry types this `object & Pick<VFXPathOptions, "step"|"stepElevation">`; the remaining keys are
+ * forwarded to {@linkcode generateArcPoints}.
+ */
+export interface ArcPathParams
+  extends Omit<ArcPathOptions, "auxiliary">, Pick<VFXPath.PathOptions, "step" | "stepElevation"> {}

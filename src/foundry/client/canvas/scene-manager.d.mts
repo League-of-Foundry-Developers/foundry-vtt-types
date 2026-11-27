@@ -116,13 +116,15 @@ declare class SceneManager {
   protected _onTearDown(options: Canvas.TearDownOptions): Promise<void>;
 
   /**
-   * Register additional hook functions are only used while this Scene is active and is automatically deactivated.
-   * Hooks should be registered in this function by calling this._registerHook(hookName, handler)
+   * Register requested hooks that were configured via `this.registerHook()`.
+   * Runs after `Canvas#_onInit` but before the `"canvasInit"` hook event.
    */
   protected _registerHooks(): void;
 
   /**
-   * Register additional hook functions are only used while this Scene is active and is automatically deactivated.
+   * Register additional hook functions that are only used while this Scene is active and are automatically deactivated.
+   * Hooks should be registered in this function by calling `this.registerHook(hookName, handler)`.
+   * @remarks Registering the same `hookName` more than once keeps every handler.
    */
   registerHook(hookName: string, handler: AnyFunction): void;
 

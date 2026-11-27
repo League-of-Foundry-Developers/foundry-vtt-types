@@ -213,7 +213,7 @@ declare namespace WorldCollection {
     clearSort: boolean;
 
     /**
-     * Clear Document ownership (recursive).
+     * Clear non-default ownership and authorship (recursive).
      * @defaultValue `true`
      */
     clearOwnership: boolean;

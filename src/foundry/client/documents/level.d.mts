@@ -1,8 +1,8 @@
-import type { MaybeArray, Merge } from "#utils";
+import type { DeepPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseLevel } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CanvasEdges } from "#client/canvas/geometry/edges/_module.mjs";
 
 declare class Level extends BaseLevel.Internal.ClientDocument {
@@ -94,6 +94,7 @@ declare class Level extends BaseLevel.Internal.ClientDocument {
     data: Level.CreateDialogData | undefined,
     createOptions: Level.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Level.CreateDialogReturn<Options>>;
 
   /**
@@ -107,7 +108,13 @@ declare class Level extends BaseLevel.Internal.ClientDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Level.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<Level.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: Level.CreateInput[],
+    operation?: Level.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Level.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
@@ -456,6 +463,13 @@ declare namespace Level {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode Level.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<Level.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that

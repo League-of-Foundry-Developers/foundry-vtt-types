@@ -1,8 +1,8 @@
-import type { MaybeArray, Merge } from "#utils";
+import type { DeepPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryCategory } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -284,6 +284,13 @@ declare namespace JournalEntryCategory {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode JournalEntryCategory.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<JournalEntryCategory.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -804,6 +811,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
     data: JournalEntryCategory.CreateDialogData | undefined,
     createOptions: JournalEntryCategory.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<JournalEntryCategory.CreateDialogReturn<Options>>;
 
   /**
@@ -817,7 +825,13 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: JournalEntryCategory.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<JournalEntryCategory.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: JournalEntryCategory.CreateInput[],
+    operation?: JournalEntryCategory.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<JournalEntryCategory.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

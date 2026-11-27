@@ -1,9 +1,9 @@
 import type { ConfiguredActorDelta } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -465,6 +465,13 @@ declare namespace ActorDelta {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode ActorDelta.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<ActorDelta.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1211,6 +1218,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
     data: ActorDelta.CreateDialogData | undefined,
     createOptions: ActorDelta.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ActorDelta.CreateDialogReturn<Options>>;
 
   /**
@@ -1224,7 +1232,13 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: ActorDelta.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<ActorDelta.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: ActorDelta.CreateInput[],
+    operation?: ActorDelta.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<ActorDelta.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

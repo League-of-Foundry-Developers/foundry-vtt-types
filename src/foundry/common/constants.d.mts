@@ -762,6 +762,11 @@ export declare const SETUP_VIEWS: readonly ["auth", "license", "setup", "players
 export type SETUP_VIEWS = ValueOf<typeof SETUP_VIEWS>;
 
 /**
+ * The approver of a Macro whose command must be approved by a Gamemaster.
+ */
+export declare const MACRO_APPROVAL_REQUIRED: "required";
+
+/**
  * An Array of valid MacroAction scope values
  */
 export declare const MACRO_SCOPES: readonly ["global", "actors", "actor"];
@@ -2396,8 +2401,13 @@ export declare const REGION_EVENTS: Readonly<{
   REGION_ANIMATION: "regionAnimation";
 
   /**
-   * Triggered when the Region Behavior becomes active, i.e. is enabled or created without being disabled
-   * while its Region isn't hidden, or its Region becomes unhidden while it's enabled.
+   * Triggered when the Region Behavior becomes active. This happens when:
+   * - The Region Behavior is enabled or created without being disabled, provided
+   *   that neither its Region nor its attached Token, if any, is hidden.
+   * - Its Region becomes unhidden while the Region Behavior is enabled and its
+   *   attached Token, if any, isn't hidden.
+   * - Its attached Token, if any, becomes unhidden while the Region Behavior is
+   *   enabled and its Region isn't hidden.
    *
    * The event is triggered only for this Region Behavior.
    *
@@ -2406,8 +2416,13 @@ export declare const REGION_EVENTS: Readonly<{
   BEHAVIOR_ACTIVATED: "behaviorActivated";
 
   /**
-   * Triggered when the Region Behavior becomes inactive, i.e. is disabled or deleted without being disabled
-   * while its Region isn't hidden, or its Region becomes hidden while it's enabled.
+   * Triggered when the Region Behavior becomes inactive. This happens when:
+   * - The Region Behavior is disabled or deleted without being disabled, provided
+   *   that neither its Region nor its attached Token, if any, is hidden.
+   * - Its Region becomes hidden while the Region Behavior is enabled and its
+   *   attached Token, if any, isn't hidden.
+   * - Its attached Token, if any, becomes hidden while the Region Behavior is
+   *   enabled and its Region isn't hidden.
    *
    * The event is triggered only for this Region Behavior.
    *

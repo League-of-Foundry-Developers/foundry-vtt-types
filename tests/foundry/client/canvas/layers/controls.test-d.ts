@@ -63,8 +63,11 @@ test("foundry/client/canvas/layers/controls", () => {
       size: 120,
       style: "alert",
       zoom: 2.6,
+      constrainPan: "scene",
     }),
   ).toEqualTypeOf<Promise<boolean>>();
+  // @ts-expect-error `constrainPan` is `"canvas"` or `"scene"`
+  void layer.handlePing(someUser, somePoint, { scene: "some scene ID", constrainPan: "viewport" });
 
   expectTypeOf(layer.drawOffscreenPing(somePoint)).toEqualTypeOf<Promise<boolean>>();
   expectTypeOf(layer.drawOffscreenPing(somePoint, {})).toEqualTypeOf<Promise<boolean>>();

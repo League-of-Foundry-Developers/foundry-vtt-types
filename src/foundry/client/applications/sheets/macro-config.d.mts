@@ -39,7 +39,10 @@ declare class MacroConfig<
    *     width: 720,
    *     height: 600
    *   },
-   *   actions: {execute: MacroConfig.#onExecute},
+   *   actions: {
+   *     approve: MacroConfig.#onApprove,
+   *     execute: MacroConfig.#onExecute
+   *   },
    *   form: {closeOnSubmit: true}
    * }
    * ```
@@ -88,10 +91,23 @@ declare namespace MacroConfig {
 
   interface RenderContext
     extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Macro.Implementation> {
-    /** @remarks Values are unlocalized `"TYPES.Macro.{type}"` keys. */
+    /**
+     * @remarks Values are unlocalized `"TYPES.Macro.{type}"` keys. `script` is omitted when the current User lacks the
+     * `MACRO_SCRIPT` permission and the Macro is not already a script.
+     */
     typeChoices: Record<CONST.MACRO_TYPES, string>;
 
     editorLang: "javascript" | "html";
+
+    /**
+     * @remarks The name of the User who authored the Macro's command, or `""` if that User does not exist.
+     */
+    author: string;
+
+    /**
+     * @remarks Whether the Macro is a script which has not been approved; see {@linkcode Macro.isApproved | Macro#isApproved}.
+     */
+    unapproved: boolean;
 
     buttons: ApplicationV2.FormFooterButton[];
   }

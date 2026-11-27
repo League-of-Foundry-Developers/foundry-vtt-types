@@ -65,8 +65,8 @@ declare abstract class BaseRegionBehavior<
   static override canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * @remarks Clamps the level returned by `super` to at most
-   * {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER} for non-gamemaster users.
+   * @remarks Returns the Compendium pack's level for a Behavior in a pack. Otherwise clamps the level returned by
+   * `super` to at most {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER} for non-gamemaster users.
    */
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

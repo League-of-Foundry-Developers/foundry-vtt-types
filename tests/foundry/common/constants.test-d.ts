@@ -37,6 +37,7 @@ test("foundry/common/constants", () => {
   expectTypeOf<CONST.GRID_DIAGONALS>().toExtend<number>();
   expectTypeOf<CONST.GRID_SNAPPING_MODES>().toExtend<number>();
   expectTypeOf<CONST.SETUP_VIEWS>().toExtend<string>();
+  expectTypeOf(CONST.MACRO_APPROVAL_REQUIRED).toEqualTypeOf<"required">();
   expectTypeOf<CONST.MACRO_SCOPES>().toExtend<string>();
   expectTypeOf<CONST.MACRO_TYPES>().toExtend<string>();
   expectTypeOf<CONST.AUDIO_CHANNELS>().toExtend<string>();

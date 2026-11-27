@@ -1,8 +1,8 @@
-import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { LightData, fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAmbientLight } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CircleShapeData, ConeShapeData } from "#client/data/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -341,6 +341,13 @@ declare namespace AmbientLightDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode AmbientLightDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<AmbientLightDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -898,6 +905,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
     data: AmbientLightDocument.CreateDialogData | undefined,
     createOptions: AmbientLightDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<AmbientLightDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -911,7 +919,13 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: AmbientLightDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<AmbientLightDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: AmbientLightDocument.CreateInput[],
+    operation?: AmbientLightDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<AmbientLightDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

@@ -1,17 +1,16 @@
-import type { ConcreteKeys, Identity, InexactPartial, ValueOf } from "#utils";
+import type { ConcreteKeys, Identity, InexactPartial, MaybePromise, ValueOf } from "#utils";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
 /**
- * A special subclass of {@linkcode PrimarySpriteMesh} used to render an interactive door.
+ * A mesh for an animated door.
+ * Animation state is kept separate from the rendered mesh.
  */
 declare class DoorMesh extends PrimarySpriteMesh {
   /**
-   * Construct a DoorMesh by providing {@linkcode PrimarySpriteMesh} constructor options and specific door configuration.
-   * @remarks `options` is required, `texture` and `object` must be passed or construction will throw.
-   *
-   * If no door configuration options are passed, the `"swing"` animation config will be loaded
+   * Construct a DoorMesh. Call initialize after construction to prepare its animation and rendered state.
+   * @remarks `texture` and `object` are required because {@linkcode DoorMesh.initialize | #initialize} reads them.
    */
   constructor(options: DoorMesh.ConstructorOptions);
 
@@ -22,19 +21,18 @@ declare class DoorMesh extends PrimarySpriteMesh {
   static DOOR_STYLES: Readonly<DoorMesh.DoorStyles>;
 
   /**
-   * The original position of the door in its resting CLOSED state.
-   * @internal
+   * The door's position and appearance when closed.
    */
   protected _closedPosition: DoorMesh.StateSnapshot;
 
   /**
-   * The currently rendered position of the door.
-   * @internal
+   * The current animation values, before rendering adjustments such as parallax.
    */
   protected _animatedPosition: DoorMesh.StateSnapshot;
 
   /**
    * An amount of pixel padding surrounding the door texture.
+   * @defaultValue `0`
    */
   texturePadding: number;
 
@@ -44,18 +42,83 @@ declare class DoorMesh extends PrimarySpriteMesh {
   get animationId(): string;
 
   /**
+   * The resolved animation options and callbacks. Available after initialization.
+   * @remarks `undefined` until {@linkcode DoorMesh.initialize | #initialize} has been called.
+   */
+  get animationConfig(): DoorMesh.ResolvedAnimationConfiguration | undefined;
+
+  /**
+   * The rendering style of this door mesh.
+   * @remarks `undefined` until {@linkcode DoorMesh.initialize | #initialize} has been called, unless a `style` was passed
+   * to the constructor.
+   */
+  get doorStyle(): DoorMesh.DoorStyle | undefined;
+
+  /**
    * Configure and initialize the DoorMesh.
-   * This is called automatically upon construction, but may be called manually later to update the DoorMesh.
-   * @remarks Despite all properties of {@linkcode DoorMesh.AnimationConfiguration} being optional, `options`
-   * lacks a `={}` default, so you must pass at least an empty object
+   * Call this after construction so that subclass fields exist before any overridable methods run.
+   * Reinitializing cancels the current animation and resets the closed position and animation state.
+   * @remarks Emits the `"configure"` and `"refresh"` events with this mesh. Despite all properties of
+   * {@linkcode DoorMesh.AnimationConfiguration} being optional, `animation` lacks a `={}` default, so you must pass at
+   * least an empty object.
    */
   initialize(animation: DoorMesh.AnimationConfiguration): void;
 
   /**
-   * Animate the door to its current rendered state.
-   * @param open - Is the door now open or closed? (default: {@linkcode Wall.isOpen | this.object.isOpen})
+   * Initialize animation parameters after applying the closed door pose.
+   * @remarks Calls the configured {@linkcode CONFIG.Wall.DoorAnimationConfig.initialize | initialize} callback, if any.
    */
-  animate(open?: boolean): Promise<void>;
+  protected _initializeAnimation(open: boolean): void;
+
+  /**
+   * Compute the door's position and appearance when closed.
+   */
+  protected _getClosedPosition(config?: DoorMesh.AnimationConfiguration): DoorMesh.StateSnapshot;
+
+  /**
+   * Apply the current animation state and rendering adjustments to the mesh.
+   * This does not advance the animation or change its stored values.
+   * The mesh must have been initialized before calling this method.
+   * @remarks Emits the `"refresh"` event with this mesh. Returns early, without emitting, if the mesh is destroyed.
+   */
+  refresh(): this;
+
+  /**
+   * Copy the current animation state for rendering.
+   * Override this method to adjust the copy returned by super, for example to apply parallax.
+   * Do not change the stored animation state or advance effects here; repeated refreshes must give the same result.
+   */
+  protected _getRenderState(): DoorMesh.StateSnapshot;
+
+  /**
+   * Run the callback before opening or closing the door.
+   */
+  protected _prepareAnimation(open: boolean): MaybePromise<void>;
+
+  /**
+   * Prepare the attributes for the requested opening or closing animation.
+   */
+  protected _getAnimationAttributes(open: boolean): CanvasAnimation.Attribute[];
+
+  /**
+   * Run the animation completion callback, including after external cancellation.
+   * This is not called during initialization or after the animation is replaced or the mesh is destroyed.
+   * Callbacks which change animation state must refresh it themselves.
+   */
+  protected _finalizeAnimation(open: boolean): MaybePromise<void>;
+
+  /**
+   * Animate the door toward the requested open or closed state.
+   * The mesh must have been initialized before calling this method.
+   * @param open - Whether to open the door. Defaults to the wall's current state.
+   * @returns Whether the animation and its completion callback finished without being replaced.
+   */
+  animate(open?: boolean): Promise<boolean>;
+
+  /**
+   * @remarks Terminates the current animation first.
+   */
+  override destroy(options?: PIXI.IDestroyOptions | boolean): void;
 
   /**
    * Configure the `"swing"` animation.
@@ -70,13 +133,14 @@ declare class DoorMesh extends PrimarySpriteMesh {
   static animateAscend(this: DoorMesh, open: boolean): CanvasAnimation.Attribute[];
 
   /**
-   * Special initialization needed for descending door types.
+   * Set the initial elevation and sort order of an open descending door.
    * @remarks A valid {@linkcode CONFIG.Wall.DoorAnimationHook}
    */
   static initializeDescend(this: DoorMesh, open: boolean): void;
 
   /**
-   * When closing a descending door, shift its elevation to the foreground before animation.
+   * Keep a descending door at its closed elevation while it moves.
+   * Restoring the elevation refreshes all animation values on the mesh.
    * @remarks A valid {@linkcode CONFIG.Wall.DoorAnimationHook}
    */
   static preAnimateDescend(this: DoorMesh, open: boolean): Promise<void>;
@@ -88,7 +152,7 @@ declare class DoorMesh extends PrimarySpriteMesh {
   static animateDescend(this: DoorMesh, open: boolean): CanvasAnimation.Attribute[];
 
   /**
-   * When opening a descending door, shift its elevation to the background after animation.
+   * Place an open descending door behind the scene and refresh the mesh.
    * @remarks A valid {@linkcode CONFIG.Wall.DoorAnimationHook}
    */
   static postAnimateDescend(this: DoorMesh, open: boolean): Promise<void>;
@@ -106,27 +170,27 @@ declare namespace DoorMesh {
   interface Any extends AnyDoorMesh {}
   interface AnyConstructor extends Identity<typeof AnyDoorMesh> {}
 
-  /**
-   * @remarks Foundry types {@linkcode AnimationConfiguration.style | style} as required at construction, but it gets passed
-   * to `##configure` via {@linkcode DoorMesh.initialize | #initialize}, where it has a default applied
-   */
-  interface ConstructorOptions
-    extends Omit<PrimarySpriteMesh.ConstructorOptions, "object" | "texture">, AnimationConfiguration {
+  interface ConstructorOptions extends Omit<PrimarySpriteMesh.ConstructorOptions, "object" | "texture"> {
     /**
      * Texture passed to the SpriteMesh.
-     * @remarks Required for {@linkcode DoorMesh}, as the constructor calls `##configure` which calls `##getClosedPosition`
-     * which assumes a valid {@linkcode DoorMesh.texture | this.texture}
+     * @remarks Required for {@linkcode DoorMesh}, as {@linkcode DoorMesh.initialize | #initialize} computes the closed
+     * position from {@linkcode DoorMesh.texture | this.texture}
      */
     texture: PIXI.Texture;
 
     /**
      * @remarks This is technically inherited from {@linkcode PrimarySpriteMesh.ConstructorOptions.object}, which is much wider,
-     * but by usage this class requires {@linkcode Wall}s. Required because `##configure` assumes it can call its
-     * {@linkcode Wall.isOpen | isOpen} method.
+     * but by usage this class requires {@linkcode Wall}s. Required because {@linkcode DoorMesh.initialize | #initialize}
+     * calls its {@linkcode Wall.isOpen | isOpen} method.
      *
      * See {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed.object | PrimaryCanvasObject#object}
      */
     object: Wall.Implementation;
+
+    /**
+     * @remarks Takes precedence over a `style` later passed to {@linkcode DoorMesh.initialize | #initialize}.
+     */
+    style?: DoorStyle | undefined;
   }
 
   type ConfiguredAnimationType = ConcreteKeys<typeof CONFIG.Wall.animationTypes>;
@@ -150,11 +214,8 @@ declare namespace DoorMesh {
     double: boolean;
 
     /**
-     * @defaultValue `500`
-     * @remarks Animation time in milliseconds
-     *
-     * The claimed default is the value in the configs for `swivel`, `slide`, and `swing` in {@linkcode CONFIG.Wall.animationTypes},
-     * but the default of the {@linkcode WallDocument.AnimationData.duration | WallDocument#animation#duration} field is `750`
+     * Animation duration in milliseconds.
+     * @defaultValue `750`
      */
     duration: number;
 
@@ -189,16 +250,24 @@ declare namespace DoorMesh {
   }
 
   /**
-   * @remarks The Foundry typedef has `config` and `style` as required properties, but that is for the type of `DoorMesh##animation`,
-   * after the object's passed through `##configure` and had defaults applied. Since there's no public access to that property, this
-   * interface is typed for input, with everything optional.
-   *
-   * `config` always gets set to {@linkcode CONFIG.Wall.animationTypes | CONFIG.Wall.animationTypes[type]}, regardless of input, so it
-   * is not included here.
+   * @remarks The Foundry typedef also has `config`, but that always gets set to
+   * {@linkcode CONFIG.Wall.animationTypes | CONFIG.Wall.animationTypes[type]} during initialization, regardless of input,
+   * so it is not included here. See {@linkcode ResolvedAnimationConfiguration}.
    *
    * See {@linkcode WallDocument.AnimationData}
    */
   interface AnimationConfiguration extends InexactPartial<_AnimationConfiguration> {}
+
+  /**
+   * The type of {@linkcode DoorMesh.animationConfig | DoorMesh#animationConfig}: the animation configuration with
+   * defaults applied.
+   */
+  interface ResolvedAnimationConfiguration extends Readonly<_AnimationConfiguration> {
+    /**
+     * Registered callbacks, assigned during initialization.
+     */
+    readonly config: CONFIG.Wall.DoorAnimationConfig;
+  }
 
   interface DoorStyles {
     SINGLE: "single";

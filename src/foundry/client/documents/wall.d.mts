@@ -1,8 +1,8 @@
-import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseWall } from "#common/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
 import type { Level } from "#client/documents/_module.d.mts";
 
@@ -525,6 +525,13 @@ declare namespace WallDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode WallDocument.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<WallDocument.Source> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -1139,6 +1146,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
     data: WallDocument.CreateDialogData | undefined,
     createOptions: WallDocument.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<WallDocument.CreateDialogReturn<Options>>;
 
   /**
@@ -1152,7 +1160,13 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: WallDocument.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<WallDocument.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: WallDocument.CreateInput[],
+    operation?: WallDocument.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<WallDocument.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

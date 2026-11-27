@@ -13,4 +13,7 @@ test("foundry/common/prosemirror/schema/attribute-capture", () => {
   expectTypeOf(attributeCapture.attributeCapture(markSpec)).toEqualTypeOf<void>();
   expectTypeOf(attributeCapture._captureAttributes(element)).toEqualTypeOf<Record<string, string>>();
   expectTypeOf(attributeCapture._captureClasses(element, { classes: ["managed"] })).toEqualTypeOf<string>();
+  expectTypeOf(AttributeCapture._isAllowedURL("https://foundryvtt.com")).toEqualTypeOf<boolean>();
+  expectTypeOf(AttributeCapture._isAllowedURL(null)).toEqualTypeOf<boolean>();
+  expectTypeOf(attributeCapture._validateCaptured({ title: "x" }, { attributes: ["href"] })).toEqualTypeOf<void>();
 });

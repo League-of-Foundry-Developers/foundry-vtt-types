@@ -26,6 +26,10 @@ test("foundry/client/documents/macro", async () => {
   // properties and functions added by the concrete `Macro` class
   expectTypeOf(script.type).toEqualTypeOf<"script">();
   expectTypeOf(script.isAuthor).toEqualTypeOf<boolean>();
+  expectTypeOf(script.isApproved).toEqualTypeOf<boolean>();
+  expectTypeOf(script._source.approver).toEqualTypeOf<string | null>();
+  expectTypeOf(script.approver).toEqualTypeOf<string | null>();
+  expectTypeOf(script.execute({}, { promptApproval: true })).toEqualTypeOf<Promise<unknown> | void>();
   expectTypeOf(script.canExecute).toEqualTypeOf<boolean>();
   expectTypeOf(script.thumbnail).toEqualTypeOf<string | null>();
   expectTypeOf(await script.execute({ effect: testEffect })).toEqualTypeOf<unknown>();
@@ -57,6 +61,14 @@ test("foundry/client/documents/macro", async () => {
   expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 
   // static properties and functions of `ClientDocumentMixin`
+  expectTypeOf(
+    Macro.createOrReplaceDocuments([{ name: "my macro", type: "chat" }], { preserve: ["ownership", "folder"] }),
+  ).toEqualTypeOf<Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Macro.Stored>>>();
+  expectTypeOf(Macro.createOrReplaceDocuments()).toEqualTypeOf<
+    Promise<ClientDocument.CreateOrReplaceDocumentsReturn<Macro.Stored>>
+  >();
+  // @ts-expect-error `preserve` only accepts top-level source keys
+  void Macro.createOrReplaceDocuments([], { preserve: ["notAField"] });
   expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null>>();
 
   // properties of `Document`

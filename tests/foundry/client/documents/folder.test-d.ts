@@ -20,6 +20,8 @@ test("foundry/client/documents/folder", () => {
 
   // bugged in 13.351: https://github.com/foundryvtt/foundryvtt/issues/13545
   expectTypeOf(Folder.createDialog()).toEqualTypeOf<Promise<void>>();
+  // @ts-expect-error `Folder.createDialog` renders its sheet with `{force: true}` and takes no `renderOptions`
+  void Folder.createDialog({}, {}, {}, { window: { title: "New Folder" } });
   expectTypeOf(folder.getSubfolders(true)).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();
   expectTypeOf(folder.getParentFolders()).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();
   expectTypeOf(someFolder.exportDialog)

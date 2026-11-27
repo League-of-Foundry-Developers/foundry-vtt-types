@@ -1,8 +1,8 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { DeepPartial, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
-import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -60,7 +60,7 @@ declare namespace FogExploration {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "PLAYER";
+      create(user: User.Internal.Implementation, doc: Implementation): boolean;
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
       delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
     }
@@ -329,6 +329,13 @@ declare namespace FogExploration {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation extends Document.Database.CreateDocumentsOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode FogExploration.createOrReplaceDocuments}.
+     * @see {@linkcode ClientDocument.CreateOrReplaceDocumentsOptions}
+     */
+    interface CreateOrReplaceDocumentsOperation
+      extends CreateDocumentsOperation, ClientDocument.CreateOrReplaceDocumentsOptions<FogExploration.Source> {}
 
     /**
      * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
@@ -924,6 +931,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     data?: FogExploration.CreateDialogData,
     createOptions?: FogExploration.Database.CreateDocumentsOperation,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<FogExploration.CreateDialogReturn<Options>>;
 
   /**
@@ -937,7 +945,13 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: FogExploration.CreateDialogDeprecatedOptions,
     options?: Options,
+    renderOptions?: DeepPartial<ApplicationV2.RenderOptions>,
   ): Promise<FogExploration.CreateDialogReturn<Options>>;
+
+  static override createOrReplaceDocuments(
+    data?: FogExploration.CreateInput[],
+    operation?: FogExploration.Database.CreateOrReplaceDocumentsOperation,
+  ): Promise<ClientDocument.CreateOrReplaceDocumentsReturn<FogExploration.Stored>>;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

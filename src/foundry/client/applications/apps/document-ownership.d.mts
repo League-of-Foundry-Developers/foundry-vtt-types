@@ -126,8 +126,6 @@ declare namespace DocumentOwnershipConfig {
      * with no explicit entry in the Document's ownership.
      */
     level: CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_META_OWNERSHIP_LEVELS | undefined;
-
-    isAuthor: boolean;
   }
 
   interface Configuration<Document extends Document.Any = Document.Any>
